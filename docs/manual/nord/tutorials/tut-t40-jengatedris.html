@@ -12,6 +12,7 @@
 <p>Make a complete original falling-block game in three modes: a crisp grid challenge, a chaotic rigid-body tower, and a real two-browser battle. You will learn arrays, candidate movement, rotation, row compaction, seeded randomness, Matter compounds and server-owned game state. The project is called <strong>JengaTedris</strong>; it uses original code and canvas graphics, with no cartridge, ROM or commercial-game assets.</p>
 <p><strong>Download:</strong> <a href="../../assets/downloads/jengatedris-source.zip">Complete JengaTedris project and source</a>. Unzip, open <code>nord.project.json</code> in Nord, and press <strong>Play</strong>. This example uses Nord&#39;s <strong>HTML tier</strong>: one page and JavaScript modules, with a canvas as its view. You edit ordinary project files in Nord&#39;s code editor and export through the same HTML workflow as other Nord apps. A tilemap or four sprite entities could replace the canvas view without changing the grid rules.</p>
 <p><img src="../../assets/screenshots/ed-tedris-grid.png" alt="Playable grid game with next and hold previews"></p>
+<p><strong>Full-code learning route:</strong> After the orientation below, continue to <a href="#file-walkthrough">the complete file-by-file walkthrough</a>. It teaches every main project file in consecutive sections, with the actual code, an explanation of what and why, and a change to try. The expandable complete files at the end are a reference, not the lesson.</p>
 <h2 id="1-learn-the-finished-game-39-s-controls">1. Learn the finished game&#39;s controls<a class="anchor" href="#1-learn-the-finished-game-39-s-controls">#</a></h2>
 <p><strong>Grid run:</strong> arrows or A/D/S move and soft-drop, Up/W rotates, Space hard-drops, and C holds a piece once per lock. A translucent ghost shows the landing position. Clear 20 rows to win. Score increases for dropping and row clears; every five cleared rows increases gravity. The best solo score survives page reloads. Pause and Restart work during a run and after a loss.</p>
 <p><strong>Physics tower:</strong> left/right or A/D push the active rigid piece, Q/E rotate it, and Down slams it. Survive 18 pieces. Pieces keep their angles and can lean, slide and topple; this mode has no row clearing. A piece settles when slow for a short interval, or the seven-second control window ends, then the next one spawns. A high stack at the next spawn ends the run.</p>
@@ -118,10 +119,1250 @@ M.Composite.add(engine.world, body);</code></pre>
 <h2 id="10-verify-export-and-extend">10. Verify, export and extend<a class="anchor" href="#10-verify-export-and-extend">#</a></h2>
 <p>Before exporting, check wall collision, blocked rotation, soft/hard drop, ghost, once-per-piece hold, one- and multi-row clears, overflow, pause, restart and best-score persistence. In physics mode verify actual angular motion and a new piece after settling. In battle verify two names, both Ready, shared state, garbage, result and rematch. The repository tests cover grid rules, real HTTP authority, actual Matter rotation/settling and two browser clients.</p>
 <p>Use Nord&#39;s HTML export for a static client. All physics code is local; there are no CDN calls. Keep <code>server.mjs</code>, <code>server-kit.mjs</code> and <code>rules.js</code> together when hosting the Node game. The source download already includes them. A good extension is a lock-delay timer or a three-piece preview. Add one rule and a focused test before adding more presentation.</p>
-<h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
+<!-- GENERATED FILE WALKTHROUGH --><h2 id="file-walkthrough">Walk through every project file<a class="anchor" href="#file-walkthrough">#</a></h2>
+<p>Work through these files in order using your downloaded project in Nord. Each numbered part shows the <strong>next consecutive lines</strong> of that file, not a selection of highlights. Read the explanation before changing anything. Edit the existing code in place; do not append another copy of a function. Finish one experiment, observe its result, and undo that change before moving on. The complete files and download at the end remain your reference.</p>
+<p>The walkthrough covers the app/game modules, shared helpers used by them, page, styles and project configuration. Binary art/audio/models and minified vendor dependencies are resources rather than lessons in their internal implementation; their paths and contracts are explained where the app uses them.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What you will build or understand</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="#walk-rules-js">rules.js</a></td>
+<td>Build every grid rule, from literal shape cells through rotation, hold, gravity and garbage.</td>
+</tr>
+<tr>
+<td><a href="#walk-chaos-js">chaos.js</a></td>
+<td>Build every piece of the separate real-physics survival mode.</td>
+</tr>
+<tr>
+<td><a href="#walk-app-js">app.js</a></td>
+<td>Read the entire host page and client loop for all three modes.</td>
+</tr>
+<tr>
+<td><a href="#walk-server-mjs">server.mjs</a></td>
+<td>Build the complete authoritative two-player room lifecycle.</td>
+</tr>
+<tr>
+<td><a href="#walk-server-kit-mjs">server-kit.mjs</a></td>
+<td>Read the entire package-free HTTP adapter shared by the game servers.</td>
+</tr>
+<tr>
+<td><a href="#walk-index-html">index.html</a></td>
+<td>Read the complete Nord page entry point and its failure path.</td>
+</tr>
+<tr>
+<td><a href="#walk-nord-project-json">nord.project.json</a></td>
+<td>Read every project field that tells Nord which host, display and services to use.</td>
+</tr>
+<tr>
+<td><a href="#walk-style-css">style.css</a></td>
+<td>Read every stylesheet rule, grouped by the UI responsibility it controls.</td>
+</tr>
+</tbody></table>
+<h3 id="walk-rules-js">1. rules.js<a class="anchor" href="#walk-rules-js">#</a></h3>
+<p>Build every grid rule, from literal shape cells through rotation, hold, gravity and garbage.</p>
+<h4 id="1-1-define-seven-pieces-as-four-local-cells">1.1 — Define seven pieces as four local cells<a class="anchor" href="#1-1-define-seven-pieces-as-four-local-cells">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 1–47.</p>
+<!-- taught-source: jengatedris/rules.js:1-47 --><pre class="code" data-lang="js"><code>// Grid mode has no physics bodies. Board values are colour indices, zero means empty.
+export const W = 10,
+  H = 20;
+export const SHAPES = [
+  [
+    [0, 1],
+    [1, 1],
+    [2, 1],
+    [3, 1],
+  ],
+  [
+    [1, 0],
+    [2, 0],
+    [1, 1],
+    [2, 1],
+  ],
+  [
+    [1, 0],
+    [0, 1],
+    [1, 1],
+    [2, 1],
+  ],
+  [
+    [1, 0],
+    [2, 0],
+    [0, 1],
+    [1, 1],
+  ],
+  [
+    [0, 0],
+    [1, 0],
+    [1, 1],
+    [2, 1],
+  ],
+  [
+    [0, 0],
+    [0, 1],
+    [1, 1],
+    [2, 1],
+  ],
+  [
+    [2, 0],
+    [0, 1],
+    [1, 1],
+    [2, 1],
+  ],
+];</code></pre>
+<p><strong>What and why:</strong> W/H set board dimensions. Each SHAPES entry lists four offsets in a local four-by-four box, not four positions in the world. A type index selects one entry; colour values use type plus one so zero remains empty. These tables are shared by geometry and previews, preventing a preview shape from disagreeing with collision.</p>
+<p><strong>Try it / expected result:</strong> Count the offsets in each entry: every piece must have four. Change a colour rather than geometry first, then verify active/preview cells stay consistent.</p>
+<h4 id="1-2-generate-reproducible-bags">1.2 — Generate reproducible bags<a class="anchor" href="#1-2-generate-reproducible-bags">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 48–72.</p>
+<!-- taught-source: jengatedris/rules.js:48-72 --><pre class="code" data-lang="js"><code>export const COLORS = [
+  '#122130',
+  '#55dcf4',
+  '#f7d774',
+  '#c18aff',
+  '#72dda2',
+  '#fa7894',
+  '#789ef5',
+  '#f6aa66',
+  '#637485',
+];
+export function random(s) {
+  s.seed = (Math.imul(1664525, s.seed) + 1013904223) &gt;&gt;&gt; 0;
+  return s.seed / 4294967296;
+}
+function next(s) {
+  if (!s.bag.length) {
+    s.bag = [0, 1, 2, 3, 4, 5, 6];
+    for (let i = 6; i &gt; 0; i--) {
+      const j = Math.floor(random(s) * (i + 1));
+      [s.bag[i], s.bag[j]] = [s.bag[j], s.bag[i]];
+    }
+  }
+  return s.bag.pop();
+}</code></pre>
+<p><strong>What and why:</strong> The colour table includes empty and garbage colours. random updates a 32-bit seed and scales it to a fraction. next fills a bag with all seven types, shuffles it using a shrinking index range, then pops one type. Saving the generator in the state makes seeded openings reproducible in tests and battles; it is not a secure random source.</p>
+<p><strong>Try it / expected result:</strong> Start two newGrid states with the same seed and compare several pieces. They should agree until different operations consume their random streams.</p>
+<h4 id="1-3-convert-local-cells-and-test-a-candidate">1.3 — Convert local cells and test a candidate<a class="anchor" href="#1-3-convert-local-cells-and-test-a-candidate">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 73–88.</p>
+<!-- taught-source: jengatedris/rules.js:73-88 --><pre class="code" data-lang="js"><code>export function cells(p) {
+  let pts = SHAPES[p.type].map((v) =&gt; [...v]);
+  for (let r = 0; r &lt; p.r; r++) pts = pts.map(([x, y]) =&gt; [3 - y, x]);
+  return pts.map(([x, y]) =&gt; [p.x + x, p.y + y]);
+}
+export function fits(s, p) {
+  return cells(p).every(
+    ([x, y]) =&gt; x &gt;= 0 &amp;&amp; x &lt; W &amp;&amp; y &lt; H &amp;&amp; (y &lt; 0 || !s.board[y][x]),
+  );
+}
+function spawn(s, type = s.next, advance = true) {
+  s.active = { type, x: 3, y: -1, r: 0 };
+  if (advance) s.next = next(s);
+  s.fall = 0;
+  if (!fits(s, s.active)) s.over = true;
+}</code></pre>
+<p><strong>What and why:</strong> cells copies offsets before rotating them so the global SHAPES table stays unchanged. Each quarter-turn maps x/y through the four-cell box, then adds the active piece origin. fits checks all four cells, allowing negative y during entry but rejecting side/bottom collisions and occupied visible cells. spawn resets rotation/fall and checks immediate overflow.</p>
+<p><strong>Try it / expected result:</strong> Move a piece against a wall. A rejected candidate should not change the original offsets or move another piece of that type.</p>
+<h4 id="1-4-initialize-independent-rows-and-test-movement-transactionally">1.4 — Initialize independent rows and test movement transactionally<a class="anchor" href="#1-4-initialize-independent-rows-and-test-movement-transactionally">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 89–115.</p>
+<!-- taught-source: jengatedris/rules.js:89-115 --><pre class="code" data-lang="js"><code>export function newGrid(seed = 12345) {
+  const s = {
+    seed,
+    board: Array.from({ length: H }, () =&gt; Array(W).fill(0)),
+    bag: [],
+    next: 0,
+    active: null,
+    hold: null,
+    held: false,
+    score: 0,
+    lines: 0,
+    level: 1,
+    fall: 0,
+    over: false,
+    won: false,
+    lastClear: 0,
+  };
+  s.next = next(s);
+  spawn(s);
+  return s;
+}
+export function move(s, dx, dy) {
+  const p = { ...s.active, x: s.active.x + dx, y: s.active.y + dy };
+  if (!fits(s, p)) return false;
+  s.active = p;
+  return true;
+}</code></pre>
+<p><strong>What and why:</strong> Array.from creates distinct row arrays. Shared rows made with fill(oneArray) would corrupt multiple rows at once. next is prepared before spawn consumes it. move creates a candidate object, tests it, then commits it; the boolean lets soft drop and gravity decide whether to lock. No pixel coordinates appear in these decisions.</p>
+<p><strong>Try it / expected result:</strong> Temporarily write one board cell in the Console. Only its own row should change.</p>
+<h4 id="1-5-try-kicks-and-lock-four-cells">1.5 — Try kicks and lock four cells<a class="anchor" href="#1-5-try-kicks-and-lock-four-cells">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 116–146.</p>
+<!-- taught-source: jengatedris/rules.js:116-146 --><pre class="code" data-lang="js"><code>export function rotate(s) {
+  if (s.active.type === 1) return;
+  for (const dx of [0, -1, 1, -2, 2]) {
+    const p = { ...s.active, x: s.active.x + dx, r: (s.active.r + 1) % 4 };
+    if (fits(s, p)) {
+      s.active = p;
+      return;
+    }
+  }
+}
+function lock(s) {
+  const pts = cells(s.active);
+  if (pts.some(([, y]) =&gt; y &lt; 0)) {
+    s.over = true;
+    return;
+  }
+  for (const [x, y] of pts) s.board[y][x] = s.active.type + 1;
+  const kept = s.board.filter((row) =&gt; row.some((v) =&gt; !v)),
+    cleared = H - kept.length;
+  s.lastClear = cleared;
+  s.lines += cleared;
+  s.score += [0, 100, 300, 500, 800][cleared] * s.level;
+  s.level = 1 + Math.floor(s.lines / 5);
+  s.board = [...Array.from({ length: cleared }, () =&gt; Array(W).fill(0)), ...kept];
+  s.held = false;
+  spawn(s);
+  if (s.lines &gt;= 20) {
+    s.won = true;
+    s.over = true;
+  }
+}</code></pre>
+<p><strong>What and why:</strong> Square rotation is a no-op. Other rotations try horizontal offsets in priority order and accept the first fit; if none fit, state stays unchanged. lock first detects cells above the visible board, then writes type+1. It removes full rows, scores using the old level, computes the next level, prepends fresh empty rows and resets the hold gate before spawning. The goal sets a final result.</p>
+<p><strong>Try it / expected result:</strong> Create a near-full row in a test copy, clear it, and verify the top row becomes empty and score changes once.</p>
+<h4 id="1-6-dispatch-player-intentions-and-implement-hold">1.6 — Dispatch player intentions and implement hold<a class="anchor" href="#1-6-dispatch-player-intentions-and-implement-hold">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 147–175.</p>
+<!-- taught-source: jengatedris/rules.js:147-175 --><pre class="code" data-lang="js"><code>export function action(s, name) {
+  if (s.over) return;
+  s.lastClear = 0;
+  if (name === 'left') move(s, -1, 0);
+  if (name === 'right') move(s, 1, 0);
+  if (name === 'rotate') rotate(s);
+  if (name === 'down') {
+    if (move(s, 0, 1)) s.score++;
+    else lock(s);
+  }
+  if (name === 'drop') {
+    let n = 0;
+    while (move(s, 0, 1)) n++;
+    s.score += n * 2;
+    lock(s);
+  }
+  if (name === 'hold' &amp;&amp; !s.held) {
+    const t = s.active.type;
+    if (s.hold === null) {
+      s.hold = t;
+      spawn(s);
+    } else {
+      const h = s.hold;
+      s.hold = t;
+      spawn(s, h, false);
+    }
+    s.held = true;
+  }
+}</code></pre>
+<p><strong>What and why:</strong> The dispatcher stops at game over and clears lastClear for this operation. Soft drop either moves and scores or locks; hard drop repeatedly tries move until blocked, scores by distance and locks once. Hold has empty and swap cases. Passing false to spawn during a swap preserves the next queue, and held prevents repeated swaps before lock.</p>
+<p><strong>Try it / expected result:</strong> Hold twice before locking. The second press should do nothing. After locking, hold should become available again.</p>
+<h4 id="1-7-separate-gravity-garbage-and-ghost-prediction">1.7 — Separate gravity, garbage and ghost prediction<a class="anchor" href="#1-7-separate-gravity-garbage-and-ghost-prediction">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 176–203.</p>
+<!-- taught-source: jengatedris/rules.js:176-203 --><pre class="code" data-lang="js"><code>export function tickGrid(s, dt) {
+  s.lastClear = 0;
+  if (s.over) return;
+  s.fall += Math.min(0.1, dt);
+  const delay = Math.max(0.09, 0.72 - (s.level - 1) * 0.08);
+  if (s.fall &gt;= delay) {
+    s.fall = 0;
+    if (!move(s, 0, 1)) lock(s);
+  }
+}
+export function garbage(s, count = 1) {
+  if (s.over) return;
+  for (let n = 0; n &lt; count; n++) {
+    if (s.board[0].some(Boolean)) {
+      s.over = true;
+      return;
+    }
+    s.board.shift();
+    const hole = Math.floor(random(s) * W);
+    s.board.push(Array.from({ length: W }, (_, x) =&gt; (x === hole ? 0 : 8)));
+  }
+  if (!fits(s, s.active)) s.over = true;
+}
+export function ghost(s) {
+  const p = { ...s.active };
+  while (fits(s, { ...p, y: p.y + 1 })) p.y++;
+  return p;
+}</code></pre>
+<p><strong>What and why:</strong> Gravity accumulates seconds until the level-dependent delay passes, then attempts one grid step. Garbage shifts the board upward and adds one row with a seeded hole; occupied cells pushed out or a blocked active piece cause top-out. ghost moves a copy down until the next candidate fails, so it predicts Space without changing the active piece.</p>
+<p><strong>Try it / expected result:</strong> Compare the ghost with the actual hard-drop landing. In battle, watch garbage push existing rows upward rather than overwrite the bottom row.</p>
+<h3 id="walk-chaos-js">2. chaos.js<a class="anchor" href="#walk-chaos-js">#</a></h3>
+<p>Build every piece of the separate real-physics survival mode.</p>
+<h4 id="2-1-load-local-physics-and-make-a-static-container">2.1 — Load local physics and make a static container<a class="anchor" href="#2-1-load-local-physics-and-make-a-static-container">#</a></h4>
+<p><strong>Read:</strong> <code>chaos.js</code>, lines 1–20.</p>
+<!-- taught-source: jengatedris/chaos.js:1-20 --><pre class="code" data-lang="js"><code>// Matter is already bundled with Nord's pinned Phaser. No CDN and no extra npm install.
+import { SHAPES, COLORS } from './rules.js';
+export async function createChaos() {
+  if (!window.Phaser)
+    await new Promise((resolve, reject) =&gt; {
+      const tag = document.createElement('script');
+      tag.src = 'vendor/phaser/phaser.min.js';
+      tag.onload = resolve;
+      tag.onerror = () =&gt; reject(Error('Missing local vendor/phaser/phaser.min.js'));
+      document.head.append(tag);
+    });
+  const M = window.Phaser.Physics.Matter.Matter;
+  const engine = M.Engine.create();
+  engine.gravity.y = 0.8;
+  const walls = [
+    M.Bodies.rectangle(150, 590, 320, 24, { isStatic: true }),
+    M.Bodies.rectangle(-12, 300, 24, 600, { isStatic: true }),
+    M.Bodies.rectangle(312, 300, 24, 600, { isStatic: true }),
+  ];
+  M.Composite.add(engine.world, walls);</code></pre>
+<p><strong>What and why:</strong> The optional script load uses the packaged Phaser build, whose Matter namespace supplies the solver. The engine gets gravity plus a floor and two static side walls. Static means the solver does not accelerate those bodies under gravity. This coordinate system is canvas pixels and milliseconds, separate from grid cells and seconds.</p>
+<p><strong>Try it / expected result:</strong> Change gravity from 0.8 to 0.4 temporarily. Pieces should descend more slowly while grid mode stays unchanged.</p>
+<h4 id="2-2-spawn-one-compound-instead-of-four-loose-blocks">2.2 — Spawn one compound instead of four loose blocks<a class="anchor" href="#2-2-spawn-one-compound-instead-of-four-loose-blocks">#</a></h4>
+<p><strong>Read:</strong> <code>chaos.js</code>, lines 21–51.</p>
+<!-- taught-source: jengatedris/chaos.js:21-51 --><pre class="code" data-lang="js"><code>  const s = {
+    engine,
+    M,
+    blocks: [],
+    active: null,
+    count: 0,
+    over: false,
+    won: false,
+    time: 0,
+    settle: 0,
+  };
+  s.spawn = () =&gt; {
+    const type = s.count % 7;
+    const parts = SHAPES[type].map(([x, y]) =&gt;
+      M.Bodies.rectangle(110 + x * 24, 45 + y * 24, 23, 23),
+    );
+    const body = M.Body.create({
+      parts,
+      friction: 0.7,
+      restitution: 0.04,
+      density: 0.004,
+    });
+    body.color = COLORS[type + 1];
+    M.Composite.add(engine.world, body);
+    s.blocks.push(body);
+    s.active = body;
+    s.count++;
+    s.time = 0;
+    s.settle = 0;
+  };
+  s.spawn();</code></pre>
+<p><strong>What and why:</strong> The state owns every body and the active piece. spawn uses the same SHAPES offsets to make four rectangles, but Body.create combines them into one rigid object with friction, restitution and density. Colour is render data. Resetting time/settle for each spawn gives every active piece its own control window.</p>
+<p><strong>Try it / expected result:</strong> Rotate a falling piece. Its four cells should stay joined; independent Matter bodies would fall apart.</p>
+<h4 id="2-3-apply-controls-step-the-solver-and-detect-settling">2.3 — Apply controls, step the solver and detect settling<a class="anchor" href="#2-3-apply-controls-step-the-solver-and-detect-settling">#</a></h4>
+<p><strong>Read:</strong> <code>chaos.js</code>, lines 52–79.</p>
+<!-- taught-source: jengatedris/chaos.js:52-79 --><pre class="code" data-lang="js"><code>  s.tick = (dt, keys) =&gt; {
+    if (s.over) return;
+    dt = Math.min(dt, 0.033);
+    s.time += dt;
+    const b = s.active;
+    M.Body.applyForce(b, b.position, {
+      x:
+        ((keys.has('ArrowRight') || keys.has('KeyD')) -
+          (keys.has('ArrowLeft') || keys.has('KeyA'))) *
+        0.0015,
+      y: keys.has('ArrowDown') ? 0.009 : 0,
+    });
+    if (keys.has('KeyQ')) M.Body.setAngularVelocity(b, -0.035);
+    if (keys.has('KeyE')) M.Body.setAngularVelocity(b, 0.035);
+    M.Engine.update(engine, dt * 1000);
+    if (s.time &gt; 1 &amp;&amp; b.speed &lt; 0.3) s.settle += dt;
+    else s.settle = 0;
+    if (s.settle &gt; 0.65 || s.time &gt; 7) {
+      if (s.blocks.some((v) =&gt; v.position.y &lt; 90 &amp;&amp; v !== b)) {
+        s.over = true;
+        return;
+      }
+      if (s.count &gt;= 18) {
+        s.over = true;
+        s.won = true;
+      } else s.spawn();
+    }
+  };</code></pre>
+<p><strong>What and why:</strong> The dt cap limits solver steps. Left/right input contributes force; Q/E changes angular velocity and Down adds a downward force. Engine.update expects milliseconds. A slow body must remain slow for 0.65 seconds after its opening second to count as settled; the seven-second timeout keeps the game progressing. Before spawning, the stack-height check can lose the run, while surviving eighteen pieces wins.</p>
+<p><strong>Try it / expected result:</strong> Tap rotate, release it and watch contacts change the angle. A simple grid y increment could not produce this motion.</p>
+<h4 id="2-4-draw-actual-solver-vertices-and-release-the-world">2.4 — Draw actual solver vertices and release the world<a class="anchor" href="#2-4-draw-actual-solver-vertices-and-release-the-world">#</a></h4>
+<p><strong>Read:</strong> <code>chaos.js</code>, lines 80–97.</p>
+<!-- taught-source: jengatedris/chaos.js:80-97 --><pre class="code" data-lang="js"><code>  s.draw = (ctx) =&gt; {
+    for (const b of [...walls, ...s.blocks])
+      for (const p of b.parts.length &gt; 1 ? b.parts.slice(1) : [b]) {
+        ctx.fillStyle = b.color || '#69818b';
+        ctx.beginPath();
+        p.vertices.forEach((v, i) =&gt; (i ? ctx.lineTo(v.x, v.y) : ctx.moveTo(v.x, v.y)));
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#172432';
+        ctx.stroke();
+      }
+  };
+  s.dispose = () =&gt; {
+    M.Composite.clear(engine.world, false);
+    M.Engine.clear(engine);
+  };
+  return s;
+}</code></pre>
+<p><strong>What and why:</strong> Matter compounds include a parent part; drawing parts.slice(1) avoids drawing that extra bounding part. Polygon vertices already contain physical rotation and translation, so no separate canvas angle calculation is needed. The returned dispose callback clears bodies and engine state when changing mode.</p>
+<p><strong>Try it / expected result:</strong> Switch Physics → Grid → Physics. A fresh tower should start, with no old bodies falling into the new world.</p>
+<h3 id="walk-app-js">3. app.js<a class="anchor" href="#walk-app-js">#</a></h3>
+<p>Read the entire host page and client loop for all three modes.</p>
+<h4 id="3-1-create-the-board-and-mode-controls">3.1 — Create the board and mode controls<a class="anchor" href="#3-1-create-the-board-and-mode-controls">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 1–27.</p>
+<!-- taught-source: jengatedris/app.js:1-27 --><pre class="code" data-lang="js"><code>import { newGrid, cells, ghost, COLORS, action, tickGrid, SHAPES } from './rules.js';
+import { createChaos } from './chaos.js';
+export function mount(root) {
+  root.innerHTML = /* HTML */ `
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&gt;
+    &lt;main&gt;
+      &lt;h1&gt;
+        JengaTedris
+        &lt;small&gt;GRID / TOPPLE / BATTLE&lt;/small&gt;
+      &lt;/h1&gt;
+      &lt;nav&gt;
+        &lt;button id=&quot;grid&quot;&gt;Grid run&lt;/button&gt;
+        &lt;button id=&quot;chaos&quot;&gt;Physics tower&lt;/button&gt;
+        &lt;button id=&quot;pause&quot;&gt;Pause / Resume&lt;/button&gt;
+        &lt;button id=&quot;restart&quot;&gt;Restart&lt;/button&gt;
+      &lt;/nav&gt;
+      &lt;section class=&quot;layout&quot;&gt;
+        &lt;canvas width=&quot;300&quot; height=&quot;600&quot; aria-label=&quot;Game board&quot;&gt;&lt;/canvas&gt;
+        &lt;aside&gt;
+          &lt;h2 id=&quot;status&quot;&gt;&lt;/h2&gt;
+          &lt;p id=&quot;stats&quot;&gt;&lt;/p&gt;
+          &lt;canvas id=&quot;next&quot; width=&quot;200&quot; height=&quot;160&quot;&gt;&lt;/canvas&gt;
+          &lt;p&gt;Grid: arrows move/down, ↑ rotate, Space drop, C hold. Clear 20 rows!&lt;/p&gt;
+          &lt;p&gt;
+            Physics: ← → push, Q / E rotate, ↓ slam. Survive 18 rigid pieces; no row
+            clears.
+          &lt;/p&gt;</code></pre>
+<p><strong>What and why:</strong> Imports select rules and optional physics. The mounted page declares mode/restart/pause buttons, a full-size game canvas, status fields, a next/hold preview and local control explanations. IDs are the link to the wiring below. The same canvas renders grid or physics, but each mode keeps its own rules.</p>
+<p><strong>Try it / expected result:</strong> Find each button ID and its later onclick assignment; no button should rely on its visible text as a program identifier.</p>
+<h4 id="3-2-describe-and-collect-battle-connection-details">3.2 — Describe and collect battle connection details<a class="anchor" href="#3-2-describe-and-collect-battle-connection-details">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 28–75.</p>
+<!-- taught-source: jengatedris/app.js:28-75 --><pre class="code" data-lang="js"><code>          &lt;h2&gt;Battle a friend&lt;/h2&gt;
+          &lt;label&gt;
+            Name
+            &lt;input id=&quot;name&quot; value=&quot;Builder&quot; maxlength=&quot;20&quot; /&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            Room
+            &lt;input id=&quot;room&quot; value=&quot;NORD&quot; maxlength=&quot;8&quot; /&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            Server
+            &lt;input id=&quot;server&quot; /&gt;
+          &lt;/label&gt;
+          &lt;button id=&quot;join&quot;&gt;Join battle&lt;/button&gt;
+          &lt;button id=&quot;ready&quot;&gt;Ready / Rematch&lt;/button&gt;
+          &lt;button id=&quot;leave&quot;&gt;Leave battle&lt;/button&gt;
+          &lt;p id=&quot;network&quot;&gt;
+            Start node server.mjs for multiplayer. Same room, two browsers, both Ready.
+          &lt;/p&gt;
+          &lt;canvas id=&quot;rival&quot; width=&quot;150&quot; height=&quot;300&quot;&gt;&lt;/canvas&gt;
+          &lt;p&gt;
+            Two or more cleared rows send garbage to your rival. The server owns both
+            boards.
+          &lt;/p&gt;
+        &lt;/aside&gt;
+      &lt;/section&gt;
+      &lt;footer&gt;
+        Original game · Crowelian 2026 + Sonnet · Best grid score:
+        &lt;b id=&quot;best&quot;&gt;&lt;/b&gt;
+      &lt;/footer&gt;
+    &lt;/main&gt;
+  `;
+  const $ = (id) =&gt; root.querySelector('#' + id),
+    canvas = root.querySelector('canvas'),
+    ctx = canvas.getContext('2d'),
+    keys = new Set();
+  $('server').value =
+    location.port === '4382' ? location.origin : 'http://127.0.0.1:4382';
+  let mode = 'grid',
+    grid = newGrid(Date.now() &gt;&gt;&gt; 0),
+    chaos = null,
+    paused = false,
+    last = performance.now(),
+    alive = true,
+    battle = null,
+    queue = Promise.resolve(),
+    busy = false,
+    poll = 0;</code></pre>
+<p><strong>What and why:</strong> The remaining markup adds player name, room and API address, plus Join/Ready/Leave and an opponent canvas. Inputs are ordinary HTML so typing a room should not move a piece. Footer best-score text is a display target. The next code obtains canvas contexts and a Set for held physics controls, chooses a local default API address and initializes the local run.</p>
+<p><strong>Try it / expected result:</strong> Click the room input and press A/D. The text should change without shifting the active piece.</p>
+<h4 id="3-3-load-the-local-best-and-reset-owned-modes">3.3 — Load the local best and reset owned modes<a class="anchor" href="#3-3-load-the-local-best-and-reset-owned-modes">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 76–100.</p>
+<!-- taught-source: jengatedris/app.js:76-100 --><pre class="code" data-lang="js"><code>  let best = 0;
+  try {
+    best = Number(localStorage.getItem('jengatedris.best') || 0);
+  } catch {}
+  $('best').textContent = best;
+  function reset() {
+    if (mode === 'battle') {
+      message('Use Ready / Rematch after the battle ends.');
+      return;
+    }
+    chaos?.dispose();
+    chaos = null;
+    grid = newGrid(Date.now() &gt;&gt;&gt; 0);
+    paused = false;
+    keys.clear();
+    if (mode === 'chaos') startChaos();
+  }
+  async function startChaos() {
+    try {
+      chaos = await createChaos();
+    } catch (e) {
+      message(e.message);
+      mode = 'grid';
+    }
+  }</code></pre>
+<p><strong>What and why:</strong> Storage failures are caught so the game still runs. reset refuses to locally overwrite an online battle, disposes the old physics world, creates fresh grid state, unpauses and clears held keys. startChaos handles asynchronous library creation and falls back to grid with a message if it fails.</p>
+<p><strong>Try it / expected result:</strong> Pause, restart, and verify fresh state moves again. Switch away from physics and confirm its bodies are gone.</p>
+<h4 id="3-4-implement-a-request-and-accept-a-snapshot">3.4 — Implement a request and accept a snapshot<a class="anchor" href="#3-4-implement-a-request-and-accept-a-snapshot">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 101–121.</p>
+<!-- taught-source: jengatedris/app.js:101-121 --><pre class="code" data-lang="js"><code>  const message = (t) =&gt; ($('network').textContent = t);
+  const base = () =&gt; $('server').value.replace(/\/$/, '');
+  async function request(route, body) {
+    const r = await fetch(base() + '/api/' + route, {
+      method: body ? 'POST' : 'GET',
+      headers: body ? { 'content-type': 'application/json' } : {},
+      body: body ? JSON.stringify(body) : undefined,
+      signal: AbortSignal.timeout(4000),
+    });
+    const data = await r.json();
+    if (!r.ok) throw Error(data.error || r.status);
+    return data;
+  }
+  function accept(data) {
+    battle = data;
+    const own = data.players.find((p) =&gt; p.id === data.id);
+    if (own) grid = own.grid;
+    message(
+      `${data.room} · ${data.players.map((p) =&gt; p.name + (p.ready ? ' ✓' : '')).join(' vs ')} · ${data.phase}${data.winner ? ' · Winner: ' + data.winner : ''}`,
+    );
+  }</code></pre>
+<p><strong>What and why:</strong> request chooses GET for polling or JSON POST for commands and adds a timeout. HTTP failure text becomes a useful error. accept replaces battle state with the server snapshot, selects your grid by session ID and formats the roster/result. No client-submitted score is trusted here.</p>
+<p><strong>Try it / expected result:</strong> Stop the Node process mid-battle. The network area should report failure; the page should not silently pretend local changes are a server result.</p>
+<h4 id="3-5-preserve-action-order-and-wire-local-mode-controls">3.5 — Preserve action order and wire local mode controls<a class="anchor" href="#3-5-preserve-action-order-and-wire-local-mode-controls">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 122–148.</p>
+<!-- taught-source: jengatedris/app.js:122-148 --><pre class="code" data-lang="js"><code>  function send(name) {
+    queue = queue
+      .then(async () =&gt; {
+        if (!battle) return;
+        accept(await request('action', { id: battle.id, action: name }));
+      })
+      .catch((e) =&gt; message(e.message + ' — join again if expired'));
+  }
+  $('grid').onclick = () =&gt; {
+    battle = null;
+    mode = 'grid';
+    reset();
+  };
+  $('chaos').onclick = () =&gt; {
+    battle = null;
+    mode = 'chaos';
+    reset();
+  };
+  $('restart').onclick = reset;
+  $('pause').onclick = () =&gt; {
+    if (mode === 'battle') {
+      message('Live battles cannot pause one player.');
+      return;
+    }
+    paused = !paused;
+    keys.clear();
+  };</code></pre>
+<p><strong>What and why:</strong> A promise queue sends actions in order rather than letting network completion reorder left/rotate/drop. Clearing battle state before choosing a local mode prevents later controls from using the old session. Pause is deliberately local-only; a shared battle cannot be stopped for just one participant.</p>
+<p><strong>Try it / expected result:</strong> Press rotate then drop in battle. The queued requests should preserve that order in the Network panel.</p>
+<h4 id="3-6-join-ready-and-leave-deliberately">3.6 — Join, ready and leave deliberately<a class="anchor" href="#3-6-join-ready-and-leave-deliberately">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 149–177.</p>
+<!-- taught-source: jengatedris/app.js:149-177 --><pre class="code" data-lang="js"><code>  $('join').onclick = async () =&gt; {
+    try {
+      const data = await request('join', {
+        room: $('room').value,
+        name: $('name').value,
+      });
+      chaos?.dispose();
+      chaos = null;
+      mode = 'battle';
+      paused = false;
+      accept(data);
+    } catch (e) {
+      message(e.message);
+    }
+  };
+  $('ready').onclick = async () =&gt; {
+    if (!battle) return;
+    try {
+      accept(await request('ready', { id: battle.id }));
+    } catch (e) {
+      message(e.message);
+    }
+  };
+  $('leave').onclick = () =&gt; {
+    battle = null;
+    mode = 'grid';
+    reset();
+    message('Left locally; the server releases the seat after 30 seconds.');
+  };</code></pre>
+<p><strong>What and why:</strong> Join posts room/name before switching mode, so a failed connection leaves the local game usable. Successful join disposes physics and accepts the authoritative snapshot. Ready requires a session and reports server rejection; Leave returns locally and explains delayed seat expiry. These are three different lifecycle actions, not interchangeable reset buttons.</p>
+<p><strong>Try it / expected result:</strong> Join a full room and observe the error. Choose another room rather than overwriting the current two players.</p>
+<h4 id="3-7-convert-keys-into-actions-without-hijacking-text-fields">3.7 — Convert keys into actions without hijacking text fields<a class="anchor" href="#3-7-convert-keys-into-actions-without-hijacking-text-fields">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 178–208.</p>
+<!-- taught-source: jengatedris/app.js:178-208 --><pre class="code" data-lang="js"><code>  const map = {
+    ArrowLeft: 'left',
+    KeyA: 'left',
+    ArrowRight: 'right',
+    KeyD: 'right',
+    ArrowDown: 'down',
+    KeyS: 'down',
+    ArrowUp: 'rotate',
+    KeyW: 'rotate',
+    Space: 'drop',
+    KeyC: 'hold',
+  };
+  const down = (e) =&gt; {
+    if (/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) return;
+    if (map[e.code] || e.code === 'KeyQ' || e.code === 'KeyE') e.preventDefault();
+    keys.add(e.code);
+    if (paused || mode === 'chaos') return;
+    const name = map[e.code];
+    if (name &amp;&amp; (!e.repeat || ['left', 'right', 'down'].includes(name))) {
+      if (mode === 'battle') send(name);
+      else action(grid, name);
+    }
+  };
+  const up = (e) =&gt; keys.delete(e.code),
+    blur = () =&gt; {
+      keys.clear();
+      if (mode !== 'battle') paused = true;
+    };
+  window.addEventListener('keydown', down);
+  window.addEventListener('keyup', up);
+  window.addEventListener('blur', blur);</code></pre>
+<p><strong>What and why:</strong> The key table maps several physical keys to one intention. The handler ignores focused inputs, prevents page scrolling for game keys and tracks held keys for physics. Grid actions allow repeat only for lateral/down movement; rotate/drop/hold trigger once. Blur clears keys and pauses local modes, while live battles continue on the server.</p>
+<p><strong>Try it / expected result:</strong> Hold Space: it should not instantly hard-drop an unlimited stream of pieces through repeated keydown events.</p>
+<h4 id="3-8-paint-locked-cells-prediction-and-active-cells-in-order">3.8 — Paint locked cells, prediction and active cells in order<a class="anchor" href="#3-8-paint-locked-cells-prediction-and-active-cells-in-order">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 209–229.</p>
+<!-- taught-source: jengatedris/app.js:209-229 --><pre class="code" data-lang="js"><code>  function board(context, s, scale = 30) {
+    context.fillStyle = COLORS[0];
+    context.fillRect(0, 0, scale * 10, scale * 20);
+    const block = (x, y, color, alpha = 1) =&gt; {
+      if (y &lt; 0) return;
+      context.globalAlpha = alpha;
+      context.fillStyle = color;
+      context.fillRect(x * scale + 1, y * scale + 1, scale - 2, scale - 2);
+      context.fillStyle = '#ffffff22';
+      context.fillRect(x * scale + 2, y * scale + 2, scale - 4, 3);
+      context.globalAlpha = 1;
+    };
+    s.board.forEach((row, y) =&gt;
+      row.forEach((v, x) =&gt; {
+        if (v) block(x, y, COLORS[v]);
+      }),
+    );
+    if (!s.over)
+      for (const [x, y] of cells(ghost(s))) block(x, y, COLORS[s.active.type + 1], 0.22);
+    for (const [x, y] of cells(s.active)) block(x, y, COLORS[s.active.type + 1]);
+  }</code></pre>
+<p><strong>What and why:</strong> The block helper converts grid coordinates to pixels, skips above-board cells and restores globalAlpha after ghost painting. Board cells paint first, ghost second and the active piece last. A scale parameter reuses this renderer for the half-size opponent board without duplicating collision logic.</p>
+<p><strong>Try it / expected result:</strong> Look at the ghost through an active piece: the real piece should remain opaque. Removing the alpha reset would make later cells incorrectly translucent.</p>
+<h4 id="3-9-derive-status-and-previews-from-existing-state">3.9 — Derive status and previews from existing state<a class="anchor" href="#3-9-derive-status-and-previews-from-existing-state">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 230–273.</p>
+<!-- taught-source: jengatedris/app.js:230-273 --><pre class="code" data-lang="js"><code>  function draw() {
+    ctx.fillStyle = '#122130';
+    ctx.fillRect(0, 0, 300, 600);
+    if (mode === 'chaos' &amp;&amp; chaos) chaos.draw(ctx);
+    else board(ctx, grid);
+    $('status').textContent = paused
+      ? 'PAUSED'
+      : mode === 'chaos'
+        ? chaos?.over
+          ? chaos.won
+            ? 'TOWER SURVIVED!'
+            : 'TOWER OVERFLOW!'
+          : 'PHYSICS TOWER'
+        : grid.over
+          ? grid.won
+            ? '20 ROWS CLEAR!'
+            : 'STACK OVERFLOW'
+          : mode === 'battle'
+            ? 'LIVE BATTLE'
+            : 'GRID RUN';
+    $('stats').textContent =
+      mode === 'chaos'
+        ? `Piece ${chaos?.count || 0}/18 · settle each rigid tetromino`
+        : `Score ${grid.score} · Rows ${grid.lines}/20 · Level ${grid.level}`;
+    const n = $('next').getContext('2d');
+    n.clearRect(0, 0, 200, 160);
+    n.fillStyle = '#d8e8ef';
+    n.font = '14px monospace';
+    n.fillText('NEXT', 4, 16);
+    n.fillText('HOLD', 4, 90);
+    for (const [type, oy] of [
+      [grid.next, 22],
+      [grid.hold, 96],
+    ])
+      if (type !== null)
+        for (const [x, y] of SHAPES[type]) {
+          n.fillStyle = COLORS[type + 1];
+          n.fillRect(x * 22 + 24, y * 22 + oy, 20, 20);
+        }
+    const opponent = battle?.players.find((p) =&gt; p.id !== battle.id);
+    const rc = $('rival').getContext('2d');
+    rc.clearRect(0, 0, 150, 300);
+    if (opponent) board(rc, opponent.grid, 15);
+  }</code></pre>
+<p><strong>What and why:</strong> draw chooses the physics or grid renderer, then derives the status from mode, pause and result flags. It does not decide whether a line cleared. The next/hold preview reads SHAPES directly; null hold avoids indexing a nonexistent shape. The rival is whichever snapshot player is not you, and is painted through the same board function at scale 15.</p>
+<p><strong>Try it / expected result:</strong> Clear a row and inspect the preview and score together. They should reflect one state transition, not separate UI counters.</p>
+<h4 id="3-10-choose-one-clock-owner-and-stop-cleanly">3.10 — Choose one clock owner and stop cleanly<a class="anchor" href="#3-10-choose-one-clock-owner-and-stop-cleanly">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 274–327.</p>
+<!-- taught-source: jengatedris/app.js:274-327 --><pre class="code" data-lang="js"><code>  function frame(now) {
+    if (!alive) return;
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (!paused) {
+      if (mode === 'grid') tickGrid(grid, dt);
+      if (mode === 'chaos') chaos?.tick(dt, keys);
+    }
+    if (mode === 'grid' &amp;&amp; grid.score &gt; best) {
+      best = grid.score;
+      $('best').textContent = best;
+      try {
+        localStorage.setItem('jengatedris.best', best);
+      } catch {}
+    }
+    poll += dt;
+    if (mode === 'battle' &amp;&amp; battle &amp;&amp; poll &gt; 0.2 &amp;&amp; !busy) {
+      poll = 0;
+      busy = true;
+      request('state?id=' + encodeURIComponent(battle.id))
+        .then(accept)
+        .catch((e) =&gt; message(e.message))
+        .finally(() =&gt; (busy = false));
+    }
+    draw();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  window.__tedris = {
+    get grid() {
+      return grid;
+    },
+    get chaos() {
+      return chaos;
+    },
+    get mode() {
+      return mode;
+    },
+    get battle() {
+      return battle;
+    },
+    get paused() {
+      return paused;
+    },
+  };
+  return () =&gt; {
+    alive = false;
+    chaos?.dispose();
+    window.removeEventListener('keydown', down);
+    window.removeEventListener('keyup', up);
+    window.removeEventListener('blur', blur);
+    root.replaceChildren();
+  };
+}</code></pre>
+<p><strong>What and why:</strong> Local grid/physics advance only when unpaused. Best score belongs only to local grid mode and is persisted defensively. Online mode polls about five times a second with a busy guard, rather than also running local gravity. draw and the next animation request continue for UI responsiveness. Getters expose state to checks; teardown stops future frames, destroys physics, removes listeners and clears the root.</p>
+<p><strong>Try it / expected result:</strong> Compare a battle snapshot in two browsers: gravity should agree because Node owns it. Closing/reopening Play must not retain the old frame loop.</p>
+<h3 id="walk-server-mjs">4. server.mjs<a class="anchor" href="#walk-server-mjs">#</a></h3>
+<p>Build the complete authoritative two-player room lifecycle.</p>
+<h4 id="4-1-separate-sessions-rooms-and-public-snapshots">4.1 — Separate sessions, rooms and public snapshots<a class="anchor" href="#4-1-separate-sessions-rooms-and-public-snapshots">#</a></h4>
+<p><strong>Read:</strong> <code>server.mjs</code>, lines 1–46.</p>
+<!-- taught-source: jengatedris/server.mjs:1-46 --><pre class="code" data-lang="js"><code>import { randomUUID } from 'node:crypto';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { serve, failure, roomCode } from './server-kit.mjs';
+import { newGrid, action, tickGrid, garbage } from './rules.js';
+export function createBattleServer({
+  port = null,
+  host,
+  root = path.dirname(fileURLToPath(import.meta.url)),
+  clock = Date.now,
+} = {}) {
+  const rooms = new Map(),
+    sessions = new Map();
+  let now = clock();
+  const snapshot = (p) =&gt; {
+    const r = rooms.get(p.room);
+    return {
+      id: p.id,
+      room: p.room,
+      phase: r.phase,
+      winner: r.winner,
+      players: r.players.map((v) =&gt; ({
+        id: v.id,
+        name: v.name,
+        ready: v.ready,
+        grid: v.grid,
+      })),
+    };
+  };
+  function attack(r, p) {
+    const n = p.grid.lastClear;
+    if (n &gt;= 2) for (const q of r.players) if (q !== p) garbage(q.grid, n - 1);
+  }
+  function finish(r) {
+    if (r.phase !== 'playing') return;
+    const losers = r.players.filter((p) =&gt; p.grid.over &amp;&amp; !p.grid.won),
+      winner = r.players.find((p) =&gt; p.grid.won);
+    if (losers.length || winner) {
+      r.phase = 'finished';
+      r.winner =
+        winner?.name ||
+        (losers.length === 2 ? 'Draw' : r.players.find((p) =&gt; !p.grid.over)?.name) ||
+        'Draw';
+      for (const p of r.players) p.ready = false;
+    }
+  }</code></pre>
+<p><strong>What and why:</strong> The factory receives port/root/clock so tests can use a controlled local server. Rooms hold two players and a phase; sessions locate one player by ID. snapshot chooses the output fields rather than returning arbitrary transport objects. attack translates multi-line clears into opponent garbage. finish computes the room result and clears ready flags for the next round.</p>
+<p><strong>Try it / expected result:</strong> Inspect a snapshot after a clear: both players should be present, but only server-applied rule changes should affect their boards.</p>
+<h4 id="4-2-create-rooms-without-exceeding-capacity">4.2 — Create rooms without exceeding capacity<a class="anchor" href="#4-2-create-rooms-without-exceeding-capacity">#</a></h4>
+<p><strong>Read:</strong> <code>server.mjs</code>, lines 47–70.</p>
+<!-- taught-source: jengatedris/server.mjs:47-70 --><pre class="code" data-lang="js"><code>  const api = (method, url, b) =&gt; {
+    if (method === 'POST' &amp;&amp; url.pathname === '/api/join') {
+      if (sessions.size &gt;= 64) return failure(429, 'Server full');
+      const code = roomCode(b.room);
+      let r = rooms.get(code);
+      if (!r) {
+        r = { players: [], phase: 'waiting', winner: null };
+        rooms.set(code, r);
+      }
+      if (r.players.length &gt;= 2)
+        return failure(409, 'Room has two players; choose another code');
+      const p = {
+        id: randomUUID(),
+        room: code,
+        name: String(b.name || 'Builder').slice(0, 20),
+        grid: newGrid(),
+        seen: now,
+        ready: false,
+        lastAction: 0,
+      };
+      r.players.push(p);
+      sessions.set(p.id, p);
+      return snapshot(p);
+    }</code></pre>
+<p><strong>What and why:</strong> Join validates capacity, normalizes the room name and creates waiting state only when needed. Each player gets a unique session ID, fresh grid, display name and activity/rate timestamps. The record is inserted in both room roster and session lookup before returning a snapshot. These maps solve different lookup problems.</p>
+<p><strong>Try it / expected result:</strong> Open a third browser in the same room. It should receive Room has two players rather than becoming an invisible third competitor.</p>
+<h4 id="4-3-validate-ready-and-execute-bounded-intentions">4.3 — Validate Ready and execute bounded intentions<a class="anchor" href="#4-3-validate-ready-and-execute-bounded-intentions">#</a></h4>
+<p><strong>Read:</strong> <code>server.mjs</code>, lines 71–100.</p>
+<!-- taught-source: jengatedris/server.mjs:71-100 --><pre class="code" data-lang="js"><code>    const p = sessions.get(method === 'GET' ? url.searchParams.get('id') : b.id);
+    if (!p) return failure(404, 'Session expired; join again');
+    p.seen = now;
+    const r = rooms.get(p.room);
+    if (method === 'GET' &amp;&amp; url.pathname === '/api/state') return snapshot(p);
+    if (method === 'POST' &amp;&amp; url.pathname === '/api/ready') {
+      if (r.phase === 'playing')
+        return failure(409, 'Finish this battle before rematching');
+      p.ready = true;
+      if (r.players.length === 2 &amp;&amp; r.players.every((v) =&gt; v.ready)) {
+        const seed = now &gt;&gt;&gt; 0;
+        for (const v of r.players) v.grid = newGrid(seed);
+        r.phase = 'playing';
+        r.winner = null;
+      }
+      return snapshot(p);
+    }
+    if (method === 'POST' &amp;&amp; url.pathname === '/api/action') {
+      if (!['left', 'right', 'rotate', 'down', 'drop', 'hold'].includes(b.action))
+        return failure(400, 'Unknown action');
+      if (r.phase === 'playing' &amp;&amp; clock() - p.lastAction &gt;= 24) {
+        p.lastAction = clock();
+        action(p.grid, b.action);
+        attack(r, p);
+        finish(r);
+      }
+      return snapshot(p);
+    }
+    return failure(404, 'Unknown endpoint');
+  };</code></pre>
+<p><strong>What and why:</strong> Every later route resolves an existing session and refreshes activity. State returns a snapshot. Ready rejects an ongoing game, then starts only when both players have readied; both grids receive the same new seed. Action accepts a fixed vocabulary and rate limit, applies shared rules, sends attacks and evaluates the result. The client never supplies a replacement board.</p>
+<p><strong>Try it / expected result:</strong> Click Ready while playing and inspect the rejection. The existing round must not reset.</p>
+<h4 id="4-4-expire-sessions-and-advance-both-boards-on-one-server-clock">4.4 — Expire sessions and advance both boards on one server clock<a class="anchor" href="#4-4-expire-sessions-and-advance-both-boards-on-one-server-clock">#</a></h4>
+<p><strong>Read:</strong> <code>server.mjs</code>, lines 101–142.</p>
+<!-- taught-source: jengatedris/server.mjs:101-142 --><pre class="code" data-lang="js"><code>  const tick = (dt) =&gt; {
+    now = clock();
+    for (const [code, r] of rooms) {
+      for (const p of [...r.players])
+        if (now - p.seen &gt; 30000) {
+          sessions.delete(p.id);
+          r.players.splice(r.players.indexOf(p), 1);
+          r.phase = 'waiting';
+          r.players.forEach((v) =&gt; (v.ready = false));
+        }
+      if (!r.players.length) {
+        rooms.delete(code);
+        continue;
+      }
+      if (r.phase === 'playing') {
+        for (const p of r.players) {
+          tickGrid(p.grid, dt);
+          attack(r, p);
+        }
+        finish(r);
+      }
+    }
+  };
+  return serve({
+    root,
+    port,
+    host,
+    api,
+    tick,
+    files: {
+      '/': 'index.html',
+      '/index.html': 'index.html',
+      '/app.js': 'app.js',
+      '/rules.js': 'rules.js',
+      '/chaos.js': 'chaos.js',
+      '/style.css': 'style.css',
+      '/vendor/phaser/phaser.min.js': 'vendor/phaser/phaser.min.js',
+    },
+  });
+}
+if (process.argv[1] &amp;&amp; path.resolve(process.argv[1]) === fileURLToPath(import.meta.url))
+  createBattleServer({ port: Number(process.env.PORT || 4382) });</code></pre>
+<p><strong>What and why:</strong> The tick updates activity time, removes silent sessions after thirty seconds and returns a lone player to waiting. Empty rooms are deleted. Only playing rooms tick gravity, apply attacks and evaluate a result. serve receives an explicit client-file list, and the final direct-execution guard starts the server only when this module is the program entry point.</p>
+<p><strong>Try it / expected result:</strong> Close one client and wait for expiry. The remaining client should return to waiting and a new player should be able to take the seat.</p>
+<h3 id="walk-server-kit-mjs">5. server-kit.mjs<a class="anchor" href="#walk-server-kit-mjs">#</a></h3>
+<p>Read the entire package-free HTTP adapter shared by the game servers.</p>
+<h4 id="5-1-create-an-http-response-boundary">5.1 — Create an HTTP response boundary<a class="anchor" href="#5-1-create-an-http-response-boundary">#</a></h4>
+<p><strong>Read:</strong> <code>server-kit.mjs</code>, lines 1–39.</p>
+<!-- taught-source: jengatedris/server-kit.mjs:1-39 --><pre class="code" data-lang="js"><code>// Small HTTP transport shared by the teaching servers. No npm packages.
+import http from 'node:http';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+export function serve({
+  root,
+  files,
+  api,
+  tick,
+  port = 4382,
+  host = process.env.HOST || '127.0.0.1',
+}) {
+  const server = http.createServer(async (req, res) =&gt; {
+    const json = (status, data) =&gt; {
+      res.writeHead(status, {
+        'content-type': 'application/json',
+        'cache-control': 'no-store',
+      });
+      res.end(JSON.stringify(data));
+    };
+    const origin = req.headers.origin;
+    if (origin) {
+      try {
+        const u = new URL(origin);
+        if (u.protocol !== 'http:' &amp;&amp; u.protocol !== 'https:')
+          return json(403, { error: 'HTTP origin required' });
+        if (
+          u.host !== req.headers.host &amp;&amp;
+          !['localhost', '127.0.0.1'].includes(u.hostname)
+        )
+          return json(403, { error: 'Open the game from this server' });
+        res.setHeader('access-control-allow-origin', origin);
+        res.setHeader('vary', 'Origin');
+        res.setHeader('access-control-allow-headers', 'content-type');
+        res.setHeader('access-control-allow-methods', 'GET, POST, OPTIONS');
+      } catch {
+        return json(403, { error: 'Invalid origin' });
+      }
+    }</code></pre>
+<p><strong>What and why:</strong> The imported Node modules handle sockets, files and paths. serve receives game-specific api/tick callbacks and an explicit public-file map. json writes a content type and disables caching before serializing the result. The origin branch permits same-origin clients and local Nord previews, while rejecting unrelated remote origins. This is a trusted-room development policy, not an account system.</p>
+<p><strong>Try it / expected result:</strong> Open the game through its Node server, then through Nord Play with the same Server address. Both supported origins should receive JSON.</p>
+<h4 id="5-2-parse-a-bounded-api-message">5.2 — Parse a bounded API message<a class="anchor" href="#5-2-parse-a-bounded-api-message">#</a></h4>
+<p><strong>Read:</strong> <code>server-kit.mjs</code>, lines 40–68.</p>
+<!-- taught-source: jengatedris/server-kit.mjs:40-68 --><pre class="code" data-lang="js"><code>    if (req.method === 'OPTIONS') {
+      res.writeHead(204);
+      res.end();
+      return;
+    }
+    try {
+      const url = new URL(req.url, 'http://localhost');
+      if (url.pathname.startsWith('/api/')) {
+        let body = {};
+        if (req.method === 'POST') {
+          if (!req.headers['content-type']?.startsWith('application/json'))
+            return json(415, { error: 'Send JSON' });
+          let raw = '';
+          for await (const chunk of req) {
+            raw += chunk;
+            if (Buffer.byteLength(raw) &gt; 2048) return json(413, { error: 'Too large' });
+          }
+          try {
+            body = JSON.parse(raw);
+          } catch {
+            return json(400, { error: 'Invalid JSON' });
+          }
+          if (!body || typeof body !== 'object' || Array.isArray(body))
+            return json(400, { error: 'Send an object' });
+        } else if (req.method !== 'GET')
+          return json(405, { error: 'GET or POST required' });
+        const result = api(req.method, url, body);
+        return json(result.status ?? 200, result.data ?? result);
+      }</code></pre>
+<p><strong>What and why:</strong> OPTIONS answers a browser preflight before gameplay. API POST bodies must declare JSON, remain under 2048 bytes and parse as an object. GET is allowed for snapshots. Returning early for invalid input prevents malformed messages from reaching game rules. api returns either plain data or a status/data result, which the adapter normalizes through json.</p>
+<p><strong>Try it / expected result:</strong> Send an invalid action with the browser Network panel and inspect its HTTP status; distinguish transport validation from the game-specific unknown-action error.</p>
+<h4 id="5-3-serve-only-named-public-files-and-own-the-tick">5.3 — Serve only named public files and own the tick<a class="anchor" href="#5-3-serve-only-named-public-files-and-own-the-tick">#</a></h4>
+<p><strong>Read:</strong> <code>server-kit.mjs</code>, lines 69–103.</p>
+<!-- taught-source: jengatedris/server-kit.mjs:69-103 --><pre class="code" data-lang="js"><code>      const name = files[url.pathname];
+      if (req.method !== 'GET' || !name) return json(404, { error: 'Not found' });
+      const mime =
+        {
+          '.html': 'text/html',
+          '.js': 'text/javascript',
+          '.mjs': 'text/javascript',
+          '.css': 'text/css',
+          '.md': 'text/plain',
+        }[path.extname(name)] || 'application/octet-stream';
+      const bytes = await fs.readFile(path.join(root, name));
+      res.writeHead(200, { 'content-type': mime, 'cache-control': 'no-store' });
+      res.end(bytes);
+    } catch (e) {
+      console.error(e);
+      if (!res.headersSent) json(500, { error: 'Server error' });
+      else res.end();
+    }
+  });
+  const interval = setInterval(() =&gt; tick(0.05), 50);
+  server.on('close', () =&gt; clearInterval(interval));
+  if (port !== null)
+    server.listen(port, host, () =&gt;
+      console.log(
+        `Open http://${host === '0.0.0.0' ? 'localhost' : host}:${server.address().port} (HOST=${host})`,
+      ),
+    );
+  return server;
+}
+export const failure = (status, error) =&gt; ({ status, data: { error } });
+export const roomCode = (value) =&gt;
+  String(value ?? 'NORD')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '')
+    .slice(0, 8) || 'NORD';</code></pre>
+<p><strong>What and why:</strong> The file map resolves URL paths to known project files; arbitrary requested disk paths are not joined directly. MIME types tell the browser how to load modules/styles. A catch turns failures into a 500 response. setInterval calls game rules every 50ms, close clears it, and optional port null makes tests control listening. failure and roomCode centralize error shape and safe room naming.</p>
+<p><strong>Try it / expected result:</strong> Request server.mjs in the browser URL. It should return Not found; the source is distributed through the archive rather than this static allowlist.</p>
+<h3 id="walk-index-html">6. index.html<a class="anchor" href="#walk-index-html">#</a></h3>
+<p>Read the complete Nord page entry point and its failure path.</p>
+<h4 id="6-1-load-the-local-runtime-and-start-the-app">6.1 — Load the local runtime and start the app<a class="anchor" href="#6-1-load-the-local-runtime-and-start-the-app">#</a></h4>
+<p><strong>Read:</strong> <code>index.html</code>, lines 1–8.</p>
+<!-- taught-source: jengatedris/index.html:1-8 --><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.jengatedris&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;JengaTedris — grid, topple and battle&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+<p><strong>What and why:</strong> The document declares encoding and viewport, creates the mount container and loads local code. The module imports mount from app.js and awaits initialization for the HTML-tier root. The ready/error flags are inspection signals used by browser checks; they are not a second simulation. The catch logs and exposes initialization errors. The page is served over HTTP so local module and asset URLs resolve consistently.</p>
+<p><strong>Try it / expected result:</strong> Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name.</p>
+<h3 id="walk-nord-project-json">7. nord.project.json<a class="anchor" href="#walk-nord-project-json">#</a></h3>
+<p>Read every project field that tells Nord which host, display and services to use.</p>
+<h4 id="7-1-identify-the-project-and-choose-its-presentation">7.1 — Identify the project and choose its presentation<a class="anchor" href="#7-1-identify-the-project-and-choose-its-presentation">#</a></h4>
+<p><strong>Read:</strong> <code>nord.project.json</code>, lines 1–22.</p>
+<!-- taught-source: jengatedris/nord.project.json:1-22 --><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;JengaTedris&quot;,
+  &quot;id&quot;: &quot;com.crowelian.jengatedris&quot;,
+  &quot;type&quot;: &quot;html&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 640,
+    &quot;height&quot;: 360,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: false,
+    &quot;background&quot;: &quot;#2e3440&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;none&quot;,
+    &quot;gravity&quot;: [
+      0,
+      0,
+      0
+    ]
+  },</code></pre>
+<p><strong>What and why:</strong> format and engineVersion identify the serialized contract, while name/id give human and stable application identity. type chooses the host; startScene is used by a scene backend and is empty for these HTML apps. Display fields request dimensions, fit behaviour, pixel-art treatment and background. Physics selects a runtime engine; the rail shooter uses custom rules with none, while HTML-hosted libraries are initialized in their own modules.</p>
+<p><strong>Try it / expected result:</strong> Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.</p>
+<h4 id="7-2-distinguish-scene-actions-from-html-event-handling">7.2 — Distinguish scene actions from HTML event handling<a class="anchor" href="#7-2-distinguish-scene-actions-from-html-event-handling">#</a></h4>
+<p><strong>Read:</strong> <code>nord.project.json</code>, lines 23–64.</p>
+<!-- taught-source: jengatedris/nord.project.json:23-64 --><pre class="code" data-lang="json"><code>  &quot;input&quot;: {
+    &quot;actions&quot;: {
+      &quot;left&quot;: [
+        &quot;KeyA&quot;,
+        &quot;ArrowLeft&quot;
+      ],
+      &quot;right&quot;: [
+        &quot;KeyD&quot;,
+        &quot;ArrowRight&quot;
+      ],
+      &quot;up&quot;: [
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;down&quot;: [
+        &quot;KeyS&quot;,
+        &quot;ArrowDown&quot;
+      ],
+      &quot;jump&quot;: [
+        &quot;Space&quot;,
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;fire&quot;: [
+        &quot;Space&quot;,
+        &quot;Mouse0&quot;
+      ],
+      &quot;interact&quot;: [
+        &quot;KeyE&quot;,
+        &quot;Enter&quot;
+      ]
+    }
+  },
+  &quot;plugins&quot;: [
+    &quot;ui&quot;,
+    &quot;audio&quot;
+  ],
+  &quot;ui&quot;: {
+    &quot;skin&quot;: &quot;cyber&quot;,
+    &quot;theme&quot;: &quot;nord&quot;
+  }
+}</code></pre>
+<p><strong>What and why:</strong> The input object maps action names to keyboard codes for Nord scene scripts. Vector Patrol reads these through this.input. HTML-tier hosts in the other projects read their own DOM events, so editing this action table alone does not rewrite those handlers. plugins/ui declare ordinary scene services and skin/theme; any remaining desktop configuration is the native capability contract rather than a browser CORS override.</p>
+<p><strong>Try it / expected result:</strong> For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input.</p>
+<h3 id="walk-style-css">8. style.css<a class="anchor" href="#walk-style-css">#</a></h3>
+<p>Read every stylesheet rule, grouped by the UI responsibility it controls.</p>
+<h4 id="8-1-set-the-app-foundation-and-reusable-visual-language">8.1 — Set the app foundation and reusable visual language<a class="anchor" href="#8-1-set-the-app-foundation-and-reusable-visual-language">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 1–51.</p>
+<!-- taught-source: jengatedris/style.css:1-51 --><pre class="code" data-lang="css"><code>html {
+  background: #0a1522;
+}
+html,
+body {
+  height: auto;
+  min-height: 100%;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  background: #0a1522;
+  color: #d8e8ef;
+  font: 16px system-ui;
+  margin: 0;
+}
+main {
+  max-width: 850px;
+  margin: auto;
+  padding: 18px;
+}
+h1 {
+  color: #6de1ef;
+  margin: 4px 0 12px;
+}
+small {
+  font-size: 12px;
+  color: #eec677;
+}
+nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+button,
+input {
+  font: inherit;
+  padding: 8px;
+  border: 1px solid #3e6070;
+  border-radius: 6px;
+  background: #20364a;
+  color: #f4f8ff;
+}
+button {
+  cursor: pointer;
+}
+button:hover {
+  background: #35536b;
+}</code></pre>
+<p><strong>What and why:</strong> The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.</p>
+<p><strong>Try it / expected result:</strong> Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change.</p>
+<h4 id="8-2-lay-out-board-and-previews">8.2 — Lay out board and previews<a class="anchor" href="#8-2-lay-out-board-and-previews">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 52–87.</p>
+<!-- taught-source: jengatedris/style.css:52-87 --><pre class="code" data-lang="css"><code>.layout {
+  display: flex;
+  gap: 22px;
+  align-items: flex-start;
+}
+canvas {
+  border: 1px solid #35536b;
+  max-width: 100%;
+  image-rendering: pixelated;
+}
+aside {
+  max-width: 350px;
+}
+aside h2 {
+  font-size: 18px;
+  color: #eec677;
+}
+label {
+  display: block;
+  font-size: 13px;
+  margin: 8px 0;
+}
+input {
+  width: 100%;
+  font-size: 14px;
+}
+p {
+  line-height: 1.45;
+  font-size: 14px;
+}
+#next {
+  border: 0;
+}
+#rival {
+  float: right;
+}</code></pre>
+<p><strong>What and why:</strong> Flex layout keeps board and sidebar together; canvas rules preserve crisp pixels without changing internal canvas dimensions. Sidebar/label/input rules establish readable configuration controls.</p>
+<p><strong>Try it / expected result:</strong> Resize slowly and compare CSS display size with the fixed canvas.width used by rendering.</p>
+<h4 id="8-3-clear-auxiliary-content-and-stack-on-narrow-screens">8.3 — Clear auxiliary content and stack on narrow screens<a class="anchor" href="#8-3-clear-auxiliary-content-and-stack-on-narrow-screens">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 88–101.</p>
+<!-- taught-source: jengatedris/style.css:88-101 --><pre class="code" data-lang="css"><code>footer {
+  clear: both;
+  padding: 12px;
+  color: #8faab8;
+  font-size: 12px;
+}
+@media (max-width: 620px) {
+  .layout {
+    flex-direction: column;
+  }
+  main {
+    padding: 8px;
+  }
+}</code></pre>
+<p><strong>What and why:</strong> The rival float is cleared before footer text. The media query changes the layout direction and page padding for small windows rather than altering grid width or physics coordinates.</p>
+<p><strong>Try it / expected result:</strong> Narrow below 620 pixels. The sidebar should move below the board while the rules still use ten columns.</p>
+<!-- END GENERATED FILE WALKTHROUGH --><h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
 <p>The archive contains every file needed for the complete local game and Node battle, including the pinned physics bundle and licences. Below are all authored game, server, page, configuration and style files in the manual&#39;s local CodeMirror viewer. Copy the complete files when following from an empty project; the smaller excerpts above explain the decisions.</p>
-<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="app-js">app.js<a class="anchor" href="#app-js">#</a></h3>
-<pre class="code" data-lang="js"><code>import { newGrid, cells, ghost, COLORS, action, tickGrid, SHAPES } from './rules.js';
+<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><details>
+<summary>Complete app.js</summary><pre class="code" data-lang="js"><code>import { newGrid, cells, ghost, COLORS, action, tickGrid, SHAPES } from './rules.js';
 import { createChaos } from './chaos.js';
 export function mount(root) {
   root.innerHTML = /* HTML */ `
@@ -448,7 +1689,7 @@ export function mount(root) {
     root.replaceChildren();
   };
 }</code></pre>
-<details>
+</details><details>
 <summary>Complete chaos.js</summary><pre class="code" data-lang="js"><code>// Matter is already bundled with Nord's pinned Phaser. No CDN and no extra npm install.
 import { SHAPES, COLORS } from './rules.js';
 export async function createChaos() {
@@ -1174,5 +2415,5 @@ footer {
   }
 }</code></pre>
 </details>
-<div class="pager"><a href="tut-t39-vector-patrol.html"><small>← Previous</small>T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t41-nord-office.html"><small>Next →</small>T41 Nord Engine Office — interns, bugs and AI</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-learn-the-finished-game-39-s-controls">1. Learn the finished game&amp;#39;s controls </a><a href="#2-open-the-project-and-follow-its-files">2. Open the project and follow its files </a><a href="#3-represent-the-board-as-data-not-falling-pixels">3. Represent the board as data, not falling pixels </a><a href="#4-rotate-candidates-and-give-the-player-useful-feedback">4. Rotate candidates and give the player useful feedback </a><a href="#5-lock-clear-compact-and-score">5. Lock, clear, compact and score </a><a href="#6-make-physics-mode-actually-topple">6. Make physics mode actually topple </a><a href="#7-run-a-real-battle-server">7. Run a real battle server </a><a href="#8-follow-a-move-from-browser-to-authoritative-server">8. Follow a move from browser to authoritative server </a><a href="#9-source-research-and-deliberate-choices">9. Source research and deliberate choices </a><a href="#10-verify-export-and-extend">10. Verify, export and extend </a><a href="#complete-project-source">Complete project source </a></aside></div>
+<div class="pager"><a href="tut-t39-vector-patrol.html"><small>← Previous</small>T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t41-nord-office.html"><small>Next →</small>T41 Nord Engine Office — interns, bugs and AI</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-learn-the-finished-game-39-s-controls">1. Learn the finished game&amp;#39;s controls </a><a href="#2-open-the-project-and-follow-its-files">2. Open the project and follow its files </a><a href="#3-represent-the-board-as-data-not-falling-pixels">3. Represent the board as data, not falling pixels </a><a href="#4-rotate-candidates-and-give-the-player-useful-feedback">4. Rotate candidates and give the player useful feedback </a><a href="#5-lock-clear-compact-and-score">5. Lock, clear, compact and score </a><a href="#6-make-physics-mode-actually-topple">6. Make physics mode actually topple </a><a href="#7-run-a-real-battle-server">7. Run a real battle server </a><a href="#8-follow-a-move-from-browser-to-authoritative-server">8. Follow a move from browser to authoritative server </a><a href="#9-source-research-and-deliberate-choices">9. Source research and deliberate choices </a><a href="#10-verify-export-and-extend">10. Verify, export and extend </a><a href="#file-walkthrough">Walk through every project file </a><a href="#complete-project-source">Complete project source </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -125,7 +125,7 @@ jobs:
         run: node tools/code-workshops-test.mjs --manual
       - name: Retro and multiplayer full workshops
         run: |
-          node --test tools/retro-games.test.mjs tools/office-tedris.test.mjs tools/tutorial-quality.test.mjs
+          node --test tools/retro-games.test.mjs tools/office-tedris.test.mjs tools/tutorial-quality.test.mjs tools/tutorial-lessons.test.mjs
           node tools/retro-games-test.mjs
           node tools/office-tedris-test.mjs
           node tools/retro-social-manual-test.mjs

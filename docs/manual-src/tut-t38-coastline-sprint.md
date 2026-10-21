@@ -13,6 +13,8 @@ The reference request was ZgzInfinity/OutRun. This tutorial uses the same broad 
 
 <figure class="shot"><img src="assets/screenshots/ed-retro-coast-split.png" alt="Coastline Sprint top/bottom split-screen with independent red and white Amiga cars" loading="lazy"><figcaption>One course, two drivers and two cameras. The red car is keyboard player one; the white car is gamepad player two.</figcaption></figure>
 
+**Full-code learning route:** After the orientation below, continue to [the complete file-by-file walkthrough](#file-walkthrough). It teaches every main project file in consecutive sections, with the actual code, an explanation of what and why, and a change to try. The expandable complete files at the end are a reference, not the lesson.
+
 ## 1. Open and run the finished project
 
 Extract the zip into a writable folder and open its nord.project.json in Nord. Press Play, then choose **1 player**. W/Up accelerates, S/Down brakes, A/D or Left/Right steer and Shift uses nitro. P or the Pause/Resume button pauses; Restart starts a fresh race. Choose either music track from the dropdown. Mute affects both music and SFX.
@@ -220,13 +222,1180 @@ Open the exported copy, click a start button and test both views there. Upload t
 
 **Extensions:** tune one corner, change the checkpoint spacing, add a lap record, add an explicit gamepad selector, or replace one sprite sheet while retaining its frame contract. Keep traffic updates outside the viewport loop and input/state separate from drawing.
 
+<!-- GENERATED FILE WALKTHROUGH -->
+
+## Walk through every project file {#file-walkthrough}
+
+Work through these files in order using your downloaded project in Nord. Each numbered part shows the **next consecutive lines** of that file, not a selection of highlights. Read the explanation before changing anything. Edit the existing code in place; do not append another copy of a function. Finish one experiment, observe its result, and undo that change before moving on. The complete files and download at the end remain your reference.
+
+The walkthrough covers the app/game modules, shared helpers used by them, page, styles and project configuration. Binary art/audio/models and minified vendor dependencies are resources rather than lessons in their internal implementation; their paths and contracts are explained where the app uses them.
+
+| File | What you will build or understand |
+| --- | --- |
+| [track.js](#walk-track-js) | Build every rule before connecting it to graphics: course, fresh drivers, traffic, movement, results and pad mapping. |
+| [render.js](#walk-render-js) | Turn the simulation into a pseudo-3D picture, including every projection, sprite and HUD step. |
+| [app.js](#walk-app-js) | Wire the whole racer together: page, resources, intent, state changes, simulation loop and independent viewports. |
+| [audio.js](#walk-audio-js) | Build the complete local-audio helper: activation, cached decoding, voices, crossfade and cleanup. |
+| [audio-config.js](#walk-audio-config-js) | Choose recordings through data rather than hardcoded paths in gameplay. |
+| [index.html](#walk-index-html) | Read the complete Nord page entry point and its failure path. |
+| [nord.project.json](#walk-nord-project-json) | Read every project field that tells Nord which host, display and services to use. |
+| [assets/sprites/racing-cars.png.meta.json](#walk-assets-sprites-racing-cars-png-meta-json) | Read the supplied sprite sidecar used by Nord’s asset tools. |
+| [assets/sprites/roadside.png.meta.json](#walk-assets-sprites-roadside-png-meta-json) | Read the supplied sprite sidecar used by Nord’s asset tools. |
+
+### 1. track.js {#walk-track-js}
+
+Build every rule before connecting it to graphics: course, fresh drivers, traffic, movement, results and pad mapping.
+
+#### 1.1 — Course units and a reusable clamp
+
+**Read:** `track.js`, lines 1–13.
+
+<!-- taught-source: coastline-sprint/track.js:1-13 -->
+
+```js
+export const COURSE = {
+  length: 180000,
+  limit: 65,
+  checkpoints: [60000, 120000],
+  bonus: 18,
+  maxSpeed: 4800,
+};
+export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+export function curve(z) {
+  const t = z / COURSE.length;
+  return t < 0.12 ? 0 : Math.sin(z / 8500) * 0.65 * (t > 0.9 ? 0.3 : 1);
+}
+export const hill = (z) => Math.sin(z / 12000) * 450 + Math.sin(z / 4700) * 90;
+```
+
+**What and why:** length and checkpoint distances use arbitrary road units; limit and bonus use seconds. clamp confines a value to a closed interval, which is useful for speed, nitro and steering position. curve uses normalized course progress to keep the opening straight and soften the final bends; hill combines two waves so elevation is not a single repetitive slope. These are sampled functions, not meshes.
+
+**Try it / expected result:** Change limit from 65 to 10 and restart. You should lose sooner, while the road length and checkpoint positions remain unchanged; then restore 65.
+
+#### 1.2 — Create independent drivers
+
+**Read:** `track.js`, lines 14–30.
+
+<!-- taught-source: coastline-sprint/track.js:14-30 -->
+
+```js
+export function driver(index = 0) {
+  return {
+    index,
+    x: index ? 0.3 : -0.3,
+    z: 0,
+    speed: 0,
+    time: COURSE.limit,
+    elapsed: 0,
+    nitro: 1,
+    checkpoint: 0,
+    hits: 0,
+    cooldown: 0,
+    finished: false,
+    lost: false,
+    steer: 0,
+  };
+}
+```
+
+**What and why:** Each call returns a new mutable object. x is across the road, z is progress along it, and speed is road units per second. elapsed measures the result time while time counts down. index selects controls and car colour. Nitro, checkpoint and collision timers belong to each player, preventing P2 activity from draining P1 resources.
+
+**Try it / expected result:** Start split play and compare both timers/nitro displays. Accelerate only P2; P1 progress should stay independent.
+
+#### 1.3 — Seed opponents without updating them twice
+
+**Read:** `track.js`, lines 31–45.
+
+<!-- taught-source: coastline-sprint/track.js:31-45 -->
+
+```js
+export const traffic = () =>
+  Array.from({ length: 24 }, (_, i) => ({
+    id: i,
+    z: 7000 + i * 6900,
+    x: [-0.64, 0, 0.64][i % 3],
+    speed: 1350 + (i % 4) * 210,
+  }));
+export function updateDriver(p, input, dt, cars) {
+  if (p.finished || p.lost) return [];
+  dt = Math.min(dt, 0.05);
+  const events = [];
+  p.elapsed += dt;
+  p.time = Math.max(0, p.time - dt);
+  p.cooldown = Math.max(0, p.cooldown - dt);
+  p.skid = Math.max(0, (p.skid ?? 0) - dt);
+```
+
+**What and why:** The factory creates 24 fresh traffic records with alternating lanes and a small set of speeds. updateDriver exits for a driver whose result is final, caps an unusually long frame, advances the two clocks and decays cooldowns toward zero. The app will move traffic once per frame, outside the per-player loop.
+
+**Try it / expected result:** Restart twice and confirm traffic returns to its opening positions. Duplicating the traffic update inside each viewport would make split-screen traffic twice as fast.
+
+#### 1.4 — Integrate speed and steering in seconds
+
+**Read:** `track.js`, lines 46–59.
+
+<!-- taught-source: coastline-sprint/track.js:46-59 -->
+
+```js
+  const boost = input.boost && p.nitro > 0 && input.accel > 0;
+  p.nitro = clamp(p.nitro + (boost ? -0.4 : 0.14) * dt, 0, 1);
+  p.speed = clamp(
+    p.speed + (input.accel * 2400 - input.brake * 4200 - 500) * dt,
+    0,
+    COURSE.maxSpeed * (boost ? 1.3 : 1),
+  );
+  p.steer = input.steer;
+  p.x +=
+    input.steer * dt * (0.5 + p.speed / COURSE.maxSpeed) * 1.25 -
+    ((curve(p.z) * p.speed) / COURSE.maxSpeed) * dt * 0.7;
+  p.x = clamp(p.x, -1.8, 1.8);
+  if (Math.abs(p.x) > 1.05) p.speed = Math.max(0, p.speed - 3200 * dt);
+  if (
+```
+
+**What and why:** boost is a condition, not a stored second timer. Nitro drains while boosting and refills otherwise, with clamp keeping it between zero and one. Speed integrates throttle, braking and coasting drag using dt. The lateral expression combines player steering with outward curve drift. The off-road branch subtracts speed and clamps to zero, so grass cannot accelerate a stationary car.
+
+**Try it / expected result:** Change the coasting term 500 to 1000. Release throttle on a straight and observe faster deceleration, then restore it.
+
+#### 1.5 — Throttle repeated sound and collision responses
+
+**Read:** `track.js`, lines 60–77.
+
+<!-- taught-source: coastline-sprint/track.js:60-77 -->
+
+```js
+    p.skid === 0 &&
+    p.speed > 1800 &&
+    ((input.brake > 0.2 && Math.abs(input.steer) > 0.4) || Math.abs(p.x) > 1.15)
+  ) {
+    p.skid = 0.8;
+    events.push('skid');
+  }
+  p.z += p.speed * dt;
+  if (p.cooldown === 0)
+    for (const car of cars)
+      if (Math.abs(car.z - p.z) < 500 && Math.abs(car.x - p.x) < 0.23) {
+        p.speed *= 0.3;
+        p.cooldown = 1.4;
+        p.hits++;
+        events.push('crash');
+        break;
+      }
+  if (
+```
+
+**What and why:** This continues the if condition opened immediately above. Skid requires speed and hard turning/braking or an off-road position; its timer prevents a sound on every frame. Progress then advances by speed times dt. Collision uses independent forward and lateral distance thresholds. The 1.4-second cooldown stops one overlapping traffic car from registering dozens of impacts.
+
+**Try it / expected result:** Drive into traffic and watch HITS. It should increase once, not once per rendered frame. Reducing the cooldown is an intentional difficulty change, not a rendering change.
+
+#### 1.6 — Consume checkpoints and finish once
+
+**Read:** `track.js`, lines 78–94.
+
+<!-- taught-source: coastline-sprint/track.js:78-94 -->
+
+```js
+    p.checkpoint < COURSE.checkpoints.length &&
+    p.z >= COURSE.checkpoints[p.checkpoint]
+  ) {
+    p.checkpoint++;
+    p.time += COURSE.bonus;
+    events.push('checkpoint');
+  }
+  if (p.z >= COURSE.length) {
+    p.z = COURSE.length;
+    p.finished = true;
+    events.push('win');
+  } else if (p.time === 0) {
+    p.lost = true;
+    events.push('crash');
+  }
+  return events;
+}
+```
+
+**What and why:** The checkpoint condition continues the preceding if. The index points to the next unclaimed checkpoint; incrementing it is what prevents repeated time bonuses. Reaching the course end clamps progress and sets finished; only otherwise can the zero-time branch set lost. Returning event names keeps audio outside these rules.
+
+**Try it / expected result:** Pass one checkpoint slowly. The bonus should be awarded once even though you remain beyond its distance on later frames.
+
+#### 1.7 — Translate hardware into game intent
+
+**Read:** `track.js`, lines 95–104.
+
+<!-- taught-source: coastline-sprint/track.js:95-104 -->
+
+```js
+export function padInput(pad) {
+  const button = (i) => pad?.buttons?.[i]?.value ?? 0;
+  const axis = pad?.axes?.[0] ?? 0;
+  return {
+    steer: Math.abs(axis) > 0.14 ? axis : 0,
+    accel: Math.max(button(7), button(0)),
+    brake: Math.max(button(6), button(1)),
+    boost: button(2) > 0.5,
+  };
+}
+```
+
+**What and why:** Optional chaining makes a missing pad safe. The helper reads analog values for triggers/buttons, applies a dead zone to the stick, and returns the same steer/accel/brake/boost shape as keyboard input. Math.max allows either a trigger or a face button to request throttle. The simulation therefore does not need a special gamepad movement path.
+
+**Try it / expected result:** Gently move the stick near centre. Small noise should be ignored; a larger motion should steer continuously. Hardware mappings still need checking on your controller.
+
+
+### 2. render.js {#walk-render-js}
+
+Turn the simulation into a pseudo-3D picture, including every projection, sprite and HUD step.
+
+#### 2.1 — Paint a background in viewport coordinates
+
+**Read:** `render.js`, lines 1–18.
+
+<!-- taught-source: coastline-sprint/render.js:1-18 -->
+
+```js
+// Extended from Nord's own Amiga Showcase road/sprite presentation.
+import { curve, hill, COURSE } from './track.js';
+export function drawView(g, p, cars, others, images, w, h) {
+  const horizon = h * 0.36;
+  g.fillStyle = '#82bbce';
+  g.fillRect(0, 0, w, h);
+  g.fillStyle = '#eac48d';
+  g.fillRect(0, horizon * 0.65, w, h * 0.2);
+  g.fillStyle = '#657e86';
+  g.beginPath();
+  g.moveTo(0, horizon);
+  for (let x = 0; x <= w; x += 20)
+    g.lineTo(x, horizon - 18 - Math.sin(x * 0.02 + p.z * 0.00005) * 12);
+  g.lineTo(w, horizon + 30);
+  g.lineTo(0, horizon + 30);
+  g.fill();
+  g.fillStyle = '#487650';
+  g.fillRect(0, horizon, w, h - horizon);
+```
+
+**What and why:** The renderer receives w and h instead of reading the full canvas size, so the same function works in a half-height view. Background layers overwrite the viewport every frame. A sine ridge gives a cheap skyline; its tiny progress-dependent phase makes the horizon react as you travel. None of these pixels changes the road collision rules.
+
+**Try it / expected result:** Temporarily change the sky colour. Both split-screen views should change without affecting handling.
+
+#### 2.2 — Project many road samples
+
+**Read:** `render.js`, lines 19–36.
+
+<!-- taught-source: coastline-sprint/render.js:19-36 -->
+
+```js
+  const SEG = 200,
+    road = 2000,
+    points = [];
+  let x = 0,
+    dx = 0;
+  for (let i = 1; i <= 180; i++) {
+    const z = p.z + i * SEG;
+    dx += curve(z);
+    x += dx;
+    const scale = 0.85 / (i * SEG);
+    points.push({
+      z,
+      scale,
+      x: w / 2 + ((x - p.x * road) * scale * w) / 2,
+      y: horizon + ((hill(p.z) + 950 - hill(z)) * scale * h) / 2,
+      half: (road * scale * w) / 2,
+    });
+  }
+```
+
+**What and why:** SEG is longitudinal spacing and road is half-width in world-like units. dx accumulates curvature and x accumulates that change again, bending the road smoothly across depth. The reciprocal scale makes far samples smaller. The projected centre subtracts player lateral position, while projected height compares the local hill with the distant hill. Each point stores enough information for road and roadside objects to agree.
+
+**Try it / expected result:** Change 180 samples to 90. The visible horizon distance shrinks; this does not shorten the course.
+
+#### 2.3 — Join neighbouring samples into strips
+
+**Read:** `render.js`, lines 37–61.
+
+<!-- taught-source: coastline-sprint/render.js:37-61 -->
+
+```js
+  const quad = (a, b, ratio, color) => {
+    g.fillStyle = color;
+    g.beginPath();
+    g.moveTo(a.x - a.half * ratio, a.y);
+    g.lineTo(a.x + a.half * ratio, a.y);
+    g.lineTo(b.x + b.half * ratio, b.y);
+    g.lineTo(b.x - b.half * ratio, b.y);
+    g.closePath();
+    g.fill();
+  };
+  for (let i = points.length - 2; i >= 0; i--) {
+    const a = points[i],
+      b = points[i + 1];
+    if (b.y >= a.y || b.y > h) continue;
+    const stripe = Math.floor(a.z / 1200) % 2;
+    quad(a, b, 1.08, stripe ? '#eee0c4' : '#9a4e45');
+    quad(a, b, 1, stripe ? '#444750' : '#4c4e56');
+    if (stripe) {
+      for (const lane of [-0.33, 0.33]) {
+        const aa = { ...a, x: a.x + a.half * lane, half: a.half * 0.014 },
+          bb = { ...b, x: b.x + b.half * lane, half: b.half * 0.014 };
+        quad(aa, bb, 1, '#d7d5bb');
+      }
+    }
+  }
+```
+
+**What and why:** A quad connects two projected cross-sections. ratio widens or narrows the same geometry for shoulders, asphalt and lane paint. The loop runs far to near so closer strips cover distant ones. It skips folded/offscreen sections, alternates stripe colours by world distance, and makes thin lane quads by copying points with smaller widths.
+
+**Try it / expected result:** Reverse the loop on a temporary copy and look for near/far overlap errors. Restore the far-to-near order before continuing.
+
+#### 2.4 — Crop one sprite cell and anchor its feet
+
+**Read:** `render.js`, lines 62–75.
+
+<!-- taught-source: coastline-sprint/render.js:62-75 -->
+
+```js
+  const sprite = (image, frame, fw, fh, cols, cx, cy, sw, sh) => {
+    g.imageSmoothingEnabled = false;
+    g.drawImage(
+      image,
+      (frame % cols) * fw,
+      Math.floor(frame / cols) * fh,
+      fw,
+      fh,
+      Math.round(cx - sw / 2),
+      Math.round(cy - sh),
+      Math.round(sw),
+      Math.round(sh),
+    );
+  };
+```
+
+**What and why:** drawImage receives a source rectangle followed by a destination rectangle. Modulo selects the sheet column, integer division selects its row, and fw/fh are cell dimensions. The destination subtracts half width and full height so cx/cy is the object base, not its top-left. Rounding and disabling smoothing preserve the supplied pixel art.
+
+**Try it / expected result:** Choose a different player frame temporarily. The car should change pose without shifting the road or changing collision size.
+
+#### 2.5 — Depth-sort scenery and traffic
+
+**Read:** `render.js`, lines 76–96.
+
+<!-- taught-source: coastline-sprint/render.js:76-96 -->
+
+```js
+  const objects = [];
+  for (let i = 0; i < 32; i++) {
+    const z = Math.floor(p.z / 1900) * 1900 + i * 1900;
+    objects.push({ z, x: i % 2 ? -1.45 : 1.45, scenery: true, id: i });
+  }
+  for (const car of [...cars, ...others.filter((o) => o !== p)])
+    if (car.z > p.z + 250 && car.z < p.z + 35000) objects.push(car);
+  objects.sort((a, b) => b.z - a.z);
+  for (const o of objects) {
+    const depth = o.z - p.z,
+      index = Math.round(depth / SEG) - 1,
+      point = points[index];
+    if (!point || depth < 250) continue;
+    const xx = point.x + o.x * point.half,
+      yy = point.y,
+      size = Math.min(w * 0.4, point.scale * w * 260);
+    if (o.scenery)
+      sprite(images.roadside, o.id % 8, 64, 96, 8, xx, yy, size * 1.2, size * 1.8);
+    else
+      sprite(images.cars, o.index === 0 ? 1 : 5, 64, 40, 4, xx, yy, size, size * 0.625);
+  }
+```
+
+**What and why:** Roadside records are generated around the current travel segment. Traffic and the other player join the same visible-object list only when ahead and inside the draw distance. Sorting by descending z paints distant sprites first. Matching each object to a road sample gives consistent curve, hill, lane offset and apparent size. The other player is a visible rival, not another traffic collision body.
+
+**Try it / expected result:** Watch a traffic car near a hill while approaching. It should grow and follow the same projected road rather than sliding independently across the sky.
+
+#### 2.6 — Finish with a local car and a data-driven HUD
+
+**Read:** `render.js`, lines 97–125.
+
+<!-- taught-source: coastline-sprint/render.js:97-125 -->
+
+```js
+  const carW = Math.min(w * 0.25, h * 0.6),
+    frame = (p.index ? 4 : 0) + (p.steer < -0.15 ? 0 : p.steer > 0.15 ? 2 : 1);
+  sprite(images.cars, frame, 64, 40, 4, w / 2, h * 0.91, carW, carW * 0.625);
+  g.fillStyle = '#101a2bdf';
+  g.fillRect(0, 0, w, 37);
+  g.fillStyle = p.index ? '#f4eee2' : '#ffae9b';
+  g.font = `bold ${h < 250 ? 11 : 14}px monospace`;
+  g.fillText(
+    `P${p.index + 1}  ${Math.round(p.speed / 20)} KM/H  TIME ${Math.ceil(p.time)}  ${Math.round((p.z / COURSE.length) * 100)}%`,
+    8,
+    16,
+  );
+  g.fillText(
+    `NITRO ${Math.round(p.nitro * 100)}%  CP ${p.checkpoint}/2  HITS ${p.hits}`,
+    8,
+    31,
+  );
+  if (p.finished || p.lost) {
+    g.fillStyle = '#081326dd';
+    g.fillRect(w * 0.12, h * 0.4, w * 0.76, 60);
+    g.fillStyle = '#ffe4a1';
+    g.font = 'bold 18px monospace';
+    g.fillText(
+      p.finished ? `FINISH ${p.elapsed.toFixed(1)}s` : 'TIME UP',
+      w * 0.2,
+      h * 0.54,
+    );
+  }
+}
+```
+
+**What and why:** The player car is drawn last in a fixed screen location; steering chooses its sprite cell. Width responds to viewport height, which keeps the split view usable. HUD text reads state rather than calculating it again. Result overlays test finished/lost and show elapsed time or TIME UP; they do not end the race themselves.
+
+**Try it / expected result:** Resize the browser and compare solo/split HUDs. Restart from a result and confirm the overlay disappears when fresh driver state is created.
+
+
+### 3. app.js {#walk-app-js}
+
+Wire the whole racer together: page, resources, intent, state changes, simulation loop and independent viewports.
+
+#### 3.1 — Import modules and define the page theme
+
+**Read:** `app.js`, lines 1–42.
+
+<!-- taught-source: coastline-sprint/app.js:1-42 -->
+
+```js
+import { COURSE, driver, traffic, updateDriver, padInput } from './track.js';
+import { drawView } from './render.js';
+import { RetroAudio } from './audio.js';
+import { AUDIO } from './audio-config.js';
+export async function mount(root) {
+  root.innerHTML = /* HTML */ `
+    <style>
+      body {
+        margin: 0;
+        background: #101b2b;
+        color: #e3edf0;
+        font: 15px monospace;
+      }
+      #shell {
+        position: relative;
+        max-width: 1100px;
+        margin: auto;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        image-rendering: pixelated;
+      }
+      #bar {
+        padding: 10px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      button,
+      select {
+        font: inherit;
+        padding: 8px;
+        background: #304a61;
+        color: white;
+        border: 1px solid #7a9caa;
+        border-radius: 5px;
+      }
+      #notice {
+        padding: 8px;
+        min-height: 18px;
+      }
+```
+
+**What and why:** Imports give the host access to rules, renderer, audio and file paths without sharing module-level run state. mount receives the HTML-tier root. The embedded stylesheet establishes a centred shell, pixelated canvas and consistent controls; it is presentation only. Keeping these styles inside the mounted page makes the example self-contained.
+
+**Try it / expected result:** Find the canvas image-rendering rule and switch it to auto temporarily. Observe the art becoming softer at non-native sizes.
+
+#### 3.2 — Separate menu presentation from state
+
+**Read:** `app.js`, lines 43–57.
+
+<!-- taught-source: coastline-sprint/app.js:43-57 -->
+
+```js
+      #overlay {
+        position: absolute;
+        top: 35%;
+        left: 15%;
+        width: 70%;
+        padding: 18px;
+        box-sizing: border-box;
+        background: #0d172ae8;
+        text-align: center;
+      }
+      h1 {
+        color: #f7d89b;
+        font-size: 26px;
+      }
+    </style>
+```
+
+**What and why:** The overlay is positioned above the canvas and uses a readable translucent background. Its heading/padding do not pause simulation: that will be controlled by paused/state. This separation prevents hiding a menu from accidentally being treated as the game-start condition.
+
+**Try it / expected result:** Change the overlay opacity and reopen Play. The title should remain readable over the attract view.
+
+#### 3.3 — Give each control a stable DOM identity
+
+**Read:** `app.js`, lines 58–83.
+
+<!-- taught-source: coastline-sprint/app.js:58-83 -->
+
+```js
+    <div id="shell">
+      <div id="bar">
+        <button id="one">1 player</button>
+        <button id="two">2 player split</button>
+        <button id="pause">Pause / Resume</button>
+        <button id="restart">Restart</button>
+        <button id="mute">Mute</button>
+        <select id="track">
+          <option>Coast Drive</option>
+          <option>Coast Night</option>
+        </select>
+      </div>
+      <canvas width="960" height="540" tabindex="0"></canvas>
+      <div id="notice"></div>
+      <div id="overlay">
+        <h1>COASTLINE SPRINT</h1>
+        <p>One coast. Two checkpoints. Beat the clock!</p>
+        <p>
+          P1: WASD/arrows · Shift nitro
+          <br />
+          P2: gamepad left stick · RT/A throttle · LT/B brake · X nitro
+        </p>
+        <p>Choose 1 player or connect a gamepad and choose 2 player split.</p>
+      </div>
+    </div>
+  `;
+```
+
+**What and why:** Button IDs become the event-wiring contract later in mount. The canvas has fixed internal dimensions and responsive CSS size; scaling it does not change simulation units. tabIndex makes canvas focus possible after Start. The notice is text output, while the overlay holds startup instructions. These are actual controls, not mock UI.
+
+**Try it / expected result:** Locate Restart in markup and later its onclick assignment. Renaming only one ID will break that control; undo any experiment before proceeding.
+
+#### 3.4 — Load required images before starting the loop
+
+**Read:** `app.js`, lines 84–116.
+
+<!-- taught-source: coastline-sprint/app.js:84-116 -->
+
+```js
+  const $ = (s) => root.querySelector(s),
+    canvas = $('canvas'),
+    g = canvas.getContext('2d'),
+    sound = new RetroAudio(AUDIO),
+    keys = new Set();
+  const load = (src) =>
+    new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(Error('Missing ' + src));
+      image.src = src;
+    });
+  const images = {
+    cars: await load('assets/sprites/racing-cars.png'),
+    roadside: await load('assets/sprites/roadside.png'),
+  };
+  let players = [driver()],
+    cars = traffic(),
+    mode = 1,
+    state = 'menu',
+    paused = false,
+    last = performance.now(),
+    engine = null,
+    starting = false;
+  const pad = () => Array.from(navigator.getGamepads?.() ?? []).find((p) => p?.connected);
+  const keyboard = () => ({
+    steer:
+      (keys.has('KeyD') || keys.has('ArrowRight') ? 1 : 0) -
+      (keys.has('KeyA') || keys.has('ArrowLeft') ? 1 : 0),
+    accel: keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0,
+    brake: keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0,
+    boost: keys.has('ShiftLeft') || keys.has('ShiftRight'),
+  });
+```
+
+**What and why:** The root-scoped query helper avoids accidentally selecting another app. The image loader resolves only on load and rejects with the missing path on error. await ensures both sheets exist before drawView receives them. Run variables then hold players, shared traffic, mode, menu/result state and the previous frame timestamp; pad/keyboard translate browser state into rule inputs.
+
+**Try it / expected result:** Temporarily misspell a sprite filename, reopen Play and inspect the Console. Restore it; a missing resource should fail clearly instead of producing a silent empty car.
+
+#### 3.5 — Reset one complete race from a button
+
+**Read:** `app.js`, lines 117–143.
+
+<!-- taught-source: coastline-sprint/app.js:117-143 -->
+
+```js
+  async function start(count) {
+    if (starting) return;
+    if (count === 2 && !pad()) {
+      $('#notice').textContent =
+        'Connect a gamepad and press one of its buttons, then choose 2 player split.';
+      return;
+    }
+    starting = true;
+    mode = count;
+    players = Array.from({ length: mode }, (_, i) => driver(i));
+    cars = traffic();
+    paused = false;
+    state = 'playing';
+    keys.clear();
+    $('#overlay').hidden = true;
+    canvas.focus();
+    try {
+      await sound.unlock();
+      await sound.music($('#track').selectedIndex);
+      if (engine) engine.source.stop();
+      engine = await sound.play('engine', { loop: true, volume: 0.07 });
+    } catch (error) {
+      sound.problem = error.message;
+    } finally {
+      starting = false;
+    }
+  }
+```
+
+**What and why:** starting blocks overlapping asynchronous audio setup. Split mode first verifies a connected controller; no half-initialized second player is created when it is absent. New drivers and traffic replace old run state, held keys are cleared, and canvas focus returns to play. Audio activation stays inside this click path so the browser can authorize playback. finally releases the starting guard even if audio fails.
+
+**Try it / expected result:** Restart while holding a key, then release it. Fresh state and key clearing should prevent the old run from continuing invisibly.
+
+#### 3.6 — Pause logic and wire controls
+
+**Read:** `app.js`, lines 144–163.
+
+<!-- taught-source: coastline-sprint/app.js:144-163 -->
+
+```js
+  function togglePause() {
+    if (state !== 'playing') return;
+    if (paused && mode === 2 && !pad()) return;
+    paused = !paused;
+    $('#overlay').hidden = !paused;
+    $('#overlay').innerHTML =
+      '<h1>PAUSED</h1><p>Pause / Resume continues. Connect P2 gamepad if disconnected.</p>';
+    paused ? sound.suspend() : sound.resume();
+    keys.clear();
+  }
+  $('#one').onclick = () => start(1);
+  $('#two').onclick = () => start(2);
+  $('#restart').onclick = () => start(mode);
+  $('#pause').onclick = togglePause;
+  $('#mute').onclick = () => {
+    $('#mute').textContent = sound.mute() ? 'Unmute' : 'Mute';
+  };
+  $('#track').onchange = () => {
+    if (sound.ctx) sound.music($('#track').selectedIndex);
+  };
+```
+
+**What and why:** The guard excludes menu/results. A disconnected P2 pad prevents unsafe resume. Pause updates state, overlay, sound context and keys together. The following button assignments connect page intent to these functions; mute changes the label from the helper result, and track change requests music only after a context exists.
+
+**Try it / expected result:** Pause during a race and switch tracks. Resume and confirm the timer did not advance while paused.
+
+#### 3.7 — Maintain held keys instead of moving in key events
+
+**Read:** `app.js`, lines 164–177.
+
+<!-- taught-source: coastline-sprint/app.js:164-177 -->
+
+```js
+  window.addEventListener('keydown', (e) => {
+    if (
+      ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space'].includes(e.code) &&
+      state === 'playing'
+    )
+      e.preventDefault();
+    if (e.code === 'KeyP' && !e.repeat) togglePause();
+    keys.add(e.code);
+  });
+  window.addEventListener('keyup', (e) => keys.delete(e.code));
+  window.addEventListener('blur', () => {
+    keys.clear();
+    if (state === 'playing' && !paused) togglePause();
+  });
+```
+
+**What and why:** keydown/keyup update the Set; movement will read it once per simulation frame. preventDefault stops arrows/Space scrolling the page only while playing. P ignores auto-repeat. Blur clears held inputs and pauses, avoiding stuck steering when focus changes. These window listeners live for this mounted page, which Nord replaces when Play is reopened.
+
+**Try it / expected result:** Hold steering, move focus away, return and resume. The car must not remain stuck turning after the key was released outside the page.
+
+#### 3.8 — Advance the world once, then report results
+
+**Read:** `app.js`, lines 178–193.
+
+<!-- taught-source: coastline-sprint/app.js:178-193 -->
+
+```js
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (mode === 2 && state === 'playing' && !paused && !pad()) togglePause();
+    if (state === 'playing' && !paused) {
+      for (const car of cars) car.z += car.speed * dt;
+      for (const p of players)
+        for (const event of updateDriver(
+          p,
+          p.index ? padInput(pad()) : keyboard(),
+          dt,
+          cars,
+        ))
+          sound.play(event, { volume: event === 'crash' ? 0.65 : 0.5 });
+      if (players.every((p) => p.finished || p.lost)) {
+        state = 'result';
+```
+
+**What and why:** requestAnimationFrame supplies milliseconds; dividing by 1000 converts to the rules’ seconds. The cap avoids a giant step after a stalled frame. Disconnection can pause both views before simulation. Shared traffic moves once, each driver advances with its own input, and returned events trigger sounds. The whole race reaches result only when every driver has finished or lost.
+
+**Try it / expected result:** In split mode let one timer expire first. The other driver should still be able to finish while the finished view displays its result.
+
+#### 3.9 — Render two cameras without duplicating simulation
+
+**Read:** `app.js`, lines 194–243.
+
+<!-- taught-source: coastline-sprint/app.js:194-243 -->
+
+```js
+        if (engine) {
+          engine.source.stop();
+          engine = null;
+        }
+      }
+    }
+    if (engine) {
+      engine.source.playbackRate.value = 0.7 + (players[0].speed / COURSE.maxSpeed) * 1.4;
+      engine.gain.gain.value = paused
+        ? 0
+        : 0.035 + (players[0].speed / COURSE.maxSpeed) * 0.075;
+    }
+    const h = canvas.height / mode;
+    players.forEach((p, i) => {
+      g.save();
+      g.beginPath();
+      g.rect(0, i * h, canvas.width, h);
+      g.clip();
+      g.translate(0, i * h);
+      drawView(g, p, cars, players, images, canvas.width, h);
+      g.restore();
+    });
+    if (mode === 2) {
+      g.fillStyle = '#0b1424';
+      g.fillRect(0, h - 2, canvas.width, 4);
+    }
+    $('#notice').textContent = sound.problem
+      ? `Audio: ${sound.problem}`
+      : mode === 2
+        ? `P2 ${pad()?.id ?? 'GAMEPAD DISCONNECTED'} · ${state === 'result' ? 'Restart for a new race.' : 'P pauses both views.'}`
+        : 'W/Up accelerates · S/Down brakes · A/D steer · Shift nitro · P pause';
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  // Read-only inspection seam used by browser checks; gameplay still runs through real inputs.
+  window.__coast = {
+    get players() {
+      return players;
+    },
+    get paused() {
+      return paused;
+    },
+    get state() {
+      return state;
+    },
+    get sound() {
+      return sound;
+    },
+  };
+}
+```
+
+**What and why:** Engine rate/gain follows P1 speed. Each viewport saves canvas state, clips its own rectangle and translates the origin before calling drawView. restore prevents the second view inheriting the first view’s clip/translation. The separator is drawn once, notices reflect current pad/audio state, and scheduling the next frame keeps the loop alive even while paused so UI can still respond.
+
+**Try it / expected result:** Remove restore only on a temporary copy and observe the broken second view; put it back. The getter object at the end is for inspection/tests, not another game loop.
+
+
+### 4. audio.js {#walk-audio-js}
+
+Build the complete local-audio helper: activation, cached decoding, voices, crossfade and cleanup.
+
+#### 4.1 — Own resources for one run
+
+**Read:** `audio.js`, lines 1–18.
+
+<!-- taught-source: coastline-sprint/audio.js:1-18 -->
+
+```js
+// Local MP3/WAV/OGG files, decoded on first user activation. No external service.
+export class RetroAudio {
+  constructor(config) {
+    this.config = config;
+    this.cache = new Map();
+    this.voices = new Set();
+    this.problem = '';
+    this.muted = false;
+  }
+  async unlock() {
+    this.ctx ??= new AudioContext();
+    if (!this.master) {
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.55;
+      this.master.connect(this.ctx.destination);
+    }
+    await this.ctx.resume();
+  }
+```
+
+**What and why:** The constructor records configuration separately from browser audio objects. A Map caches a promise for each path, and a Set tracks live voices. Keeping these on the instance gives one owner for cleanup and makes repeated effects reuse decoded audio. The AudioContext is deferred until a user gesture because browser playback permission belongs to that gesture.
+
+**Try it / expected result:** Start a fresh page and inspect the helper before clicking Start: it has configuration but no running AudioContext.
+
+#### 4.2 — Decode each path once
+
+**Read:** `audio.js`, lines 19–30.
+
+<!-- taught-source: coastline-sprint/audio.js:19-30 -->
+
+```js
+  async load(path) {
+    if (!this.cache.has(path))
+      this.cache.set(
+        path,
+        (async () => {
+          const response = await fetch(path);
+          if (!response.ok) throw Error(`${path}: HTTP ${response.status}`);
+          return this.ctx.decodeAudioData(await response.arrayBuffer());
+        })(),
+      );
+    return this.cache.get(path);
+  }
+```
+
+**What and why:** The first load stores the entire asynchronous fetch/decode operation in the Map. A second request receives that same promise even if downloading is still in progress. Checking response.ok turns a missing file into a meaningful error instead of attempting to decode an HTML error page. decodeAudioData produces a reusable buffer, not a playing sound.
+
+**Try it / expected result:** Temporarily mistype one SFX path. Trigger it and observe the visible audio problem; restore the path and reopen Play to clear the rejected cached request.
+
+#### 4.3 — Turn a buffer into a voice
+
+**Read:** `audio.js`, lines 31–58.
+
+<!-- taught-source: coastline-sprint/audio.js:31-58 -->
+
+```js
+  async voice(path, { volume = 0.5, loop = false, rate = 1 } = {}) {
+    if (!this.ctx) return null;
+    try {
+      const buffer = await this.load(path);
+      if (this.voices.size > 24 && !loop) return null;
+      const source = this.ctx.createBufferSource(),
+        gain = this.ctx.createGain();
+      source.buffer = buffer;
+      source.loop = loop;
+      source.playbackRate.value = rate;
+      gain.gain.value = volume;
+      source.connect(gain);
+      gain.connect(this.master);
+      const voice = { source, gain };
+      this.voices.add(voice);
+      source.onended = () => {
+        this.voices.delete(voice);
+        source.disconnect();
+        gain.disconnect();
+      };
+      source.start();
+      return voice;
+    } catch (error) {
+      this.problem = error.message;
+      console.warn('[retro audio]', error);
+      return null;
+    }
+  }
+```
+
+**What and why:** A BufferSource is single-use: the cached buffer can be reused, but each playback needs a new source. A GainNode gives that voice its own volume before reaching the master. Loop/rate options handle music and engine pitch. The non-looping voice cap bounds overlapping effects; onended disconnects nodes and removes the finished voice from the Set. Errors become an inspectable problem rather than stopping gameplay.
+
+**Try it / expected result:** Lower the voice volume for one event. Its loudness should change without affecting music or changing the file itself.
+
+#### 4.4 — Keep game events independent of file paths
+
+**Read:** `audio.js`, lines 59–76.
+
+<!-- taught-source: coastline-sprint/audio.js:59-76 -->
+
+```js
+  play(name, options = {}) {
+    const path = this.config.sfx[name];
+    return path ? this.voice(path, options) : Promise.resolve(null);
+  }
+  async music(index = 0) {
+    const old = this.song,
+      next = await this.voice(this.config.music[index % this.config.music.length], {
+        loop: true,
+        volume: 0,
+      });
+    if (!next) return;
+    this.song = next;
+    next.gain.gain.linearRampToValueAtTime(0.4, this.ctx.currentTime + 0.4);
+    if (old) {
+      old.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.4);
+      old.source.stop(this.ctx.currentTime + 0.45);
+    }
+  }
+```
+
+**What and why:** play looks up a symbolic name in config.sfx, so collision code can request crash without knowing where the recording lives. music creates a looping voice, fades its gain in, fades the old voice out and schedules the old source to stop. Capturing the old song lets both overlap briefly rather than cutting abruptly.
+
+**Try it / expected result:** Switch between the two supplied music tracks while playing. Listen for the overlap; do not put music() inside the animation loop.
+
+#### 4.5 — Pause and dispose the right owner
+
+**Read:** `audio.js`, lines 77–92.
+
+<!-- taught-source: coastline-sprint/audio.js:77-92 -->
+
+```js
+  mute() {
+    this.muted = !this.muted;
+    if (this.master) this.master.gain.gain.value = this.muted ? 0 : 0.55;
+    return this.muted;
+  }
+  suspend() {
+    if (this.ctx?.state === 'running') return this.ctx.suspend();
+  }
+  resume() {
+    if (this.ctx?.state === 'suspended') return this.ctx.resume();
+  }
+  async dispose() {
+    if (this.ctx) await this.ctx.close();
+    this.voices.clear();
+  }
+}
+```
+
+**What and why:** Mute changes the master gain, leaving individual volume relationships intact. Suspend/resume controls the AudioContext clock alongside a paused game. Dispose closes the whole context and clears voice ownership. This is distinct from caching a buffer: cached data may exist while no voice is playing.
+
+**Try it / expected result:** Mute, unmute, pause and resume. Then restart the scene/app and verify there is one soundtrack rather than another copy layered over the old one.
+
+
+### 5. audio-config.js {#walk-audio-config-js}
+
+Choose recordings through data rather than hardcoded paths in gameplay.
+
+#### 5.1 — Keep symbolic sound names stable
+
+**Read:** `audio-config.js`, lines 1–11.
+
+<!-- taught-source: coastline-sprint/audio-config.js:1-11 -->
+
+```js
+// Put your replacement MP3/WAV/OGG files in assets/audio and change these paths.
+export const AUDIO = {
+  music: ['assets/audio/coast-drive.mp3', 'assets/audio/coast-night.mp3'],
+  sfx: {
+    engine: 'assets/audio/engine.mp3',
+    crash: 'assets/audio/crash.mp3',
+    skid: 'assets/audio/skid.mp3',
+    checkpoint: 'assets/audio/checkpoint.mp3',
+    win: 'assets/audio/win.mp3',
+  },
+};
+```
+
+**What and why:** music is an ordered list used by the track selector. sfx maps event names returned by updateDriver to local files. Changing a path replaces a recording without editing physics or rendering; changing a key would require changing event producers too. Both music tracks and every referenced effect are included in the download.
+
+**Try it / expected result:** Replace only crash with your own short recording, keeping the key crash. Reopen Play and collide with traffic to hear the replacement.
+
+
+### 6. index.html {#walk-index-html}
+
+Read the complete Nord page entry point and its failure path.
+
+#### 6.1 — Load the local runtime and start the app
+
+**Read:** `index.html`, lines 1–8.
+
+<!-- taught-source: coastline-sprint/index.html:1-8 -->
+
+```html
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="com.crowelian.coastlinesprint"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coastline Sprint — Amiga road racer</title>
+<style>html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}</style></head>
+<body><div id="app"></div>
+<script type="module">
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+</script></body></html>
+```
+
+**What and why:** The document declares encoding and viewport, creates the mount container and loads local code. The module imports mount from app.js and awaits initialization for the HTML-tier root. The ready/error flags are inspection signals used by browser checks; they are not a second simulation. The catch logs and exposes initialization errors. The page is served over HTTP so local module and asset URLs resolve consistently.
+
+**Try it / expected result:** Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name.
+
+
+### 7. nord.project.json {#walk-nord-project-json}
+
+Read every project field that tells Nord which host, display and services to use.
+
+#### 7.1 — Identify the project and choose its presentation
+
+**Read:** `nord.project.json`, lines 1–22.
+
+<!-- taught-source: coastline-sprint/nord.project.json:1-22 -->
+
+```json
+{
+  "format": 1,
+  "name": "Coastline Sprint",
+  "id": "com.crowelian.coastlinesprint",
+  "type": "html",
+  "engineVersion": "0.1.0",
+  "startScene": "",
+  "display": {
+    "width": 640,
+    "height": 360,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#2e3440"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+```
+
+**What and why:** format and engineVersion identify the serialized contract, while name/id give human and stable application identity. type chooses the host; startScene is used by a scene backend and is empty for these HTML apps. Display fields request dimensions, fit behaviour, pixel-art treatment and background. Physics selects a runtime engine; the rail shooter uses custom rules with none, while HTML-hosted libraries are initialized in their own modules.
+
+**Try it / expected result:** Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.
+
+#### 7.2 — Distinguish scene actions from HTML event handling
+
+**Read:** `nord.project.json`, lines 23–64.
+
+<!-- taught-source: coastline-sprint/nord.project.json:23-64 -->
+
+```json
+  "input": {
+    "actions": {
+      "left": [
+        "KeyA",
+        "ArrowLeft"
+      ],
+      "right": [
+        "KeyD",
+        "ArrowRight"
+      ],
+      "up": [
+        "KeyW",
+        "ArrowUp"
+      ],
+      "down": [
+        "KeyS",
+        "ArrowDown"
+      ],
+      "jump": [
+        "Space",
+        "KeyW",
+        "ArrowUp"
+      ],
+      "fire": [
+        "Space",
+        "Mouse0"
+      ],
+      "interact": [
+        "KeyE",
+        "Enter"
+      ]
+    }
+  },
+  "plugins": [
+    "ui",
+    "audio"
+  ],
+  "ui": {
+    "skin": "cyber",
+    "theme": "nord"
+  }
+}
+```
+
+**What and why:** The input object maps action names to keyboard codes for Nord scene scripts. Vector Patrol reads these through this.input. HTML-tier hosts in the other projects read their own DOM events, so editing this action table alone does not rewrite those handlers. plugins/ui declare ordinary scene services and skin/theme; any remaining desktop configuration is the native capability contract rather than a browser CORS override.
+
+**Try it / expected result:** For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input.
+
+
+### 8. assets/sprites/racing-cars.png.meta.json {#walk-assets-sprites-racing-cars-png-meta-json}
+
+Read the supplied sprite sidecar used by Nord’s asset tools.
+
+#### 8.1 — Describe cell geometry and asset identity
+
+**Read:** `assets/sprites/racing-cars.png.meta.json`, lines 1–12.
+
+<!-- taught-source: coastline-sprint/assets/sprites/racing-cars.png.meta.json:1-12 -->
+
+```json
+{
+  "type": "spritesheet",
+  "frameWidth": 64,
+  "frameHeight": 40,
+  "filter": "nearest",
+  "anims": {},
+  "tags": [
+    "amiga",
+    "original",
+    "2d"
+  ]
+}
+```
+
+**What and why:** type declares a spritesheet, frameWidth/frameHeight specify each cell and nearest filtering preserves pixel edges. anims is empty because this racer picks static directional cells itself. Tags organize the asset in tools. The renderer’s explicit crop dimensions must agree with these cell dimensions; metadata is not an automatic steering animation.
+
+**Try it / expected result:** Compare frame sizes with sprite() calls in render.js. Replace a sheet only after preserving that cell contract or updating both sides.
+
+
+### 9. assets/sprites/roadside.png.meta.json {#walk-assets-sprites-roadside-png-meta-json}
+
+Read the supplied sprite sidecar used by Nord’s asset tools.
+
+#### 9.1 — Describe cell geometry and asset identity
+
+**Read:** `assets/sprites/roadside.png.meta.json`, lines 1–12.
+
+<!-- taught-source: coastline-sprint/assets/sprites/roadside.png.meta.json:1-12 -->
+
+```json
+{
+  "type": "spritesheet",
+  "frameWidth": 64,
+  "frameHeight": 96,
+  "filter": "nearest",
+  "anims": {},
+  "tags": [
+    "amiga",
+    "original",
+    "2d"
+  ]
+}
+```
+
+**What and why:** type declares a spritesheet, frameWidth/frameHeight specify each cell and nearest filtering preserves pixel edges. anims is empty because this racer picks static directional cells itself. Tags organize the asset in tools. The renderer’s explicit crop dimensions must agree with these cell dimensions; metadata is not an automatic steering animation.
+
+**Try it / expected result:** Compare frame sizes with sprite() calls in render.js. Replace a sheet only after preserving that cell contract or updating both sides.
+
+<!-- END GENERATED FILE WALKTHROUGH -->
+
 ## Complete game source
 
 Every JavaScript file, generated HTML, project metadata and sprite metadata is listed below. The [full source archive](assets/downloads/coastline-sprint-source.zip) also contains every PNG and MP3 used by the finished game and its licence. The reference repository was inspected for context; no reference game artwork, soundtrack or C++ code is needed to reproduce this original Nord project.
 
 <!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs -->
 
-### app.js
+<details>
+<summary>Complete app.js</summary>
 
 ```js
 import { COURSE, driver, traffic, updateDriver, padInput } from './track.js';
@@ -473,6 +1642,8 @@ export async function mount(root) {
   };
 }
 ```
+
+</details>
 
 <details>
 <summary>Complete assets/sprites/racing-cars.png.meta.json</summary>

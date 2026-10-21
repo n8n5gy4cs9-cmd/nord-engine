@@ -4,6 +4,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { ROOT } from './examples/lib.mjs';
+import { renderLessons, LESSON_START, LESSON_END } from './tutorial-lessons/render.mjs';
+const lessonPlans = JSON.parse(fs.readFileSync(new URL('./tutorial-lessons/plans.json', import.meta.url), 'utf8'));
 const marker = '<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs -->';
 const workshops = [
   ['coin-rush', 'tut-t33-code-coin-rush.md', 'scripts/course.js'],
@@ -33,12 +35,26 @@ for (const [id, guide, main] of workshops) {
     const ext = path.extname(file).slice(1);
     const lang = file === '.offline-allow' ? 'text' : ({ rs: 'rust', mjs: 'js', lock: 'toml' })[ext] ?? ext;
     const body = fs.readFileSync(path.join(project, file), 'utf8').trimEnd();
-    appendix += index === 0 ? `### ${file}\n\n` : `<details>\n<summary>Complete ${file}</summary>\n\n`;
+    const collapsed = index !== 0 || Boolean(lessonPlans[id]);
+    appendix += collapsed ? `<details>\n<summary>Complete ${file}</summary>\n\n` : `### ${file}\n\n`;
     appendix += '```' + lang + '\n' + body + '\n```\n\n';
-    if (index !== 0) appendix += '</details>\n\n';
+    if (collapsed) appendix += '</details>\n\n';
   }
   const source = path.join(ROOT, 'docs/manual-src', guide);
-  const prose = fs.readFileSync(source, 'utf8').split(marker)[0];
+  let prose = fs.readFileSync(source, 'utf8').split(marker)[0];
+  if (lessonPlans[id]) {
+    const oldStart = prose.indexOf(LESSON_START);
+    if (oldStart >= 0) {
+      const oldEnd = prose.indexOf(LESSON_END, oldStart);
+      if (oldEnd < 0) throw Error(`Missing walkthrough end in ${guide}`);
+      prose = prose.slice(0, oldStart) + prose.slice(oldEnd + LESSON_END.length).replace(/^\s+/, '');
+    }
+    const reference = prose.search(/^## Complete (game|project) source/m);
+    if (reference < 0) throw Error(`Missing complete-source heading in ${guide}`);
+    const { markdown, coverage } = renderLessons(ROOT, id, lessonPlans[id]);
+    prose = prose.slice(0, reference) + markdown + prose.slice(reference);
+    console.log(`${id}: ${coverage.length} consecutive explained parts across ${lessonPlans[id].length} files`);
+  }
   fs.writeFileSync(source, (prose + marker + appendix).trimEnd() + '\n');
   // Fixed timestamps/order make repeated source packaging byte-for-byte reproducible.
   execFileSync('python3', ['-c', `

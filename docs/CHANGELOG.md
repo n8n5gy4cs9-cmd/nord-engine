@@ -1,5 +1,7 @@
 # Changelog
 
+- 2026-10-21 — M7-31: expand T38–T43 into complete file-by-file code teaching: 55 files, 249 consecutive explained parts with exact source/line ranges, what/why and observable exercises. Preserve all twelve screenshots and source downloads; collapse the whole-file appendix into references after the lessons. Add authored teaching plans, repeatable source-range rendering and coverage/navigation/CodeMirror checks so files or lines cannot silently disappear from the walkthrough.
+
 - 2026-10-21 — M7-30 / BUG-015: audit T38–T43, expand authored JS/HTML/CSS/GLSL for readable learning code, synchronize complete listings/downloads, and remove duplicate tutorial titles. Fix lossless portfolio embedding, concurrent 3D loading/view cleanup, stationary off-road acceleration, conflicting shooter outcomes and live-battle rematch resets. Focused source/readability/HTTP/browser regressions plus exact listing/archive and CodeMirror Copy/Wrap checks pass; no workspace rebuild.
 
 - 2026-10-21 — M8-23/25: preserve imported glTF palettes (BUG-013); make scene restart resume/reset clock/input/Persist state and clone saved scene data (BUG-014), with lifecycle/cache/scheduler/Persist regressions and updated guide. M8-24: audio-only asset generation no longer initializes the documentation Chromium renderer.

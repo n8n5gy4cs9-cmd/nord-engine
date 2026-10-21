@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 280/293 tasks (96%)** · updated 2026-10-21
+**Overall: 281/294 tasks (96%)** · updated 2026-10-21
 
 | Milestone | Progress |
 |---|---|
@@ -14,7 +14,7 @@
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 51/51 (100%) |
-| M7 Docs | 30/30 (100%) |
+| M7 Docs | 31/31 (100%) |
 | M8 Polish & portability | 20/25 (80%) |
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
@@ -229,6 +229,7 @@ _manual, guides, tutorials, in-editor docs_
 - [x] **M7-28** Paper Worlds full Phaser/Babylon drawing desk tutorial with physics, portals, minigames and complete source
 - [x] **M7-29** RSS River full offline reader and 3D physics paper tutorial with three default feeds and complete source
 - [x] **M7-30** Audit and format full coding tutorials, synchronize readable source downloads and repair portfolio data embedding
+- [x] **M7-31** Teach T38–T43 code in small explained steps with source-linked excerpts, exercises and implementation coverage
 
 ## M8 — Polish & portability
 _dmg, CI, Windows, Linux, perf_

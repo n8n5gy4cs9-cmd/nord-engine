@@ -1,0 +1,1838 @@
+{
+  "coastline-sprint": [
+    {
+      "file": "track.js",
+      "intro": "Build every rule before connecting it to graphics: course, fresh drivers, traffic, movement, results and pad mapping.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Course units and a reusable clamp",
+          "why": "length and checkpoint distances use arbitrary road units; limit and bonus use seconds. clamp confines a value to a closed interval, which is useful for speed, nitro and steering position. curve uses normalized course progress to keep the opening straight and soften the final bends; hill combines two waves so elevation is not a single repetitive slope. These are sampled functions, not meshes.",
+          "try": "Change limit from 65 to 10 and restart. You should lose sooner, while the road length and checkpoint positions remain unchanged; then restore 65."
+        },
+        {
+          "at": "export function driver",
+          "title": "Create independent drivers",
+          "why": "Each call returns a new mutable object. x is across the road, z is progress along it, and speed is road units per second. elapsed measures the result time while time counts down. index selects controls and car colour. Nitro, checkpoint and collision timers belong to each player, preventing P2 activity from draining P1 resources.",
+          "try": "Start split play and compare both timers/nitro displays. Accelerate only P2; P1 progress should stay independent."
+        },
+        {
+          "at": "export const traffic",
+          "title": "Seed opponents without updating them twice",
+          "why": "The factory creates 24 fresh traffic records with alternating lanes and a small set of speeds. updateDriver exits for a driver whose result is final, caps an unusually long frame, advances the two clocks and decays cooldowns toward zero. The app will move traffic once per frame, outside the per-player loop.",
+          "try": "Restart twice and confirm traffic returns to its opening positions. Duplicating the traffic update inside each viewport would make split-screen traffic twice as fast."
+        },
+        {
+          "at": "  const boost =",
+          "title": "Integrate speed and steering in seconds",
+          "why": "boost is a condition, not a stored second timer. Nitro drains while boosting and refills otherwise, with clamp keeping it between zero and one. Speed integrates throttle, braking and coasting drag using dt. The lateral expression combines player steering with outward curve drift. The off-road branch subtracts speed and clamps to zero, so grass cannot accelerate a stationary car.",
+          "try": "Change the coasting term 500 to 1000. Release throttle on a straight and observe faster deceleration, then restore it."
+        },
+        {
+          "at": "    p.skid === 0",
+          "title": "Throttle repeated sound and collision responses",
+          "why": "This continues the if condition opened immediately above. Skid requires speed and hard turning/braking or an off-road position; its timer prevents a sound on every frame. Progress then advances by speed times dt. Collision uses independent forward and lateral distance thresholds. The 1.4-second cooldown stops one overlapping traffic car from registering dozens of impacts.",
+          "try": "Drive into traffic and watch HITS. It should increase once, not once per rendered frame. Reducing the cooldown is an intentional difficulty change, not a rendering change."
+        },
+        {
+          "at": "    p.checkpoint <",
+          "title": "Consume checkpoints and finish once",
+          "why": "The checkpoint condition continues the preceding if. The index points to the next unclaimed checkpoint; incrementing it is what prevents repeated time bonuses. Reaching the course end clamps progress and sets finished; only otherwise can the zero-time branch set lost. Returning event names keeps audio outside these rules.",
+          "try": "Pass one checkpoint slowly. The bonus should be awarded once even though you remain beyond its distance on later frames."
+        },
+        {
+          "at": "export function padInput",
+          "title": "Translate hardware into game intent",
+          "why": "Optional chaining makes a missing pad safe. The helper reads analog values for triggers/buttons, applies a dead zone to the stick, and returns the same steer/accel/brake/boost shape as keyboard input. Math.max allows either a trigger or a face button to request throttle. The simulation therefore does not need a special gamepad movement path.",
+          "try": "Gently move the stick near centre. Small noise should be ignored; a larger motion should steer continuously. Hardware mappings still need checking on your controller."
+        }
+      ]
+    },
+    {
+      "file": "render.js",
+      "intro": "Turn the simulation into a pseudo-3D picture, including every projection, sprite and HUD step.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Paint a background in viewport coordinates",
+          "why": "The renderer receives w and h instead of reading the full canvas size, so the same function works in a half-height view. Background layers overwrite the viewport every frame. A sine ridge gives a cheap skyline; its tiny progress-dependent phase makes the horizon react as you travel. None of these pixels changes the road collision rules.",
+          "try": "Temporarily change the sky colour. Both split-screen views should change without affecting handling."
+        },
+        {
+          "at": "  const SEG =",
+          "title": "Project many road samples",
+          "why": "SEG is longitudinal spacing and road is half-width in world-like units. dx accumulates curvature and x accumulates that change again, bending the road smoothly across depth. The reciprocal scale makes far samples smaller. The projected centre subtracts player lateral position, while projected height compares the local hill with the distant hill. Each point stores enough information for road and roadside objects to agree.",
+          "try": "Change 180 samples to 90. The visible horizon distance shrinks; this does not shorten the course."
+        },
+        {
+          "at": "  const quad =",
+          "title": "Join neighbouring samples into strips",
+          "why": "A quad connects two projected cross-sections. ratio widens or narrows the same geometry for shoulders, asphalt and lane paint. The loop runs far to near so closer strips cover distant ones. It skips folded/offscreen sections, alternates stripe colours by world distance, and makes thin lane quads by copying points with smaller widths.",
+          "try": "Reverse the loop on a temporary copy and look for near/far overlap errors. Restore the far-to-near order before continuing."
+        },
+        {
+          "at": "  const sprite =",
+          "title": "Crop one sprite cell and anchor its feet",
+          "why": "drawImage receives a source rectangle followed by a destination rectangle. Modulo selects the sheet column, integer division selects its row, and fw/fh are cell dimensions. The destination subtracts half width and full height so cx/cy is the object base, not its top-left. Rounding and disabling smoothing preserve the supplied pixel art.",
+          "try": "Choose a different player frame temporarily. The car should change pose without shifting the road or changing collision size."
+        },
+        {
+          "at": "  const objects =",
+          "title": "Depth-sort scenery and traffic",
+          "why": "Roadside records are generated around the current travel segment. Traffic and the other player join the same visible-object list only when ahead and inside the draw distance. Sorting by descending z paints distant sprites first. Matching each object to a road sample gives consistent curve, hill, lane offset and apparent size. The other player is a visible rival, not another traffic collision body.",
+          "try": "Watch a traffic car near a hill while approaching. It should grow and follow the same projected road rather than sliding independently across the sky."
+        },
+        {
+          "at": "  const carW =",
+          "title": "Finish with a local car and a data-driven HUD",
+          "why": "The player car is drawn last in a fixed screen location; steering chooses its sprite cell. Width responds to viewport height, which keeps the split view usable. HUD text reads state rather than calculating it again. Result overlays test finished/lost and show elapsed time or TIME UP; they do not end the race themselves.",
+          "try": "Resize the browser and compare solo/split HUDs. Restart from a result and confirm the overlay disappears when fresh driver state is created."
+        }
+      ]
+    },
+    {
+      "file": "app.js",
+      "intro": "Wire the whole racer together: page, resources, intent, state changes, simulation loop and independent viewports.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Import modules and define the page theme",
+          "why": "Imports give the host access to rules, renderer, audio and file paths without sharing module-level run state. mount receives the HTML-tier root. The embedded stylesheet establishes a centred shell, pixelated canvas and consistent controls; it is presentation only. Keeping these styles inside the mounted page makes the example self-contained.",
+          "try": "Find the canvas image-rendering rule and switch it to auto temporarily. Observe the art becoming softer at non-native sizes."
+        },
+        {
+          "at": "      #overlay {",
+          "title": "Separate menu presentation from state",
+          "why": "The overlay is positioned above the canvas and uses a readable translucent background. Its heading/padding do not pause simulation: that will be controlled by paused/state. This separation prevents hiding a menu from accidentally being treated as the game-start condition.",
+          "try": "Change the overlay opacity and reopen Play. The title should remain readable over the attract view."
+        },
+        {
+          "at": "    <div id=\"shell\">",
+          "title": "Give each control a stable DOM identity",
+          "why": "Button IDs become the event-wiring contract later in mount. The canvas has fixed internal dimensions and responsive CSS size; scaling it does not change simulation units. tabIndex makes canvas focus possible after Start. The notice is text output, while the overlay holds startup instructions. These are actual controls, not mock UI.",
+          "try": "Locate Restart in markup and later its onclick assignment. Renaming only one ID will break that control; undo any experiment before proceeding."
+        },
+        {
+          "at": "  const $ =",
+          "title": "Load required images before starting the loop",
+          "why": "The root-scoped query helper avoids accidentally selecting another app. The image loader resolves only on load and rejects with the missing path on error. await ensures both sheets exist before drawView receives them. Run variables then hold players, shared traffic, mode, menu/result state and the previous frame timestamp; pad/keyboard translate browser state into rule inputs.",
+          "try": "Temporarily misspell a sprite filename, reopen Play and inspect the Console. Restore it; a missing resource should fail clearly instead of producing a silent empty car."
+        },
+        {
+          "at": "  async function start",
+          "title": "Reset one complete race from a button",
+          "why": "starting blocks overlapping asynchronous audio setup. Split mode first verifies a connected controller; no half-initialized second player is created when it is absent. New drivers and traffic replace old run state, held keys are cleared, and canvas focus returns to play. Audio activation stays inside this click path so the browser can authorize playback. finally releases the starting guard even if audio fails.",
+          "try": "Restart while holding a key, then release it. Fresh state and key clearing should prevent the old run from continuing invisibly."
+        },
+        {
+          "at": "  function togglePause",
+          "title": "Pause logic and wire controls",
+          "why": "The guard excludes menu/results. A disconnected P2 pad prevents unsafe resume. Pause updates state, overlay, sound context and keys together. The following button assignments connect page intent to these functions; mute changes the label from the helper result, and track change requests music only after a context exists.",
+          "try": "Pause during a race and switch tracks. Resume and confirm the timer did not advance while paused."
+        },
+        {
+          "at": "  window.addEventListener('keydown'",
+          "title": "Maintain held keys instead of moving in key events",
+          "why": "keydown/keyup update the Set; movement will read it once per simulation frame. preventDefault stops arrows/Space scrolling the page only while playing. P ignores auto-repeat. Blur clears held inputs and pauses, avoiding stuck steering when focus changes. These window listeners live for this mounted page, which Nord replaces when Play is reopened.",
+          "try": "Hold steering, move focus away, return and resume. The car must not remain stuck turning after the key was released outside the page."
+        },
+        {
+          "at": "  function frame(now)",
+          "title": "Advance the world once, then report results",
+          "why": "requestAnimationFrame supplies milliseconds; dividing by 1000 converts to the rules’ seconds. The cap avoids a giant step after a stalled frame. Disconnection can pause both views before simulation. Shared traffic moves once, each driver advances with its own input, and returned events trigger sounds. The whole race reaches result only when every driver has finished or lost.",
+          "try": "In split mode let one timer expire first. The other driver should still be able to finish while the finished view displays its result."
+        },
+        {
+          "at": "    if (engine) {",
+          "title": "Render two cameras without duplicating simulation",
+          "why": "Engine rate/gain follows P1 speed. Each viewport saves canvas state, clips its own rectangle and translates the origin before calling drawView. restore prevents the second view inheriting the first view’s clip/translation. The separator is drawn once, notices reflect current pad/audio state, and scheduling the next frame keeps the loop alive even while paused so UI can still respond.",
+          "try": "Remove restore only on a temporary copy and observe the broken second view; put it back. The getter object at the end is for inspection/tests, not another game loop."
+        }
+      ]
+    },
+    {
+      "file": "audio.js",
+      "intro": "Build the complete local-audio helper: activation, cached decoding, voices, crossfade and cleanup.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Own resources for one run",
+          "why": "The constructor records configuration separately from browser audio objects. A Map caches a promise for each path, and a Set tracks live voices. Keeping these on the instance gives one owner for cleanup and makes repeated effects reuse decoded audio. The AudioContext is deferred until a user gesture because browser playback permission belongs to that gesture.",
+          "try": "Start a fresh page and inspect the helper before clicking Start: it has configuration but no running AudioContext."
+        },
+        {
+          "at": "  async load(path)",
+          "title": "Decode each path once",
+          "why": "The first load stores the entire asynchronous fetch/decode operation in the Map. A second request receives that same promise even if downloading is still in progress. Checking response.ok turns a missing file into a meaningful error instead of attempting to decode an HTML error page. decodeAudioData produces a reusable buffer, not a playing sound.",
+          "try": "Temporarily mistype one SFX path. Trigger it and observe the visible audio problem; restore the path and reopen Play to clear the rejected cached request."
+        },
+        {
+          "at": "  async voice(path",
+          "title": "Turn a buffer into a voice",
+          "why": "A BufferSource is single-use: the cached buffer can be reused, but each playback needs a new source. A GainNode gives that voice its own volume before reaching the master. Loop/rate options handle music and engine pitch. The non-looping voice cap bounds overlapping effects; onended disconnects nodes and removes the finished voice from the Set. Errors become an inspectable problem rather than stopping gameplay.",
+          "try": "Lower the voice volume for one event. Its loudness should change without affecting music or changing the file itself."
+        },
+        {
+          "at": "  play(name",
+          "title": "Keep game events independent of file paths",
+          "why": "play looks up a symbolic name in config.sfx, so collision code can request crash without knowing where the recording lives. music creates a looping voice, fades its gain in, fades the old voice out and schedules the old source to stop. Capturing the old song lets both overlap briefly rather than cutting abruptly.",
+          "try": "Switch between the two supplied music tracks while playing. Listen for the overlap; do not put music() inside the animation loop."
+        },
+        {
+          "at": "  mute()",
+          "title": "Pause and dispose the right owner",
+          "why": "Mute changes the master gain, leaving individual volume relationships intact. Suspend/resume controls the AudioContext clock alongside a paused game. Dispose closes the whole context and clears voice ownership. This is distinct from caching a buffer: cached data may exist while no voice is playing.",
+          "try": "Mute, unmute, pause and resume. Then restart the scene/app and verify there is one soundtrack rather than another copy layered over the old one."
+        }
+      ]
+    },
+    {
+      "file": "audio-config.js",
+      "intro": "Choose recordings through data rather than hardcoded paths in gameplay.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Keep symbolic sound names stable",
+          "why": "music is an ordered list used by the track selector. sfx maps event names returned by updateDriver to local files. Changing a path replaces a recording without editing physics or rendering; changing a key would require changing event producers too. Both music tracks and every referenced effect are included in the download.",
+          "try": "Replace only crash with your own short recording, keeping the key crash. Reopen Play and collide with traffic to hear the replacement."
+        }
+      ]
+    },
+    {
+      "file": "index.html",
+      "intro": "Read the complete Nord page entry point and its failure path.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Load the local runtime and start the app",
+          "why": "The document declares encoding and viewport, creates the mount container and loads local code. The module imports mount from app.js and awaits initialization for the HTML-tier root. The ready/error flags are inspection signals used by browser checks; they are not a second simulation. The catch logs and exposes initialization errors. The page is served over HTTP so local module and asset URLs resolve consistently.",
+          "try": "Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name."
+        }
+      ]
+    },
+    {
+      "file": "nord.project.json",
+      "intro": "Read every project field that tells Nord which host, display and services to use.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Identify the project and choose its presentation",
+          "why": "format and engineVersion identify the serialized contract, while name/id give human and stable application identity. type chooses the host; startScene is used by a scene backend and is empty for these HTML apps. Display fields request dimensions, fit behaviour, pixel-art treatment and background. Physics selects a runtime engine; the rail shooter uses custom rules with none, while HTML-hosted libraries are initialized in their own modules.",
+          "try": "Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace."
+        },
+        {
+          "at": "  \"input\":",
+          "title": "Distinguish scene actions from HTML event handling",
+          "why": "The input object maps action names to keyboard codes for Nord scene scripts. Vector Patrol reads these through this.input. HTML-tier hosts in the other projects read their own DOM events, so editing this action table alone does not rewrite those handlers. plugins/ui declare ordinary scene services and skin/theme; any remaining desktop configuration is the native capability contract rather than a browser CORS override.",
+          "try": "For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input."
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/racing-cars.png.meta.json",
+      "intro": "Read the supplied sprite sidecar used by Nord’s asset tools.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Describe cell geometry and asset identity",
+          "why": "type declares a spritesheet, frameWidth/frameHeight specify each cell and nearest filtering preserves pixel edges. anims is empty because this racer picks static directional cells itself. Tags organize the asset in tools. The renderer’s explicit crop dimensions must agree with these cell dimensions; metadata is not an automatic steering animation.",
+          "try": "Compare frame sizes with sprite() calls in render.js. Replace a sheet only after preserving that cell contract or updating both sides."
+        }
+      ]
+    },
+    {
+      "file": "assets/sprites/roadside.png.meta.json",
+      "intro": "Read the supplied sprite sidecar used by Nord’s asset tools.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Describe cell geometry and asset identity",
+          "why": "type declares a spritesheet, frameWidth/frameHeight specify each cell and nearest filtering preserves pixel edges. anims is empty because this racer picks static directional cells itself. Tags organize the asset in tools. The renderer’s explicit crop dimensions must agree with these cell dimensions; metadata is not an automatic steering animation.",
+          "try": "Compare frame sizes with sprite() calls in render.js. Replace a sheet only after preserving that cell contract or updating both sides."
+        }
+      ]
+    }
+  ],
+  "vector-patrol": [
+    {
+      "file": "scripts/sim.js",
+      "intro": "Read the complete rail-shooter simulation, including every timer, collision, spawn and end condition.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Give a run one state object",
+          "why": "newFlight creates fresh arrays and scalar fields for a run. time controls encounters; distance scrolls scenery; x/y describe the fighter’s corridor position. fire/spawn/gate/cell are countdowns, while bossHP and bossZ describe the later encounter. won/lost stop future ticks. None of this requires a browser or a mesh, so the same state can be exercised by small rule tests.",
+          "try": "List which fields are timers and which are coordinates. Change only hp to 50, reopen Play and confirm the HUD starts at half hull."
+        },
+        {
+          "at": "export function tick",
+          "title": "Read one intent and advance clocks",
+          "why": "tick exits once a result is final, bounds dt, then integrates travel and clamped steering. Every countdown is updated in the same seconds-based clock. Roll starts only after its cooldown reaches zero, sets a shorter invulnerability window and emits a sound event. Holding fire creates a shot only when its interval expires, so framerate does not determine firing frequency.",
+          "try": "Double the fire interval from 0.16 to 0.32. Holding Space should produce roughly half as many shots; restore the original value."
+        },
+        {
+          "at": "  if (s.time < 63",
+          "title": "Spawn waves and rewards on separate schedules",
+          "why": "An increasing serial ID gives repeatable sine/cosine spawn positions. Enemy spawn delay shrinks as time advances but has a minimum; enemy firing starts with staggered timers. Gates and energy cells use independent countdowns, and ordinary spawns stop before the carrier. Resetting a countdown on spawn is what prevents creating an object on every later frame.",
+          "try": "Change the first gate countdown in newFlight from 18 to 5. It should arrive earlier without making enemies fire faster."
+        },
+        {
+          "at": "  const damage =",
+          "title": "Centralize hull loss and grace",
+          "why": "Every damage source calls this closure. It ignores hits while shielded or after a result, clamps hp at zero, gives a short grace window and emits crash. Enemy motion and firing are separate: z brings them toward the player, and hostile vx/vy are calculated when a shot is created. Contact consumes the enemy even if the shield prevents damage.",
+          "try": "Activate roll immediately before contact. The visual roll and the shorter damage shield are related but distinct timers."
+        },
+        {
+          "at": "  if (s.time >= 65)",
+          "title": "Introduce the carrier and its fan pattern",
+          "why": "The encounter is time-driven, while approach distance is clamped to 48 so the carrier remains ahead. bossFire creates five shots with different horizontal velocities. These are ordinary hostile records; the same bullet collision path handles both enemy and carrier fire. That reuse keeps boss code from inventing a second damage system.",
+          "try": "Change the fan loop limits to -1 and 1 on a copy. You should see three shots per burst; restore five before continuing."
+        },
+        {
+          "at": "  for (const shot of s.shots)",
+          "title": "Resolve a player shot against one target",
+          "why": "Shots move forward, then test a depth window and XY distance against living enemies. Setting z to 999 consumes a hit shot, and break prevents the same shot hitting another drone in that loop. Enemy death awards score and explosion once. The carrier check additionally rejects a shot after a player death or prior victory.",
+          "try": "Lower drone hp to one in the spawn record. A single hit should remove one drone and award 100, without damaging every drone in the array."
+        },
+        {
+          "at": "      if (s.bossHP <= 0)",
+          "title": "Make the result exclusive and process hazards",
+          "why": "The final carrier hit sets won and adds the bonus. Later damage calls see that flag and cannot turn the same winning frame into a death. Hostile bullets advance on their stored velocities and are moved behind the scene after a hit. Gates have a passed flag so their reward/penalty is evaluated once while crossing the player plane.",
+          "try": "Reach a gate and inspect whether its event occurs once. Temporarily remove passed on a copy to understand why overlap over several frames needs a consumption flag."
+        },
+        {
+          "at": "  for (const cell of s.cells)",
+          "title": "Consume pickups, prune arrays and enforce the deadline",
+          "why": "A nearby cell heals with an upper bound, gives score and moves behind the player for removal. filter creates the next living arrays, discarding dead enemies and offscreen shots/gates/cells. These bounds matter because a view pool is finite. The deadline marks a non-winning run lost, then the event list returns to the controller for audio.",
+          "try": "Watch arrays in the Console during a long run; old objects should disappear. Changing a mesh’s visibility alone would not remove its simulation record."
+        }
+      ]
+    },
+    {
+      "file": "scripts/flight.js",
+      "intro": "Connect all simulation decisions to Nord lifecycle, actions, UI, save data and resource cleanup.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Create state and name UI screens",
+          "why": "Imports separate rules, view and audio. start creates fresh run state and resource owners, loads the best score from Save and creates the persistent flight HUD. Screen names let the controller show/clear one group of labels and buttons without deleting another. Nord calls start after scene entities are available, which is why FlightView can find Fighter and Carrier now.",
+          "try": "Change the HUD position and reopen Play. It should move without changing the simulated fighter coordinates."
+        },
+        {
+          "at": "    this.ui.menu(",
+          "title": "Build launch controls and explain actions",
+          "why": "The menu callbacks capture this controller instance. Launch is a user-gesture entry for audio, while mute changes the audio owner. The instruction label joins separate lines without embedding rules in UI text. Pause and Restart buttons remain on the HUD screen; Restart delegates creation of a fresh scene to Nord.",
+          "try": "Use Restart before launching and after pausing. The new controller should return to the launch menu with no old labels left behind."
+        },
+        {
+          "at": "    this.key =",
+          "title": "Handle input that must work while paused",
+          "why": "A paused scene does not update, so P is handled by a window listener rather than only inside update. Ignoring repeat prevents rapid toggles from a held key. Blur pauses only an active unfinished run. launch clears the menu and unlocks/starts sound; its started guard prevents duplicate launches. Audio failures become visible state instead of destroying the scene.",
+          "try": "Hold P down rather than tapping it. It should toggle once. Switch away from the window mid-flight and return to find a paused run."
+        },
+        {
+          "at": "  togglePause()",
+          "title": "Keep pause UI and the engine in agreement",
+          "why": "This method changes the controller flag, game pause state, sound context and menu screen as one operation. Ended or unlaunched runs ignore it. Resume clears the temporary pause screen and restarts both clocks. Calling only game.pause without a reachable external resume action would strand the user.",
+          "try": "Pause and click the same button to resume. Verify the hull/time values stay fixed during the pause."
+        },
+        {
+          "at": "  update(dt)",
+          "title": "Route actions, sound events and the one-time result",
+          "why": "The retro action toggles the view. vec creates a directional input, down sustains firing and pressed triggers one roll. tick returns events that select local recordings. The bossMusic flag prevents restarting the carrier song every frame. finished gates the result handler, which writes a new best only on victory and shows one result label. Finally view.draw and draw project the state into meshes and text.",
+          "try": "Launch, lose and wait several seconds. The loss message should not multiply. Inspect the best-score slot: losing should not overwrite it with a lower score."
+        },
+        {
+          "at": "  draw()",
+          "title": "Format state without changing it, then release resources",
+          "why": "The HUD method builds readable strings from current state; it does not decrement timers or grant score. onDestroy removes window listeners, releases the view and sound and clears both UI groups. Resuming during teardown prevents an old paused controller from leaving a new scene unable to tick. This cleanup is why scene restart can be safe repeatedly.",
+          "try": "Restart several times and press P once. One press should cause one toggle, not a toggle from every old controller."
+        }
+      ]
+    },
+    {
+      "file": "scripts/view.js",
+      "intro": "Follow every conversion from rule records to Nord entities, native pools and retro materials.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Keep the backend and imported palette",
+          "why": "The view stores Babylon’s engine/scene/canvas plus the script’s Nord game. It walks imported meshes and extracts either PBR albedoColor or standard diffuseColor. The colour’s hex string is a Map key, so equal palette colours share one shader material. Originals are retained for teardown rather than destroyed.",
+          "try": "Select a coloured drone in the scene and compare it in clean/retro mode. A single grey material for every mesh would lose the imported palette."
+        },
+        {
+          "at": "          mat = new this.B.ShaderMaterial",
+          "title": "Bind shader attributes and uniforms explicitly",
+          "why": "ShaderMaterial receives actual source strings and a declared interface. position/normal are vertex data; world/worldViewProjection are matrices; uColor/uRetro/uGrid are custom uniforms. A new colour creates a new material once, while subsequent meshes reuse it. The original material pair is recorded before assignment.",
+          "try": "Rename a custom uniform only in GLSL on a temporary copy and observe the error or missing effect. Restore both shader and binding names together."
+        },
+        {
+          "at": "    this.player = script.scene.find",
+          "title": "Find reusable entities and make simple effect materials",
+          "why": "Names bridge the authored scene to this view: fourteen drones and three gates already exist. The local material helper creates unlit emissive colours for shots, dots and cells so those tiny objects remain readable. These materials are view resources, not new gameplay records.",
+          "try": "Rename Drone0 only in the scene on a copy to see why scene names are a contract. Restore it before testing combat."
+        },
+        {
+          "at": "    const pool =",
+          "title": "Allocate bounded native pools once",
+          "why": "pool creates boxes, assigns a shared material and records every mesh for disposal. The four pool sizes reflect different expected object counts. Terrain then gets one lit material and a ground mesh, separate from unlit effects. Allocating here rather than on every shot avoids repeated GPU setup during combat.",
+          "try": "Compare the 40-shot pool with the maximum shot lifetime and fire interval. If you raise fire rate dramatically, you must reconsider pool capacity too."
+        },
+        {
+          "at": "    this.mountains =",
+          "title": "Add cheap canyon landmarks and a view target",
+          "why": "Low-tessellation cones become alternating ridges. A hemispheric light illuminates those lit materials and a target points the scene camera into the corridor. Initialization ends by applying retro settings, ensuring resolution and shader toggles begin in the same mode.",
+          "try": "Reduce the ridge tessellation on a copy. The silhouette changes while collision rules remain exactly the same."
+        },
+        {
+          "at": "  setRetro(on)",
+          "title": "Synchronize framebuffer and shader quality",
+          "why": "Hardware scaling reduces the rendered pixel dimensions relative to the display canvas. CSS imageRendering chooses nearest-style presentation. uRetro selects clean/quantized behaviour, and uGrid derives snapping from the actual render dimensions, not a guessed window size. Reusing this method keeps all materials synchronized when C is pressed.",
+          "try": "Toggle C while watching a moving model edge. Resolution, vertex steps and colour bands should change together."
+        },
+        {
+          "at": "  draw(s)",
+          "title": "Place Nord entities from arrays",
+          "why": "The player’s transform uses state directly; the roll is a visual angle derived from a timer. entities enables only used pooled entities and copies record coordinates. Enemy rotation is visual decoration; it does not move the collision centre. Carrier visibility depends on encounter and win state, so victory removes it without inventing a new simulation condition.",
+          "try": "Stop firing and watch unused drone slots: they must be disabled rather than left visible at their last position."
+        },
+        {
+          "at": "    const native =",
+          "title": "Place primitive pools and wrap ground motion",
+          "why": "Native Babylon meshes use setEnabled/position instead of Nord entity properties. The same index-to-record rule draws shots, hostile shots and pickups. Ground dots and ridge positions use modulo distance to recycle a fixed set of meshes, making continuous travel without continuously allocating scenery.",
+          "try": "Temporarily remove the modulo from ground-dot motion and observe dots leaving permanently; restore it to maintain the repeating corridor."
+        },
+        {
+          "at": "  dispose()",
+          "title": "Restore borrowed resources, destroy owned ones",
+          "why": "Imported meshes belong to scene entities, so the view restores their borrowed materials if they still exist. It destroys materials/meshes/light it created and resets engine scaling for the next scene. This distinction between borrowed and owned resources prevents both leaks and accidental destruction of scene assets.",
+          "try": "Restart after toggling clean mode. Check the new run initializes consistently and the Console has no disposed-material errors."
+        }
+      ]
+    },
+    {
+      "file": "scripts/retro-shader.js",
+      "intro": "Read both complete GLSL programs; matrix conversion and quantization are small enough to understand line by line.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Move from object vertices to a screen grid",
+          "why": "precision controls floating-point calculation quality. Attributes arrive per vertex; uniforms are shared inputs. The world-view-projection matrix creates clip coordinates. Dividing XY by W gives projected coordinates, which are rounded to a grid and multiplied by W again. mix uses uRetro to select original or snapped positions. The transformed normal is passed to the fragment shader for lighting.",
+          "try": "Make uGrid smaller in setRetro, then compare a drone edge. Larger visible steps should appear without changing the drone’s simulation position."
+        },
+        {
+          "at": "export const fragmentSource",
+          "title": "Light, dither and quantize colour",
+          "why": "The fragment program normalizes directions and clamps the dot product so back-facing light contributes no negative value. A small base light preserves silhouettes. gl_FragCoord selects one of four ordered dither offsets; quantization rounds each channel to sixteen levels. mix keeps a clean comparison mode and alpha one makes models opaque. This is flat-colour stylization, not texture warping.",
+          "try": "Set uRetro to zero through the C toggle, then re-enable it. Compare colour bands separately from vertex position changes."
+        }
+      ]
+    },
+    {
+      "file": "scripts/retro-audio.js",
+      "intro": "Build the complete local-audio helper: activation, cached decoding, voices, crossfade and cleanup.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Own resources for one run",
+          "why": "The constructor records configuration separately from browser audio objects. A Map caches a promise for each path, and a Set tracks live voices. Keeping these on the instance gives one owner for cleanup and makes repeated effects reuse decoded audio. The AudioContext is deferred until a user gesture because browser playback permission belongs to that gesture.",
+          "try": "Start a fresh page and inspect the helper before clicking Start: it has configuration but no running AudioContext."
+        },
+        {
+          "at": "  async load(path)",
+          "title": "Decode each path once",
+          "why": "The first load stores the entire asynchronous fetch/decode operation in the Map. A second request receives that same promise even if downloading is still in progress. Checking response.ok turns a missing file into a meaningful error instead of attempting to decode an HTML error page. decodeAudioData produces a reusable buffer, not a playing sound.",
+          "try": "Temporarily mistype one SFX path. Trigger it and observe the visible audio problem; restore the path and reopen Play to clear the rejected cached request."
+        },
+        {
+          "at": "  async voice(path",
+          "title": "Turn a buffer into a voice",
+          "why": "A BufferSource is single-use: the cached buffer can be reused, but each playback needs a new source. A GainNode gives that voice its own volume before reaching the master. Loop/rate options handle music and engine pitch. The non-looping voice cap bounds overlapping effects; onended disconnects nodes and removes the finished voice from the Set. Errors become an inspectable problem rather than stopping gameplay.",
+          "try": "Lower the voice volume for one event. Its loudness should change without affecting music or changing the file itself."
+        },
+        {
+          "at": "  play(name",
+          "title": "Keep game events independent of file paths",
+          "why": "play looks up a symbolic name in config.sfx, so collision code can request crash without knowing where the recording lives. music creates a looping voice, fades its gain in, fades the old voice out and schedules the old source to stop. Capturing the old song lets both overlap briefly rather than cutting abruptly.",
+          "try": "Switch between the two supplied music tracks while playing. Listen for the overlap; do not put music() inside the animation loop."
+        },
+        {
+          "at": "  mute()",
+          "title": "Pause and dispose the right owner",
+          "why": "Mute changes the master gain, leaving individual volume relationships intact. Suspend/resume controls the AudioContext clock alongside a paused game. Dispose closes the whole context and clears voice ownership. This is distinct from caching a buffer: cached data may exist while no voice is playing.",
+          "try": "Mute, unmute, pause and resume. Then restart the scene/app and verify there is one soundtrack rather than another copy layered over the old one."
+        }
+      ]
+    },
+    {
+      "file": "scripts/audio-config.js",
+      "intro": "Keep flight music, boss music and every combat event mapped to supplied local recordings.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Map event names to recordings",
+          "why": "The controller requests names such as laser, shield and win. This object maps those names to project-relative paths, while music index zero is flight and one is the carrier encounter. The helper has no knowledge of combat rules. A replacement recording only requires changing a path while preserving the event key.",
+          "try": "Replace laser with a short owned recording, reopen Play and fire once. Music should remain unchanged."
+        }
+      ]
+    },
+    {
+      "file": "index.html",
+      "intro": "Read the complete Nord page entry point and its failure path.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Load the local runtime and start the app",
+          "why": "The document declares encoding and viewport, creates the mount container and loads local code. The import map resolves nord for scene scripts. Local Babylon/loaders/UI/Havok scripts initialize the backend, then boot reads project metadata and builds its start scene. The ready/error flags are inspection signals used by browser checks; they are not a second simulation. The catch logs and exposes initialization errors. The page is served over HTTP so local module and asset URLs resolve consistently.",
+          "try": "Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name."
+        }
+      ]
+    },
+    {
+      "file": "nord.project.json",
+      "intro": "Read every project field that tells Nord which host, display and services to use.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Identify the project and choose its presentation",
+          "why": "format and engineVersion identify the serialized contract, while name/id give human and stable application identity. type chooses the host; startScene is used by a scene backend and is empty for these HTML apps. Display fields request dimensions, fit behaviour, pixel-art treatment and background. Physics selects a runtime engine; the rail shooter uses custom rules with none, while HTML-hosted libraries are initialized in their own modules.",
+          "try": "Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace."
+        },
+        {
+          "at": "  \"input\":",
+          "title": "Distinguish scene actions from HTML event handling",
+          "why": "The input object maps action names to keyboard codes for Nord scene scripts. Vector Patrol reads these through this.input. HTML-tier hosts in the other projects read their own DOM events, so editing this action table alone does not rewrite those handlers. plugins/ui declare ordinary scene services and skin/theme; any remaining desktop configuration is the native capability contract rather than a browser CORS override.",
+          "try": "For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input."
+        }
+      ]
+    },
+    {
+      "file": "scripts/mk.js",
+      "intro": "Read the complete generic spawn helper included by Nord’s scene-example generator.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Understand the optional entity-data helpers",
+          "why": "base constructs plain entity data with transform, tags, components and empty script/child lists. rectData/circleData/textData specialize that structure; rect/circle/label pass it to scene.spawnData. Rest parameters forward the original arguments, and aabb is a simple axis-aligned overlap comparison. This generic helper is not imported by Vector Patrol: its actual effects use the pools in view.js. Its 2D sprite factories would also require the corresponding sprite assets before reuse.",
+          "try": "Search this project for imports of mk.js. There should be none; follow FlightView for the real shooter effect path rather than adding unused 2D spawn calls."
+        }
+      ]
+    },
+    {
+      "file": "scenes/main.scene.json",
+      "intro": "Read the whole saved scene: camera, every pooled model slot and the controller attachment.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Declare Camera",
+          "why": "The scene envelope declares format/name/settings and an ordered entity array. Camera has a stable ID, enabled/layer/tags and a transform, then a camera component with field of view and clipping planes. Its position behind the fighter and later target assignment frame the corridor. Empty script/child arrays mean this entity is only the scene camera.",
+          "try": "Select Camera in Nord and inspect position and fov. A small fov change should alter perspective without changing shot collision ranges."
+        },
+        {
+          "at": "\"name\": \"Fighter\"",
+          "title": "Declare Fighter",
+          "why": "This is the player’s authored model slot. Transform arrays use position/rotation/scale, model.path resolves a supplied GLB and unique requests an independent instance. Scripts/children/prefab are empty because FlightGame owns control. The view later overrides the animated transform, so changing this starting position alone is not a movement rule.",
+          "try": "Locate Fighter in the Hierarchy and inspect its GLB. Keep the name stable because FlightView.find uses it."
+        },
+        {
+          "at": "\"name\": \"Drone0\"",
+          "title": "Declare Drone0",
+          "why": "Drone0 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 0 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Drone1\"",
+          "title": "Declare Drone1",
+          "why": "Drone1 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 1 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Drone2\"",
+          "title": "Declare Drone2",
+          "why": "Drone2 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 2 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Drone3\"",
+          "title": "Declare Drone3",
+          "why": "Drone3 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 3 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Drone4\"",
+          "title": "Declare Drone4",
+          "why": "Drone4 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 4 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Drone5\"",
+          "title": "Declare Drone5",
+          "why": "Drone5 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 5 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Drone6\"",
+          "title": "Declare Drone6",
+          "why": "Drone6 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 6 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Drone7\"",
+          "title": "Declare Drone7",
+          "why": "Drone7 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 7 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Drone8\"",
+          "title": "Declare Drone8",
+          "why": "Drone8 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 8 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Drone9\"",
+          "title": "Declare Drone9",
+          "why": "Drone9 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 9 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Drone10\"",
+          "title": "Declare Drone10",
+          "why": "Drone10 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 10 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Drone11\"",
+          "title": "Declare Drone11",
+          "why": "Drone11 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 11 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Drone12\"",
+          "title": "Declare Drone12",
+          "why": "Drone12 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 12 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Drone13\"",
+          "title": "Declare Drone13",
+          "why": "Drone13 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 13 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.",
+          "try": "Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource."
+        },
+        {
+          "at": "\"name\": \"Carrier\"",
+          "title": "Declare Carrier",
+          "why": "The carrier has its own supplied model and a larger authored scale. It begins ahead of the corridor and is enabled/positioned later by boss state. Its JSON does not decide when the boss arrives or how much hull it has; those values live in sim.js, keeping encounter rules separate from the visual asset.",
+          "try": "Change only carrier scale on a copy. Its silhouette should grow while the simulation hit box remains explicit and unchanged."
+        },
+        {
+          "at": "\"name\": \"Gate0\"",
+          "title": "Declare Gate0",
+          "why": "Gate0 is one of the three reusable gate model slots. The same GLB is placed ahead initially; FlightView later pairs live gate records with these slots. Keeping gates as models and pass/fail checks as rule records makes it possible to change art without changing scoring thresholds.",
+          "try": "Find all three gate names in the Hierarchy, then find the three-slot array in view.js. Their counts must agree."
+        },
+        {
+          "at": "\"name\": \"Gate1\"",
+          "title": "Declare Gate1",
+          "why": "Gate1 is one of the three reusable gate model slots. The same GLB is placed ahead initially; FlightView later pairs live gate records with these slots. Keeping gates as models and pass/fail checks as rule records makes it possible to change art without changing scoring thresholds.",
+          "try": "Find all three gate names in the Hierarchy, then find the three-slot array in view.js. Their counts must agree."
+        },
+        {
+          "at": "\"name\": \"Gate2\"",
+          "title": "Declare Gate2",
+          "why": "Gate2 is one of the three reusable gate model slots. The same GLB is placed ahead initially; FlightView later pairs live gate records with these slots. Keeping gates as models and pass/fail checks as rule records makes it possible to change art without changing scoring thresholds.",
+          "try": "Find all three gate names in the Hierarchy, then find the three-slot array in view.js. Their counts must agree."
+        },
+        {
+          "at": "\"name\": \"FlightGame\"",
+          "title": "Declare FlightGame",
+          "why": "FlightGame is the controller entity. Its script attachment names scripts/flight.js and provides an attributes object. Unlike model entities it needs no rendering component: its job is lifecycle, simulation and UI ownership. The closing JSON also closes the entity array/scene, completing a valid saved scene.",
+          "try": "Select FlightGame and open its script attachment in Nord. This is the file that starts the run and owns restart cleanup."
+        }
+      ]
+    }
+  ],
+  "jengatedris": [
+    {
+      "file": "rules.js",
+      "intro": "Build every grid rule, from literal shape cells through rotation, hold, gravity and garbage.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Define seven pieces as four local cells",
+          "why": "W/H set board dimensions. Each SHAPES entry lists four offsets in a local four-by-four box, not four positions in the world. A type index selects one entry; colour values use type plus one so zero remains empty. These tables are shared by geometry and previews, preventing a preview shape from disagreeing with collision.",
+          "try": "Count the offsets in each entry: every piece must have four. Change a colour rather than geometry first, then verify active/preview cells stay consistent."
+        },
+        {
+          "at": "export const COLORS",
+          "title": "Generate reproducible bags",
+          "why": "The colour table includes empty and garbage colours. random updates a 32-bit seed and scales it to a fraction. next fills a bag with all seven types, shuffles it using a shrinking index range, then pops one type. Saving the generator in the state makes seeded openings reproducible in tests and battles; it is not a secure random source.",
+          "try": "Start two newGrid states with the same seed and compare several pieces. They should agree until different operations consume their random streams."
+        },
+        {
+          "at": "export function cells",
+          "title": "Convert local cells and test a candidate",
+          "why": "cells copies offsets before rotating them so the global SHAPES table stays unchanged. Each quarter-turn maps x/y through the four-cell box, then adds the active piece origin. fits checks all four cells, allowing negative y during entry but rejecting side/bottom collisions and occupied visible cells. spawn resets rotation/fall and checks immediate overflow.",
+          "try": "Move a piece against a wall. A rejected candidate should not change the original offsets or move another piece of that type."
+        },
+        {
+          "at": "export function newGrid",
+          "title": "Initialize independent rows and test movement transactionally",
+          "why": "Array.from creates distinct row arrays. Shared rows made with fill(oneArray) would corrupt multiple rows at once. next is prepared before spawn consumes it. move creates a candidate object, tests it, then commits it; the boolean lets soft drop and gravity decide whether to lock. No pixel coordinates appear in these decisions.",
+          "try": "Temporarily write one board cell in the Console. Only its own row should change."
+        },
+        {
+          "at": "export function rotate",
+          "title": "Try kicks and lock four cells",
+          "why": "Square rotation is a no-op. Other rotations try horizontal offsets in priority order and accept the first fit; if none fit, state stays unchanged. lock first detects cells above the visible board, then writes type+1. It removes full rows, scores using the old level, computes the next level, prepends fresh empty rows and resets the hold gate before spawning. The goal sets a final result.",
+          "try": "Create a near-full row in a test copy, clear it, and verify the top row becomes empty and score changes once."
+        },
+        {
+          "at": "export function action",
+          "title": "Dispatch player intentions and implement hold",
+          "why": "The dispatcher stops at game over and clears lastClear for this operation. Soft drop either moves and scores or locks; hard drop repeatedly tries move until blocked, scores by distance and locks once. Hold has empty and swap cases. Passing false to spawn during a swap preserves the next queue, and held prevents repeated swaps before lock.",
+          "try": "Hold twice before locking. The second press should do nothing. After locking, hold should become available again."
+        },
+        {
+          "at": "export function tickGrid",
+          "title": "Separate gravity, garbage and ghost prediction",
+          "why": "Gravity accumulates seconds until the level-dependent delay passes, then attempts one grid step. Garbage shifts the board upward and adds one row with a seeded hole; occupied cells pushed out or a blocked active piece cause top-out. ghost moves a copy down until the next candidate fails, so it predicts Space without changing the active piece.",
+          "try": "Compare the ghost with the actual hard-drop landing. In battle, watch garbage push existing rows upward rather than overwrite the bottom row."
+        }
+      ]
+    },
+    {
+      "file": "chaos.js",
+      "intro": "Build every piece of the separate real-physics survival mode.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Load local physics and make a static container",
+          "why": "The optional script load uses the packaged Phaser build, whose Matter namespace supplies the solver. The engine gets gravity plus a floor and two static side walls. Static means the solver does not accelerate those bodies under gravity. This coordinate system is canvas pixels and milliseconds, separate from grid cells and seconds.",
+          "try": "Change gravity from 0.8 to 0.4 temporarily. Pieces should descend more slowly while grid mode stays unchanged."
+        },
+        {
+          "at": "  const s =",
+          "title": "Spawn one compound instead of four loose blocks",
+          "why": "The state owns every body and the active piece. spawn uses the same SHAPES offsets to make four rectangles, but Body.create combines them into one rigid object with friction, restitution and density. Colour is render data. Resetting time/settle for each spawn gives every active piece its own control window.",
+          "try": "Rotate a falling piece. Its four cells should stay joined; independent Matter bodies would fall apart."
+        },
+        {
+          "at": "  s.tick =",
+          "title": "Apply controls, step the solver and detect settling",
+          "why": "The dt cap limits solver steps. Left/right input contributes force; Q/E changes angular velocity and Down adds a downward force. Engine.update expects milliseconds. A slow body must remain slow for 0.65 seconds after its opening second to count as settled; the seven-second timeout keeps the game progressing. Before spawning, the stack-height check can lose the run, while surviving eighteen pieces wins.",
+          "try": "Tap rotate, release it and watch contacts change the angle. A simple grid y increment could not produce this motion."
+        },
+        {
+          "at": "  s.draw =",
+          "title": "Draw actual solver vertices and release the world",
+          "why": "Matter compounds include a parent part; drawing parts.slice(1) avoids drawing that extra bounding part. Polygon vertices already contain physical rotation and translation, so no separate canvas angle calculation is needed. The returned dispose callback clears bodies and engine state when changing mode.",
+          "try": "Switch Physics → Grid → Physics. A fresh tower should start, with no old bodies falling into the new world."
+        }
+      ]
+    },
+    {
+      "file": "app.js",
+      "intro": "Read the entire host page and client loop for all three modes.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Create the board and mode controls",
+          "why": "Imports select rules and optional physics. The mounted page declares mode/restart/pause buttons, a full-size game canvas, status fields, a next/hold preview and local control explanations. IDs are the link to the wiring below. The same canvas renders grid or physics, but each mode keeps its own rules.",
+          "try": "Find each button ID and its later onclick assignment; no button should rely on its visible text as a program identifier."
+        },
+        {
+          "at": "          <h2>Battle a friend",
+          "title": "Describe and collect battle connection details",
+          "why": "The remaining markup adds player name, room and API address, plus Join/Ready/Leave and an opponent canvas. Inputs are ordinary HTML so typing a room should not move a piece. Footer best-score text is a display target. The next code obtains canvas contexts and a Set for held physics controls, chooses a local default API address and initializes the local run.",
+          "try": "Click the room input and press A/D. The text should change without shifting the active piece."
+        },
+        {
+          "at": "  let best =",
+          "title": "Load the local best and reset owned modes",
+          "why": "Storage failures are caught so the game still runs. reset refuses to locally overwrite an online battle, disposes the old physics world, creates fresh grid state, unpauses and clears held keys. startChaos handles asynchronous library creation and falls back to grid with a message if it fails.",
+          "try": "Pause, restart, and verify fresh state moves again. Switch away from physics and confirm its bodies are gone."
+        },
+        {
+          "at": "  const message =",
+          "title": "Implement a request and accept a snapshot",
+          "why": "request chooses GET for polling or JSON POST for commands and adds a timeout. HTTP failure text becomes a useful error. accept replaces battle state with the server snapshot, selects your grid by session ID and formats the roster/result. No client-submitted score is trusted here.",
+          "try": "Stop the Node process mid-battle. The network area should report failure; the page should not silently pretend local changes are a server result."
+        },
+        {
+          "at": "  function send(name)",
+          "title": "Preserve action order and wire local mode controls",
+          "why": "A promise queue sends actions in order rather than letting network completion reorder left/rotate/drop. Clearing battle state before choosing a local mode prevents later controls from using the old session. Pause is deliberately local-only; a shared battle cannot be stopped for just one participant.",
+          "try": "Press rotate then drop in battle. The queued requests should preserve that order in the Network panel."
+        },
+        {
+          "at": "  $('join').onclick",
+          "title": "Join, ready and leave deliberately",
+          "why": "Join posts room/name before switching mode, so a failed connection leaves the local game usable. Successful join disposes physics and accepts the authoritative snapshot. Ready requires a session and reports server rejection; Leave returns locally and explains delayed seat expiry. These are three different lifecycle actions, not interchangeable reset buttons.",
+          "try": "Join a full room and observe the error. Choose another room rather than overwriting the current two players."
+        },
+        {
+          "at": "  const map =",
+          "title": "Convert keys into actions without hijacking text fields",
+          "why": "The key table maps several physical keys to one intention. The handler ignores focused inputs, prevents page scrolling for game keys and tracks held keys for physics. Grid actions allow repeat only for lateral/down movement; rotate/drop/hold trigger once. Blur clears keys and pauses local modes, while live battles continue on the server.",
+          "try": "Hold Space: it should not instantly hard-drop an unlimited stream of pieces through repeated keydown events."
+        },
+        {
+          "at": "  function board(",
+          "title": "Paint locked cells, prediction and active cells in order",
+          "why": "The block helper converts grid coordinates to pixels, skips above-board cells and restores globalAlpha after ghost painting. Board cells paint first, ghost second and the active piece last. A scale parameter reuses this renderer for the half-size opponent board without duplicating collision logic.",
+          "try": "Look at the ghost through an active piece: the real piece should remain opaque. Removing the alpha reset would make later cells incorrectly translucent."
+        },
+        {
+          "at": "  function draw()",
+          "title": "Derive status and previews from existing state",
+          "why": "draw chooses the physics or grid renderer, then derives the status from mode, pause and result flags. It does not decide whether a line cleared. The next/hold preview reads SHAPES directly; null hold avoids indexing a nonexistent shape. The rival is whichever snapshot player is not you, and is painted through the same board function at scale 15.",
+          "try": "Clear a row and inspect the preview and score together. They should reflect one state transition, not separate UI counters."
+        },
+        {
+          "at": "  function frame(now)",
+          "title": "Choose one clock owner and stop cleanly",
+          "why": "Local grid/physics advance only when unpaused. Best score belongs only to local grid mode and is persisted defensively. Online mode polls about five times a second with a busy guard, rather than also running local gravity. draw and the next animation request continue for UI responsiveness. Getters expose state to checks; teardown stops future frames, destroys physics, removes listeners and clears the root.",
+          "try": "Compare a battle snapshot in two browsers: gravity should agree because Node owns it. Closing/reopening Play must not retain the old frame loop."
+        }
+      ]
+    },
+    {
+      "file": "server.mjs",
+      "intro": "Build the complete authoritative two-player room lifecycle.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Separate sessions, rooms and public snapshots",
+          "why": "The factory receives port/root/clock so tests can use a controlled local server. Rooms hold two players and a phase; sessions locate one player by ID. snapshot chooses the output fields rather than returning arbitrary transport objects. attack translates multi-line clears into opponent garbage. finish computes the room result and clears ready flags for the next round.",
+          "try": "Inspect a snapshot after a clear: both players should be present, but only server-applied rule changes should affect their boards."
+        },
+        {
+          "at": "  const api =",
+          "title": "Create rooms without exceeding capacity",
+          "why": "Join validates capacity, normalizes the room name and creates waiting state only when needed. Each player gets a unique session ID, fresh grid, display name and activity/rate timestamps. The record is inserted in both room roster and session lookup before returning a snapshot. These maps solve different lookup problems.",
+          "try": "Open a third browser in the same room. It should receive Room has two players rather than becoming an invisible third competitor."
+        },
+        {
+          "at": "    const p = sessions.get",
+          "title": "Validate Ready and execute bounded intentions",
+          "why": "Every later route resolves an existing session and refreshes activity. State returns a snapshot. Ready rejects an ongoing game, then starts only when both players have readied; both grids receive the same new seed. Action accepts a fixed vocabulary and rate limit, applies shared rules, sends attacks and evaluates the result. The client never supplies a replacement board.",
+          "try": "Click Ready while playing and inspect the rejection. The existing round must not reset."
+        },
+        {
+          "at": "  const tick =",
+          "title": "Expire sessions and advance both boards on one server clock",
+          "why": "The tick updates activity time, removes silent sessions after thirty seconds and returns a lone player to waiting. Empty rooms are deleted. Only playing rooms tick gravity, apply attacks and evaluate a result. serve receives an explicit client-file list, and the final direct-execution guard starts the server only when this module is the program entry point.",
+          "try": "Close one client and wait for expiry. The remaining client should return to waiting and a new player should be able to take the seat."
+        }
+      ]
+    },
+    {
+      "file": "server-kit.mjs",
+      "intro": "Read the entire package-free HTTP adapter shared by the game servers.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Create an HTTP response boundary",
+          "why": "The imported Node modules handle sockets, files and paths. serve receives game-specific api/tick callbacks and an explicit public-file map. json writes a content type and disables caching before serializing the result. The origin branch permits same-origin clients and local Nord previews, while rejecting unrelated remote origins. This is a trusted-room development policy, not an account system.",
+          "try": "Open the game through its Node server, then through Nord Play with the same Server address. Both supported origins should receive JSON."
+        },
+        {
+          "at": "    if (req.method === 'OPTIONS')",
+          "title": "Parse a bounded API message",
+          "why": "OPTIONS answers a browser preflight before gameplay. API POST bodies must declare JSON, remain under 2048 bytes and parse as an object. GET is allowed for snapshots. Returning early for invalid input prevents malformed messages from reaching game rules. api returns either plain data or a status/data result, which the adapter normalizes through json.",
+          "try": "Send an invalid action with the browser Network panel and inspect its HTTP status; distinguish transport validation from the game-specific unknown-action error."
+        },
+        {
+          "at": "      const name = files",
+          "title": "Serve only named public files and own the tick",
+          "why": "The file map resolves URL paths to known project files; arbitrary requested disk paths are not joined directly. MIME types tell the browser how to load modules/styles. A catch turns failures into a 500 response. setInterval calls game rules every 50ms, close clears it, and optional port null makes tests control listening. failure and roomCode centralize error shape and safe room naming.",
+          "try": "Request server.mjs in the browser URL. It should return Not found; the source is distributed through the archive rather than this static allowlist."
+        }
+      ]
+    },
+    {
+      "file": "index.html",
+      "intro": "Read the complete Nord page entry point and its failure path.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Load the local runtime and start the app",
+          "why": "The document declares encoding and viewport, creates the mount container and loads local code. The module imports mount from app.js and awaits initialization for the HTML-tier root. The ready/error flags are inspection signals used by browser checks; they are not a second simulation. The catch logs and exposes initialization errors. The page is served over HTTP so local module and asset URLs resolve consistently.",
+          "try": "Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name."
+        }
+      ]
+    },
+    {
+      "file": "nord.project.json",
+      "intro": "Read every project field that tells Nord which host, display and services to use.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Identify the project and choose its presentation",
+          "why": "format and engineVersion identify the serialized contract, while name/id give human and stable application identity. type chooses the host; startScene is used by a scene backend and is empty for these HTML apps. Display fields request dimensions, fit behaviour, pixel-art treatment and background. Physics selects a runtime engine; the rail shooter uses custom rules with none, while HTML-hosted libraries are initialized in their own modules.",
+          "try": "Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace."
+        },
+        {
+          "at": "  \"input\":",
+          "title": "Distinguish scene actions from HTML event handling",
+          "why": "The input object maps action names to keyboard codes for Nord scene scripts. Vector Patrol reads these through this.input. HTML-tier hosts in the other projects read their own DOM events, so editing this action table alone does not rewrite those handlers. plugins/ui declare ordinary scene services and skin/theme; any remaining desktop configuration is the native capability contract rather than a browser CORS override.",
+          "try": "For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input."
+        }
+      ]
+    },
+    {
+      "file": "style.css",
+      "intro": "Read every stylesheet rule, grouped by the UI responsibility it controls.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Set the app foundation and reusable visual language",
+          "why": "The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.",
+          "try": "Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change."
+        },
+        {
+          "at": ".layout",
+          "title": "Lay out board and previews",
+          "why": "Flex layout keeps board and sidebar together; canvas rules preserve crisp pixels without changing internal canvas dimensions. Sidebar/label/input rules establish readable configuration controls.",
+          "try": "Resize slowly and compare CSS display size with the fixed canvas.width used by rendering."
+        },
+        {
+          "at": "footer {",
+          "title": "Clear auxiliary content and stack on narrow screens",
+          "why": "The rival float is cleared before footer text. The media query changes the layout direction and page padding for small windows rather than altering grid width or physics coordinates.",
+          "try": "Narrow below 620 pixels. The sidebar should move below the board while the rules still use ten columns."
+        }
+      ]
+    }
+  ],
+  "nord-office": [
+    {
+      "file": "rules.js",
+      "intro": "Build all office rules: map, players, movement, tasks, pranks, pathfinding and shift results.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Use readable map and station data",
+          "why": "Each map string is one row; matching widths keep indexing predictable. Walls/desks are collision tiles, while JOBS supplies the station name, location and puzzle kind. PUZZLES stores a visible faulty JavaScript line, answer choices and the expected index. The three mistakes are off-by-one iteration, assignment versus equality and milliseconds versus seconds. These are data interpreted by rules/UI, not executable snippets from a remote player.",
+          "try": "Count one map row and move a station on a copy. Keep JOBS coordinates and the corresponding visible marker consistent."
+        },
+        {
+          "at": "export function newOffice",
+          "title": "Create fresh jobs and players",
+          "why": "JOBS.map copies definitions into mutable run records, so completing a job does not alter the global station catalogue. owner/work/version are runtime fields. Team score/morale/time/phase belong to the shift; each player owns position, intended direction, active job, prank cooldown and completion count. Names are length-limited at the boundary.",
+          "try": "Start two fresh state objects and complete a task in one. The other state and the JOBS definitions should remain unchanged."
+        },
+        {
+          "at": "export function startShift",
+          "title": "Reset a run without disconnecting the roster",
+          "why": "The reset changes phase, clocks, score, morale and log, then restores stations and player work. It preserves player IDs/names and the room roster so an online rematch does not require joining again. Incrementing job version changes the next puzzle sequence. This reset is app-specific state replacement, not Nord scene reload.",
+          "try": "Restart a shared shift. Both human names should remain, while their jobs, scores and positions return to the opening state."
+        },
+        {
+          "at": "export function walkable",
+          "title": "Move a small body through a tile grid",
+          "why": "walkable floors fractional coordinates and treats out-of-map positions as blocked. movePlayer normalizes diagonals before multiplying by speed and seconds. Testing four corner offsets gives the player width rather than a point collision. X and Y are accepted independently so motion can slide along a desk. nearby uses station centres with half-tile offsets.",
+          "try": "Hold two directions diagonally and compare speed with straight movement. You should not gain a square-root-of-two speed bonus."
+        },
+        {
+          "at": "function note(",
+          "title": "Claim and cancel work without duplicate owners",
+          "why": "note keeps a newest-first bounded log. beginJob checks phase, existing work, station state, owner and distance before claiming it. The player job records progress, a puzzle index, deterministic wire sequence and a start time. cancelJob releases the station only if this player still owns it, then clears local work. These ownership checks prevent simultaneous repairs from counting twice.",
+          "try": "Have two humans press E at the same red station. Only one should claim it; cancel that task and let the other claim it."
+        },
+        {
+          "at": "function complete(",
+          "title": "Complete exactly one job and validate the next step",
+          "why": "complete clears the fault/owner, increments team and worker counts, restores bounded morale and changes the version before testing victory. jobStep rejects inactive/distant work. Wire tasks compare the next terminal and return early until the final correct input; bug tasks compare one answer; coffee computes elapsed fill from the simulation clock. The client supplies a choice, not a success flag.",
+          "try": "Choose one wrong wire terminal and confirm no score is awarded. Then repair correctly and check team score increases by exactly one."
+        },
+        {
+          "at": "  if (ok) {",
+          "title": "Resolve failure and deliberately introduce faults",
+          "why": "A successful step calls complete. A wrong fix costs morale, logs the outcome and releases ownership so work can be retried. prank requires playing state, no current job, no cooldown and a nearby fixed station. It makes a real fault, advances its version, starts a cooldown and costs team morale. This keeps pranks inside the same job/morale model as normal faults.",
+          "try": "Prank a green station twice rapidly. Only the first should succeed, and its colour should change because broken state changed."
+        },
+        {
+          "at": "export function pathTo",
+          "title": "Search breadth-first through tile centres",
+          "why": "The queue starts at the player tile and prev records visited cells plus their parent. Each tile expands four axis neighbours. Because every step has equal cost, the first reached goal gives a shortest tile path. The visited Map prevents loops. Reconstructing parents walks backward, unshift reverses that order, and slice(1) removes the already occupied starting tile.",
+          "try": "Put a desk on the direct route in a copy. Ada should take a longer walkable path, not move through the desk."
+        },
+        {
+          "at": "export function tickOffice",
+          "title": "Give the AI the same movement and ownership rules",
+          "why": "The playing guard freezes ended shifts. Each player cooldown decays. Ada either spends time on an owned job or selects the nearest unclaimed fault, uses nearby/beginJob on arrival, and otherwise follows the first BFS waypoint. Human movement uses stored intentions and cancels work when leaving range. The bot’s timed completion is an explicit shortcut for minigames, not a language model.",
+          "try": "Turn Ada off mid-task and ensure her ownership is released, then turn her back on and observe a real walk to a fault."
+        },
+        {
+          "at": "  if (s.time >= s.nextFault)",
+          "title": "Create pressure, end the shift and serialize a view",
+          "why": "This second phase check occurs after player work, so a newly won shift is not immediately subjected to another fault/deadline. nextFault advances on schedule, a fixed station becomes broken, and open faults drain morale by elapsed seconds. Time/morale can lose the shift. publicOffice adds the requesting player ID and copies player/job records into a response shape.",
+          "try": "Leave several faults unattended and compare morale drain with a nearly clean office. A won shift should stop accumulating new pressure."
+        }
+      ]
+    },
+    {
+      "file": "app.js",
+      "intro": "Connect every HTML control, puzzle panel, canvas layer and polling path to the shared office rules.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Declare the page and the available rule operations",
+          "why": "Imports enumerate the exact local rule functions that the host can invoke. The header/navigation provide solo, shift, AI and pause controls. The canvas size matches 24 by 16 tiles at 32 pixels. The task/result containers separate dynamic interaction from the map so a rendered sprite is not responsible for validating a fix.",
+          "try": "Find work/cancel controls in the page and later in command(). Trace one control from its ID to the rule call."
+        },
+        {
+          "at": "        <aside>",
+          "title": "Collect online details without replacing solo play",
+          "why": "The sidebar exposes name, room and server plus ticket/log outputs. It explains host ownership and AI behaviour. These are presentation promises implemented later, not a server hidden in the page. After markup, canvas context, held keys and fresh office state are created; the local human and Ada are added explicitly.",
+          "try": "Choose Solo practice without running Node. The page should still start a complete local shift."
+        },
+        {
+          "at": "  const player =",
+          "title": "Use one command interface for local and online rules",
+          "why": "request handles timeout, JSON and HTTP errors. command either posts an intention and adopts the returned server state or calls the corresponding shared function locally. The bot branch releases owned work before removing Ada. Clearing taskKey forces the task panel to reflect the new operation. This is where authority changes; rendering code does not need two implementations.",
+          "try": "Compare a local repair with an online repair. Both should reach jobStep, but only the online one goes through HTTP."
+        },
+        {
+          "at": "  $('solo').onclick",
+          "title": "Create sessions and keep shared pause honest",
+          "why": "Solo builds a fresh state and roster. Join adopts the server’s identity and room snapshot only after a successful response. Start and bot use command, while Pause freezes only the local shift. Clearing keys on a join/reset prevents old intent crossing into a new run. Error messages leave the page operable.",
+          "try": "Join two browsers and click Pause in one. It should explain that the shared shift continues rather than freezing the other player."
+        },
+        {
+          "at": "  function work()",
+          "title": "Find an eligible station and handle keyboard intent",
+          "why": "work chooses a nearby broken unowned station, then requests a claim. The key handler ignores text inputs, prevents page scrolling and treats E/X/Escape as one-shot actions. Key release/blur clears movement, and blur pauses solo only. Window listeners are paired with teardown at the end.",
+          "try": "Hold E and verify it does not repeatedly claim/complete a task. Move away from a claimed station and watch it become available again."
+        },
+        {
+          "at": "  function drawTask()",
+          "title": "Rebuild only when the task changes",
+          "why": "The task key combines identity/progress/puzzle/start time. If unchanged, the UI leaves buttons in place instead of recreating them every frame and losing focus. A small button factory sends step values. Wire labels show the ordered sequence, bug labels show actual faulty JavaScript, coffee adds a fill meter, and Cancel overrides the generic step callback with the cancel route.",
+          "try": "Click the first correct wire colour. The panel should advance to step two; the score should still be unchanged."
+        },
+        {
+          "at": "  function draw()",
+          "title": "Paint tiles and station status",
+          "why": "The entire canvas is repainted, then map characters choose floor/wall/desk layers. Multiplying tile indices by 32 is the only tile-to-screen conversion. Station markers read broken state for colour and use a sine ring as a visual alert. The ring does not define interaction distance; nearby in rules does.",
+          "try": "Change the alert ring radius visually. You should still need to stand within the same rule distance to press E."
+        },
+        {
+          "at": "    for (const p of s.players)",
+          "title": "Paint people and derive the HUD",
+          "why": "Avatars use tile positions converted to pixels, a small shadow, role-dependent clothing, a name and a work indicator. textAlign is restored for later drawing. HUD/result strings read team phase/score/morale/time. No score is awarded here, and a visual success message is not used as a rule condition.",
+          "try": "Inspect a client snapshot while another intern moves. The same player record should drive both its name and avatar position."
+        },
+        {
+          "at": "    const nextStatus =",
+          "title": "Update text only when needed and animate coffee from time",
+          "why": "Ticket/log text is cached to avoid unnecessary DOM replacement. drawTask decides whether puzzle controls need a rebuild. Coffee’s gradient uses the same elapsed-time formula as validation, while its green target region is fixed. This UI prediction makes the game readable, but the server still determines the result when the pour arrives.",
+          "try": "Pour just outside the green interval. The animated meter should not grant success merely because the button was clicked."
+        },
+        {
+          "at": "  function frame(now)",
+          "title": "Choose local simulation or online snapshots, then dispose",
+          "why": "The loop computes clamped seconds and a directional intention from the held-key Set. Solo assigns those axes and calls tickOffice; online sends input, then requests a snapshot, about ten times per second with a busy guard. It never also runs local authoritative rules online. draw remains common. The final getters support inspection; cleanup stops future frames, removes listeners and clears the mount root.",
+          "try": "Temporarily stop Node and observe the connection message. Rejoin after restarting it; do not expect memory-only rooms to survive a process restart."
+        }
+      ]
+    },
+    {
+      "file": "server.mjs",
+      "intro": "Implement the complete room API, host controls and stale-input safety.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Create a room and add its host",
+          "why": "The server factory accepts a root/clock/port for both direct use and tests. Join capacity is bounded globally and per room. A new room receives fresh office rules and Ada, then a unique human is added. The first human becomes host, and a session record owns activity/input/action timestamps. Returning publicOffice gives the client its own ID.",
+          "try": "Join the same room twice with different names. Both should see one room with one Ada, not one bot per browser."
+        },
+        {
+          "at": "    const id = method === 'GET'",
+          "title": "Resolve identity and accept only finite axes",
+          "why": "Subsequent requests locate the session and refresh its activity timestamp. State is read-only output. Input rejects non-number axes, clamps them to a valid range and records when they arrived. Positions are not accepted from the browser. The simulation will use these axes on the server’s tick.",
+          "try": "Inspect /api/input in the Network panel: it sends dx/dy, not a claimed x/y position or a claimed score."
+        },
+        {
+          "at": "    if (url.pathname === '/api/start')",
+          "title": "Authorize shared controls and route task intentions",
+          "why": "Only the host can restart or toggle AI. Removing Ada cancels her task before removing her record. A short action interval bounds repeated work/prank messages. Each endpoint calls the same rule function as solo, then returns a fresh room snapshot. Unknown routes are errors rather than silently succeeding.",
+          "try": "Try Start from the second human client. It should return a host-only error without resetting the running shift."
+        },
+        {
+          "at": "  const tick =",
+          "title": "Stop abandoned movement and release abandoned work",
+          "why": "Sessions expire after thirty seconds of silence; cleanup cancels owned work and can promote another host. Axes are zeroed much sooner after stale input, preventing walking forever after a lost connection. Empty rooms are deleted; each nonempty room advances once. The static-file allowlist and direct-entry guard finish a server that can also be imported by tests.",
+          "try": "Close a moving client. It should stop after input expiry, then disappear and release work after session expiry."
+        }
+      ]
+    },
+    {
+      "file": "server-kit.mjs",
+      "intro": "Read the entire package-free HTTP adapter shared by the game servers.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Create an HTTP response boundary",
+          "why": "The imported Node modules handle sockets, files and paths. serve receives game-specific api/tick callbacks and an explicit public-file map. json writes a content type and disables caching before serializing the result. The origin branch permits same-origin clients and local Nord previews, while rejecting unrelated remote origins. This is a trusted-room development policy, not an account system.",
+          "try": "Open the game through its Node server, then through Nord Play with the same Server address. Both supported origins should receive JSON."
+        },
+        {
+          "at": "    if (req.method === 'OPTIONS')",
+          "title": "Parse a bounded API message",
+          "why": "OPTIONS answers a browser preflight before gameplay. API POST bodies must declare JSON, remain under 2048 bytes and parse as an object. GET is allowed for snapshots. Returning early for invalid input prevents malformed messages from reaching game rules. api returns either plain data or a status/data result, which the adapter normalizes through json.",
+          "try": "Send an invalid action with the browser Network panel and inspect its HTTP status; distinguish transport validation from the game-specific unknown-action error."
+        },
+        {
+          "at": "      const name = files",
+          "title": "Serve only named public files and own the tick",
+          "why": "The file map resolves URL paths to known project files; arbitrary requested disk paths are not joined directly. MIME types tell the browser how to load modules/styles. A catch turns failures into a 500 response. setInterval calls game rules every 50ms, close clears it, and optional port null makes tests control listening. failure and roomCode centralize error shape and safe room naming.",
+          "try": "Request server.mjs in the browser URL. It should return Not found; the source is distributed through the archive rather than this static allowlist."
+        }
+      ]
+    },
+    {
+      "file": "index.html",
+      "intro": "Read the complete Nord page entry point and its failure path.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Load the local runtime and start the app",
+          "why": "The document declares encoding and viewport, creates the mount container and loads local code. The module imports mount from app.js and awaits initialization for the HTML-tier root. The ready/error flags are inspection signals used by browser checks; they are not a second simulation. The catch logs and exposes initialization errors. The page is served over HTTP so local module and asset URLs resolve consistently.",
+          "try": "Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name."
+        }
+      ]
+    },
+    {
+      "file": "nord.project.json",
+      "intro": "Read every project field that tells Nord which host, display and services to use.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Identify the project and choose its presentation",
+          "why": "format and engineVersion identify the serialized contract, while name/id give human and stable application identity. type chooses the host; startScene is used by a scene backend and is empty for these HTML apps. Display fields request dimensions, fit behaviour, pixel-art treatment and background. Physics selects a runtime engine; the rail shooter uses custom rules with none, while HTML-hosted libraries are initialized in their own modules.",
+          "try": "Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace."
+        },
+        {
+          "at": "  \"input\":",
+          "title": "Distinguish scene actions from HTML event handling",
+          "why": "The input object maps action names to keyboard codes for Nord scene scripts. Vector Patrol reads these through this.input. HTML-tier hosts in the other projects read their own DOM events, so editing this action table alone does not rewrite those handlers. plugins/ui declare ordinary scene services and skin/theme; any remaining desktop configuration is the native capability contract rather than a browser CORS override.",
+          "try": "For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input."
+        }
+      ]
+    },
+    {
+      "file": "style.css",
+      "intro": "Read every stylesheet rule, grouped by the UI responsibility it controls.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Set the app foundation and reusable visual language",
+          "why": "The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.",
+          "try": "Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change."
+        },
+        {
+          "at": ".layout {",
+          "title": "Place the map next to connection controls",
+          "why": "The desktop grid assigns the map flexible space and the sidebar a fixed readable column. Canvas scales responsively while retaining its simulation tile units. Buttons/inputs share typography and focusable native controls.",
+          "try": "Resize the window: the map may scale, but a worker should not gain a different walking speed."
+        },
+        {
+          "at": "#task {",
+          "title": "Style task feedback and a readable coffee target",
+          "why": "Pre-line preserves ticket/log line breaks. The task panel contains live buttons, coffee gets a visible bounded meter and the result has stronger colour/size. The narrow-screen rule stacks the sidebar. These are feedback styles, not the logic that awards a repair.",
+          "try": "Change the coffee border style only. Success must still be decided by the elapsed-time rule, not by CSS colour."
+        }
+      ]
+    }
+  ],
+  "paper-worlds": [
+    {
+      "file": "model.js",
+      "intro": "Build the entire serializable document and common painter before adding either view.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Initialize ten independent boards",
+          "why": "Page dimensions describe drawing coordinates. Array.from produces one board object per ID with a title selected by index. The first page gets text and a sticky, while other pages begin empty. Shape records carry kind, position, colour and text; they do not contain native Phaser/Babylon objects, which would not serialize cleanly.",
+          "try": "On a fresh save, change one title in this initializer. Existing saved data should still take precedence until you intentionally import/reset it."
+        },
+        {
+          "at": "              kind: 'rect'",
+          "title": "Seed a door and a graph as ordinary document records",
+          "why": "These are the remaining properties in the first-page shapes array. The rectangle uses text door as a convention interpreted later by world.js. The pen stores sampled pairs, which both the 2D painter and graph ride can consume. Finishing with an empty array for other boards avoids accidentally sharing the first page’s shapes.",
+          "try": "Add a pen point to the seed on a fresh copy and observe the same change in the drawing and graph path."
+        },
+        {
+          "at": "export function paint",
+          "title": "Paint the page and the first shape types",
+          "why": "paint clears its destination before drawing a paper background and dot grid. Every shape resets drawing style so previous colour/line settings do not leak. Pen points become a path; rect uses x/y/width/height and a door gets translucent fill. This painter works with either the Phaser canvas or a Babylon texture context.",
+          "try": "Disable background only in a temporary painter call and inspect transparency. The stored shapes must remain unchanged."
+        },
+        {
+          "at": "    if (s.kind === 'circle')",
+          "title": "Finish circles, sticky shadows and text",
+          "why": "A circle interprets w as radius and enforces a small minimum. Sticky shadows are reset immediately after drawing so later text does not inherit blur/offset. Text size depends on kind; splitting and limiting lines prevents a long note from flooding the page. None of these view choices changes the saved note body.",
+          "try": "Place text after a sticky. Its letters should be crisp instead of inheriting the sticky’s shadow."
+        },
+        {
+          "at": "export function validateBoards",
+          "title": "Treat imported data as a document boundary",
+          "why": "Validation limits numbers, allowed kinds, colour syntax, text length and point counts. Pen geometry requires finite coordinate pairs; other kinds require position and relevant dimensions. The outer check requires exactly ten titled boards with bounded shape arrays. This prevents malformed imports from reaching drawing methods that expect coordinates.",
+          "try": "Import a copy with a string where a coordinate should be. It should produce an error and leave the previous document usable."
+        },
+        {
+          "at": "export function portfolioHTML",
+          "title": "Embed text as inert JSON without changing it",
+          "why": "JSON.stringify preserves document structure. Escaping less-than characters prevents note text from closing a script data element. Using a replacement callback is equally important: dollar tokens in a replacement string have special meaning to String.replace, while a returned string is inserted literally. This preserves both markup-like text and prices containing dollar signs.",
+          "try": "Write a note containing <door> and $&. Export the desk and compare the embedded/restored board text with the original."
+        }
+      ]
+    },
+    {
+      "file": "flat.js",
+      "intro": "Build the complete Phaser drawing interaction and both Arcade minigames.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Own view-local state and a Phaser game",
+          "why": "getBoard supplies the currently selected document without freezing an old array reference. change reports committed edits. The view owns a canvas texture, camera pan/zoom, draft shape and temporary play bodies. Phaser AUTO selects its renderer; Arcade starts with zero global gravity because only bouncing balls need gravity. The fixed internal viewport is separate from the document page size.",
+          "try": "Switch board selection and verify the next stroke edits the new board, not the board that was selected when the view was created."
+        },
+        {
+          "at": "      create() {",
+          "title": "Create a texture and begin an input transaction",
+          "why": "The CanvasTexture is displayed at origin zero. Camera bounds allow a wide pannable workspace, and cursor keys serve the maze. Pointer down converts to world coordinates first. Hand mode records initial pan/screen values; text/sticky commit immediately; other tools begin a draft. A draft is not a saved stroke until pointer up.",
+          "try": "Zoom, place a sticky and compare its position after Fit page. It should stay at its document coordinates."
+        },
+        {
+          "at": "        this.input.on('pointermove'",
+          "title": "Keep drag geometry separate from committed shapes",
+          "why": "The draft stores initial coordinates and an initial pen point. The rectangle label is lowercased when interpreting door, so the convention does not depend on letter case. Pointer move computes either camera pan in inverse zoom units or shape geometry. Preview painting appends the draft to a temporary array; it does not keep pushing copies into the document.",
+          "try": "Drag slowly and inspect shape count before releasing. A long stroke should become one shape, not one saved shape per movement event."
+        },
+        {
+          "at": "        const end =",
+          "title": "Commit once and normalize rectangle directions",
+          "why": "Pointer up and leaving the game share one completion function. Rectangles dragged left/up get shifted origins and positive dimensions, so collision conversion later can use centres and sizes consistently. Only non-hand drafts enter the document. Clearing drag and repainting removes preview state. Wheel zoom is clamped and reapplied to the camera.",
+          "try": "Draw the same rectangle down-right and up-left. Both should later create usable maze walls."
+        },
+        {
+          "at": "      update() {",
+          "title": "Move a tiny player and translate coordinates correctly",
+          "why": "The maze update reads cursor directions, sets velocity and checks the lower-right goal. Reaching it dispatches a host event and destroys temporary play objects. point uses the camera’s world conversion then clamps to the printable page; applyCamera applies zoom and scroll; redraw repaints the current board and refreshes the GPU texture. These helpers centralize transforms and rendering.",
+          "try": "Pan away from the page, use Fit, then play a maze. Drawing and movement should still agree about page coordinates."
+        },
+        {
+          "at": "  function stopPlay()",
+          "title": "Destroy temporary objects before changing modes",
+          "why": "The player, balls and wall/goal objects belong only to a play session. stopPlay destroys them and clears arrays, leaving document shapes intact. play always calls it first, restores a useful camera framing and sets physics bounds to the entire page. This keeps a second play mode from inheriting the previous mode’s bodies.",
+          "try": "Start balls, then maze, then Stop. The saved circles/rectangles should remain while moving toys disappear."
+        },
+        {
+          "at": "    if (mode === 'balls')",
+          "title": "Turn each circle into a controlled Arcade toy",
+          "why": "Only circle records become dynamic circles. Radius is bounded for playable size, colour is converted from CSS hex to a Phaser number, and an Arcade body is attached. Bounce, world collision, initial velocity and per-body gravity describe the toy. Registering a collider lets the balls interact with one another; their physical positions are not written back into the document.",
+          "try": "Draw two circles close together and press Bounce circles. They should collide and move while your original saved circles stay unchanged."
+        },
+        {
+          "at": "    if (mode === 'maze')",
+          "title": "Turn rectangles into static walls and add a goal",
+          "why": "Door rectangles are excluded from walls. The visual rectangle is created from its centre and dimensions, then a static Arcade body is attached. The player gets a circular body/world bounds and a collider with walls. The teal goal is a visual target checked in update. All are registered for Stop cleanup.",
+          "try": "Draw walls with an open path to the lower-right; then temporarily close that path. The player should be blocked by actual colliders, not merely dark paint."
+        },
+        {
+          "at": "  await new Promise",
+          "title": "Expose a small view interface after readiness",
+          "why": "The host waits until Phaser has created the scene before manipulating the view. The returned interface exposes only the operations the host needs, plus the texture canvas for the 3D bridge. Changing tools stops play, Fit changes the camera, and dispose destroys both temporary bodies and the Phaser game. This is explicit ownership across an asynchronous framework startup.",
+          "try": "Reopen Play after using a minigame. There should be one Phaser canvas and a fresh usable input system."
+        }
+      ]
+    },
+    {
+      "file": "world.js",
+      "intro": "Build every 3D representation and interaction from the same saved boards.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Lay out ten textured papers",
+          "why": "createDesk returns the owned Babylon environment. Each board is painted with the common painter after scaling page coordinates to the texture size. Five columns/two rows place the papers; metadata stores the board ID for picking. Paper arrays retain texture and mesh handles for later refresh/focus. Texture content is derived from documents rather than separate 3D-only notes.",
+          "try": "Edit board zero, enter 3D and click its paper. The editor should return to the same board ID."
+        },
+        {
+          "at": "    for (const s of board.shapes.filter",
+          "title": "Translate sticky positions and construct a door",
+          "why": "Sticky X/Y fractions become offsets across that board’s 3D paper. The box helper adds a physical toy, and metadata marks it as flickable. A door-labelled rectangle causes three glowing frame bars to be built with next-board metadata. The rendered frame is an interpretation of the label, not a direct extrusion of every rectangle.",
+          "try": "Draw a normal rectangle and one labelled door. Only the labelled one should create a clickable 3D frame."
+        },
+        {
+          "at": "  scene.onPointerObservable.add",
+          "title": "Dispatch picks by metadata",
+          "why": "Only a completed pick event triggers actions. Sticky picks find their aggregate and apply an impulse at the mesh position. Door picks create a short flight record containing cloned camera targets and destination ID. Plain paper picks select the editor only when no transition/ride owns the camera. This avoids one click starting conflicting actions.",
+          "try": "Click a sticky and then an empty paper. The first should flick; the second should edit, without treating the desk itself as a board."
+        },
+        {
+          "at": "  d.update.add",
+          "title": "Animate camera ownership in seconds",
+          "why": "Door flight interpolates the orbit target over about one second and brings radius inward, then calls select. A graph ride uses a different camera and a sampled path index; it clamps the index so looking at the next point stays valid. At the end, it restores the orbit camera and disposes the temporary camera/tube. These are animations, not edits to board state.",
+          "try": "Ride the initial graph to its end. Orbit controls should be available again rather than leaving a hidden FreeCamera active."
+        },
+        {
+          "at": "  return {",
+          "title": "Refresh textures and scatter owned toys",
+          "why": "Spreading d returns the desk lifecycle along with papers/stickies. refresh clears and uploads the active Phaser canvas into one DynamicTexture; update makes the new pixels visible. shake applies different lateral/upward impulses to each physical note. Neither operation rewrites the saved shape array.",
+          "try": "Shake notes, return to 2D and compare text/positions. The original document should be intact even though physical poses were chaotic."
+        },
+        {
+          "at": "    ride(board) {",
+          "title": "Convert one stroke into a camera track",
+          "why": "The last pen stroke with enough points becomes the route. Subsampling limits geometric complexity, coordinate mapping turns page X/Y into track X/Y/Z, and Catmull–Rom creates a smooth sampled curve. A tube displays it. A FreeCamera takes over until the update callback completes the ride. focus is a separate orbit convenience for board selection.",
+          "try": "Draw a rising/falling graph and ride it. Changing the stroke’s vertical shape should alter camera height, while no rigid-body vehicle is implied."
+        }
+      ]
+    },
+    {
+      "file": "app.js",
+      "intro": "Build the entire document host: controls, document selection, async mode changes, persistence, exports and teardown.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Create identity and document actions",
+          "why": "The imports give the host document, views and download operations. The header contains mode/save/export controls and uses the supplied mascot sheet through CSS. These controls are separate from painting so the same document can be acted on in either view. mount owns only the supplied root.",
+          "try": "Change the subtitle and reopen Play. It should not affect saves or board identity."
+        },
+        {
+          "at": "      <section class=\"workbench\">",
+          "title": "Declare tools and editing values",
+          "why": "The sidebar exposes board selection, tool, colour and text. IDs are read later by tool(), so choosing a tool changes data passed into flat.setTool rather than mutating a Phaser object directly from markup. Undo/Fit operate on document or camera respectively; their similar UI placement does not mean they have the same state owner.",
+          "try": "Follow the color input ID to tool(). Verify the same colour reaches newly drawn shapes, not existing ones."
+        },
+        {
+          "at": "          <h3>Make it playful",
+          "title": "Declare play/backup controls and both surfaces",
+          "why": "Minigame, shake and ride controls are explicit mode requests. PNG/JSON/import expose recovery tools. The titlebar/badge communicates which representation is active, while only one of the two canvases is visible. The status paragraph is the common error/progress outlet. None of these buttons silently writes files to a disk path.",
+          "try": "Find the hidden world canvas and the flat container; switch modes and observe visibility changing for the same page."
+        },
+        {
+          "at": "  const $ =",
+          "title": "Choose document data before starting Phaser",
+          "why": "The host reads a versioned save, optionally reads embedded document JSON, validates it and falls back to newBoards. Active index, revision and saved counters are host state. createFlat receives a getter for the current board and a change callback that marks unsaved edits. A captured fixed board object here would break selection/import later.",
+          "try": "Import a valid JSON backup after editing another board. New strokes should use the imported board array."
+        },
+        {
+          "at": "  const options =",
+          "title": "Wire selections and serialize 3D transitions",
+          "why": "options rebuilds the selector and title from document data. tool reads current editing values, then Fit sets the opening camera. modeChange chains asynchronous mode requests so rapid clicks cannot create orphaned engines. changeMode creates/replaces the world, refreshes the active texture and pauses Phaser, or hides/stops 3D and resumes Phaser. Errors stay visible in status.",
+          "try": "Double-click Explore 3D quickly. You should end with one active desk, not multiple render loops."
+        },
+        {
+          "at": "  $('mode').onclick",
+          "title": "Separate document edits, camera changes and toy actions",
+          "why": "Board selection changes the getter target and redraws; Undo changes saved shapes/revision; Fit changes only the view. Ball/maze requests return to 2D; Stop removes temporary play state. Shake/ride await a 3D transition before using its world. Maze victory arrives as an event from flat rather than the host guessing coordinates again.",
+          "try": "Undo once after drawing, then use Fit. Only Undo should change shape count."
+        },
+        {
+          "at": "  function persist()",
+          "title": "Save revisions and export simple formats",
+          "why": "persist writes boards through Nord Save and acknowledges the exact revision only on success. The timer writes only changed documents. PNG reads the drawing canvas into a Blob, while JSON serializes editable records. Their outputs serve different purposes: an image is viewable, a JSON backup can be edited/imported. Storage failure explains the recovery path.",
+          "try": "Draw, wait for autosave and reload. Then compare a downloaded PNG with a JSON backup: only the JSON contains shape kinds and coordinates."
+        },
+        {
+          "at": "  $('import').onchange",
+          "title": "Validate imported files and export a portfolio template",
+          "why": "Import limits bytes, parses JSON, validates the full document, updates selection/revision, returns to 2D and persists. Export fetches the local template, calls the safe embedding helper and downloads a new HTML page. Missing template and storage errors are reported. The exported HTML still needs the accompanying local modules/vendor folder explained in the guide.",
+          "try": "Import malformed JSON and confirm the old document remains. Export a valid desk and inspect that it contains all ten boards, not just the active PNG."
+        },
+        {
+          "at": "  let pinch =",
+          "title": "Offer touch navigation and release the mounted app",
+          "why": "The initial two-touch distance becomes a comparison baseline; a sufficiently smaller distance requests the same mode function as the button. Passive listeners do not claim to implement every browser gesture. Inspection getters expose current state, and teardown cancels autosave, writes pending edits, disposes both view owners and clears the root.",
+          "try": "Use the button as the desktop fallback; on supported touch hardware, test the inward pinch. Close/reopen Play and ensure the previous autosave timer does not keep running."
+        }
+      ]
+    },
+    {
+      "file": "desk.js",
+      "intro": "Build the complete reusable Babylon/Havok desk and browser-download helper.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Share pending local script loads",
+          "why": "The Map caches the promise, not just the presence of a script tag. Rapid callers must all wait until the library is actually ready. onerror removes the failed element/cache entry so a later attempt can retry. This is important because both mode buttons and filter changes can request 3D before the first load finishes.",
+          "try": "Click the 3D mode button twice rapidly. There should be one ready view, not an undefined BABYLON error."
+        },
+        {
+          "at": "export async function createDesk",
+          "title": "Create one engine, scene and controllable camera",
+          "why": "createDesk loads the local Babylon file, owns an Engine for the supplied canvas and sets an opaque background. ArcRotateCamera uses alpha/beta/radius around a target; attachControl gives orbit/zoom input. Radius limits avoid entering the paper surface or losing the whole desk at extreme zoom. minZ controls near clipping.",
+          "try": "Compare orbit dragging with moving a paper: the camera changes the view without altering saved document coordinates."
+        },
+        {
+          "at": "  const fill =",
+          "title": "Light a surface and prepare shadow ownership",
+          "why": "The hemispheric light supplies broad fill; the directional light supplies a direction and shadow map. A restrained specular colour avoids a distracting glossy desk. A solid box, not a zero-thickness drawing, supplies the tabletop. Materials and meshes are scene-owned. The aggregates array will additionally own physics handles that need disposing.",
+          "try": "Change the directional light direction temporarily and observe where shadows fall, while paper text remains readable."
+        },
+        {
+          "at": "  if (physics) {",
+          "title": "Load the packaged physics binary",
+          "why": "The local Havok loader receives locateFile so its WASM resolves beside the supplied loader. enablePhysics connects it to this Babylon scene with a gravity vector in 3D units. The tabletop aggregate has mass zero, making it a fixed collider rather than another falling toy. Physics is an optional helper setting, not an editor tier switch.",
+          "try": "Temporarily set physics false at the helper call. Static papers should still render, but there will be no physical sticky/flick response."
+        },
+        {
+          "at": "  const paper =",
+          "title": "Create a writable texture rather than a screenshot file",
+          "why": "A double-sided plane is laid across the desk. DynamicTexture owns a canvas context that callers can paint, then upload with update. The emissive/unlit material preserves readable colour from either side; zero specular avoids highlights washing out text. The mesh still casts a shadow. The return object exposes mesh, texture and material for later drawing and picking.",
+          "try": "Draw a bold line in 2D and switch views. It should appear as actual texture content on the corresponding paper."
+        },
+        {
+          "at": "  const box =",
+          "title": "Create a visible rigid sticky toy",
+          "why": "A small box has physical thickness, a colour material and a shadow caster. A dynamic aggregate supplies mass, restitution and friction. Registering that aggregate gives one disposal owner. The returned mesh supports picking and position inspection; the returned aggregate supports impulses. These are different handles for appearance and physics.",
+          "try": "Increase restitution slightly and flick a sticky. It should bounce more without changing the original 2D note shape."
+        },
+        {
+          "at": "  const update =",
+          "title": "Own the render loop and resize lifecycle",
+          "why": "The update Set lets app-specific animations run before scene.render. Delta is converted to seconds and capped for those callbacks. A single resize listener updates the engine. setActive can stop/restart the stored render callback, and dispose releases listeners, aggregates, scene and engine. Replacing a view must call this owner, not merely hide its canvas.",
+          "try": "Switch back to 2D and observe that the old desk stops animating. Reopening 3D creates one fresh owner."
+        },
+        {
+          "at": "export function download",
+          "title": "Hand a browser a real downloadable object",
+          "why": "download accepts a Blob or creates one, creates a temporary object URL and triggers a named anchor download. Revoking shortly afterward releases the temporary URL without invalidating the click immediately. The browser still controls the save destination; this is not an arbitrary filesystem write.",
+          "try": "Download JSON and verify its suggested filename and contents. Cancel the save if you do not need another copy."
+        }
+      ]
+    },
+    {
+      "file": "save.js",
+      "intro": "Understand the complete existing Nord Save helper bundled with this app.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Namespace slots and read versioned data",
+          "why": "The prefix includes the app identity, and slotId chooses one save slot. A private key method keeps naming in one place. Reading returns an empty versioned envelope when missing or invalid, and an optional migration callback upgrades older data. This helper stores serializable values, not engine objects. MemoryStorage is available when no Storage implementation is supplied.",
+          "try": "Compare the Paper Worlds and RSS River storage prefixes in browser tools. Their saves should not overwrite each other."
+        },
+        {
+          "at": "  get(k, def)",
+          "title": "Read and write values, then define memory storage",
+          "why": "get supplies a caller default when a value is absent. set reads the envelope, replaces one key, records version/time and serializes through the Storage interface. all/has/delete expose slot operations. MemoryStorage implements the same getItem/setItem/removeItem contract using a Map, which is useful in tests but does not survive page reload. App callers still need to catch storage quota/permission failures on writes.",
+          "try": "Back up your document, reload the page and verify it returns. Then inspect how the app reports a failed write instead of assuming success."
+        }
+      ]
+    },
+    {
+      "file": "portfolio.html",
+      "intro": "Read the entire exported desk template that embeds your documents and opens directly in 3D.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Style a standalone viewing surface",
+          "why": "The page declares UTF-8, viewport and a full-window canvas. Its small header sits above the scene and contains an all-boards action. Styles belong to this standalone page rather than requiring the studio sidebar stylesheet. It is a viewer, so it does not create drawing tools or write the recipient’s saves.",
+          "try": "Open an exported desk from the served project folder and resize it. The canvas should fill the window and the header should remain reachable."
+        },
+        {
+          "at": "  <script id=\"desk-data\"",
+          "title": "Read embedded data and handle module failures",
+          "why": "The application/json element is a data container; portfolioHTML replaces its marker safely before download. The module imports the same world code as the editor, parses the embedded boards and focuses a clicked paper. View all restores an overview target/radius. A catch changes hint text if local resources are missing, giving a useful failure rather than a blank unexplained page.",
+          "try": "Move only the HTML away from its modules on a test copy. Observe the missing-resource failure, then restore the full exported folder."
+        }
+      ]
+    },
+    {
+      "file": "index.html",
+      "intro": "Read the complete Nord page entry point and its failure path.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Load the local runtime and start the app",
+          "why": "The document declares encoding and viewport, creates the mount container and loads local code. The module imports mount from app.js and awaits initialization for the HTML-tier root. The ready/error flags are inspection signals used by browser checks; they are not a second simulation. The catch logs and exposes initialization errors. The page is served over HTTP so local module and asset URLs resolve consistently.",
+          "try": "Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name."
+        }
+      ]
+    },
+    {
+      "file": "nord.project.json",
+      "intro": "Read every project field that tells Nord which host, display and services to use.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Identify the project and choose its presentation",
+          "why": "format and engineVersion identify the serialized contract, while name/id give human and stable application identity. type chooses the host; startScene is used by a scene backend and is empty for these HTML apps. Display fields request dimensions, fit behaviour, pixel-art treatment and background. Physics selects a runtime engine; the rail shooter uses custom rules with none, while HTML-hosted libraries are initialized in their own modules.",
+          "try": "Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace."
+        },
+        {
+          "at": "  \"input\":",
+          "title": "Distinguish scene actions from HTML event handling",
+          "why": "The input object maps action names to keyboard codes for Nord scene scripts. Vector Patrol reads these through this.input. HTML-tier hosts in the other projects read their own DOM events, so editing this action table alone does not rewrite those handlers. plugins/ui declare ordinary scene services and skin/theme; any remaining desktop configuration is the native capability contract rather than a browser CORS override.",
+          "try": "For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input."
+        }
+      ]
+    },
+    {
+      "file": "style.css",
+      "intro": "Read every stylesheet rule, grouped by the UI responsibility it controls.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Set the app foundation and reusable visual language",
+          "why": "The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.",
+          "try": "Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change."
+        },
+        {
+          "at": ".mascot {",
+          "title": "Use the supplied sheet and style controls",
+          "why": "The mascot uses one region of the packaged four-by-two sheet through background size/position. Shared button/input/select/textarea rules keep the studio coherent; labels explain each input and textarea sizing gives notes usable space. Changing sprite position selects a different artwork cell without loading an external image.",
+          "try": "Temporarily change the sprite background position to another cell, then restore the ghost."
+        },
+        {
+          "at": ".workbench {",
+          "title": "Create a studio layout without changing document coordinates",
+          "why": "The grid assigns sidebar width and flexible workspace. Panels, rules, headings and titlebar communicate editing versus viewing roles. Styling never changes WIDTH/HEIGHT in model.js: browser layout and drawing coordinate systems remain separate.",
+          "try": "Change sidebar width slightly and verify a saved stroke stays at its document position."
+        },
+        {
+          "at": "#flat,",
+          "title": "Size surfaces, honor hidden state and adapt",
+          "why": "Both view surfaces share a display area; the inner Phaser canvas scales within it and the 3D canvas disables conflicting browser touch gestures. Status/footer remain legible. The explicit hidden rule wins over display declarations, and the media query reduces sidebar/padding for smaller screens.",
+          "try": "Switch 2D/3D and verify the inactive surface truly disappears, rather than occupying another blank 640-pixel region."
+        }
+      ]
+    }
+  ],
+  "rss-river": [
+    {
+      "file": "feeds.js",
+      "intro": "Build all feed configuration, parsing, safe-link and cache-merge logic.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Give subscriptions stable identities",
+          "why": "Each feed has an app ID, display name, endpoint and topic. IDs are used for filtering and article namespacing; labels can change without losing identity. The three sources are defaults, not automatic requests or a bundled current-news database. Fetch is a separate user action so startup can remain offline.",
+          "try": "Change a source name without changing its ID. Existing cached items should still belong to that source."
+        },
+        {
+          "at": "export function safeLink",
+          "title": "Normalize links before creating anchors",
+          "why": "URL resolves relative links against a feed’s address and lets the helper inspect the protocol. Only HTTP/HTTPS survive; malformed input becomes an empty link instead of throwing through the reader. parseFeed then bounds input size and checks XML parser errors and item/entry presence. A successful HTTP response is not enough to prove its body is a feed.",
+          "try": "Import an HTML error page renamed .xml. It should be rejected rather than shown as fake articles."
+        },
+        {
+          "at": "  const plain =",
+          "title": "Extract inert text and choose a usable link",
+          "why": "The helper parses description markup in an inert document, removes active container elements, then reads normalized textContent. Entry iteration is capped. RSS text links and Atom href links have different forms, so linkNode selects an alternate/default link before safeLink resolves it. Title length is bounded. No publisher HTML is inserted into app controls.",
+          "try": "Import a description containing bold markup and a script tag. The reader should show text without executing the script or creating a live script element."
+        },
+        {
+          "at": "    const raw =",
+          "title": "Choose stable keys and a single article schema",
+          "why": "The GUID/Atom ID is preferred, then a resolved link, then a title/index fallback. Prefixing with feed.id prevents collisions across sources. All entries become the same fields for title, summary, date, read and star; the UI does not need separate RSS and Atom rendering paths. Summary limits keep the cache practical and the original URL preserves access to the full publisher article.",
+          "try": "Import one RSS item and one Atom entry. Verify both produce a usable title, plain summary and Read original link."
+        },
+        {
+          "at": "export function mergeArticles",
+          "title": "Preserve reading choices while refreshing content",
+          "why": "A Map indexes old records by stable ID. Each incoming record replaces content but retains previous read/star flags. New IDs become new entries. Converting back to an array and taking the last 240 bounds the small library. This is a deliberate personal cache, not a permanent archive with unlimited history.",
+          "try": "Star a demo entry, load the demo again, then reload the page. Its star should survive both merging and persistence."
+        }
+      ]
+    },
+    {
+      "file": "app.js",
+      "intro": "Build the complete reader host, filters, both fetch paths, river lifetime and import/backup flow.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Create the reading room header and source controls",
+          "why": "The imports select one schema/merge path, one 3D view owner and existing save/download helpers. Header controls make refresh, native fetch, 3D and backup explicit actions. The sidebar source selector and filters determine a view of cached data, not separate databases. This keeps search usable without networking.",
+          "try": "Disconnect networking and type in Search after loading the demo. Filtering cached content should still work."
+        },
+        {
+          "at": "        <div class=\"content\">",
+          "title": "Provide separate list, river and reading surfaces",
+          "why": "The list and river occupy one content area while the article pane remains readable alongside it. Status can report fetch failures without deleting current content. After markup, the host reads saved subscriptions/articles and keeps selected ID and river lifetime separately. Invalid top-level storage values fall back to defaults.",
+          "try": "Switch list/river and confirm the reading pane does not become a different copy of the article state."
+        },
+        {
+          "at": "  const say =",
+          "title": "Persist carefully and create filter options",
+          "why": "Persistence writes subscriptions and articles through Nord Save and reports quota errors. feedOptions rebuilds option elements with textContent and preserves a still-valid selection. visible applies source/unread/star/search predicates, then reverses a copy rather than mutating the stored order. Filters compose, so a starred item from another source can still be hidden by source choice.",
+          "try": "Enable Starred only with no stars. You should see an empty state, not a broken render or an automatic network refresh."
+        },
+        {
+          "at": "  function read(id)",
+          "title": "Open one article without trusting its markup",
+          "why": "read finds by ID, marks read and persists. It builds source/title/date/summary nodes using textContent, then wires Star and Flick. Star changes the shared record and may rebuild the river; Flick is temporary visual physics. safeLink controls whether an original anchor is created; noopener/noreferrer isolates the new tab. The final render updates list read styling.",
+          "try": "Click a story, star it, then search for it. Its title and state should agree between the article pane and list."
+        },
+        {
+          "at": "  function renderList()",
+          "title": "Rebuild an understandable list from filtered records",
+          "why": "Each button gets source, title and a bounded summary preview. Classes express read/selected state without changing article content. Empty state tells users how to obtain data. Cached/unread/star counts summarize the whole library, while the heading counts the current filtered list. These are derived values, not counters incremented independently.",
+          "try": "Mark visible read with a source selected. Other-source unread counts should remain until you read them."
+        },
+        {
+          "at": "  let riverVersion =",
+          "title": "Discard superseded asynchronous scenes",
+          "why": "A version number identifies the newest river request. createRiver can await libraries/physics; if a later filter/mode request wins, this finished scene is disposed instead of taking over the UI. The previous visible river is released only when a current replacement is ready. Mode changes and filters reuse this lifecycle; hiding the river invalidates pending requests.",
+          "try": "Double-click 3D or change filters rapidly. You should end with the latest view and one live Babylon engine."
+        },
+        {
+          "at": "  async function refresh",
+          "title": "Fetch intentionally through browser or Nord host",
+          "why": "Refresh disables the main button and gathers partial failures. The optional bridge is imported only for the native action. Each non-demo source is fetched with an HTTP status check; browser fetch has a timeout and remains subject to CORS, while Nord host fetch goes through declared capabilities. Parsed entries merge into the cache, then the UI is saved/rebuilt. One failed source does not erase successful source results.",
+          "try": "Refresh while one endpoint is unavailable. Read cached articles afterward and inspect the per-source error text."
+        },
+        {
+          "at": "  $('refresh').onclick",
+          "title": "Wire batch actions and add subscriptions as data",
+          "why": "The two refresh buttons choose transport explicitly. Mark visible read acts on the current filter. Adding a URL normalizes it, rejects duplicates, creates an identity/name and persists it. Adding a source does not silently grant native host permission, which is why the status explains the manifest requirement.",
+          "try": "Add the same endpoint twice. The second attempt should report Already subscribed rather than create duplicate source options."
+        },
+        {
+          "at": "  async function demo()",
+          "title": "Use a real local feed fixture and restore backups",
+          "why": "demo loads packaged XML through the same parser/merge path as live feeds and clearly names its source as local demo. Import distinguishes a full JSON backup from XML, limits file size, checks required collection/item shapes and rebuilds options/list after success. Imported XML becomes its own named source. Errors go to status.",
+          "try": "Back up, import that JSON, then import a small XML feed. Verify the first restores state while the second adds a source."
+        },
+        {
+          "at": "  $('backup').onclick",
+          "title": "Finish startup and release a replaced view",
+          "why": "Backup serializes both subscriptions and article flags. Initial render happens before the demo fallback, and only an empty cache loads that local fixture. The inspection interface exposes current arrays/view for checks. Teardown marks the host inactive so a pending river request cannot attach later, disposes the view and clears the root.",
+          "try": "Reload after starring an item. Existing cached data should appear without re-fetching news or replacing it with the demo."
+        }
+      ]
+    },
+    {
+      "file": "river.js",
+      "intro": "Follow every texture, pick, movement, physics and cleanup operation in the 3D reader.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Wrap text into bounded canvas lines",
+          "why": "The view owns a desk and lists of papers/physics bodies. wrapText measures prospective words against available width, paints a line when full and stops at a maximum line count. Line height determines baseline spacing. It works with system fonts and plain strings, avoiding remote page screenshots and publisher images.",
+          "try": "Use a long title in a demo copy. It should wrap into bounded lines rather than painting across neighbouring paper edges."
+        },
+        {
+          "at": "  articles.slice",
+          "title": "Paint each article and encode importance spatially",
+          "why": "Only eighteen visible entries become papers. A star changes width/height, tint and later elevation. The painter reserves separate areas for source, title, summary and status with appropriate fonts/line limits. Metadata stores article ID for the host callback; grid placement prevents opening all papers at the same location. These are views of shared records, not a second article store.",
+          "try": "Star one story and reopen the river. Its paper should be larger/higher, and clicking it should open that same article ID."
+        },
+        {
+          "at": "  scene.onPointerObservable.add",
+          "title": "Route picks and animate only floating papers",
+          "why": "A completed pick reads article metadata and calls the same host read function used by list buttons. The update callback moves floating papers slowly, wraps travel at the far edge and uses small sine motions. dropped excludes bodies now owned by physics so animation and Havok do not fight over position.",
+          "try": "Read one paper from the river, then flick it. Its original read flag remains even after its visual motion changes."
+        },
+        {
+          "at": "  return {",
+          "title": "Hand one paper over to a rigid body",
+          "why": "flick ignores missing/already-dropped records, then makes a thin box of matching dimensions. The collider is invisible and receives the old world position; parenting the visual and zeroing its local position preserves appearance. The aggregate adds mass/contact properties, an impulse starts motion, and disposal later releases these aggregates before the desk owner.",
+          "try": "Press Flick twice on the same story. The second click should not create another body or duplicate the paper."
+        }
+      ]
+    },
+    {
+      "file": "desk.js",
+      "intro": "Build the complete reusable Babylon/Havok desk and browser-download helper.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Share pending local script loads",
+          "why": "The Map caches the promise, not just the presence of a script tag. Rapid callers must all wait until the library is actually ready. onerror removes the failed element/cache entry so a later attempt can retry. This is important because both mode buttons and filter changes can request 3D before the first load finishes.",
+          "try": "Click the 3D mode button twice rapidly. There should be one ready view, not an undefined BABYLON error."
+        },
+        {
+          "at": "export async function createDesk",
+          "title": "Create one engine, scene and controllable camera",
+          "why": "createDesk loads the local Babylon file, owns an Engine for the supplied canvas and sets an opaque background. ArcRotateCamera uses alpha/beta/radius around a target; attachControl gives orbit/zoom input. Radius limits avoid entering the paper surface or losing the whole desk at extreme zoom. minZ controls near clipping.",
+          "try": "Compare orbit dragging with moving a paper: the camera changes the view without altering saved document coordinates."
+        },
+        {
+          "at": "  const fill =",
+          "title": "Light a surface and prepare shadow ownership",
+          "why": "The hemispheric light supplies broad fill; the directional light supplies a direction and shadow map. A restrained specular colour avoids a distracting glossy desk. A solid box, not a zero-thickness drawing, supplies the tabletop. Materials and meshes are scene-owned. The aggregates array will additionally own physics handles that need disposing.",
+          "try": "Change the directional light direction temporarily and observe where shadows fall, while paper text remains readable."
+        },
+        {
+          "at": "  if (physics) {",
+          "title": "Load the packaged physics binary",
+          "why": "The local Havok loader receives locateFile so its WASM resolves beside the supplied loader. enablePhysics connects it to this Babylon scene with a gravity vector in 3D units. The tabletop aggregate has mass zero, making it a fixed collider rather than another falling toy. Physics is an optional helper setting, not an editor tier switch.",
+          "try": "Temporarily set physics false at the helper call. Static papers should still render, but there will be no physical sticky/flick response."
+        },
+        {
+          "at": "  const paper =",
+          "title": "Create a writable texture rather than a screenshot file",
+          "why": "A double-sided plane is laid across the desk. DynamicTexture owns a canvas context that callers can paint, then upload with update. The emissive/unlit material preserves readable colour from either side; zero specular avoids highlights washing out text. The mesh still casts a shadow. The return object exposes mesh, texture and material for later drawing and picking.",
+          "try": "Draw a bold line in 2D and switch views. It should appear as actual texture content on the corresponding paper."
+        },
+        {
+          "at": "  const box =",
+          "title": "Create a visible rigid sticky toy",
+          "why": "A small box has physical thickness, a colour material and a shadow caster. A dynamic aggregate supplies mass, restitution and friction. Registering that aggregate gives one disposal owner. The returned mesh supports picking and position inspection; the returned aggregate supports impulses. These are different handles for appearance and physics.",
+          "try": "Increase restitution slightly and flick a sticky. It should bounce more without changing the original 2D note shape."
+        },
+        {
+          "at": "  const update =",
+          "title": "Own the render loop and resize lifecycle",
+          "why": "The update Set lets app-specific animations run before scene.render. Delta is converted to seconds and capped for those callbacks. A single resize listener updates the engine. setActive can stop/restart the stored render callback, and dispose releases listeners, aggregates, scene and engine. Replacing a view must call this owner, not merely hide its canvas.",
+          "try": "Switch back to 2D and observe that the old desk stops animating. Reopening 3D creates one fresh owner."
+        },
+        {
+          "at": "export function download",
+          "title": "Hand a browser a real downloadable object",
+          "why": "download accepts a Blob or creates one, creates a temporary object URL and triggers a named anchor download. Revoking shortly afterward releases the temporary URL without invalidating the click immediately. The browser still controls the save destination; this is not an arbitrary filesystem write.",
+          "try": "Download JSON and verify its suggested filename and contents. Cancel the save if you do not need another copy."
+        }
+      ]
+    },
+    {
+      "file": "save.js",
+      "intro": "Understand the complete existing Nord Save helper bundled with this app.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Namespace slots and read versioned data",
+          "why": "The prefix includes the app identity, and slotId chooses one save slot. A private key method keeps naming in one place. Reading returns an empty versioned envelope when missing or invalid, and an optional migration callback upgrades older data. This helper stores serializable values, not engine objects. MemoryStorage is available when no Storage implementation is supplied.",
+          "try": "Compare the Paper Worlds and RSS River storage prefixes in browser tools. Their saves should not overwrite each other."
+        },
+        {
+          "at": "  get(k, def)",
+          "title": "Read and write values, then define memory storage",
+          "why": "get supplies a caller default when a value is absent. set reads the envelope, replaces one key, records version/time and serializes through the Storage interface. all/has/delete expose slot operations. MemoryStorage implements the same getItem/setItem/removeItem contract using a Map, which is useful in tests but does not survive page reload. App callers still need to catch storage quota/permission failures on writes.",
+          "try": "Back up your document, reload the page and verify it returns. Then inspect how the app reports a failed write instead of assuming success."
+        }
+      ]
+    },
+    {
+      "file": "demo.xml",
+      "intro": "Read the complete original local RSS fixture; it is also an example of the input format.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Recognize an RSS channel and stable item IDs",
+          "why": "The XML declaration describes encoding; rss/channel wraps title, link and description for the source. Every item has a guid, title, original link and description. The stories are explicitly original tutorial demonstrations, not scraped current reporting. Stable GUIDs let reload merge a revised demo item without losing its star/read choices.",
+          "try": "Add a ninth item with a new GUID and load the demo again. Existing stars should remain and one new story should appear."
+        }
+      ]
+    },
+    {
+      "file": ".offline-allow",
+      "intro": "Read the entire explicit feed-host allowlist.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Distinguish intentional news endpoints from library dependencies",
+          "why": "These three hostnames declare the app’s deliberate external feed data to Nord’s static URL checker. They do not make browser CORS disappear and do not grant native HTTP capabilities; those are separate boundaries. Babylon, Havok and artwork still load from the project. A new default feed needs an intentional update here and in the appropriate permission configuration.",
+          "try": "Add a custom source through the UI and compare the stored subscription with this file. They have different responsibilities."
+        }
+      ]
+    },
+    {
+      "file": "index.html",
+      "intro": "Read the complete Nord page entry point and its failure path.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Load the local runtime and start the app",
+          "why": "The document declares encoding and viewport, creates the mount container and loads local code. The module imports mount from app.js and awaits initialization for the HTML-tier root. The ready/error flags are inspection signals used by browser checks; they are not a second simulation. The catch logs and exposes initialization errors. The page is served over HTTP so local module and asset URLs resolve consistently.",
+          "try": "Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name."
+        }
+      ]
+    },
+    {
+      "file": "nord.project.json",
+      "intro": "Read every project field that tells Nord which host, display and services to use.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Identify the project and choose its presentation",
+          "why": "format and engineVersion identify the serialized contract, while name/id give human and stable application identity. type chooses the host; startScene is used by a scene backend and is empty for these HTML apps. Display fields request dimensions, fit behaviour, pixel-art treatment and background. Physics selects a runtime engine; the rail shooter uses custom rules with none, while HTML-hosted libraries are initialized in their own modules.",
+          "try": "Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace."
+        },
+        {
+          "at": "  \"input\":",
+          "title": "Distinguish scene actions from HTML event handling",
+          "why": "The input object maps action names to keyboard codes for Nord scene scripts. Vector Patrol reads these through this.input. HTML-tier hosts in the other projects read their own DOM events, so editing this action table alone does not rewrite those handlers. plugins/ui declare ordinary scene services and skin/theme; any remaining desktop configuration is the native capability contract rather than a browser CORS override.",
+          "try": "For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input."
+        }
+      ]
+    },
+    {
+      "file": "style.css",
+      "intro": "Read every stylesheet rule, grouped by the UI responsibility it controls.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Set the app foundation and reusable visual language",
+          "why": "The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.",
+          "try": "Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change."
+        },
+        {
+          "at": ".layout {",
+          "title": "Arrange source, list and reading columns",
+          "why": "The three-column layout gives navigation, a flexible current and a readable article width. Sidebar controls/filter labels and status/count styling distinguish actions from information. Native inputs remain usable; this app does not paint its text fields into 3D.",
+          "try": "Narrow the window and observe which areas move before changing any article data."
+        },
+        {
+          "at": "#list {",
+          "title": "Give list entries useful reading states",
+          "why": "The bounded list scrolls independently. Each story is a full-width button with source, title and excerpt typography. read reduces emphasis while selected restores a clear active border. These classes are a visual projection of article flags, not storage themselves.",
+          "try": "Read a story and then select another. The first should remain read while the selected border moves."
+        },
+        {
+          "at": "#reader {",
+          "title": "Make article text calm and readable",
+          "why": "The article pane uses a light paper surface, comfortable line height and a serif title. Source/date/link/button rules retain clear hierarchy. The river canvas has its own bounded area and touch handling so it can be optional. No publisher stylesheet is imported.",
+          "try": "Open a long summary and inspect line length. The pane should remain useful even when the 3D river is hidden."
+        },
+        {
+          "at": "@media (max-width: 1050px)",
+          "title": "Adapt columns at two viewport widths",
+          "why": "The first breakpoint reduces to two columns and places the article below content; the smaller breakpoint stacks the page. The hidden rule ensures list/river mode switching continues to work at either width. Responsive CSS changes presentation, not the subscription cache.",
+          "try": "Try both breakpoints, then restore a wide window. Your active story and reading flags should still be present."
+        }
+      ]
+    },
+    {
+      "file": "nord-desktop.js",
+      "intro": "Read the complete bundled Nord bridge used by the optional host-fetch button.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Normalize errors and choose request transports",
+          "why": "The bridge exposes Promise-based operations with stable error codes. Binary helpers convert bytes to/from base64 for transport. IPC assigns request IDs and resolves pending promises when the native host replies; HTTP wraps the same method/params request shape through the local desktop endpoint. RSS River consumes http.fetch but the bridge is shared with other Nord apps.",
+          "try": "Find where RSS River calls desktop.http.fetch and where this module converts that call into a method/params request."
+        },
+        {
+          "at": "function webTransport",
+          "title": "Build bounded browser fallbacks",
+          "why": "Browser storage is namespaced per app, with an in-memory fallback when localStorage cannot be used. Path normalization rejects external/parent paths for the emulated app-data filesystem. Helpers encode binary files, provide file pickers and snapshot watches. These are browser equivalents of selected desktop features, not unrestricted access to your disk.",
+          "try": "Run a static browser export and inspect desktop.transport after readiness: it should choose web rather than claim a native host exists."
+        },
+        {
+          "at": "  const m = {",
+          "title": "Map supported browser operations explicitly",
+          "why": "The dispatch table implements app info, local store, virtual files, dialogs, notifications and clipboard using browser APIs and permissions. Files are stored as encoded content; list/stat/watch operate on that virtual namespace. Unsupported methods are rejected after lookup. In particular, this fallback does not grant a browser a universal CORS-bypassing HTTP client.",
+          "try": "Use Refresh feeds in a plain browser. A blocked publisher still needs XML import or a genuine Nord host, not this fallback."
+        },
+        {
+          "at": "const handlers =",
+          "title": "Deliver events and await transport readiness",
+          "why": "The event Map keeps listener sets, and polling relays host events on the HTTP transport. create chooses native IPC when appropriate, otherwise probes the local host and falls back to web. The internal c function awaits readiness before dispatch, preventing an early click from calling an unselected transport. sub reduces repeated wrapper construction while preserving method names.",
+          "try": "Call a bridge method just after app startup. It should wait for ready rather than failing because call is still null."
+        },
+        {
+          "at": "    fs: {",
+          "title": "Expose capability-shaped wrappers and the shared instance",
+          "why": "The public object groups file/dialog/notification/clipboard/store/process/network/window/menu operations. Wrappers marshal arguments; real native permissions are enforced by the host. watch returns an unwatch function, and on/off manage callback lifetime. Drag/drop becomes an event. The module finally exports one app-identified instance and exposes it on window.nord.desktop. These APIs do not mean RSS River requests every capability.",
+          "try": "Compare this API surface with nord.project.json permissions. The reader only declares the feed hosts it needs, not every bridge feature."
+        }
+      ]
+    }
+  ]
+}

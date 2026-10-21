@@ -12,6 +12,7 @@
 <p>Build an original cooperative chaos game set inside the Nord Engine office. Walk around desks, repair wiring, diagnose actual JavaScript mistakes, time the coffee machine, and ship twelve fixes before the shift ends. Browser friends can help as interns or introduce new bugs. A pathfinding AI coworker can fill an empty seat.</p>
 <p><strong>Download:</strong> <a href="../../assets/downloads/nord-office-source.zip">Complete Nord Engine Office game and source</a>. Unzip into a writable folder, open <code>nord.project.json</code> in Nord and press <strong>Play</strong>. The project uses Nord&#39;s <strong>HTML tier</strong>, a canvas view and ordinary JavaScript modules. Solo practice runs entirely in the browser. The included Node server adds shared rooms for up to six human players. No API key, npm install or external art is needed.</p>
 <p><img src="../../assets/screenshots/ed-office-task.png" alt="Office game with a JavaScript repair task"></p>
+<p><strong>Full-code learning route:</strong> After the orientation below, continue to <a href="#file-walkthrough">the complete file-by-file walkthrough</a>. It teaches every main project file in consecutive sections, with the actual code, an explanation of what and why, and a change to try. The expandable complete files at the end are a reference, not the lesson.</p>
 <h2 id="1-play-one-shift-before-editing">1. Play one shift before editing<a class="anchor" href="#1-play-one-shift-before-editing">#</a></h2>
 <p>Click <strong>Start / Restart shift</strong>. Use WASD or arrows to walk. Red stations need work; green stations are fixed. Press E near an unclaimed red station to open its task. Escape or Cancel releases it. Walking too far away also cancels work, so you cannot repair a rack from across the room.</p>
 <p>There are three minigames:</p>
@@ -121,10 +122,1262 @@ if (waypoint) movePlayer(ai, waypoint[0] - ai.x, waypoint[1] - ai.y, dt);</code>
 <p>Test movement against desks and walls, near/far interactions, wrong and correct puzzle answers, coffee timing, task cancellation, prank cooldown, AI routing, morale loss, victory and restart. In two browsers verify that both see movement, ownership, score and the same result. Stop Node to test connection-error messages, then restart it and rejoin. The repository browser tests cover real keyboard movement, task clicks, pranks, AI completion and two-client snapshots; rule tests cover both win and loss and HTTP host restrictions.</p>
 <p>Export the client using Nord&#39;s HTML target and serve it over HTTP. Solo practice remains entirely local and offline. Keep the downloaded <code>server.mjs</code>, <code>server-kit.mjs</code>, <code>rules.js</code>, <code>index.html</code>, <code>app.js</code> and <code>style.css</code> together to host multiplayer. The server serves its own client files; it is a separate running process from the static export.</p>
 <p>A useful next feature is interpolation between snapshots. Keep the last two server positions in a view-only structure and blend their screen coordinates; leave collisions and task distance authoritative. Another is adding a fourth puzzle type: define its state in <code>rules.js</code>, add its DOM controls in <code>app.js</code>, and test success, failure and cancellation before increasing the number of stations.</p>
-<h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
+<!-- GENERATED FILE WALKTHROUGH --><h2 id="file-walkthrough">Walk through every project file<a class="anchor" href="#file-walkthrough">#</a></h2>
+<p>Work through these files in order using your downloaded project in Nord. Each numbered part shows the <strong>next consecutive lines</strong> of that file, not a selection of highlights. Read the explanation before changing anything. Edit the existing code in place; do not append another copy of a function. Finish one experiment, observe its result, and undo that change before moving on. The complete files and download at the end remain your reference.</p>
+<p>The walkthrough covers the app/game modules, shared helpers used by them, page, styles and project configuration. Binary art/audio/models and minified vendor dependencies are resources rather than lessons in their internal implementation; their paths and contracts are explained where the app uses them.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What you will build or understand</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="#walk-rules-js">rules.js</a></td>
+<td>Build all office rules: map, players, movement, tasks, pranks, pathfinding and shift results.</td>
+</tr>
+<tr>
+<td><a href="#walk-app-js">app.js</a></td>
+<td>Connect every HTML control, puzzle panel, canvas layer and polling path to the shared office rules.</td>
+</tr>
+<tr>
+<td><a href="#walk-server-mjs">server.mjs</a></td>
+<td>Implement the complete room API, host controls and stale-input safety.</td>
+</tr>
+<tr>
+<td><a href="#walk-server-kit-mjs">server-kit.mjs</a></td>
+<td>Read the entire package-free HTTP adapter shared by the game servers.</td>
+</tr>
+<tr>
+<td><a href="#walk-index-html">index.html</a></td>
+<td>Read the complete Nord page entry point and its failure path.</td>
+</tr>
+<tr>
+<td><a href="#walk-nord-project-json">nord.project.json</a></td>
+<td>Read every project field that tells Nord which host, display and services to use.</td>
+</tr>
+<tr>
+<td><a href="#walk-style-css">style.css</a></td>
+<td>Read every stylesheet rule, grouped by the UI responsibility it controls.</td>
+</tr>
+</tbody></table>
+<h3 id="walk-rules-js">1. rules.js<a class="anchor" href="#walk-rules-js">#</a></h3>
+<p>Build all office rules: map, players, movement, tasks, pranks, pathfinding and shift results.</p>
+<h4 id="1-1-use-readable-map-and-station-data">1.1 — Use readable map and station data<a class="anchor" href="#1-1-use-readable-map-and-station-data">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 1–43.</p>
+<!-- taught-source: nord-office/rules.js:1-43 --><pre class="code" data-lang="js"><code>// Shared simulation: Node advances online rooms; the browser advances solo practice.
+export const MAP = [
+  '########################',
+  '#......................#',
+  '#..DD....DD....DD......#',
+  '#..DD....DD....DD......#',
+  '#......................#',
+  '#......................#',
+  '#..W......B......C.....#',
+  '#......................#',
+  '#......................#',
+  '#..DD....DD....DD......#',
+  '#..DD....DD....DD......#',
+  '#......................#',
+  '#.....T........E.......#',
+  '#......................#',
+  '#......................#',
+  '########################',
+];
+export const JOBS = [
+  { name: 'Rewire build rack', x: 3, y: 6, kind: 'wire' },
+  { name: 'Fix viewport bug', x: 10, y: 6, kind: 'bug' },
+  { name: 'Brew emergency coffee', x: 17, y: 6, kind: 'coffee' },
+  { name: 'Repair failing tests', x: 6, y: 12, kind: 'bug' },
+  { name: 'Patch HTML exporter', x: 15, y: 12, kind: 'wire' },
+];
+export const PUZZLES = [
+  {
+    log: 'for (let i=0; i&lt;=rows.length; i++) draw(rows[i]);',
+    choices: ['Change &lt;= to &lt;', 'Delete draw', 'Set i to -1'],
+    answer: 0,
+  },
+  {
+    log: 'if (health = 0) gameOver();',
+    choices: ['Set health to 100', 'Use health === 0', 'Remove gameOver'],
+    answer: 1,
+  },
+  {
+    log: 'const dt = milliseconds; x += speed * dt;',
+    choices: ['Double speed', 'Multiply dt by 1000', 'Divide dt by 1000'],
+    answer: 2,
+  },
+];</code></pre>
+<p><strong>What and why:</strong> Each map string is one row; matching widths keep indexing predictable. Walls/desks are collision tiles, while JOBS supplies the station name, location and puzzle kind. PUZZLES stores a visible faulty JavaScript line, answer choices and the expected index. The three mistakes are off-by-one iteration, assignment versus equality and milliseconds versus seconds. These are data interpreted by rules/UI, not executable snippets from a remote player.</p>
+<p><strong>Try it / expected result:</strong> Count one map row and move a station on a copy. Keep JOBS coordinates and the corresponding visible marker consistent.</p>
+<h4 id="1-2-create-fresh-jobs-and-players">1.2 — Create fresh jobs and players<a class="anchor" href="#1-2-create-fresh-jobs-and-players">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 44–81.</p>
+<!-- taught-source: nord-office/rules.js:44-81 --><pre class="code" data-lang="js"><code>export function newOffice() {
+  return {
+    players: [],
+    jobs: JOBS.map((j, i) =&gt; ({
+      ...j,
+      id: i,
+      broken: i &lt; 3,
+      owner: null,
+      work: 0,
+      version: 0,
+    })),
+    time: 0,
+    nextFault: 9,
+    score: 0,
+    morale: 100,
+    phase: 'lobby',
+    bot: true,
+    goal: 12,
+    duration: 150,
+    log: ['Welcome to Nord Engine Office. Finish 12 jobs in 150 seconds.'],
+  };
+}
+export function addPlayer(s, id, name, bot = false) {
+  const p = {
+    id,
+    name: String(name || 'Intern').slice(0, 20),
+    x: 11.5,
+    y: 8.2 + s.players.filter((p) =&gt; !p.bot).length * 0.35,
+    dx: 0,
+    dy: 0,
+    bot,
+    job: null,
+    prank: 0,
+    done: 0,
+  };
+  s.players.push(p);
+  return p;
+}</code></pre>
+<p><strong>What and why:</strong> JOBS.map copies definitions into mutable run records, so completing a job does not alter the global station catalogue. owner/work/version are runtime fields. Team score/morale/time/phase belong to the shift; each player owns position, intended direction, active job, prank cooldown and completion count. Names are length-limited at the boundary.</p>
+<p><strong>Try it / expected result:</strong> Start two fresh state objects and complete a task in one. The other state and the JOBS definitions should remain unchanged.</p>
+<h4 id="1-3-reset-a-run-without-disconnecting-the-roster">1.3 — Reset a run without disconnecting the roster<a class="anchor" href="#1-3-reset-a-run-without-disconnecting-the-roster">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 82–104.</p>
+<!-- taught-source: nord-office/rules.js:82-104 --><pre class="code" data-lang="js"><code>export function startShift(s) {
+  s.phase = 'playing';
+  s.time = 0;
+  s.score = 0;
+  s.morale = 100;
+  s.nextFault = 9;
+  s.log = ['Shift started! E near a station to work.'];
+  for (const j of s.jobs) {
+    j.broken = j.id &lt; 3;
+    j.owner = null;
+    j.work = 0;
+    j.version++;
+  }
+  for (const p of s.players) {
+    p.x = 11.5;
+    p.y = 8.5;
+    p.job = null;
+    p.dx = 0;
+    p.dy = 0;
+    p.prank = 0;
+    p.done = 0;
+  }
+}</code></pre>
+<p><strong>What and why:</strong> The reset changes phase, clocks, score, morale and log, then restores stations and player work. It preserves player IDs/names and the room roster so an online rematch does not require joining again. Incrementing job version changes the next puzzle sequence. This reset is app-specific state replacement, not Nord scene reload.</p>
+<p><strong>Try it / expected result:</strong> Restart a shared shift. Both human names should remain, while their jobs, scores and positions return to the opening state.</p>
+<h4 id="1-4-move-a-small-body-through-a-tile-grid">1.4 — Move a small body through a tile grid<a class="anchor" href="#1-4-move-a-small-body-through-a-tile-grid">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 105–118.</p>
+<!-- taught-source: nord-office/rules.js:105-118 --><pre class="code" data-lang="js"><code>export function walkable(x, y) {
+  const cell = MAP[Math.floor(y)]?.[Math.floor(x)];
+  return cell !== undefined &amp;&amp; cell !== '#' &amp;&amp; cell !== 'D';
+}
+export function movePlayer(p, dx, dy, dt) {
+  const n = Math.max(1, Math.hypot(dx, dy));
+  dx = (dx / n) * 3.3 * dt;
+  dy = (dy / n) * 3.3 * dt;
+  const fits = (x, y) =&gt;
+    [-0.22, 0.22].every((a) =&gt; [-0.22, 0.22].every((b) =&gt; walkable(x + a, y + b)));
+  if (fits(p.x + dx, p.y)) p.x += dx;
+  if (fits(p.x, p.y + dy)) p.y += dy;
+}
+export const nearby = (p, j) =&gt; Math.hypot(p.x - (j.x + 0.5), p.y - (j.y + 0.5)) &lt; 1.5;</code></pre>
+<p><strong>What and why:</strong> walkable floors fractional coordinates and treats out-of-map positions as blocked. movePlayer normalizes diagonals before multiplying by speed and seconds. Testing four corner offsets gives the player width rather than a point collision. X and Y are accepted independently so motion can slide along a desk. nearby uses station centres with half-tile offsets.</p>
+<p><strong>Try it / expected result:</strong> Hold two directions diagonally and compare speed with straight movement. You should not gain a square-root-of-two speed bonus.</p>
+<h4 id="1-5-claim-and-cancel-work-without-duplicate-owners">1.5 — Claim and cancel work without duplicate owners<a class="anchor" href="#1-5-claim-and-cancel-work-without-duplicate-owners">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 119–151.</p>
+<!-- taught-source: nord-office/rules.js:119-151 --><pre class="code" data-lang="js"><code>function note(s, text) {
+  s.log.unshift(text);
+  s.log.length = Math.min(6, s.log.length);
+}
+export function beginJob(s, p, id) {
+  if (s.phase !== 'playing' || p.job) return false;
+  const j = s.jobs.find((v) =&gt; v.id === id);
+  if (!j?.broken || j.owner || !nearby(p, j)) return false;
+  j.owner = p.id;
+  j.work = 0;
+  p.job = {
+    id,
+    step: 0,
+    puzzle: j.version % PUZZLES.length,
+    sequence: [
+      (j.id + j.version) % 4,
+      (j.id + j.version + 2) % 4,
+      (j.id + j.version + 1) % 4,
+    ],
+    began: s.time,
+  };
+  return true;
+}
+export function cancelJob(s, p) {
+  if (p.job) {
+    const j = s.jobs[p.job.id];
+    if (j.owner === p.id) {
+      j.owner = null;
+      j.work = 0;
+    }
+    p.job = null;
+  }
+}</code></pre>
+<p><strong>What and why:</strong> note keeps a newest-first bounded log. beginJob checks phase, existing work, station state, owner and distance before claiming it. The player job records progress, a puzzle index, deterministic wire sequence and a start time. cancelJob releases the station only if this player still owns it, then clears local work. These ownership checks prevent simultaneous repairs from counting twice.</p>
+<p><strong>Try it / expected result:</strong> Have two humans press E at the same red station. Only one should claim it; cancel that task and let the other claim it.</p>
+<h4 id="1-6-complete-exactly-one-job-and-validate-the-next-step">1.6 — Complete exactly one job and validate the next step<a class="anchor" href="#1-6-complete-exactly-one-job-and-validate-the-next-step">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 152–181.</p>
+<!-- taught-source: nord-office/rules.js:152-181 --><pre class="code" data-lang="js"><code>function complete(s, p) {
+  const j = s.jobs[p.job.id];
+  j.broken = false;
+  j.owner = null;
+  j.work = 0;
+  j.version++;
+  s.score++;
+  p.done++;
+  s.morale = Math.min(100, s.morale + 7);
+  note(s, `${p.name} completed: ${j.name}`);
+  p.job = null;
+  if (s.score &gt;= s.goal) s.phase = 'won';
+}
+export function jobStep(s, p, value) {
+  if (s.phase !== 'playing' || !p.job) return false;
+  const j = s.jobs[p.job.id];
+  if (!nearby(p, j)) {
+    cancelJob(s, p);
+    return false;
+  }
+  let ok = false;
+  if (j.kind === 'wire') {
+    ok = value === p.job.sequence[p.job.step];
+    if (ok &amp;&amp; ++p.job.step &lt; 3) return true;
+  }
+  if (j.kind === 'bug') ok = value === PUZZLES[p.job.puzzle].answer;
+  if (j.kind === 'coffee') {
+    const fill = ((s.time - p.job.began) % 2.4) / 2.4;
+    ok = fill &gt;= 0.55 &amp;&amp; fill &lt;= 0.85;
+  }</code></pre>
+<p><strong>What and why:</strong> complete clears the fault/owner, increments team and worker counts, restores bounded morale and changes the version before testing victory. jobStep rejects inactive/distant work. Wire tasks compare the next terminal and return early until the final correct input; bug tasks compare one answer; coffee computes elapsed fill from the simulation clock. The client supplies a choice, not a success flag.</p>
+<p><strong>Try it / expected result:</strong> Choose one wrong wire terminal and confirm no score is awarded. Then repair correctly and check team score increases by exactly one.</p>
+<h4 id="1-7-resolve-failure-and-deliberately-introduce-faults">1.7 — Resolve failure and deliberately introduce faults<a class="anchor" href="#1-7-resolve-failure-and-deliberately-introduce-faults">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 182–202.</p>
+<!-- taught-source: nord-office/rules.js:182-202 --><pre class="code" data-lang="js"><code>  if (ok) {
+    complete(s, p);
+    return true;
+  }
+  s.morale = Math.max(0, s.morale - 5);
+  note(s, `${p.name}: wrong fix — morale -5`);
+  cancelJob(s, p);
+  return false;
+}
+export function prank(s, p) {
+  if (s.phase !== 'playing' || p.prank &gt; 0 || p.job) return false;
+  const j = s.jobs.find((j) =&gt; !j.broken &amp;&amp; nearby(p, j));
+  if (!j) return false;
+  j.broken = true;
+  j.version++;
+  p.prank = 15;
+  s.morale = Math.max(0, s.morale - 8);
+  note(s, `${p.name} introduced a bug at ${j.name}!`);
+  return true;
+}
+// BFS over tile centres makes the coworker navigate around desks, not teleport through them.</code></pre>
+<p><strong>What and why:</strong> A successful step calls complete. A wrong fix costs morale, logs the outcome and releases ownership so work can be retried. prank requires playing state, no current job, no cooldown and a nearby fixed station. It makes a real fault, advances its version, starts a cooldown and costs team morale. This keeps pranks inside the same job/morale model as normal faults.</p>
+<p><strong>Try it / expected result:</strong> Prank a green station twice rapidly. Only the first should succeed, and its colour should change because broken state changed.</p>
+<h4 id="1-8-search-breadth-first-through-tile-centres">1.8 — Search breadth-first through tile centres<a class="anchor" href="#1-8-search-breadth-first-through-tile-centres">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 203–233.</p>
+<!-- taught-source: nord-office/rules.js:203-233 --><pre class="code" data-lang="js"><code>export function pathTo(p, j) {
+  const start = [Math.floor(p.x), Math.floor(p.y)],
+    goal = [j.x, j.y],
+    q = [start],
+    prev = new Map([[start.join(','), null]]);
+  let found = null;
+  for (let i = 0; i &lt; q.length; i++) {
+    const v = q[i];
+    if (v[0] === goal[0] &amp;&amp; v[1] === goal[1]) {
+      found = v;
+      break;
+    }
+    for (const [dx, dy] of [
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+    ]) {
+      const n = [v[0] + dx, v[1] + dy],
+        k = n.join(',');
+      if (!prev.has(k) &amp;&amp; walkable(n[0] + 0.5, n[1] + 0.5)) {
+        prev.set(k, v);
+        q.push(n);
+      }
+    }
+  }
+  if (!found) return [];
+  const out = [];
+  for (let v = found; v; v = prev.get(v.join(','))) out.unshift([v[0] + 0.5, v[1] + 0.5]);
+  return out.slice(1);
+}</code></pre>
+<p><strong>What and why:</strong> The queue starts at the player tile and prev records visited cells plus their parent. Each tile expands four axis neighbours. Because every step has equal cost, the first reached goal gives a shortest tile path. The visited Map prevents loops. Reconstructing parents walks backward, unshift reverses that order, and slice(1) removes the already occupied starting tile.</p>
+<p><strong>Try it / expected result:</strong> Put a desk on the direct route in a copy. Ada should take a longer walkable path, not move through the desk.</p>
+<h4 id="1-9-give-the-ai-the-same-movement-and-ownership-rules">1.9 — Give the AI the same movement and ownership rules<a class="anchor" href="#1-9-give-the-ai-the-same-movement-and-ownership-rules">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 234–264.</p>
+<!-- taught-source: nord-office/rules.js:234-264 --><pre class="code" data-lang="js"><code>export function tickOffice(s, dt) {
+  if (s.phase !== 'playing') return;
+  dt = Math.min(0.1, dt);
+  s.time += dt;
+  for (const p of s.players) {
+    p.prank = Math.max(0, p.prank - dt);
+    if (p.bot) {
+      if (p.job) {
+        const j = s.jobs[p.job.id];
+        j.work += dt;
+        if (j.work &gt;= 2.5) complete(s, p);
+      } else {
+        const target = s.jobs
+          .filter((j) =&gt; j.broken &amp;&amp; !j.owner)
+          .sort(
+            (a, b) =&gt; Math.hypot(p.x - a.x, p.y - a.y) - Math.hypot(p.x - b.x, p.y - b.y),
+          )[0];
+        if (target) {
+          if (nearby(p, target)) beginJob(s, p, target.id);
+          else {
+            const waypoint = pathTo(p, target)[0];
+            if (waypoint) movePlayer(p, waypoint[0] - p.x, waypoint[1] - p.y, dt);
+          }
+        }
+      }
+    } else {
+      movePlayer(p, p.dx, p.dy, dt);
+      if (p.job &amp;&amp; !nearby(p, s.jobs[p.job.id])) cancelJob(s, p);
+    }
+  }
+  if (s.phase !== 'playing') return;</code></pre>
+<p><strong>What and why:</strong> The playing guard freezes ended shifts. Each player cooldown decays. Ada either spends time on an owned job or selects the nearest unclaimed fault, uses nearby/beginJob on arrival, and otherwise follows the first BFS waypoint. Human movement uses stored intentions and cancels work when leaving range. The bot’s timed completion is an explicit shortcut for minigames, not a language model.</p>
+<p><strong>Try it / expected result:</strong> Turn Ada off mid-task and ensure her ownership is released, then turn her back on and observe a real walk to a fault.</p>
+<h4 id="1-10-create-pressure-end-the-shift-and-serialize-a-view">1.10 — Create pressure, end the shift and serialize a view<a class="anchor" href="#1-10-create-pressure-end-the-shift-and-serialize-a-view">#</a></h4>
+<p><strong>Read:</strong> <code>rules.js</code>, lines 265–289.</p>
+<!-- taught-source: nord-office/rules.js:265-289 --><pre class="code" data-lang="js"><code>  if (s.time &gt;= s.nextFault) {
+    s.nextFault += 9;
+    const j = s.jobs.find((j) =&gt; !j.broken);
+    if (j) {
+      j.broken = true;
+      j.version++;
+      note(s, `New ticket: ${j.name}`);
+    }
+  }
+  s.morale = Math.max(0, s.morale - s.jobs.filter((j) =&gt; j.broken).length * dt * 0.32);
+  if (s.time &gt;= s.duration || s.morale &lt;= 0) {
+    s.phase = 'lost';
+    note(s, 'Shift failed — start a new shift and try again.');
+  }
+}
+export function publicOffice(s, id) {
+  return {
+    ...s,
+    you: id,
+    players: s.players.map((p) =&gt; ({
+      ...p,
+      job: p.job ? { ...p.job, puzzle: p.job.puzzle } : null,
+    })),
+  };
+}</code></pre>
+<p><strong>What and why:</strong> This second phase check occurs after player work, so a newly won shift is not immediately subjected to another fault/deadline. nextFault advances on schedule, a fixed station becomes broken, and open faults drain morale by elapsed seconds. Time/morale can lose the shift. publicOffice adds the requesting player ID and copies player/job records into a response shape.</p>
+<p><strong>Try it / expected result:</strong> Leave several faults unattended and compare morale drain with a nearly clean office. A won shift should stop accumulating new pressure.</p>
+<h3 id="walk-app-js">2. app.js<a class="anchor" href="#walk-app-js">#</a></h3>
+<p>Connect every HTML control, puzzle panel, canvas layer and polling path to the shared office rules.</p>
+<h4 id="2-1-declare-the-page-and-the-available-rule-operations">2.1 — Declare the page and the available rule operations<a class="anchor" href="#2-1-declare-the-page-and-the-available-rule-operations">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 1–38.</p>
+<!-- taught-source: nord-office/app.js:1-38 --><pre class="code" data-lang="js"><code>import {
+  MAP,
+  JOBS,
+  PUZZLES,
+  newOffice,
+  addPlayer,
+  startShift,
+  tickOffice,
+  beginJob,
+  jobStep,
+  prank,
+  cancelJob,
+  nearby,
+} from './rules.js';
+export function mount(root) {
+  root.innerHTML = /* HTML */ `
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&gt;
+    &lt;main&gt;
+      &lt;header&gt;
+        &lt;h1&gt;NORD ENGINE OFFICE&lt;/h1&gt;
+        &lt;p&gt;Ship the engine. Fix the coffee. Survive your interns.&lt;/p&gt;
+      &lt;/header&gt;
+      &lt;nav&gt;
+        &lt;button id=&quot;solo&quot;&gt;Solo + AI practice&lt;/button&gt;
+        &lt;button id=&quot;start&quot;&gt;Start / Restart shift&lt;/button&gt;
+        &lt;button id=&quot;bot&quot;&gt;Toggle AI coworker&lt;/button&gt;
+        &lt;button id=&quot;pause&quot;&gt;Pause solo&lt;/button&gt;
+      &lt;/nav&gt;
+      &lt;section class=&quot;layout&quot;&gt;
+        &lt;div&gt;
+          &lt;canvas width=&quot;768&quot; height=&quot;512&quot; aria-label=&quot;Office game map&quot;&gt;&lt;/canvas&gt;
+          &lt;h2 id=&quot;hud&quot;&gt;&lt;/h2&gt;
+          &lt;p&gt;
+            WASD / arrows: walk · E: work nearby · X: introduce a bug · Esc: cancel task
+          &lt;/p&gt;
+          &lt;div id=&quot;task&quot;&gt;&lt;/div&gt;
+          &lt;p id=&quot;result&quot;&gt;&lt;/p&gt;
+        &lt;/div&gt;</code></pre>
+<p><strong>What and why:</strong> Imports enumerate the exact local rule functions that the host can invoke. The header/navigation provide solo, shift, AI and pause controls. The canvas size matches 24 by 16 tiles at 32 pixels. The task/result containers separate dynamic interaction from the map so a rendered sprite is not responsible for validating a fix.</p>
+<p><strong>Try it / expected result:</strong> Find work/cancel controls in the page and later in command(). Trace one control from its ID to the rule call.</p>
+<h4 id="2-2-collect-online-details-without-replacing-solo-play">2.2 — Collect online details without replacing solo play<a class="anchor" href="#2-2-collect-online-details-without-replacing-solo-play">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 39–87.</p>
+<!-- taught-source: nord-office/app.js:39-87 --><pre class="code" data-lang="js"><code>        &lt;aside&gt;
+          &lt;h2&gt;Invite interns&lt;/h2&gt;
+          &lt;label&gt;
+            Name
+            &lt;input id=&quot;name&quot; value=&quot;Intern&quot; maxlength=&quot;20&quot; /&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            Room
+            &lt;input id=&quot;room&quot; value=&quot;NORD&quot; maxlength=&quot;8&quot; /&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            Server
+            &lt;input id=&quot;server&quot; /&gt;
+          &lt;/label&gt;
+          &lt;button id=&quot;join&quot;&gt;Join online office&lt;/button&gt;
+          &lt;p id=&quot;network&quot;&gt;
+            Run node server.mjs to host friends. Solo works without a server.
+          &lt;/p&gt;
+          &lt;h2&gt;Tickets&lt;/h2&gt;
+          &lt;div id=&quot;tickets&quot;&gt;&lt;/div&gt;
+          &lt;h2&gt;Office log&lt;/h2&gt;
+          &lt;div id=&quot;log&quot;&gt;&lt;/div&gt;
+          &lt;p&gt;
+            Host starts the shift. Finish 12 tasks in 150 seconds. Too many open bugs
+            drain morale. X pranks a fixed nearby station, with a 15-second cooldown.
+          &lt;/p&gt;
+          &lt;p&gt;Ada is a local pathfinding AI coworker, no account or API key needed.&lt;/p&gt;
+        &lt;/aside&gt;
+      &lt;/section&gt;
+      &lt;footer&gt;Crowelian 2026 + Sonnet · Original code and canvas graphics&lt;/footer&gt;
+    &lt;/main&gt;
+  `;
+  const $ = (id) =&gt; root.querySelector('#' + id),
+    ctx = root.querySelector('canvas').getContext('2d'),
+    keys = new Set();
+  let s = newOffice(),
+    you = 'solo',
+    online = false,
+    paused = false,
+    alive = true,
+    last = performance.now(),
+    poll = 0,
+    busy = false,
+    taskKey = '',
+    status = '';
+  addPlayer(s, you, 'You');
+  addPlayer(s, 'ai', 'Ada (AI)', true);
+  $('server').value =
+    location.port === '4383' ? location.origin : 'http://127.0.0.1:4383';</code></pre>
+<p><strong>What and why:</strong> The sidebar exposes name, room and server plus ticket/log outputs. It explains host ownership and AI behaviour. These are presentation promises implemented later, not a server hidden in the page. After markup, canvas context, held keys and fresh office state are created; the local human and Ada are added explicitly.</p>
+<p><strong>Try it / expected result:</strong> Choose Solo practice without running Node. The page should still start a complete local shift.</p>
+<h4 id="2-3-use-one-command-interface-for-local-and-online-rules">2.3 — Use one command interface for local and online rules<a class="anchor" href="#2-3-use-one-command-interface-for-local-and-online-rules">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 88–126.</p>
+<!-- taught-source: nord-office/app.js:88-126 --><pre class="code" data-lang="js"><code>  const player = () =&gt; s.players.find((p) =&gt; p.id === you);
+  const say = (t) =&gt; {
+    $('network').textContent = t;
+  };
+  async function request(route, body) {
+    const res = await fetch($('server').value.replace(/\/$/, '') + '/api/' + route, {
+      method: body ? 'POST' : 'GET',
+      headers: body ? { 'content-type': 'application/json' } : {},
+      body: body ? JSON.stringify(body) : undefined,
+      signal: AbortSignal.timeout(4000),
+    });
+    const data = await res.json();
+    if (!res.ok) throw Error(data.error || res.status);
+    return data;
+  }
+  async function command(route, body = {}) {
+    if (online) {
+      try {
+        s = await request(route, { id: you, ...body });
+      } catch (e) {
+        say(e.message);
+      }
+      return;
+    }
+    const p = player();
+    if (route === 'start') startShift(s);
+    if (route === 'work') beginJob(s, p, body.job);
+    if (route === 'step') jobStep(s, p, body.value);
+    if (route === 'cancel') cancelJob(s, p);
+    if (route === 'prank') prank(s, p);
+    if (route === 'bot') {
+      const ai = s.players.find((p) =&gt; p.bot);
+      if (ai) {
+        cancelJob(s, ai);
+        s.players = s.players.filter((p) =&gt; !p.bot);
+      } else addPlayer(s, 'ai', 'Ada (AI)', true);
+    }
+    taskKey = '';
+  }</code></pre>
+<p><strong>What and why:</strong> request handles timeout, JSON and HTTP errors. command either posts an intention and adopts the returned server state or calls the corresponding shared function locally. The bot branch releases owned work before removing Ada. Clearing taskKey forces the task panel to reflect the new operation. This is where authority changes; rendering code does not need two implementations.</p>
+<p><strong>Try it / expected result:</strong> Compare a local repair with an online repair. Both should reach jobStep, but only the online one goes through HTTP.</p>
+<h4 id="2-4-create-sessions-and-keep-shared-pause-honest">2.4 — Create sessions and keep shared pause honest<a class="anchor" href="#2-4-create-sessions-and-keep-shared-pause-honest">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 127–163.</p>
+<!-- taught-source: nord-office/app.js:127-163 --><pre class="code" data-lang="js"><code>  $('solo').onclick = () =&gt; {
+    online = false;
+    s = newOffice();
+    you = 'solo';
+    addPlayer(s, you, $('name').value);
+    addPlayer(s, 'ai', 'Ada (AI)', true);
+    paused = false;
+    taskKey = '';
+    say('Solo practice. Start a shift when ready.');
+  };
+  $('join').onclick = async () =&gt; {
+    try {
+      s = await request('join', { name: $('name').value, room: $('room').value });
+      you = s.you;
+      online = true;
+      paused = false;
+      keys.clear();
+      taskKey = '';
+      say(
+        `Room ${s.code} · ${s.host === you ? 'You are host' : 'Host starts the shift'} · share this server address and room`,
+      );
+    } catch (e) {
+      say(e.message);
+    }
+  };
+  $('start').onclick = () =&gt; {
+    paused = false;
+    command('start');
+  };
+  $('bot').onclick = () =&gt; command('bot');
+  $('pause').onclick = () =&gt; {
+    if (online) say('Online shifts keep running for everyone.');
+    else {
+      paused = !paused;
+      keys.clear();
+    }
+  };</code></pre>
+<p><strong>What and why:</strong> Solo builds a fresh state and roster. Join adopts the server’s identity and room snapshot only after a successful response. Start and bot use command, while Pause freezes only the local shift. Clearing keys on a join/reset prevents old intent crossing into a new run. Error messages leave the page operable.</p>
+<p><strong>Try it / expected result:</strong> Join two browsers and click Pause in one. It should explain that the shared shift continues rather than freezing the other player.</p>
+<h4 id="2-5-find-an-eligible-station-and-handle-keyboard-intent">2.5 — Find an eligible station and handle keyboard intent<a class="anchor" href="#2-5-find-an-eligible-station-and-handle-keyboard-intent">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 164–189.</p>
+<!-- taught-source: nord-office/app.js:164-189 --><pre class="code" data-lang="js"><code>  function work() {
+    const p = player();
+    if (!p || paused) return;
+    const j = s.jobs.find((j) =&gt; j.broken &amp;&amp; !j.owner &amp;&amp; nearby(p, j));
+    if (j) command('work', { job: j.id });
+    else say('Walk closer to a red station with an unclaimed ticket.');
+  }
+  const down = (e) =&gt; {
+    if (/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) return;
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code))
+      e.preventDefault();
+    keys.add(e.code);
+    if (!e.repeat) {
+      if (e.code === 'KeyE') work();
+      if (e.code === 'KeyX') command('prank');
+      if (e.code === 'Escape') command('cancel');
+    }
+  };
+  const up = (e) =&gt; keys.delete(e.code),
+    blur = () =&gt; {
+      keys.clear();
+      if (!online) paused = true;
+    };
+  window.addEventListener('keydown', down);
+  window.addEventListener('keyup', up);
+  window.addEventListener('blur', blur);</code></pre>
+<p><strong>What and why:</strong> work chooses a nearby broken unowned station, then requests a claim. The key handler ignores text inputs, prevents page scrolling and treats E/X/Escape as one-shot actions. Key release/blur clears movement, and blur pauses solo only. Window listeners are paired with teardown at the end.</p>
+<p><strong>Try it / expected result:</strong> Hold E and verify it does not repeatedly claim/complete a task. Move away from a claimed station and watch it become available again.</p>
+<h4 id="2-6-rebuild-only-when-the-task-changes">2.6 — Rebuild only when the task changes<a class="anchor" href="#2-6-rebuild-only-when-the-task-changes">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 190–229.</p>
+<!-- taught-source: nord-office/app.js:190-229 --><pre class="code" data-lang="js"><code>  function drawTask() {
+    const p = player(),
+      job = p?.job,
+      key = job ? `${job.id}:${job.step}:${job.puzzle}:${job.began}` : '';
+    if (key === taskKey) return;
+    taskKey = key;
+    const box = $('task');
+    box.replaceChildren();
+    if (!job) return;
+    const j = s.jobs[job.id],
+      title = document.createElement('h3');
+    title.textContent = j.name;
+    box.append(title);
+    const label = document.createElement('p');
+    box.append(label);
+    const button = (text, value) =&gt; {
+      const b = document.createElement('button');
+      b.textContent = text;
+      b.onclick = () =&gt; command('step', { value });
+      box.append(b);
+    };
+    if (j.kind === 'wire') {
+      label.textContent = `Reconnect in order: ${job.sequence.map((v) =&gt; ['RED', 'BLUE', 'GREEN', 'GOLD'][v]).join(' → ')}. Step ${job.step + 1}/3`;
+      ['RED', 'BLUE', 'GREEN', 'GOLD'].forEach((v, i) =&gt; button(v, i));
+    }
+    if (j.kind === 'bug') {
+      label.textContent = PUZZLES[job.puzzle].log;
+      PUZZLES[job.puzzle].choices.forEach((v, i) =&gt; button(v, i));
+    }
+    if (j.kind === 'coffee') {
+      label.textContent =
+        'Stop the fill between 55% and 85% (green). The server measures elapsed time.';
+      const meter = document.createElement('div');
+      meter.id = 'coffee';
+      box.append(meter);
+      button('Pour coffee', 0);
+    }
+    button('Cancel', -1);
+    box.lastChild.onclick = () =&gt; command('cancel');
+  }</code></pre>
+<p><strong>What and why:</strong> The task key combines identity/progress/puzzle/start time. If unchanged, the UI leaves buttons in place instead of recreating them every frame and losing focus. A small button factory sends step values. Wire labels show the ordered sequence, bug labels show actual faulty JavaScript, coffee adds a fill meter, and Cancel overrides the generic step callback with the cancel route.</p>
+<p><strong>Try it / expected result:</strong> Click the first correct wire colour. The panel should advance to step two; the score should still be unchanged.</p>
+<h4 id="2-7-paint-tiles-and-station-status">2.7 — Paint tiles and station status<a class="anchor" href="#2-7-paint-tiles-and-station-status">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 230–263.</p>
+<!-- taught-source: nord-office/app.js:230-263 --><pre class="code" data-lang="js"><code>  function draw() {
+    ctx.fillStyle = '#152238';
+    ctx.fillRect(0, 0, 768, 512);
+    MAP.forEach((row, y) =&gt;
+      [...row].forEach((tile, x) =&gt; {
+        ctx.fillStyle = tile === '#' ? '#2d4660' : (x + y) % 2 ? '#1e3448' : '#22394d';
+        ctx.fillRect(x * 32, y * 32, 32, 32);
+        if (tile === 'D') {
+          ctx.fillStyle = '#895d55';
+          ctx.fillRect(x * 32 + 2, y * 32 + 2, 28, 28);
+          ctx.fillStyle = '#6be4df';
+          ctx.fillRect(x * 32 + 6, y * 32 + 5, 18, 10);
+        }
+      }),
+    );
+    for (const j of s.jobs) {
+      ctx.fillStyle = j.broken ? '#ed6c83' : '#69d9a0';
+      ctx.fillRect(j.x * 32 + 2, j.y * 32 + 2, 28, 28);
+      ctx.fillStyle = '#0f1e2d';
+      ctx.font = 'bold 18px monospace';
+      ctx.fillText(['W', 'B', 'C', 'T', 'E'][j.id], j.x * 32 + 10, j.y * 32 + 23);
+      if (j.broken) {
+        ctx.strokeStyle = '#ed6c83';
+        ctx.beginPath();
+        ctx.arc(
+          j.x * 32 + 16,
+          j.y * 32 + 16,
+          25 + Math.sin(s.time * 4) * 3,
+          0,
+          Math.PI * 2,
+        );
+        ctx.stroke();
+      }
+    }</code></pre>
+<p><strong>What and why:</strong> The entire canvas is repainted, then map characters choose floor/wall/desk layers. Multiplying tile indices by 32 is the only tile-to-screen conversion. Station markers read broken state for colour and use a sine ring as a visual alert. The ring does not define interaction distance; nearby in rules does.</p>
+<p><strong>Try it / expected result:</strong> Change the alert ring radius visually. You should still need to stand within the same rule distance to press E.</p>
+<h4 id="2-8-paint-people-and-derive-the-hud">2.8 — Paint people and derive the HUD<a class="anchor" href="#2-8-paint-people-and-derive-the-hud">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 264–291.</p>
+<!-- taught-source: nord-office/app.js:264-291 --><pre class="code" data-lang="js"><code>    for (const p of s.players) {
+      const x = p.x * 32,
+        y = p.y * 32;
+      ctx.fillStyle = '#0005';
+      ctx.beginPath();
+      ctx.ellipse(x, y + 10, 12, 5, 0, 0, 7);
+      ctx.fill();
+      ctx.fillStyle = p.bot ? '#b7a0ff' : p.id === you ? '#6ee6ee' : '#ffc86e';
+      ctx.fillRect(x - 9, y - 8, 18, 18);
+      ctx.fillStyle = '#f5ccaf';
+      ctx.fillRect(x - 7, y - 16, 14, 10);
+      ctx.fillStyle = '#fff';
+      ctx.font = '12px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(p.name, x, y - 22);
+      if (p.job) ctx.fillText('⚙', x, y - 38);
+      ctx.textAlign = 'left';
+    }
+    $('hud').textContent =
+      `${paused ? 'PAUSED · ' : ''}${s.phase.toUpperCase()} · ` +
+      `${s.score}/${s.goal} fixes · Morale ${Math.ceil(s.morale)} · ` +
+      `${Math.max(0, Math.ceil(s.duration - s.time))}s`;
+    $('result').textContent =
+      s.phase === 'won'
+        ? 'BUILD SHIPPED! Great shift. Start another to replay.'
+        : s.phase === 'lost'
+          ? 'SHIFT FAILED. Try with Ada, share tasks, and keep morale up.'
+          : '';</code></pre>
+<p><strong>What and why:</strong> Avatars use tile positions converted to pixels, a small shadow, role-dependent clothing, a name and a work indicator. textAlign is restored for later drawing. HUD/result strings read team phase/score/morale/time. No score is awarded here, and a visual success message is not used as a rule condition.</p>
+<p><strong>Try it / expected result:</strong> Inspect a client snapshot while another intern moves. The same player record should drive both its name and avatar position.</p>
+<h4 id="2-9-update-text-only-when-needed-and-animate-coffee-from-time">2.9 — Update text only when needed and animate coffee from time<a class="anchor" href="#2-9-update-text-only-when-needed-and-animate-coffee-from-time">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 292–312.</p>
+<!-- taught-source: nord-office/app.js:292-312 --><pre class="code" data-lang="js"><code>    const nextStatus =
+      s.jobs
+        .map(
+          (j) =&gt; `${j.name}: ${j.broken ? (j.owner ? 'IN PROGRESS' : 'BROKEN') : 'OK'}`,
+        )
+        .join('\n') +
+      '\n' +
+      s.log.join('\n');
+    if (nextStatus !== status) {
+      status = nextStatus;
+      $('tickets').textContent = nextStatus.split('\n').slice(0, 5).join('\n');
+      $('log').textContent = s.log.join('\n');
+    }
+    drawTask();
+    const coffee = $('coffee');
+    if (coffee &amp;&amp; player()?.job) {
+      const fill = ((s.time - player().job.began) % 2.4) / 2.4;
+      coffee.style.background = `linear-gradient(to right,#eec76a ${fill * 100}%,transparent 0),linear-gradient(to right,#27394b 55%,#36694d 55%,#36694d 85%,#27394b 85%)`;
+      coffee.textContent = Math.round(fill * 100) + '%';
+    }
+  }</code></pre>
+<p><strong>What and why:</strong> Ticket/log text is cached to avoid unnecessary DOM replacement. drawTask decides whether puzzle controls need a rebuild. Coffee’s gradient uses the same elapsed-time formula as validation, while its green target region is fixed. This UI prediction makes the game readable, but the server still determines the result when the pour arrives.</p>
+<p><strong>Try it / expected result:</strong> Pour just outside the green interval. The animated meter should not grant success merely because the button was clicked.</p>
+<h4 id="2-10-choose-local-simulation-or-online-snapshots-then-dispose">2.10 — Choose local simulation or online snapshots, then dispose<a class="anchor" href="#2-10-choose-local-simulation-or-online-snapshots-then-dispose">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 313–366.</p>
+<!-- taught-source: nord-office/app.js:313-366 --><pre class="code" data-lang="js"><code>  function frame(now) {
+    if (!alive) return;
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    const p = player(),
+      dx =
+        Number(keys.has('KeyD') || keys.has('ArrowRight')) -
+        Number(keys.has('KeyA') || keys.has('ArrowLeft')),
+      dy =
+        Number(keys.has('KeyS') || keys.has('ArrowDown')) -
+        Number(keys.has('KeyW') || keys.has('ArrowUp'));
+    if (!online) {
+      if (p) {
+        p.dx = paused ? 0 : dx;
+        p.dy = paused ? 0 : dy;
+      }
+      if (!paused) tickOffice(s, dt);
+    } else {
+      poll += dt;
+      if (poll &gt; 0.1 &amp;&amp; !busy) {
+        poll = 0;
+        busy = true;
+        request('input', { id: you, dx, dy })
+          .then(() =&gt; request('state?id=' + encodeURIComponent(you)))
+          .then((data) =&gt; {
+            s = data;
+          })
+          .catch((e) =&gt; say(e.message + ' — check server / rejoin'))
+          .finally(() =&gt; (busy = false));
+      }
+    }
+    draw();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  window.__office = {
+    get state() {
+      return s;
+    },
+    get you() {
+      return you;
+    },
+    get online() {
+      return online;
+    },
+  };
+  return () =&gt; {
+    alive = false;
+    window.removeEventListener('keydown', down);
+    window.removeEventListener('keyup', up);
+    window.removeEventListener('blur', blur);
+    root.replaceChildren();
+  };
+}</code></pre>
+<p><strong>What and why:</strong> The loop computes clamped seconds and a directional intention from the held-key Set. Solo assigns those axes and calls tickOffice; online sends input, then requests a snapshot, about ten times per second with a busy guard. It never also runs local authoritative rules online. draw remains common. The final getters support inspection; cleanup stops future frames, removes listeners and clears the mount root.</p>
+<p><strong>Try it / expected result:</strong> Temporarily stop Node and observe the connection message. Rejoin after restarting it; do not expect memory-only rooms to survive a process restart.</p>
+<h3 id="walk-server-mjs">3. server.mjs<a class="anchor" href="#walk-server-mjs">#</a></h3>
+<p>Implement the complete room API, host controls and stale-input safety.</p>
+<h4 id="3-1-create-a-room-and-add-its-host">3.1 — Create a room and add its host<a class="anchor" href="#3-1-create-a-room-and-add-its-host">#</a></h4>
+<p><strong>Read:</strong> <code>server.mjs</code>, lines 1–41.</p>
+<!-- taught-source: nord-office/server.mjs:1-41 --><pre class="code" data-lang="js"><code>import { randomUUID } from 'node:crypto';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { serve, failure, roomCode } from './server-kit.mjs';
+import {
+  newOffice,
+  addPlayer,
+  startShift,
+  tickOffice,
+  beginJob,
+  jobStep,
+  prank,
+  cancelJob,
+  publicOffice,
+} from './rules.js';
+export function createOfficeServer({
+  port = null,
+  host,
+  root = path.dirname(fileURLToPath(import.meta.url)),
+  clock = Date.now,
+} = {}) {
+  const rooms = new Map(),
+    sessions = new Map();
+  const api = (method, url, b) =&gt; {
+    if (method === 'POST' &amp;&amp; url.pathname === '/api/join') {
+      if (sessions.size &gt;= 96) return failure(429, 'Server full');
+      const code = roomCode(b.room);
+      let s = rooms.get(code);
+      if (!s) {
+        s = newOffice();
+        s.code = code;
+        addPlayer(s, 'ai', 'Ada (AI)', true);
+        rooms.set(code, s);
+      }
+      if (s.players.filter((p) =&gt; !p.bot).length &gt;= 6) return failure(409, 'Room full');
+      const id = randomUUID(),
+        p = addPlayer(s, id, b.name);
+      if (!s.host) s.host = id;
+      sessions.set(id, { p, s, seen: clock(), inputAt: 0, actionAt: 0 });
+      return publicOffice(s, id);
+    }</code></pre>
+<p><strong>What and why:</strong> The server factory accepts a root/clock/port for both direct use and tests. Join capacity is bounded globally and per room. A new room receives fresh office rules and Ada, then a unique human is added. The first human becomes host, and a session record owns activity/input/action timestamps. Returning publicOffice gives the client its own ID.</p>
+<p><strong>Try it / expected result:</strong> Join the same room twice with different names. Both should see one room with one Ada, not one bot per browser.</p>
+<h4 id="3-2-resolve-identity-and-accept-only-finite-axes">3.2 — Resolve identity and accept only finite axes<a class="anchor" href="#3-2-resolve-identity-and-accept-only-finite-axes">#</a></h4>
+<p><strong>Read:</strong> <code>server.mjs</code>, lines 42–56.</p>
+<!-- taught-source: nord-office/server.mjs:42-56 --><pre class="code" data-lang="js"><code>    const id = method === 'GET' ? url.searchParams.get('id') : b.id,
+      session = sessions.get(id);
+    if (!session) return failure(404, 'Session expired; join again');
+    const { p, s } = session;
+    session.seen = clock();
+    if (method === 'GET' &amp;&amp; url.pathname === '/api/state') return publicOffice(s, id);
+    if (method !== 'POST') return failure(404, 'Unknown endpoint');
+    if (url.pathname === '/api/input') {
+      if (!Number.isFinite(b.dx) || !Number.isFinite(b.dy))
+        return failure(400, 'Finite axes required');
+      p.dx = Math.max(-1, Math.min(1, b.dx));
+      p.dy = Math.max(-1, Math.min(1, b.dy));
+      session.inputAt = clock();
+      return { ok: true };
+    }</code></pre>
+<p><strong>What and why:</strong> Subsequent requests locate the session and refresh its activity timestamp. State is read-only output. Input rejects non-number axes, clamps them to a valid range and records when they arrived. Positions are not accepted from the browser. The simulation will use these axes on the server’s tick.</p>
+<p><strong>Try it / expected result:</strong> Inspect /api/input in the Network panel: it sends dx/dy, not a claimed x/y position or a claimed score.</p>
+<h4 id="3-3-authorize-shared-controls-and-route-task-intentions">3.3 — Authorize shared controls and route task intentions<a class="anchor" href="#3-3-authorize-shared-controls-and-route-task-intentions">#</a></h4>
+<p><strong>Read:</strong> <code>server.mjs</code>, lines 57–80.</p>
+<!-- taught-source: nord-office/server.mjs:57-80 --><pre class="code" data-lang="js"><code>    if (url.pathname === '/api/start') {
+      if (s.host !== id) return failure(403, 'Only the room host starts shifts');
+      startShift(s);
+      return publicOffice(s, id);
+    }
+    if (url.pathname === '/api/bot') {
+      if (s.host !== id) return failure(403, 'Only the host changes AI');
+      s.bot = !s.bot;
+      if (!s.bot) {
+        const ai = s.players.find((v) =&gt; v.bot);
+        if (ai) cancelJob(s, ai);
+        s.players = s.players.filter((v) =&gt; !v.bot);
+      } else addPlayer(s, 'ai', 'Ada (AI)', true);
+      return publicOffice(s, id);
+    }
+    if (clock() - session.actionAt &lt; 120) return publicOffice(s, id);
+    session.actionAt = clock();
+    if (url.pathname === '/api/work') beginJob(s, p, b.job);
+    else if (url.pathname === '/api/step') jobStep(s, p, b.value);
+    else if (url.pathname === '/api/prank') prank(s, p);
+    else if (url.pathname === '/api/cancel') cancelJob(s, p);
+    else return failure(404, 'Unknown endpoint');
+    return publicOffice(s, id);
+  };</code></pre>
+<p><strong>What and why:</strong> Only the host can restart or toggle AI. Removing Ada cancels her task before removing her record. A short action interval bounds repeated work/prank messages. Each endpoint calls the same rule function as solo, then returns a fresh room snapshot. Unknown routes are errors rather than silently succeeding.</p>
+<p><strong>Try it / expected result:</strong> Try Start from the second human client. It should return a host-only error without resetting the running shift.</p>
+<h4 id="3-4-stop-abandoned-movement-and-release-abandoned-work">3.4 — Stop abandoned movement and release abandoned work<a class="anchor" href="#3-4-stop-abandoned-movement-and-release-abandoned-work">#</a></h4>
+<p><strong>Read:</strong> <code>server.mjs</code>, lines 81–118.</p>
+<!-- taught-source: nord-office/server.mjs:81-118 --><pre class="code" data-lang="js"><code>  const tick = (dt) =&gt; {
+    const now = clock();
+    for (const [id, v] of sessions) {
+      if (now - v.seen &gt; 30000) {
+        cancelJob(v.s, v.p);
+        v.s.players = v.s.players.filter((p) =&gt; p !== v.p);
+        sessions.delete(id);
+        if (v.s.host === id) v.s.host = v.s.players.find((p) =&gt; !p.bot)?.id;
+      } else if (now - v.inputAt &gt; 350) {
+        v.p.dx = 0;
+        v.p.dy = 0;
+      }
+    }
+    for (const [code, s] of rooms) {
+      if (!s.players.some((p) =&gt; !p.bot)) {
+        rooms.delete(code);
+        continue;
+      }
+      tickOffice(s, dt);
+    }
+  };
+  return serve({
+    root,
+    port,
+    host,
+    api,
+    tick,
+    files: {
+      '/': 'index.html',
+      '/index.html': 'index.html',
+      '/app.js': 'app.js',
+      '/rules.js': 'rules.js',
+      '/style.css': 'style.css',
+    },
+  });
+}
+if (process.argv[1] &amp;&amp; path.resolve(process.argv[1]) === fileURLToPath(import.meta.url))
+  createOfficeServer({ port: Number(process.env.PORT || 4383) });</code></pre>
+<p><strong>What and why:</strong> Sessions expire after thirty seconds of silence; cleanup cancels owned work and can promote another host. Axes are zeroed much sooner after stale input, preventing walking forever after a lost connection. Empty rooms are deleted; each nonempty room advances once. The static-file allowlist and direct-entry guard finish a server that can also be imported by tests.</p>
+<p><strong>Try it / expected result:</strong> Close a moving client. It should stop after input expiry, then disappear and release work after session expiry.</p>
+<h3 id="walk-server-kit-mjs">4. server-kit.mjs<a class="anchor" href="#walk-server-kit-mjs">#</a></h3>
+<p>Read the entire package-free HTTP adapter shared by the game servers.</p>
+<h4 id="4-1-create-an-http-response-boundary">4.1 — Create an HTTP response boundary<a class="anchor" href="#4-1-create-an-http-response-boundary">#</a></h4>
+<p><strong>Read:</strong> <code>server-kit.mjs</code>, lines 1–39.</p>
+<!-- taught-source: nord-office/server-kit.mjs:1-39 --><pre class="code" data-lang="js"><code>// Small HTTP transport shared by the teaching servers. No npm packages.
+import http from 'node:http';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+export function serve({
+  root,
+  files,
+  api,
+  tick,
+  port = 4382,
+  host = process.env.HOST || '127.0.0.1',
+}) {
+  const server = http.createServer(async (req, res) =&gt; {
+    const json = (status, data) =&gt; {
+      res.writeHead(status, {
+        'content-type': 'application/json',
+        'cache-control': 'no-store',
+      });
+      res.end(JSON.stringify(data));
+    };
+    const origin = req.headers.origin;
+    if (origin) {
+      try {
+        const u = new URL(origin);
+        if (u.protocol !== 'http:' &amp;&amp; u.protocol !== 'https:')
+          return json(403, { error: 'HTTP origin required' });
+        if (
+          u.host !== req.headers.host &amp;&amp;
+          !['localhost', '127.0.0.1'].includes(u.hostname)
+        )
+          return json(403, { error: 'Open the game from this server' });
+        res.setHeader('access-control-allow-origin', origin);
+        res.setHeader('vary', 'Origin');
+        res.setHeader('access-control-allow-headers', 'content-type');
+        res.setHeader('access-control-allow-methods', 'GET, POST, OPTIONS');
+      } catch {
+        return json(403, { error: 'Invalid origin' });
+      }
+    }</code></pre>
+<p><strong>What and why:</strong> The imported Node modules handle sockets, files and paths. serve receives game-specific api/tick callbacks and an explicit public-file map. json writes a content type and disables caching before serializing the result. The origin branch permits same-origin clients and local Nord previews, while rejecting unrelated remote origins. This is a trusted-room development policy, not an account system.</p>
+<p><strong>Try it / expected result:</strong> Open the game through its Node server, then through Nord Play with the same Server address. Both supported origins should receive JSON.</p>
+<h4 id="4-2-parse-a-bounded-api-message">4.2 — Parse a bounded API message<a class="anchor" href="#4-2-parse-a-bounded-api-message">#</a></h4>
+<p><strong>Read:</strong> <code>server-kit.mjs</code>, lines 40–68.</p>
+<!-- taught-source: nord-office/server-kit.mjs:40-68 --><pre class="code" data-lang="js"><code>    if (req.method === 'OPTIONS') {
+      res.writeHead(204);
+      res.end();
+      return;
+    }
+    try {
+      const url = new URL(req.url, 'http://localhost');
+      if (url.pathname.startsWith('/api/')) {
+        let body = {};
+        if (req.method === 'POST') {
+          if (!req.headers['content-type']?.startsWith('application/json'))
+            return json(415, { error: 'Send JSON' });
+          let raw = '';
+          for await (const chunk of req) {
+            raw += chunk;
+            if (Buffer.byteLength(raw) &gt; 2048) return json(413, { error: 'Too large' });
+          }
+          try {
+            body = JSON.parse(raw);
+          } catch {
+            return json(400, { error: 'Invalid JSON' });
+          }
+          if (!body || typeof body !== 'object' || Array.isArray(body))
+            return json(400, { error: 'Send an object' });
+        } else if (req.method !== 'GET')
+          return json(405, { error: 'GET or POST required' });
+        const result = api(req.method, url, body);
+        return json(result.status ?? 200, result.data ?? result);
+      }</code></pre>
+<p><strong>What and why:</strong> OPTIONS answers a browser preflight before gameplay. API POST bodies must declare JSON, remain under 2048 bytes and parse as an object. GET is allowed for snapshots. Returning early for invalid input prevents malformed messages from reaching game rules. api returns either plain data or a status/data result, which the adapter normalizes through json.</p>
+<p><strong>Try it / expected result:</strong> Send an invalid action with the browser Network panel and inspect its HTTP status; distinguish transport validation from the game-specific unknown-action error.</p>
+<h4 id="4-3-serve-only-named-public-files-and-own-the-tick">4.3 — Serve only named public files and own the tick<a class="anchor" href="#4-3-serve-only-named-public-files-and-own-the-tick">#</a></h4>
+<p><strong>Read:</strong> <code>server-kit.mjs</code>, lines 69–103.</p>
+<!-- taught-source: nord-office/server-kit.mjs:69-103 --><pre class="code" data-lang="js"><code>      const name = files[url.pathname];
+      if (req.method !== 'GET' || !name) return json(404, { error: 'Not found' });
+      const mime =
+        {
+          '.html': 'text/html',
+          '.js': 'text/javascript',
+          '.mjs': 'text/javascript',
+          '.css': 'text/css',
+          '.md': 'text/plain',
+        }[path.extname(name)] || 'application/octet-stream';
+      const bytes = await fs.readFile(path.join(root, name));
+      res.writeHead(200, { 'content-type': mime, 'cache-control': 'no-store' });
+      res.end(bytes);
+    } catch (e) {
+      console.error(e);
+      if (!res.headersSent) json(500, { error: 'Server error' });
+      else res.end();
+    }
+  });
+  const interval = setInterval(() =&gt; tick(0.05), 50);
+  server.on('close', () =&gt; clearInterval(interval));
+  if (port !== null)
+    server.listen(port, host, () =&gt;
+      console.log(
+        `Open http://${host === '0.0.0.0' ? 'localhost' : host}:${server.address().port} (HOST=${host})`,
+      ),
+    );
+  return server;
+}
+export const failure = (status, error) =&gt; ({ status, data: { error } });
+export const roomCode = (value) =&gt;
+  String(value ?? 'NORD')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '')
+    .slice(0, 8) || 'NORD';</code></pre>
+<p><strong>What and why:</strong> The file map resolves URL paths to known project files; arbitrary requested disk paths are not joined directly. MIME types tell the browser how to load modules/styles. A catch turns failures into a 500 response. setInterval calls game rules every 50ms, close clears it, and optional port null makes tests control listening. failure and roomCode centralize error shape and safe room naming.</p>
+<p><strong>Try it / expected result:</strong> Request server.mjs in the browser URL. It should return Not found; the source is distributed through the archive rather than this static allowlist.</p>
+<h3 id="walk-index-html">5. index.html<a class="anchor" href="#walk-index-html">#</a></h3>
+<p>Read the complete Nord page entry point and its failure path.</p>
+<h4 id="5-1-load-the-local-runtime-and-start-the-app">5.1 — Load the local runtime and start the app<a class="anchor" href="#5-1-load-the-local-runtime-and-start-the-app">#</a></h4>
+<p><strong>Read:</strong> <code>index.html</code>, lines 1–8.</p>
+<!-- taught-source: nord-office/index.html:1-8 --><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.nordoffice&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Nord Engine Office — interns vs bugs&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+<p><strong>What and why:</strong> The document declares encoding and viewport, creates the mount container and loads local code. The module imports mount from app.js and awaits initialization for the HTML-tier root. The ready/error flags are inspection signals used by browser checks; they are not a second simulation. The catch logs and exposes initialization errors. The page is served over HTTP so local module and asset URLs resolve consistently.</p>
+<p><strong>Try it / expected result:</strong> Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name.</p>
+<h3 id="walk-nord-project-json">6. nord.project.json<a class="anchor" href="#walk-nord-project-json">#</a></h3>
+<p>Read every project field that tells Nord which host, display and services to use.</p>
+<h4 id="6-1-identify-the-project-and-choose-its-presentation">6.1 — Identify the project and choose its presentation<a class="anchor" href="#6-1-identify-the-project-and-choose-its-presentation">#</a></h4>
+<p><strong>Read:</strong> <code>nord.project.json</code>, lines 1–22.</p>
+<!-- taught-source: nord-office/nord.project.json:1-22 --><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;Nord Engine Office&quot;,
+  &quot;id&quot;: &quot;com.crowelian.nordoffice&quot;,
+  &quot;type&quot;: &quot;html&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 640,
+    &quot;height&quot;: 360,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: false,
+    &quot;background&quot;: &quot;#2e3440&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;none&quot;,
+    &quot;gravity&quot;: [
+      0,
+      0,
+      0
+    ]
+  },</code></pre>
+<p><strong>What and why:</strong> format and engineVersion identify the serialized contract, while name/id give human and stable application identity. type chooses the host; startScene is used by a scene backend and is empty for these HTML apps. Display fields request dimensions, fit behaviour, pixel-art treatment and background. Physics selects a runtime engine; the rail shooter uses custom rules with none, while HTML-hosted libraries are initialized in their own modules.</p>
+<p><strong>Try it / expected result:</strong> Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.</p>
+<h4 id="6-2-distinguish-scene-actions-from-html-event-handling">6.2 — Distinguish scene actions from HTML event handling<a class="anchor" href="#6-2-distinguish-scene-actions-from-html-event-handling">#</a></h4>
+<p><strong>Read:</strong> <code>nord.project.json</code>, lines 23–64.</p>
+<!-- taught-source: nord-office/nord.project.json:23-64 --><pre class="code" data-lang="json"><code>  &quot;input&quot;: {
+    &quot;actions&quot;: {
+      &quot;left&quot;: [
+        &quot;KeyA&quot;,
+        &quot;ArrowLeft&quot;
+      ],
+      &quot;right&quot;: [
+        &quot;KeyD&quot;,
+        &quot;ArrowRight&quot;
+      ],
+      &quot;up&quot;: [
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;down&quot;: [
+        &quot;KeyS&quot;,
+        &quot;ArrowDown&quot;
+      ],
+      &quot;jump&quot;: [
+        &quot;Space&quot;,
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;fire&quot;: [
+        &quot;Space&quot;,
+        &quot;Mouse0&quot;
+      ],
+      &quot;interact&quot;: [
+        &quot;KeyE&quot;,
+        &quot;Enter&quot;
+      ]
+    }
+  },
+  &quot;plugins&quot;: [
+    &quot;ui&quot;,
+    &quot;audio&quot;
+  ],
+  &quot;ui&quot;: {
+    &quot;skin&quot;: &quot;cyber&quot;,
+    &quot;theme&quot;: &quot;nord&quot;
+  }
+}</code></pre>
+<p><strong>What and why:</strong> The input object maps action names to keyboard codes for Nord scene scripts. Vector Patrol reads these through this.input. HTML-tier hosts in the other projects read their own DOM events, so editing this action table alone does not rewrite those handlers. plugins/ui declare ordinary scene services and skin/theme; any remaining desktop configuration is the native capability contract rather than a browser CORS override.</p>
+<p><strong>Try it / expected result:</strong> For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input.</p>
+<h3 id="walk-style-css">7. style.css<a class="anchor" href="#walk-style-css">#</a></h3>
+<p>Read every stylesheet rule, grouped by the UI responsibility it controls.</p>
+<h4 id="7-1-set-the-app-foundation-and-reusable-visual-language">7.1 — Set the app foundation and reusable visual language<a class="anchor" href="#7-1-set-the-app-foundation-and-reusable-visual-language">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 1–37.</p>
+<!-- taught-source: nord-office/style.css:1-37 --><pre class="code" data-lang="css"><code>html {
+  background: #0b1421;
+}
+html,
+body {
+  height: auto;
+  min-height: 100%;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  background: #0b1421;
+  color: #e3edf4;
+  font: 15px system-ui;
+  margin: 0;
+}
+main {
+  max-width: 1150px;
+  margin: auto;
+  padding: 18px;
+}
+h1 {
+  color: #69e0e5;
+  letter-spacing: 3px;
+  margin: 0;
+}
+header p {
+  color: #eac47b;
+  margin: 6px 0 16px;
+}
+nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}</code></pre>
+<p><strong>What and why:</strong> The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.</p>
+<p><strong>Try it / expected result:</strong> Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change.</p>
+<h4 id="7-2-place-the-map-next-to-connection-controls">7.2 — Place the map next to connection controls<a class="anchor" href="#7-2-place-the-map-next-to-connection-controls">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 38–84.</p>
+<!-- taught-source: nord-office/style.css:38-84 --><pre class="code" data-lang="css"><code>.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 768px) 280px;
+  gap: 20px;
+}
+canvas {
+  width: 100%;
+  border: 2px solid #48627a;
+  image-rendering: pixelated;
+}
+button,
+input {
+  font: inherit;
+  border: 1px solid #45637c;
+  border-radius: 5px;
+  padding: 9px;
+  background: #20394f;
+  color: #fff;
+}
+button {
+  cursor: pointer;
+  margin: 3px;
+}
+button:hover {
+  background: #3c5c73;
+}
+input {
+  width: 100%;
+}
+label {
+  display: block;
+  margin: 8px 0;
+  font-size: 12px;
+}
+h2 {
+  font-size: 18px;
+  color: #eac47b;
+}
+p {
+  line-height: 1.45;
+}
+#tickets,
+#log {
+  white-space: pre-line;
+  font-size: 13px;
+  line-height: 1.8;
+}</code></pre>
+<p><strong>What and why:</strong> The desktop grid assigns the map flexible space and the sidebar a fixed readable column. Canvas scales responsively while retaining its simulation tile units. Buttons/inputs share typography and focusable native controls.</p>
+<p><strong>Try it / expected result:</strong> Resize the window: the map may scale, but a worker should not gain a different walking speed.</p>
+<h4 id="7-3-style-task-feedback-and-a-readable-coffee-target">7.3 — Style task feedback and a readable coffee target<a class="anchor" href="#7-3-style-task-feedback-and-a-readable-coffee-target">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 85–119.</p>
+<!-- taught-source: nord-office/style.css:85-119 --><pre class="code" data-lang="css"><code>#task {
+  background: #253a51;
+  padding: 12px;
+  border-radius: 8px;
+  min-height: 30px;
+}
+#task p {
+  font-family: monospace;
+}
+#coffee {
+  height: 28px;
+  text-align: center;
+  border: 1px solid #78927e;
+  margin: 8px 0;
+}
+#result {
+  font-size: 22px;
+  color: #77f1b1;
+}
+footer {
+  padding: 20px;
+  color: #7895ad;
+  font-size: 12px;
+}
+@media (max-width: 850px) {
+  .layout {
+    display: block;
+  }
+  aside {
+    max-width: 500px;
+  }
+  main {
+    padding: 8px;
+  }
+}</code></pre>
+<p><strong>What and why:</strong> Pre-line preserves ticket/log line breaks. The task panel contains live buttons, coffee gets a visible bounded meter and the result has stronger colour/size. The narrow-screen rule stacks the sidebar. These are feedback styles, not the logic that awards a repair.</p>
+<p><strong>Try it / expected result:</strong> Change the coffee border style only. Success must still be decided by the elapsed-time rule, not by CSS colour.</p>
+<!-- END GENERATED FILE WALKTHROUGH --><h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
 <p>The full download contains the entire runnable game and Node server. Every authored text file follows, using the manual&#39;s offline CodeMirror viewers with Copy and Wrap controls. The earlier excerpts teach each stage; these complete files are the reference implementation you can run, edit and redistribute under the included project licence.</p>
-<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="app-js">app.js<a class="anchor" href="#app-js">#</a></h3>
-<pre class="code" data-lang="js"><code>import {
+<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><details>
+<summary>Complete app.js</summary><pre class="code" data-lang="js"><code>import {
   MAP,
   JOBS,
   PUZZLES,
@@ -490,7 +1743,7 @@ export function mount(root) {
     root.replaceChildren();
   };
 }</code></pre>
-<details>
+</details><details>
 <summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.nordoffice&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Nord Engine Office — interns vs bugs&lt;/title&gt;
 &lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
@@ -1198,5 +2451,5 @@ footer {
   }
 }</code></pre>
 </details>
-<div class="pager"><a href="tut-t40-jengatedris.html"><small>← Previous</small>T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t42-paper-worlds.html"><small>Next →</small>T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-play-one-shift-before-editing">1. Play one shift before editing </a><a href="#2-find-the-whole-project-in-nord">2. Find the whole project in Nord </a><a href="#3-build-a-tile-grid-with-meaningful-stations">3. Build a tile grid with meaningful stations </a><a href="#4-define-a-shift-as-fresh-state">4. Define a shift as fresh state </a><a href="#5-claim-tasks-and-validate-their-results">5. Claim tasks and validate their results </a><a href="#6-make-the-office-chaotic-without-random-movement-bugs">6. Make the office chaotic without random movement bugs </a><a href="#7-give-the-ai-a-real-route">7. Give the AI a real route </a><a href="#8-host-browser-friends-with-node">8. Host browser friends with Node </a><a href="#9-send-intentions-and-keep-authority-on-the-server">9. Send intentions and keep authority on the server </a><a href="#10-learn-from-the-source-research">10. Learn from the source research </a><a href="#11-verify-and-export-the-complete-game">11. Verify and export the complete game </a><a href="#complete-project-source">Complete project source </a></aside></div>
+<div class="pager"><a href="tut-t40-jengatedris.html"><small>← Previous</small>T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t42-paper-worlds.html"><small>Next →</small>T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-play-one-shift-before-editing">1. Play one shift before editing </a><a href="#2-find-the-whole-project-in-nord">2. Find the whole project in Nord </a><a href="#3-build-a-tile-grid-with-meaningful-stations">3. Build a tile grid with meaningful stations </a><a href="#4-define-a-shift-as-fresh-state">4. Define a shift as fresh state </a><a href="#5-claim-tasks-and-validate-their-results">5. Claim tasks and validate their results </a><a href="#6-make-the-office-chaotic-without-random-movement-bugs">6. Make the office chaotic without random movement bugs </a><a href="#7-give-the-ai-a-real-route">7. Give the AI a real route </a><a href="#8-host-browser-friends-with-node">8. Host browser friends with Node </a><a href="#9-send-intentions-and-keep-authority-on-the-server">9. Send intentions and keep authority on the server </a><a href="#10-learn-from-the-source-research">10. Learn from the source research </a><a href="#11-verify-and-export-the-complete-game">11. Verify and export the complete game </a><a href="#file-walkthrough">Walk through every project file </a><a href="#complete-project-source">Complete project source </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

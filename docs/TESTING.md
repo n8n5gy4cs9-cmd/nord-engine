@@ -66,3 +66,6 @@ For T42/T43 run `node tools/desk-apps-test.mjs`: a focused smoke of drawing, Sav
 
 
 `node --test tools/tutorial-quality.test.mjs` checks lossless/inert portfolio JSON embedding, concurrent local script readiness/retry and readable line lengths in authored T38–T43 source. The browser app smoke also checks rapid view switching leaves one Babylon engine and that the downloaded portfolio contains exactly the current boards. The tutorial manual test verifies each complete text listing against the runnable file, not just archive availability, and toggles Wrap/checks Copy.
+
+
+`node --test tools/tutorial-lessons.test.mjs` verifies complete T38–T43 teaching coverage: every main module/page/style/config, consecutive first-to-last source ranges, substantive explanations/exercises and published walkthrough consistency. The manual browser check also follows a file-navigation link and initializes its lesson CodeMirror before checking the original illustrations and full-source archive. This documentation-only teaching pass does not require rebuilding or rerunning the unchanged game engine.

@@ -1794,6 +1794,12 @@
       "status": "done"
     },
     {
+      "id": "M7-31",
+      "milestone": "M7",
+      "title": "Teach T38–T43 code in small explained steps with source-linked excerpts, exercises and implementation coverage",
+      "status": "done"
+    },
+    {
       "id": "M8-01",
       "milestone": "M8",
       "title": ".dmg packaging + notarisation notes",

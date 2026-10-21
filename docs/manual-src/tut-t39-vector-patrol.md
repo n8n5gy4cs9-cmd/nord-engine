@@ -12,9 +12,11 @@ Build an original one-level rail shooter with low-poly ships, moving ground dots
 
 ![Vector Patrol in flight](assets/screenshots/ed-retro-vector-flight.png)
 
+**Full-code learning route:** After the orientation below, continue to [the complete file-by-file walkthrough](#file-walkthrough). It teaches every main project file in consecutive sections, with the actual code, an explanation of what and why, and a change to try. The expandable complete files at the end are a reference, not the lesson.
+
 ## 1. Play the finished level and find its code
 
-Click **Launch patrol** to unlock browser audio. WASD or arrows steer; Space/J fires; Shift activates a short roll shield with a three-second cooldown. C switches retro/clean rendering. P or **Pause / Resume** pauses; the Restart button reloads the scene. Reach the carrier at 65 seconds and destroy it before 110 seconds. A collision costs hull, green pickups restore hull, and passing a gate rewards accurate flying. A successful run saves the best score in browser storage.
+Click **Launch patrol** to unlock browser audio. WASD or arrows steer; Space/J fires; Shift activates a short roll shield with a three-second cooldown. C switches retro/clean rendering. P or **Pause / Resume** pauses; the Restart button reloads the scene. Reach the carrier at 65 seconds and destroy it before 110 seconds. A collision costs hull, gold pickups restore hull, and passing a gate rewards accurate flying. A successful run saves the best score in browser storage.
 
 In Hierarchy select **FlightGame**. Its Script component attaches `scripts/flight.js`. Open that file in Nord's code editor; use the Console to investigate script errors. The Camera looks along positive Z. Fighter, Drone0…Drone13, Carrier and Gate0…Gate2 are ordinary model entities. Select one to inspect its GLB path, transform and imported colours. The gameplay controller moves these reusable entities rather than loading a new model per shot.
 
@@ -49,7 +51,7 @@ Find the roll cooldown and shield duration. They are different timers: you canno
 
 Enemies spawn ahead of the player and move toward the camera. Their fire timer emits hostile shots. A hit removes hull unless the shield is active; a player bullet consumes an enemy hit point and awards score when the enemy dies. Discard expired bullets and objects behind the player so arrays remain bounded.
 
-At 65 seconds the simulation enables a carrier with 48 hit points. It approaches the combat zone, moves across the flight corridor and fires a spread. Its defeat awards the victory bonus exactly once. The 110-second deadline prevents an endless stalled fight. On loss or victory, movement and scoring stop; the HUD remains visible for the result.
+At 65 seconds the simulation enables a carrier with 48 hit points. It approaches the combat zone along Z, stops ahead of the fighter and fires a spread. Its defeat awards the victory bonus exactly once. The 110-second deadline prevents an endless stalled fight. On loss or victory, movement and scoring stop; the HUD remains visible for the result.
 
 **Learning check:** temporarily lower the carrier's starting hit points to test victory, then restore 48. Temporarily set hull low to test failure. Exercise both results before judging the game finished. Do not submit scores from a rendered label: the simulation owns them.
 
@@ -159,13 +161,2266 @@ Use Nord's HTML export and serve the output over HTTP. The exporter includes the
 
 The original source study is recorded in the repository's `docs/RESEARCH_GAME_TUTORIALS.md`, including pinned OutRun and StarFoxSNESRecomp source paths. This project contains original code and original Nord/Blocksmith assets, with no ROM requirement.
 
+<!-- GENERATED FILE WALKTHROUGH -->
+
+## Walk through every project file {#file-walkthrough}
+
+Work through these files in order using your downloaded project in Nord. Each numbered part shows the **next consecutive lines** of that file, not a selection of highlights. Read the explanation before changing anything. Edit the existing code in place; do not append another copy of a function. Finish one experiment, observe its result, and undo that change before moving on. The complete files and download at the end remain your reference.
+
+The walkthrough covers the app/game modules, shared helpers used by them, page, styles and project configuration. Binary art/audio/models and minified vendor dependencies are resources rather than lessons in their internal implementation; their paths and contracts are explained where the app uses them.
+
+| File | What you will build or understand |
+| --- | --- |
+| [scripts/sim.js](#walk-scripts-sim-js) | Read the complete rail-shooter simulation, including every timer, collision, spawn and end condition. |
+| [scripts/flight.js](#walk-scripts-flight-js) | Connect all simulation decisions to Nord lifecycle, actions, UI, save data and resource cleanup. |
+| [scripts/view.js](#walk-scripts-view-js) | Follow every conversion from rule records to Nord entities, native pools and retro materials. |
+| [scripts/retro-shader.js](#walk-scripts-retro-shader-js) | Read both complete GLSL programs; matrix conversion and quantization are small enough to understand line by line. |
+| [scripts/retro-audio.js](#walk-scripts-retro-audio-js) | Build the complete local-audio helper: activation, cached decoding, voices, crossfade and cleanup. |
+| [scripts/audio-config.js](#walk-scripts-audio-config-js) | Keep flight music, boss music and every combat event mapped to supplied local recordings. |
+| [index.html](#walk-index-html) | Read the complete Nord page entry point and its failure path. |
+| [nord.project.json](#walk-nord-project-json) | Read every project field that tells Nord which host, display and services to use. |
+| [scripts/mk.js](#walk-scripts-mk-js) | Read the complete generic spawn helper included by Nord’s scene-example generator. |
+| [scenes/main.scene.json](#walk-scenes-main-scene-json) | Read the whole saved scene: camera, every pooled model slot and the controller attachment. |
+
+### 1. scripts/sim.js {#walk-scripts-sim-js}
+
+Read the complete rail-shooter simulation, including every timer, collision, spawn and end condition.
+
+#### 1.1 — Give a run one state object
+
+**Read:** `scripts/sim.js`, lines 1–29.
+
+<!-- taught-source: vector-patrol/scripts/sim.js:1-29 -->
+
+```js
+export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+export function newFlight() {
+  return {
+    time: 0,
+    distance: 0,
+    x: 0,
+    y: 0,
+    hp: 100,
+    score: 0,
+    roll: 0,
+    shield: 0,
+    fire: 0,
+    spawn: 0,
+    gate: 18,
+    cell: 8,
+    bossHP: 48,
+    bossZ: 130,
+    bossFire: 1,
+    boss: false,
+    won: false,
+    lost: false,
+    enemies: [],
+    shots: [],
+    hostile: [],
+    gates: [],
+    cells: [],
+    serial: 0,
+  };
+}
+```
+
+**What and why:** newFlight creates fresh arrays and scalar fields for a run. time controls encounters; distance scrolls scenery; x/y describe the fighter’s corridor position. fire/spawn/gate/cell are countdowns, while bossHP and bossZ describe the later encounter. won/lost stop future ticks. None of this requires a browser or a mesh, so the same state can be exercised by small rule tests.
+
+**Try it / expected result:** List which fields are timers and which are coordinates. Change only hp to 50, reopen Play and confirm the HUD starts at half hull.
+
+#### 1.2 — Read one intent and advance clocks
+
+**Read:** `scripts/sim.js`, lines 30–53.
+
+<!-- taught-source: vector-patrol/scripts/sim.js:30-53 -->
+
+```js
+export function tick(s, input, dt) {
+  if (s.won || s.lost) return [];
+  dt = Math.min(0.05, dt);
+  const events = [];
+  s.time += dt;
+  s.distance += 22 * dt;
+  s.x = clamp(s.x + input.x * 12 * dt, -9, 9);
+  s.y = clamp(s.y + input.y * 9 * dt, -4.4, 5.2);
+  s.roll = Math.max(0, s.roll - dt);
+  s.shield = Math.max(0, s.shield - dt);
+  s.fire -= dt;
+  s.spawn -= dt;
+  s.gate -= dt;
+  s.cell -= dt;
+  if (input.roll && s.roll === 0) {
+    s.roll = 3;
+    s.shield = 0.75;
+    events.push('shield');
+  }
+  if (input.fire && s.fire <= 0) {
+    s.fire = 0.16;
+    s.shots.push({ x: s.x, y: s.y, z: 3 });
+    events.push('laser');
+  }
+```
+
+**What and why:** tick exits once a result is final, bounds dt, then integrates travel and clamped steering. Every countdown is updated in the same seconds-based clock. Roll starts only after its cooldown reaches zero, sets a shorter invulnerability window and emits a sound event. Holding fire creates a shot only when its interval expires, so framerate does not determine firing frequency.
+
+**Try it / expected result:** Double the fire interval from 0.16 to 0.32. Holding Space should produce roughly half as many shots; restore the original value.
+
+#### 1.3 — Spawn waves and rewards on separate schedules
+
+**Read:** `scripts/sim.js`, lines 54–73.
+
+<!-- taught-source: vector-patrol/scripts/sim.js:54-73 -->
+
+```js
+  if (s.time < 63 && s.spawn <= 0) {
+    s.spawn = Math.max(0.7, 2 - s.time / 70);
+    const id = s.serial++;
+    s.enemies.push({
+      id,
+      x: Math.sin(id * 2.3) * 7,
+      y: Math.cos(id * 1.7) * 3,
+      z: 130,
+      hp: 2,
+      fire: 1.5 + (id % 3) * 0.3,
+    });
+  }
+  if (s.gate <= 0 && s.time < 65) {
+    s.gate = 12;
+    s.gates.push({ x: Math.sin(s.serial) * 3, y: 0, z: 150 });
+  }
+  if (s.cell <= 0 && s.time < 65) {
+    s.cell = 11;
+    s.cells.push({ x: Math.sin(s.time) * 5, y: Math.cos(s.time) * 2, z: 110 });
+  }
+```
+
+**What and why:** An increasing serial ID gives repeatable sine/cosine spawn positions. Enemy spawn delay shrinks as time advances but has a minimum; enemy firing starts with staggered timers. Gates and energy cells use independent countdowns, and ordinary spawns stop before the carrier. Resetting a countdown on spawn is what prevents creating an object on every later frame.
+
+**Try it / expected result:** Change the first gate countdown in newFlight from 18 to 5. It should arrive earlier without making enemies fire faster.
+
+#### 1.4 — Centralize hull loss and grace
+
+**Read:** `scripts/sim.js`, lines 74–98.
+
+<!-- taught-source: vector-patrol/scripts/sim.js:74-98 -->
+
+```js
+  const damage = (n) => {
+    if (s.shield > 0 || s.won || s.lost) return;
+    s.hp = Math.max(0, s.hp - n);
+    s.shield = 1.2;
+    events.push('crash');
+    if (s.hp === 0) s.lost = true;
+  };
+  for (const e of s.enemies) {
+    e.z -= 24 * dt;
+    e.fire -= dt;
+    if (e.fire <= 0 && e.z > 10) {
+      e.fire = 2.8;
+      s.hostile.push({
+        x: e.x,
+        y: e.y,
+        z: e.z,
+        vx: (s.x - e.x) * 0.3,
+        vy: (s.y - e.y) * 0.3,
+      });
+    }
+    if (Math.abs(e.z) < 2 && Math.hypot(e.x - s.x, e.y - s.y) < 2) {
+      damage(18);
+      e.hp = 0;
+    }
+  }
+```
+
+**What and why:** Every damage source calls this closure. It ignores hits while shielded or after a result, clamps hp at zero, gives a short grace window and emits crash. Enemy motion and firing are separate: z brings them toward the player, and hostile vx/vy are calculated when a shot is created. Contact consumes the enemy even if the shield prevents damage.
+
+**Try it / expected result:** Activate roll immediately before contact. The visual roll and the shorter damage shield are related but distinct timers.
+
+#### 1.5 — Introduce the carrier and its fan pattern
+
+**Read:** `scripts/sim.js`, lines 99–114.
+
+<!-- taught-source: vector-patrol/scripts/sim.js:99-114 -->
+
+```js
+  if (s.time >= 65) {
+    s.boss = true;
+    s.bossZ = Math.max(48, s.bossZ - 14 * dt);
+    s.bossFire -= dt;
+    if (s.bossFire <= 0) {
+      s.bossFire = 1;
+      for (let i = -2; i <= 2; i++)
+        s.hostile.push({
+          x: i * 2,
+          y: Math.sin(s.time) * 2,
+          z: s.bossZ,
+          vx: i * 0.8,
+          vy: 0,
+        });
+    }
+  }
+```
+
+**What and why:** The encounter is time-driven, while approach distance is clamped to 48 so the carrier remains ahead. bossFire creates five shots with different horizontal velocities. These are ordinary hostile records; the same bullet collision path handles both enemy and carrier fire. That reuse keeps boss code from inventing a second damage system.
+
+**Try it / expected result:** Change the fan loop limits to -1 and 1 on a copy. You should see three shots per burst; restore five before continuing.
+
+#### 1.6 — Resolve a player shot against one target
+
+**Read:** `scripts/sim.js`, lines 115–141.
+
+<!-- taught-source: vector-patrol/scripts/sim.js:115-141 -->
+
+```js
+  for (const shot of s.shots) {
+    shot.z += 110 * dt;
+    for (const e of s.enemies)
+      if (
+        e.hp > 0 &&
+        Math.abs(shot.z - e.z) < 4 &&
+        Math.hypot(shot.x - e.x, shot.y - e.y) < 1.7
+      ) {
+        e.hp--;
+        shot.z = 999;
+        if (e.hp === 0) {
+          s.score += 100;
+          events.push('explosion');
+        }
+        break;
+      }
+    if (
+      !s.won &&
+      !s.lost &&
+      s.boss &&
+      Math.abs(shot.z - s.bossZ) < 5 &&
+      Math.abs(shot.x) < 5 &&
+      Math.abs(shot.y) < 2.6
+    ) {
+      s.bossHP--;
+      shot.z = 999;
+      events.push('checkpoint');
+```
+
+**What and why:** Shots move forward, then test a depth window and XY distance against living enemies. Setting z to 999 consumes a hit shot, and break prevents the same shot hitting another drone in that loop. Enemy death awards score and explosion once. The carrier check additionally rejects a shot after a player death or prior victory.
+
+**Try it / expected result:** Lower drone hp to one in the spawn record. A single hit should remove one drone and award 100, without damaging every drone in the array.
+
+#### 1.7 — Make the result exclusive and process hazards
+
+**Read:** `scripts/sim.js`, lines 142–168.
+
+<!-- taught-source: vector-patrol/scripts/sim.js:142-168 -->
+
+```js
+      if (s.bossHP <= 0) {
+        s.won = true;
+        s.score += 2500;
+        events.push('win');
+      }
+    }
+  }
+  for (const bullet of s.hostile) {
+    bullet.z -= 46 * dt;
+    bullet.x += bullet.vx * dt;
+    bullet.y += bullet.vy * dt;
+    if (Math.abs(bullet.z) < 2 && Math.hypot(bullet.x - s.x, bullet.y - s.y) < 1) {
+      damage(12);
+      bullet.z = -20;
+    }
+  }
+  for (const gate of s.gates) {
+    gate.z -= 22 * dt;
+    if (Math.abs(gate.z) < 1 && !gate.passed) {
+      gate.passed = true;
+      if (Math.abs(s.x - gate.x) > 3 || Math.abs(s.y) > 2.8) damage(24);
+      else {
+        s.score += 150;
+        events.push('checkpoint');
+      }
+    }
+  }
+```
+
+**What and why:** The final carrier hit sets won and adds the bonus. Later damage calls see that flag and cannot turn the same winning frame into a death. Hostile bullets advance on their stored velocities and are moved behind the scene after a hit. Gates have a passed flag so their reward/penalty is evaluated once while crossing the player plane.
+
+**Try it / expected result:** Reach a gate and inspect whether its event occurs once. Temporarily remove passed on a copy to understand why overlap over several frames needs a consumption flag.
+
+#### 1.8 — Consume pickups, prune arrays and enforce the deadline
+
+**Read:** `scripts/sim.js`, lines 169–185.
+
+<!-- taught-source: vector-patrol/scripts/sim.js:169-185 -->
+
+```js
+  for (const cell of s.cells) {
+    cell.z -= 22 * dt;
+    if (Math.abs(cell.z) < 2 && Math.hypot(cell.x - s.x, cell.y - s.y) < 1.7) {
+      cell.z = -20;
+      s.hp = Math.min(100, s.hp + 20);
+      s.score += 50;
+      events.push('shield');
+    }
+  }
+  s.enemies = s.enemies.filter((e) => e.hp > 0 && e.z > -8);
+  s.shots = s.shots.filter((b) => b.z < 180);
+  s.hostile = s.hostile.filter((b) => b.z > -10);
+  s.gates = s.gates.filter((g) => g.z > -10);
+  s.cells = s.cells.filter((c) => c.z > -10);
+  if (s.time >= 110 && !s.won) s.lost = true;
+  return events;
+}
+```
+
+**What and why:** A nearby cell heals with an upper bound, gives score and moves behind the player for removal. filter creates the next living arrays, discarding dead enemies and offscreen shots/gates/cells. These bounds matter because a view pool is finite. The deadline marks a non-winning run lost, then the event list returns to the controller for audio.
+
+**Try it / expected result:** Watch arrays in the Console during a long run; old objects should disappear. Changing a mesh’s visibility alone would not remove its simulation record.
+
+
+### 2. scripts/flight.js {#walk-scripts-flight-js}
+
+Connect all simulation decisions to Nord lifecycle, actions, UI, save data and resource cleanup.
+
+#### 2.1 — Create state and name UI screens
+
+**Read:** `scripts/flight.js`, lines 1–22.
+
+<!-- taught-source: vector-patrol/scripts/flight.js:1-22 -->
+
+```js
+import { NordScript } from 'nord';
+import { newFlight, tick } from './sim.js';
+import { FlightView } from './view.js';
+import { RetroAudio } from './retro-audio.js';
+import { AUDIO } from './audio-config.js';
+export default class Flight extends NordScript {
+  start() {
+    this.state = newFlight();
+    this.started = false;
+    this.paused = false;
+    this.bossMusic = false;
+    this.sound = new RetroAudio(AUDIO);
+    this.view = new FlightView(this);
+    this.best = this.save.get('vector-patrol.best', 0);
+    this.hud = this.ui.label('', {
+      screen: 'flight',
+      x: 12,
+      y: 8,
+      size: 18,
+      style: { whiteSpace: 'pre-wrap', maxWidth: '95%' },
+    });
+    this.ui.show('flight');
+```
+
+**What and why:** Imports separate rules, view and audio. start creates fresh run state and resource owners, loads the best score from Save and creates the persistent flight HUD. Screen names let the controller show/clear one group of labels and buttons without deleting another. Nord calls start after scene entities are available, which is why FlightView can find Fighter and Carrier now.
+
+**Try it / expected result:** Change the HUD position and reopen Play. It should move without changing the simulated fighter coordinates.
+
+#### 2.2 — Build launch controls and explain actions
+
+**Read:** `scripts/flight.js`, lines 23–52.
+
+<!-- taught-source: vector-patrol/scripts/flight.js:23-52 -->
+
+```js
+    this.ui.menu(
+      'flight-menu',
+      [
+        { text: 'Launch patrol', onClick: () => this.launch() },
+        { text: 'Mute / Unmute', onClick: () => this.sound.mute() },
+      ],
+      { x: 24, y: 170 },
+    );
+    this.ui.label(
+      [
+        'VECTOR PATROL',
+        'One canyon. Enemy waves. A carrier at 65 seconds.',
+        'WASD/arrows steer · Space/J fire · Shift roll shield',
+        'C retro/clean · P pause · clear the carrier before 110s',
+      ].join('\n'),
+      { screen: 'flight-menu', x: 24, y: 52, size: 19 },
+    );
+    this.ui.show('flight-menu');
+    this.pauseButton = this.ui.button('Pause / Resume', () => this.togglePause(), {
+      screen: 'flight',
+      x: 12,
+      y: 65,
+    });
+    this.ui.button(
+      'Restart',
+      () => {
+        this.game.restart();
+      },
+      { screen: 'flight', x: 180, y: 65 },
+    );
+```
+
+**What and why:** The menu callbacks capture this controller instance. Launch is a user-gesture entry for audio, while mute changes the audio owner. The instruction label joins separate lines without embedding rules in UI text. Pause and Restart buttons remain on the HUD screen; Restart delegates creation of a fresh scene to Nord.
+
+**Try it / expected result:** Use Restart before launching and after pausing. The new controller should return to the launch menu with no old labels left behind.
+
+#### 2.3 — Handle input that must work while paused
+
+**Read:** `scripts/flight.js`, lines 53–74.
+
+<!-- taught-source: vector-patrol/scripts/flight.js:53-74 -->
+
+```js
+    this.key = (e) => {
+      if (e.code === 'KeyP' && !e.repeat) this.togglePause();
+    };
+    window.addEventListener('keydown', this.key);
+    this.blur = () => {
+      if (this.started && !this.paused && !this.state.won && !this.state.lost)
+        this.togglePause();
+    };
+    window.addEventListener('blur', this.blur);
+    this.draw();
+  }
+  async launch() {
+    if (this.started) return;
+    this.started = true;
+    this.ui.clear('flight-menu');
+    try {
+      await this.sound.unlock();
+      await this.sound.music(0);
+    } catch (e) {
+      this.sound.problem = e.message;
+    }
+  }
+```
+
+**What and why:** A paused scene does not update, so P is handled by a window listener rather than only inside update. Ignoring repeat prevents rapid toggles from a held key. Blur pauses only an active unfinished run. launch clears the menu and unlocks/starts sound; its started guard prevents duplicate launches. Audio failures become visible state instead of destroying the scene.
+
+**Try it / expected result:** Hold P down rather than tapping it. It should toggle once. Switch away from the window mid-flight and return to find a paused run.
+
+#### 2.4 — Keep pause UI and the engine in agreement
+
+**Read:** `scripts/flight.js`, lines 75–93.
+
+<!-- taught-source: vector-patrol/scripts/flight.js:75-93 -->
+
+```js
+  togglePause() {
+    if (!this.started || this.state.won || this.state.lost) return;
+    this.paused = !this.paused;
+    if (this.paused) {
+      this.game.pause();
+      this.sound.suspend();
+      this.ui.label('PAUSED — P or Pause / Resume continues', {
+        screen: 'flight-menu',
+        x: 24,
+        y: 170,
+        size: 24,
+      });
+      this.ui.show('flight-menu');
+    } else {
+      this.ui.clear('flight-menu');
+      this.game.resume();
+      this.sound.resume();
+    }
+  }
+```
+
+**What and why:** This method changes the controller flag, game pause state, sound context and menu screen as one operation. Ended or unlaunched runs ignore it. Resume clears the temporary pause screen and restarts both clocks. Calling only game.pause without a reachable external resume action would strand the user.
+
+**Try it / expected result:** Pause and click the same button to resume. Verify the hull/time values stay fixed during the pause.
+
+#### 2.5 — Route actions, sound events and the one-time result
+
+**Read:** `scripts/flight.js`, lines 94–124.
+
+<!-- taught-source: vector-patrol/scripts/flight.js:94-124 -->
+
+```js
+  update(dt) {
+    if (this.input.pressed('retro')) this.view.setRetro(!this.view.retro);
+    if (this.started) {
+      const [x, y] = this.input.vec('left', 'right', 'down', 'up');
+      const events = tick(
+        this.state,
+        { x, y, fire: this.input.down('fire'), roll: this.input.pressed('roll') },
+        dt,
+      );
+      for (const name of events)
+        this.sound.play(name, { volume: name === 'laser' ? 0.16 : 0.5 });
+      if (this.state.boss && !this.bossMusic) {
+        this.bossMusic = true;
+        this.sound.music(1);
+      }
+      if ((this.state.won || this.state.lost) && !this.finished) {
+        this.finished = true;
+        if (this.state.won) {
+          this.best = Math.max(this.best, this.state.score);
+          this.save.set('vector-patrol.best', this.best);
+        }
+        this.ui.label(
+          this.state.won ? 'SECTOR CLEAR!' : 'PATROL LOST — Restart to retry',
+          { screen: 'flight-menu', x: 24, y: 160, size: 32 },
+        );
+        this.ui.show('flight-menu');
+      }
+    }
+    this.view.draw(this.state);
+    this.draw();
+  }
+```
+
+**What and why:** The retro action toggles the view. vec creates a directional input, down sustains firing and pressed triggers one roll. tick returns events that select local recordings. The bossMusic flag prevents restarting the carrier song every frame. finished gates the result handler, which writes a new best only on victory and shows one result label. Finally view.draw and draw project the state into meshes and text.
+
+**Try it / expected result:** Launch, lose and wait several seconds. The loss message should not multiply. Inspect the best-score slot: losing should not overwrite it with a lower score.
+
+#### 2.6 — Format state without changing it, then release resources
+
+**Read:** `scripts/flight.js`, lines 125–143.
+
+<!-- taught-source: vector-patrol/scripts/flight.js:125-143 -->
+
+```js
+  draw() {
+    const s = this.state;
+    const hull = `HULL ${s.hp}  SCORE ${s.score}  TIME ${s.time.toFixed(1)}`;
+    const roll = `ROLL ${s.roll.toFixed(1)}  BEST ${this.best}`;
+    const target = s.boss ? 'CARRIER ' + s.bossHP + '/48' : 'Reach carrier at 65s';
+    const mode = this.view.retro ? 'RETRO 320px + vertex snap' : 'CLEAN';
+    const audio = this.sound.problem ? ' · Audio: ' + this.sound.problem : '';
+    this.hud.set(`${hull}  ${roll}\n${target} · ${mode}${audio}`);
+  }
+  onDestroy() {
+    window.removeEventListener('keydown', this.key);
+    window.removeEventListener('blur', this.blur);
+    this.view?.dispose();
+    this.sound?.dispose();
+    this.ui.clear('flight');
+    this.ui.clear('flight-menu');
+    this.game.resume();
+  }
+}
+```
+
+**What and why:** The HUD method builds readable strings from current state; it does not decrement timers or grant score. onDestroy removes window listeners, releases the view and sound and clears both UI groups. Resuming during teardown prevents an old paused controller from leaving a new scene unable to tick. This cleanup is why scene restart can be safe repeatedly.
+
+**Try it / expected result:** Restart several times and press P once. One press should cause one toggle, not a toggle from every old controller.
+
+
+### 3. scripts/view.js {#walk-scripts-view-js}
+
+Follow every conversion from rule records to Nord entities, native pools and retro materials.
+
+#### 3.1 — Keep the backend and imported palette
+
+**Read:** `scripts/view.js`, lines 1–22.
+
+<!-- taught-source: vector-patrol/scripts/view.js:1-22 -->
+
+```js
+import { vertexSource, fragmentSource } from './retro-shader.js';
+export class FlightView {
+  constructor(script) {
+    this.script = script;
+    this.game = script.game;
+    const b = this.game.backend;
+    this.B = b.B;
+    this.scene = b.scene;
+    this.engine = b.engine;
+    this.canvas = b.canvas;
+    this.materials = new Map();
+    this.originals = [];
+    this.retro = true;
+    this.visuals = [];
+    for (const entity of script.scene.all())
+      for (const mesh of entity.__meshes ?? []) {
+        if (!mesh.getTotalVertices?.()) continue;
+        const old = mesh.material,
+          color = old?.albedoColor ?? old?.diffuseColor ?? this.B.Color3.White(),
+          key = color.toHexString();
+        let mat = this.materials.get(key);
+        if (!mat) {
+```
+
+**What and why:** The view stores Babylon’s engine/scene/canvas plus the script’s Nord game. It walks imported meshes and extracts either PBR albedoColor or standard diffuseColor. The colour’s hex string is a Map key, so equal palette colours share one shader material. Originals are retained for teardown rather than destroyed.
+
+**Try it / expected result:** Select a coloured drone in the scene and compare it in clean/retro mode. A single grey material for every mesh would lose the imported palette.
+
+#### 3.2 — Bind shader attributes and uniforms explicitly
+
+**Read:** `scripts/view.js`, lines 23–37.
+
+<!-- taught-source: vector-patrol/scripts/view.js:23-37 -->
+
+```js
+          mat = new this.B.ShaderMaterial(
+            'retro-' + key,
+            this.scene,
+            { vertexSource, fragmentSource },
+            {
+              attributes: ['position', 'normal'],
+              uniforms: ['worldViewProjection', 'world', 'uColor', 'uRetro', 'uGrid'],
+            },
+          );
+          mat.setColor3('uColor', color);
+          this.materials.set(key, mat);
+        }
+        this.originals.push([mesh, old]);
+        mesh.material = mat;
+      }
+```
+
+**What and why:** ShaderMaterial receives actual source strings and a declared interface. position/normal are vertex data; world/worldViewProjection are matrices; uColor/uRetro/uGrid are custom uniforms. A new colour creates a new material once, while subsequent meshes reuse it. The original material pair is recorded before assignment.
+
+**Try it / expected result:** Rename a custom uniform only in GLSL on a temporary copy and observe the error or missing effect. Restore both shader and binding names together.
+
+#### 3.3 — Find reusable entities and make simple effect materials
+
+**Read:** `scripts/view.js`, lines 38–51.
+
+<!-- taught-source: vector-patrol/scripts/view.js:38-51 -->
+
+```js
+    this.player = script.scene.find('Fighter');
+    this.carrier = script.scene.find('Carrier');
+    this.drones = Array.from({ length: 14 }, (_, i) => script.scene.find('Drone' + i));
+    this.gates = Array.from({ length: 3 }, (_, i) => script.scene.find('Gate' + i));
+    const material = (name, color) => {
+      const m = new this.B.StandardMaterial(name, this.scene);
+      m.disableLighting = true;
+      m.emissiveColor = this.B.Color3.FromHexString(color);
+      return m;
+    };
+    this.green = material('player laser', '#6affbc');
+    this.red = material('hostile laser', '#ff765a');
+    this.dot = material('ground dot', '#4b9995');
+    this.gold = material('energy cell', '#f8df75');
+```
+
+**What and why:** Names bridge the authored scene to this view: fourteen drones and three gates already exist. The local material helper creates unlit emissive colours for shots, dots and cells so those tiny objects remain readable. These materials are view resources, not new gameplay records.
+
+**Try it / expected result:** Rename Drone0 only in the scene on a copy to see why scene names are a contract. Restore it before testing combat.
+
+#### 3.4 — Allocate bounded native pools once
+
+**Read:** `scripts/view.js`, lines 52–77.
+
+<!-- taught-source: vector-patrol/scripts/view.js:52-77 -->
+
+```js
+    const pool = (count, kind, mat, size) =>
+      Array.from({ length: count }, (_, i) => {
+        const mesh = this.B.MeshBuilder.CreateBox(
+          kind + i,
+          { width: size, height: size, depth: kind === 'shot' ? 1.6 : size },
+          this.scene,
+        );
+        mesh.material = mat;
+        this.visuals.push(mesh);
+        return mesh;
+      });
+    this.shots = pool(40, 'shot', this.green, 0.12);
+    this.hostile = pool(60, 'hostile', this.red, 0.28);
+    this.cells = pool(6, 'cell', this.gold, 0.7);
+    this.dots = pool(200, 'dot', this.dot, 0.14);
+    this.terrain = new this.B.StandardMaterial('canyon', this.scene);
+    this.terrain.diffuseColor = this.B.Color3.FromHexString('#28625d');
+    this.terrain.specularColor = this.B.Color3.Black();
+    this.ground = this.B.MeshBuilder.CreateGround(
+      'canyon floor',
+      { width: 300, height: 500 },
+      this.scene,
+    );
+    this.ground.position.set(0, -5.7, 190);
+    this.ground.material = this.terrain;
+    this.visuals.push(this.ground);
+```
+
+**What and why:** pool creates boxes, assigns a shared material and records every mesh for disposal. The four pool sizes reflect different expected object counts. Terrain then gets one lit material and a ground mesh, separate from unlit effects. Allocating here rather than on every shot avoids repeated GPU setup during combat.
+
+**Try it / expected result:** Compare the 40-shot pool with the maximum shot lifetime and fire interval. If you raise fire rate dramatically, you must reconsider pool capacity too.
+
+#### 3.5 — Add cheap canyon landmarks and a view target
+
+**Read:** `scripts/view.js`, lines 78–101.
+
+<!-- taught-source: vector-patrol/scripts/view.js:78-101 -->
+
+```js
+    this.mountains = Array.from({ length: 18 }, (_, i) => {
+      const m = this.B.MeshBuilder.CreateCylinder(
+        'canyon ridge' + i,
+        {
+          diameterTop: 0,
+          diameterBottom: 18 + (i % 3) * 7,
+          height: 12 + (i % 4) * 4,
+          tessellation: 4,
+        },
+        this.scene,
+      );
+      m.material = this.terrain;
+      this.visuals.push(m);
+      return m;
+    });
+    this.light = new this.B.HemisphericLight(
+      'canyon light',
+      new this.B.Vector3(-0.6, 1, -0.4),
+      this.scene,
+    );
+    this.light.intensity = 0.95;
+    this.scene.activeCamera.setTarget(new this.B.Vector3(0, 0, 40));
+    this.setRetro(true);
+  }
+```
+
+**What and why:** Low-tessellation cones become alternating ridges. A hemispheric light illuminates those lit materials and a target points the scene camera into the corridor. Initialization ends by applying retro settings, ensuring resolution and shader toggles begin in the same mode.
+
+**Try it / expected result:** Reduce the ridge tessellation on a copy. The silhouette changes while collision rules remain exactly the same.
+
+#### 3.6 — Synchronize framebuffer and shader quality
+
+**Read:** `scripts/view.js`, lines 102–118.
+
+<!-- taught-source: vector-patrol/scripts/view.js:102-118 -->
+
+```js
+  setRetro(on) {
+    this.retro = on;
+    this.engine.setHardwareScalingLevel(
+      on ? Math.max(1, this.canvas.clientWidth / 320) : 1,
+    );
+    this.canvas.style.imageRendering = on ? 'pixelated' : 'auto';
+    for (const m of this.materials.values()) {
+      m.setFloat('uRetro', on ? 1 : 0);
+      m.setVector2(
+        'uGrid',
+        new this.B.Vector2(
+          this.engine.getRenderWidth() / 2,
+          this.engine.getRenderHeight() / 2,
+        ),
+      );
+    }
+  }
+```
+
+**What and why:** Hardware scaling reduces the rendered pixel dimensions relative to the display canvas. CSS imageRendering chooses nearest-style presentation. uRetro selects clean/quantized behaviour, and uGrid derives snapping from the actual render dimensions, not a guessed window size. Reusing this method keeps all materials synchronized when C is pressed.
+
+**Try it / expected result:** Toggle C while watching a moving model edge. Resolution, vertex steps and colour bands should change together.
+
+#### 3.7 — Place Nord entities from arrays
+
+**Read:** `scripts/view.js`, lines 119–139.
+
+<!-- taught-source: vector-patrol/scripts/view.js:119-139 -->
+
+```js
+  draw(s) {
+    this.player.pos = [s.x, s.y, 0];
+    this.player.rot = [0, 0, s.roll > 2.25 ? ((3 - s.roll) / 0.75) * 360 : -s.x * 3];
+    this.player.scale = s.shield > 0 ? [1.25, 1.25, 1.25] : [1.2, 1.2, 1.2];
+    const entities = (pool, items, fn) =>
+      pool.forEach((e, i) => {
+        e.enabled = i < items.length;
+        if (e.enabled) {
+          e.pos = [items[i].x ?? 0, items[i].y ?? 0, items[i].z];
+          fn?.(e, items[i]);
+        }
+      });
+    entities(
+      this.drones,
+      s.enemies.slice(0, 14),
+      (e, v) => (e.rot = [0, 0, Math.sin(s.time + v.id) * 12]),
+    );
+    entities(this.gates, s.gates);
+    this.carrier.enabled = s.boss && !s.won;
+    this.carrier.pos = [0, 0, s.bossZ];
+    this.carrier.rot = [0, 0, 0];
+```
+
+**What and why:** The player’s transform uses state directly; the roll is a visual angle derived from a timer. entities enables only used pooled entities and copies record coordinates. Enemy rotation is visual decoration; it does not move the collision centre. Carrier visibility depends on encounter and win state, so victory removes it without inventing a new simulation condition.
+
+**Try it / expected result:** Stop firing and watch unused drone slots: they must be disabled rather than left visible at their last position.
+
+#### 3.8 — Place primitive pools and wrap ground motion
+
+**Read:** `scripts/view.js`, lines 140–162.
+
+<!-- taught-source: vector-patrol/scripts/view.js:140-162 -->
+
+```js
+    const native = (pool, items) =>
+      pool.forEach((m, i) => {
+        m.setEnabled(i < items.length);
+        if (i < items.length) m.position.set(items[i].x, items[i].y, items[i].z);
+      });
+    native(this.shots, s.shots);
+    native(this.hostile, s.hostile);
+    native(this.cells, s.cells);
+    this.dots.forEach((m, i) =>
+      m.position.set(
+        ((i % 10) - 4.5) * 8,
+        -5.5,
+        12 + Math.floor(i / 10) * 10 - (s.distance % 10),
+      ),
+    );
+    this.mountains.forEach((m, i) =>
+      m.position.set(
+        (i % 2 ? -1 : 1) * (25 + (i % 3) * 5),
+        0,
+        20 + Math.floor(i / 2) * 28 - (s.distance % 28),
+      ),
+    );
+  }
+```
+
+**What and why:** Native Babylon meshes use setEnabled/position instead of Nord entity properties. The same index-to-record rule draws shots, hostile shots and pickups. Ground dots and ridge positions use modulo distance to recycle a fixed set of meshes, making continuous travel without continuously allocating scenery.
+
+**Try it / expected result:** Temporarily remove the modulo from ground-dot motion and observe dots leaving permanently; restore it to maintain the repeating corridor.
+
+#### 3.9 — Restore borrowed resources, destroy owned ones
+
+**Read:** `scripts/view.js`, lines 163–172.
+
+<!-- taught-source: vector-patrol/scripts/view.js:163-172 -->
+
+```js
+  dispose() {
+    for (const [mesh, mat] of this.originals) if (!mesh.isDisposed()) mesh.material = mat;
+    for (const m of this.materials.values()) m.dispose();
+    for (const m of this.visuals) m.dispose();
+    for (const m of [this.green, this.red, this.dot, this.gold]) m.dispose();
+    this.terrain.dispose();
+    this.light.dispose();
+    this.engine.setHardwareScalingLevel(1);
+  }
+}
+```
+
+**What and why:** Imported meshes belong to scene entities, so the view restores their borrowed materials if they still exist. It destroys materials/meshes/light it created and resets engine scaling for the next scene. This distinction between borrowed and owned resources prevents both leaks and accidental destruction of scene assets.
+
+**Try it / expected result:** Restart after toggling clean mode. Check the new run initializes consistently and the Console has no disposed-material errors.
+
+
+### 4. scripts/retro-shader.js {#walk-scripts-retro-shader-js}
+
+Read both complete GLSL programs; matrix conversion and quantization are small enough to understand line by line.
+
+#### 4.1 — Move from object vertices to a screen grid
+
+**Read:** `scripts/retro-shader.js`, lines 1–22.
+
+<!-- taught-source: vector-patrol/scripts/retro-shader.js:1-22 -->
+
+```js
+// Snap in projected space so the grid follows the screen, rather than world units.
+export const vertexSource = `
+precision highp float;
+attribute vec3 position;
+attribute vec3 normal;
+uniform mat4 worldViewProjection;
+uniform mat4 world;
+uniform float uRetro;
+uniform vec2 uGrid;
+varying vec3 vNormal;
+
+void main() {
+  vec4 clip = worldViewProjection * vec4(position, 1.0);
+  vec2 projected = clip.xy / clip.w;
+  vec2 snapped = floor(projected * uGrid + 0.5) / uGrid;
+  clip.xy = mix(clip.xy, snapped * clip.w, uRetro);
+  gl_Position = clip;
+  vNormal = normalize(mat3(world) * normal);
+}
+`;
+
+// A 2×2 ordered dither offsets the sixteen-level colour quantization.
+```
+
+**What and why:** precision controls floating-point calculation quality. Attributes arrive per vertex; uniforms are shared inputs. The world-view-projection matrix creates clip coordinates. Dividing XY by W gives projected coordinates, which are rounded to a grid and multiplied by W again. mix uses uRetro to select original or snapped positions. The transformed normal is passed to the fragment shader for lighting.
+
+**Try it / expected result:** Make uGrid smaller in setRetro, then compare a drone edge. Larger visible steps should appear without changing the drone’s simulation position.
+
+#### 4.2 — Light, dither and quantize colour
+
+**Read:** `scripts/retro-shader.js`, lines 23–40.
+
+<!-- taught-source: vector-patrol/scripts/retro-shader.js:23-40 -->
+
+```js
+export const fragmentSource = `
+precision highp float;
+uniform vec3 uColor;
+uniform float uRetro;
+varying vec3 vNormal;
+
+void main() {
+  vec3 lightDirection = normalize(vec3(-0.4, 0.8, -0.5));
+  float light = 0.45 + 0.55 * max(dot(normalize(vNormal), lightDirection), 0.0);
+  vec3 color = uColor * light;
+  vec2 pixel = mod(floor(gl_FragCoord.xy), 2.0);
+  float dither = (pixel.x + pixel.y * 2.0) / 4.0 - 0.375;
+  vec3 quantized = floor(
+    clamp(color + dither / 15.0, 0.0, 1.0) * 15.0 + 0.5
+  ) / 15.0;
+  gl_FragColor = vec4(mix(color, quantized, uRetro), 1.0);
+}
+`;
+```
+
+**What and why:** The fragment program normalizes directions and clamps the dot product so back-facing light contributes no negative value. A small base light preserves silhouettes. gl_FragCoord selects one of four ordered dither offsets; quantization rounds each channel to sixteen levels. mix keeps a clean comparison mode and alpha one makes models opaque. This is flat-colour stylization, not texture warping.
+
+**Try it / expected result:** Set uRetro to zero through the C toggle, then re-enable it. Compare colour bands separately from vertex position changes.
+
+
+### 5. scripts/retro-audio.js {#walk-scripts-retro-audio-js}
+
+Build the complete local-audio helper: activation, cached decoding, voices, crossfade and cleanup.
+
+#### 5.1 — Own resources for one run
+
+**Read:** `scripts/retro-audio.js`, lines 1–18.
+
+<!-- taught-source: vector-patrol/scripts/retro-audio.js:1-18 -->
+
+```js
+// Local MP3/WAV/OGG files, decoded on first user activation. No external service.
+export class RetroAudio {
+  constructor(config) {
+    this.config = config;
+    this.cache = new Map();
+    this.voices = new Set();
+    this.problem = '';
+    this.muted = false;
+  }
+  async unlock() {
+    this.ctx ??= new AudioContext();
+    if (!this.master) {
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.55;
+      this.master.connect(this.ctx.destination);
+    }
+    await this.ctx.resume();
+  }
+```
+
+**What and why:** The constructor records configuration separately from browser audio objects. A Map caches a promise for each path, and a Set tracks live voices. Keeping these on the instance gives one owner for cleanup and makes repeated effects reuse decoded audio. The AudioContext is deferred until a user gesture because browser playback permission belongs to that gesture.
+
+**Try it / expected result:** Start a fresh page and inspect the helper before clicking Start: it has configuration but no running AudioContext.
+
+#### 5.2 — Decode each path once
+
+**Read:** `scripts/retro-audio.js`, lines 19–30.
+
+<!-- taught-source: vector-patrol/scripts/retro-audio.js:19-30 -->
+
+```js
+  async load(path) {
+    if (!this.cache.has(path))
+      this.cache.set(
+        path,
+        (async () => {
+          const response = await fetch(path);
+          if (!response.ok) throw Error(`${path}: HTTP ${response.status}`);
+          return this.ctx.decodeAudioData(await response.arrayBuffer());
+        })(),
+      );
+    return this.cache.get(path);
+  }
+```
+
+**What and why:** The first load stores the entire asynchronous fetch/decode operation in the Map. A second request receives that same promise even if downloading is still in progress. Checking response.ok turns a missing file into a meaningful error instead of attempting to decode an HTML error page. decodeAudioData produces a reusable buffer, not a playing sound.
+
+**Try it / expected result:** Temporarily mistype one SFX path. Trigger it and observe the visible audio problem; restore the path and reopen Play to clear the rejected cached request.
+
+#### 5.3 — Turn a buffer into a voice
+
+**Read:** `scripts/retro-audio.js`, lines 31–58.
+
+<!-- taught-source: vector-patrol/scripts/retro-audio.js:31-58 -->
+
+```js
+  async voice(path, { volume = 0.5, loop = false, rate = 1 } = {}) {
+    if (!this.ctx) return null;
+    try {
+      const buffer = await this.load(path);
+      if (this.voices.size > 24 && !loop) return null;
+      const source = this.ctx.createBufferSource(),
+        gain = this.ctx.createGain();
+      source.buffer = buffer;
+      source.loop = loop;
+      source.playbackRate.value = rate;
+      gain.gain.value = volume;
+      source.connect(gain);
+      gain.connect(this.master);
+      const voice = { source, gain };
+      this.voices.add(voice);
+      source.onended = () => {
+        this.voices.delete(voice);
+        source.disconnect();
+        gain.disconnect();
+      };
+      source.start();
+      return voice;
+    } catch (error) {
+      this.problem = error.message;
+      console.warn('[retro audio]', error);
+      return null;
+    }
+  }
+```
+
+**What and why:** A BufferSource is single-use: the cached buffer can be reused, but each playback needs a new source. A GainNode gives that voice its own volume before reaching the master. Loop/rate options handle music and engine pitch. The non-looping voice cap bounds overlapping effects; onended disconnects nodes and removes the finished voice from the Set. Errors become an inspectable problem rather than stopping gameplay.
+
+**Try it / expected result:** Lower the voice volume for one event. Its loudness should change without affecting music or changing the file itself.
+
+#### 5.4 — Keep game events independent of file paths
+
+**Read:** `scripts/retro-audio.js`, lines 59–76.
+
+<!-- taught-source: vector-patrol/scripts/retro-audio.js:59-76 -->
+
+```js
+  play(name, options = {}) {
+    const path = this.config.sfx[name];
+    return path ? this.voice(path, options) : Promise.resolve(null);
+  }
+  async music(index = 0) {
+    const old = this.song,
+      next = await this.voice(this.config.music[index % this.config.music.length], {
+        loop: true,
+        volume: 0,
+      });
+    if (!next) return;
+    this.song = next;
+    next.gain.gain.linearRampToValueAtTime(0.4, this.ctx.currentTime + 0.4);
+    if (old) {
+      old.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.4);
+      old.source.stop(this.ctx.currentTime + 0.45);
+    }
+  }
+```
+
+**What and why:** play looks up a symbolic name in config.sfx, so collision code can request crash without knowing where the recording lives. music creates a looping voice, fades its gain in, fades the old voice out and schedules the old source to stop. Capturing the old song lets both overlap briefly rather than cutting abruptly.
+
+**Try it / expected result:** Switch between the two supplied music tracks while playing. Listen for the overlap; do not put music() inside the animation loop.
+
+#### 5.5 — Pause and dispose the right owner
+
+**Read:** `scripts/retro-audio.js`, lines 77–92.
+
+<!-- taught-source: vector-patrol/scripts/retro-audio.js:77-92 -->
+
+```js
+  mute() {
+    this.muted = !this.muted;
+    if (this.master) this.master.gain.gain.value = this.muted ? 0 : 0.55;
+    return this.muted;
+  }
+  suspend() {
+    if (this.ctx?.state === 'running') return this.ctx.suspend();
+  }
+  resume() {
+    if (this.ctx?.state === 'suspended') return this.ctx.resume();
+  }
+  async dispose() {
+    if (this.ctx) await this.ctx.close();
+    this.voices.clear();
+  }
+}
+```
+
+**What and why:** Mute changes the master gain, leaving individual volume relationships intact. Suspend/resume controls the AudioContext clock alongside a paused game. Dispose closes the whole context and clears voice ownership. This is distinct from caching a buffer: cached data may exist while no voice is playing.
+
+**Try it / expected result:** Mute, unmute, pause and resume. Then restart the scene/app and verify there is one soundtrack rather than another copy layered over the old one.
+
+
+### 6. scripts/audio-config.js {#walk-scripts-audio-config-js}
+
+Keep flight music, boss music and every combat event mapped to supplied local recordings.
+
+#### 6.1 — Map event names to recordings
+
+**Read:** `scripts/audio-config.js`, lines 1–11.
+
+<!-- taught-source: vector-patrol/scripts/audio-config.js:1-11 -->
+
+```js
+export const AUDIO = {
+  music: ['assets/audio/vector-flight.mp3', 'assets/audio/vector-boss.mp3'],
+  sfx: {
+    laser: 'assets/audio/laser.mp3',
+    explosion: 'assets/audio/explosion.mp3',
+    crash: 'assets/audio/crash.mp3',
+    shield: 'assets/audio/shield.mp3',
+    checkpoint: 'assets/audio/checkpoint.mp3',
+    win: 'assets/audio/win.mp3',
+  },
+};
+```
+
+**What and why:** The controller requests names such as laser, shield and win. This object maps those names to project-relative paths, while music index zero is flight and one is the carrier encounter. The helper has no knowledge of combat rules. A replacement recording only requires changing a path while preserving the event key.
+
+**Try it / expected result:** Replace laser with a short owned recording, reopen Play and fire once. Music should remain unchanged.
+
+
+### 7. index.html {#walk-index-html}
+
+Read the complete Nord page entry point and its failure path.
+
+#### 7.1 — Load the local runtime and start the app
+
+**Read:** `index.html`, lines 1–17.
+
+<!-- taught-source: vector-patrol/index.html:1-17 -->
+
+```html
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vector Patrol — retro rail shooter</title>
+<style>html,body{margin:0;height:100%;background:#101418;overflow:hidden}#stage{position:relative;width:100vw;height:100vh}</style>
+<script type="importmap">{"imports":{"nord":"/runtime/core/index.js"}}</script></head>
+<body><div id="stage"></div>
+<script src="/vendor/babylonjs/babylon.js"></script>
+<script src="/vendor/babylonjs-loaders/babylonjs.loaders.min.js"></script>
+<script src="/vendor/babylonjs-gui/babylon.gui.min.js"></script>
+<script src="/vendor/havok/HavokPhysics_umd.js"></script>
+<script type="module">
+import { boot } from '/runtime/babylon/index.js';
+try {
+  const project = await (await fetch('nord.project.json')).json();
+  await boot(project, { container: document.getElementById('stage'), preserveDrawingBuffer: true });
+  window.__nord_ready = true;
+} catch (e) { console.error(e); window.__nord_error = String(e); }
+</script></body></html>
+```
+
+**What and why:** The document declares encoding and viewport, creates the mount container and loads local code. The import map resolves nord for scene scripts. Local Babylon/loaders/UI/Havok scripts initialize the backend, then boot reads project metadata and builds its start scene. The ready/error flags are inspection signals used by browser checks; they are not a second simulation. The catch logs and exposes initialization errors. The page is served over HTTP so local module and asset URLs resolve consistently.
+
+**Try it / expected result:** Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name.
+
+
+### 8. nord.project.json {#walk-nord-project-json}
+
+Read every project field that tells Nord which host, display and services to use.
+
+#### 8.1 — Identify the project and choose its presentation
+
+**Read:** `nord.project.json`, lines 1–22.
+
+<!-- taught-source: vector-patrol/nord.project.json:1-22 -->
+
+```json
+{
+  "format": 1,
+  "name": "Vector Patrol",
+  "id": "com.crowelian.vectorpatrol",
+  "type": "3d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/main.scene.json",
+  "display": {
+    "width": 960,
+    "height": 540,
+    "scale": "fit",
+    "pixelArt": true,
+    "background": "#163d57"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+```
+
+**What and why:** format and engineVersion identify the serialized contract, while name/id give human and stable application identity. type chooses the host; startScene is used by a scene backend and is empty for these HTML apps. Display fields request dimensions, fit behaviour, pixel-art treatment and background. Physics selects a runtime engine; the rail shooter uses custom rules with none, while HTML-hosted libraries are initialized in their own modules.
+
+**Try it / expected result:** Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.
+
+#### 8.2 — Distinguish scene actions from HTML event handling
+
+**Read:** `nord.project.json`, lines 23–62.
+
+<!-- taught-source: vector-patrol/nord.project.json:23-62 -->
+
+```json
+  "input": {
+    "actions": {
+      "left": [
+        "KeyA",
+        "ArrowLeft"
+      ],
+      "right": [
+        "KeyD",
+        "ArrowRight"
+      ],
+      "up": [
+        "KeyW",
+        "ArrowUp"
+      ],
+      "down": [
+        "KeyS",
+        "ArrowDown"
+      ],
+      "fire": [
+        "Space",
+        "KeyJ"
+      ],
+      "roll": [
+        "ShiftLeft",
+        "ShiftRight"
+      ],
+      "retro": [
+        "KeyC"
+      ]
+    }
+  },
+  "plugins": [
+    "ui",
+    "audio"
+  ],
+  "ui": {
+    "skin": "cyber",
+    "theme": "nord"
+  }
+}
+```
+
+**What and why:** The input object maps action names to keyboard codes for Nord scene scripts. Vector Patrol reads these through this.input. HTML-tier hosts in the other projects read their own DOM events, so editing this action table alone does not rewrite those handlers. plugins/ui declare ordinary scene services and skin/theme; any remaining desktop configuration is the native capability contract rather than a browser CORS override.
+
+**Try it / expected result:** For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input.
+
+
+### 9. scripts/mk.js {#walk-scripts-mk-js}
+
+Read the complete generic spawn helper included by Nord’s scene-example generator.
+
+#### 9.1 — Understand the optional entity-data helpers
+
+**Read:** `scripts/mk.js`, lines 1–9.
+
+<!-- taught-source: vector-patrol/scripts/mk.js:1-9 -->
+
+```js
+// Tiny helpers to spawn coloured rectangles / circles / text at runtime (placeholder art). Generated by tools/gen_examples.mjs.
+const base = (name, x, y, z, tags, comps) => ({ name, tags: tags ?? [], transform: { pos: [x, y, z ?? 0], rot: [0, 0, 0], scale: [1, 1, 1] }, components: comps, scripts: [], children: [] });
+export const rectData = (name, x, y, w, h, color, o = {}) => base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/square.png', size: [w, h], tint: color, alpha: o.alpha ?? 1 }]);
+export const circleData = (name, x, y, d, color, o = {}) => base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/circle.png', size: [d, d], tint: color, alpha: o.alpha ?? 1 }]);
+export const textData = (name, x, y, t, o = {}) => base(name, x, y, o.z ?? 50, o.tags, [{ type: 'text', text: t, size: o.size ?? 20, color: o.color ?? '#eceff4' }]);
+export const rect = (scene, ...a) => scene.spawnData(rectData(...a));
+export const circle = (scene, ...a) => scene.spawnData(circleData(...a));
+export const label = (scene, ...a) => scene.spawnData(textData(...a));
+export const aabb = (a, b) => Math.abs(a.pos[0] - b.pos[0]) * 2 < a.w + b.w && Math.abs(a.pos[1] - b.pos[1]) * 2 < a.h + b.h;
+```
+
+**What and why:** base constructs plain entity data with transform, tags, components and empty script/child lists. rectData/circleData/textData specialize that structure; rect/circle/label pass it to scene.spawnData. Rest parameters forward the original arguments, and aabb is a simple axis-aligned overlap comparison. This generic helper is not imported by Vector Patrol: its actual effects use the pools in view.js. Its 2D sprite factories would also require the corresponding sprite assets before reuse.
+
+**Try it / expected result:** Search this project for imports of mk.js. There should be none; follow FlightView for the real shooter effect path rather than adding unused 2D spawn calls.
+
+
+### 10. scenes/main.scene.json {#walk-scenes-main-scene-json}
+
+Read the whole saved scene: camera, every pooled model slot and the controller attachment.
+
+#### 10.1 — Declare Camera
+
+**Read:** `scenes/main.scene.json`, lines 1–42.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:1-42 -->
+
+```json
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "eeeeee25",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          2,
+          -18
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "fov": 65,
+          "near": 0.1,
+          "far": 450
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee26",
+```
+
+**What and why:** The scene envelope declares format/name/settings and an ordered entity array. Camera has a stable ID, enabled/layer/tags and a transform, then a camera component with field of view and clipping planes. Its position behind the fighter and later target assignment frame the corridor. Empty script/child arrays mean this entity is only the scene camera.
+
+**Try it / expected result:** Select Camera in Nord and inspect position and fov. A small fov change should alter perspective without changing shot collision ranges.
+
+#### 10.2 — Declare Fighter
+
+**Read:** `scenes/main.scene.json`, lines 43–76.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:43-76 -->
+
+```json
+      "name": "Fighter",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          0.75,
+          0.75,
+          0.75
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/fighter.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee27",
+```
+
+**What and why:** This is the player’s authored model slot. Transform arrays use position/rotation/scale, model.path resolves a supplied GLB and unique requests an independent instance. Scripts/children/prefab are empty because FlightGame owns control. The view later overrides the animated transform, so changing this starting position alone is not a movement rule.
+
+**Try it / expected result:** Locate Fighter in the Hierarchy and inspect its GLB. Keep the name stable because FlightView.find uses it.
+
+#### 10.3 — Declare Drone0
+
+**Read:** `scenes/main.scene.json`, lines 77–110.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:77-110 -->
+
+```json
+      "name": "Drone0",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee28",
+```
+
+**What and why:** Drone0 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 0 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.4 — Declare Drone1
+
+**Read:** `scenes/main.scene.json`, lines 111–144.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:111-144 -->
+
+```json
+      "name": "Drone1",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee29",
+```
+
+**What and why:** Drone1 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 1 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.5 — Declare Drone2
+
+**Read:** `scenes/main.scene.json`, lines 145–178.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:145-178 -->
+
+```json
+      "name": "Drone2",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2a",
+```
+
+**What and why:** Drone2 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 2 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.6 — Declare Drone3
+
+**Read:** `scenes/main.scene.json`, lines 179–212.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:179-212 -->
+
+```json
+      "name": "Drone3",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2b",
+```
+
+**What and why:** Drone3 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 3 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.7 — Declare Drone4
+
+**Read:** `scenes/main.scene.json`, lines 213–246.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:213-246 -->
+
+```json
+      "name": "Drone4",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2c",
+```
+
+**What and why:** Drone4 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 4 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.8 — Declare Drone5
+
+**Read:** `scenes/main.scene.json`, lines 247–280.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:247-280 -->
+
+```json
+      "name": "Drone5",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2d",
+```
+
+**What and why:** Drone5 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 5 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.9 — Declare Drone6
+
+**Read:** `scenes/main.scene.json`, lines 281–314.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:281-314 -->
+
+```json
+      "name": "Drone6",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2e",
+```
+
+**What and why:** Drone6 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 6 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.10 — Declare Drone7
+
+**Read:** `scenes/main.scene.json`, lines 315–348.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:315-348 -->
+
+```json
+      "name": "Drone7",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2f",
+```
+
+**What and why:** Drone7 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 7 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.11 — Declare Drone8
+
+**Read:** `scenes/main.scene.json`, lines 349–382.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:349-382 -->
+
+```json
+      "name": "Drone8",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2g",
+```
+
+**What and why:** Drone8 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 8 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.12 — Declare Drone9
+
+**Read:** `scenes/main.scene.json`, lines 383–416.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:383-416 -->
+
+```json
+      "name": "Drone9",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2h",
+```
+
+**What and why:** Drone9 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 9 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.13 — Declare Drone10
+
+**Read:** `scenes/main.scene.json`, lines 417–450.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:417-450 -->
+
+```json
+      "name": "Drone10",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2i",
+```
+
+**What and why:** Drone10 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 10 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.14 — Declare Drone11
+
+**Read:** `scenes/main.scene.json`, lines 451–484.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:451-484 -->
+
+```json
+      "name": "Drone11",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2j",
+```
+
+**What and why:** Drone11 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 11 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.15 — Declare Drone12
+
+**Read:** `scenes/main.scene.json`, lines 485–518.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:485-518 -->
+
+```json
+      "name": "Drone12",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2k",
+```
+
+**What and why:** Drone12 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 12 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.16 — Declare Drone13
+
+**Read:** `scenes/main.scene.json`, lines 519–552.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:519-552 -->
+
+```json
+      "name": "Drone13",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          140
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/drone.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2l",
+```
+
+**What and why:** Drone13 is one named slot in the fourteen-entity drone pool. The repeated transform/component schema is intentional: all slots load the supplied drone GLB, begin ahead of the player and have no per-drone controller script. FlightView maps simulation enemy record index 13 into this slot, updates its transform and disables it when unused. IDs must remain unique even though resources repeat.
+
+**Try it / expected result:** Compare this record with its neighbour. Change neither the unique ID nor slot naming when replacing the shared GLB resource.
+
+#### 10.17 — Declare Carrier
+
+**Read:** `scenes/main.scene.json`, lines 553–586.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:553-586 -->
+
+```json
+      "name": "Carrier",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          130
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          3.5,
+          3.5,
+          3.5
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/carrier.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2m",
+```
+
+**What and why:** The carrier has its own supplied model and a larger authored scale. It begins ahead of the corridor and is enabled/positioned later by boss state. Its JSON does not decide when the boss arrives or how much hull it has; those values live in sim.js, keeping encounter rules separate from the visual asset.
+
+**Try it / expected result:** Change only carrier scale on a copy. Its silhouette should grow while the simulation hit box remains explicit and unchanged.
+
+#### 10.18 — Declare Gate0
+
+**Read:** `scenes/main.scene.json`, lines 587–620.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:587-620 -->
+
+```json
+      "name": "Gate0",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          150
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/gate.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2n",
+```
+
+**What and why:** Gate0 is one of the three reusable gate model slots. The same GLB is placed ahead initially; FlightView later pairs live gate records with these slots. Keeping gates as models and pass/fail checks as rule records makes it possible to change art without changing scoring thresholds.
+
+**Try it / expected result:** Find all three gate names in the Hierarchy, then find the three-slot array in view.js. Their counts must agree.
+
+#### 10.19 — Declare Gate1
+
+**Read:** `scenes/main.scene.json`, lines 621–654.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:621-654 -->
+
+```json
+      "name": "Gate1",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          150
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/gate.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2o",
+```
+
+**What and why:** Gate1 is one of the three reusable gate model slots. The same GLB is placed ahead initially; FlightView later pairs live gate records with these slots. Keeping gates as models and pass/fail checks as rule records makes it possible to change art without changing scoring thresholds.
+
+**Try it / expected result:** Find all three gate names in the Hierarchy, then find the three-slot array in view.js. Their counts must agree.
+
+#### 10.20 — Declare Gate2
+
+**Read:** `scenes/main.scene.json`, lines 655–688.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:655-688 -->
+
+```json
+      "name": "Gate2",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          150
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "assets/models/gate.glb",
+          "unique": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeee2p",
+```
+
+**What and why:** Gate2 is one of the three reusable gate model slots. The same GLB is placed ahead initially; FlightView later pairs live gate records with these slots. Keeping gates as models and pass/fail checks as rule records makes it possible to change art without changing scoring thresholds.
+
+**Try it / expected result:** Find all three gate names in the Hierarchy, then find the three-slot array in view.js. Their counts must agree.
+
+#### 10.21 — Declare FlightGame
+
+**Read:** `scenes/main.scene.json`, lines 689–721.
+
+<!-- taught-source: vector-patrol/scenes/main.scene.json:689-721 -->
+
+```json
+      "name": "FlightGame",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/flight.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}
+```
+
+**What and why:** FlightGame is the controller entity. Its script attachment names scripts/flight.js and provides an attributes object. Unlike model entities it needs no rendering component: its job is lifecycle, simulation and UI ownership. The closing JSON also closes the entity array/scene, completing a valid saved scene.
+
+**Try it / expected result:** Select FlightGame and open its script attachment in Nord. This is the file that starts the run and owns restart cleanup.
+
+<!-- END GENERATED FILE WALKTHROUGH -->
+
 ## Complete project source
 
 The download contains all binary assets and licences as well as the following complete text files. The guide's code blocks use the manual's local CodeMirror viewer with Copy and Wrap controls. Read a section, edit its matching project file, then compare against this complete implementation.
 
 <!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs -->
 
-### scripts/flight.js
+<details>
+<summary>Complete scripts/flight.js</summary>
 
 ```js
 import { NordScript } from 'nord';
@@ -312,6 +2567,8 @@ export default class Flight extends NordScript {
   }
 }
 ```
+
+</details>
 
 <details>
 <summary>Complete assets/models/carrier.blocksmith.json</summary>

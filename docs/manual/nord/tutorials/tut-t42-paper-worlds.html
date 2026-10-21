@@ -12,6 +12,7 @@
 <p>Build <strong>Paper Worlds</strong>, a useful drawing studio that becomes a playful 3D desk. Sketch with a pen, add shapes, text and sticky notes, zoom around your workspace, then explore ten papers in Babylon. Flick sticky notes with Havok, walk through a drawn door, play a maze or ride a graph you sketched. Save locally and share an actual 3D desk, with all source and assets supplied.</p>
 <p><strong>Download:</strong> <a href="../../assets/downloads/paper-worlds-source.zip">Complete Paper Worlds project, source and sprites</a>. Extract into a writable folder, open <code>nord.project.json</code> in Nord and press <strong>Play</strong>. No npm, account or external library download is required. This is an original app inspired by the usefulness of sketch tools such as Excalidraw; it does not copy Excalidraw source or assets.</p>
 <p><img src="../../assets/screenshots/ed-paper-studio.png" alt="Paper Worlds drawing studio"></p>
+<p><strong>Full-code learning route:</strong> After the orientation below, continue to <a href="#file-walkthrough">the complete file-by-file walkthrough</a>. It teaches every main project file in consecutive sections, with the actual code, an explanation of what and why, and a change to try. The expandable complete files at the end are a reference, not the lesson.</p>
 <h2 id="1-understand-the-actual-nord-setup">1. Understand the actual Nord setup<a class="anchor" href="#1-understand-the-actual-nord-setup">#</a></h2>
 <p>The working project uses Nord&#39;s <strong>HTML tier</strong> as the host for a local Phaser 4.2.1 drawing view and a local Babylon 3D view. Nord currently selects one scene backend per engine project; there is no “add Babylon adapter” setting that converts an existing Phaser Entity into a Babylon Entity. This tutorial implements the bridge explicitly through shared board data and a canvas texture, so the downloaded app runs in the current engine.</p>
 <p>Open <code>app.js</code> in Nord&#39;s code editor. It implements <code>mount(root)</code> and wires the views to a common model. The conceptual BoardManager is this module; the Pen is an input tool in <code>flat.js</code>; Sticky is one saved shape rendered as a 2D note or a 3D rigid box. This makes the boundary visible and teachable without inventing unsupported Inspector components.</p>
@@ -109,10 +110,1613 @@ save.set('boards', boards);</code></pre>
 <p><strong>WASM, briefly:</strong> WebAssembly is compiled code loaded by JavaScript; this app already uses the supplied Havok <code>.wasm</code> for physics, while the drawing/UI remains an HTML/JavaScript app. Nord&#39;s Rust/WASM target is a separate route for Rust applications, not a switch that compiles this JavaScript into Rust.</p>
 <h2 id="10-finish-with-a-focused-check">10. Finish with a focused check<a class="anchor" href="#10-finish-with-a-focused-check">#</a></h2>
 <p>Draw one stroke and note, save and reload, check the note survives, explore the desk, flick a sticky, use a door, try a circle and a maze, then export PNG, JSON and the desk. The automated smoke checks real Phaser drawing/save, Babylon/Havok, graph ride and desk download; full touch gestures and creative usability still benefit from human testing.</p>
-<h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
+<!-- GENERATED FILE WALKTHROUGH --><h2 id="file-walkthrough">Walk through every project file<a class="anchor" href="#file-walkthrough">#</a></h2>
+<p>Work through these files in order using your downloaded project in Nord. Each numbered part shows the <strong>next consecutive lines</strong> of that file, not a selection of highlights. Read the explanation before changing anything. Edit the existing code in place; do not append another copy of a function. Finish one experiment, observe its result, and undo that change before moving on. The complete files and download at the end remain your reference.</p>
+<p>The walkthrough covers the app/game modules, shared helpers used by them, page, styles and project configuration. Binary art/audio/models and minified vendor dependencies are resources rather than lessons in their internal implementation; their paths and contracts are explained where the app uses them.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What you will build or understand</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="#walk-model-js">model.js</a></td>
+<td>Build the entire serializable document and common painter before adding either view.</td>
+</tr>
+<tr>
+<td><a href="#walk-flat-js">flat.js</a></td>
+<td>Build the complete Phaser drawing interaction and both Arcade minigames.</td>
+</tr>
+<tr>
+<td><a href="#walk-world-js">world.js</a></td>
+<td>Build every 3D representation and interaction from the same saved boards.</td>
+</tr>
+<tr>
+<td><a href="#walk-app-js">app.js</a></td>
+<td>Build the entire document host: controls, document selection, async mode changes, persistence, exports and teardown.</td>
+</tr>
+<tr>
+<td><a href="#walk-desk-js">desk.js</a></td>
+<td>Build the complete reusable Babylon/Havok desk and browser-download helper.</td>
+</tr>
+<tr>
+<td><a href="#walk-save-js">save.js</a></td>
+<td>Understand the complete existing Nord Save helper bundled with this app.</td>
+</tr>
+<tr>
+<td><a href="#walk-portfolio-html">portfolio.html</a></td>
+<td>Read the entire exported desk template that embeds your documents and opens directly in 3D.</td>
+</tr>
+<tr>
+<td><a href="#walk-index-html">index.html</a></td>
+<td>Read the complete Nord page entry point and its failure path.</td>
+</tr>
+<tr>
+<td><a href="#walk-nord-project-json">nord.project.json</a></td>
+<td>Read every project field that tells Nord which host, display and services to use.</td>
+</tr>
+<tr>
+<td><a href="#walk-style-css">style.css</a></td>
+<td>Read every stylesheet rule, grouped by the UI responsibility it controls.</td>
+</tr>
+</tbody></table>
+<h3 id="walk-model-js">1. model.js<a class="anchor" href="#walk-model-js">#</a></h3>
+<p>Build the entire serializable document and common painter before adding either view.</p>
+<h4 id="1-1-initialize-ten-independent-boards">1.1 — Initialize ten independent boards<a class="anchor" href="#1-1-initialize-ten-independent-boards">#</a></h4>
+<p><strong>Read:</strong> <code>model.js</code>, lines 1–37.</p>
+<!-- taught-source: paper-worlds/model.js:1-37 --><pre class="code" data-lang="js"><code>export const WIDTH = 1200,
+  HEIGHT = 850;
+export function newBoards() {
+  return Array.from({ length: 10 }, (_, i) =&gt; ({
+    id: i,
+    title: [
+      'Launch plan',
+      'Build ideas',
+      'Sketchbook',
+      'Links &amp; doors',
+      'Tiny maze',
+      'Release notes',
+      'Experiments',
+      'Garden',
+      'Roadmap',
+      'Portfolio',
+    ][i],
+    shapes:
+      i === 0
+        ? [
+            {
+              kind: 'text',
+              x: 90,
+              y: 90,
+              text: 'Make something worth exploring.',
+              color: '#23384b',
+            },
+            {
+              kind: 'sticky',
+              x: 110,
+              y: 190,
+              w: 230,
+              h: 160,
+              text: 'Draw. Zoom out. Play.',
+              color: '#f5d889',
+            },
+            {</code></pre>
+<p><strong>What and why:</strong> Page dimensions describe drawing coordinates. Array.from produces one board object per ID with a title selected by index. The first page gets text and a sticky, while other pages begin empty. Shape records carry kind, position, colour and text; they do not contain native Phaser/Babylon objects, which would not serialize cleanly.</p>
+<p><strong>Try it / expected result:</strong> On a fresh save, change one title in this initializer. Existing saved data should still take precedence until you intentionally import/reset it.</p>
+<h4 id="1-2-seed-a-door-and-a-graph-as-ordinary-document-records">1.2 — Seed a door and a graph as ordinary document records<a class="anchor" href="#1-2-seed-a-door-and-a-graph-as-ordinary-document-records">#</a></h4>
+<p><strong>Read:</strong> <code>model.js</code>, lines 38–62.</p>
+<!-- taught-source: paper-worlds/model.js:38-62 --><pre class="code" data-lang="js"><code>              kind: 'rect',
+              x: 650,
+              y: 230,
+              w: 240,
+              h: 330,
+              text: 'door',
+              color: '#6a9cff',
+            },
+            {
+              kind: 'pen',
+              color: '#32a7a0',
+              points: [
+                [100, 620],
+                [210, 540],
+                [330, 590],
+                [460, 420],
+                [610, 490],
+                [760, 350],
+                [1000, 470],
+              ],
+            },
+          ]
+        : [],
+  }));
+}</code></pre>
+<p><strong>What and why:</strong> These are the remaining properties in the first-page shapes array. The rectangle uses text door as a convention interpreted later by world.js. The pen stores sampled pairs, which both the 2D painter and graph ride can consume. Finishing with an empty array for other boards avoids accidentally sharing the first page’s shapes.</p>
+<p><strong>Try it / expected result:</strong> Add a pen point to the seed on a fresh copy and observe the same change in the drawing and graph path.</p>
+<h4 id="1-3-paint-the-page-and-the-first-shape-types">1.3 — Paint the page and the first shape types<a class="anchor" href="#1-3-paint-the-page-and-the-first-shape-types">#</a></h4>
+<p><strong>Read:</strong> <code>model.js</code>, lines 63–89.</p>
+<!-- taught-source: paper-worlds/model.js:63-89 --><pre class="code" data-lang="js"><code>export function paint(ctx, board, { background = true } = {}) {
+  ctx.clearRect(0, 0, WIDTH, HEIGHT);
+  if (background) {
+    ctx.fillStyle = '#faf7ed';
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+    ctx.fillStyle = '#d5d9d6';
+    for (let y = 25; y &lt; HEIGHT; y += 25)
+      for (let x = 25; x &lt; WIDTH; x += 25) ctx.fillRect(x, y, 1, 1);
+  }
+  for (const s of board.shapes) {
+    ctx.strokeStyle = s.color || '#23384b';
+    ctx.fillStyle = s.color || '#23384b';
+    ctx.lineWidth = 4;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    if (s.kind === 'pen') {
+      ctx.beginPath();
+      s.points.forEach(([x, y], i) =&gt; (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+      ctx.stroke();
+    }
+    if (s.kind === 'rect') {
+      ctx.strokeRect(s.x, s.y, s.w, s.h);
+      if (s.text === 'door') {
+        ctx.fillStyle = '#6a9cff22';
+        ctx.fillRect(s.x, s.y, s.w, s.h);
+      }
+    }</code></pre>
+<p><strong>What and why:</strong> paint clears its destination before drawing a paper background and dot grid. Every shape resets drawing style so previous colour/line settings do not leak. Pen points become a path; rect uses x/y/width/height and a door gets translucent fill. This painter works with either the Phaser canvas or a Babylon texture context.</p>
+<p><strong>Try it / expected result:</strong> Disable background only in a temporary painter call and inspect transparency. The stored shapes must remain unchanged.</p>
+<h4 id="1-4-finish-circles-sticky-shadows-and-text">1.4 — Finish circles, sticky shadows and text<a class="anchor" href="#1-4-finish-circles-sticky-shadows-and-text">#</a></h4>
+<p><strong>Read:</strong> <code>model.js</code>, lines 90–114.</p>
+<!-- taught-source: paper-worlds/model.js:90-114 --><pre class="code" data-lang="js"><code>    if (s.kind === 'circle') {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, Math.max(4, Math.abs(s.w)), 0, 7);
+      ctx.stroke();
+    }
+    if (s.kind === 'sticky') {
+      ctx.shadowColor = '#21364b33';
+      ctx.shadowBlur = 12;
+      ctx.shadowOffsetY = 6;
+      ctx.fillRect(s.x, s.y, s.w, s.h);
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+      ctx.fillStyle = '#26384b';
+    }
+    if (s.text) {
+      ctx.font = s.kind === 'text' ? '32px system-ui' : '24px system-ui';
+      String(s.text)
+        .split('\n')
+        .slice(0, 8)
+        .forEach((line, i) =&gt;
+          ctx.fillText(line.slice(0, 60), s.x + 12, s.y + 36 + i * 30),
+        );
+    }
+  }
+}</code></pre>
+<p><strong>What and why:</strong> A circle interprets w as radius and enforces a small minimum. Sticky shadows are reset immediately after drawing so later text does not inherit blur/offset. Text size depends on kind; splitting and limiting lines prevents a long note from flooding the page. None of these view choices changes the saved note body.</p>
+<p><strong>Try it / expected result:</strong> Place text after a sticky. Its letters should be crisp instead of inheriting the sticky’s shadow.</p>
+<h4 id="1-5-treat-imported-data-as-a-document-boundary">1.5 — Treat imported data as a document boundary<a class="anchor" href="#1-5-treat-imported-data-as-a-document-boundary">#</a></h4>
+<p><strong>Read:</strong> <code>model.js</code>, lines 115–142.</p>
+<!-- taught-source: paper-worlds/model.js:115-142 --><pre class="code" data-lang="js"><code>export function validateBoards(data) {
+  const num = (v) =&gt; Number.isFinite(v) &amp;&amp; Math.abs(v) &lt;= 40000;
+  const valid = (s) =&gt;
+    s &amp;&amp;
+    ['pen', 'rect', 'circle', 'sticky', 'text'].includes(s.kind) &amp;&amp;
+    (!s.color || /^#[0-9a-f]{6}$/i.test(s.color)) &amp;&amp;
+    (!s.text || (typeof s.text === 'string' &amp;&amp; s.text.length &lt;= 10000)) &amp;&amp;
+    (s.kind === 'pen'
+      ? Array.isArray(s.points) &amp;&amp;
+        s.points.length &lt;= 10000 &amp;&amp;
+        s.points.every((p) =&gt; Array.isArray(p) &amp;&amp; p.length === 2 &amp;&amp; p.every(num))
+      : num(s.x) &amp;&amp; num(s.y) &amp;&amp; (s.kind === 'text' || (num(s.w) &amp;&amp; num(s.h))));
+  return (
+    Array.isArray(data) &amp;&amp;
+    data.length === 10 &amp;&amp;
+    data.every(
+      (b) =&gt;
+        b &amp;&amp;
+        typeof b.title === 'string' &amp;&amp;
+        b.title.length &lt;= 200 &amp;&amp;
+        Array.isArray(b.shapes) &amp;&amp;
+        b.shapes.length &lt;= 1000 &amp;&amp;
+        b.shapes.every(valid),
+    )
+  );
+}
+
+// Embed JSON as data, preserving literal replacement tokens and preventing &lt;/script&gt; markup.</code></pre>
+<p><strong>What and why:</strong> Validation limits numbers, allowed kinds, colour syntax, text length and point counts. Pen geometry requires finite coordinate pairs; other kinds require position and relevant dimensions. The outer check requires exactly ten titled boards with bounded shape arrays. This prevents malformed imports from reaching drawing methods that expect coordinates.</p>
+<p><strong>Try it / expected result:</strong> Import a copy with a string where a coordinate should be. It should produce an error and leave the previous document usable.</p>
+<h4 id="1-6-embed-text-as-inert-json-without-changing-it">1.6 — Embed text as inert JSON without changing it<a class="anchor" href="#1-6-embed-text-as-inert-json-without-changing-it">#</a></h4>
+<p><strong>Read:</strong> <code>model.js</code>, lines 143–146.</p>
+<!-- taught-source: paper-worlds/model.js:143-146 --><pre class="code" data-lang="js"><code>export function portfolioHTML(template, boards) {
+  const data = JSON.stringify(boards).replaceAll('&lt;', '\\u003c');
+  return template.replace('/*BOARD_DATA*/', () =&gt; data);
+}</code></pre>
+<p><strong>What and why:</strong> JSON.stringify preserves document structure. Escaping less-than characters prevents note text from closing a script data element. Using a replacement callback is equally important: dollar tokens in a replacement string have special meaning to String.replace, while a returned string is inserted literally. This preserves both markup-like text and prices containing dollar signs.</p>
+<p><strong>Try it / expected result:</strong> Write a note containing <door> and $&amp;. Export the desk and compare the embedded/restored board text with the original.</p>
+<h3 id="walk-flat-js">2. flat.js<a class="anchor" href="#walk-flat-js">#</a></h3>
+<p>Build the complete Phaser drawing interaction and both Arcade minigames.</p>
+<h4 id="2-1-own-view-local-state-and-a-phaser-game">2.1 — Own view-local state and a Phaser game<a class="anchor" href="#2-1-own-view-local-state-and-a-phaser-game">#</a></h4>
+<p><strong>Read:</strong> <code>flat.js</code>, lines 1–26.</p>
+<!-- taught-source: paper-worlds/flat.js:1-26 --><pre class="code" data-lang="js"><code>import { WIDTH, HEIGHT, paint } from './model.js';
+import { loadScript } from './desk.js';
+export async function createFlat(parent, getBoard, change) {
+  await loadScript('vendor/phaser/phaser.min.js');
+  const P = window.Phaser;
+  let scene,
+    texture,
+    image,
+    drag = null,
+    tool = 'pen',
+    color = '#32a7a0',
+    text = '',
+    zoom = 0.75,
+    pan = { x: 120, y: 105 },
+    balls = [],
+    player = null,
+    walls = [],
+    keys = null;
+  const game = new P.Game({
+    type: P.AUTO,
+    parent,
+    width: 960,
+    height: 640,
+    backgroundColor: '#dce5e6',
+    physics: { default: 'arcade', arcade: { gravity: { y: 0 }, debug: false } },
+    scene: {</code></pre>
+<p><strong>What and why:</strong> getBoard supplies the currently selected document without freezing an old array reference. change reports committed edits. The view owns a canvas texture, camera pan/zoom, draft shape and temporary play bodies. Phaser AUTO selects its renderer; Arcade starts with zero global gravity because only bouncing balls need gravity. The fixed internal viewport is separate from the document page size.</p>
+<p><strong>Try it / expected result:</strong> Switch board selection and verify the next stroke edits the new board, not the board that was selected when the view was created.</p>
+<h4 id="2-2-create-a-texture-and-begin-an-input-transaction">2.2 — Create a texture and begin an input transaction<a class="anchor" href="#2-2-create-a-texture-and-begin-an-input-transaction">#</a></h4>
+<p><strong>Read:</strong> <code>flat.js</code>, lines 27–64.</p>
+<!-- taught-source: paper-worlds/flat.js:27-64 --><pre class="code" data-lang="js"><code>      create() {
+        scene = this;
+        texture = this.textures.createCanvas('paper', WIDTH, HEIGHT);
+        image = this.add.image(0, 0, 'paper').setOrigin(0);
+        this.cameras.main.setBounds(-20000, -20000, 40000, 40000);
+        keys = this.input.keyboard.createCursorKeys();
+        this.input.on('pointerdown', (p) =&gt; {
+          const q = point(p);
+          if (tool === 'hand') {
+            drag = { kind: 'hand', sx: p.x, sy: p.y, px: pan.x, py: pan.y };
+            return;
+          }
+          if (player) return;
+          if (tool === 'text' || tool === 'sticky') {
+            getBoard().shapes.push({
+              kind: tool,
+              x: q.x,
+              y: q.y,
+              w: 230,
+              h: 160,
+              text: text || 'New idea',
+              color,
+            });
+            change();
+            redraw();
+            return;
+          }
+          drag = {
+            kind: tool,
+            x: q.x,
+            y: q.y,
+            w: 0,
+            h: 0,
+            text: tool === 'rect' &amp;&amp; text.toLowerCase() === 'door' ? 'door' : '',
+            color,
+            points: [[q.x, q.y]],
+          };
+        });</code></pre>
+<p><strong>What and why:</strong> The CanvasTexture is displayed at origin zero. Camera bounds allow a wide pannable workspace, and cursor keys serve the maze. Pointer down converts to world coordinates first. Hand mode records initial pan/screen values; text/sticky commit immediately; other tools begin a draft. A draft is not a saved stroke until pointer up.</p>
+<p><strong>Try it / expected result:</strong> Zoom, place a sticky and compare its position after Fit page. It should stay at its document coordinates.</p>
+<h4 id="2-3-keep-drag-geometry-separate-from-committed-shapes">2.3 — Keep drag geometry separate from committed shapes<a class="anchor" href="#2-3-keep-drag-geometry-separate-from-committed-shapes">#</a></h4>
+<p><strong>Read:</strong> <code>flat.js</code>, lines 65–85.</p>
+<!-- taught-source: paper-worlds/flat.js:65-85 --><pre class="code" data-lang="js"><code>        this.input.on('pointermove', (p) =&gt; {
+          if (!drag) return;
+          if (drag.kind === 'hand') {
+            pan.x = drag.px - (p.x - drag.sx) / zoom;
+            pan.y = drag.py - (p.y - drag.sy) / zoom;
+            applyCamera();
+            return;
+          }
+          const q = point(p);
+          if (drag.kind === 'pen') drag.points.push([q.x, q.y]);
+          else {
+            drag.w =
+              drag.kind === 'circle'
+                ? Math.hypot(q.x - drag.x, q.y - drag.y)
+                : q.x - drag.x;
+            drag.h = q.y - drag.y;
+          }
+          redraw();
+          paint(texture.context, { ...getBoard(), shapes: [...getBoard().shapes, drag] });
+          texture.refresh();
+        });</code></pre>
+<p><strong>What and why:</strong> The draft stores initial coordinates and an initial pen point. The rectangle label is lowercased when interpreting door, so the convention does not depend on letter case. Pointer move computes either camera pan in inverse zoom units or shape geometry. Preview painting appends the draft to a temporary array; it does not keep pushing copies into the document.</p>
+<p><strong>Try it / expected result:</strong> Drag slowly and inspect shape count before releasing. A long stroke should become one shape, not one saved shape per movement event.</p>
+<h4 id="2-4-commit-once-and-normalize-rectangle-directions">2.4 — Commit once and normalize rectangle directions<a class="anchor" href="#2-4-commit-once-and-normalize-rectangle-directions">#</a></h4>
+<p><strong>Read:</strong> <code>flat.js</code>, lines 86–112.</p>
+<!-- taught-source: paper-worlds/flat.js:86-112 --><pre class="code" data-lang="js"><code>        const end = () =&gt; {
+          if (drag &amp;&amp; drag.kind !== 'hand') {
+            if (drag.kind === 'rect') {
+              if (drag.w &lt; 0) {
+                drag.x += drag.w;
+                drag.w = -drag.w;
+              }
+              if (drag.h &lt; 0) {
+                drag.y += drag.h;
+                drag.h = -drag.h;
+              }
+            }
+            getBoard().shapes.push(drag);
+            change();
+          }
+          drag = null;
+          redraw();
+        };
+        this.input.on('pointerup', end);
+        this.input.on('gameout', end);
+        this.input.on('wheel', (_p, _objects, _dx, dy) =&gt; {
+          zoom = Math.max(0.2, Math.min(2.5, zoom * (dy &gt; 0 ? 0.9 : 1.1)));
+          applyCamera();
+        });
+        redraw();
+        applyCamera();
+      },</code></pre>
+<p><strong>What and why:</strong> Pointer up and leaving the game share one completion function. Rectangles dragged left/up get shifted origins and positive dimensions, so collision conversion later can use centres and sizes consistently. Only non-hand drafts enter the document. Clearing drag and repainting removes preview state. Wheel zoom is clamped and reapplied to the camera.</p>
+<p><strong>Try it / expected result:</strong> Draw the same rectangle down-right and up-left. Both should later create usable maze walls.</p>
+<h4 id="2-5-move-a-tiny-player-and-translate-coordinates-correctly">2.5 — Move a tiny player and translate coordinates correctly<a class="anchor" href="#2-5-move-a-tiny-player-and-translate-coordinates-correctly">#</a></h4>
+<p><strong>Read:</strong> <code>flat.js</code>, lines 113–145.</p>
+<!-- taught-source: paper-worlds/flat.js:113-145 --><pre class="code" data-lang="js"><code>      update() {
+        if (player) {
+          const x = Number(keys.right.isDown) - Number(keys.left.isDown),
+            y = Number(keys.down.isDown) - Number(keys.up.isDown);
+          player.body.setVelocity(x * 180, y * 180);
+          if (player.x &gt; 1100 &amp;&amp; player.y &gt; 720) {
+            parent.dispatchEvent(new CustomEvent('mazewin'));
+            stopPlay();
+          }
+        }
+      },
+    },
+  });
+  function point(p) {
+    const v = scene.cameras.main.getWorldPoint(p.x, p.y);
+    return {
+      x: Math.max(0, Math.min(WIDTH, v.x)),
+      y: Math.max(0, Math.min(HEIGHT, v.y)),
+    };
+  }
+  function applyCamera() {
+    if (scene) {
+      scene.cameras.main.setZoom(zoom);
+      scene.cameras.main.scrollX = pan.x;
+      scene.cameras.main.scrollY = pan.y;
+    }
+  }
+  function redraw() {
+    if (texture) {
+      paint(texture.context, getBoard());
+      texture.refresh();
+    }
+  }</code></pre>
+<p><strong>What and why:</strong> The maze update reads cursor directions, sets velocity and checks the lower-right goal. Reaching it dispatches a host event and destroys temporary play objects. point uses the camera’s world conversion then clamps to the printable page; applyCamera applies zoom and scroll; redraw repaints the current board and refreshes the GPU texture. These helpers centralize transforms and rendering.</p>
+<p><strong>Try it / expected result:</strong> Pan away from the page, use Fit, then play a maze. Drawing and movement should still agree about page coordinates.</p>
+<h4 id="2-6-destroy-temporary-objects-before-changing-modes">2.6 — Destroy temporary objects before changing modes<a class="anchor" href="#2-6-destroy-temporary-objects-before-changing-modes">#</a></h4>
+<p><strong>Read:</strong> <code>flat.js</code>, lines 146–160.</p>
+<!-- taught-source: paper-worlds/flat.js:146-160 --><pre class="code" data-lang="js"><code>  function stopPlay() {
+    player?.destroy();
+    player = null;
+    balls.forEach((v) =&gt; v.destroy());
+    balls = [];
+    walls.forEach((v) =&gt; v.destroy());
+    walls = [];
+  }
+  function play(mode) {
+    stopPlay();
+    zoom = 0.75;
+    pan = { x: 120, y: 105 };
+    applyCamera();
+    if (!scene) return;
+    scene.physics.world.setBounds(0, 0, WIDTH, HEIGHT);</code></pre>
+<p><strong>What and why:</strong> The player, balls and wall/goal objects belong only to a play session. stopPlay destroys them and clears arrays, leaving document shapes intact. play always calls it first, restores a useful camera framing and sets physics bounds to the entire page. This keeps a second play mode from inheriting the previous mode’s bodies.</p>
+<p><strong>Try it / expected result:</strong> Start balls, then maze, then Stop. The saved circles/rectangles should remain while moving toys disappear.</p>
+<h4 id="2-7-turn-each-circle-into-a-controlled-arcade-toy">2.7 — Turn each circle into a controlled Arcade toy<a class="anchor" href="#2-7-turn-each-circle-into-a-controlled-arcade-toy">#</a></h4>
+<p><strong>Read:</strong> <code>flat.js</code>, lines 161–182.</p>
+<!-- taught-source: paper-worlds/flat.js:161-182 --><pre class="code" data-lang="js"><code>    if (mode === 'balls') {
+      scene.physics.world.setBounds(0, 0, WIDTH, HEIGHT);
+      for (const s of getBoard().shapes.filter((s) =&gt; s.kind === 'circle')) {
+        const r = Math.max(10, Math.min(90, s.w)),
+          v = scene.add.circle(
+            s.x,
+            s.y,
+            r,
+            P.Display.Color.HexStringToColor(s.color).color,
+            0.8,
+          );
+        scene.physics.add.existing(v);
+        v.body
+          .setCircle(r)
+          .setBounce(0.95)
+          .setCollideWorldBounds(true)
+          .setVelocity(120, -60)
+          .setGravityY(240);
+        balls.push(v);
+      }
+      scene.physics.add.collider(balls, balls);
+    }</code></pre>
+<p><strong>What and why:</strong> Only circle records become dynamic circles. Radius is bounded for playable size, colour is converted from CSS hex to a Phaser number, and an Arcade body is attached. Bounce, world collision, initial velocity and per-body gravity describe the toy. Registering a collider lets the balls interact with one another; their physical positions are not written back into the document.</p>
+<p><strong>Try it / expected result:</strong> Draw two circles close together and press Bounce circles. They should collide and move while your original saved circles stay unchanged.</p>
+<h4 id="2-8-turn-rectangles-into-static-walls-and-add-a-goal">2.8 — Turn rectangles into static walls and add a goal<a class="anchor" href="#2-8-turn-rectangles-into-static-walls-and-add-a-goal">#</a></h4>
+<p><strong>Read:</strong> <code>flat.js</code>, lines 183–204.</p>
+<!-- taught-source: paper-worlds/flat.js:183-204 --><pre class="code" data-lang="js"><code>    if (mode === 'maze') {
+      for (const s of getBoard().shapes.filter(
+        (s) =&gt; s.kind === 'rect' &amp;&amp; s.text !== 'door',
+      )) {
+        const v = scene.add.rectangle(
+          s.x + s.w / 2,
+          s.y + s.h / 2,
+          Math.max(4, s.w),
+          Math.max(4, s.h),
+          0x23384b,
+        );
+        scene.physics.add.existing(v, true);
+        walls.push(v);
+      }
+      player = scene.add.circle(55, 55, 12, 0xf18b75);
+      scene.physics.add.existing(player);
+      player.body.setCircle(12).setCollideWorldBounds(true);
+      scene.physics.add.collider(player, walls);
+      const goal = scene.add.rectangle(1150, 790, 70, 70, 0x32a7a0, 0.5);
+      walls.push(goal);
+    }
+  }</code></pre>
+<p><strong>What and why:</strong> Door rectangles are excluded from walls. The visual rectangle is created from its centre and dimensions, then a static Arcade body is attached. The player gets a circular body/world bounds and a collider with walls. The teal goal is a visual target checked in update. All are registered for Stop cleanup.</p>
+<p><strong>Try it / expected result:</strong> Draw walls with an open path to the lower-right; then temporarily close that path. The player should be blocked by actual colliders, not merely dark paint.</p>
+<h4 id="2-9-expose-a-small-view-interface-after-readiness">2.9 — Expose a small view interface after readiness<a class="anchor" href="#2-9-expose-a-small-view-interface-after-readiness">#</a></h4>
+<p><strong>Read:</strong> <code>flat.js</code>, lines 205–233.</p>
+<!-- taught-source: paper-worlds/flat.js:205-233 --><pre class="code" data-lang="js"><code>  await new Promise((resolve) =&gt; {
+    const wait = () =&gt; (scene ? resolve() : requestAnimationFrame(wait));
+    wait();
+  });
+  return {
+    game,
+    redraw,
+    play,
+    stopPlay,
+    get canvas() {
+      return texture.canvas;
+    },
+    setTool(t, c, txt) {
+      tool = t;
+      color = c;
+      text = txt;
+      stopPlay();
+    },
+    fit() {
+      zoom = 0.75;
+      pan = { x: 120, y: 105 };
+      applyCamera();
+    },
+    dispose() {
+      stopPlay();
+      game.destroy(true);
+    },
+  };
+}</code></pre>
+<p><strong>What and why:</strong> The host waits until Phaser has created the scene before manipulating the view. The returned interface exposes only the operations the host needs, plus the texture canvas for the 3D bridge. Changing tools stops play, Fit changes the camera, and dispose destroys both temporary bodies and the Phaser game. This is explicit ownership across an asynchronous framework startup.</p>
+<p><strong>Try it / expected result:</strong> Reopen Play after using a minigame. There should be one Phaser canvas and a fresh usable input system.</p>
+<h3 id="walk-world-js">3. world.js<a class="anchor" href="#walk-world-js">#</a></h3>
+<p>Build every 3D representation and interaction from the same saved boards.</p>
+<h4 id="3-1-lay-out-ten-textured-papers">3.1 — Lay out ten textured papers<a class="anchor" href="#3-1-lay-out-ten-textured-papers">#</a></h4>
+<p><strong>Read:</strong> <code>world.js</code>, lines 1–20.</p>
+<!-- taught-source: paper-worlds/world.js:1-20 --><pre class="code" data-lang="js"><code>import { createDesk } from './desk.js';
+import { WIDTH, HEIGHT, paint } from './model.js';
+export async function createWorld(canvas, boards, select) {
+  const d = await createDesk(canvas),
+    { B, scene, camera } = d;
+  const papers = [],
+    stickies = [],
+    portals = [];
+  let flying = null,
+    ride = null;
+  boards.forEach((board, i) =&gt; {
+    const p = d.paper('Board ' + i, 6, 4.25, (ctx) =&gt; {
+      ctx.save();
+      ctx.scale(1024 / WIDTH, 768 / HEIGHT);
+      paint(ctx, board);
+      ctx.restore();
+    });
+    p.mesh.position.set(((i % 5) - 2) * 7, 0.12, (Math.floor(i / 5) - 0.5) * 6);
+    p.mesh.metadata = { board: i };
+    papers.push(p);</code></pre>
+<p><strong>What and why:</strong> createDesk returns the owned Babylon environment. Each board is painted with the common painter after scaling page coordinates to the texture size. Five columns/two rows place the papers; metadata stores the board ID for picking. Paper arrays retain texture and mesh handles for later refresh/focus. Texture content is derived from documents rather than separate 3D-only notes.</p>
+<p><strong>Try it / expected result:</strong> Edit board zero, enter 3D and click its paper. The editor should return to the same board ID.</p>
+<h4 id="3-2-translate-sticky-positions-and-construct-a-door">3.2 — Translate sticky positions and construct a door<a class="anchor" href="#3-2-translate-sticky-positions-and-construct-a-door">#</a></h4>
+<p><strong>Read:</strong> <code>world.js</code>, lines 21–51.</p>
+<!-- taught-source: paper-worlds/world.js:21-51 --><pre class="code" data-lang="js"><code>    for (const s of board.shapes.filter((s) =&gt; s.kind === 'sticky')) {
+      const pos = [
+        p.mesh.position.x + (s.x / WIDTH - 0.5) * 6,
+        0.5,
+        p.mesh.position.z + (s.y / HEIGHT - 0.5) * 4.25,
+      ];
+      const box = d.box('Sticky note', pos, s.color);
+      box.mesh.metadata = { sticky: true };
+      stickies.push(box);
+    }
+    if (board.shapes.some((s) =&gt; s.kind === 'rect' &amp;&amp; s.text === 'door')) {
+      const at = p.mesh.position;
+      const material = new B.StandardMaterial('Door glow', scene);
+      material.emissiveColor = B.Color3.FromHexString('#4de1d0');
+      for (const [x, y, w, h] of [
+        [-0.8, 1.3, 0.15, 2.6],
+        [0.8, 1.3, 0.15, 2.6],
+        [0, 2.6, 1.75, 0.15],
+      ]) {
+        const frame = B.MeshBuilder.CreateBox(
+          'Drawn door',
+          { width: w, height: h, depth: 0.15 },
+          scene,
+        );
+        frame.position.set(at.x + x, y, at.z + 1.4);
+        frame.material = material;
+        frame.metadata = { door: (i + 1) % 10 };
+        portals.push(frame);
+      }
+    }
+  });</code></pre>
+<p><strong>What and why:</strong> Sticky X/Y fractions become offsets across that board’s 3D paper. The box helper adds a physical toy, and metadata marks it as flickable. A door-labelled rectangle causes three glowing frame bars to be built with next-board metadata. The rendered frame is an interpretation of the label, not a direct extrusion of every rectangle.</p>
+<p><strong>Try it / expected result:</strong> Draw a normal rectangle and one labelled door. Only the labelled one should create a clickable 3D frame.</p>
+<h4 id="3-3-dispatch-picks-by-metadata">3.3 — Dispatch picks by metadata<a class="anchor" href="#3-3-dispatch-picks-by-metadata">#</a></h4>
+<p><strong>Read:</strong> <code>world.js</code>, lines 52–73.</p>
+<!-- taught-source: paper-worlds/world.js:52-73 --><pre class="code" data-lang="js"><code>  scene.onPointerObservable.add((info) =&gt; {
+    if (info.type !== B.PointerEventTypes.POINTERPICK) return;
+    const pick = info.pickInfo,
+      meta = pick?.pickedMesh?.metadata;
+    if (!meta) return;
+    if (meta.sticky) {
+      const v = stickies.find((s) =&gt; s.mesh === pick.pickedMesh);
+      v?.aggregate?.body.applyImpulse(
+        new B.Vector3(1.7, 3, -1),
+        v.mesh.getAbsolutePosition(),
+      );
+    }
+    if (meta.door !== undefined) {
+      flying = {
+        from: camera.target.clone(),
+        to: papers[meta.door].mesh.position.clone(),
+        t: 0,
+        id: meta.door,
+      };
+    }
+    if (meta.board !== undefined &amp;&amp; !flying &amp;&amp; !ride) select(meta.board);
+  });</code></pre>
+<p><strong>What and why:</strong> Only a completed pick event triggers actions. Sticky picks find their aggregate and apply an impulse at the mesh position. Door picks create a short flight record containing cloned camera targets and destination ID. Plain paper picks select the editor only when no transition/ride owns the camera. This avoids one click starting conflicting actions.</p>
+<p><strong>Try it / expected result:</strong> Click a sticky and then an empty paper. The first should flick; the second should edit, without treating the desk itself as a board.</p>
+<h4 id="3-4-animate-camera-ownership-in-seconds">3.4 — Animate camera ownership in seconds<a class="anchor" href="#3-4-animate-camera-ownership-in-seconds">#</a></h4>
+<p><strong>Read:</strong> <code>world.js</code>, lines 74–100.</p>
+<!-- taught-source: paper-worlds/world.js:74-100 --><pre class="code" data-lang="js"><code>  d.update.add((dt) =&gt; {
+    if (flying) {
+      flying.t += dt;
+      camera.setTarget(B.Vector3.Lerp(flying.from, flying.to, Math.min(1, flying.t)));
+      camera.radius = Math.max(3, camera.radius - dt * 20);
+      if (flying.t &gt;= 1) {
+        const id = flying.id;
+        flying = null;
+        select(id);
+      }
+    }
+    if (ride) {
+      ride.t += dt * 0.06;
+      const n = Math.min(
+        ride.points.length - 2,
+        Math.floor(ride.t * (ride.points.length - 1)),
+      );
+      ride.camera.position.copyFrom(ride.points[n]).addInPlace(new B.Vector3(0, 0.8, 0));
+      ride.camera.setTarget(ride.points[n + 1]);
+      if (ride.t &gt;= 1) {
+        scene.activeCamera = camera;
+        ride.camera.dispose();
+        ride.mesh.dispose();
+        ride = null;
+      }
+    }
+  });</code></pre>
+<p><strong>What and why:</strong> Door flight interpolates the orbit target over about one second and brings radius inward, then calls select. A graph ride uses a different camera and a sampled path index; it clamps the index so looking at the next point stays valid. At the end, it restores the orbit camera and disposes the temporary camera/tube. These are animations, not edits to board state.</p>
+<p><strong>Try it / expected result:</strong> Ride the initial graph to its end. Orbit controls should be available again rather than leaving a hidden FreeCamera active.</p>
+<h4 id="3-5-refresh-textures-and-scatter-owned-toys">3.5 — Refresh textures and scatter owned toys<a class="anchor" href="#3-5-refresh-textures-and-scatter-owned-toys">#</a></h4>
+<p><strong>Read:</strong> <code>world.js</code>, lines 101–122.</p>
+<!-- taught-source: paper-worlds/world.js:101-122 --><pre class="code" data-lang="js"><code>  return {
+    ...d,
+    papers,
+    stickies,
+    refresh(id, source) {
+      const p = papers[id],
+        ctx = p.texture.getContext();
+      ctx.clearRect(0, 0, 1024, 768);
+      ctx.drawImage(source, 0, 0, 1024, 768);
+      p.texture.update();
+    },
+    shake() {
+      for (const s of stickies)
+        s.aggregate?.body.applyImpulse(
+          new B.Vector3(
+            (Math.random() - 0.5) * 4,
+            2 + Math.random() * 2,
+            (Math.random() - 0.5) * 4,
+          ),
+          s.mesh.getAbsolutePosition(),
+        );
+    },</code></pre>
+<p><strong>What and why:</strong> Spreading d returns the desk lifecycle along with papers/stickies. refresh clears and uploads the active Phaser canvas into one DynamicTexture; update makes the new pixels visible. shake applies different lateral/upward impulses to each physical note. Neither operation rewrites the saved shape array.</p>
+<p><strong>Try it / expected result:</strong> Shake notes, return to 2D and compare text/positions. The original document should be intact even though physical poses were chaotic.</p>
+<h4 id="3-6-convert-one-stroke-into-a-camera-track">3.6 — Convert one stroke into a camera track<a class="anchor" href="#3-6-convert-one-stroke-into-a-camera-track">#</a></h4>
+<p><strong>Read:</strong> <code>world.js</code>, lines 123–157.</p>
+<!-- taught-source: paper-worlds/world.js:123-157 --><pre class="code" data-lang="js"><code>    ride(board) {
+      if (ride) return;
+      const line = board.shapes
+        .filter((s) =&gt; s.kind === 'pen' &amp;&amp; s.points.length &gt; 3)
+        .at(-1);
+      if (!line) throw Error('Draw a pen graph with at least four points first.');
+      const pts = line.points
+        .filter((_, i) =&gt; i % Math.max(1, Math.floor(line.points.length / 30)) === 0)
+        .map(
+          ([x, y]) =&gt;
+            new B.Vector3(
+              (x / WIDTH - 0.5) * 26,
+              1 + (1 - y / HEIGHT) * 6,
+              (x / WIDTH - 0.5) * 14,
+            ),
+        );
+      const points = B.Curve3.CreateCatmullRomSpline(pts, 8).getPoints(),
+        mesh = B.MeshBuilder.CreateTube(
+          'Graph track',
+          { path: points, radius: 0.08 },
+          scene,
+        );
+      const mat = new B.StandardMaterial('Track teal', scene);
+      mat.emissiveColor = B.Color3.FromHexString('#3dd4c5');
+      mesh.material = mat;
+      const rc = new B.FreeCamera('Coaster', points[0], scene);
+      scene.activeCamera = rc;
+      ride = { points, camera: rc, mesh, t: 0 };
+    },
+    focus(id) {
+      camera.setTarget(papers[id].mesh.position);
+      camera.radius = 10;
+    },
+  };
+}</code></pre>
+<p><strong>What and why:</strong> The last pen stroke with enough points becomes the route. Subsampling limits geometric complexity, coordinate mapping turns page X/Y into track X/Y/Z, and Catmull–Rom creates a smooth sampled curve. A tube displays it. A FreeCamera takes over until the update callback completes the ride. focus is a separate orbit convenience for board selection.</p>
+<p><strong>Try it / expected result:</strong> Draw a rising/falling graph and ride it. Changing the stroke’s vertical shape should alter camera height, while no rigid-body vehicle is implied.</p>
+<h3 id="walk-app-js">4. app.js<a class="anchor" href="#walk-app-js">#</a></h3>
+<p>Build the entire document host: controls, document selection, async mode changes, persistence, exports and teardown.</p>
+<h4 id="4-1-create-identity-and-document-actions">4.1 — Create identity and document actions<a class="anchor" href="#4-1-create-identity-and-document-actions">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 1–23.</p>
+<!-- taught-source: paper-worlds/app.js:1-23 --><pre class="code" data-lang="js"><code>import { Save } from './save.js';
+import { newBoards, validateBoards, portfolioHTML } from './model.js';
+import { createFlat } from './flat.js';
+import { createWorld } from './world.js';
+import { download } from './desk.js';
+export async function mount(root) {
+  root.innerHTML = /* HTML */ `
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&gt;
+    &lt;main&gt;
+      &lt;header&gt;
+        &lt;div class=&quot;brand&quot;&gt;
+          &lt;span class=&quot;mascot&quot;&gt;&lt;/span&gt;
+          &lt;div&gt;
+            &lt;h1&gt;Paper Worlds&lt;/h1&gt;
+            &lt;p&gt;A little room for big ideas.&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;button id=&quot;mode&quot;&gt;Explore 3D desk&lt;/button&gt;
+          &lt;button id=&quot;save&quot;&gt;Save&lt;/button&gt;
+          &lt;button id=&quot;export&quot;&gt;Export desk&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/header&gt;</code></pre>
+<p><strong>What and why:</strong> The imports give the host document, views and download operations. The header contains mode/save/export controls and uses the supplied mascot sheet through CSS. These controls are separate from painting so the same document can be acted on in either view. mount owns only the supplied root.</p>
+<p><strong>Try it / expected result:</strong> Change the subtitle and reopen Play. It should not affect saves or board identity.</p>
+<h4 id="4-2-declare-tools-and-editing-values">4.2 — Declare tools and editing values<a class="anchor" href="#4-2-declare-tools-and-editing-values">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 24–51.</p>
+<!-- taught-source: paper-worlds/app.js:24-51 --><pre class="code" data-lang="js"><code>      &lt;section class=&quot;workbench&quot;&gt;
+        &lt;aside&gt;
+          &lt;label&gt;
+            YOUR BOARDS
+            &lt;select id=&quot;boards&quot;&gt;&lt;/select&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            Tool
+            &lt;select id=&quot;tool&quot;&gt;
+              &lt;option value=&quot;pen&quot;&gt;Pen&lt;/option&gt;
+              &lt;option value=&quot;hand&quot;&gt;Pan workspace&lt;/option&gt;
+              &lt;option value=&quot;rect&quot;&gt;Rectangle / door&lt;/option&gt;
+              &lt;option value=&quot;circle&quot;&gt;Circle&lt;/option&gt;
+              &lt;option value=&quot;sticky&quot;&gt;Sticky note&lt;/option&gt;
+              &lt;option value=&quot;text&quot;&gt;Text&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            Ink
+            &lt;input id=&quot;color&quot; type=&quot;color&quot; value=&quot;#32a7a0&quot; /&gt;
+          &lt;/label&gt;
+          &lt;label&gt;
+            Text / rectangle label
+            &lt;textarea id=&quot;text&quot; placeholder=&quot;Type door for a portal rectangle&quot;&gt;&lt;/textarea&gt;
+          &lt;/label&gt;
+          &lt;button id=&quot;undo&quot;&gt;Undo last shape&lt;/button&gt;
+          &lt;button id=&quot;fit&quot;&gt;Fit page&lt;/button&gt;
+          &lt;div class=&quot;rule&quot;&gt;&lt;/div&gt;</code></pre>
+<p><strong>What and why:</strong> The sidebar exposes board selection, tool, colour and text. IDs are read later by tool(), so choosing a tool changes data passed into flat.setTool rather than mutating a Phaser object directly from markup. Undo/Fit operate on document or camera respectively; their similar UI placement does not mean they have the same state owner.</p>
+<p><strong>Try it / expected result:</strong> Follow the color input ID to tool(). Verify the same colour reaches newly drawn shapes, not existing ones.</p>
+<h4 id="4-3-declare-play-backup-controls-and-both-surfaces">4.3 — Declare play/backup controls and both surfaces<a class="anchor" href="#4-3-declare-play-backup-controls-and-both-surfaces">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 52–85.</p>
+<!-- taught-source: paper-worlds/app.js:52-85 --><pre class="code" data-lang="js"><code>          &lt;h3&gt;Make it playful&lt;/h3&gt;
+          &lt;button id=&quot;balls&quot;&gt;Bounce circles&lt;/button&gt;
+          &lt;button id=&quot;maze&quot;&gt;Play drawn maze&lt;/button&gt;
+          &lt;button id=&quot;stop&quot;&gt;Stop minigame&lt;/button&gt;
+          &lt;button id=&quot;shake&quot;&gt;Shake stickies&lt;/button&gt;
+          &lt;button id=&quot;ride&quot;&gt;Ride pen graph&lt;/button&gt;
+          &lt;div class=&quot;rule&quot;&gt;&lt;/div&gt;
+          &lt;button id=&quot;png&quot;&gt;Download PNG&lt;/button&gt;
+          &lt;button id=&quot;json&quot;&gt;Backup JSON&lt;/button&gt;
+          &lt;label&gt;
+            Import desk JSON
+            &lt;input id=&quot;import&quot; type=&quot;file&quot; accept=&quot;.json&quot; /&gt;
+          &lt;/label&gt;
+          &lt;p&gt;
+            Wheel zooms. Pan tool moves the workspace. In 3D drag to orbit and wheel to
+            zoom; click a paper to edit, a door to travel, a sticky to flick.
+          &lt;/p&gt;
+        &lt;/aside&gt;
+        &lt;div&gt;
+          &lt;div class=&quot;titlebar&quot;&gt;
+            &lt;b id=&quot;title&quot;&gt;&lt;/b&gt;
+            &lt;span id=&quot;badge&quot;&gt;2D STUDIO&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div id=&quot;flat&quot;&gt;&lt;/div&gt;
+          &lt;canvas id=&quot;world&quot; hidden&gt;&lt;/canvas&gt;
+          &lt;p id=&quot;status&quot;&gt;
+            Draw a rectangle labelled door to link the next board. Draw a graph with the
+            pen for a camera ride.
+          &lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+      &lt;footer&gt;10 boards · local-first · Crowelian 2026 + Sonnet&lt;/footer&gt;
+    &lt;/main&gt;
+  `;</code></pre>
+<p><strong>What and why:</strong> Minigame, shake and ride controls are explicit mode requests. PNG/JSON/import expose recovery tools. The titlebar/badge communicates which representation is active, while only one of the two canvases is visible. The status paragraph is the common error/progress outlet. None of these buttons silently writes files to a disk path.</p>
+<p><strong>Try it / expected result:</strong> Find the hidden world canvas and the flat container; switch modes and observe visibility changing for the same page.</p>
+<h4 id="4-4-choose-document-data-before-starting-phaser">4.4 — Choose document data before starting Phaser<a class="anchor" href="#4-4-choose-document-data-before-starting-phaser">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 86–110.</p>
+<!-- taught-source: paper-worlds/app.js:86-110 --><pre class="code" data-lang="js"><code>  const $ = (id) =&gt; root.querySelector('#' + id);
+  const save = new Save('paper-worlds');
+  let boards = save.get('boards', null),
+    active = 0,
+    world = null,
+    in3d = false,
+    revision = 0,
+    saved = 0;
+  const embedded = document.querySelector('#desk-data');
+  if (embedded) {
+    try {
+      const v = JSON.parse(embedded.textContent);
+      if (validateBoards(v)) boards = v;
+    } catch {}
+  }
+  if (!validateBoards(boards)) boards = newBoards();
+  const say = (t) =&gt; ($('status').textContent = t);
+  const flat = await createFlat(
+    $('flat'),
+    () =&gt; boards[active],
+    () =&gt; {
+      revision++;
+      say('Edited · autosaving locally');
+    },
+  );</code></pre>
+<p><strong>What and why:</strong> The host reads a versioned save, optionally reads embedded document JSON, validates it and falls back to newBoards. Active index, revision and saved counters are host state. createFlat receives a getter for the current board and a change callback that marks unsaved edits. A captured fixed board object here would break selection/import later.</p>
+<p><strong>Try it / expected result:</strong> Import a valid JSON backup after editing another board. New strokes should use the imported board array.</p>
+<h4 id="4-5-wire-selections-and-serialize-3d-transitions">4.5 — Wire selections and serialize 3D transitions<a class="anchor" href="#4-5-wire-selections-and-serialize-3d-transitions">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 111–169.</p>
+<!-- taught-source: paper-worlds/app.js:111-169 --><pre class="code" data-lang="js"><code>  const options = () =&gt; {
+    $('boards').replaceChildren(
+      ...boards.map((b, i) =&gt; {
+        const o = document.createElement('option');
+        o.value = i;
+        o.textContent = `${String(i + 1).padStart(2, '0')} ${b.title}`;
+        return o;
+      }),
+    );
+    $('boards').value = active;
+    $('title').textContent = boards[active].title;
+  };
+  options();
+  const tool = () =&gt; flat.setTool($('tool').value, $('color').value, $('text').value);
+  for (const id of ['tool', 'color', 'text']) $(id).addEventListener('input', tool);
+  tool();
+  flat.fit();
+  // Serialize view changes so double-clicks cannot leave an orphaned 3D engine.
+  let modeChange = Promise.resolve();
+  function mode(to3d) {
+    modeChange = modeChange.then(() =&gt; changeMode(to3d));
+    return modeChange;
+  }
+  async function changeMode(to3d) {
+    if (to3d === in3d) return;
+    try {
+      if (to3d) {
+        say('Preparing the desk and Havok…');
+        world?.dispose();
+        world = await createWorld($('world'), boards, (id) =&gt; {
+          active = id;
+          options();
+          flat.redraw();
+          mode(false);
+        });
+        world.refresh(active, flat.canvas);
+        flat.stopPlay();
+        flat.game.scene.pause('default');
+      }
+      in3d = to3d;
+      $('flat').hidden = in3d;
+      $('world').hidden = !in3d;
+      $('mode').textContent = in3d ? 'Return to 2D studio' : 'Explore 3D desk';
+      $('badge').textContent = in3d ? '3D DESK' : '2D STUDIO';
+      if (in3d) world.resize();
+      else {
+        world?.setActive(false);
+        world?.scene.detachControl();
+        flat.game.scene.resume('default');
+      }
+      say(
+        in3d
+          ? 'Orbit the desk. Click a paper, glowing door or sticky.'
+          : 'Wheel zooms · Pan tool moves · edit the selected board',
+      );
+    } catch (e) {
+      say(e.message);
+    }
+  }</code></pre>
+<p><strong>What and why:</strong> options rebuilds the selector and title from document data. tool reads current editing values, then Fit sets the opening camera. modeChange chains asynchronous mode requests so rapid clicks cannot create orphaned engines. changeMode creates/replaces the world, refreshes the active texture and pauses Phaser, or hides/stops 3D and resumes Phaser. Errors stay visible in status.</p>
+<p><strong>Try it / expected result:</strong> Double-click Explore 3D quickly. You should end with one active desk, not multiple render loops.</p>
+<h4 id="4-6-separate-document-edits-camera-changes-and-toy-actions">4.6 — Separate document edits, camera changes and toy actions<a class="anchor" href="#4-6-separate-document-edits-camera-changes-and-toy-actions">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 170–214.</p>
+<!-- taught-source: paper-worlds/app.js:170-214 --><pre class="code" data-lang="js"><code>  $('mode').onclick = () =&gt; mode(!in3d);
+  $('boards').onchange = () =&gt; {
+    active = Number($('boards').value);
+    flat.stopPlay();
+    flat.redraw();
+    options();
+    if (in3d) world.focus(active);
+  };
+  $('undo').onclick = () =&gt; {
+    boards[active].shapes.pop();
+    flat.redraw();
+    revision++;
+  };
+  $('fit').onclick = () =&gt; flat.fit();
+  $('balls').onclick = () =&gt; {
+    mode(false);
+    flat.play('balls');
+    say('Circles are now Arcade balls. Stop minigame to edit again.');
+  };
+  $('maze').onclick = () =&gt; {
+    mode(false);
+    flat.play('maze');
+    say(
+      'Arrow keys move the tiny coral player to the lower-right goal. Rectangles are solid maze walls.',
+    );
+  };
+  $('stop').onclick = () =&gt; {
+    flat.stopPlay();
+    say('Back to drawing.');
+  };
+  $('flat').addEventListener('mazewin', () =&gt;
+    say('MAZE COMPLETE! You walked your own drawing.'),
+  );
+  $('shake').onclick = async () =&gt; {
+    await mode(true);
+    world?.shake();
+  };
+  $('ride').onclick = async () =&gt; {
+    await mode(true);
+    try {
+      world?.ride(boards[active]);
+    } catch (e) {
+      say(e.message);
+    }
+  };</code></pre>
+<p><strong>What and why:</strong> Board selection changes the getter target and redraws; Undo changes saved shapes/revision; Fit changes only the view. Ball/maze requests return to 2D; Stop removes temporary play state. Shake/ride await a 3D transition before using its world. Maze victory arrives as an event from flat rather than the host guessing coordinates again.</p>
+<p><strong>Try it / expected result:</strong> Undo once after drawing, then use Fit. Only Undo should change shape count.</p>
+<h4 id="4-7-save-revisions-and-export-simple-formats">4.7 — Save revisions and export simple formats<a class="anchor" href="#4-7-save-revisions-and-export-simple-formats">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 215–233.</p>
+<!-- taught-source: paper-worlds/app.js:215-233 --><pre class="code" data-lang="js"><code>  function persist() {
+    try {
+      save.set('boards', boards);
+      saved = revision;
+      say('Saved on this device · ' + new Date().toLocaleTimeString());
+    } catch (e) {
+      say('Storage full or unavailable: export JSON to keep your work. ' + e.message);
+    }
+  }
+  $('save').onclick = persist;
+  const timer = setInterval(() =&gt; {
+    if (revision !== saved) persist();
+  }, 1500);
+  $('png').onclick = () =&gt;
+    flat.canvas.toBlob((blob) =&gt;
+      download('paper-' + (active + 1) + '.png', blob, 'image/png'),
+    );
+  $('json').onclick = () =&gt;
+    download('paper-worlds.json', JSON.stringify(boards, null, 2));</code></pre>
+<p><strong>What and why:</strong> persist writes boards through Nord Save and acknowledges the exact revision only on success. The timer writes only changed documents. PNG reads the drawing canvas into a Blob, while JSON serializes editable records. Their outputs serve different purposes: an image is viewable, a JSON backup can be edited/imported. Storage failure explains the recovery path.</p>
+<p><strong>Try it / expected result:</strong> Draw, wait for autosave and reload. Then compare a downloaded PNG with a JSON backup: only the JSON contains shape kinds and coordinates.</p>
+<h4 id="4-8-validate-imported-files-and-export-a-portfolio-template">4.8 — Validate imported files and export a portfolio template<a class="anchor" href="#4-8-validate-imported-files-and-export-a-portfolio-template">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 234–269.</p>
+<!-- taught-source: paper-worlds/app.js:234-269 --><pre class="code" data-lang="js"><code>  $('import').onchange = async () =&gt; {
+    const file = $('import').files[0];
+    if (!file) return;
+    if (file.size &gt; 5000000) {
+      say('Desk JSON must be under 5 MB.');
+      return;
+    }
+    try {
+      const data = JSON.parse(await file.text());
+      if (!validateBoards(data))
+        throw Error('Expected ten boards with supported shapes.');
+      boards = data;
+      active = 0;
+      revision++;
+      options();
+      flat.redraw();
+      await mode(false);
+      persist();
+    } catch (e) {
+      say(e.message);
+    }
+  };
+  $('export').onclick = async () =&gt; {
+    try {
+      persist();
+      const response = await fetch('portfolio.html');
+      if (!response.ok) throw Error('Missing portfolio.html');
+      const template = await response.text();
+      download('my-paper-desk.html', portfolioHTML(template, boards), 'text/html');
+      say(
+        'Desk HTML downloaded. Put it beside the exported lib/vendor files, then serve that folder over HTTP.',
+      );
+    } catch (e) {
+      say(e.message);
+    }
+  };</code></pre>
+<p><strong>What and why:</strong> Import limits bytes, parses JSON, validates the full document, updates selection/revision, returns to 2D and persists. Export fetches the local template, calls the safe embedding helper and downloads a new HTML page. Missing template and storage errors are reported. The exported HTML still needs the accompanying local modules/vendor folder explained in the guide.</p>
+<p><strong>Try it / expected result:</strong> Import malformed JSON and confirm the old document remains. Export a valid desk and inspect that it contains all ten boards, not just the active PNG.</p>
+<h4 id="4-9-offer-touch-navigation-and-release-the-mounted-app">4.9 — Offer touch navigation and release the mounted app<a class="anchor" href="#4-9-offer-touch-navigation-and-release-the-mounted-app">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 270–314.</p>
+<!-- taught-source: paper-worlds/app.js:270-314 --><pre class="code" data-lang="js"><code>  let pinch = 0;
+  const pinchStart = (e) =&gt; {
+      if (e.touches.length === 2)
+        pinch = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY,
+        );
+    },
+    pinchMove = (e) =&gt; {
+      if (e.touches.length === 2 &amp;&amp; pinch) {
+        const dist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY,
+        );
+        if (dist &lt; pinch * 0.65) {
+          pinch = 0;
+          mode(true);
+        }
+      }
+    };
+  $('flat').addEventListener('touchstart', pinchStart, { passive: true });
+  $('flat').addEventListener('touchmove', pinchMove, { passive: true });
+  window.__paper = {
+    get boards() {
+      return boards;
+    },
+    get active() {
+      return active;
+    },
+    get world() {
+      return world;
+    },
+    flat,
+    get in3d() {
+      return in3d;
+    },
+  };
+  return () =&gt; {
+    clearInterval(timer);
+    if (revision !== saved) persist();
+    world?.dispose();
+    flat.dispose();
+    root.replaceChildren();
+  };
+}</code></pre>
+<p><strong>What and why:</strong> The initial two-touch distance becomes a comparison baseline; a sufficiently smaller distance requests the same mode function as the button. Passive listeners do not claim to implement every browser gesture. Inspection getters expose current state, and teardown cancels autosave, writes pending edits, disposes both view owners and clears the root.</p>
+<p><strong>Try it / expected result:</strong> Use the button as the desktop fallback; on supported touch hardware, test the inward pinch. Close/reopen Play and ensure the previous autosave timer does not keep running.</p>
+<h3 id="walk-desk-js">5. desk.js<a class="anchor" href="#walk-desk-js">#</a></h3>
+<p>Build the complete reusable Babylon/Havok desk and browser-download helper.</p>
+<h4 id="5-1-share-pending-local-script-loads">5.1 — Share pending local script loads<a class="anchor" href="#5-1-share-pending-local-script-loads">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 1–20.</p>
+<!-- taught-source: paper-worlds/desk.js:1-20 --><pre class="code" data-lang="js"><code>// Cache the pending promise too: rapid view changes must wait for the same script.
+const scriptLoads = new Map();
+export function loadScript(src) {
+  if (!scriptLoads.has(src)) {
+    const pending = new Promise((resolve, reject) =&gt; {
+      const script = document.createElement('script');
+      script.src = src;
+      script.dataset.local = src;
+      script.onload = resolve;
+      script.onerror = () =&gt; {
+        script.remove();
+        scriptLoads.delete(src);
+        reject(Error('Cannot load ' + src));
+      };
+      document.head.append(script);
+    });
+    scriptLoads.set(src, pending);
+  }
+  return scriptLoads.get(src);
+}</code></pre>
+<p><strong>What and why:</strong> The Map caches the promise, not just the presence of a script tag. Rapid callers must all wait until the library is actually ready. onerror removes the failed element/cache entry so a later attempt can retry. This is important because both mode buttons and filter changes can request 3D before the first load finishes.</p>
+<p><strong>Try it / expected result:</strong> Click the 3D mode button twice rapidly. There should be one ready view, not an undefined BABYLON error.</p>
+<h4 id="5-2-create-one-engine-scene-and-controllable-camera">5.2 — Create one engine, scene and controllable camera<a class="anchor" href="#5-2-create-one-engine-scene-and-controllable-camera">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 21–42.</p>
+<!-- taught-source: paper-worlds/desk.js:21-42 --><pre class="code" data-lang="js"><code>export async function createDesk(canvas, { physics = true } = {}) {
+  await loadScript('vendor/babylonjs/babylon.js');
+  const B = window.BABYLON;
+  const engine = new B.Engine(canvas, true, {
+      preserveDrawingBuffer: true,
+      stencil: true,
+    }),
+    scene = new B.Scene(engine);
+  scene.clearColor = B.Color4.FromHexString('#101b2bff');
+  const camera = new B.ArcRotateCamera(
+    'Orbit',
+    -Math.PI / 2,
+    0.67,
+    28,
+    new B.Vector3(0, 0, 0),
+    scene,
+  );
+  camera.attachControl(canvas, true);
+  camera.lowerRadiusLimit = 4;
+  camera.upperRadiusLimit = 70;
+  camera.wheelPrecision = 25;
+  camera.minZ = 0.1;</code></pre>
+<p><strong>What and why:</strong> createDesk loads the local Babylon file, owns an Engine for the supplied canvas and sets an opaque background. ArcRotateCamera uses alpha/beta/radius around a target; attachControl gives orbit/zoom input. Radius limits avoid entering the paper surface or losing the whole desk at extreme zoom. minZ controls near clipping.</p>
+<p><strong>Try it / expected result:</strong> Compare orbit dragging with moving a paper: the camera changes the view without altering saved document coordinates.</p>
+<h4 id="5-3-light-a-surface-and-prepare-shadow-ownership">5.3 — Light a surface and prepare shadow ownership<a class="anchor" href="#5-3-light-a-surface-and-prepare-shadow-ownership">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 43–62.</p>
+<!-- taught-source: paper-worlds/desk.js:43-62 --><pre class="code" data-lang="js"><code>  const fill = new B.HemisphericLight('Sky', new B.Vector3(0, 1, 0), scene);
+  fill.intensity = 0.65;
+  const light = new B.DirectionalLight('Sun', new B.Vector3(-0.4, -1, 0.5), scene);
+  light.position.set(8, 18, -8);
+  light.intensity = 1.2;
+  const shadows = new B.ShadowGenerator(1024, light);
+  shadows.useBlurExponentialShadowMap = true;
+  shadows.blurKernel = 16;
+  const mat = new B.StandardMaterial('Desk surface', scene);
+  mat.diffuseColor = B.Color3.FromHexString('#253a46');
+  mat.specularColor = new B.Color3(0.1, 0.1, 0.1);
+  const desk = B.MeshBuilder.CreateBox(
+    'Desk',
+    { width: 45, depth: 35, height: 0.6 },
+    scene,
+  );
+  desk.position.y = -0.45;
+  desk.material = mat;
+  desk.receiveShadows = true;
+  const aggregates = [];</code></pre>
+<p><strong>What and why:</strong> The hemispheric light supplies broad fill; the directional light supplies a direction and shadow map. A restrained specular colour avoids a distracting glossy desk. A solid box, not a zero-thickness drawing, supplies the tabletop. Materials and meshes are scene-owned. The aggregates array will additionally own physics handles that need disposing.</p>
+<p><strong>Try it / expected result:</strong> Change the directional light direction temporarily and observe where shadows fall, while paper text remains readable.</p>
+<h4 id="5-4-load-the-packaged-physics-binary">5.4 — Load the packaged physics binary<a class="anchor" href="#5-4-load-the-packaged-physics-binary">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 63–77.</p>
+<!-- taught-source: paper-worlds/desk.js:63-77 --><pre class="code" data-lang="js"><code>  if (physics) {
+    await loadScript('vendor/havok/HavokPhysics_umd.js');
+    const havok = await window.HavokPhysics({
+      locateFile: (name) =&gt; 'vendor/havok/' + name,
+    });
+    scene.enablePhysics(new B.Vector3(0, -9.81, 0), new B.HavokPlugin(true, havok));
+    aggregates.push(
+      new B.PhysicsAggregate(
+        desk,
+        B.PhysicsShapeType.BOX,
+        { mass: 0, restitution: 0.2 },
+        scene,
+      ),
+    );
+  }</code></pre>
+<p><strong>What and why:</strong> The local Havok loader receives locateFile so its WASM resolves beside the supplied loader. enablePhysics connects it to this Babylon scene with a gravity vector in 3D units. The tabletop aggregate has mass zero, making it a fixed collider rather than another falling toy. Physics is an optional helper setting, not an editor tier switch.</p>
+<p><strong>Try it / expected result:</strong> Temporarily set physics false at the helper call. Static papers should still render, but there will be no physical sticky/flick response.</p>
+<h4 id="5-5-create-a-writable-texture-rather-than-a-screenshot-file">5.5 — Create a writable texture rather than a screenshot file<a class="anchor" href="#5-5-create-a-writable-texture-rather-than-a-screenshot-file">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 78–104.</p>
+<!-- taught-source: paper-worlds/desk.js:78-104 --><pre class="code" data-lang="js"><code>  const paper = (name, width, height, paint) =&gt; {
+    const mesh = B.MeshBuilder.CreatePlane(
+      name,
+      { width, height, sideOrientation: B.Mesh.DOUBLESIDE },
+      scene,
+    );
+    mesh.rotation.x = Math.PI / 2;
+    const texture = new B.DynamicTexture(
+      name + ' texture',
+      { width: 1024, height: 768 },
+      scene,
+      false,
+    );
+    const material = new B.StandardMaterial(name + ' material', scene);
+    material.emissiveTexture = texture;
+    material.emissiveColor = B.Color3.White();
+    material.disableLighting = true;
+    material.diffuseColor = B.Color3.Black();
+    material.specularColor = B.Color3.Black();
+    material.backFaceCulling = false;
+    mesh.material = material;
+    shadows.addShadowCaster(mesh);
+    mesh.receiveShadows = true;
+    paint?.(texture.getContext());
+    texture.update();
+    return { mesh, texture, material };
+  };</code></pre>
+<p><strong>What and why:</strong> A double-sided plane is laid across the desk. DynamicTexture owns a canvas context that callers can paint, then upload with update. The emissive/unlit material preserves readable colour from either side; zero specular avoids highlights washing out text. The mesh still casts a shadow. The return object exposes mesh, texture and material for later drawing and picking.</p>
+<p><strong>Try it / expected result:</strong> Draw a bold line in 2D and switch views. It should appear as actual texture content on the corresponding paper.</p>
+<h4 id="5-6-create-a-visible-rigid-sticky-toy">5.6 — Create a visible rigid sticky toy<a class="anchor" href="#5-6-create-a-visible-rigid-sticky-toy">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 105–126.</p>
+<!-- taught-source: paper-worlds/desk.js:105-126 --><pre class="code" data-lang="js"><code>  const box = (name, pos, color = '#f6d675', mass = 0.2) =&gt; {
+    const mesh = B.MeshBuilder.CreateBox(
+      name,
+      { width: 1.1, height: 0.13, depth: 0.9 },
+      scene,
+    );
+    mesh.position.copyFromFloats(...pos);
+    const material = new B.StandardMaterial(name + ' paint', scene);
+    material.diffuseColor = B.Color3.FromHexString(color);
+    mesh.material = material;
+    shadows.addShadowCaster(mesh);
+    const aggregate = physics
+      ? new B.PhysicsAggregate(
+          mesh,
+          B.PhysicsShapeType.BOX,
+          { mass, restitution: 0.55, friction: 0.45 },
+          scene,
+        )
+      : null;
+    if (aggregate) aggregates.push(aggregate);
+    return { mesh, aggregate };
+  };</code></pre>
+<p><strong>What and why:</strong> A small box has physical thickness, a colour material and a shadow caster. A dynamic aggregate supplies mass, restitution and friction. Registering that aggregate gives one disposal owner. The returned mesh supports picking and position inspection; the returned aggregate supports impulses. These are different handles for appearance and physics.</p>
+<p><strong>Try it / expected result:</strong> Increase restitution slightly and flick a sticky. It should bounce more without changing the original 2D note shape.</p>
+<h4 id="5-7-own-the-render-loop-and-resize-lifecycle">5.7 — Own the render loop and resize lifecycle<a class="anchor" href="#5-7-own-the-render-loop-and-resize-lifecycle">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 127–156.</p>
+<!-- taught-source: paper-worlds/desk.js:127-156 --><pre class="code" data-lang="js"><code>  const update = new Set(),
+    render = () =&gt; {
+      for (const fn of update) fn(Math.min(0.05, engine.getDeltaTime() / 1000));
+      scene.render();
+    };
+  engine.runRenderLoop(render);
+  const resize = () =&gt; engine.resize();
+  window.addEventListener('resize', resize);
+  return {
+    B,
+    engine,
+    scene,
+    camera,
+    shadows,
+    paper,
+    box,
+    update,
+    resize,
+    setActive(on) {
+      engine.stopRenderLoop(render);
+      if (on) engine.runRenderLoop(render);
+    },
+    dispose() {
+      window.removeEventListener('resize', resize);
+      for (const a of aggregates) a.dispose();
+      scene.dispose();
+      engine.dispose();
+    },
+  };
+}</code></pre>
+<p><strong>What and why:</strong> The update Set lets app-specific animations run before scene.render. Delta is converted to seconds and capped for those callbacks. A single resize listener updates the engine. setActive can stop/restart the stored render callback, and dispose releases listeners, aggregates, scene and engine. Replacing a view must call this owner, not merely hide its canvas.</p>
+<p><strong>Try it / expected result:</strong> Switch back to 2D and observe that the old desk stops animating. Reopening 3D creates one fresh owner.</p>
+<h4 id="5-8-hand-a-browser-a-real-downloadable-object">5.8 — Hand a browser a real downloadable object<a class="anchor" href="#5-8-hand-a-browser-a-real-downloadable-object">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 157–165.</p>
+<!-- taught-source: paper-worlds/desk.js:157-165 --><pre class="code" data-lang="js"><code>export function download(name, content, type = 'application/json') {
+  const blob = content instanceof Blob ? content : new Blob([content], { type }),
+    url = URL.createObjectURL(blob),
+    a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  a.click();
+  setTimeout(() =&gt; URL.revokeObjectURL(url), 1000);
+}</code></pre>
+<p><strong>What and why:</strong> download accepts a Blob or creates one, creates a temporary object URL and triggers a named anchor download. Revoking shortly afterward releases the temporary URL without invalidating the click immediately. The browser still controls the save destination; this is not an arbitrary filesystem write.</p>
+<p><strong>Try it / expected result:</strong> Download JSON and verify its suggested filename and contents. Cancel the save if you do not need another copy.</p>
+<h3 id="walk-save-js">6. save.js<a class="anchor" href="#walk-save-js">#</a></h3>
+<p>Understand the complete existing Nord Save helper bundled with this app.</p>
+<h4 id="6-1-namespace-slots-and-read-versioned-data">6.1 — Namespace slots and read versioned data<a class="anchor" href="#6-1-namespace-slots-and-read-versioned-data">#</a></h4>
+<p><strong>Read:</strong> <code>save.js</code>, lines 1–20.</p>
+<!-- taught-source: paper-worlds/save.js:1-20 --><pre class="code" data-lang="js"><code>// Versioned save slots on top of localStorage (or any Storage-like object).
+export class Save {
+  constructor(gameId, { version = 1, storage = globalThis.localStorage, migrate = null } = {}) {
+    this.prefix = `nord:${gameId}:`;
+    this.version = version;
+    this.storage = storage ?? new MemoryStorage();
+    this.migrate = migrate; // (data, fromVersion) =&gt; data
+    this.slotId = 0;
+  }
+  slot(n) { this.slotId = n; return this; }
+  #key(n = this.slotId) { return `${this.prefix}slot${n}`; }
+  #read(n) {
+    try {
+      const raw = this.storage.getItem(this.#key(n));
+      if (!raw) return { v: this.version, data: {} };
+      const o = JSON.parse(raw);
+      if (o.v &lt; this.version &amp;&amp; this.migrate) { o.data = this.migrate(o.data, o.v); o.v = this.version; }
+      return o;
+    } catch { return { v: this.version, data: {} }; }
+  }</code></pre>
+<p><strong>What and why:</strong> The prefix includes the app identity, and slotId chooses one save slot. A private key method keeps naming in one place. Reading returns an empty versioned envelope when missing or invalid, and an optional migration callback upgrades older data. This helper stores serializable values, not engine objects. MemoryStorage is available when no Storage implementation is supplied.</p>
+<p><strong>Try it / expected result:</strong> Compare the Paper Worlds and RSS River storage prefixes in browser tools. Their saves should not overwrite each other.</p>
+<h4 id="6-2-read-and-write-values-then-define-memory-storage">6.2 — Read and write values, then define memory storage<a class="anchor" href="#6-2-read-and-write-values-then-define-memory-storage">#</a></h4>
+<p><strong>Read:</strong> <code>save.js</code>, lines 21–32.</p>
+<!-- taught-source: paper-worlds/save.js:21-32 --><pre class="code" data-lang="js"><code>  get(k, def) { const d = this.#read().data; return k in d ? d[k] : def; }
+  set(k, v) { const o = this.#read(); o.data[k] = v; o.v = this.version; o.t = Date.now(); this.storage.setItem(this.#key(), JSON.stringify(o)); }
+  all() { return this.#read().data; }
+  has(n = this.slotId) { return this.storage.getItem(this.#key(n)) != null; }
+  delete(n = this.slotId) { this.storage.removeItem(this.#key(n)); }
+}
+export class MemoryStorage {
+  #m = new Map();
+  getItem(k) { return this.#m.has(k) ? this.#m.get(k) : null; }
+  setItem(k, v) { this.#m.set(k, String(v)); }
+  removeItem(k) { this.#m.delete(k); }
+}</code></pre>
+<p><strong>What and why:</strong> get supplies a caller default when a value is absent. set reads the envelope, replaces one key, records version/time and serializes through the Storage interface. all/has/delete expose slot operations. MemoryStorage implements the same getItem/setItem/removeItem contract using a Map, which is useful in tests but does not survive page reload. App callers still need to catch storage quota/permission failures on writes.</p>
+<p><strong>Try it / expected result:</strong> Back up your document, reload the page and verify it returns. Then inspect how the app reports a failed write instead of assuming success.</p>
+<h3 id="walk-portfolio-html">7. portfolio.html<a class="anchor" href="#walk-portfolio-html">#</a></h3>
+<p>Read the entire exported desk template that embeds your documents and opens directly in 3D.</p>
+<h4 id="7-1-style-a-standalone-viewing-surface">7.1 — Style a standalone viewing surface<a class="anchor" href="#7-1-style-a-standalone-viewing-surface">#</a></h4>
+<p><strong>Read:</strong> <code>portfolio.html</code>, lines 1–34.</p>
+<!-- taught-source: paper-worlds/portfolio.html:1-34 --><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;meta charset=&quot;utf-8&quot; /&gt;
+  &lt;title&gt;My Paper Worlds desk&lt;/title&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot; /&gt;
+  &lt;style&gt;
+    body {
+      margin: 0;
+      background: #101b2b;
+      color: #eaf2ef;
+      font: 16px system-ui;
+    }
+    header {
+      position: absolute;
+      z-index: 2;
+      padding: 16px;
+    }
+    canvas {
+      width: 100vw;
+      height: 100vh;
+      display: block;
+      touch-action: none;
+    }
+    button {
+      padding: 10px;
+      margin: 8px;
+    }
+  &lt;/style&gt;
+  &lt;header&gt;
+    &lt;b&gt;My Paper Worlds desk&lt;/b&gt;
+    &lt;p id=&quot;hint&quot;&gt;Orbit, click papers to focus; click glowing doors to travel.&lt;/p&gt;
+    &lt;button id=&quot;all&quot;&gt;View all boards&lt;/button&gt;
+  &lt;/header&gt;
+  &lt;canvas id=&quot;desk&quot;&gt;&lt;/canvas&gt;</code></pre>
+<p><strong>What and why:</strong> The page declares UTF-8, viewport and a full-window canvas. Its small header sits above the scene and contains an all-boards action. Styles belong to this standalone page rather than requiring the studio sidebar stylesheet. It is a viewer, so it does not create drawing tools or write the recipient’s saves.</p>
+<p><strong>Try it / expected result:</strong> Open an exported desk from the served project folder and resize it. The canvas should fill the window and the header should remain reachable.</p>
+<h4 id="7-2-read-embedded-data-and-handle-module-failures">7.2 — Read embedded data and handle module failures<a class="anchor" href="#7-2-read-embedded-data-and-handle-module-failures">#</a></h4>
+<p><strong>Read:</strong> <code>portfolio.html</code>, lines 35–55.</p>
+<!-- taught-source: paper-worlds/portfolio.html:35-55 --><pre class="code" data-lang="html"><code>  &lt;script id=&quot;desk-data&quot; type=&quot;application/json&quot;&gt;
+    /*BOARD_DATA*/
+  &lt;/script&gt;
+  &lt;script type=&quot;module&quot;&gt;
+    import { createWorld } from './world.js';
+    const boards = JSON.parse(document.querySelector('#desk-data').textContent);
+    try {
+      const world = await createWorld(document.querySelector('canvas'), boards, (id) =&gt; {
+        world.focus(id);
+        document.querySelector('#hint').textContent = boards[id].title;
+      });
+      document.querySelector('#all').onclick = () =&gt; {
+        world.camera.setTarget(world.B.Vector3.Zero());
+        world.camera.radius = 28;
+      };
+    } catch (e) {
+      document.querySelector('#hint').textContent =
+        e.message + ' — serve beside the exported project files.';
+    }
+  &lt;/script&gt;
+&lt;/html&gt;</code></pre>
+<p><strong>What and why:</strong> The application/json element is a data container; portfolioHTML replaces its marker safely before download. The module imports the same world code as the editor, parses the embedded boards and focuses a clicked paper. View all restores an overview target/radius. A catch changes hint text if local resources are missing, giving a useful failure rather than a blank unexplained page.</p>
+<p><strong>Try it / expected result:</strong> Move only the HTML away from its modules on a test copy. Observe the missing-resource failure, then restore the full exported folder.</p>
+<h3 id="walk-index-html">8. index.html<a class="anchor" href="#walk-index-html">#</a></h3>
+<p>Read the complete Nord page entry point and its failure path.</p>
+<h4 id="8-1-load-the-local-runtime-and-start-the-app">8.1 — Load the local runtime and start the app<a class="anchor" href="#8-1-load-the-local-runtime-and-start-the-app">#</a></h4>
+<p><strong>Read:</strong> <code>index.html</code>, lines 1–8.</p>
+<!-- taught-source: paper-worlds/index.html:1-8 --><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.paperworlds&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Paper Worlds — a playful 2D/3D drawing desk&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+<p><strong>What and why:</strong> The document declares encoding and viewport, creates the mount container and loads local code. The module imports mount from app.js and awaits initialization for the HTML-tier root. The ready/error flags are inspection signals used by browser checks; they are not a second simulation. The catch logs and exposes initialization errors. The page is served over HTTP so local module and asset URLs resolve consistently.</p>
+<p><strong>Try it / expected result:</strong> Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name.</p>
+<h3 id="walk-nord-project-json">9. nord.project.json<a class="anchor" href="#walk-nord-project-json">#</a></h3>
+<p>Read every project field that tells Nord which host, display and services to use.</p>
+<h4 id="9-1-identify-the-project-and-choose-its-presentation">9.1 — Identify the project and choose its presentation<a class="anchor" href="#9-1-identify-the-project-and-choose-its-presentation">#</a></h4>
+<p><strong>Read:</strong> <code>nord.project.json</code>, lines 1–22.</p>
+<!-- taught-source: paper-worlds/nord.project.json:1-22 --><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;Paper Worlds&quot;,
+  &quot;id&quot;: &quot;com.crowelian.paperworlds&quot;,
+  &quot;type&quot;: &quot;html&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 640,
+    &quot;height&quot;: 360,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: false,
+    &quot;background&quot;: &quot;#2e3440&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;none&quot;,
+    &quot;gravity&quot;: [
+      0,
+      0,
+      0
+    ]
+  },</code></pre>
+<p><strong>What and why:</strong> format and engineVersion identify the serialized contract, while name/id give human and stable application identity. type chooses the host; startScene is used by a scene backend and is empty for these HTML apps. Display fields request dimensions, fit behaviour, pixel-art treatment and background. Physics selects a runtime engine; the rail shooter uses custom rules with none, while HTML-hosted libraries are initialized in their own modules.</p>
+<p><strong>Try it / expected result:</strong> Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.</p>
+<h4 id="9-2-distinguish-scene-actions-from-html-event-handling">9.2 — Distinguish scene actions from HTML event handling<a class="anchor" href="#9-2-distinguish-scene-actions-from-html-event-handling">#</a></h4>
+<p><strong>Read:</strong> <code>nord.project.json</code>, lines 23–64.</p>
+<!-- taught-source: paper-worlds/nord.project.json:23-64 --><pre class="code" data-lang="json"><code>  &quot;input&quot;: {
+    &quot;actions&quot;: {
+      &quot;left&quot;: [
+        &quot;KeyA&quot;,
+        &quot;ArrowLeft&quot;
+      ],
+      &quot;right&quot;: [
+        &quot;KeyD&quot;,
+        &quot;ArrowRight&quot;
+      ],
+      &quot;up&quot;: [
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;down&quot;: [
+        &quot;KeyS&quot;,
+        &quot;ArrowDown&quot;
+      ],
+      &quot;jump&quot;: [
+        &quot;Space&quot;,
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;fire&quot;: [
+        &quot;Space&quot;,
+        &quot;Mouse0&quot;
+      ],
+      &quot;interact&quot;: [
+        &quot;KeyE&quot;,
+        &quot;Enter&quot;
+      ]
+    }
+  },
+  &quot;plugins&quot;: [
+    &quot;ui&quot;,
+    &quot;audio&quot;
+  ],
+  &quot;ui&quot;: {
+    &quot;skin&quot;: &quot;cyber&quot;,
+    &quot;theme&quot;: &quot;nord&quot;
+  }
+}</code></pre>
+<p><strong>What and why:</strong> The input object maps action names to keyboard codes for Nord scene scripts. Vector Patrol reads these through this.input. HTML-tier hosts in the other projects read their own DOM events, so editing this action table alone does not rewrite those handlers. plugins/ui declare ordinary scene services and skin/theme; any remaining desktop configuration is the native capability contract rather than a browser CORS override.</p>
+<p><strong>Try it / expected result:</strong> For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input.</p>
+<h3 id="walk-style-css">10. style.css<a class="anchor" href="#walk-style-css">#</a></h3>
+<p>Read every stylesheet rule, grouped by the UI responsibility it controls.</p>
+<h4 id="10-1-set-the-app-foundation-and-reusable-visual-language">10.1 — Set the app foundation and reusable visual language<a class="anchor" href="#10-1-set-the-app-foundation-and-reusable-visual-language">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 1–40.</p>
+<!-- taught-source: paper-worlds/style.css:1-40 --><pre class="code" data-lang="css"><code>html,
+body {
+  height: auto;
+  min-height: 100%;
+  background: #101b2b;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  color: #dbe9ee;
+  font: 14px system-ui;
+}
+main {
+  max-width: 1400px;
+  margin: auto;
+  padding: 22px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+.brand {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+h1 {
+  margin: 0;
+  font-size: 30px;
+  letter-spacing: -1px;
+}
+header p {
+  margin: 5px 0;
+  color: #8ba3af;
+}</code></pre>
+<p><strong>What and why:</strong> The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.</p>
+<p><strong>Try it / expected result:</strong> Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change.</p>
+<h4 id="10-2-use-the-supplied-sheet-and-style-controls">10.2 — Use the supplied sheet and style controls<a class="anchor" href="#10-2-use-the-supplied-sheet-and-style-controls">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 41–87.</p>
+<!-- taught-source: paper-worlds/style.css:41-87 --><pre class="code" data-lang="css"><code>.mascot {
+  width: 62px;
+  height: 62px;
+  display: inline-block;
+  background: url(assets/dev-desk-sprites.png) 0 100%/400% 200%;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: #e7f2f5;
+  background: #21374a;
+  border: 1px solid #3e596e;
+  border-radius: 7px;
+  padding: 9px;
+}
+button {
+  cursor: pointer;
+  margin: 4px 0;
+}
+button:hover {
+  background: #335269;
+}
+header button:first-child {
+  background: #287e7a;
+}
+label {
+  display: block;
+  margin: 12px 0;
+  font-size: 12px;
+  color: #9bb4c1;
+}
+select,
+textarea {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+}
+textarea {
+  height: 76px;
+  resize: vertical;
+}
+aside button {
+  width: 100%;
+  text-align: left;
+}</code></pre>
+<p><strong>What and why:</strong> The mascot uses one region of the packaged four-by-two sheet through background size/position. Shared button/input/select/textarea rules keep the studio coherent; labels explain each input and textarea sizing gives notes usable space. Changing sprite position selects a different artwork cell without loading an external image.</p>
+<p><strong>Try it / expected result:</strong> Temporarily change the sprite background position to another cell, then restore the ghost.</p>
+<h4 id="10-3-create-a-studio-layout-without-changing-document-coordinates">10.3 — Create a studio layout without changing document coordinates<a class="anchor" href="#10-3-create-a-studio-layout-without-changing-document-coordinates">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 88–124.</p>
+<!-- taught-source: paper-worlds/style.css:88-124 --><pre class="code" data-lang="css"><code>.workbench {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 20px;
+}
+aside {
+  padding: 8px 16px;
+  background: #15283a;
+  border-radius: 12px;
+}
+aside p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #9bb4c1;
+}
+.rule {
+  height: 1px;
+  background: #34495b;
+  margin: 15px 0;
+}
+h3 {
+  font-size: 12px;
+  color: #88d4c8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.titlebar {
+  display: flex;
+  justify-content: space-between;
+  background: #203447;
+  padding: 14px;
+  border-radius: 10px 10px 0 0;
+}
+#badge {
+  font-size: 11px;
+  color: #88d4c8;
+}</code></pre>
+<p><strong>What and why:</strong> The grid assigns sidebar width and flexible workspace. Panels, rules, headings and titlebar communicate editing versus viewing roles. Styling never changes WIDTH/HEIGHT in model.js: browser layout and drawing coordinate systems remain separate.</p>
+<p><strong>Try it / expected result:</strong> Change sidebar width slightly and verify a saved stroke stays at its document position.</p>
+<h4 id="10-4-size-surfaces-honor-hidden-state-and-adapt">10.4 — Size surfaces, honor hidden state and adapt<a class="anchor" href="#10-4-size-surfaces-honor-hidden-state-and-adapt">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 125–162.</p>
+<!-- taught-source: paper-worlds/style.css:125-162 --><pre class="code" data-lang="css"><code>#flat,
+#world {
+  width: 100%;
+  height: 640px;
+  background: #dce5e6;
+  overflow: hidden;
+  border-radius: 0 0 10px 10px;
+}
+#flat canvas {
+  max-width: 100%;
+  display: block;
+}
+#world {
+  touch-action: none;
+}
+#status {
+  color: #a8c4cd;
+  line-height: 1.6;
+}
+footer {
+  padding-top: 20px;
+  color: #718e9e;
+  font-size: 12px;
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 850px) {
+  .workbench {
+    grid-template-columns: 160px minmax(0, 1fr);
+  }
+  main {
+    padding: 8px;
+  }
+  header {
+    flex-wrap: wrap;
+  }
+}</code></pre>
+<p><strong>What and why:</strong> Both view surfaces share a display area; the inner Phaser canvas scales within it and the 3D canvas disables conflicting browser touch gestures. Status/footer remain legible. The explicit hidden rule wins over display declarations, and the media query reduces sidebar/padding for smaller screens.</p>
+<p><strong>Try it / expected result:</strong> Switch 2D/3D and verify the inactive surface truly disappears, rather than occupying another blank 640-pixel region.</p>
+<!-- END GENERATED FILE WALKTHROUGH --><h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
 <p>All authored files follow in the manual&#39;s offline CodeMirror viewers. The complete archive also includes the original sprite sheet and pinned Phaser, Babylon and Havok libraries with licences. Minified dependencies are supplied in the archive rather than expanded as teaching code.</p>
-<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="app-js">app.js<a class="anchor" href="#app-js">#</a></h3>
-<pre class="code" data-lang="js"><code>import { Save } from './save.js';
+<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><details>
+<summary>Complete app.js</summary><pre class="code" data-lang="js"><code>import { Save } from './save.js';
 import { newBoards, validateBoards, portfolioHTML } from './model.js';
 import { createFlat } from './flat.js';
 import { createWorld } from './world.js';
@@ -426,7 +2030,7 @@ export async function mount(root) {
     root.replaceChildren();
   };
 }</code></pre>
-<details>
+</details><details>
 <summary>Complete desk.js</summary><pre class="code" data-lang="js"><code>// Cache the pending promise too: rapid view changes must wait for the same script.
 const scriptLoads = new Map();
 export function loadScript(src) {
@@ -1458,5 +3062,5 @@ export async function createWorld(canvas, boards, select) {
   };
 }</code></pre>
 </details>
-<div class="pager"><a href="tut-t41-nord-office.html"><small>← Previous</small>T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t43-rss-river.html"><small>Next →</small>T43 RSS River — build a calm reader with a physical paper view</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-understand-the-actual-nord-setup">1. Understand the actual Nord setup </a><a href="#2-make-drawing-data-independent-of-the-renderer">2. Make drawing data independent of the renderer </a><a href="#3-build-the-phaser-pen-and-shape-tools">3. Build the Phaser pen and shape tools </a><a href="#4-turn-the-page-into-a-live-3d-paper">4. Turn the page into a live 3D paper </a><a href="#5-give-stickies-real-havok-bodies">5. Give stickies real Havok bodies </a><a href="#6-draw-a-door-and-travel-to-another-board">6. Draw a door and travel to another board </a><a href="#7-play-three-things-you-drew">7. Play three things you drew </a><a href="#8-save-back-up-and-handle-storage-limits">8. Save, back up and handle storage limits </a><a href="#9-export-a-portfolio-desk">9. Export a portfolio desk </a><a href="#10-finish-with-a-focused-check">10. Finish with a focused check </a><a href="#complete-project-source">Complete project source </a></aside></div>
+<div class="pager"><a href="tut-t41-nord-office.html"><small>← Previous</small>T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t43-rss-river.html"><small>Next →</small>T43 RSS River — build a calm reader with a physical paper view</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-understand-the-actual-nord-setup">1. Understand the actual Nord setup </a><a href="#2-make-drawing-data-independent-of-the-renderer">2. Make drawing data independent of the renderer </a><a href="#3-build-the-phaser-pen-and-shape-tools">3. Build the Phaser pen and shape tools </a><a href="#4-turn-the-page-into-a-live-3d-paper">4. Turn the page into a live 3D paper </a><a href="#5-give-stickies-real-havok-bodies">5. Give stickies real Havok bodies </a><a href="#6-draw-a-door-and-travel-to-another-board">6. Draw a door and travel to another board </a><a href="#7-play-three-things-you-drew">7. Play three things you drew </a><a href="#8-save-back-up-and-handle-storage-limits">8. Save, back up and handle storage limits </a><a href="#9-export-a-portfolio-desk">9. Export a portfolio desk </a><a href="#10-finish-with-a-focused-check">10. Finish with a focused check </a><a href="#file-walkthrough">Walk through every project file </a><a href="#complete-project-source">Complete project source </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

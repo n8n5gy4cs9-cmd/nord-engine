@@ -12,6 +12,7 @@
 <p>Build <strong>RSS River</strong>, an original local-first news reader for developers. Its ordinary reading view gives you a source list, search, unread/star filters and readable article summaries. Its optional 3D view turns those stories into slowly flowing papers over a desk. Starred stories become larger and float higher. Click a paper to read it, then flick it onto the desk with real Havok physics.</p>
 <p><strong>Download:</strong> <a href="../../assets/downloads/rss-river-source.zip">Complete RSS River app, source and sprites</a>. Extract, open <code>nord.project.json</code> in Nord and press <strong>Play</strong>. This is a complete <strong>HTML-tier</strong> project with local Babylon/Havok files and no npm step. An original local demo makes every feature usable before you fetch external news. Demo stories are explicitly labelled and are not presented as current reporting.</p>
 <p><img src="../../assets/screenshots/ed-rss-list.png" alt="RSS River list, filters and reading pane"></p>
+<p><strong>Full-code learning route:</strong> After the orientation below, continue to <a href="#file-walkthrough">the complete file-by-file walkthrough</a>. It teaches every main project file in consecutive sections, with the actual code, an explanation of what and why, and a change to try. The expandable complete files at the end are a reference, not the lesson.</p>
 <h2 id="1-learn-the-finished-reader">1. Learn the finished reader<a class="anchor" href="#1-learn-the-finished-reader">#</a></h2>
 <p>Click a story to read its summary and mark it read. Star it to keep it important. Search matches titles and summaries; Unread only and Starred only combine with the source selector. Mark visible read affects only your current filtered list. Backup library downloads your subscriptions, cached entries and reading flags as JSON; the Import control accepts that backup as well as RSS/Atom XML.</p>
 <p>Click <strong>3D paper river</strong> to explore the same filtered stories spatially. Drag to orbit and use the wheel to zoom. Click a paper to open its reading pane, then <strong>Flick this paper</strong> to drop that paper with an impulse. The ordinary list remains available at any time. Flicking is a temporary visual action: it does not delete an article from your library.</p>
@@ -147,10 +148,1485 @@ map.set(article.id, { ...article,
 <p><strong>WASM, briefly:</strong> the included Havok <code>.wasm</code> is compiled physics called from JavaScript; this reader&#39;s UI and feed parsing remain HTML/JavaScript. A Rust/WASM export would require a Rust implementation of the relevant app logic, not simply selecting a different target for this project.</p>
 <h2 id="11-finish-with-a-short-useful-check">11. Finish with a short useful check<a class="anchor" href="#11-finish-with-a-short-useful-check">#</a></h2>
 <p>Load the demo, read/star a story, search it, refresh the page, import XML, back up JSON, switch to 3D and flick a paper. Then refresh your chosen live feed and confirm failures leave cached content usable. The focused automated smoke checks parsing errors, cache/star persistence, real 3D paper creation and Havok flicks. Feed headers were checked separately; external availability and complete native permission dialogs are not asserted by the offline browser smoke test.</p>
-<h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
+<!-- GENERATED FILE WALKTHROUGH --><h2 id="file-walkthrough">Walk through every project file<a class="anchor" href="#file-walkthrough">#</a></h2>
+<p>Work through these files in order using your downloaded project in Nord. Each numbered part shows the <strong>next consecutive lines</strong> of that file, not a selection of highlights. Read the explanation before changing anything. Edit the existing code in place; do not append another copy of a function. Finish one experiment, observe its result, and undo that change before moving on. The complete files and download at the end remain your reference.</p>
+<p>The walkthrough covers the app/game modules, shared helpers used by them, page, styles and project configuration. Binary art/audio/models and minified vendor dependencies are resources rather than lessons in their internal implementation; their paths and contracts are explained where the app uses them.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What you will build or understand</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="#walk-feeds-js">feeds.js</a></td>
+<td>Build all feed configuration, parsing, safe-link and cache-merge logic.</td>
+</tr>
+<tr>
+<td><a href="#walk-app-js">app.js</a></td>
+<td>Build the complete reader host, filters, both fetch paths, river lifetime and import/backup flow.</td>
+</tr>
+<tr>
+<td><a href="#walk-river-js">river.js</a></td>
+<td>Follow every texture, pick, movement, physics and cleanup operation in the 3D reader.</td>
+</tr>
+<tr>
+<td><a href="#walk-desk-js">desk.js</a></td>
+<td>Build the complete reusable Babylon/Havok desk and browser-download helper.</td>
+</tr>
+<tr>
+<td><a href="#walk-save-js">save.js</a></td>
+<td>Understand the complete existing Nord Save helper bundled with this app.</td>
+</tr>
+<tr>
+<td><a href="#walk-demo-xml">demo.xml</a></td>
+<td>Read the complete original local RSS fixture; it is also an example of the input format.</td>
+</tr>
+<tr>
+<td><a href="#walk--offline-allow">.offline-allow</a></td>
+<td>Read the entire explicit feed-host allowlist.</td>
+</tr>
+<tr>
+<td><a href="#walk-index-html">index.html</a></td>
+<td>Read the complete Nord page entry point and its failure path.</td>
+</tr>
+<tr>
+<td><a href="#walk-nord-project-json">nord.project.json</a></td>
+<td>Read every project field that tells Nord which host, display and services to use.</td>
+</tr>
+<tr>
+<td><a href="#walk-style-css">style.css</a></td>
+<td>Read every stylesheet rule, grouped by the UI responsibility it controls.</td>
+</tr>
+<tr>
+<td><a href="#walk-nord-desktop-js">nord-desktop.js</a></td>
+<td>Read the complete bundled Nord bridge used by the optional host-fetch button.</td>
+</tr>
+</tbody></table>
+<h3 id="walk-feeds-js">1. feeds.js<a class="anchor" href="#walk-feeds-js">#</a></h3>
+<p>Build all feed configuration, parsing, safe-link and cache-merge logic.</p>
+<h4 id="1-1-give-subscriptions-stable-identities">1.1 — Give subscriptions stable identities<a class="anchor" href="#1-1-give-subscriptions-stable-identities">#</a></h4>
+<p><strong>Read:</strong> <code>feeds.js</code>, lines 1–21.</p>
+<!-- taught-source: rss-river/feeds.js:1-21 --><pre class="code" data-lang="js"><code>// Feed URLs are user data, not CDN dependencies. Nothing is requested until Refresh.
+export const DEFAULT_FEEDS = [
+  {
+    id: 'hn',
+    name: 'Hacker News',
+    url: 'https://hnrss.org/frontpage',
+    topic: 'Community',
+  },
+  {
+    id: 'ai',
+    name: 'Simon Willison — AI &amp; LLMs',
+    url: 'https://simonwillison.net/atom/everything/',
+    topic: 'AI',
+  },
+  {
+    id: 'code',
+    name: 'GitHub Engineering',
+    url: 'https://github.blog/engineering/feed/',
+    topic: 'Coding',
+  },
+];</code></pre>
+<p><strong>What and why:</strong> Each feed has an app ID, display name, endpoint and topic. IDs are used for filtering and article namespacing; labels can change without losing identity. The three sources are defaults, not automatic requests or a bundled current-news database. Fetch is a separate user action so startup can remain offline.</p>
+<p><strong>Try it / expected result:</strong> Change a source name without changing its ID. Existing cached items should still belong to that source.</p>
+<h4 id="1-2-normalize-links-before-creating-anchors">1.2 — Normalize links before creating anchors<a class="anchor" href="#1-2-normalize-links-before-creating-anchors">#</a></h4>
+<p><strong>Read:</strong> <code>feeds.js</code>, lines 22–35.</p>
+<!-- taught-source: rss-river/feeds.js:22-35 --><pre class="code" data-lang="js"><code>export function safeLink(value, base = 'https://example.org/') {
+  try {
+    const u = new URL(value, base);
+    return ['https:', 'http:'].includes(u.protocol) ? u.href : '';
+  } catch {
+    return '';
+  }
+}
+export function parseFeed(xml, feed) {
+  if (xml.length &gt; 2000000) throw Error('Feed is larger than 2 MB');
+  const doc = new DOMParser().parseFromString(xml, 'application/xml');
+  if (doc.querySelector('parsererror')) throw Error('Invalid RSS/Atom XML');
+  const entries = [...doc.querySelectorAll('item, entry')];
+  if (!entries.length) throw Error('No RSS items or Atom entries found');</code></pre>
+<p><strong>What and why:</strong> URL resolves relative links against a feed’s address and lets the helper inspect the protocol. Only HTTP/HTTPS survive; malformed input becomes an empty link instead of throwing through the reader. parseFeed then bounds input size and checks XML parser errors and item/entry presence. A successful HTTP response is not enough to prove its body is a feed.</p>
+<p><strong>Try it / expected result:</strong> Import an HTML error page renamed .xml. It should be rejected rather than shown as fake articles.</p>
+<h4 id="1-3-extract-inert-text-and-choose-a-usable-link">1.3 — Extract inert text and choose a usable link<a class="anchor" href="#1-3-extract-inert-text-and-choose-a-usable-link">#</a></h4>
+<p><strong>Read:</strong> <code>feeds.js</code>, lines 36–48.</p>
+<!-- taught-source: rss-river/feeds.js:36-48 --><pre class="code" data-lang="js"><code>  const plain = (html) =&gt; {
+    const d = new DOMParser().parseFromString(html, 'text/html');
+    d.querySelectorAll('script,style,iframe,object').forEach((e) =&gt; e.remove());
+    return (d.body.textContent || '').replace(/\s+/g, ' ').trim();
+  };
+  return entries.slice(0, 80).map((node, index) =&gt; {
+    const title = plain(node.querySelector('title')?.textContent || 'Untitled').slice(
+        0,
+        180,
+      ),
+      linkNode = [...node.querySelectorAll('link')].find(
+        (n) =&gt; !n.getAttribute('rel') || n.getAttribute('rel') === 'alternate',
+      );</code></pre>
+<p><strong>What and why:</strong> The helper parses description markup in an inert document, removes active container elements, then reads normalized textContent. Entry iteration is capped. RSS text links and Atom href links have different forms, so linkNode selects an alternate/default link before safeLink resolves it. Title length is bounded. No publisher HTML is inserted into app controls.</p>
+<p><strong>Try it / expected result:</strong> Import a description containing bold markup and a script tag. The reader should show text without executing the script or creating a live script element.</p>
+<h4 id="1-4-choose-stable-keys-and-a-single-article-schema">1.4 — Choose stable keys and a single article schema<a class="anchor" href="#1-4-choose-stable-keys-and-a-single-article-schema">#</a></h4>
+<p><strong>Read:</strong> <code>feeds.js</code>, lines 49–67.</p>
+<!-- taught-source: rss-river/feeds.js:49-67 --><pre class="code" data-lang="js"><code>    const raw = linkNode?.getAttribute('href') || linkNode?.textContent || '',
+      link = safeLink(raw, feed.url),
+      guid = node.querySelector('guid, id')?.textContent || link || title + index;
+    return {
+      id: feed.id + ':' + guid,
+      feed: feed.id,
+      source: feed.name,
+      title,
+      link,
+      summary: plain(
+        node.querySelector('description, summary, content')?.textContent ||
+          'Open the original to read the full article.',
+      ).slice(0, 1200),
+      date: node.querySelector('pubDate, published, updated')?.textContent || '',
+      read: false,
+      star: false,
+    };
+  });
+}</code></pre>
+<p><strong>What and why:</strong> The GUID/Atom ID is preferred, then a resolved link, then a title/index fallback. Prefixing with feed.id prevents collisions across sources. All entries become the same fields for title, summary, date, read and star; the UI does not need separate RSS and Atom rendering paths. Summary limits keep the cache practical and the original URL preserves access to the full publisher article.</p>
+<p><strong>Try it / expected result:</strong> Import one RSS item and one Atom entry. Verify both produce a usable title, plain summary and Read original link.</p>
+<h4 id="1-5-preserve-reading-choices-while-refreshing-content">1.5 — Preserve reading choices while refreshing content<a class="anchor" href="#1-5-preserve-reading-choices-while-refreshing-content">#</a></h4>
+<p><strong>Read:</strong> <code>feeds.js</code>, lines 68–75.</p>
+<!-- taught-source: rss-river/feeds.js:68-75 --><pre class="code" data-lang="js"><code>export function mergeArticles(old, items) {
+  const map = new Map(old.map((a) =&gt; [a.id, a]));
+  for (const a of items) {
+    const prev = map.get(a.id);
+    map.set(a.id, { ...a, read: prev?.read || false, star: prev?.star || false });
+  }
+  return [...map.values()].slice(-240);
+}</code></pre>
+<p><strong>What and why:</strong> A Map indexes old records by stable ID. Each incoming record replaces content but retains previous read/star flags. New IDs become new entries. Converting back to an array and taking the last 240 bounds the small library. This is a deliberate personal cache, not a permanent archive with unlimited history.</p>
+<p><strong>Try it / expected result:</strong> Star a demo entry, load the demo again, then reload the page. Its star should survive both merging and persistence.</p>
+<h3 id="walk-app-js">2. app.js<a class="anchor" href="#walk-app-js">#</a></h3>
+<p>Build the complete reader host, filters, both fetch paths, river lifetime and import/backup flow.</p>
+<h4 id="2-1-create-the-reading-room-header-and-source-controls">2.1 — Create the reading room header and source controls<a class="anchor" href="#2-1-create-the-reading-room-header-and-source-controls">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 1–54.</p>
+<!-- taught-source: rss-river/app.js:1-54 --><pre class="code" data-lang="js"><code>import { Save } from './save.js';
+import { DEFAULT_FEEDS, parseFeed, mergeArticles, safeLink } from './feeds.js';
+import { createRiver } from './river.js';
+import { download } from './desk.js';
+export async function mount(root) {
+  root.innerHTML = /* HTML */ `
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&gt;
+    &lt;main&gt;
+      &lt;header&gt;
+        &lt;div class=&quot;brand&quot;&gt;
+          &lt;span class=&quot;boat&quot;&gt;&lt;/span&gt;
+          &lt;div&gt;
+            &lt;h1&gt;RSS River&lt;/h1&gt;
+            &lt;p&gt;A quieter current for curious developers.&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;nav&gt;
+          &lt;button id=&quot;refresh&quot;&gt;Refresh feeds&lt;/button&gt;
+          &lt;button id=&quot;native&quot;&gt;Fetch with Nord host&lt;/button&gt;
+          &lt;button id=&quot;mode&quot;&gt;3D paper river&lt;/button&gt;
+          &lt;button id=&quot;backup&quot;&gt;Backup library&lt;/button&gt;
+        &lt;/nav&gt;
+      &lt;/header&gt;
+      &lt;section class=&quot;layout&quot;&gt;
+        &lt;aside&gt;
+          &lt;h3&gt;SOURCES&lt;/h3&gt;
+          &lt;select id=&quot;feed&quot;&gt;
+            &lt;option value=&quot;all&quot;&gt;All sources&lt;/option&gt;
+          &lt;/select&gt;
+          &lt;input id=&quot;search&quot; placeholder=&quot;Search titles &amp; summaries&quot; /&gt;
+          &lt;label&gt;
+            &lt;input id=&quot;unread&quot; type=&quot;checkbox&quot; /&gt;
+            Unread only
+          &lt;/label&gt;
+          &lt;label&gt;
+            &lt;input id=&quot;stars&quot; type=&quot;checkbox&quot; /&gt;
+            Starred only
+          &lt;/label&gt;
+          &lt;button id=&quot;readall&quot;&gt;Mark visible read&lt;/button&gt;
+          &lt;hr /&gt;
+          &lt;h3&gt;IMPORT A FEED&lt;/h3&gt;
+          &lt;label&gt;
+            RSS / Atom XML
+            &lt;input id=&quot;import&quot; type=&quot;file&quot; accept=&quot;.xml,.rss,.atom,.json&quot; /&gt;
+          &lt;/label&gt;
+          &lt;input id=&quot;custom&quot; placeholder=&quot;https://example.org/feed.xml&quot; /&gt;
+          &lt;button id=&quot;add&quot;&gt;Add feed URL&lt;/button&gt;
+          &lt;button id=&quot;demo&quot;&gt;Load local demo&lt;/button&gt;
+          &lt;p&gt;
+            Feeds refresh only when asked. Read cached news offline. If a site blocks
+            browser CORS, import its XML or use Nord host fetch.
+          &lt;/p&gt;
+          &lt;div id=&quot;counts&quot;&gt;&lt;/div&gt;
+        &lt;/aside&gt;</code></pre>
+<p><strong>What and why:</strong> The imports select one schema/merge path, one 3D view owner and existing save/download helpers. Header controls make refresh, native fetch, 3D and backup explicit actions. The sidebar source selector and filters determine a view of cached data, not separate databases. This keeps search usable without networking.</p>
+<p><strong>Try it / expected result:</strong> Disconnect networking and type in Search after loading the demo. Filtering cached content should still work.</p>
+<h4 id="2-2-provide-separate-list-river-and-reading-surfaces">2.2 — Provide separate list, river and reading surfaces<a class="anchor" href="#2-2-provide-separate-list-river-and-reading-surfaces">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 55–84.</p>
+<!-- taught-source: rss-river/app.js:55-84 --><pre class="code" data-lang="js"><code>        &lt;div class=&quot;content&quot;&gt;
+          &lt;div class=&quot;viewbar&quot;&gt;
+            &lt;b id=&quot;heading&quot;&gt;Your reading room&lt;/b&gt;
+            &lt;span id=&quot;status&quot;&gt;Local cache ready&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div id=&quot;list&quot;&gt;&lt;/div&gt;
+          &lt;canvas id=&quot;river&quot; hidden&gt;&lt;/canvas&gt;
+        &lt;/div&gt;
+        &lt;article id=&quot;reader&quot;&gt;
+          &lt;p class=&quot;eyebrow&quot;&gt;SELECT A PAPER&lt;/p&gt;
+          &lt;h2&gt;Welcome to the river.&lt;/h2&gt;
+          &lt;p&gt;
+            Your saved articles stay on this device. The initial demo is original tutorial
+            content, clearly marked as local demo.
+          &lt;/p&gt;
+        &lt;/article&gt;
+      &lt;/section&gt;
+      &lt;footer&gt;Local-first RSS + Atom · no account · Crowelian 2026 + Sonnet&lt;/footer&gt;
+    &lt;/main&gt;
+  `;
+  const $ = (id) =&gt; root.querySelector('#' + id),
+    save = new Save('rss-river');
+  let feeds = save.get('feeds', DEFAULT_FEEDS),
+    articles = save.get('articles', []),
+    selected = null,
+    river = null,
+    in3d = false,
+    alive = true;
+  if (!Array.isArray(feeds) || !feeds.length) feeds = [...DEFAULT_FEEDS];
+  if (!Array.isArray(articles)) articles = [];</code></pre>
+<p><strong>What and why:</strong> The list and river occupy one content area while the article pane remains readable alongside it. Status can report fetch failures without deleting current content. After markup, the host reads saved subscriptions/articles and keeps selected ID and river lifetime separately. Invalid top-level storage values fall back to defaults.</p>
+<p><strong>Try it / expected result:</strong> Switch list/river and confirm the reading pane does not become a different copy of the article state.</p>
+<h4 id="2-3-persist-carefully-and-create-filter-options">2.3 — Persist carefully and create filter options<a class="anchor" href="#2-3-persist-carefully-and-create-filter-options">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 85–119.</p>
+<!-- taught-source: rss-river/app.js:85-119 --><pre class="code" data-lang="js"><code>  const say = (t) =&gt; ($('status').textContent = t);
+  const persist = () =&gt; {
+    try {
+      save.set('feeds', feeds);
+      save.set('articles', articles);
+    } catch {
+      say('Storage is full; use Backup library.');
+    }
+  };
+  function feedOptions() {
+    const select = $('feed'),
+      value = select.value;
+    select.replaceChildren();
+    for (const f of [{ id: 'all', name: 'All sources' }, ...feeds]) {
+      const o = document.createElement('option');
+      o.value = f.id;
+      o.textContent = f.name;
+      select.append(o);
+    }
+    select.value = [...select.options].some((o) =&gt; o.value === value) ? value : 'all';
+  }
+  feedOptions();
+  const visible = () =&gt;
+    articles
+      .filter(
+        (a) =&gt;
+          ($('feed').value === 'all' || a.feed === $('feed').value) &amp;&amp;
+          (!$('unread').checked || !a.read) &amp;&amp;
+          (!$('stars').checked || a.star) &amp;&amp;
+          (a.title + ' ' + a.summary)
+            .toLowerCase()
+            .includes($('search').value.toLowerCase()),
+      )
+      .slice()
+      .reverse();</code></pre>
+<p><strong>What and why:</strong> Persistence writes subscriptions and articles through Nord Save and reports quota errors. feedOptions rebuilds option elements with textContent and preserves a still-valid selection. visible applies source/unread/star/search predicates, then reverses a copy rather than mutating the stored order. Filters compose, so a starred item from another source can still be hidden by source choice.</p>
+<p><strong>Try it / expected result:</strong> Enable Starred only with no stars. You should see an empty state, not a broken render or an automatic network refresh.</p>
+<h4 id="2-4-open-one-article-without-trusting-its-markup">2.4 — Open one article without trusting its markup<a class="anchor" href="#2-4-open-one-article-without-trusting-its-markup">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 120–160.</p>
+<!-- taught-source: rss-river/app.js:120-160 --><pre class="code" data-lang="js"><code>  function read(id) {
+    selected = id;
+    const a = articles.find((a) =&gt; a.id === id);
+    if (!a) return;
+    a.read = true;
+    persist();
+    const reader = $('reader');
+    reader.replaceChildren();
+    const source = document.createElement('p');
+    source.className = 'eyebrow';
+    source.textContent = a.source;
+    const h = document.createElement('h2');
+    h.textContent = a.title;
+    const date = document.createElement('p');
+    date.className = 'date';
+    date.textContent = a.date ? new Date(a.date).toLocaleString() : '';
+    const text = document.createElement('p');
+    text.textContent = a.summary;
+    const star = document.createElement('button');
+    star.textContent = a.star ? '★ Starred' : '☆ Star';
+    star.onclick = () =&gt; {
+      a.star = !a.star;
+      persist();
+      read(id);
+      if (in3d) showRiver();
+    };
+    const flick = document.createElement('button');
+    flick.textContent = 'Flick this paper';
+    flick.onclick = () =&gt; river?.flick(id);
+    reader.append(source, h, date, text, star, flick);
+    const link = safeLink(a.link);
+    if (link) {
+      const aTag = document.createElement('a');
+      aTag.textContent = 'Read original ↗';
+      aTag.href = link;
+      aTag.target = '_blank';
+      aTag.rel = 'noopener noreferrer';
+      reader.append(aTag);
+    }
+    renderList();
+  }</code></pre>
+<p><strong>What and why:</strong> read finds by ID, marks read and persists. It builds source/title/date/summary nodes using textContent, then wires Star and Flick. Star changes the shared record and may rebuild the river; Flick is temporary visual physics. safeLink controls whether an original anchor is created; noopener/noreferrer isolates the new tab. The final render updates list read styling.</p>
+<p><strong>Try it / expected result:</strong> Click a story, star it, then search for it. Its title and state should agree between the article pane and list.</p>
+<h4 id="2-5-rebuild-an-understandable-list-from-filtered-records">2.5 — Rebuild an understandable list from filtered records<a class="anchor" href="#2-5-rebuild-an-understandable-list-from-filtered-records">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 161–185.</p>
+<!-- taught-source: rss-river/app.js:161-185 --><pre class="code" data-lang="js"><code>  function renderList() {
+    const list = $('list');
+    list.replaceChildren();
+    const items = visible();
+    for (const a of items) {
+      const b = document.createElement('button');
+      b.className =
+        'news ' + (a.read ? 'read ' : '') + (a.id === selected ? 'selected' : '');
+      const tag = document.createElement('span');
+      tag.textContent = (a.star ? '★ ' : '') + a.source;
+      const title = document.createElement('strong');
+      title.textContent = a.title;
+      const summary = document.createElement('p');
+      summary.textContent = a.summary.slice(0, 150);
+      b.append(tag, title, summary);
+      b.onclick = () =&gt; read(a.id);
+      list.append(b);
+    }
+    if (!items.length)
+      list.textContent =
+        'No articles match. Refresh, import a feed, or load the local demo.';
+    $('counts').textContent =
+      `${articles.length} cached · ${articles.filter((a) =&gt; !a.read).length} unread · ${articles.filter((a) =&gt; a.star).length} starred`;
+    $('heading').textContent = `${items.length} papers in your current`;
+  }</code></pre>
+<p><strong>What and why:</strong> Each button gets source, title and a bounded summary preview. Classes express read/selected state without changing article content. Empty state tells users how to obtain data. Cached/unread/star counts summarize the whole library, while the heading counts the current filtered list. These are derived values, not counters incremented independently.</p>
+<p><strong>Try it / expected result:</strong> Mark visible read with a source selected. Other-source unread counts should remain until you read them.</p>
+<h4 id="2-6-discard-superseded-asynchronous-scenes">2.6 — Discard superseded asynchronous scenes<a class="anchor" href="#2-6-discard-superseded-asynchronous-scenes">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 186–224.</p>
+<!-- taught-source: rss-river/app.js:186-224 --><pre class="code" data-lang="js"><code>  let riverVersion = 0;
+  async function showRiver() {
+    const version = ++riverVersion;
+    try {
+      say('Preparing Babylon + Havok…');
+      const next = await createRiver($('river'), visible(), read);
+      // A newer filter/view request owns the UI; release this stale scene.
+      if (version !== riverVersion || !alive) {
+        next.dispose();
+        return;
+      }
+      river?.dispose();
+      river = next;
+      in3d = true;
+      $('list').hidden = true;
+      $('river').hidden = false;
+      $('mode').textContent = '2D reading list';
+      river.resize();
+      say('Orbit slowly · click a paper to read · Flick drops it with Havok');
+    } catch (e) {
+      say(e.message);
+    }
+  }
+  $('mode').onclick = () =&gt; {
+    if (in3d) {
+      riverVersion++;
+      in3d = false;
+      $('list').hidden = false;
+      $('river').hidden = true;
+      $('mode').textContent = '3D paper river';
+      river?.dispose();
+      river = null;
+    } else showRiver();
+  };
+  for (const id of ['feed', 'search', 'unread', 'stars'])
+    $(id).addEventListener('input', () =&gt; {
+      renderList();
+      if (in3d) showRiver();
+    });</code></pre>
+<p><strong>What and why:</strong> A version number identifies the newest river request. createRiver can await libraries/physics; if a later filter/mode request wins, this finished scene is disposed instead of taking over the UI. The previous visible river is released only when a current replacement is ready. Mode changes and filters reuse this lifecycle; hiding the river invalidates pending requests.</p>
+<p><strong>Try it / expected result:</strong> Double-click 3D or change filters rapidly. You should end with the latest view and one live Babylon engine.</p>
+<h4 id="2-7-fetch-intentionally-through-browser-or-nord-host">2.7 — Fetch intentionally through browser or Nord host<a class="anchor" href="#2-7-fetch-intentionally-through-browser-or-nord-host">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 225–264.</p>
+<!-- taught-source: rss-river/app.js:225-264 --><pre class="code" data-lang="js"><code>  async function refresh(native = false) {
+    $('refresh').disabled = true;
+    let count = 0;
+    const errors = [];
+    let desktop;
+    if (native) {
+      try {
+        desktop = (await import('./nord-desktop.js')).default;
+      } catch (e) {
+        errors.push(e.message);
+      }
+    }
+    for (const feed of feeds.filter((f) =&gt; !f.demo)) {
+      try {
+        let xml;
+        if (native) {
+          if (!desktop) throw Error('Nord desktop bridge unavailable');
+          const r = await desktop.http.fetch(feed.url);
+          if (r.status &gt;= 400) throw Error('HTTP ' + r.status);
+          xml = r.body;
+        } else {
+          const r = await fetch(feed.url, { signal: AbortSignal.timeout(12000) });
+          if (!r.ok) throw Error('HTTP ' + r.status);
+          xml = await r.text();
+        }
+        const items = parseFeed(xml, feed);
+        articles = mergeArticles(articles, items);
+        count += items.length;
+      } catch (e) {
+        errors.push(feed.name + ': ' + e.message);
+      }
+    }
+    persist();
+    renderList();
+    if (in3d) await showRiver();
+    say(
+      `Updated ${count} entries${errors.length ? ' · Some feeds blocked/offline; XML import or Nord host fetch works. ' + errors.join(' | ') : ''}`,
+    );
+    $('refresh').disabled = false;
+  }</code></pre>
+<p><strong>What and why:</strong> Refresh disables the main button and gathers partial failures. The optional bridge is imported only for the native action. Each non-demo source is fetched with an HTTP status check; browser fetch has a timeout and remains subject to CORS, while Nord host fetch goes through declared capabilities. Parsed entries merge into the cache, then the UI is saved/rebuilt. One failed source does not erase successful source results.</p>
+<p><strong>Try it / expected result:</strong> Refresh while one endpoint is unavailable. Read cached articles afterward and inspect the per-source error text.</p>
+<h4 id="2-8-wire-batch-actions-and-add-subscriptions-as-data">2.8 — Wire batch actions and add subscriptions as data<a class="anchor" href="#2-8-wire-batch-actions-and-add-subscriptions-as-data">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 265–288.</p>
+<!-- taught-source: rss-river/app.js:265-288 --><pre class="code" data-lang="js"><code>  $('refresh').onclick = () =&gt; refresh();
+  $('native').onclick = () =&gt; refresh(true);
+  $('readall').onclick = () =&gt; {
+    visible().forEach((a) =&gt; (a.read = true));
+    persist();
+    renderList();
+  };
+  $('add').onclick = () =&gt; {
+    const url = safeLink($('custom').value);
+    if (!url) {
+      say('Enter an HTTP or HTTPS feed URL.');
+      return;
+    }
+    if (feeds.some((f) =&gt; f.url === url)) {
+      say('Already subscribed.');
+      return;
+    }
+    feeds.push({ id: 'custom-' + Date.now(), name: new URL(url).hostname, url });
+    feedOptions();
+    persist();
+    say(
+      'Feed added; click Refresh. Native fetch needs that host in project permissions.',
+    );
+  };</code></pre>
+<p><strong>What and why:</strong> The two refresh buttons choose transport explicitly. Mark visible read acts on the current filter. Adding a URL normalizes it, rejects duplicates, creates an identity/name and persists it. Adding a source does not silently grant native host permission, which is why the status explains the manifest requirement.</p>
+<p><strong>Try it / expected result:</strong> Add the same endpoint twice. The second attempt should report Already subscribed rather than create duplicate source options.</p>
+<h4 id="2-9-use-a-real-local-feed-fixture-and-restore-backups">2.9 — Use a real local feed fixture and restore backups<a class="anchor" href="#2-9-use-a-real-local-feed-fixture-and-restore-backups">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 289–343.</p>
+<!-- taught-source: rss-river/app.js:289-343 --><pre class="code" data-lang="js"><code>  async function demo() {
+    const r = await fetch('demo.xml');
+    const f = {
+      id: 'demo',
+      name: 'Local demo — tutorial stories',
+      url: 'https://example.org/',
+      demo: true,
+    };
+    if (!feeds.some((v) =&gt; v.id === 'demo')) feeds.push(f);
+    articles = mergeArticles(articles, parseFeed(await r.text(), f));
+    feedOptions();
+    persist();
+    renderList();
+    say('Original local demo loaded — not live news.');
+  }
+  $('demo').onclick = demo;
+  $('import').onchange = async () =&gt; {
+    const file = $('import').files[0];
+    if (!file) return;
+    try {
+      if (file.size &gt; 2000000) throw Error('Choose a file below 2 MB');
+      const text = await file.text();
+      if (file.name.endsWith('.json')) {
+        const data = JSON.parse(text);
+        if (!Array.isArray(data.feeds) || !Array.isArray(data.articles))
+          throw Error('Expected RSS River backup');
+        feeds = data.feeds
+          .slice(0, 30)
+          .filter((f) =&gt; typeof f.name === 'string' &amp;&amp; safeLink(f.url));
+        articles = data.articles
+          .slice(-240)
+          .filter(
+            (a) =&gt;
+              typeof a.id === 'string' &amp;&amp;
+              typeof a.title === 'string' &amp;&amp;
+              typeof a.summary === 'string',
+          );
+      } else {
+        const f = {
+          id: 'import-' + Date.now(),
+          name: file.name,
+          url: 'https://example.org/',
+          demo: true,
+        };
+        articles = mergeArticles(articles, parseFeed(text, f));
+        feeds.push(f);
+      }
+      feedOptions();
+      persist();
+      renderList();
+      say('Imported ' + file.name);
+    } catch (e) {
+      say(e.message);
+    }
+  };</code></pre>
+<p><strong>What and why:</strong> demo loads packaged XML through the same parser/merge path as live feeds and clearly names its source as local demo. Import distinguishes a full JSON backup from XML, limits file size, checks required collection/item shapes and rebuilds options/list after success. Imported XML becomes its own named source. Errors go to status.</p>
+<p><strong>Try it / expected result:</strong> Back up, import that JSON, then import a small XML feed. Verify the first restores state while the second adds a source.</p>
+<h4 id="2-10-finish-startup-and-release-a-replaced-view">2.10 — Finish startup and release a replaced view<a class="anchor" href="#2-10-finish-startup-and-release-a-replaced-view">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 344–365.</p>
+<!-- taught-source: rss-river/app.js:344-365 --><pre class="code" data-lang="js"><code>  $('backup').onclick = () =&gt;
+    download('rss-river-library.json', JSON.stringify({ feeds, articles }, null, 2));
+  renderList();
+  if (!articles.length) await demo();
+  window.__rss = {
+    get articles() {
+      return articles;
+    },
+    get feeds() {
+      return feeds;
+    },
+    get river() {
+      return river;
+    },
+    read,
+  };
+  return () =&gt; {
+    alive = false;
+    river?.dispose();
+    root.replaceChildren();
+  };
+}</code></pre>
+<p><strong>What and why:</strong> Backup serializes both subscriptions and article flags. Initial render happens before the demo fallback, and only an empty cache loads that local fixture. The inspection interface exposes current arrays/view for checks. Teardown marks the host inactive so a pending river request cannot attach later, disposes the view and clears the root.</p>
+<p><strong>Try it / expected result:</strong> Reload after starring an item. Existing cached data should appear without re-fetching news or replacing it with the demo.</p>
+<h3 id="walk-river-js">3. river.js<a class="anchor" href="#walk-river-js">#</a></h3>
+<p>Follow every texture, pick, movement, physics and cleanup operation in the 3D reader.</p>
+<h4 id="3-1-wrap-text-into-bounded-canvas-lines">3.1 — Wrap text into bounded canvas lines<a class="anchor" href="#3-1-wrap-text-into-bounded-canvas-lines">#</a></h4>
+<p><strong>Read:</strong> <code>river.js</code>, lines 1–20.</p>
+<!-- taught-source: rss-river/river.js:1-20 --><pre class="code" data-lang="js"><code>import { createDesk } from './desk.js';
+export async function createRiver(canvas, articles, open) {
+  const d = await createDesk(canvas),
+    { B, scene } = d;
+  const papers = [],
+    bodies = [];
+  let time = 0;
+  const wrapText = (ctx, text, x, y, width, lineHeight, max = 4) =&gt; {
+    let line = '',
+      n = 0;
+    for (const word of text.split(/\s+/)) {
+      if (ctx.measureText(line + word).width &gt; width &amp;&amp; line) {
+        ctx.fillText(line, x, y + n * lineHeight);
+        if (++n &gt;= max) return;
+        line = '';
+      }
+      line += word + ' ';
+    }
+    if (n &lt; max) ctx.fillText(line, x, y + n * lineHeight);
+  };</code></pre>
+<p><strong>What and why:</strong> The view owns a desk and lists of papers/physics bodies. wrapText measures prospective words against available width, paints a line when full and stops at a maximum line count. Line height determines baseline spacing. It works with system fonts and plain strings, avoiding remote page screenshots and publisher images.</p>
+<p><strong>Try it / expected result:</strong> Use a long title in a demo copy. It should wrap into bounded lines rather than painting across neighbouring paper edges.</p>
+<h4 id="3-2-paint-each-article-and-encode-importance-spatially">3.2 — Paint each article and encode importance spatially<a class="anchor" href="#3-2-paint-each-article-and-encode-importance-spatially">#</a></h4>
+<p><strong>Read:</strong> <code>river.js</code>, lines 21–48.</p>
+<!-- taught-source: rss-river/river.js:21-48 --><pre class="code" data-lang="js"><code>  articles.slice(0, 18).forEach((a, i) =&gt; {
+    const width = a.star ? 4.5 : 3.6,
+      height = a.star ? 3.2 : 2.5,
+      p = d.paper('Article ' + i, width, height, (ctx) =&gt; {
+        ctx.fillStyle = a.star ? '#fff2c9' : '#f7f4e9';
+        ctx.fillRect(0, 0, 1024, 768);
+        ctx.fillStyle = '#298a86';
+        ctx.fillRect(58, 60, 72, 8);
+        ctx.font = '22px system-ui';
+        ctx.fillText(a.source.toUpperCase().slice(0, 45), 58, 112);
+        ctx.fillStyle = '#1e3548';
+        ctx.font = 'bold 48px system-ui';
+        wrapText(ctx, a.title, 58, 205, 900, 60, 4);
+        ctx.fillStyle = '#5f737b';
+        ctx.font = '27px system-ui';
+        wrapText(ctx, a.summary, 58, 500, 890, 36, 5);
+        ctx.font = '22px system-ui';
+        ctx.fillText(
+          a.star ? 'STARRED · FLOATING HIGHER' : a.read ? 'READ' : 'UNREAD',
+          58,
+          728,
+        );
+      });
+    p.mesh.position.set(((i % 3) - 1) * 5, a.star ? 2 : 1, Math.floor(i / 3) * 4.6 - 12);
+    p.mesh.rotation.z = i % 2 ? 0.035 : -0.035;
+    p.mesh.metadata = { article: a.id };
+    papers.push({ ...p, article: a, width, height, phase: i, dropped: false });
+  });</code></pre>
+<p><strong>What and why:</strong> Only eighteen visible entries become papers. A star changes width/height, tint and later elevation. The painter reserves separate areas for source, title, summary and status with appropriate fonts/line limits. Metadata stores article ID for the host callback; grid placement prevents opening all papers at the same location. These are views of shared records, not a second article store.</p>
+<p><strong>Try it / expected result:</strong> Star one story and reopen the river. Its paper should be larger/higher, and clicking it should open that same article ID.</p>
+<h4 id="3-3-route-picks-and-animate-only-floating-papers">3.3 — Route picks and animate only floating papers<a class="anchor" href="#3-3-route-picks-and-animate-only-floating-papers">#</a></h4>
+<p><strong>Read:</strong> <code>river.js</code>, lines 49–65.</p>
+<!-- taught-source: rss-river/river.js:49-65 --><pre class="code" data-lang="js"><code>  scene.onPointerObservable.add((info) =&gt; {
+    if (info.type === B.PointerEventTypes.POINTERPICK) {
+      const id = info.pickInfo?.pickedMesh?.metadata?.article;
+      if (id) open(id);
+    }
+  });
+  d.update.add((dt) =&gt; {
+    time += dt;
+    for (const p of papers)
+      if (!p.dropped) {
+        p.mesh.position.z += dt * 0.65;
+        if (p.mesh.position.z &gt; 15) p.mesh.position.z = -14;
+        p.mesh.position.y =
+          (p.article.star ? 2 : 1) + Math.sin(time * 0.7 + p.phase) * 0.15;
+        p.mesh.rotation.z = Math.sin(time * 0.35 + p.phase) * 0.035;
+      }
+  });</code></pre>
+<p><strong>What and why:</strong> A completed pick reads article metadata and calls the same host read function used by list buttons. The update callback moves floating papers slowly, wraps travel at the far edge and uses small sine motions. dropped excludes bodies now owned by physics so animation and Havok do not fight over position.</p>
+<p><strong>Try it / expected result:</strong> Read one paper from the river, then flick it. Its original read flag remains even after its visual motion changes.</p>
+<h4 id="3-4-hand-one-paper-over-to-a-rigid-body">3.4 — Hand one paper over to a rigid body<a class="anchor" href="#3-4-hand-one-paper-over-to-a-rigid-body">#</a></h4>
+<p><strong>Read:</strong> <code>river.js</code>, lines 66–96.</p>
+<!-- taught-source: rss-river/river.js:66-96 --><pre class="code" data-lang="js"><code>  return {
+    ...d,
+    papers,
+    flick(id) {
+      const p = papers.find((p) =&gt; p.article.id === id);
+      if (!p || p.dropped) return;
+      p.dropped = true;
+      const body = B.MeshBuilder.CreateBox(
+        'Paper collider',
+        { width: p.width, height: 0.05, depth: p.height },
+        scene,
+      );
+      body.position.copyFrom(p.mesh.position);
+      body.visibility = 0;
+      p.mesh.parent = body;
+      p.mesh.position.set(0, 0, 0);
+      const aggregate = new B.PhysicsAggregate(
+        body,
+        B.PhysicsShapeType.BOX,
+        { mass: 0.2, restitution: 0.5, friction: 0.5 },
+        scene,
+      );
+      aggregate.body.applyImpulse(new B.Vector3(1.6, 2.8, -1.2), body.position);
+      bodies.push(aggregate);
+    },
+    dispose() {
+      bodies.forEach((v) =&gt; v.dispose());
+      d.dispose();
+    },
+  };
+}</code></pre>
+<p><strong>What and why:</strong> flick ignores missing/already-dropped records, then makes a thin box of matching dimensions. The collider is invisible and receives the old world position; parenting the visual and zeroing its local position preserves appearance. The aggregate adds mass/contact properties, an impulse starts motion, and disposal later releases these aggregates before the desk owner.</p>
+<p><strong>Try it / expected result:</strong> Press Flick twice on the same story. The second click should not create another body or duplicate the paper.</p>
+<h3 id="walk-desk-js">4. desk.js<a class="anchor" href="#walk-desk-js">#</a></h3>
+<p>Build the complete reusable Babylon/Havok desk and browser-download helper.</p>
+<h4 id="4-1-share-pending-local-script-loads">4.1 — Share pending local script loads<a class="anchor" href="#4-1-share-pending-local-script-loads">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 1–20.</p>
+<!-- taught-source: rss-river/desk.js:1-20 --><pre class="code" data-lang="js"><code>// Cache the pending promise too: rapid view changes must wait for the same script.
+const scriptLoads = new Map();
+export function loadScript(src) {
+  if (!scriptLoads.has(src)) {
+    const pending = new Promise((resolve, reject) =&gt; {
+      const script = document.createElement('script');
+      script.src = src;
+      script.dataset.local = src;
+      script.onload = resolve;
+      script.onerror = () =&gt; {
+        script.remove();
+        scriptLoads.delete(src);
+        reject(Error('Cannot load ' + src));
+      };
+      document.head.append(script);
+    });
+    scriptLoads.set(src, pending);
+  }
+  return scriptLoads.get(src);
+}</code></pre>
+<p><strong>What and why:</strong> The Map caches the promise, not just the presence of a script tag. Rapid callers must all wait until the library is actually ready. onerror removes the failed element/cache entry so a later attempt can retry. This is important because both mode buttons and filter changes can request 3D before the first load finishes.</p>
+<p><strong>Try it / expected result:</strong> Click the 3D mode button twice rapidly. There should be one ready view, not an undefined BABYLON error.</p>
+<h4 id="4-2-create-one-engine-scene-and-controllable-camera">4.2 — Create one engine, scene and controllable camera<a class="anchor" href="#4-2-create-one-engine-scene-and-controllable-camera">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 21–42.</p>
+<!-- taught-source: rss-river/desk.js:21-42 --><pre class="code" data-lang="js"><code>export async function createDesk(canvas, { physics = true } = {}) {
+  await loadScript('vendor/babylonjs/babylon.js');
+  const B = window.BABYLON;
+  const engine = new B.Engine(canvas, true, {
+      preserveDrawingBuffer: true,
+      stencil: true,
+    }),
+    scene = new B.Scene(engine);
+  scene.clearColor = B.Color4.FromHexString('#101b2bff');
+  const camera = new B.ArcRotateCamera(
+    'Orbit',
+    -Math.PI / 2,
+    0.67,
+    28,
+    new B.Vector3(0, 0, 0),
+    scene,
+  );
+  camera.attachControl(canvas, true);
+  camera.lowerRadiusLimit = 4;
+  camera.upperRadiusLimit = 70;
+  camera.wheelPrecision = 25;
+  camera.minZ = 0.1;</code></pre>
+<p><strong>What and why:</strong> createDesk loads the local Babylon file, owns an Engine for the supplied canvas and sets an opaque background. ArcRotateCamera uses alpha/beta/radius around a target; attachControl gives orbit/zoom input. Radius limits avoid entering the paper surface or losing the whole desk at extreme zoom. minZ controls near clipping.</p>
+<p><strong>Try it / expected result:</strong> Compare orbit dragging with moving a paper: the camera changes the view without altering saved document coordinates.</p>
+<h4 id="4-3-light-a-surface-and-prepare-shadow-ownership">4.3 — Light a surface and prepare shadow ownership<a class="anchor" href="#4-3-light-a-surface-and-prepare-shadow-ownership">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 43–62.</p>
+<!-- taught-source: rss-river/desk.js:43-62 --><pre class="code" data-lang="js"><code>  const fill = new B.HemisphericLight('Sky', new B.Vector3(0, 1, 0), scene);
+  fill.intensity = 0.65;
+  const light = new B.DirectionalLight('Sun', new B.Vector3(-0.4, -1, 0.5), scene);
+  light.position.set(8, 18, -8);
+  light.intensity = 1.2;
+  const shadows = new B.ShadowGenerator(1024, light);
+  shadows.useBlurExponentialShadowMap = true;
+  shadows.blurKernel = 16;
+  const mat = new B.StandardMaterial('Desk surface', scene);
+  mat.diffuseColor = B.Color3.FromHexString('#253a46');
+  mat.specularColor = new B.Color3(0.1, 0.1, 0.1);
+  const desk = B.MeshBuilder.CreateBox(
+    'Desk',
+    { width: 45, depth: 35, height: 0.6 },
+    scene,
+  );
+  desk.position.y = -0.45;
+  desk.material = mat;
+  desk.receiveShadows = true;
+  const aggregates = [];</code></pre>
+<p><strong>What and why:</strong> The hemispheric light supplies broad fill; the directional light supplies a direction and shadow map. A restrained specular colour avoids a distracting glossy desk. A solid box, not a zero-thickness drawing, supplies the tabletop. Materials and meshes are scene-owned. The aggregates array will additionally own physics handles that need disposing.</p>
+<p><strong>Try it / expected result:</strong> Change the directional light direction temporarily and observe where shadows fall, while paper text remains readable.</p>
+<h4 id="4-4-load-the-packaged-physics-binary">4.4 — Load the packaged physics binary<a class="anchor" href="#4-4-load-the-packaged-physics-binary">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 63–77.</p>
+<!-- taught-source: rss-river/desk.js:63-77 --><pre class="code" data-lang="js"><code>  if (physics) {
+    await loadScript('vendor/havok/HavokPhysics_umd.js');
+    const havok = await window.HavokPhysics({
+      locateFile: (name) =&gt; 'vendor/havok/' + name,
+    });
+    scene.enablePhysics(new B.Vector3(0, -9.81, 0), new B.HavokPlugin(true, havok));
+    aggregates.push(
+      new B.PhysicsAggregate(
+        desk,
+        B.PhysicsShapeType.BOX,
+        { mass: 0, restitution: 0.2 },
+        scene,
+      ),
+    );
+  }</code></pre>
+<p><strong>What and why:</strong> The local Havok loader receives locateFile so its WASM resolves beside the supplied loader. enablePhysics connects it to this Babylon scene with a gravity vector in 3D units. The tabletop aggregate has mass zero, making it a fixed collider rather than another falling toy. Physics is an optional helper setting, not an editor tier switch.</p>
+<p><strong>Try it / expected result:</strong> Temporarily set physics false at the helper call. Static papers should still render, but there will be no physical sticky/flick response.</p>
+<h4 id="4-5-create-a-writable-texture-rather-than-a-screenshot-file">4.5 — Create a writable texture rather than a screenshot file<a class="anchor" href="#4-5-create-a-writable-texture-rather-than-a-screenshot-file">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 78–104.</p>
+<!-- taught-source: rss-river/desk.js:78-104 --><pre class="code" data-lang="js"><code>  const paper = (name, width, height, paint) =&gt; {
+    const mesh = B.MeshBuilder.CreatePlane(
+      name,
+      { width, height, sideOrientation: B.Mesh.DOUBLESIDE },
+      scene,
+    );
+    mesh.rotation.x = Math.PI / 2;
+    const texture = new B.DynamicTexture(
+      name + ' texture',
+      { width: 1024, height: 768 },
+      scene,
+      false,
+    );
+    const material = new B.StandardMaterial(name + ' material', scene);
+    material.emissiveTexture = texture;
+    material.emissiveColor = B.Color3.White();
+    material.disableLighting = true;
+    material.diffuseColor = B.Color3.Black();
+    material.specularColor = B.Color3.Black();
+    material.backFaceCulling = false;
+    mesh.material = material;
+    shadows.addShadowCaster(mesh);
+    mesh.receiveShadows = true;
+    paint?.(texture.getContext());
+    texture.update();
+    return { mesh, texture, material };
+  };</code></pre>
+<p><strong>What and why:</strong> A double-sided plane is laid across the desk. DynamicTexture owns a canvas context that callers can paint, then upload with update. The emissive/unlit material preserves readable colour from either side; zero specular avoids highlights washing out text. The mesh still casts a shadow. The return object exposes mesh, texture and material for later drawing and picking.</p>
+<p><strong>Try it / expected result:</strong> Draw a bold line in 2D and switch views. It should appear as actual texture content on the corresponding paper.</p>
+<h4 id="4-6-create-a-visible-rigid-sticky-toy">4.6 — Create a visible rigid sticky toy<a class="anchor" href="#4-6-create-a-visible-rigid-sticky-toy">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 105–126.</p>
+<!-- taught-source: rss-river/desk.js:105-126 --><pre class="code" data-lang="js"><code>  const box = (name, pos, color = '#f6d675', mass = 0.2) =&gt; {
+    const mesh = B.MeshBuilder.CreateBox(
+      name,
+      { width: 1.1, height: 0.13, depth: 0.9 },
+      scene,
+    );
+    mesh.position.copyFromFloats(...pos);
+    const material = new B.StandardMaterial(name + ' paint', scene);
+    material.diffuseColor = B.Color3.FromHexString(color);
+    mesh.material = material;
+    shadows.addShadowCaster(mesh);
+    const aggregate = physics
+      ? new B.PhysicsAggregate(
+          mesh,
+          B.PhysicsShapeType.BOX,
+          { mass, restitution: 0.55, friction: 0.45 },
+          scene,
+        )
+      : null;
+    if (aggregate) aggregates.push(aggregate);
+    return { mesh, aggregate };
+  };</code></pre>
+<p><strong>What and why:</strong> A small box has physical thickness, a colour material and a shadow caster. A dynamic aggregate supplies mass, restitution and friction. Registering that aggregate gives one disposal owner. The returned mesh supports picking and position inspection; the returned aggregate supports impulses. These are different handles for appearance and physics.</p>
+<p><strong>Try it / expected result:</strong> Increase restitution slightly and flick a sticky. It should bounce more without changing the original 2D note shape.</p>
+<h4 id="4-7-own-the-render-loop-and-resize-lifecycle">4.7 — Own the render loop and resize lifecycle<a class="anchor" href="#4-7-own-the-render-loop-and-resize-lifecycle">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 127–156.</p>
+<!-- taught-source: rss-river/desk.js:127-156 --><pre class="code" data-lang="js"><code>  const update = new Set(),
+    render = () =&gt; {
+      for (const fn of update) fn(Math.min(0.05, engine.getDeltaTime() / 1000));
+      scene.render();
+    };
+  engine.runRenderLoop(render);
+  const resize = () =&gt; engine.resize();
+  window.addEventListener('resize', resize);
+  return {
+    B,
+    engine,
+    scene,
+    camera,
+    shadows,
+    paper,
+    box,
+    update,
+    resize,
+    setActive(on) {
+      engine.stopRenderLoop(render);
+      if (on) engine.runRenderLoop(render);
+    },
+    dispose() {
+      window.removeEventListener('resize', resize);
+      for (const a of aggregates) a.dispose();
+      scene.dispose();
+      engine.dispose();
+    },
+  };
+}</code></pre>
+<p><strong>What and why:</strong> The update Set lets app-specific animations run before scene.render. Delta is converted to seconds and capped for those callbacks. A single resize listener updates the engine. setActive can stop/restart the stored render callback, and dispose releases listeners, aggregates, scene and engine. Replacing a view must call this owner, not merely hide its canvas.</p>
+<p><strong>Try it / expected result:</strong> Switch back to 2D and observe that the old desk stops animating. Reopening 3D creates one fresh owner.</p>
+<h4 id="4-8-hand-a-browser-a-real-downloadable-object">4.8 — Hand a browser a real downloadable object<a class="anchor" href="#4-8-hand-a-browser-a-real-downloadable-object">#</a></h4>
+<p><strong>Read:</strong> <code>desk.js</code>, lines 157–165.</p>
+<!-- taught-source: rss-river/desk.js:157-165 --><pre class="code" data-lang="js"><code>export function download(name, content, type = 'application/json') {
+  const blob = content instanceof Blob ? content : new Blob([content], { type }),
+    url = URL.createObjectURL(blob),
+    a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  a.click();
+  setTimeout(() =&gt; URL.revokeObjectURL(url), 1000);
+}</code></pre>
+<p><strong>What and why:</strong> download accepts a Blob or creates one, creates a temporary object URL and triggers a named anchor download. Revoking shortly afterward releases the temporary URL without invalidating the click immediately. The browser still controls the save destination; this is not an arbitrary filesystem write.</p>
+<p><strong>Try it / expected result:</strong> Download JSON and verify its suggested filename and contents. Cancel the save if you do not need another copy.</p>
+<h3 id="walk-save-js">5. save.js<a class="anchor" href="#walk-save-js">#</a></h3>
+<p>Understand the complete existing Nord Save helper bundled with this app.</p>
+<h4 id="5-1-namespace-slots-and-read-versioned-data">5.1 — Namespace slots and read versioned data<a class="anchor" href="#5-1-namespace-slots-and-read-versioned-data">#</a></h4>
+<p><strong>Read:</strong> <code>save.js</code>, lines 1–20.</p>
+<!-- taught-source: rss-river/save.js:1-20 --><pre class="code" data-lang="js"><code>// Versioned save slots on top of localStorage (or any Storage-like object).
+export class Save {
+  constructor(gameId, { version = 1, storage = globalThis.localStorage, migrate = null } = {}) {
+    this.prefix = `nord:${gameId}:`;
+    this.version = version;
+    this.storage = storage ?? new MemoryStorage();
+    this.migrate = migrate; // (data, fromVersion) =&gt; data
+    this.slotId = 0;
+  }
+  slot(n) { this.slotId = n; return this; }
+  #key(n = this.slotId) { return `${this.prefix}slot${n}`; }
+  #read(n) {
+    try {
+      const raw = this.storage.getItem(this.#key(n));
+      if (!raw) return { v: this.version, data: {} };
+      const o = JSON.parse(raw);
+      if (o.v &lt; this.version &amp;&amp; this.migrate) { o.data = this.migrate(o.data, o.v); o.v = this.version; }
+      return o;
+    } catch { return { v: this.version, data: {} }; }
+  }</code></pre>
+<p><strong>What and why:</strong> The prefix includes the app identity, and slotId chooses one save slot. A private key method keeps naming in one place. Reading returns an empty versioned envelope when missing or invalid, and an optional migration callback upgrades older data. This helper stores serializable values, not engine objects. MemoryStorage is available when no Storage implementation is supplied.</p>
+<p><strong>Try it / expected result:</strong> Compare the Paper Worlds and RSS River storage prefixes in browser tools. Their saves should not overwrite each other.</p>
+<h4 id="5-2-read-and-write-values-then-define-memory-storage">5.2 — Read and write values, then define memory storage<a class="anchor" href="#5-2-read-and-write-values-then-define-memory-storage">#</a></h4>
+<p><strong>Read:</strong> <code>save.js</code>, lines 21–32.</p>
+<!-- taught-source: rss-river/save.js:21-32 --><pre class="code" data-lang="js"><code>  get(k, def) { const d = this.#read().data; return k in d ? d[k] : def; }
+  set(k, v) { const o = this.#read(); o.data[k] = v; o.v = this.version; o.t = Date.now(); this.storage.setItem(this.#key(), JSON.stringify(o)); }
+  all() { return this.#read().data; }
+  has(n = this.slotId) { return this.storage.getItem(this.#key(n)) != null; }
+  delete(n = this.slotId) { this.storage.removeItem(this.#key(n)); }
+}
+export class MemoryStorage {
+  #m = new Map();
+  getItem(k) { return this.#m.has(k) ? this.#m.get(k) : null; }
+  setItem(k, v) { this.#m.set(k, String(v)); }
+  removeItem(k) { this.#m.delete(k); }
+}</code></pre>
+<p><strong>What and why:</strong> get supplies a caller default when a value is absent. set reads the envelope, replaces one key, records version/time and serializes through the Storage interface. all/has/delete expose slot operations. MemoryStorage implements the same getItem/setItem/removeItem contract using a Map, which is useful in tests but does not survive page reload. App callers still need to catch storage quota/permission failures on writes.</p>
+<p><strong>Try it / expected result:</strong> Back up your document, reload the page and verify it returns. Then inspect how the app reports a failed write instead of assuming success.</p>
+<h3 id="walk-demo-xml">6. demo.xml<a class="anchor" href="#walk-demo-xml">#</a></h3>
+<p>Read the complete original local RSS fixture; it is also an example of the input format.</p>
+<h4 id="6-1-recognize-an-rss-channel-and-stable-item-ids">6.1 — Recognize an RSS channel and stable item IDs<a class="anchor" href="#6-1-recognize-an-rss-channel-and-stable-item-ids">#</a></h4>
+<p><strong>Read:</strong> <code>demo.xml</code>, lines 1–10.</p>
+<!-- taught-source: rss-river/demo.xml:1-10 --><pre class="code" data-lang="xml"><code>&lt;?xml version=&quot;1.0&quot;?&gt;&lt;rss version=&quot;2.0&quot;&gt;&lt;channel&gt;&lt;title&gt;Original tutorial demo — not live news&lt;/title&gt;&lt;link&gt;https://example.org/&lt;/link&gt;&lt;description&gt;Fictional local content for learning RSS River.&lt;/description&gt;
+&lt;item&gt;&lt;guid&gt;demo-1&lt;/guid&gt;&lt;title&gt;A small app can be a place you want to visit&lt;/title&gt;&lt;link&gt;https://example.org/demo/1&lt;/link&gt;&lt;description&gt;This is original tutorial demo content, not a published news report. Try starring this paper, switching to the 3D river and flicking it onto the desk.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-2&lt;/guid&gt;&lt;title&gt;AI reading list: keep the source next to the summary&lt;/title&gt;&lt;link&gt;https://example.org/demo/2&lt;/link&gt;&lt;description&gt;Demo: a good reading tool preserves the original link. The app stores plain text and lets you open the publisher when you want the complete article.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-3&lt;/guid&gt;&lt;title&gt;Why seconds and milliseconds deserve different names&lt;/title&gt;&lt;link&gt;https://example.org/demo/3&lt;/link&gt;&lt;description&gt;Demo coding note: engines often give delta time in seconds while a physics API expects milliseconds. Write the conversion at the boundary.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-4&lt;/guid&gt;&lt;title&gt;Offline-first means your notes survive a train ride&lt;/title&gt;&lt;link&gt;https://example.org/demo/4&lt;/link&gt;&lt;description&gt;Demo: refresh news when connected, then read the cached titles and summaries offline. Back up the library before clearing browser storage.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-5&lt;/guid&gt;&lt;title&gt;Make important things a little bigger&lt;/title&gt;&lt;link&gt;https://example.org/demo/5&lt;/link&gt;&lt;description&gt;Demo design idea: starred papers are physically larger and float higher. One data flag changes both the reading list and spatial view.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-6&lt;/guid&gt;&lt;title&gt;Read a feed without trusting its markup&lt;/title&gt;&lt;link&gt;https://example.org/demo/6&lt;/link&gt;&lt;description&gt;Demo security lesson: convert feed descriptions to text. Never execute a publisher's script or insert its HTML into your app's controls.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-7&lt;/guid&gt;&lt;title&gt;Slow motion is a feature of a calm interface&lt;/title&gt;&lt;link&gt;https://example.org/demo/7&lt;/link&gt;&lt;description&gt;Demo: the river is a gentle browse mode. Use the ordinary list and keyboard for precise reading, and keep motion optional.&lt;/description&gt;&lt;/item&gt;
+&lt;item&gt;&lt;guid&gt;demo-8&lt;/guid&gt;&lt;title&gt;Ship the smallest complete version&lt;/title&gt;&lt;link&gt;https://example.org/demo/8&lt;/link&gt;&lt;description&gt;Demo: include import, backup, empty states and connection errors before adding an account system. A complete local app is already useful.&lt;/description&gt;&lt;/item&gt;
+&lt;/channel&gt;&lt;/rss&gt;</code></pre>
+<p><strong>What and why:</strong> The XML declaration describes encoding; rss/channel wraps title, link and description for the source. Every item has a guid, title, original link and description. The stories are explicitly original tutorial demonstrations, not scraped current reporting. Stable GUIDs let reload merge a revised demo item without losing its star/read choices.</p>
+<p><strong>Try it / expected result:</strong> Add a ninth item with a new GUID and load the demo again. Existing stars should remain and one new story should appear.</p>
+<h3 id="walk--offline-allow">7. .offline-allow<a class="anchor" href="#walk--offline-allow">#</a></h3>
+<p>Read the entire explicit feed-host allowlist.</p>
+<h4 id="7-1-distinguish-intentional-news-endpoints-from-library-dependencies">7.1 — Distinguish intentional news endpoints from library dependencies<a class="anchor" href="#7-1-distinguish-intentional-news-endpoints-from-library-dependencies">#</a></h4>
+<p><strong>Read:</strong> <code>.offline-allow</code>, lines 1–3.</p>
+<!-- taught-source: rss-river/.offline-allow:1-3 --><pre class="code" data-lang="text"><code>hnrss.org
+simonwillison.net
+github.blog</code></pre>
+<p><strong>What and why:</strong> These three hostnames declare the app’s deliberate external feed data to Nord’s static URL checker. They do not make browser CORS disappear and do not grant native HTTP capabilities; those are separate boundaries. Babylon, Havok and artwork still load from the project. A new default feed needs an intentional update here and in the appropriate permission configuration.</p>
+<p><strong>Try it / expected result:</strong> Add a custom source through the UI and compare the stored subscription with this file. They have different responsibilities.</p>
+<h3 id="walk-index-html">8. index.html<a class="anchor" href="#walk-index-html">#</a></h3>
+<p>Read the complete Nord page entry point and its failure path.</p>
+<h4 id="8-1-load-the-local-runtime-and-start-the-app">8.1 — Load the local runtime and start the app<a class="anchor" href="#8-1-load-the-local-runtime-and-start-the-app">#</a></h4>
+<p><strong>Read:</strong> <code>index.html</code>, lines 1–8.</p>
+<!-- taught-source: rss-river/index.html:1-8 --><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.rssriver&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;RSS River — a calm reading desk&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+<p><strong>What and why:</strong> The document declares encoding and viewport, creates the mount container and loads local code. The module imports mount from app.js and awaits initialization for the HTML-tier root. The ready/error flags are inspection signals used by browser checks; they are not a second simulation. The catch logs and exposes initialization errors. The page is served over HTTP so local module and asset URLs resolve consistently.</p>
+<p><strong>Try it / expected result:</strong> Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name.</p>
+<h3 id="walk-nord-project-json">9. nord.project.json<a class="anchor" href="#walk-nord-project-json">#</a></h3>
+<p>Read every project field that tells Nord which host, display and services to use.</p>
+<h4 id="9-1-identify-the-project-and-choose-its-presentation">9.1 — Identify the project and choose its presentation<a class="anchor" href="#9-1-identify-the-project-and-choose-its-presentation">#</a></h4>
+<p><strong>Read:</strong> <code>nord.project.json</code>, lines 1–22.</p>
+<!-- taught-source: rss-river/nord.project.json:1-22 --><pre class="code" data-lang="json"><code>{
+  &quot;format&quot;: 1,
+  &quot;name&quot;: &quot;RSS River&quot;,
+  &quot;id&quot;: &quot;com.crowelian.rssriver&quot;,
+  &quot;type&quot;: &quot;html&quot;,
+  &quot;engineVersion&quot;: &quot;0.1.0&quot;,
+  &quot;startScene&quot;: &quot;&quot;,
+  &quot;display&quot;: {
+    &quot;width&quot;: 640,
+    &quot;height&quot;: 360,
+    &quot;scale&quot;: &quot;fit&quot;,
+    &quot;pixelArt&quot;: false,
+    &quot;background&quot;: &quot;#2e3440&quot;
+  },
+  &quot;physics&quot;: {
+    &quot;engine&quot;: &quot;none&quot;,
+    &quot;gravity&quot;: [
+      0,
+      0,
+      0
+    ]
+  },</code></pre>
+<p><strong>What and why:</strong> format and engineVersion identify the serialized contract, while name/id give human and stable application identity. type chooses the host; startScene is used by a scene backend and is empty for these HTML apps. Display fields request dimensions, fit behaviour, pixel-art treatment and background. Physics selects a runtime engine; the rail shooter uses custom rules with none, while HTML-hosted libraries are initialized in their own modules.</p>
+<p><strong>Try it / expected result:</strong> Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.</p>
+<h4 id="9-2-distinguish-scene-actions-from-html-event-handling">9.2 — Distinguish scene actions from HTML event handling<a class="anchor" href="#9-2-distinguish-scene-actions-from-html-event-handling">#</a></h4>
+<p><strong>Read:</strong> <code>nord.project.json</code>, lines 23–75.</p>
+<!-- taught-source: rss-river/nord.project.json:23-75 --><pre class="code" data-lang="json"><code>  &quot;input&quot;: {
+    &quot;actions&quot;: {
+      &quot;left&quot;: [
+        &quot;KeyA&quot;,
+        &quot;ArrowLeft&quot;
+      ],
+      &quot;right&quot;: [
+        &quot;KeyD&quot;,
+        &quot;ArrowRight&quot;
+      ],
+      &quot;up&quot;: [
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;down&quot;: [
+        &quot;KeyS&quot;,
+        &quot;ArrowDown&quot;
+      ],
+      &quot;jump&quot;: [
+        &quot;Space&quot;,
+        &quot;KeyW&quot;,
+        &quot;ArrowUp&quot;
+      ],
+      &quot;fire&quot;: [
+        &quot;Space&quot;,
+        &quot;Mouse0&quot;
+      ],
+      &quot;interact&quot;: [
+        &quot;KeyE&quot;,
+        &quot;Enter&quot;
+      ]
+    }
+  },
+  &quot;plugins&quot;: [
+    &quot;ui&quot;,
+    &quot;audio&quot;
+  ],
+  &quot;ui&quot;: {
+    &quot;skin&quot;: &quot;cyber&quot;,
+    &quot;theme&quot;: &quot;nord&quot;
+  },
+  &quot;desktop&quot;: {
+    &quot;permissions&quot;: {
+      &quot;net&quot;: {
+        &quot;hosts&quot;: [
+          &quot;hnrss.org&quot;,
+          &quot;simonwillison.net&quot;,
+          &quot;github.blog&quot;
+        ]
+      }
+    }
+  }
+}</code></pre>
+<p><strong>What and why:</strong> The input object maps action names to keyboard codes for Nord scene scripts. Vector Patrol reads these through this.input. HTML-tier hosts in the other projects read their own DOM events, so editing this action table alone does not rewrite those handlers. plugins/ui declare ordinary scene services and skin/theme; any remaining desktop configuration is the native capability contract rather than a browser CORS override.</p>
+<p><strong>Try it / expected result:</strong> For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input.</p>
+<h3 id="walk-style-css">10. style.css<a class="anchor" href="#walk-style-css">#</a></h3>
+<p>Read every stylesheet rule, grouped by the UI responsibility it controls.</p>
+<h4 id="10-1-set-the-app-foundation-and-reusable-visual-language">10.1 — Set the app foundation and reusable visual language<a class="anchor" href="#10-1-set-the-app-foundation-and-reusable-visual-language">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 1–68.</p>
+<!-- taught-source: rss-river/style.css:1-68 --><pre class="code" data-lang="css"><code>html,
+body {
+  height: auto;
+  min-height: 100%;
+  background: #101b2b;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  color: #dce9ee;
+  font: 14px system-ui;
+}
+main {
+  max-width: 1500px;
+  padding: 22px;
+  margin: auto;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 24px;
+}
+.brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.boat {
+  display: block;
+  width: 66px;
+  height: 66px;
+  background: url(assets/dev-desk-sprites.png) 100% 100%/400% 200%;
+}
+h1 {
+  font-size: 30px;
+  margin: 0;
+  letter-spacing: -1px;
+}
+header p {
+  color: #8fa9b7;
+  margin: 5px 0;
+}
+button,
+input,
+select {
+  font: inherit;
+  background: #20364b;
+  color: #e7f3f6;
+  border: 1px solid #3c5b71;
+  border-radius: 7px;
+  padding: 9px;
+}
+button {
+  cursor: pointer;
+}
+button:hover {
+  background: #33546c;
+}
+nav button {
+  margin: 3px;
+}
+#mode {
+  background: #297f7b;
+}</code></pre>
+<p><strong>What and why:</strong> The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.</p>
+<p><strong>Try it / expected result:</strong> Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change.</p>
+<h4 id="10-2-arrange-source-list-and-reading-columns">10.2 — Arrange source, list and reading columns<a class="anchor" href="#10-2-arrange-source-list-and-reading-columns">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 69–125.</p>
+<!-- taught-source: rss-river/style.css:69-125 --><pre class="code" data-lang="css"><code>.layout {
+  display: grid;
+  grid-template-columns: 205px minmax(350px, 1fr) 330px;
+  gap: 18px;
+  align-items: start;
+}
+aside {
+  background: #14283a;
+  border-radius: 12px;
+  padding: 15px;
+}
+h3,
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #83cfc3;
+}
+aside select,
+aside &gt; input,
+aside button {
+  width: 100%;
+  margin: 6px 0;
+}
+label {
+  display: block;
+  margin: 12px 0;
+  font-size: 12px;
+}
+input[type='file'] {
+  max-width: 175px;
+  font-size: 11px;
+}
+aside p,
+#counts {
+  font-size: 12px;
+  color: #94aebc;
+  line-height: 1.6;
+}
+hr {
+  border: 0;
+  border-top: 1px solid #34495d;
+  margin: 22px 0;
+}
+.viewbar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 15px;
+  background: #203448;
+  border-radius: 10px 10px 0 0;
+}
+#status {
+  font-size: 11px;
+  color: #8dc6c5;
+  max-height: 65px;
+  overflow: auto;
+}</code></pre>
+<p><strong>What and why:</strong> The three-column layout gives navigation, a flexible current and a readable article width. Sidebar controls/filter labels and status/count styling distinguish actions from information. Native inputs remain usable; this app does not paint its text fields into 3D.</p>
+<p><strong>Try it / expected result:</strong> Narrow the window and observe which areas move before changing any article data.</p>
+<h4 id="10-3-give-list-entries-useful-reading-states">10.3 — Give list entries useful reading states<a class="anchor" href="#10-3-give-list-entries-useful-reading-states">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 126–167.</p>
+<!-- taught-source: rss-river/style.css:126-167 --><pre class="code" data-lang="css"><code>#list {
+  height: 680px;
+  overflow: auto;
+  background: #142536;
+  padding: 12px;
+  border-radius: 0 0 10px 10px;
+}
+.news {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: #20374b;
+  border: 1px solid #35556a;
+  padding: 17px;
+  margin-bottom: 10px;
+}
+.news span {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8bcfc4;
+}
+.news strong {
+  display: block;
+  font-size: 17px;
+  line-height: 1.4;
+  margin: 8px 0;
+}
+.news p {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #a0b8c5;
+  margin-bottom: 0;
+}
+.news.read {
+  opacity: 0.65;
+}
+.news.selected {
+  border-color: #66cbbd;
+  opacity: 1;
+}</code></pre>
+<p><strong>What and why:</strong> The bounded list scrolls independently. Each story is a full-width button with source, title and excerpt typography. read reduces emphasis while selected restores a clear active border. These classes are a visual projection of article flags, not storage themselves.</p>
+<p><strong>Try it / expected result:</strong> Read a story and then select another. The first should remain read while the selected border moves.</p>
+<h4 id="10-4-make-article-text-calm-and-readable">10.4 — Make article text calm and readable<a class="anchor" href="#10-4-make-article-text-calm-and-readable">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 168–211.</p>
+<!-- taught-source: rss-river/style.css:168-211 --><pre class="code" data-lang="css"><code>#reader {
+  background: #f7f4e9;
+  color: #253a4c;
+  border-radius: 10px;
+  padding: 24px;
+  min-height: 400px;
+  line-height: 1.8;
+  box-shadow: 0 8px 30px #0003;
+}
+#reader .eyebrow {
+  color: #277e7a;
+}
+#reader h2 {
+  font:
+    600 25px/1.35 Georgia,
+    serif;
+}
+#reader .date {
+  font-size: 11px;
+  color: #71818a;
+}
+#reader a {
+  display: block;
+  color: #267b78;
+  margin-top: 18px;
+}
+#reader button {
+  margin: 4px;
+}
+#river {
+  height: 680px;
+  width: 100%;
+  display: block;
+  touch-action: none;
+  border-radius: 0 0 10px 10px;
+}
+footer {
+  font-size: 12px;
+  color: #7895a6;
+  padding-top: 22px;
+}
+[hidden] {
+  display: none !important;
+}</code></pre>
+<p><strong>What and why:</strong> The article pane uses a light paper surface, comfortable line height and a serif title. Source/date/link/button rules retain clear hierarchy. The river canvas has its own bounded area and touch handling so it can be optional. No publisher stylesheet is imported.</p>
+<p><strong>Try it / expected result:</strong> Open a long summary and inspect line length. The pane should remain useful even when the 3D river is hidden.</p>
+<h4 id="10-5-adapt-columns-at-two-viewport-widths">10.5 — Adapt columns at two viewport widths<a class="anchor" href="#10-5-adapt-columns-at-two-viewport-widths">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 212–236.</p>
+<!-- taught-source: rss-river/style.css:212-236 --><pre class="code" data-lang="css"><code>@media (max-width: 1050px) {
+  .layout {
+    grid-template-columns: 180px minmax(300px, 1fr);
+  }
+  #reader {
+    grid-column: 2;
+  }
+  header {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 650px) {
+  main {
+    padding: 8px;
+  }
+  .layout {
+    display: block;
+  }
+  aside {
+    margin-bottom: 12px;
+  }
+  #reader {
+    margin-top: 12px;
+  }
+}</code></pre>
+<p><strong>What and why:</strong> The first breakpoint reduces to two columns and places the article below content; the smaller breakpoint stacks the page. The hidden rule ensures list/river mode switching continues to work at either width. Responsive CSS changes presentation, not the subscription cache.</p>
+<p><strong>Try it / expected result:</strong> Try both breakpoints, then restore a wide window. Your active story and reading flags should still be present.</p>
+<h3 id="walk-nord-desktop-js">11. nord-desktop.js<a class="anchor" href="#walk-nord-desktop-js">#</a></h3>
+<p>Read the complete bundled Nord bridge used by the optional host-fetch button.</p>
+<h4 id="11-1-normalize-errors-and-choose-request-transports">11.1 — Normalize errors and choose request transports<a class="anchor" href="#11-1-normalize-errors-and-choose-request-transports">#</a></h4>
+<p><strong>Read:</strong> <code>nord-desktop.js</code>, lines 1–34.</p>
+<!-- taught-source: rss-river/nord-desktop.js:1-34 --><pre class="code" data-lang="js"><code>// Nord desktop API (M9, ADR-020): window.nord.desktop.* — files, dialogs, notifications, clipboard, storage, windows, menus, tray.
+// One API, three transports, picked automatically:
+//   ipc  — inside the native player (wry): window.ipc.postMessage ⇄ Rust `nord-desktop` bridge, capability-checked
+//   http — `nord serve` / editor Play: POST /__desktop/call (same Rust bridge, same permissions)
+//   web  — plain browser export: graceful fallbacks (localStorage store + virtual appData files, Notification API, navigator.clipboard,
+//          &lt;input type=file&gt; / download for dialogs); everything else rejects with code &quot;unsupported&quot;.
+// Every method returns a Promise; failures reject with NordDesktopError { code: denied|unsupported|not_found|invalid|io|cancelled }.
+export class NordDesktopError extends Error {
+  constructor(code, message) { super(message); this.name = 'NordDesktopError'; this.code = code; }
+}
+const unsupported = (m) =&gt; Promise.reject(new NordDesktopError('unsupported', `${m} is not available in this environment`));
+const b64 = (u8) =&gt; { let s = ''; for (let i = 0; i &lt; u8.length; i += 0x8000) s += String.fromCharCode(...u8.subarray(i, i + 0x8000)); return btoa(s); };
+const unb64 = (s) =&gt; Uint8Array.from(atob(s), (c) =&gt; c.charCodeAt(0));
+const bytes = (d) =&gt; (typeof d === 'string' ? new TextEncoder().encode(d) : d instanceof ArrayBuffer ? new Uint8Array(d) : d);
+
+// ---- transports: (method, params) -&gt; Promise&lt;result&gt; ------------------------------------------------------------------------------
+function ipcTransport() {
+  let next = 1; const pending = new Map();
+  window.__nordDesktop = {
+    reply(id, json) { const p = pending.get(id); if (!p) return; pending.delete(id); const r = typeof json === 'string' ? JSON.parse(json) : json; r.error ? p[1](new NordDesktopError(r.error.code, r.error.message)) : p[0](r.ok); },
+    emit(name, payload) { emit(name, payload); },
+  };
+  return (method, params) =&gt; new Promise((ok, no) =&gt; { const id = next++; pending.set(id, [ok, no]); window.ipc.postMessage(JSON.stringify({ id, method, params: params ?? {} })); });
+}
+function httpTransport() {
+  return async (method, params) =&gt; {
+    const r = await fetch('/__desktop/call', { method: 'POST', headers: { 'content-type': 'application/json', 'x-nord': '1' }, body: JSON.stringify({ method, params: params ?? {} }) });
+    const j = await r.json();
+    if (j.error) throw new NordDesktopError(j.error.code, j.error.message);
+    return j.ok;
+  };
+}
+
+// ---- web fallbacks ---------------------------------------------------------------------------------------------------------------</code></pre>
+<p><strong>What and why:</strong> The bridge exposes Promise-based operations with stable error codes. Binary helpers convert bytes to/from base64 for transport. IPC assigns request IDs and resolves pending promises when the native host replies; HTTP wraps the same method/params request shape through the local desktop endpoint. RSS River consumes http.fetch but the bridge is shared with other Nord apps.</p>
+<p><strong>Try it / expected result:</strong> Find where RSS River calls desktop.http.fetch and where this module converts that call into a method/params request.</p>
+<h4 id="11-2-build-bounded-browser-fallbacks">11.2 — Build bounded browser fallbacks<a class="anchor" href="#11-2-build-bounded-browser-fallbacks">#</a></h4>
+<p><strong>Read:</strong> <code>nord-desktop.js</code>, lines 35–49.</p>
+<!-- taught-source: rss-river/nord-desktop.js:35-49 --><pre class="code" data-lang="js"><code>function webTransport(appId) {
+  const ls = (() =&gt; { try { return window.localStorage; } catch { return null; } })();
+  const mem = new Map();
+  const kv = { get: (k) =&gt; (ls ? ls.getItem(k) : mem.get(k) ?? null), set: (k, v) =&gt; (ls ? ls.setItem(k, v) : mem.set(k, v)), del: (k) =&gt; (ls ? ls.removeItem(k) : mem.delete(k)), keys: () =&gt; (ls ? Object.keys(ls) : [...mem.keys()]) };
+  const S = `nord.${appId}.store.`, F = `nord.${appId}.fs.`;
+  const norm = (p) =&gt; { p = String(p).replace(/^appData:/, ''); if (/^[a-z]+:/i.test(p) || p.startsWith('/') || p.split('/').includes('..') || p.includes('\\')) throw new NordDesktopError('denied', 'only app-data paths exist in the browser'); return p.split('/').filter((x) =&gt; x &amp;&amp; x !== '.').join('/'); };
+  // files are stored as base64 so binary survives; helpers convert from/to text
+  const fsRaw = (p) =&gt; { const v = kv.get(F + norm(p)); if (v === null) throw new NordDesktopError('not_found', p); return v; };
+  const fsRead = (p) =&gt; new TextDecoder().decode(unb64(fsRaw(p)));
+  const fsPut = (p, u8) =&gt; kv.set(F + norm(p), b64(u8));
+  const enc = (t) =&gt; new TextEncoder().encode(t);
+  const fsPaths = () =&gt; kv.keys().filter((k) =&gt; k.startsWith(F)).map((k) =&gt; k.slice(F.length));
+  const fileDialog = (accept, multiple) =&gt; new Promise((ok) =&gt; { const i = Object.assign(document.createElement('input'), { type: 'file', multiple, accept }); i.onchange = () =&gt; ok([...i.files]); i.oncancel = () =&gt; ok(null); i.click(); });
+  let wid = 0; const watchers = new Map();
+  const snap = (p) =&gt; new Map(fsPaths().filter((x) =&gt; !p || x === p || x.startsWith(p + '/')).map((x) =&gt; [x, kv.get(F + x)]));</code></pre>
+<p><strong>What and why:</strong> Browser storage is namespaced per app, with an in-memory fallback when localStorage cannot be used. Path normalization rejects external/parent paths for the emulated app-data filesystem. Helpers encode binary files, provide file pickers and snapshot watches. These are browser equivalents of selected desktop features, not unrestricted access to your disk.</p>
+<p><strong>Try it / expected result:</strong> Run a static browser export and inspect desktop.transport after readiness: it should choose web rather than claim a native host exists.</p>
+<h4 id="11-3-map-supported-browser-operations-explicitly">11.3 — Map supported browser operations explicitly<a class="anchor" href="#11-3-map-supported-browser-operations-explicitly">#</a></h4>
+<p><strong>Read:</strong> <code>nord-desktop.js</code>, lines 50–85.</p>
+<!-- taught-source: rss-river/nord-desktop.js:50-85 --><pre class="code" data-lang="js"><code>  const m = {
+    'app.info': () =&gt; ({ name: document.title, version: '', id: appId, os: 'web', arch: '', shell: 'web' }),
+    'app.paths': () =&gt; ({ appData: 'appData:' }), 'app.permissions': () =&gt; ({ summary: ['browser sandbox'], granted: {} }), 'app.launch': () =&gt; ({ files: [], urls: [] }),
+    'app.quit': () =&gt; window.close(), 'app.quitGuard': () =&gt; { },
+    'store.get': ({ key }) =&gt; { const v = kv.get(S + key); return v === null ? null : JSON.parse(v); },
+    'store.set': ({ key, value }) =&gt; kv.set(S + key, JSON.stringify(value)), 'store.remove': ({ key }) =&gt; kv.del(S + key),
+    'store.keys': () =&gt; kv.keys().filter((k) =&gt; k.startsWith(S)).map((k) =&gt; k.slice(S.length)).sort(),
+    'store.clear': () =&gt; kv.keys().filter((k) =&gt; k.startsWith(S)).forEach((k) =&gt; kv.del(k)),
+    'secret.get': ({ key }) =&gt; kv.get(`nord.${appId}.secret.${key}`), 'secret.set': ({ key, value }) =&gt; kv.set(`nord.${appId}.secret.${key}`, value), 'secret.delete': ({ key }) =&gt; kv.del(`nord.${appId}.secret.${key}`),
+    'fs.readText': ({ path }) =&gt; fsRead(path), 'fs.writeText': ({ path, text }) =&gt; fsPut(path, enc(text)), 'fs.append': ({ path, text }) =&gt; fsPut(path, enc((kv.get(F + norm(path)) === null ? '' : fsRead(path)) + text)),
+    'fs.read': ({ path }) =&gt; fsRaw(path), 'fs.write': ({ path, data }) =&gt; kv.set(F + norm(path), data),
+    'fs.exists': ({ path }) =&gt; { const p = norm(path); return p === '' || kv.get(F + p) !== null || fsPaths().some((x) =&gt; x.startsWith(p + '/')); },
+    'fs.stat': ({ path }) =&gt; { const p = norm(path), v = kv.get(F + p); if (v !== null) return { name: p.split('/').pop(), isDir: false, size: unb64(v).length, modified: 0 }; if (p === '' || fsPaths().some((x) =&gt; x.startsWith(p + '/'))) return { name: p.split('/').pop(), isDir: true, size: 0, modified: 0 }; throw new NordDesktopError('not_found', path); },
+    'fs.list': ({ path }) =&gt; { const p = norm(path), pre = p ? p + '/' : '', seen = new Map(); for (const x of fsPaths().filter((x) =&gt; x.startsWith(pre))) { const rest = x.slice(pre.length), n = rest.split('/')[0], dir = rest.includes('/'); seen.set(n, { name: n, isDir: dir, size: dir ? 0 : unb64(kv.get(F + x)).length, modified: 0 }); } return [...seen.values()].sort((a, b) =&gt; b.isDir - a.isDir || a.name.localeCompare(b.name)); },
+    'fs.mkdir': () =&gt; { },
+    'fs.watch': ({ path }) =&gt; { const p = norm(path), id = ++wid; watchers.set(id, { p, snap: snap(p) }); return id; },
+    'fs.poll': ({ id }) =&gt; { const w = watchers.get(id); if (!w) throw new NordDesktopError('not_found', 'no such watcher'); const now = snap(w.p), ev = []; for (const [k, v] of now) { if (!w.snap.has(k)) ev.push({ kind: 'created', path: k }); else if (w.snap.get(k) !== v) ev.push({ kind: 'modified', path: k }); } for (const k of w.snap.keys()) if (!now.has(k)) ev.push({ kind: 'removed', path: k }); w.snap = now; return ev; },
+    'fs.unwatch': ({ id }) =&gt; { watchers.delete(id); },
+    'fs.remove': ({ path, recursive }) =&gt; { const p = norm(path); if (kv.get(F + p) !== null) return kv.del(F + p); const ch = fsPaths().filter((x) =&gt; x.startsWith(p + '/')); if (ch.length &amp;&amp; !recursive) throw new NordDesktopError('io', 'directory not empty'); ch.forEach((x) =&gt; kv.del(F + x)); },
+    'fs.rename': ({ from, to }) =&gt; { const v = fsRaw(from); kv.set(F + norm(to), v); kv.del(F + norm(from)); }, 'fs.copy': ({ from, to }) =&gt; kv.set(F + norm(to), fsRaw(from)),
+    'dialog.message': ({ text }) =&gt; alert(text), 'dialog.confirm': ({ text }) =&gt; confirm(text), 'dialog.recent': () =&gt; [],
+    'dialog.open': async ({ filters, multiple }) =&gt; { const f = await fileDialog((filters ?? []).flatMap((x) =&gt; x.extensions.map((e) =&gt; '.' + e)).join(','), !!multiple); if (!f) return null; for (const x of f) fsPut('picked/' + x.name, new Uint8Array(await x.arrayBuffer())); return f.map((x) =&gt; 'appData:picked/' + x.name); },
+    'dialog.save': ({ fileName }) =&gt; 'appData:saved/' + (fileName ?? 'untitled.txt'),
+    'notify.show': async ({ title, body }) =&gt; { if (!('Notification' in window)) throw new NordDesktopError('unsupported', 'Notification API'); if (Notification.permission === 'default') await Notification.requestPermission(); if (Notification.permission !== 'granted') throw new NordDesktopError('denied', 'notifications blocked'); new Notification(title, { body }); },
+    'notify.badge': ({ text }) =&gt; { if (navigator.setAppBadge) return text ? navigator.setAppBadge(parseInt(text, 10) || undefined) : navigator.clearAppBadge(); }, 'notify.progress': () =&gt; { },
+    'clipboard.readText': () =&gt; navigator.clipboard.readText(), 'clipboard.writeText': ({ text }) =&gt; navigator.clipboard.writeText(text),
+    'shell.openUrl': ({ url }) =&gt; { if (!/^(https?:|mailto:)/i.test(url)) throw new NordDesktopError('denied', 'only http(s)/mailto'); window.open(url, '_blank', 'noopener'); },
+  };
+  return async (method, params) =&gt; {
+    const f = m[method];
+    if (!f) throw new NordDesktopError('unsupported', `${method} is not available in the browser`);
+    try { return await f(params ?? {}); } catch (e) { throw e instanceof NordDesktopError ? e : new NordDesktopError('io', String(e?.message ?? e)); }
+  };
+}
+
+// ---- events ----------------------------------------------------------------------------------------------------------------------</code></pre>
+<p><strong>What and why:</strong> The dispatch table implements app info, local store, virtual files, dialogs, notifications and clipboard using browser APIs and permissions. Files are stored as encoded content; list/stat/watch operate on that virtual namespace. Unsupported methods are rejected after lookup. In particular, this fallback does not grant a browser a universal CORS-bypassing HTTP client.</p>
+<p><strong>Try it / expected result:</strong> Use Refresh feeds in a plain browser. A blocked publisher still needs XML import or a genuine Nord host, not this fallback.</p>
+<h4 id="11-4-deliver-events-and-await-transport-readiness">11.4 — Deliver events and await transport readiness<a class="anchor" href="#11-4-deliver-events-and-await-transport-readiness">#</a></h4>
+<p><strong>Read:</strong> <code>nord-desktop.js</code>, lines 86–111.</p>
+<!-- taught-source: rss-river/nord-desktop.js:86-111 --><pre class="code" data-lang="js"><code>const handlers = new Map();
+function emit(name, payload) { for (const f of handlers.get(name) ?? []) { try { f(payload); } catch (e) { console.error(e); } } }
+let poller = null;
+function startPolling() {
+  if (poller) return;
+  poller = setInterval(async () =&gt; { try { for (const e of await (await fetch('/__desktop/events')).json()) emit(e.name, e.payload); } catch { /* server gone */ } }, 400);
+}
+
+// ---- API -------------------------------------------------------------------------------------------------------------------------
+export function create(appId = 'web-app', force) {
+  const mode = force ?? (window.ipc?.postMessage &amp;&amp; location.protocol !== 'http:' &amp;&amp; location.protocol !== 'https:' ? 'ipc' : null);
+  let call = mode === 'ipc' ? ipcTransport() : null, transport = mode;
+  const ready = (async () =&gt; {
+    if (call) return;
+    try { const r = await fetch('/__desktop/events', { cache: 'no-store' }); if (r.ok &amp;&amp; (r.headers.get('content-type') ?? '').includes('json')) { call = httpTransport(); transport = 'http'; startPolling(); return; } } catch { /* no server bridge */ }
+    call = webTransport(appId); transport = 'web';
+  })();
+  const c = async (method, params) =&gt; { await ready; return call(method, params); };
+  const sub = (ns, names) =&gt; Object.fromEntries(names.map((n) =&gt; [n, (p) =&gt; c(`${ns}.${n}`, p)]));
+  const d = {
+    get transport() { return transport; },
+    ready,
+    app: {
+      ...sub('app', ['info', 'paths', 'permissions', 'launch', 'audit', 'quit']),
+      setQuitGuard: (enable = true) =&gt; c('app.quitGuard', { enable }), setAutostart: (enable = true) =&gt; c('app.autostart', { enable }),
+    },</code></pre>
+<p><strong>What and why:</strong> The event Map keeps listener sets, and polling relays host events on the HTTP transport. create chooses native IPC when appropriate, otherwise probes the local host and falls back to web. The internal c function awaits readiness before dispatch, preventing an early click from calling an unselected transport. sub reduces repeated wrapper construction while preserving method names.</p>
+<p><strong>Try it / expected result:</strong> Call a bridge method just after app startup. It should wait for ready rather than failing because call is still null.</p>
+<h4 id="11-5-expose-capability-shaped-wrappers-and-the-shared-instance">11.5 — Expose capability-shaped wrappers and the shared instance<a class="anchor" href="#11-5-expose-capability-shaped-wrappers-and-the-shared-instance">#</a></h4>
+<p><strong>Read:</strong> <code>nord-desktop.js</code>, lines 112–157.</p>
+<!-- taught-source: rss-river/nord-desktop.js:112-157 --><pre class="code" data-lang="js"><code>    fs: {
+      readText: (path) =&gt; c('fs.readText', { path }), writeText: (path, text) =&gt; c('fs.writeText', { path, text }), append: (path, text) =&gt; c('fs.append', { path, text }),
+      read: async (path) =&gt; unb64(await c('fs.read', { path })), write: (path, data) =&gt; c('fs.write', { path, data: b64(bytes(data)) }),
+      list: (path = '') =&gt; c('fs.list', { path }), stat: (path) =&gt; c('fs.stat', { path }), exists: (path) =&gt; c('fs.exists', { path }), mkdir: (path) =&gt; c('fs.mkdir', { path }),
+      remove: (path, { recursive = false } = {}) =&gt; c('fs.remove', { path, recursive }), rename: (from, to) =&gt; c('fs.rename', { from, to }), copy: (from, to) =&gt; c('fs.copy', { from, to }),
+      readJson: async (path) =&gt; JSON.parse(await c('fs.readText', { path })), writeJson: (path, v) =&gt; c('fs.writeText', { path, text: JSON.stringify(v, null, 2) }),
+      /** Calls cb({kind: created|modified|removed, path}) on changes (polled every `interval` ms). Returns an unwatch function. */
+      async watch(path, cb, { recursive = false, interval = 700 } = {}) {
+        const id = await c('fs.watch', { path, recursive });
+        const t = setInterval(async () =&gt; { try { for (const e of await c('fs.poll', { id })) cb(e); } catch { clearInterval(t); } }, interval);
+        return () =&gt; { clearInterval(t); c('fs.unwatch', { id }).catch(() =&gt; { }); };
+      },
+    },
+    dialog: {
+      open: (o = {}) =&gt; c('dialog.open', o), save: (o = {}) =&gt; c('dialog.save', o), folder: (o = {}) =&gt; c('dialog.folder', o), recent: () =&gt; c('dialog.recent'),
+      message: (text, o = {}) =&gt; c('dialog.message', { text, ...o }), confirm: (text, o = {}) =&gt; c('dialog.confirm', { text, ...o }),
+    },
+    notify: Object.assign((title, body = '') =&gt; c('notify.show', { title, body }), { setBadge: (text) =&gt; c('notify.badge', { text: text == null ? null : String(text) }), setProgress: (value) =&gt; c('notify.progress', { value }) }),
+    clipboard: { readText: () =&gt; c('clipboard.readText'), writeText: (text) =&gt; c('clipboard.writeText', { text }), readImage: () =&gt; c('clipboard.readImage'), writeImage: (png) =&gt; c('clipboard.writeImage', { png: b64(bytes(png)) }) },
+    store: { ...sub('store', ['get', 'remove', 'keys', 'clear']), set: (key, value) =&gt; c('store.set', { key, value }), get: (key, fallback = null) =&gt; c('store.get', { key }).then((v) =&gt; v ?? fallback) },
+    secret: { get: (key) =&gt; c('secret.get', { key }), set: (key, value) =&gt; c('secret.set', { key, value }), delete: (key) =&gt; c('secret.delete', { key }) },
+    shell: { openUrl: (url) =&gt; c('shell.openUrl', { url }), openPath: (path) =&gt; c('shell.openPath', { path }), reveal: (path) =&gt; c('shell.reveal', { path }) },
+    process: { run: (program, args = [], opts = {}) =&gt; c('process.run', { program, args, ...opts }) },
+    /** Local static web server (needs `server: true`): start({root, port?, cors?, spa?, listing?, liveReload?, lan?, cache?}) → {id, port, url} */
+    server: { start: (o) =&gt; c('server.start', o), stop: (id) =&gt; c('server.stop', { id }), list: () =&gt; c('server.list'), logs: (id, since = 0) =&gt; c('server.logs', { id, since }) },
+    http: { fetch: (url, o = {}) =&gt; c('http.fetch', { url, ...o }) },
+    window: { open: (o) =&gt; c('window.open', o), close: (id) =&gt; c('window.close', { id }), setTitle: (title) =&gt; c('window.setTitle', { title }), setFullscreen: (on = true) =&gt; c('window.setFullscreen', { on }), setAlwaysOnTop: (on = true) =&gt; c('window.setAlwaysOnTop', { on }) },
+    menu: { set: (items) =&gt; c('menu.set', { items }), context: (items, pos = {}) =&gt; c('menu.context', { items, ...pos }) },
+    tray: { set: (o) =&gt; c('tray.set', o), remove: () =&gt; c('tray.remove') },
+    shortcut: { register: async (id, accelerator, cb) =&gt; { if (cb) d.on('shortcut:' + id, cb); return c('shortcut.register', { id, accelerator }); }, unregister: (id) =&gt; c('shortcut.unregister', { id }) },
+    /** Events from the shell: `menu` {id}, `tray` {id}, `shortcut:&lt;id&gt;`, `drop` {files}, `open` {files, urls}, `quit-requested`. Returns an off function. */
+    on(name, fn) { (handlers.get(name) ?? handlers.set(name, new Set()).get(name)).add(fn); return () =&gt; handlers.get(name)?.delete(fn); },
+    off(name, fn) { handlers.get(name)?.delete(fn); },
+  };
+  // drag &amp; drop of files from the OS onto the page (browser + webview): reported as `drop` with File objects (web) — the native shell adds absolute paths
+  if (typeof window !== 'undefined') {
+    window.addEventListener('dragover', (e) =&gt; { if (e.dataTransfer?.types?.includes('Files')) e.preventDefault(); });
+    window.addEventListener('drop', (e) =&gt; { if (e.dataTransfer?.files?.length) { e.preventDefault(); emit('drop', { files: [...e.dataTransfer.files] }); } });
+  }
+  return d;
+}
+
+/** The shared instance: `import desktop from './nord-desktop.js'` (also exposed as window.nord.desktop). */
+const desktop = create(globalThis.NORD_APP_ID ?? document.querySelector('meta[name=nord-app-id]')?.content ?? location.host ?? 'web-app');
+(globalThis.nord ??= {}).desktop = desktop;
+export default desktop;</code></pre>
+<p><strong>What and why:</strong> The public object groups file/dialog/notification/clipboard/store/process/network/window/menu operations. Wrappers marshal arguments; real native permissions are enforced by the host. watch returns an unwatch function, and on/off manage callback lifetime. Drag/drop becomes an event. The module finally exports one app-identified instance and exposes it on window.nord.desktop. These APIs do not mean RSS River requests every capability.</p>
+<p><strong>Try it / expected result:</strong> Compare this API surface with nord.project.json permissions. The reader only declares the feed hosts it needs, not every bridge feature.</p>
+<!-- END GENERATED FILE WALKTHROUGH --><h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
 <p>All authored text files follow in offline CodeMirror viewers. The archive includes the original sprite sheet and all pinned binary/vendor dependencies and licences. It contains no scraped article collection: <code>demo.xml</code> is original, explicitly fictional tutorial material, and real news comes from the subscriptions you choose to refresh.</p>
-<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="app-js">app.js<a class="anchor" href="#app-js">#</a></h3>
-<pre class="code" data-lang="js"><code>import { Save } from './save.js';
+<!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><details>
+<summary>Complete app.js</summary><pre class="code" data-lang="js"><code>import { Save } from './save.js';
 import { DEFAULT_FEEDS, parseFeed, mergeArticles, safeLink } from './feeds.js';
 import { createRiver } from './river.js';
 import { download } from './desk.js';
@@ -515,7 +1991,7 @@ export async function mount(root) {
     root.replaceChildren();
   };
 }</code></pre>
-<details>
+</details><details>
 <summary>Complete .offline-allow</summary><pre class="code" data-lang="text"><code>hnrss.org
 simonwillison.net
 github.blog</code></pre>
@@ -1383,5 +2859,5 @@ footer {
   }
 }</code></pre>
 </details>
-<div class="pager"><a href="tut-t42-paper-worlds.html"><small>← Previous</small>T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-learn-the-finished-reader">1. Learn the finished reader </a><a href="#2-open-and-edit-the-real-project">2. Open and edit the real project </a><a href="#3-parse-rss-and-atom-into-one-article-model">3. Parse RSS and Atom into one article model </a><a href="#4-merge-updates-without-losing-reading-state">4. Merge updates without losing reading state </a><a href="#5-handle-browser-cors-honestly">5. Handle browser CORS honestly </a><a href="#6-build-a-readable-html-list-first">6. Build a readable HTML list first </a><a href="#7-paint-articles-onto-babylon-papers">7. Paint articles onto Babylon papers </a><a href="#8-flick-a-floating-paper-into-real-physics">8. Flick a floating paper into real physics </a><a href="#9-save-and-back-up-the-useful-parts">9. Save and back up the useful parts </a><a href="#10-export-and-understand-the-boundaries">10. Export and understand the boundaries </a><a href="#11-finish-with-a-short-useful-check">11. Finish with a short useful check </a><a href="#complete-project-source">Complete project source </a></aside></div>
+<div class="pager"><a href="tut-t42-paper-worlds.html"><small>← Previous</small>T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-learn-the-finished-reader">1. Learn the finished reader </a><a href="#2-open-and-edit-the-real-project">2. Open and edit the real project </a><a href="#3-parse-rss-and-atom-into-one-article-model">3. Parse RSS and Atom into one article model </a><a href="#4-merge-updates-without-losing-reading-state">4. Merge updates without losing reading state </a><a href="#5-handle-browser-cors-honestly">5. Handle browser CORS honestly </a><a href="#6-build-a-readable-html-list-first">6. Build a readable HTML list first </a><a href="#7-paint-articles-onto-babylon-papers">7. Paint articles onto Babylon papers </a><a href="#8-flick-a-floating-paper-into-real-physics">8. Flick a floating paper into real physics </a><a href="#9-save-and-back-up-the-useful-parts">9. Save and back up the useful parts </a><a href="#10-export-and-understand-the-boundaries">10. Export and understand the boundaries </a><a href="#11-finish-with-a-short-useful-check">11. Finish with a short useful check </a><a href="#file-walkthrough">Walk through every project file </a><a href="#complete-project-source">Complete project source </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

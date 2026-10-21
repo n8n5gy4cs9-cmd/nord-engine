@@ -49,6 +49,15 @@ for p in files: assert archive.read(root.name+'/'+p.relative_to(root).as_posix()
   const { errors } = await withPage(
     `${ROOT}/docs/manual`,
     async (page) => {
+      assert.equal(await page.locator('#file-walkthrough').count(), 1);
+      const fileLink = page.locator('a[href^="#walk-"]').first();
+      const target = await fileLink.getAttribute('href');
+      await fileLink.click();
+      const firstLessonCode = page
+        .locator(target)
+        .locator('xpath=following-sibling::div[contains(@class,"code-frame")][1]');
+      await firstLessonCode.scrollIntoViewIfNeeded();
+      await firstLessonCode.locator('.cm-editor').waitFor();
       const frames = page.locator('.code-frame');
       assert((await frames.count()) >= 8);
       const frame = frames.first();
