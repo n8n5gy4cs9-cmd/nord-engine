@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 248/261 tasks (95%)** · updated 2026-10-21
+**Overall: 249/262 tasks (95%)** · updated 2026-10-21
 
 | Milestone | Progress |
 |---|---|
@@ -19,7 +19,7 @@
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
 | M11 Web editor | 14/16 (88%) |
-| M12 FPS Creator addon | 17/18 (94%) |
+| M12 FPS Creator addon | 18/19 (95%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -340,6 +340,7 @@ _a full first-person level editor + runtime modelled on the classic FPS Creator 
 - [x] **M12-16** Expand illustrated FPS Level manual, quick reference, tutorial and screenshots
 - [x] **M12-17** Add diagonal and rounded FPS corners with matching cut surfaces and collision
 - [x] **M12-18** Save and update reusable FPS item variants from the Inspector
+- [x] **M12-19** Show diagonal and rounded rooms in the default FPS starter and Outpost Zero
 
 ## Features (PRD)
 

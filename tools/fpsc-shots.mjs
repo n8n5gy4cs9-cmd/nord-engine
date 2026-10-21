@@ -34,6 +34,8 @@ try {
   await ed.waitForTimeout(1400); await ed.screenshot({path:`${tmp}/ed-fpsc-corners.png`});
   await E(`ed=>{const e=ed.addEntity('enemy_soldier',12,14);e.props.health=123;ed.scriptEntry(e,'ai-shooter').params.damage=2;ed.commit('gentle guard');ed.setTab('items');ed.saveVariant(e);}`);
   await ed.waitForSelector('[aria-label="Variant name"]'); await ed.screenshot({path:`${tmp}/ed-fpsc-variant.png`}); await ed.keyboard.press('Escape');
+  await E(`ed=>{ed.dirty=false;ed.newLevel();ed.setTab('build');ed.brush.cellMode='corner';ed.setTool('cell');ed.map.fit(ed.level);ed.map.draw();ed.v3.cam.position.set(60,70,-20);ed.v3.yaw=0;ed.v3.pitch=Math.PI/4;document.getElementById('left-body').scrollTop=10000;}`);
+  await ed.waitForTimeout(1200); await ed.screenshot({path:`${tmp}/ed-fpsc-starter-corners.png`});
   const pg = await browser.newPage({ viewport: { width: 1280, height: 720 } });
   await pg.goto(`${base}/editor/fpsc/play.html?level=levels/level1.fpsl.json&autostart&nolock&shot`); await pg.waitForFunction(() => window.__fpsc_ready);
   for (const [n, x, z, yaw, pitch] of [['yard', 24.2, 19.5, 80, 0.05], ['hall', 15.6, 16.5, 25, 0.02], ['arena', 29.5, 28.6, 0, 0.06]]) {

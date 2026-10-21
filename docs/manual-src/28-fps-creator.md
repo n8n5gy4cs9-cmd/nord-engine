@@ -187,6 +187,10 @@ The current addon uses keyboard/mouse controls, procedural characters and weapon
 
 ## Diagonal, rounded and circular rooms
 
+The editor's **New** starter now shows both shapes immediately: a room with four diagonal corners and a second room with four rounded corners. In **Outpost Zero** (the FPS template/main example), the starting bunker has diagonal corners and the main hall has rounded corners. Their original doors, window, enemies, pickups, exits and mission routes remain available. Existing saved levels are not rewritten: click **New** for the updated starter, or open the refreshed built-in example/new template project.
+
+<figure class="shot"><img src="assets/screenshots/ed-fpsc-starter-corners.png" alt="Default FPS editor starter showing a diagonal-corner room beside a rounded-corner room, in the map and 3D preview" loading="lazy"><figcaption>The default starter demonstrates both wall shapes with matching floor cuts. Use New to create it; save any existing edits first.</figcaption></figure>
+
 **Upgrade existing projects first:** click **FPS Level → Upgrade runtime** before using the new shapes through main Play or an export. FPS Test reads the current engine code; the project uses its own installed runtime copy.
 
 1. Draw a rectangular room with R as before.

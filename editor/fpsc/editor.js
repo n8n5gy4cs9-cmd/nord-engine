@@ -231,9 +231,12 @@ function starterLevel(name = 'New level') {
   const lv = newLevel({ name, w: 32, d: 32 });
   const room = (x0, z0, x1, z1, floor, ceil, tex) => { for (let x = x0; x <= x1; x++) for (let z = z0; z <= z1; z++) setCell(lv, 0, x, z, { f: floor, c: ceil }); for (let x = x0; x <= x1; x++) { setEdge(lv, 0, x, z0, 'H', { k: 'wall', t: tex }); setEdge(lv, 0, x, z1 + 1, 'H', { k: 'wall', t: tex }); } for (let z = z0; z <= z1; z++) { setEdge(lv, 0, x0, z, 'V', { k: 'wall', t: tex }); setEdge(lv, 0, x1 + 1, z, 'V', { k: 'wall', t: tex }); } };
   room(10, 10, 15, 14, 'floor_concrete', 'ceiling_tiles', 'brick');
-  setEdge(lv, 0, 16, 12, 'V', { k: 'door', t: 'metal_panel', td: 'door_metal' });
   room(16, 10, 19, 14, 'wood_floor', 'ceiling_tiles', 'plaster');
+  setEdge(lv, 0, 16, 12, 'V', { k: 'door', t: 'metal_panel', td: 'door_metal' });
   setEdge(lv, 0, 12, 15, 'H', { k: 'window', t: 'brick' });
+  // Show both shape tools immediately, while keeping the original doors, window and gameplay.
+  for (const [x,z,corner] of [[10,10,'SW'],[15,10,'SE'],[10,14,'NW'],[15,14,'NE']]) setCell(lv,0,x,z,{shape:{kind:'diagonal',corner,t:'brick'}});
+  for (const [x,z,corner] of [[16,10,'SW'],[19,10,'SE'],[16,14,'NW'],[19,14,'NE']]) setCell(lv,0,x,z,{shape:{kind:'round',corner,t:'plaster'}});
   const add = (type, x, z, rot = 0, props = {}) => lv.entities.push({ id: uid(), type, x, z, layer: 0, rot, name: '', tag: '', target: '', props, scripts: [], rules: [] });
   add('player_start', 12 * CELL, 12 * CELL, 90); add('light_ceiling', 12.5 * CELL, 12 * CELL); add('light_ceiling', 18 * CELL, 12 * CELL); add('enemy_guard', 17.5 * CELL, 12.5 * CELL, 270); add('health_small', 11 * CELL, 10.8 * CELL); add('level_exit', 19 * CELL - 4, 12.5 * CELL);
   return lv;

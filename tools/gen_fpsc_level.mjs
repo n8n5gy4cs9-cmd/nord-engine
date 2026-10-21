@@ -37,6 +37,9 @@ export function outpostZero() {
   ent('message_zone', 5, 19.5, { props: { w: 4, d: 4, text: 'Mission: find the exit.  [E] opens doors, [F] flashlight, [R] reload.', seconds: 6 } });
   ent('locker', 2.6, 19.8, { rot: 90 }); ent('plant', 7.2, 21.6);
 
+  // Diagonal start-bunker corners are visible from the first room; all original edge data is retained.
+  for (const [x,z,corner] of [[2,17,'SW'],[7,17,'SE'],[2,22,'NW'],[7,22,'NE']]) setCell(lv,0,x,z,{shape:{kind:'diagonal',corner,t:'bunker'}});
+
   // 2. corridor ------------------------------------------------------------------------------------------------------------------
   for (let x = 8; x <= 13; x++) { setCell(lv, 0, x, 19, { f: 'floor_concrete', c: 'ceiling_tiles' }); edge(0, x, 19, 'H', { k: x === 11 ? 'window' : 'wall', t: 'concrete' }); edge(0, x, 20, 'H', { k: 'wall', t: 'concrete' }); }
   edge(0, 14, 19, 'V', { k: 'doorway', t: 'concrete' });
@@ -58,6 +61,9 @@ export function outpostZero() {
   ent('crate', 15.4, 23.4); ent('crate_metal', 20.2, 23.2); ent('table', 17.5, 17.4); ent('chair', 18.5, 17.5, { rot: 270 }); ent('sandbags', 19.5, 19.2, { rot: 90 });
   ent('checkpoint', 15, 19.5);
   ent('spawn_point', 16, 21, { name: 'sp_hall' });
+
+  // Rounded hall corners demonstrate the same cuts at a larger scale without changing its doors/patrols.
+  for (const [x,z,corner] of [[14,14,'SW'],[21,14,'SE'],[14,24,'NW'],[21,24,'NE']]) setCell(lv,0,x,z,{shape:{kind:'round',corner,t:'plaster'}});
 
   // 4. armory (red key) -------------------------------------------------------------------------------------------------------------
   room(0, 14, 8, 21, 13, { floor: 'floor_concrete', tex: 'metal_plate' });

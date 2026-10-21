@@ -254,6 +254,18 @@ if (run('nord') || run('game') || run('editor')) {
       assert.ok(Math.abs(xy[0] - 18.2) < 0.15 && Math.abs(xy[1] - 20.2) < 0.15, JSON.stringify(xy));
       await page.check('#snap'); await page.selectOption('#snap-step', '0.5'); await page.focus('#c2d');
     });
+    await test('default starter shows diagonal and round rooms and keeps its original gameplay items', async () => {
+      // Discard earlier fixtures explicitly; New without a kind is the same starter as first-open fallback.
+      await ED(`ed=>{ed.dirty=false;ed.newLevel();}`);
+      const summary=await ED(`ed=>({shapes:Object.values(ed.level.layers[0].cells).filter(c=>c.shape).map(c=>c.shape.kind),types:ed.level.entities.map(e=>e.type),door:ed.level.layers[0].edges['16,12,V']?.k,window:ed.level.layers[0].edges['12,15,H']?.k})`);
+      assert.equal(summary.shapes.filter(k=>k==='diagonal').length,4);assert.equal(summary.shapes.filter(k=>k==='round').length,4);
+      assert.ok(summary.types.includes('player_start')&&summary.types.includes('level_exit')&&summary.types.includes('enemy_guard'));assert.equal(summary.door,'door');assert.equal(summary.window,'window');
+      await ED(`ed=>{ed.map.fit(ed.level);ed.map.draw();}`);await shot('default-shaped-starter');
+      await ED(`ed=>ed.play(false)`);await page.waitForFunction(()=>document.getElementById('play-frame').contentWindow?.__fpsc_ready,null,{timeout:30000});
+      const frame=page.frames().find(f=>f.url().includes('play.html'));
+      assert.ok(await frame.evaluate(()=>{const g=window.__fpsc.game,p=g.player,exit=g.ents.find(e=>e.type==='level_exit');return !!g.world.path({x:p.x,z:p.z,layer:0},{x:exit.x,z:exit.z,layer:0},{doors:'open'});}), 'starter exit must be reachable through the connecting door');
+      await ED(`ed=>ed.stopPlay()`);
+    });
     await test('New → empty level; Room tool drag builds floor, ceiling and wall ring', async () => {
       await ED(`(ed) => { ed.dirty = false; ed.setLevel(JSON.parse(JSON.stringify(ed.level)), ''); }`); await ED(`(ed) => { const lv = ed.level; lv.entities = []; for (const l of lv.layers) { l.cells = {}; l.edges = {}; } lv.layers.length = 1; ed.hist = []; ed.hi = -1; ed.commit('clear', { force: true }); ed.map.cx = 40; ed.map.cz = 40; ed.map.zoom = 10; ed.map.draw(); }`);
       await page.keyboard.press('KeyR'); const a = await scr(4 * C + 2, 4 * C + 2), b = await scr(8 * C + 2, 6 * C + 2);

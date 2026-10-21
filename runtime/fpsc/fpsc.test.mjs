@@ -222,3 +222,16 @@ test('upper cut floors keep holes and lower ceilings; raised corners retain fini
   const ceil=g.batches.get('ceiling_tiles');assert.ok(ceil&&ceil.idx.length>0,'lower ceiling remains visible under the cut-away portion');
   for(const b of g.batches.values()) { assert.ok(b.pos.every(Number.isFinite));assert.ok(b.nor.every(Number.isFinite));assert.ok(b.uv.every(Number.isFinite)); }
 });
+
+
+test('Outpost Zero example demonstrates both shapes without cutting away any gameplay placements or patrols', async () => {
+  const { outpostZero } = await import('../../tools/gen_fpsc_level.mjs');
+  const lv=outpostZero(), shaped=Object.values(lv.layers[0].cells).filter(c=>c.shape);
+  assert.equal(shaped.filter(c=>c.shape.kind==='diagonal').length,4);assert.equal(shaped.filter(c=>c.shape.kind==='round').length,4);
+  for(const e of lv.entities) {
+    const cell=lv.layers[e.layer].cells[`${Math.floor(e.x/CELL)},${Math.floor(e.z/CELL)}`];
+    assert.ok(cellContains(cell,e.x,e.z),`cut removed ${e.type} ${e.id}`);
+    for(const [x,z] of e.path??[]) assert.ok(cellContains(lv.layers[e.layer].cells[`${Math.floor(x/CELL)},${Math.floor(z/CELL)}`],x,z),`cut removed patrol point for ${e.id}`);
+  }
+  assert.equal(lv.layers[0].edges['8,19,V'].k,'door');assert.equal(lv.entities.find(e=>e.type==='player_start').x,4.5*CELL);
+});

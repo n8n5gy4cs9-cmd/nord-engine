@@ -26,7 +26,12 @@
       "cells": {
         "2,17": {
           "f": "floor_concrete",
-          "c": "ceiling_tiles"
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "diagonal",
+            "corner": "SW",
+            "t": "bunker"
+          }
         },
         "2,18": {
           "f": "floor_concrete",
@@ -46,7 +51,12 @@
         },
         "2,22": {
           "f": "floor_concrete",
-          "c": "ceiling_tiles"
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "diagonal",
+            "corner": "NW",
+            "t": "bunker"
+          }
         },
         "3,17": {
           "f": "floor_concrete",
@@ -146,7 +156,12 @@
         },
         "7,17": {
           "f": "floor_concrete",
-          "c": "ceiling_tiles"
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "diagonal",
+            "corner": "SE",
+            "t": "bunker"
+          }
         },
         "7,18": {
           "f": "floor_concrete",
@@ -166,7 +181,12 @@
         },
         "7,22": {
           "f": "floor_concrete",
-          "c": "ceiling_tiles"
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "diagonal",
+            "corner": "NE",
+            "t": "bunker"
+          }
         },
         "8,19": {
           "f": "floor_concrete",
@@ -194,7 +214,12 @@
         },
         "14,14": {
           "f": "wood_floor",
-          "c": "ceiling_tiles"
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "round",
+            "corner": "SW",
+            "t": "plaster"
+          }
         },
         "14,15": {
           "f": "wood_floor",
@@ -234,7 +259,12 @@
         },
         "14,24": {
           "f": "wood_floor",
-          "c": "ceiling_tiles"
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "round",
+            "corner": "NW",
+            "t": "plaster"
+          }
         },
         "15,14": {
           "f": "wood_floor",
@@ -502,7 +532,12 @@
         },
         "21,14": {
           "f": "wood_floor",
-          "c": "ceiling_tiles"
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "round",
+            "corner": "SE",
+            "t": "plaster"
+          }
         },
         "21,15": {
           "f": "wood_floor",
@@ -542,7 +577,12 @@
         },
         "21,24": {
           "f": "wood_floor",
-          "c": "ceiling_tiles"
+          "c": "ceiling_tiles",
+          "shape": {
+            "kind": "round",
+            "corner": "NE",
+            "t": "plaster"
+          }
         },
         "14,8": {
           "f": "floor_concrete",
