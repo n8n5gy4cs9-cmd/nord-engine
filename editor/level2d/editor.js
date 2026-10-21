@@ -1,11 +1,12 @@
 import { clone, uid, newLevel, place, History, compile, projectSettings, SCRIPTS, validate } from './model.js';
 import { starter as makeStarter } from './starter.js';
 const starter=mode=>makeStarter(mode,app.bank);
+import { itemBank, instantiateItem } from './items.js';
 import { MapView } from './view.js';
 import { Panels, node, button, field } from './ui.js';
 const $=s=>document.querySelector(s);
 const tools={select:'V Select',brush:'B Brush',rect:'R Rectangle',fill:'F Fill',erase:'X Erase',entity:'E Object',pick:'I Pick'};
-const app={level:newLevel(),bank:[],byId:new Map(),selected:new Set(),history:new History(),activeLayer:'',tool:'brush',role:'decoration',asset:null,frame:0,anim:'',space:false,showCollision:true,dirty:false,name:'level1',variant:null};
+const app={level:newLevel(),bank:[],byId:new Map(),selected:new Set(),history:new History(),activeLayer:'',tool:'brush',role:'decoration',asset:null,frame:0,anim:'',space:false,showCollision:true,dirty:false,name:'level1',variant:null,placementMode:'tiles',projectItems:[]};
 window.editor2d=app;
 app.status=text=>{$('#status').textContent=text;};
 app.layer=()=>app.level.layers.find(l=>l.id===app.activeLayer)??app.level.layers.at(-1);
@@ -13,12 +14,16 @@ app.refreshInspector=()=>app.panels.inspector();
 app.record=before=>{app.history.push(before,app.level);if(JSON.stringify(before)!==JSON.stringify(app.level)){app.dirty=true;app.updateTitle();}};
 app.mutate=fn=>{const before=clone(app.level);fn();app.record(before);};
 app.updateTitle=()=>{$('#filename').textContent=`${app.dirty?'● ':''}${app.name}.level2d.json` ;$('#mode').textContent=`${app.level.mode==='platform'?'Side-scroller':'Top-down'} · ${app.level.physics??'arcade'} physics`;};
-app.choose=b=>{if(!b)return;app.asset=b;app.frame=b.frame??0;app.anim=Object.keys(b.anims??{})[0]??'';app.selected.clear();app.refreshInspector();};
-app.setTool=t=>{app.tool=t;$('#tools').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.tool===t));app.status(tools[t]+' · drag to paint/move · wheel zoom · middle/right drag pan');};
+app.choose=b=>{if(!b)return;app.variant=null;app.asset=b;app.frame=b.frame??0;app.anim=Object.keys(b.anims??{})[0]??'';app.selected.clear();app.refreshInspector();app.placementHint?.();};
+app.isItemBrush=()=>app.tool==='entity'||app.tool==='brush'&&app.placementMode==='items';
+app.chooseItem=item=>{app.choose(app.byId.get(item.entity.asset));app.variant=item;app.placementMode='items';app.setTool('brush');document.querySelectorAll('.item-card').forEach(c=>c.classList.toggle('on',c.dataset.item===item.id));};
+app.placementHint=()=>{const layer=app.layer(),kind=app.placementMode==='items'?'Item':'Tile',title=app.variant?.title??app.asset?.title??'choose a sprite';$('#placement').textContent=`${kind}: ${title} · Layer: ${layer.name}${layer.locked?' (locked)':''}${!layer.visible?' (hidden)':''}`;};
+app.setTool=t=>{app.tool=t;if(t==='entity')app.placementMode='items';if(['rect','fill'].includes(t))app.placementMode='tiles';$('#tools').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.tool===t));app.placementHint();app.status((app.isItemBrush()?'Item brush · click or drag to place':tools[t])+' · wheel zoom · middle/right drag pan');};
 app.attach=id=>{const e=app.level.entities.find(e=>app.selected.has(e.id));if(!e)return app.status('Select an object first');app.mutate(()=>e.scripts.push({path:'scripts/level2d/'+id+'.js',attributes:clone(SCRIPTS[id].attrs)}));app.refreshInspector();};
 app.customScript=async()=>{const e=app.level.entities.find(e=>app.selected.has(e.id));if(!e)return app.status('Select an object first');const path=await app.ask('Project-relative script path','scripts/my-script.js');if(!path)return;if(!/^scripts\/[a-zA-Z0-9_./-]+\.js$/.test(path)||path.split('/').includes('..'))return app.status('Use a relative scripts/*.js path');app.mutate(()=>e.scripts.push({path,attributes:{}}));app.refreshInspector();};
-app.addEntity=(x,y)=>{const step=$('#snap').checked?app.level.tileSize/2:1;x=Math.round(x/step)*step;y=Math.round(y/step)*step;
-  let e;if(app.variant){e=clone(app.variant.entity);Object.assign(e,{id:uid(),x,y,layer:app.layer().id});app.level.entities.push(e);}else e=place(app.level,app.asset,x,y,app.layer().id,app.role);
+app.addEntity=(x,y)=>{if(!app.asset)return app.status('Choose an item first');const layer=app.layer();if(layer.locked||!layer.visible)return app.status(`Layer ${layer.name} is ${layer.locked?'locked':'hidden'}`);const cellAligned=$('#snap').checked&&app.variant?.entity.scripts?.some(s=>s.path==='scripts/dungeon-object.js');
+  if(cellAligned){const size=app.level.tileSize;x=Math.floor(x/size)*size+size/2;y=Math.floor(y/size)*size+size/2;}else{const step=$('#snap').checked?app.level.tileSize/2:1;x=Math.round(x/step)*step;y=Math.round(y/step)*step;}
+  let e;if(app.variant){e=instantiateItem(app.level,app.variant,x,y,app.layer().id);}else e=place(app.level,app.asset,x,y,app.layer().id,app.role);
   app.selected=new Set([e.id]);app.refreshInspector();
 };
 app.remove=()=>{app.mutate(()=>app.level.entities=app.level.entities.filter(e=>!app.selected.has(e.id)||app.level.layers.find(l=>l.id===e.layer)?.locked));app.selected.clear();app.refreshInspector();};
@@ -30,7 +35,7 @@ app.message=(title,text)=>app.dialog(title,body=>{node('p',text,body,'error');re
 app.load=(l,name)=>{
   if(l?.format!=='nord-level2d/1'||!Array.isArray(l.layers)||!l.layers.length||!Array.isArray(l.entities))throw Error('Invalid 2D level');
   const custom=l.custom??[];for(const b of custom)if(!/^assets\/[a-zA-Z0-9_./-]+\.png$/.test(b.source)||b.source.split('/').includes('..')||!(b.width>0&&b.height>0&&b.columns>0))throw Error('Invalid custom sprite');
-  app.level=l;app.bank=[...app.builtins,...custom];app.byId=new Map(app.bank.map(b=>[b.id,b]));app.activeLayer=l.layers.at(-1).id;app.name=name??'level1';app.selected.clear();app.history=new History();app.dirty=false;app.updateTitle();app.view.fit();app.panels.left();app.refreshInspector();
+  app.level=l;app.projectItems=itemBank(l);app.level.items=clone(app.projectItems);app.variant=null;app.placementMode='tiles';app.bank=[...app.builtins,...custom];app.byId=new Map(app.bank.map(b=>[b.id,b]));app.activeLayer=l.layers.at(-1).id;app.name=name??'level1';app.selected.clear();app.history=new History();app.dirty=false;app.updateTitle();app.view.fit();app.panels.tab='Build';app.panels.left();app.refreshInspector();app.setTool('brush');
 };
 app.publish=async(start=false,as=false)=>{
   if(as){const name=await app.ask('Level filename (letters, numbers, - or _)',app.name);if(!name)return;app.name=name;}
@@ -54,7 +59,7 @@ const actions={
   save:()=>app.publish(),saveas:()=>app.publish(false,true),start:async()=>{if(await app.dialog('Use this level as the game start?',p=>{node('p','Save this level and scene, then set the project start scene, display, physics engine/gravity and movement keys. Other scenes keep their files; project physics settings apply to all scenes.',p);return()=>true;}))await app.publish(true);},
   undo:()=>{app.level=app.history.step(app.level);app.activeLayer=app.layer().id;app.dirty=true;app.panels.left();app.refreshInspector();app.updateTitle();},redo:()=>{app.level=app.history.step(app.level,true);app.activeLayer=app.layer().id;app.dirty=true;app.panels.left();app.refreshInspector();app.updateTitle();},
   fit:()=>app.view.fit(),test:()=>app.test(),download:()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(app.level,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=app.name+'.level2d.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);},
-  import:()=>$('#file').click(),help:()=>app.message('2D Level Creator',`Build: choose a bank sprite and paint. B brush · R rectangle · F fill · X erase · I eyedropper. Solid tiles collide. Items: choose a role, then E places it. V selects and drags objects; Shift-click selects several. Del deletes, Ctrl+D duplicates. Wheel zooms, middle/right drag pans, Home fits. Ctrl+S saves, Ctrl+Z undoes. F5 tests the unsaved level; Shift+Esc stops. Level manages layers, gravity and Arcade/Matter physics. Inspector edits bodies and script values. Save as variant keeps reusable item defaults in this level. Save copies referenced bank art and scripts into the project and writes a normal scene. Use as game start applies settings. Export through Nord's normal Export command. Player must be named Player for the camera. Custom scripts are edited in Nord's Code tab.`),
+  import:()=>$('#file').click(),help:()=>app.message('2D Level Creator',`Build: choose a bank sprite and paint. B brush · R rectangle · F fill · X erase · I eyedropper. Solid tiles collide. Items: choose a ready-made game item, then B Brush clicks/drags to place it. You can also drag its card onto the map. E places items too. V selects and drags objects; Shift-click selects several. Del deletes, Ctrl+D duplicates. Wheel zooms, middle/right drag pans, Home fits. Ctrl+S saves, Ctrl+Z undoes. F5 tests the unsaved level; Shift+Esc stops. Level manages layers, gravity and Arcade/Matter physics. Inspector edits bodies and script values. Save as variant keeps reusable item defaults in this level. Save copies referenced bank art and scripts into the project and writes a normal scene. Use as game start applies settings. Export through Nord's normal Export command. Player must be named Player for the camera. Custom scripts are edited in Nord's Code tab.`),
 };
 for(const b of document.querySelectorAll('[data-act]'))b.onclick=()=>Promise.resolve().then(()=>actions[b.dataset.act]()).catch(e=>app.message('Could not complete action',e.message));
 $('#file').onchange=async e=>{try{const f=e.target.files[0];if(f&&(!app.dirty||await app.confirm('Replace unsaved level?')))app.load(JSON.parse(await f.text()),f.name.replace('.level2d.json',''));}catch(err){app.message('Import failed',err.message);}e.target.value='';};

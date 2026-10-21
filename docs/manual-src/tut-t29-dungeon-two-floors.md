@@ -68,7 +68,11 @@ Visible monsters pursue with a simple four-neighbor path search. Adjacent monste
 
 ## 5. Add your own enemy preset
 
-Select an existing rat → **Save as variant → Small sewer rat**. Open Assets, choose that reusable item, and place it with E on a clear floor cell. V selects it. Rename it and adjust hp/damage in Inspector.
+**Items** now lists ready-made game pieces: Rat, Guard, Potion, Key, Door, Stairs and Relic. Click **Rat**, keep **B Brush** active, and click or drag on the map. You can also drag its card directly onto the map. The placed rat keeps `dungeon-object.js`, its HP and other values. A translucent preview and the toolbar identify the selected item.
+
+<figure class="shot"><img src="assets/screenshots/ed-level2d-items-brush.png" alt="Ready-made dungeon item cards and the selected Rat item Brush" loading="lazy"><figcaption>Items contains working game pieces. B Brush places them with scripts and values intact.</figcaption></figure>
+
+For a custom preset, select an existing rat → **Save as variant → Small sewer rat**. Open Assets, choose that reusable item, and brush it onto a clear floor cell. V selects it. Rename it and adjust hp/damage in Inspector.
 
 Alternatively, Ctrl/Cmd+D duplicates a selected rat. Place the duplicate at a cell centre with Snap enabled. Reuse an existing scripted enemy so the `dungeon-object.js` attachment and attributes travel with it.
 

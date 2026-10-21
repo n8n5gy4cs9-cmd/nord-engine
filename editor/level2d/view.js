@@ -3,13 +3,16 @@ export class MapView {
   constructor(app){
     this.app=app;this.canvas=document.querySelector('#map');this.ctx=this.canvas.getContext('2d');this.x=30;this.y=30;this.zoom=1;this.images=new Map();this.cursor=[0,0];
     new ResizeObserver(()=>this.resize()).observe(this.canvas);
+    this.canvas.addEventListener('pointerenter',()=>this.hover=true);this.canvas.addEventListener('pointerleave',()=>this.hover=false);
+    this.canvas.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='copy';this.cursor=this.point(e);});
+    this.canvas.addEventListener('drop',e=>this.drop(e));
     this.canvas.addEventListener('contextmenu',e=>e.preventDefault());
     this.canvas.addEventListener('wheel',e=>{e.preventDefault();const r=this.canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,z=Math.max(.1,Math.min(6,this.zoom*Math.exp(-e.deltaY*.001)));this.x=x-(x-this.x)*z/this.zoom;this.y=y-(y-this.y)*z/this.zoom;this.zoom=z;},{passive:false});
     this.canvas.addEventListener('pointerdown',e=>this.down(e));this.canvas.addEventListener('pointermove',e=>this.move(e));this.canvas.addEventListener('pointerup',e=>this.up(e));this.canvas.addEventListener('pointercancel',e=>this.up(e));
     const tick=t=>{this.draw(t);requestAnimationFrame(tick);};requestAnimationFrame(tick);
   }
-  resize(){const r=this.canvas.getBoundingClientRect(),d=devicePixelRatio||1;this.canvas.width=r.width*d;this.canvas.height=r.height*d;this.w=r.width;this.h=r.height;}
-  fit(){const l=this.app.level;this.zoom=Math.max(.1,Math.min(2,Math.min((this.w-48)/(l.width*l.tileSize),(this.h-48)/(l.height*l.tileSize))));this.x=(this.w-l.width*l.tileSize*this.zoom)/2;this.y=(this.h-l.height*l.tileSize*this.zoom)/2;}
+  resize(){const r=this.canvas.getBoundingClientRect(),d=devicePixelRatio||1;this.canvas.width=r.width*d;this.canvas.height=r.height*d;this.w=r.width;this.h=r.height;if(this.fitPending){this.fitPending=false;this.fit();}}
+  fit(){const r=this.canvas.getBoundingClientRect();if(r.width<=0||r.height<=0){this.fitPending=true;return;}this.fitPending=false;this.w=r.width;this.h=r.height;const l=this.app.level;this.zoom=Math.max(.1,Math.min(2,Math.min((this.w-48)/(l.width*l.tileSize),(this.h-48)/(l.height*l.tileSize))));this.x=(this.w-l.width*l.tileSize*this.zoom)/2;this.y=(this.h-l.height*l.tileSize*this.zoom)/2;}
   image(a){let im=this.images.get(a.source);if(!im){im=new Image();im.src=a.custom?'/'+a.source:'/__spritebank/'+a.source;this.images.set(a.source,im);}return im;}
   sprite(ctx,a,x,y,w,h,t,frame=a.frame??0,anim='',rot=0,flip=false){
     const im=this.image(a);if(!im.complete||!im.naturalWidth)return;
@@ -27,6 +30,7 @@ export class MapView {
     }c.globalAlpha=1;
     if(document.querySelector('#grid').checked&&this.zoom>.3){c.beginPath();for(let x=0;x<=l.width;x++){c.moveTo(x*l.tileSize,0);c.lineTo(x*l.tileSize,l.height*l.tileSize);}for(let y=0;y<=l.height;y++){c.moveTo(0,y*l.tileSize);c.lineTo(l.width*l.tileSize,y*l.tileSize);}c.strokeStyle='#ffffff16';c.lineWidth=1/this.zoom;c.stroke();}
     if(this.drag?.kind==='rect'){const [x,y]=this.cell(this.cursor),[sx,sy]=this.drag.cell;c.strokeStyle='#9cdbb2';c.lineWidth=2/this.zoom;c.strokeRect(Math.min(x,sx)*l.tileSize,Math.min(y,sy)*l.tileSize,(Math.abs(x-sx)+1)*l.tileSize,(Math.abs(y-sy)+1)*l.tileSize);}
+    if(this.hover&&a.isItemBrush()&&this.inside(this.cell(this.cursor))){const def=a.variant?.entity,b=a.byId.get(def?.asset??a.asset?.id);if(b){c.globalAlpha=.55;this.sprite(c,b,...this.cursor,def?.w??32,def?.h??32,t,def?.frame??a.frame,def?.anim??a.anim,def?.rot??0,def?.flipX);c.globalAlpha=1;}}
     c.restore();
   }
   point(e){const r=this.canvas.getBoundingClientRect();return[(e.clientX-r.left-this.x)/this.zoom,(e.clientY-r.top-this.y)/this.zoom];}
@@ -34,6 +38,8 @@ export class MapView {
   inside([x,y]){const l=this.app.level;return x>=0&&y>=0&&x<l.width&&y<l.height;}
   hit(p){const a=this.app;return [...a.level.entities].reverse().find(e=>{const layer=a.level.layers.find(l=>l.id===e.layer);if(!layer?.visible||layer.locked)return false;const r=-(e.rot??0)*Math.PI/180,dx=p[0]-e.x,dy=p[1]-e.y;return Math.abs(dx*Math.cos(r)-dy*Math.sin(r))<e.w/2&&Math.abs(dx*Math.sin(r)+dy*Math.cos(r))<e.h/2;});}
   tile(cell){if(!this.inside(cell))return;const a=this.app,layer=a.layer();if(layer.locked)return;const key=cell.join(',');if(a.tool==='erase')delete layer.tiles[key];else if(a.asset)layer.tiles[key]={asset:a.asset.id,frame:a.frame,anim:a.anim,solid:document.querySelector('#solid').checked};}
+  drop(e){e.preventDefault();const a=this.app;let payload=a.dragPayload;try{payload=JSON.parse(e.dataTransfer.getData('application/x-nord-level2d')||e.dataTransfer.getData('text/plain'));}catch{}if(!payload)return;const p=this.point(e),cell=this.cell(p);if(!this.inside(cell))return;if(payload.item){const item=[...a.projectItems,...a.level.variants].find(i=>i.id===payload.item);if(!item)return;a.chooseItem(item);}else{const b=a.byId.get(payload.asset);if(!b)return;a.choose(b);a.placementMode=payload.placement;a.setTool('brush');}if(a.isItemBrush())a.mutate(()=>a.addEntity(...p));else a.mutate(()=>this.tile(cell));a.dragPayload=null;}
+  stampItem(cell,point){const d=this.drag;if(!this.inside(cell)||d.seen.has(cell.join(',')))return;d.seen.add(cell.join(','));this.app.addEntity(...point);}
   down(e){
     this.canvas.focus();this.canvas.setPointerCapture(e.pointerId);const a=this.app,p=this.point(e),cell=this.cell(p);this.cursor=p;
     if(e.button!==0||a.space){this.drag={kind:'pan',client:[e.clientX,e.clientY],offset:[this.x,this.y]};return;}
@@ -43,8 +49,8 @@ export class MapView {
       if(e.shiftKey){a.selected.has(hit.id)?a.selected.delete(hit.id):a.selected.add(hit.id);}else if(!a.selected.has(hit.id)){a.selected=new Set([hit.id]);}
       this.drag={kind:'move',start:p,before:clone(a.level),orig:a.level.entities.filter(e=>a.selected.has(e.id)).map(e=>[e.id,e.x,e.y])};a.refreshInspector();return;
     }
-    if(a.layer().locked){a.status('Layer locked');return;}
-    if(a.tool==='entity'){if(this.inside(cell))a.mutate(()=>a.addEntity(...p));return;}
+    if(a.layer().locked||!a.layer().visible){a.status('Active layer is locked or hidden');return;}
+    if(a.isItemBrush()){this.drag={kind:'items',before:clone(a.level),seen:new Set(),last:cell};this.stampItem(cell,p);return;}
     if(!this.inside(cell))return;
     if(a.tool==='fill'){a.mutate(()=>flood(a.level,a.layer(),...cell,{asset:a.asset.id,frame:a.frame,anim:a.anim,solid:document.querySelector('#solid').checked}));return;}
     this.drag={kind:a.tool==='rect'?'rect':'paint',cell,before:clone(a.level),last:cell};if(this.drag.kind==='paint')this.tile(cell);
@@ -53,6 +59,7 @@ export class MapView {
     const d=this.drag;if(!d)return;
     if(d.kind==='pan'){this.x=d.offset[0]+e.clientX-d.client[0];this.y=d.offset[1]+e.clientY-d.client[1];}
     if(d.kind==='move'){const step=document.querySelector('#snap').checked?a.level.tileSize/2:1;for(const[id,x,y]of d.orig){const ent=a.level.entities.find(v=>v.id===id);ent.x=Math.round((x+p[0]-d.start[0])/step)*step;ent.y=Math.round((y+p[1]-d.start[1])/step)*step;}}
+    if(d.kind==='items'){const dx=cell[0]-d.last[0],dy=cell[1]-d.last[1],n=Math.max(Math.abs(dx),Math.abs(dy));for(let i=0;i<=n;i++){const c=[Math.round(d.last[0]+dx*i/(n||1)),Math.round(d.last[1]+dy*i/(n||1))];this.stampItem(c,[(c[0]+.5)*a.level.tileSize,(c[1]+.5)*a.level.tileSize]);}d.last=cell;}
     if(d.kind==='paint'){const dx=cell[0]-d.last[0],dy=cell[1]-d.last[1],n=Math.max(Math.abs(dx),Math.abs(dy));for(let i=0;i<=n;i++)this.tile([Math.round(d.last[0]+dx*i/(n||1)),Math.round(d.last[1]+dy*i/(n||1))]);d.last=cell;}
   }
   up(){const a=this.app,d=this.drag;if(!d)return;if(d.kind==='rect'){const [x,y]=this.cell(this.cursor);for(let cy=Math.max(0,Math.min(y,d.cell[1]));cy<=Math.min(a.level.height-1,Math.max(y,d.cell[1]));cy++)for(let cx=Math.max(0,Math.min(x,d.cell[0]));cx<=Math.min(a.level.width-1,Math.max(x,d.cell[0]));cx++)this.tile([cx,cy]);}if(d.before)a.record(d.before);this.drag=null;a.refreshInspector();}

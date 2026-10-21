@@ -10,7 +10,7 @@
   "gravity": 0,
   "layers": [
     {
-      "id": "dyz9a2tg",
+      "id": "d02gznmo",
       "name": "Background",
       "visible": true,
       "locked": false,
@@ -19,7 +19,7 @@
       "tiles": {}
     },
     {
-      "id": "d75imi0p",
+      "id": "d10112r3",
       "name": "World",
       "visible": true,
       "locked": false,
@@ -2241,7 +2241,7 @@
   ],
   "entities": [
     {
-      "id": "djfnntkh",
+      "id": "dc04rz0n",
       "name": "Player",
       "asset": "dungeon-hero",
       "x": 112,
@@ -2252,7 +2252,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "idle",
-      "layer": "d75imi0p",
+      "layer": "d10112r3",
       "tags": [
         "player"
       ],
@@ -2276,7 +2276,7 @@
       ]
     },
     {
-      "id": "d25f3wrp",
+      "id": "d5bceylj",
       "name": "key 5,5",
       "asset": "dungeon-key",
       "x": 176,
@@ -2287,7 +2287,7 @@
       "flipX": false,
       "frame": 14,
       "anim": "",
-      "layer": "d75imi0p",
+      "layer": "d10112r3",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2309,7 +2309,7 @@
       ]
     },
     {
-      "id": "dykefnuw",
+      "id": "d0nwbklj",
       "name": "door 13,8",
       "asset": "dungeon-door",
       "x": 432,
@@ -2320,7 +2320,7 @@
       "flipX": false,
       "frame": 8,
       "anim": "",
-      "layer": "d75imi0p",
+      "layer": "d10112r3",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2342,7 +2342,7 @@
       ]
     },
     {
-      "id": "dsz85w92",
+      "id": "drrr7jvw",
       "name": "potion 8,5",
       "asset": "dungeon-potion",
       "x": 272,
@@ -2353,7 +2353,7 @@
       "flipX": false,
       "frame": 5,
       "anim": "",
-      "layer": "d75imi0p",
+      "layer": "d10112r3",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2375,7 +2375,7 @@
       ]
     },
     {
-      "id": "dln4bt34",
+      "id": "d568kbag",
       "name": "gold 10,10",
       "asset": "dungeon-gold",
       "x": 336,
@@ -2386,7 +2386,7 @@
       "flipX": false,
       "frame": 13,
       "anim": "",
-      "layer": "d75imi0p",
+      "layer": "d10112r3",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2408,7 +2408,7 @@
       ]
     },
     {
-      "id": "d68gnofw",
+      "id": "dy0k0n0k",
       "name": "trap 17,8",
       "asset": "dungeon-trap",
       "x": 560,
@@ -2419,7 +2419,7 @@
       "flipX": false,
       "frame": 15,
       "anim": "",
-      "layer": "d75imi0p",
+      "layer": "d10112r3",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2441,7 +2441,7 @@
       ]
     },
     {
-      "id": "dhi5mi44",
+      "id": "d0w2xfuf",
       "name": "rat 8,8",
       "asset": "dungeon-rat",
       "x": 272,
@@ -2452,7 +2452,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "idle",
-      "layer": "d75imi0p",
+      "layer": "d10112r3",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2474,7 +2474,7 @@
       ]
     },
     {
-      "id": "dj3a5d24",
+      "id": "d9aa9rpu",
       "name": "rat 19,10",
       "asset": "dungeon-rat",
       "x": 624,
@@ -2485,7 +2485,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "idle",
-      "layer": "d75imi0p",
+      "layer": "d10112r3",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2507,7 +2507,7 @@
       ]
     },
     {
-      "id": "do6z5nm3",
+      "id": "d86exjw4",
       "name": "guard 20,6",
       "asset": "dungeon-guard",
       "x": 656,
@@ -2518,7 +2518,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "idle",
-      "layer": "d75imi0p",
+      "layer": "d10112r3",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2540,7 +2540,7 @@
       ]
     },
     {
-      "id": "dx40cevy",
+      "id": "dkgwobv6",
       "name": "stairs 23,8",
       "asset": "dungeon-stairs",
       "x": 752,
@@ -2551,7 +2551,7 @@
       "flipX": false,
       "frame": 10,
       "anim": "",
-      "layer": "d75imi0p",
+      "layer": "d10112r3",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2815,5 +2815,379 @@
     "tileSize": 32,
     "viewRadius": 8,
     "firstScene": "scenes/floor1.scene.json"
-  }
+  },
+  "items": [
+    {
+      "id": "item-0",
+      "title": "Hero",
+      "entity": {
+        "id": "dc04rz0n",
+        "name": "Player",
+        "asset": "dungeon-hero",
+        "x": 112,
+        "y": 272,
+        "w": 32,
+        "h": 32,
+        "rot": 0,
+        "flipX": false,
+        "frame": 0,
+        "anim": "idle",
+        "layer": "d10112r3",
+        "tags": [
+          "player"
+        ],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/dungeon-object.js",
+            "attributes": {
+              "kind": "hero",
+              "hp": 32,
+              "accuracy": 16,
+              "defense": 8,
+              "damageMin": 5,
+              "damageMax": 8,
+              "armor": 2,
+              "value": 1,
+              "next": "scenes/floor2.scene.json"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-1",
+      "title": "Key",
+      "entity": {
+        "id": "d5bceylj",
+        "name": "key 5,5",
+        "asset": "dungeon-key",
+        "x": 176,
+        "y": 176,
+        "w": 32,
+        "h": 32,
+        "rot": 0,
+        "flipX": false,
+        "frame": 14,
+        "anim": "",
+        "layer": "d10112r3",
+        "tags": [],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/dungeon-object.js",
+            "attributes": {
+              "kind": "key",
+              "hp": 8,
+              "accuracy": 8,
+              "defense": 2,
+              "damageMin": 1,
+              "damageMax": 4,
+              "armor": 1,
+              "value": 1,
+              "next": "scenes/floor2.scene.json"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-2",
+      "title": "Door",
+      "entity": {
+        "id": "d0nwbklj",
+        "name": "door 13,8",
+        "asset": "dungeon-door",
+        "x": 432,
+        "y": 272,
+        "w": 32,
+        "h": 32,
+        "rot": 0,
+        "flipX": false,
+        "frame": 8,
+        "anim": "",
+        "layer": "d10112r3",
+        "tags": [],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/dungeon-object.js",
+            "attributes": {
+              "kind": "door",
+              "hp": 8,
+              "accuracy": 8,
+              "defense": 2,
+              "damageMin": 1,
+              "damageMax": 4,
+              "armor": 1,
+              "value": 1,
+              "next": "scenes/floor2.scene.json"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-3",
+      "title": "Potion",
+      "entity": {
+        "id": "drrr7jvw",
+        "name": "potion 8,5",
+        "asset": "dungeon-potion",
+        "x": 272,
+        "y": 176,
+        "w": 32,
+        "h": 32,
+        "rot": 0,
+        "flipX": false,
+        "frame": 5,
+        "anim": "",
+        "layer": "d10112r3",
+        "tags": [],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/dungeon-object.js",
+            "attributes": {
+              "kind": "potion",
+              "hp": 8,
+              "accuracy": 8,
+              "defense": 2,
+              "damageMin": 1,
+              "damageMax": 4,
+              "armor": 1,
+              "value": 1,
+              "next": "scenes/floor2.scene.json"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-4",
+      "title": "Gold",
+      "entity": {
+        "id": "d568kbag",
+        "name": "gold 10,10",
+        "asset": "dungeon-gold",
+        "x": 336,
+        "y": 336,
+        "w": 32,
+        "h": 32,
+        "rot": 0,
+        "flipX": false,
+        "frame": 13,
+        "anim": "",
+        "layer": "d10112r3",
+        "tags": [],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/dungeon-object.js",
+            "attributes": {
+              "kind": "gold",
+              "hp": 8,
+              "accuracy": 8,
+              "defense": 2,
+              "damageMin": 1,
+              "damageMax": 4,
+              "armor": 1,
+              "value": 12,
+              "next": "scenes/floor2.scene.json"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-5",
+      "title": "Trap",
+      "entity": {
+        "id": "dy0k0n0k",
+        "name": "trap 17,8",
+        "asset": "dungeon-trap",
+        "x": 560,
+        "y": 272,
+        "w": 32,
+        "h": 32,
+        "rot": 0,
+        "flipX": false,
+        "frame": 15,
+        "anim": "",
+        "layer": "d10112r3",
+        "tags": [],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/dungeon-object.js",
+            "attributes": {
+              "kind": "trap",
+              "hp": 8,
+              "accuracy": 8,
+              "defense": 2,
+              "damageMin": 1,
+              "damageMax": 4,
+              "armor": 1,
+              "value": 3,
+              "next": "scenes/floor2.scene.json"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-6",
+      "title": "Rat",
+      "entity": {
+        "id": "d0w2xfuf",
+        "name": "rat 8,8",
+        "asset": "dungeon-rat",
+        "x": 272,
+        "y": 272,
+        "w": 32,
+        "h": 32,
+        "rot": 0,
+        "flipX": false,
+        "frame": 0,
+        "anim": "idle",
+        "layer": "d10112r3",
+        "tags": [],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/dungeon-object.js",
+            "attributes": {
+              "kind": "rat",
+              "hp": 8,
+              "accuracy": 8,
+              "defense": 2,
+              "damageMin": 1,
+              "damageMax": 4,
+              "armor": 1,
+              "value": 1,
+              "next": "scenes/floor2.scene.json"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-7",
+      "title": "Guard",
+      "entity": {
+        "id": "d86exjw4",
+        "name": "guard 20,6",
+        "asset": "dungeon-guard",
+        "x": 656,
+        "y": 208,
+        "w": 32,
+        "h": 32,
+        "rot": 0,
+        "flipX": false,
+        "frame": 0,
+        "anim": "idle",
+        "layer": "d10112r3",
+        "tags": [],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/dungeon-object.js",
+            "attributes": {
+              "kind": "guard",
+              "hp": 12,
+              "accuracy": 10,
+              "defense": 4,
+              "damageMin": 1,
+              "damageMax": 6,
+              "armor": 2,
+              "value": 1,
+              "next": "scenes/floor2.scene.json"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-8",
+      "title": "Stairs",
+      "entity": {
+        "id": "dkgwobv6",
+        "name": "stairs 23,8",
+        "asset": "dungeon-stairs",
+        "x": 752,
+        "y": 272,
+        "w": 32,
+        "h": 32,
+        "rot": 0,
+        "flipX": false,
+        "frame": 10,
+        "anim": "",
+        "layer": "d10112r3",
+        "tags": [],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/dungeon-object.js",
+            "attributes": {
+              "kind": "stairs",
+              "hp": 8,
+              "accuracy": 8,
+              "defense": 2,
+              "damageMin": 1,
+              "damageMax": 4,
+              "armor": 1,
+              "value": 1,
+              "next": "scenes/floor2.scene.json"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-9",
+      "title": "Relic",
+      "entity": {
+        "id": "d8u14iy8",
+        "name": "relic 23,8",
+        "asset": "dungeon-relic",
+        "x": 752,
+        "y": 272,
+        "w": 32,
+        "h": 32,
+        "rot": 0,
+        "flipX": false,
+        "frame": 1,
+        "anim": "",
+        "layer": "d72xfqd1",
+        "tags": [],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/dungeon-object.js",
+            "attributes": {
+              "kind": "relic",
+              "hp": 8,
+              "accuracy": 8,
+              "defense": 2,
+              "damageMin": 1,
+              "damageMax": 4,
+              "armor": 1,
+              "value": 50,
+              "next": "scenes/floor2.scene.json"
+            }
+          }
+        ]
+      }
+    }
+  ]
 }

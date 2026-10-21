@@ -59,7 +59,9 @@ The sample uses a custom arena controller for collision and shells; its tank obj
 
 ## 5. Add and balance an enemy
 
-Choose an existing red enemy through Objects. Duplicate it, place the copy on clear ground and rename it. Or Save as variant, give the reusable item a name, and place that preset from Assets.
+**Items → Enemy** selects a working red tank with its script and values. Use **B Brush** to click/drag it onto clear ground, or drag its card directly onto the map. The toolbar and translucent preview show what will be placed.
+
+You can also choose an existing red enemy through Objects and duplicate it, or Save as variant and place that preset from Assets.
 
 Set its kind to `enemy`. Try hp 1, speed 45 and fireDelay 2.5. That enemy is easier than the default. A lower fireDelay fires more often; it is measured in seconds. Set score to 250 to make it worth more points.
 

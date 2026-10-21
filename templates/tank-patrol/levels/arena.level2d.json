@@ -10,7 +10,7 @@
   "gravity": 0,
   "layers": [
     {
-      "id": "dw4wwd0o",
+      "id": "d42st9zm",
       "name": "Background",
       "visible": true,
       "locked": false,
@@ -19,7 +19,7 @@
       "tiles": {}
     },
     {
-      "id": "dectdd54",
+      "id": "dgii6u2t",
       "name": "World",
       "visible": true,
       "locked": false,
@@ -2581,7 +2581,7 @@
   ],
   "entities": [
     {
-      "id": "di8rs0s2",
+      "id": "dyevzsgl",
       "name": "Player",
       "asset": "tank_blue",
       "x": 464,
@@ -2592,7 +2592,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [
         "player"
       ],
@@ -2612,7 +2612,7 @@
       ]
     },
     {
-      "id": "d2otnbkp",
+      "id": "du9u5d57",
       "name": "base 15,14",
       "asset": "tank_green",
       "x": 496,
@@ -2623,7 +2623,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2641,7 +2641,7 @@
       ]
     },
     {
-      "id": "d8xcnc7o",
+      "id": "d22a2sj8",
       "name": "enemy 5,3",
       "asset": "tank_red",
       "x": 176,
@@ -2652,7 +2652,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2670,7 +2670,7 @@
       ]
     },
     {
-      "id": "dijobshq",
+      "id": "dp28u4yy",
       "name": "enemy 14,3",
       "asset": "tank_red",
       "x": 464,
@@ -2681,7 +2681,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2699,7 +2699,7 @@
       ]
     },
     {
-      "id": "dio9e0fz",
+      "id": "d6bqq7b3",
       "name": "enemy 24,3",
       "asset": "tank_red",
       "x": 784,
@@ -2710,7 +2710,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2728,7 +2728,7 @@
       ]
     },
     {
-      "id": "d33wfrd1",
+      "id": "dcpvhv33",
       "name": "brick 5,6",
       "asset": "crateWood",
       "x": 176,
@@ -2739,7 +2739,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2757,7 +2757,7 @@
       ]
     },
     {
-      "id": "dt75nnnw",
+      "id": "df3t4g7h",
       "name": "brick 6,6",
       "asset": "crateWood",
       "x": 208,
@@ -2768,7 +2768,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2786,7 +2786,7 @@
       ]
     },
     {
-      "id": "dac2zsox",
+      "id": "dm352zmx",
       "name": "brick 7,6",
       "asset": "crateWood",
       "x": 240,
@@ -2797,7 +2797,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2815,7 +2815,7 @@
       ]
     },
     {
-      "id": "d1153ewd",
+      "id": "d57yyrrf",
       "name": "brick 11,6",
       "asset": "crateWood",
       "x": 368,
@@ -2826,7 +2826,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2844,7 +2844,7 @@
       ]
     },
     {
-      "id": "dxibyq8z",
+      "id": "dggqktyy",
       "name": "brick 12,6",
       "asset": "crateWood",
       "x": 400,
@@ -2855,7 +2855,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2873,7 +2873,7 @@
       ]
     },
     {
-      "id": "dfqd5zq5",
+      "id": "dv9f0rk3",
       "name": "brick 17,6",
       "asset": "crateWood",
       "x": 560,
@@ -2884,7 +2884,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2902,7 +2902,7 @@
       ]
     },
     {
-      "id": "dwaiecib",
+      "id": "dibvisbd",
       "name": "brick 18,6",
       "asset": "crateWood",
       "x": 592,
@@ -2913,7 +2913,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2931,7 +2931,7 @@
       ]
     },
     {
-      "id": "dzimzwz4",
+      "id": "d2zfmjib",
       "name": "brick 22,6",
       "asset": "crateWood",
       "x": 720,
@@ -2942,7 +2942,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2960,7 +2960,7 @@
       ]
     },
     {
-      "id": "d4bpdszd",
+      "id": "dnrcytkl",
       "name": "brick 23,6",
       "asset": "crateWood",
       "x": 752,
@@ -2971,7 +2971,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -2989,7 +2989,7 @@
       ]
     },
     {
-      "id": "dwile4zh",
+      "id": "dxwcq1pt",
       "name": "brick 24,6",
       "asset": "crateWood",
       "x": 784,
@@ -3000,7 +3000,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3018,7 +3018,7 @@
       ]
     },
     {
-      "id": "dt9rwjei",
+      "id": "de5q01os",
       "name": "brick 7,10",
       "asset": "crateWood",
       "x": 240,
@@ -3029,7 +3029,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3047,7 +3047,7 @@
       ]
     },
     {
-      "id": "doq9fae8",
+      "id": "da2snvi9",
       "name": "brick 8,10",
       "asset": "crateWood",
       "x": 272,
@@ -3058,7 +3058,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3076,7 +3076,7 @@
       ]
     },
     {
-      "id": "dwh6wuz8",
+      "id": "dq8cy45z",
       "name": "brick 9,10",
       "asset": "crateWood",
       "x": 304,
@@ -3087,7 +3087,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3105,7 +3105,7 @@
       ]
     },
     {
-      "id": "dl2cndq6",
+      "id": "dfwlgdu0",
       "name": "brick 13,10",
       "asset": "crateWood",
       "x": 432,
@@ -3116,7 +3116,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3134,7 +3134,7 @@
       ]
     },
     {
-      "id": "dx5hksr1",
+      "id": "dib96x86",
       "name": "brick 14,10",
       "asset": "crateWood",
       "x": 464,
@@ -3145,7 +3145,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3163,7 +3163,7 @@
       ]
     },
     {
-      "id": "dd4yly49",
+      "id": "dup2jk51",
       "name": "brick 19,10",
       "asset": "crateWood",
       "x": 624,
@@ -3174,7 +3174,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3192,7 +3192,7 @@
       ]
     },
     {
-      "id": "d3q1nhss",
+      "id": "d7iqwjem",
       "name": "brick 20,10",
       "asset": "crateWood",
       "x": 656,
@@ -3203,7 +3203,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3221,7 +3221,7 @@
       ]
     },
     {
-      "id": "duxn69oj",
+      "id": "dle6f8l8",
       "name": "brick 21,10",
       "asset": "crateWood",
       "x": 688,
@@ -3232,7 +3232,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3250,7 +3250,7 @@
       ]
     },
     {
-      "id": "djisunb5",
+      "id": "d2ccy9wl",
       "name": "brick 14,14",
       "asset": "crateWood",
       "x": 464,
@@ -3261,7 +3261,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3279,7 +3279,7 @@
       ]
     },
     {
-      "id": "dxwxzfse",
+      "id": "dt86ihf5",
       "name": "brick 16,14",
       "asset": "crateWood",
       "x": 528,
@@ -3290,7 +3290,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3308,7 +3308,7 @@
       ]
     },
     {
-      "id": "d40od0dt",
+      "id": "dnidv6fw",
       "name": "steel 10,8",
       "asset": "barricadeMetal",
       "x": 336,
@@ -3319,7 +3319,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3337,7 +3337,7 @@
       ]
     },
     {
-      "id": "da6wup62",
+      "id": "di5koxf3",
       "name": "steel 11,8",
       "asset": "barricadeMetal",
       "x": 368,
@@ -3348,7 +3348,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3366,7 +3366,7 @@
       ]
     },
     {
-      "id": "dlf0fje3",
+      "id": "d0ueu7xa",
       "name": "steel 18,8",
       "asset": "barricadeMetal",
       "x": 592,
@@ -3377,7 +3377,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3395,7 +3395,7 @@
       ]
     },
     {
-      "id": "dgb80dqu",
+      "id": "dbkw57xr",
       "name": "steel 19,8",
       "asset": "barricadeMetal",
       "x": 624,
@@ -3406,7 +3406,7 @@
       "flipX": false,
       "frame": 0,
       "anim": "",
-      "layer": "dectdd54",
+      "layer": "dgii6u2t",
       "tags": [],
       "body": "none",
       "trigger": false,
@@ -3538,5 +3538,174 @@
     "playerFireDelay": 0.3,
     "timeLimit": 120,
     "enemyAggression": 0.65
-  }
+  },
+  "items": [
+    {
+      "id": "item-0",
+      "title": "Player",
+      "entity": {
+        "id": "dyevzsgl",
+        "name": "Player",
+        "asset": "tank_blue",
+        "x": 464,
+        "y": 432,
+        "w": 28,
+        "h": 28,
+        "rot": 180,
+        "flipX": false,
+        "frame": 0,
+        "anim": "",
+        "layer": "dgii6u2t",
+        "tags": [
+          "player"
+        ],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/tank-object.js",
+            "attributes": {
+              "kind": "player",
+              "hp": 3,
+              "speed": 120,
+              "fireDelay": 2,
+              "score": 100
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-1",
+      "title": "Base",
+      "entity": {
+        "id": "du9u5d57",
+        "name": "base 15,14",
+        "asset": "tank_green",
+        "x": 496,
+        "y": 464,
+        "w": 32,
+        "h": 32,
+        "rot": 0,
+        "flipX": false,
+        "frame": 0,
+        "anim": "",
+        "layer": "dgii6u2t",
+        "tags": [],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/tank-object.js",
+            "attributes": {
+              "kind": "base",
+              "hp": 3,
+              "speed": 0,
+              "fireDelay": 2,
+              "score": 100
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-2",
+      "title": "Enemy",
+      "entity": {
+        "id": "d22a2sj8",
+        "name": "enemy 5,3",
+        "asset": "tank_red",
+        "x": 176,
+        "y": 112,
+        "w": 28,
+        "h": 28,
+        "rot": 0,
+        "flipX": false,
+        "frame": 0,
+        "anim": "",
+        "layer": "dgii6u2t",
+        "tags": [],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/tank-object.js",
+            "attributes": {
+              "kind": "enemy",
+              "hp": 2,
+              "speed": 55,
+              "fireDelay": 2,
+              "score": 100
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-3",
+      "title": "Brick",
+      "entity": {
+        "id": "dcpvhv33",
+        "name": "brick 5,6",
+        "asset": "crateWood",
+        "x": 176,
+        "y": 208,
+        "w": 32,
+        "h": 32,
+        "rot": 0,
+        "flipX": false,
+        "frame": 0,
+        "anim": "",
+        "layer": "dgii6u2t",
+        "tags": [],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/tank-object.js",
+            "attributes": {
+              "kind": "brick",
+              "hp": 1,
+              "speed": 0,
+              "fireDelay": 2,
+              "score": 100
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "item-4",
+      "title": "Steel",
+      "entity": {
+        "id": "dnidv6fw",
+        "name": "steel 10,8",
+        "asset": "barricadeMetal",
+        "x": 336,
+        "y": 272,
+        "w": 32,
+        "h": 32,
+        "rot": 0,
+        "flipX": false,
+        "frame": 0,
+        "anim": "",
+        "layer": "dgii6u2t",
+        "tags": [],
+        "body": "none",
+        "trigger": false,
+        "scripts": [
+          {
+            "path": "scripts/tank-object.js",
+            "attributes": {
+              "kind": "steel",
+              "hp": 1,
+              "speed": 0,
+              "fireDelay": 2,
+              "score": 100
+            }
+          }
+        ]
+      }
+    }
+  ]
 }

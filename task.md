@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 264/277 tasks (95%)** · updated 2026-10-21
+**Overall: 265/278 tasks (95%)** · updated 2026-10-21
 
 | Milestone | Progress |
 |---|---|
@@ -19,7 +19,7 @@
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
 | M11 Web editor | 14/16 (88%) |
-| M12 FPS Creator addon | 29/30 (97%) |
+| M12 FPS Creator addon | 30/31 (97%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -356,6 +356,7 @@ _a full first-person level editor + runtime modelled on the classic FPS Creator 
 - [x] **M12-28** Add editable two-floor Shattered Pixel Dungeon adaptation to 2D Level Creator
 - [x] **M12-29** Add editable NES-style top-down tank game and starter
 - [x] **M12-30** Add full illustrated HTML tutorials for Machine Workshop, dungeon and tank games
+- [x] **M12-31** Fix demo item palettes, Brush placement and drag-and-drop in 2D Level Creator
 
 ## Features (PRD)
 

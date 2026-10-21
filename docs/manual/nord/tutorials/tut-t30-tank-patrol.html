@@ -62,7 +62,8 @@
 <p>Change speed to 90, test, then try 150. The smaller value gives more time to line up a shot. Keep kind as <code>player</code>; the controller needs one player object. Its name <strong>Player</strong> also supports the generated camera.</p>
 <p>The sample uses a custom arena controller for collision and shells; its tank objects do not need dynamic physics bodies. Arcade/Matter remain available for other 2D projects.</p>
 <h2 id="5-add-and-balance-an-enemy">5. Add and balance an enemy<a class="anchor" href="#5-add-and-balance-an-enemy">#</a></h2>
-<p>Choose an existing red enemy through Objects. Duplicate it, place the copy on clear ground and rename it. Or Save as variant, give the reusable item a name, and place that preset from Assets.</p>
+<p><strong>Items → Enemy</strong> selects a working red tank with its script and values. Use <strong>B Brush</strong> to click/drag it onto clear ground, or drag its card directly onto the map. The toolbar and translucent preview show what will be placed.</p>
+<p>You can also choose an existing red enemy through Objects and duplicate it, or Save as variant and place that preset from Assets.</p>
 <p>Set its kind to <code>enemy</code>. Try hp 1, speed 45 and fireDelay 2.5. That enemy is easier than the default. A lower fireDelay fires more often; it is measured in seconds. Set score to 250 to make it worth more points.</p>
 <p>Enemy tanks turn when blocked and choose a direction periodically. They do not have a full path planner. Arrange corridors so an enemy can turn and approach the base; do not seal its spawn behind permanent steel unless that is your intended scenario.</p>
 <p><strong>Checkpoint:</strong> adding an enemy increases the HUD count, and defeating it adds your chosen score.</p>

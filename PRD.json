@@ -672,6 +672,12 @@
       "status": "done"
     },
     {
+      "id": "M12-31",
+      "milestone": "M12",
+      "title": "Fix demo item palettes, Brush placement and drag-and-drop in 2D Level Creator",
+      "status": "done"
+    },
+    {
       "id": "M9-01",
       "milestone": "M9",
       "title": "PLAN: docs/DESKTOP_APPS.md — desktop target architecture (ADR): reuse nord-player/wry shell vs native egui apps; capability model, API surface per tier (JS via IPC bridge, Rust direct); permissions/sandbox; what real apps need (checklist)",
