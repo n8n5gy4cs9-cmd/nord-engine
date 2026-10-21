@@ -406,7 +406,8 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                                 .as_ref()
                                                 .is_some_and(|e| p.starts_with(e))
                                                 || p.starts_with(nord_core::io::config_dir());
-                                            ui.with_layout(
+                                            ui.allocate_ui_with_layout(
+                                                egui::vec2(ui.available_width(), 32.0),
                                                 egui::Layout::right_to_left(egui::Align::Center),
                                                 |ui| {
                                                     // button first = fixed right-hand column, same x on every row
