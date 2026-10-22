@@ -26,6 +26,26 @@ Owner: Crowelian. Credit: **Crowelian 2026 + Sonnet**. Keep it **pragmatic, not 
 Linux only; Rust 1.9x, Node 22, Python3+PIL/numpy, ffmpeg, Chromium via Playwright. `git clone` of GitHub works; npm + crates.io work.
 macOS-only things (egui window + wry child webview, codesign, dmg) cannot be run here → must be verified by CI `macos-14` or the owner.
 
+## Library versions (keep in sync)
+Bundled versions as of **2026-10-22**. Source of truth: `vendor/VENDOR.json` (web libs), `Cargo.lock` / `crates/*/Cargo.toml` (Rust), `rustc --version`. **When you change any of these, update this table AND the "Part 3: The libraries Nord uses" tables in `docs/manual-src/how-nord-works.md` (plus the `Phaser`/`Babylon` mentions in `01-welcome.md`), then run `node tools/build-manual.mjs`.**
+
+| Library | Version | Role |
+|---|---|---|
+| Phaser | 4.2.1 | 2D runtime |
+| Babylon.js (+ loaders, gui, materials, post-process, procedural-textures, serializers) | 9.30.0 | 3D runtime |
+| Havok (wasm) | 1.3.14 | 3D physics |
+| PlayCanvas | 2.23.2 | optional 3D tier |
+| macroquad | 0.4.16 | Rust game drawing |
+| rapier2d | 0.22 | Rust game physics |
+| eframe / egui | 0.31.1 | editor UI + Rust app tier |
+| wry / tao | 0.50.5 / 0.33.0 | webview / window shell |
+| CodeMirror | 6 | code editor |
+| esbuild-wasm | 0.25.10 | export minify/bundle |
+| marked | 18.1.0 | manual markdown |
+| Lucide | 1.55.0 | icons |
+| Fonts (fontsource) | 5.3.0 | bundled typefaces |
+| Rust toolchain | 1.96.0 | build |
+
 ## Quick commands
 ```
 node tools/tasks.mjs status            # progress by milestone

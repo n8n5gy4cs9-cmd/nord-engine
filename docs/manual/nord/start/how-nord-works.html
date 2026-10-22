@@ -9,111 +9,322 @@
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html" class="active" aria-current="page">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
 <div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Start here</div><a href="getting-started.html">Getting started</a><a href="how-nord-works.html" class="cur" aria-current="page">How Nord works</a><a href="developer-basics.html">Programming for dummy developers</a></nav><main id="content"><div class="crumb">Start here / Nord Engine</div><h1>How Nord works</h1>
-<p><strong>Nord is the place where you put your project together.</strong> It provides an editor, scene files, scripts and export tools. It uses an existing engine underneath to draw and run the game.</p>
-<h2 id="the-pieces-in-one-minute">The pieces, in one minute<a class="anchor" href="#the-pieces-in-one-minute">#</a></h2>
+<p><strong>Nord is a workbench for making games and apps.</strong> You arrange pictures, 3D shapes, sounds and rules in the editor, press Play, and the game runs. When you are happy, Nord packs the game into a folder anyone can open in a web browser.</p>
+<p>This page explains what is going on behind the Play button, and which other people&#39;s software Nord relies on. You do not need any of it to make your first game. Read it when you want to know <em>why</em> things behave the way they do.</p>
+<h2 id="the-whole-picture-on-one-screen">The whole picture on one screen<a class="anchor" href="#the-whole-picture-on-one-screen">#</a></h2>
+<pre class="code" data-lang=""><code> YOU                       NORD EDITOR                      YOUR GAME FOLDER
+ click, type,   ───────►   windows, panels, tools  ───────► scenes, scripts,
+ press Play                (a desktop program)              pictures, sounds
+                                  │
+                                  │ Play / Export
+                                  ▼
+                        THE GAME PLAYER (a web page)
+                        Nord's own code (nord.js)
+                           + a drawing library
+                           + a physics library
+                                  │
+                                  ▼
+               what you see and hear: a game in the editor,
+               a browser tab, or a stand-alone window</code></pre>
+<p>Three things to take from it:</p>
+<ol>
+<li><strong>The editor and the game are separate.</strong> The editor is a desktop program you use. The game is a small web page that Nord starts when you press Play.</li>
+<li><strong>Your work is saved as ordinary files</strong> in a folder. The editor reads and writes them; the game reads them too.</li>
+<li><strong>Nord does not draw things itself.</strong> It hands the drawing and the physics to well-known open-source libraries. Nord&#39;s job is to give you one friendly set of tools in front of them.</li>
+</ol>
+<h2 id="part-1-the-pieces-in-plain-words">Part 1: The pieces, in plain words<a class="anchor" href="#part-1-the-pieces-in-plain-words">#</a></h2>
 <table>
 <thead>
 <tr>
-<th>Term</th>
-<th>Plain English</th>
+<th>Word</th>
+<th>What it means</th>
 <th>Where you meet it</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Editor</td>
-<td>The workbench where you arrange things and edit settings.</td>
-<td>NordEditor, before pressing Play.</td>
+<td><strong>Editor</strong></td>
+<td>The desktop program where you build.</td>
+<td>NordEditor, before you press Play.</td>
 </tr>
 <tr>
-<td>Scene</td>
-<td>A level, screen or collection of things that run together.</td>
-<td>A <code>.scene.json</code> file.</td>
+<td><strong>Project</strong></td>
+<td>A folder with everything about one game.</td>
+<td>The folder you picked in the hub.</td>
 </tr>
 <tr>
-<td>Entity</td>
-<td>One thing in the scene: a player, camera, lamp or label.</td>
-<td>The Hierarchy panel.</td>
+<td><strong>Scene</strong></td>
+<td>One screen or level, saved as a file.</td>
+<td><code>scenes/main.scene.json</code>.</td>
 </tr>
 <tr>
-<td>Component</td>
-<td>A feature attached to an entity: show a picture, collide, make light.</td>
-<td>The Inspector&#39;s Add component menu.</td>
+<td><strong>Entity</strong></td>
+<td>One thing in a scene: a hero, a coin, a camera, a label.</td>
+<td>The Hierarchy list.</td>
 </tr>
 <tr>
-<td>Script</td>
-<td>Instructions you write to make something happen.</td>
-<td>A JavaScript or Rust file.</td>
+<td><strong>Component</strong></td>
+<td>A feature attached to an entity: a picture, a shape for collisions, a light.</td>
+<td>The Inspector&#39;s <strong>+ Add component</strong>.</td>
 </tr>
 <tr>
-<td>Runtime</td>
-<td>The code running while someone plays your game.</td>
-<td>Game view or an exported game.</td>
+<td><strong>Script</strong></td>
+<td>A code file that tells an entity how to behave.</td>
+<td><code>scripts/*.js</code>, <strong>+ Add script</strong>.</td>
 </tr>
 <tr>
-<td>Export</td>
-<td>A packaged copy of the project for players.</td>
-<td>The <code>dist</code> folder or desktop bundle.</td>
+<td><strong>Runtime</strong></td>
+<td>The code that runs while someone plays.</td>
+<td>The Game view, or an exported game.</td>
+</tr>
+<tr>
+<td><strong>Export</strong></td>
+<td>A finished copy of the game for players.</td>
+<td>The <code>dist</code> folder, or an app bundle.</td>
 </tr>
 </tbody></table>
-<aside class="box dummies"><div class="box-title">For dummy developers</div><p>For a player character, the <strong>entity</strong> is the thing you select. A <strong>sprite component</strong> gives it a picture. A <strong>physics component</strong> makes it fall and collide. A <strong>script</strong> tells it to move when a key is pressed. You add only the features it needs.</p>
-</aside><h2 id="what-happens-when-you-press-play">What happens when you press Play?<a class="anchor" href="#what-happens-when-you-press-play">#</a></h2>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A player character: the <strong>entity</strong> is a blank card. A <strong>sprite component</strong> is its portrait. A <strong>physics component</strong> makes it fall and bump into things. A <strong>script</strong> says &quot;move when I press an arrow key&quot;. You add only what that thing needs.</p>
+</aside><h2 id="part-2-what-happens-when-you-press-play">Part 2: What happens when you press Play<a class="anchor" href="#part-2-what-happens-when-you-press-play">#</a></h2>
 <ol>
-<li>Nord reads your project settings and the starting scene.</li>
-<li>It creates the scene&#39;s entities and their components.</li>
-<li>It calls your scripts at the right moments: once at startup, then repeatedly while the game runs.</li>
-<li>The selected engine draws the result and runs its physics system.</li>
-<li>Input, sounds, UI and saves connect your game to the player.</li>
+<li><strong>Nord saves a snapshot of your project</strong> and starts a tiny local web server. (A web server is a program that hands files to a browser; this one only talks to your own computer.)</li>
+<li><strong>A game page opens inside the editor</strong> (the <strong>Game</strong> tab). It loads Nord&#39;s own code, <code>nord.js</code>, plus the drawing and physics libraries for your project&#39;s type.</li>
+<li><strong>The page reads your start scene</strong> and creates every entity and component in it.</li>
+<li><strong>Your scripts get their first call.</strong> Each script&#39;s <code>start()</code> runs once.</li>
+<li><strong>Then the game loop begins.</strong> About 60 times every second, the game does the same short cycle, called a <strong>frame</strong>: read the keyboard, run every script&#39;s <code>update()</code>, step the physics, redraw the picture.</li>
+<li><strong>Save a script while it runs</strong> and Nord swaps in the new code without restarting. This is <em>hot reload</em>.</li>
+<li><strong>Press Stop</strong> and the page is thrown away. Your project is unchanged, except for what you saved.</li>
 </ol>
-<p>You usually work with <strong>Nord&#39;s API</strong>. For example, <code>this.entity.pos</code> means the position of the thing your script is attached to. Nord connects it to the object used by the selected engine.</p>
-<h2 id="phaser-nord-39-s-2d-engine">Phaser: Nord&#39;s 2D engine<a class="anchor" href="#phaser-nord-39-s-2d-engine">#</a></h2>
-<p><strong>Phaser</strong> draws flat pictures, text, tilemaps and particles. Nord&#39;s <code>2d</code> projects use Phaser <strong>4.2.1</strong>. Add Nord&#39;s <code>sprite</code>, <code>animatedSprite</code>, <code>tilemap</code> and physics components instead of constructing a separate Phaser game.</p>
-<p>Phaser can draw using WebGL, with a Canvas fallback where supported. The physics choices are Arcade (simple and fast) and Matter (more complex shapes and motion).</p>
-<p><strong>You do not need to learn Phaser first.</strong> Use the <a href="../manual/2d.html">2D manual</a> and <a href="../reference/components.html">Nord component reference</a>. The <a href="../reference/engine-docs.html">Phaser reference</a> is useful when you need a capability Nord has not wrapped.</p>
-<h2 id="babylon-nord-39-s-3d-engine">Babylon: Nord&#39;s 3D engine<a class="anchor" href="#babylon-nord-39-s-3d-engine">#</a></h2>
-<p><strong>Babylon.js</strong> draws 3D models, cameras, lighting and materials. Nord&#39;s <code>3d</code> projects use Babylon <strong>9.30.0</strong>, with Havok for 3D physics.</p>
-<p>Add Nord&#39;s <code>mesh</code>, <code>model</code>, <code>camera</code>, <code>light</code> and <code>rigidbody3d</code> components. The Babylon adapter turns them into engine objects. Read <a href="../manual/3d.html">the 3D manual</a> for Nord&#39;s workflow; use <a href="../reference/engine-docs.html">the underlying reference</a> for advanced engine details.</p>
-<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A <strong>mesh</strong> is the shape. A <strong>material</strong> is how its surface looks. A <strong>camera</strong> decides what you see. A <strong>light</strong> helps you see the shape. You need a camera and something visible before a 3D scene can look useful.</p>
-</aside><h2 id="webgl-asking-the-graphics-chip-to-draw">WebGL: asking the graphics chip to draw<a class="anchor" href="#webgl-asking-the-graphics-chip-to-draw">#</a></h2>
-<p><strong>WebGL</strong> is a browser graphics interface. Phaser and Babylon use it to ask the computer&#39;s graphics chip to draw pictures quickly. It is not a language you must learn to use Nord. You normally work with entities, components and scripts; the engine handles the drawing calls.</p>
-<p>A <strong>shader</strong> is a small program that changes how pixels or surfaces are drawn. You can explore shaders later; you do not need one for your first game.</p>
-<h2 id="wasm-running-rust-in-a-browser">WASM: running Rust in a browser<a class="anchor" href="#wasm-running-rust-in-a-browser">#</a></h2>
-<p><strong>WebAssembly</strong>, shortened to <strong>WASM</strong>, is a format browsers can run. Nord compiles Rust projects into this format. It does not automatically convert JavaScript scripts into Rust.</p>
-<ul>
-<li><strong><code>wasm-game</code></strong> uses macroquad to draw and Rapier for 2D physics. Game behavior is written in Rust.</li>
-<li><strong><code>wasm-app</code></strong> uses egui/eframe for an app interface, also written in Rust.</li>
-</ul>
-<p>WASM runs the program&#39;s logic. It is <strong>not</strong> a replacement for drawing: the game or app still needs its graphics runtime. Rust tiers use their own Rust APIs; they do not expose all JavaScript NordScript methods. <a href="../manual/rust-wasm.html">See the Rust guide</a>.</p>
-<h2 id="html-a-plain-web-app">HTML: a plain web app<a class="anchor" href="#html-a-plain-web-app">#</a></h2>
-<p>The <code>html</code> tier starts with ordinary HTML, CSS and JavaScript. HTML describes the page, CSS controls its appearance, and JavaScript adds behavior. This tier is useful for tools and interfaces that do not need a 2D or 3D game scene.</p>
-<h2 id="which-should-i-choose">Which should I choose?<a class="anchor" href="#which-should-i-choose">#</a></h2>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A game is a flip-book drawn very quickly. A frame is one page of the flip-book. Between pages, the game checks what you pressed and moves things a little. At 60 pages a second, it looks like movement.</p>
+</aside><p>The same game page, packed into a folder, is what <strong>Export</strong> gives you. That is why a game that works in Play also works on a website: it is literally the same program.</p>
+<h2 id="part-3-the-libraries-nord-uses">Part 3: The libraries Nord uses<a class="anchor" href="#part-3-the-libraries-nord-uses">#</a></h2>
+<p>Nord stands on these open-source libraries. Versions are the ones bundled with Nord, checked on <strong>2026-10-22</strong> against <code>vendor/VENDOR.json</code> and <code>Cargo.lock</code>. Everything is included in the app and works offline.</p>
+<h3 id="drawing-and-physics-for-games-run-in-the-game-page">Drawing and physics for games (run in the game page)<a class="anchor" href="#drawing-and-physics-for-games-run-in-the-game-page">#</a></h3>
 <table>
 <thead>
 <tr>
-<th>You want to make…</th>
-<th>Start with</th>
+<th>Library</th>
+<th>Version</th>
+<th>Used for</th>
+<th>Project type</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>A platformer, puzzle or top-down game</td>
-<td>2D / Phaser</td>
+<td><strong>Phaser</strong></td>
+<td>4.2.1</td>
+<td>Drawing 2D pictures, text, tile maps and particles; Arcade and Matter physics.</td>
+<td><code>2d</code></td>
 </tr>
 <tr>
-<td>A 3D world, driving game or first-person scene</td>
-<td>3D / Babylon</td>
+<td><strong>Babylon.js</strong></td>
+<td>9.30.0</td>
+<td>Drawing 3D models, cameras, lights, materials and 3D menus (plus its loaders, GUI, materials, post-process, procedural textures and serializers add-ons, all 9.30.0).</td>
+<td><code>3d</code></td>
 </tr>
 <tr>
-<td>A notes app, dashboard or web tool</td>
-<td>HTML</td>
+<td><strong>Havok Physics</strong></td>
+<td>1.3.14</td>
+<td>3D physics: falling, bouncing, colliding. Used with Babylon.</td>
+<td><code>3d</code></td>
 </tr>
 <tr>
-<td>A game or app specifically written in Rust</td>
-<td>Rust game or Rust app</td>
+<td><strong>PlayCanvas</strong></td>
+<td>2.23.2</td>
+<td>Optional alternative 3D renderer. Physics, particles and some effects are not supported yet.</td>
+<td>optional</td>
 </tr>
 </tbody></table>
-<p>For your first game, <strong>choose 2D</strong>. It has fewer moving parts to learn. You can create a separate 3D project later.</p>
-<h2 id="nord-apis-and-engine-apis">Nord APIs and engine APIs<a class="anchor" href="#nord-apis-and-engine-apis">#</a></h2>
-<p>Start with <code>NordScript</code>, <code>entity.*</code> and <code>game.*</code>. These are documented in <a href="../api/api.html">Nord&#39;s API reference</a>.</p>
-<p>When a feature has no Nord wrapper, certain components expose an underlying object such as <code>component.obj</code> or <code>component.mesh</code>; entities also have <code>entity.native</code>. This is an <strong>escape hatch</strong>. The underlying Phaser and Babylon objects have different methods, so engine-specific code needs the matching reference and version.</p>
-<p>An engine&#39;s full API being documented here does not mean every method is a Nord method. Reference pages label their engine and version, and link back to the Nord way of doing common tasks.</p>
-<div class="pager"><a href="getting-started.html"><small>← Previous</small>Getting started</a><a href="developer-basics.html"><small>Next →</small>Programming for dummy developers</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#the-pieces-in-one-minute">The pieces, in one minute </a><a href="#what-happens-when-you-press-play">What happens when you press Play? </a><a href="#phaser-nord-39-s-2d-engine">Phaser: Nord&amp;#39;s 2D engine </a><a href="#babylon-nord-39-s-3d-engine">Babylon: Nord&amp;#39;s 3D engine </a><a href="#webgl-asking-the-graphics-chip-to-draw">WebGL: asking the graphics chip to draw </a><a href="#wasm-running-rust-in-a-browser">WASM: running Rust in a browser </a><a href="#html-a-plain-web-app">HTML: a plain web app </a><a href="#which-should-i-choose">Which should I choose? </a><a href="#nord-apis-and-engine-apis">Nord APIs and engine APIs </a></aside></div>
+<h3 id="rust-projects-compiled-to-run-in-a-browser">Rust projects (compiled to run in a browser)<a class="anchor" href="#rust-projects-compiled-to-run-in-a-browser">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Version</th>
+<th>Used for</th>
+<th>Project type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>macroquad</strong></td>
+<td>0.4.16</td>
+<td>Drawing and sound for Rust games.</td>
+<td><code>wasm-game</code></td>
+</tr>
+<tr>
+<td><strong>rapier2d</strong></td>
+<td>0.22</td>
+<td>2D physics for Rust games.</td>
+<td><code>wasm-game</code></td>
+</tr>
+<tr>
+<td><strong>eframe / egui</strong></td>
+<td>0.31.1</td>
+<td>Buttons, text boxes and windows for Rust apps (and for the editor itself).</td>
+<td><code>wasm-app</code></td>
+</tr>
+</tbody></table>
+<h3 id="the-editor-program-itself">The editor program itself<a class="anchor" href="#the-editor-program-itself">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Version</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Rust</strong> (compiler used to build Nord)</td>
+<td>1.96.0</td>
+<td>The language the editor and command-line tool are written in.</td>
+</tr>
+<tr>
+<td><strong>eframe / egui</strong></td>
+<td>0.31.1</td>
+<td>The editor&#39;s windows, panels and buttons.</td>
+</tr>
+<tr>
+<td><strong>wry</strong></td>
+<td>0.50.5</td>
+<td>The web view inside the editor that shows your running game.</td>
+</tr>
+<tr>
+<td><strong>tao</strong></td>
+<td>0.33.0</td>
+<td>Opens native windows for the game player.</td>
+</tr>
+<tr>
+<td><strong>CodeMirror</strong></td>
+<td>6</td>
+<td>The code editor with highlighting and autocomplete.</td>
+</tr>
+<tr>
+<td><strong>esbuild (WASM)</strong></td>
+<td>0.25.10</td>
+<td>Minifies and bundles a game into a single file when you export (optional).</td>
+</tr>
+<tr>
+<td><strong>marked</strong></td>
+<td>18.1.0</td>
+<td>Turns Markdown into pages (this manual).</td>
+</tr>
+<tr>
+<td><strong>Lucide</strong></td>
+<td>1.55.0</td>
+<td>The icons.</td>
+</tr>
+<tr>
+<td><strong>Fonts</strong></td>
+<td>5.3.0</td>
+<td>The bundled typefaces.</td>
+</tr>
+</tbody></table>
+<aside class="box tip"><div class="box-title">Tip</div><p>A newer version of a library may exist. Nord ships the versions above on purpose: they are the ones tested together. The authoritative list is <code>vendor/VENDOR.json</code> (web libraries) and <code>Cargo.lock</code> (Rust libraries); <code>AGENTS.md</code> records that this table must be updated when they change.</p>
+</aside><h3 id="words-you-can-skip-until-you-are-curious">Words you can skip until you are curious<a class="anchor" href="#words-you-can-skip-until-you-are-curious">#</a></h3>
+<ul>
+<li><strong>WebGL</strong> - a web-browser feature that lets a page use the computer&#39;s graphics chip. Phaser and Babylon use it to draw quickly. You never call it yourself.</li>
+<li><strong>WebAssembly (WASM)</strong> - a format that lets a browser run programs written in languages like Rust. Nord uses it for the two Rust project types. JavaScript scripts are <em>not</em> converted to Rust.</li>
+<li><strong>Shader</strong> - a tiny program that decides the colour of each pixel or surface. Optional; advanced.</li>
+<li><strong>Physics engine</strong> - code that works out how things fall, bounce and collide so that you do not have to.</li>
+</ul>
+<h2 id="part-4-what-each-project-type-uses">Part 4: What each project type uses<a class="anchor" href="#part-4-what-each-project-type-uses">#</a></h2>
+<p>Pick the type when you create a project; it is stored in <code>nord.project.json</code> as <code>type</code>.</p>
+<table>
+<thead>
+<tr>
+<th>You want</th>
+<th>Type</th>
+<th>Drawn by</th>
+<th>Physics by</th>
+<th>You write</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A platformer, puzzle, top-down or arcade game</td>
+<td><code>2d</code></td>
+<td>Phaser 4.2.1</td>
+<td>Arcade or Matter</td>
+<td>JavaScript, or no code with the creators</td>
+</tr>
+<tr>
+<td>A 3D world, first-person or driving game</td>
+<td><code>3d</code></td>
+<td>Babylon.js 9.30.0</td>
+<td>Havok 1.3.14</td>
+<td>JavaScript, or the FPS Creator</td>
+</tr>
+<tr>
+<td>A tool, dashboard or plain web app</td>
+<td><code>html</code></td>
+<td>The browser</td>
+<td>none</td>
+<td>HTML, CSS, JavaScript</td>
+</tr>
+<tr>
+<td>A game written in Rust</td>
+<td><code>wasm-game</code></td>
+<td>macroquad 0.4.16</td>
+<td>rapier2d 0.22</td>
+<td>Rust</td>
+</tr>
+<tr>
+<td>An app written in Rust</td>
+<td><code>wasm-app</code></td>
+<td>egui 0.31.1</td>
+<td>none</td>
+<td>Rust</td>
+</tr>
+</tbody></table>
+<p>For a first game, <strong>choose <code>2d</code></strong>. It has the fewest moving parts. You can make a 3D project later; nothing is lost.</p>
+<p>The Rust types do not read all of Nord&#39;s JavaScript features. <a href="../manual/rust-wasm.html">The Rust guide</a> lists what they support.</p>
+<h2 id="part-5-nord-39-s-tools-sit-on-top">Part 5: Nord&#39;s tools sit on top<a class="anchor" href="#part-5-nord-39-s-tools-sit-on-top">#</a></h2>
+<p>Besides the editor panels, Nord includes tools that build things for you. They all save normal project files that the same player runs:</p>
+<ul>
+<li><strong>2D Level Creator</strong> (the <strong>2D Level</strong> tab) paints platform and top-down maps and places objects. <a href="../manual/level-creator-2d.html">Guide</a>.</li>
+<li><strong>FPS Creator</strong> (the <strong>FPS Level</strong> tab) builds first-person levels on a grid. <a href="../manual/fps-creator.html">Guide</a>.</li>
+<li><strong>Event sheets</strong> and <strong>Behaviors</strong> make game logic without code. <a href="../manual/event-sheets.html">Event sheets</a>, <a href="../manual/behaviors.html">Behaviors</a>.</li>
+<li><strong>Sprite, animation, tilemap, particle and timeline editors</strong> make art and motion. <a href="../manual/sprites-animation-tilemaps.html">Sprites</a>, <a href="../manual/effects-particles-timelines.html">Effects</a>.</li>
+<li><strong>Debugger and profiler</strong> show what a running game is doing. <a href="../manual/debugger.html">Debugger</a>.</li>
+</ul>
+<h2 id="part-6-nord-39-s-api-and-the-libraries-39-apis">Part 6: Nord&#39;s API and the libraries&#39; APIs<a class="anchor" href="#part-6-nord-39-s-api-and-the-libraries-39-apis">#</a></h2>
+<p>An <strong>API</strong> is the list of commands a library understands. You will meet three layers:</p>
+<ol>
+<li><strong>Nord&#39;s API</strong> - what you should use first. Examples: <code>this.entity.pos</code>, <code>this.input.axis(&#39;left&#39;, &#39;right&#39;)</code>, <code>game.loadScene(&#39;scenes/level2.scene.json&#39;)</code>. It works the same in 2D and 3D. Reference: <a href="../api/api.html">API</a>.</li>
+<li><strong>Nord&#39;s components</strong> - the settings you edit in the Inspector, such as <code>sprite</code>, <code>text</code>, <code>rigidbody</code>, <code>light</code>. Reference: <a href="../reference/components.html">Components</a>.</li>
+<li><strong>The library underneath</strong> - Phaser or Babylon. Nord keeps these hidden on purpose. For something Nord has not wrapped yet, an <em>escape hatch</em> gives you the raw object: <code>entity.native</code>, and on some components <code>component.obj</code> or <code>component.mesh</code>. The raw objects differ between Phaser and Babylon, so code that uses them is tied to that engine and version. Reference: <a href="../reference/engine-docs.html">Engine documentation</a>, which is labelled by engine and version.</li>
+</ol>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Think of Nord as a car&#39;s dashboard. You press the pedal and turn the wheel (Nord&#39;s API). Under the bonnet there is an engine you did not build (Phaser, Babylon). There is a hatch if you ever need to reach it, but most drivers never open it.</p>
+</aside><h2 id="part-7-where-your-files-are-and-what-is-stored">Part 7: Where your files are, and what is stored<a class="anchor" href="#part-7-where-your-files-are-and-what-is-stored">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Your game</td>
+<td>The project folder you chose: <code>nord.project.json</code>, <code>scenes/</code>, <code>scripts/</code>, <code>assets/</code></td>
+</tr>
+<tr>
+<td>Your export</td>
+<td><code>dist/</code> inside the project</td>
+</tr>
+<tr>
+<td>Thumbnails and autosaves</td>
+<td><code>.nord-cache/</code> inside the project (safe to delete)</td>
+</tr>
+<tr>
+<td>Editor preferences, recent projects, layout</td>
+<td><code>~/.config/nord/</code> on macOS and Linux; <code>%APPDATA%\NordEngine\</code> on Windows</td>
+</tr>
+</tbody></table>
+<p>Nothing is uploaded anywhere. Nord never needs the internet to edit, play or export.</p>
+<h2 id="part-8-the-same-engine-without-the-window">Part 8: The same engine without the window<a class="anchor" href="#part-8-the-same-engine-without-the-window">#</a></h2>
+<p>The editor and the optional <code>nord</code> command-line tool use the same project code. Anything you do by clicking, such as creating, validating, serving or exporting a project, the command line can also do for scripts and build servers. It is not required. See <a href="getting-started.html#part-11-the-optional-nord-command">Getting started, Part 11</a>.</p>
+<h2 id="where-next">Where next<a class="anchor" href="#where-next">#</a></h2>
+<ul>
+<li><a href="getting-started.html">Getting started</a> - install, tour the editor, change a real game.</li>
+<li><a href="../tutorials/tut-t01-hello-nord.html">T01 Hello Nord</a> - your first scene, from nothing.</li>
+<li><a href="../manual/editor-tour.html">Editor tour</a> - every panel in detail.</li>
+<li><a href="../manual/scripting.html">Scripting</a> - the full script guide.</li>
+</ul>
+<div class="pager"><a href="getting-started.html"><small>← Previous</small>Getting started</a><a href="developer-basics.html"><small>Next →</small>Programming for dummy developers</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#the-whole-picture-on-one-screen">The whole picture on one screen </a><a href="#part-1-the-pieces-in-plain-words">Part 1: The pieces, in plain words </a><a href="#part-2-what-happens-when-you-press-play">Part 2: What happens when you press Play </a><a href="#part-3-the-libraries-nord-uses">Part 3: The libraries Nord uses </a><a href="#part-4-what-each-project-type-uses">Part 4: What each project type uses </a><a href="#part-5-nord-39-s-tools-sit-on-top">Part 5: Nord&amp;#39;s tools sit on top </a><a href="#part-6-nord-39-s-api-and-the-libraries-39-apis">Part 6: Nord&amp;#39;s API and the libraries&amp;#39; APIs </a><a href="#part-7-where-your-files-are-and-what-is-stored">Part 7: Where your files are, and what is stored </a><a href="#part-8-the-same-engine-without-the-window">Part 8: The same engine without the window </a><a href="#where-next">Where next </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -7,7 +7,7 @@ summary: A complete first-hour guide - install, tour the editor, learn the menta
 Nord is an **editor**, like Unity or Godot. You open **NordEditor**, click through windows, press **▶ Play**, and see your game run. This guide takes about an hour and ends with a game you changed, understood and exported.
 
 ::: dummies
-**Is `nord` a command I must type?** No. Everything in this guide is done by clicking in the editor. A small companion program also called `nord` exists for people who want to automate things (build servers, scripts). It is optional, and [Part 10](#part-10-the-optional-nord-command) explains exactly what it is. If you never open a terminal, you miss nothing.
+**Is `nord` a command I must type?** No. Everything in this guide is done by clicking in the editor. A small companion program also called `nord` exists for people who want to automate things (build servers, scripts). It is optional, and [Part 11](#part-11-the-optional-nord-command) explains exactly what it is. If you never open a terminal, you miss nothing.
 :::
 
 ## Pick your path
@@ -17,12 +17,14 @@ Nord is an **editor**, like Unity or Godot. You open **NordEditor**, click throu
 | **New to game making** | Read every part in order. Parts 4–6 are the heart of it. |
 | **Coming from Unity or Godot** | Skim Part 1, read the [translation table in Part 5](#part-5-the-mental-model), then jump to Part 6. |
 | **Impatient** | Do Parts 1–3 (ten minutes), then [T01: Hello Nord](tut-t01-hello-nord.html). Come back for the rest. |
+| **Want to build levels, not code** | Do Parts 1–4, then [Part 9](#part-9-the-built-in-creator-tools): the 2D Level Creator and FPS Creator. |
 | **Just want to see what Nord can do** | Open the hub's **Examples** and play a few. Nothing in them is mocked up. |
 
 ## What you will have at the end
 * A running platformer game, opened and played in the editor.
 * A game you tuned (higher jumps, new text, a new script) without breaking it.
 * A clear picture of **project → scene → entity → component → script**.
+* A taste of the level creators (**2D Level** and **FPS Level**) that build games without code.
 * An exported web folder you can put on any website.
 
 ---
@@ -243,7 +245,28 @@ Habits that save hours:
 * Keep a copy (git, or just duplicate the folder) before big experiments.
 * Name entities clearly: `Hero`, `CoinTrail`, `ScoreLabel`.
 
-## Part 9: Export your game
+## Part 9: The built-in creator tools
+
+Scripts are only one way to build in Nord. Several tools let you make a game by painting, placing and clicking. They appear as extra tabs or project options; you can ignore them until you want them.
+
+| Tool | Where you find it | What it is for | Learn more |
+|---|---|---|---|
+| **2D Level Creator** (the **2D Level** tab) | Hub templates **2D Platform Workshop**, **2D Top-down Workshop** and **Machine Workshop** | Paint a side-scroller or top-down map from a bank of ready sprites, place the player, pickups, enemies and exits, set physics, and test with **F5**. | [2D Level Creator](level-creator-2d.html) |
+| **FPS Creator** (the **FPS Level** tab) | Hub template **FPS Creator (level editor)**, or **Project ▸ Add / upgrade FPS Creator…** in any 3D project | Draw rooms on a grid, add doors, stairs, lights, enemies and pickups, and walk through your level in first person with **F5**. | [FPS Creator](fps-creator.html) |
+| **Event sheets** | The Event sheets tab | Game logic as readable "when this happens, do that" rules, no code. | [Event sheets](event-sheets.html) |
+| **Behaviors** | Inspector, on any entity | Ready-made movement and gameplay such as Platform, 8-Direction, Bullet and Turret. | [Behaviors](behaviors.html) |
+| **Sprite, animation and tilemap editors** | Assets and Inspector | Paint pixel art, build animations, paint tile maps. | [Sprites and tilemaps](sprites-animation-tilemaps.html) |
+| **Layout editor** | Scene view tools | Layers, parallax, guides and alignment. | [Layout editor](layout-editor.html) |
+| **Particles and timelines** | Inspector | Effects such as sparks and smoke, and keyframed animation. | [Effects and timelines](effects-particles-timelines.html) |
+| **Debugger and profiler** | While the game is running | Pause, step through and inspect a live game; find what is slow. | [Debugger](debugger.html) |
+
+**Quickest taste:** make a new project from **2D Platform Workshop**, open the **2D Level** tab, paint a few solid blocks with **B Brush**, place a **Player start**, press **F5** and run across your own level. Press **Shift+Esc** to return to editing. For a first-person version, make a project from **FPS Creator (level editor)**, open the **FPS Level** tab, click **Open…**, choose `level1.fpsl.json` and press **F5**.
+
+::: dummies
+You do not need to pick between "visual tools" and "code". Most projects mix both: paint the level in a creator tool, then attach a small script to make one thing special.
+:::
+
+## Part 10: Export your game
 
 When the game runs well, press **Export…** in the toolbar and follow the dialog. The result is a static folder (`dist`) containing `index.html` and all assets.
 
@@ -251,7 +274,7 @@ When the game runs well, press **Export…** in the toolbar and follow the dialo
 * Put it on any web host (itch.io, GitHub Pages, your own server). Most browsers need the folder to be *served*; double-clicking `index.html` may fail because of browser security rules.
 * Mac app, Windows and Linux bundles are also possible: see [Export and hosting](export.html) and the [desktop apps chapter](desktop-apps.html).
 
-## Part 10: The optional `nord` command
+## Part 11: The optional `nord` command
 
 You may have seen commands such as `nord new` or `nord build` in places. Here is what they are.
 
@@ -292,7 +315,7 @@ Adjust the path to wherever your app is. Without installing, run it by its full 
 | A picture will not load | Check its project-relative path and the exact filename, including capitals. |
 | No sound | Click or tap the game once; browsers wait for a gesture before playing audio. |
 | Code changed but an imported helper did not | Stop and Play again; imported helper modules need a full restart. |
-| `nord: command not found` | You do not need it. See [Part 10](#part-10-the-optional-nord-command) if you want it. |
+| `nord: command not found` | You do not need it. See [Part 11](#part-11-the-optional-nord-command) if you want it. |
 | You broke something | **Cmd+Z**. If that is not enough, recreate the project from the template and compare. |
 
 ## Words you met

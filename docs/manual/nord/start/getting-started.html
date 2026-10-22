@@ -10,7 +10,7 @@
 <nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html" class="active" aria-current="page">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
 <div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Start here</div><a href="getting-started.html" class="cur" aria-current="page">Getting started</a><a href="how-nord-works.html">How Nord works</a><a href="developer-basics.html">Programming for dummy developers</a></nav><main id="content"><div class="crumb">Start here / Nord Engine</div><h1>Getting started</h1>
 <p>Nord is an <strong>editor</strong>, like Unity or Godot. You open <strong>NordEditor</strong>, click through windows, press <strong>▶ Play</strong>, and see your game run. This guide takes about an hour and ends with a game you changed, understood and exported.</p>
-<aside class="box dummies"><div class="box-title">For dummy developers</div><p><strong>Is <code>nord</code> a command I must type?</strong> No. Everything in this guide is done by clicking in the editor. A small companion program also called <code>nord</code> exists for people who want to automate things (build servers, scripts). It is optional, and <a href="#part-10-the-optional-nord-command">Part 10</a> explains exactly what it is. If you never open a terminal, you miss nothing.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p><strong>Is <code>nord</code> a command I must type?</strong> No. Everything in this guide is done by clicking in the editor. A small companion program also called <code>nord</code> exists for people who want to automate things (build servers, scripts). It is optional, and <a href="#part-11-the-optional-nord-command">Part 11</a> explains exactly what it is. If you never open a terminal, you miss nothing.</p>
 </aside><h2 id="pick-your-path">Pick your path<a class="anchor" href="#pick-your-path">#</a></h2>
 <table>
 <thead>
@@ -32,6 +32,10 @@
 <td>Do Parts 1–3 (ten minutes), then <a href="../tutorials/tut-t01-hello-nord.html">T01: Hello Nord</a>. Come back for the rest.</td>
 </tr>
 <tr>
+<td><strong>Want to build levels, not code</strong></td>
+<td>Do Parts 1–4, then <a href="#part-9-the-built-in-creator-tools">Part 9</a>: the 2D Level Creator and FPS Creator.</td>
+</tr>
+<tr>
 <td><strong>Just want to see what Nord can do</strong></td>
 <td>Open the hub&#39;s <strong>Examples</strong> and play a few. Nothing in them is mocked up.</td>
 </tr>
@@ -41,6 +45,7 @@
 <li>A running platformer game, opened and played in the editor.</li>
 <li>A game you tuned (higher jumps, new text, a new script) without breaking it.</li>
 <li>A clear picture of <strong>project → scene → entity → component → script</strong>.</li>
+<li>A taste of the level creators (<strong>2D Level</strong> and <strong>FPS Level</strong>) that build games without code.</li>
 <li>An exported web folder you can put on any website.</li>
 </ul>
 <hr>
@@ -284,14 +289,76 @@ export default class Pulse extends NordScript {
 <li>Keep a copy (git, or just duplicate the folder) before big experiments.</li>
 <li>Name entities clearly: <code>Hero</code>, <code>CoinTrail</code>, <code>ScoreLabel</code>.</li>
 </ul>
-<h2 id="part-9-export-your-game">Part 9: Export your game<a class="anchor" href="#part-9-export-your-game">#</a></h2>
+<h2 id="part-9-the-built-in-creator-tools">Part 9: The built-in creator tools<a class="anchor" href="#part-9-the-built-in-creator-tools">#</a></h2>
+<p>Scripts are only one way to build in Nord. Several tools let you make a game by painting, placing and clicking. They appear as extra tabs or project options; you can ignore them until you want them.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Where you find it</th>
+<th>What it is for</th>
+<th>Learn more</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>2D Level Creator</strong> (the <strong>2D Level</strong> tab)</td>
+<td>Hub templates <strong>2D Platform Workshop</strong>, <strong>2D Top-down Workshop</strong> and <strong>Machine Workshop</strong></td>
+<td>Paint a side-scroller or top-down map from a bank of ready sprites, place the player, pickups, enemies and exits, set physics, and test with <strong>F5</strong>.</td>
+<td><a href="../manual/level-creator-2d.html">2D Level Creator</a></td>
+</tr>
+<tr>
+<td><strong>FPS Creator</strong> (the <strong>FPS Level</strong> tab)</td>
+<td>Hub template <strong>FPS Creator (level editor)</strong>, or <strong>Project ▸ Add / upgrade FPS Creator…</strong> in any 3D project</td>
+<td>Draw rooms on a grid, add doors, stairs, lights, enemies and pickups, and walk through your level in first person with <strong>F5</strong>.</td>
+<td><a href="../manual/fps-creator.html">FPS Creator</a></td>
+</tr>
+<tr>
+<td><strong>Event sheets</strong></td>
+<td>The Event sheets tab</td>
+<td>Game logic as readable &quot;when this happens, do that&quot; rules, no code.</td>
+<td><a href="../manual/event-sheets.html">Event sheets</a></td>
+</tr>
+<tr>
+<td><strong>Behaviors</strong></td>
+<td>Inspector, on any entity</td>
+<td>Ready-made movement and gameplay such as Platform, 8-Direction, Bullet and Turret.</td>
+<td><a href="../manual/behaviors.html">Behaviors</a></td>
+</tr>
+<tr>
+<td><strong>Sprite, animation and tilemap editors</strong></td>
+<td>Assets and Inspector</td>
+<td>Paint pixel art, build animations, paint tile maps.</td>
+<td><a href="../manual/sprites-animation-tilemaps.html">Sprites and tilemaps</a></td>
+</tr>
+<tr>
+<td><strong>Layout editor</strong></td>
+<td>Scene view tools</td>
+<td>Layers, parallax, guides and alignment.</td>
+<td><a href="../manual/layout-editor.html">Layout editor</a></td>
+</tr>
+<tr>
+<td><strong>Particles and timelines</strong></td>
+<td>Inspector</td>
+<td>Effects such as sparks and smoke, and keyframed animation.</td>
+<td><a href="../manual/effects-particles-timelines.html">Effects and timelines</a></td>
+</tr>
+<tr>
+<td><strong>Debugger and profiler</strong></td>
+<td>While the game is running</td>
+<td>Pause, step through and inspect a live game; find what is slow.</td>
+<td><a href="../manual/debugger.html">Debugger</a></td>
+</tr>
+</tbody></table>
+<p><strong>Quickest taste:</strong> make a new project from <strong>2D Platform Workshop</strong>, open the <strong>2D Level</strong> tab, paint a few solid blocks with <strong>B Brush</strong>, place a <strong>Player start</strong>, press <strong>F5</strong> and run across your own level. Press <strong>Shift+Esc</strong> to return to editing. For a first-person version, make a project from <strong>FPS Creator (level editor)</strong>, open the <strong>FPS Level</strong> tab, click <strong>Open…</strong>, choose <code>level1.fpsl.json</code> and press <strong>F5</strong>.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>You do not need to pick between &quot;visual tools&quot; and &quot;code&quot;. Most projects mix both: paint the level in a creator tool, then attach a small script to make one thing special.</p>
+</aside><h2 id="part-10-export-your-game">Part 10: Export your game<a class="anchor" href="#part-10-export-your-game">#</a></h2>
 <p>When the game runs well, press <strong>Export…</strong> in the toolbar and follow the dialog. The result is a static folder (<code>dist</code>) containing <code>index.html</code> and all assets.</p>
 <ul>
 <li>Share <strong>the whole folder</strong>, never only <code>index.html</code>.</li>
 <li>Put it on any web host (itch.io, GitHub Pages, your own server). Most browsers need the folder to be <em>served</em>; double-clicking <code>index.html</code> may fail because of browser security rules.</li>
 <li>Mac app, Windows and Linux bundles are also possible: see <a href="../manual/export.html">Export and hosting</a> and the <a href="../manual/desktop-apps.html">desktop apps chapter</a>.</li>
 </ul>
-<h2 id="part-10-the-optional-nord-command">Part 10: The optional <code>nord</code> command<a class="anchor" href="#part-10-the-optional-nord-command">#</a></h2>
+<h2 id="part-11-the-optional-nord-command">Part 11: The optional <code>nord</code> command<a class="anchor" href="#part-11-the-optional-nord-command">#</a></h2>
 <p>You may have seen commands such as <code>nord new</code> or <code>nord build</code> in places. Here is what they are.</p>
 <p><strong><code>nord</code> is the Nord Engine command-line tool.</strong> It is a small program that does the same project jobs as the editor, but without a window. It exists for:</p>
 <ul>
@@ -370,7 +437,7 @@ export default class Pulse extends NordScript {
 </tr>
 <tr>
 <td><code>nord: command not found</code></td>
-<td>You do not need it. See <a href="#part-10-the-optional-nord-command">Part 10</a> if you want it.</td>
+<td>You do not need it. See <a href="#part-11-the-optional-nord-command">Part 11</a> if you want it.</td>
 </tr>
 <tr>
 <td>You broke something</td>
@@ -430,5 +497,5 @@ export default class Pulse extends NordScript {
 <li><a href="../manual/editor-tour.html">Editor tour</a> - every panel in detail.</li>
 <li><a href="../manual/scripting.html">Scripting</a> - lifecycle, input, events and the full API.</li>
 </ul>
-<div class="pager"><span></span><a href="how-nord-works.html"><small>Next →</small>How Nord works</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#pick-your-path">Pick your path </a><a href="#what-you-will-have-at-the-end">What you will have at the end </a><a href="#part-1-install-and-open-the-editor">Part 1: Install and open the editor </a><a href="#part-2-the-project-hub">Part 2: The project hub </a><a href="#part-3-create-your-first-project-and-press-play">Part 3: Create your first project and press Play </a><a href="#part-4-a-guided-tour-of-the-editor">Part 4: A guided tour of the editor </a><a href="#part-5-the-mental-model">Part 5: The mental model </a><a href="#part-6-change-a-real-game-five-small-wins">Part 6: Change a real game (five small wins) </a><a href="#part-7-save-undo-and-your-files">Part 7: Save, undo and your files </a><a href="#part-8-make-something-of-your-own">Part 8: Make something of your own </a><a href="#part-9-export-your-game">Part 9: Export your game </a><a href="#part-10-the-optional-nord-command">Part 10: The optional nord command </a><a href="#if-you-get-stuck">If you get stuck </a><a href="#words-you-met">Words you met </a><a href="#where-next">Where next </a></aside></div>
+<div class="pager"><span></span><a href="how-nord-works.html"><small>Next →</small>How Nord works</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#pick-your-path">Pick your path </a><a href="#what-you-will-have-at-the-end">What you will have at the end </a><a href="#part-1-install-and-open-the-editor">Part 1: Install and open the editor </a><a href="#part-2-the-project-hub">Part 2: The project hub </a><a href="#part-3-create-your-first-project-and-press-play">Part 3: Create your first project and press Play </a><a href="#part-4-a-guided-tour-of-the-editor">Part 4: A guided tour of the editor </a><a href="#part-5-the-mental-model">Part 5: The mental model </a><a href="#part-6-change-a-real-game-five-small-wins">Part 6: Change a real game (five small wins) </a><a href="#part-7-save-undo-and-your-files">Part 7: Save, undo and your files </a><a href="#part-8-make-something-of-your-own">Part 8: Make something of your own </a><a href="#part-9-the-built-in-creator-tools">Part 9: The built-in creator tools </a><a href="#part-10-export-your-game">Part 10: Export your game </a><a href="#part-11-the-optional-nord-command">Part 11: The optional nord command </a><a href="#if-you-get-stuck">If you get stuck </a><a href="#words-you-met">Words you met </a><a href="#where-next">Where next </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>
