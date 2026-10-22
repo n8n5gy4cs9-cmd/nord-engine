@@ -8,6 +8,7 @@ pub mod panels;
 pub mod particles;
 pub mod pixel;
 pub mod platform;
+pub mod prefab;
 pub mod scene_ops;
 pub mod schema;
 pub mod state;

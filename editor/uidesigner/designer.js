@@ -39,8 +39,8 @@ const FIELDS = {
   select: [['options', 'Options (a,b,c)', 'list'], ['value', 'Value', 'text'], ['on.changed', 'Action', 'text']],
   spacer: [], html: [['html', 'HTML', 'area']], instance: [['ref', 'File', 'text']],
 };
-const IMG = [['image.src', 'Image', 'img'], ['image.mode', 'Image mode', ['', 'slice', 'stretch', 'tile', 'fit', 'cover', 'center']], ['image.slice', '9-slice L T R B', 'nums'], ['image.scale', 'Slice scale', 'num'], ['image.pixelated', 'Pixelated', 'bool']];
-const IMGNODE = [['src', 'Image', 'img'], ['mode', 'Mode', ['', 'slice', 'stretch', 'tile', 'fit', 'cover', 'center']], ['slice', '9-slice L T R B', 'nums'], ['scale', 'Slice scale', 'num']];
+const IMG = [['image.src', 'Image', 'img'], ['image.mode', 'Image mode', ['', 'slice', 'stretch', 'tile', 'fit', 'cover', 'center']], ['image.slice', '9-slice L T R B', 'nums'], ['image.scale', 'Slice scale', 'num'], ['image.tint', 'Tint (multiplies sprite)', 'tint'], ['image.pixelated', 'Pixelated', 'bool']];
+const IMGNODE = [['src', 'Image', 'img'], ['mode', 'Mode', ['', 'slice', 'stretch', 'tile', 'fit', 'cover', 'center']], ['slice', '9-slice L T R B', 'nums'], ['scale', 'Slice scale', 'num'], ['tint', 'Tint (multiplies sprite)', 'tint']];
 const tail = [['visible', 'Visible', 'bool', true], ['disabled', 'Disabled', 'bool'], ['bind.text', 'Bind text var', 'text'], ['tooltip', 'Tooltip', 'text']];
 
 const SKINS = { '': null };
@@ -150,6 +150,11 @@ function renderProps() {
     if (Array.isArray(kind)) { inp = el('select', {}, f); for (const o of kind) el('option', { value: o, textContent: o || '—' }, inp); inp.value = cur ?? ''; } else if (kind === 'bool') { inp = el('input', { type: 'checkbox', checked: cur ?? dflt ?? false }, f); inp.style.width = 'auto'; } else if (kind === 'area') inp = el('textarea', { value: cur ?? '' }, f);
     else if (kind === 'list') inp = el('input', { value: (cur ?? []).join(',') }, f);
     else if (kind === 'img') { inp = el('input', { value: cur ?? '', placeholder: 'assets/ui/panel.png' }, f); }
+    else if (kind === 'tint') {
+      inp = el('input', { value: cur ?? '', placeholder: '#ff5050 (white sprite -> red)' }, f);
+      const pick = el('input', { type: 'color', value: /^#[0-9a-f]{6}$/i.test(cur ?? '') ? cur : '#ffffff', title: 'Pick tint' }, f); pick.style.width = '36px';
+      pick.oninput = () => { inp.value = pick.value; inp.dispatchEvent(new Event('input')); };
+    }
     else if (kind === 'nums') inp = el('input', { value: Array.isArray(cur) ? cur.join(' ') : cur ?? '', placeholder: '8 8 8 8' }, f);
     else inp = el('input', { type: kind === 'num' ? 'number' : 'text', step: 'any', value: Array.isArray(cur) ? cur.join(' ') : cur ?? '' }, f);
     const read = () => {

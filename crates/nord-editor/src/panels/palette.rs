@@ -117,6 +117,7 @@ pub const COMMANDS: &[(&str, CmdFn)] = &[
         Action::ShowTab(crate::app::Tab::Animation)
     }),
     ("Run: Play", || Action::Play),
+    ("Run: This Scene (F6)", || Action::PlayScene),
     ("Run: Stop", || Action::Stop),
     ("Run: Reload", || Action::Reload),
     ("Project: Validate", || Action::Build("validate".into())),

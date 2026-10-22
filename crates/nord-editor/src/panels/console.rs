@@ -1,4 +1,4 @@
-use crate::state::{Action, EditorState, LogLevel};
+use crate::state::{Action, EditorState, LogLevel, LogLine};
 use crate::theme::hex;
 use egui::{RichText, Ui};
 
@@ -6,6 +6,10 @@ pub struct ConsoleUi {
     pub show: [bool; 4], // info, warn, error, build
     pub filter: String,
     pub stick: bool,
+    /// Unity-style Collapse: identical lines are shown once with a count
+    pub collapse: bool,
+    /// Unity-style Clear on Play: start each run with an empty console
+    pub clear_on_play: bool,
 }
 
 impl Default for ConsoleUi {
@@ -14,6 +18,8 @@ impl Default for ConsoleUi {
             show: [true; 4],
             filter: String::new(),
             stick: true,
+            collapse: true,
+            clear_on_play: true,
         }
     }
 }
@@ -39,6 +45,34 @@ pub fn find_location(s: &str) -> Option<(String, usize)> {
     None
 }
 
+fn level_idx(l: &LogLevel) -> usize {
+    match l {
+        LogLevel::Info => 0,
+        LogLevel::Warn => 1,
+        LogLevel::Error => 2,
+        LogLevel::Build => 3,
+    }
+}
+
+/// Lines in display order; with `collapse`, a repeated (level, text) is folded into its first occurrence with a count.
+fn visible_lines(lines: &[LogLine], collapse: bool) -> Vec<(&LogLine, usize)> {
+    let mut out: Vec<(&LogLine, usize)> = Vec::with_capacity(lines.len());
+    if !collapse {
+        return lines.iter().map(|l| (l, 1)).collect();
+    }
+    let mut seen: std::collections::HashMap<(usize, &str), usize> = Default::default();
+    for l in lines {
+        match seen.entry((level_idx(&l.level), l.text.as_str())) {
+            std::collections::hash_map::Entry::Occupied(e) => out[*e.get()].1 += 1,
+            std::collections::hash_map::Entry::Vacant(e) => {
+                e.insert(out.len());
+                out.push((l, 1));
+            }
+        }
+    }
+    out
+}
+
 pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     ui.horizontal_wrapped(|ui| {
         if ui.small_button("Clear").clicked() {
@@ -56,6 +90,9 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             let _ = c;
             ui.toggle_value(&mut st.console_ui.show[i], *n);
         }
+        ui.toggle_value(&mut st.console_ui.collapse, "Collapse")
+            .on_hover_text("Show identical lines once, with a count");
+        ui.toggle_value(&mut st.console_ui.clear_on_play, "Clear on Play");
         ui.add(
             egui::TextEdit::singleline(&mut st.console_ui.filter)
                 .hint_text("Filter…")
@@ -86,13 +123,8 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         .auto_shrink([false; 2])
         .stick_to_bottom(st.console_ui.stick)
         .show(ui, |ui| {
-            for l in &st.console {
-                let idx = match l.level {
-                    LogLevel::Info => 0,
-                    LogLevel::Warn => 1,
-                    LogLevel::Error => 2,
-                    LogLevel::Build => 3,
-                };
+            for (l, n) in visible_lines(&st.console, st.console_ui.collapse) {
+                let idx = level_idx(&l.level);
                 if !st.console_ui.show[idx]
                     || (!filter.is_empty() && !l.text.to_lowercase().contains(&filter))
                 {
@@ -106,13 +138,20 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 };
                 let loc = find_location(&l.text);
                 let r = ui.add(
-                    egui::Label::new(RichText::new(&l.text).monospace().color(color)).sense(
-                        if loc.is_some() {
-                            egui::Sense::click()
+                    egui::Label::new(
+                        RichText::new(if n > 1 {
+                            format!("({n}) {}", l.text)
                         } else {
-                            egui::Sense::hover()
-                        },
-                    ),
+                            l.text.clone()
+                        })
+                        .monospace()
+                        .color(color),
+                    )
+                    .sense(if loc.is_some() {
+                        egui::Sense::click()
+                    } else {
+                        egui::Sense::hover()
+                    }),
                 );
                 if let Some(loc) = loc {
                     if r.on_hover_cursor(egui::CursorIcon::PointingHand)
@@ -138,6 +177,23 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn collapse_counts() {
+        let mk = |t: &str| LogLine {
+            level: LogLevel::Info,
+            text: t.into(),
+        };
+        let v = vec![mk("a"), mk("b"), mk("a"), mk("a")];
+        let c = visible_lines(&v, true);
+        assert_eq!(
+            c.iter()
+                .map(|(l, n)| (l.text.as_str(), *n))
+                .collect::<Vec<_>>(),
+            [("a", 3), ("b", 1)]
+        );
+        assert_eq!(visible_lines(&v, false).len(), 4);
+    }
 
     #[test]
     fn locations() {

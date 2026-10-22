@@ -66,7 +66,9 @@
 <p><code>sprite, animatedSprite, text, tilemap, particles, camera, light, mesh (primitive), model (glTF), material, rigidbody, collider, audioSource, audioListener, uiPanel/uiButton/uiLabel/uiImage/uiBar, trigger, path, spawner</code>.
 Each component has a JSON schema <code>{ type, fields:[{name,type,default,min,max,enum,label}] }</code> in
 <code>runtime/core/components/*.schema.json</code>; the <strong>inspector is generated from schemas</strong> (same for script <code>attributes</code>).
-Attribute types: <code>number, int, bool, string, color, vec2, vec3, enum, entity, asset(image|audio|model|json|prefab), curve, array&lt;T&gt;</code>.</p>
+Optional attribute keys: <code>label</code>, <code>default</code>, <code>min</code>/<code>max</code>, <code>options</code> (enum), <code>assetType</code>, <code>description</code>/<code>tooltip</code> (Inspector tooltip). Attribute types: <code>number, int, bool, string, color, vec2, vec3, enum, entity, asset(image|audio|model|json|prefab), curve, array&lt;T&gt;</code>.</p>
+<h3 id="signal-connections-connections">Signal connections (<code>connections</code>)<a class="anchor" href="#signal-connections-connections">#</a></h3>
+<p><code>&quot;connections&quot;: [{ &quot;event&quot;: &quot;pressed&quot;, &quot;target&quot;: &quot;&lt;entity id, empty = itself&gt;&quot;, &quot;method&quot;: &quot;open&quot; }]</code> on an entity: when it emits <code>event</code>, the runtime calls <code>method(data)</code> on the target&#39;s scripts (Inspector ▸ Signals).</p>
 <h2 id="prefab">Prefab<a class="anchor" href="#prefab">#</a></h2>
 <p>Same as a scene with a single root entity: <code>{ &quot;format&quot;:1, &quot;root&quot;: {entity…} }</code>.</p>
 <h2 id="asset-metadata">Asset metadata<a class="anchor" href="#asset-metadata">#</a></h2>

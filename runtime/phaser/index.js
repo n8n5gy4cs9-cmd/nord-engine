@@ -1,6 +1,6 @@
 // Phaser 2D backend. `boot(project, opts)` creates the Phaser game, wires core services, loads the start scene.
 // Requires the global `Phaser` (vendor/phaser/phaser.min.js loaded before this module).
-import { createGame, errorOverlay, registerCoreComponents, registerComponent } from '../core/index.js';
+import { createGame, devSceneOverride, errorOverlay, registerCoreComponents, registerComponent } from '../core/index.js';
 import { toWorld } from './transform.js';
 import { createEffect } from './effects.js';
 import { registerPhaserComponents } from './components.js';
@@ -73,7 +73,7 @@ export async function boot(project, opts = {}) {
 
   window.__nord = game;
   document.addEventListener('visibilitychange', () => { if (document.hidden) { game.audio.suspend(); } else game.audio.resume(); });
-  try { await game.loadScene(project.startScene); overlay.clear(); } catch (e) { overlay.show(String(e?.stack ?? e)); throw e; }
+  try { await game.loadScene(devSceneOverride(project)); overlay.clear(); } catch (e) { overlay.show(String(e?.stack ?? e)); throw e; }
   return game;
 }
 

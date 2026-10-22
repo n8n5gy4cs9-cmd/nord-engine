@@ -88,3 +88,6 @@ The helper consumes the first mouse/touch/key activation plus its release/synthe
 pub trait Script { fn start(&mut self, ctx:&mut Ctx){}  fn update(&mut self, ctx:&mut Ctx, dt:f32){} fn on_destroy(&mut self, ctx:&mut Ctx){} }
 ```
 Register with `registry.register("player", || Box::new(Player::default()))`; scene JSON refers by name.
+
+## Inspector extras (M8-32)
+Attributes may add `description` (tooltip); ranged numbers get a slider. Entities can carry `connections` (Inspector ▸ Signals): `{event, target, method}` calls `method(data)` on the target entity's scripts when the entity emits `event`.

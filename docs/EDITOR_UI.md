@@ -115,3 +115,11 @@ Creator game templates **Two Floors — Dungeon Creator** and **Tiny Tank Patrol
 **Graph tab:** litegraph canvas + Nord nodes (`editor/graph/`), see `docs/GRAPH.md`. **Hierarchy:** Create menu (presets), F2 rename, Create empty parent. **View ▸ Layout:** presets. **Toolbar:** Pause / Step while playing.
 
 **UI Designer tab:** embedded page `editor/uidesigner/` (like FPS/2D Level): palette, tree with drag reorder, live preview using the real runtime, property inspector, JSON tab, undo/redo, saves `ui/*.ui.json`. See `docs/UI_SCENES.md`.
+
+## Unity-style workflow (M8-32)
+- **Run**: F5 = Play/Stop project, F6 = *Run this scene* (`Action::PlayScene`, game URL `?scene=<path>`, runtime `devSceneOverride()` in `runtime/core/boot.js`; only plain relative `.json` paths are accepted). Cmd+R unchanged.
+- **Console** `Collapse` toggle (`ConsoleUi::collapse`, default on): identical (level, text) lines fold into the first one with `(n)`.
+- **Inspector**: script `static attributes` → sliders for min+max numbers, tooltips from `description`/`tooltip` or the type/range; **Signals** section edits `Entity.connections` (`nord_core::scene::Connection`, wired by `Scene.#wireConnections`).
+- **Prefab overrides** (`prefab.rs`): the Inspector edits `effective(instance, prefab)`, writes back `diff` as `overrides` for `components, scripts, behaviors, effects, layer`; blue ● + revert per field, *Revert all overrides*.
+- **Remote scene tree** (`panels/remote.rs`): while playing, Hierarchy/Inspector render the live game. Editor → game: JS snippets via `WebPanes::eval("game", …)` every 0.5 s (and for edits); game → editor: `POST /api/ipc` `{t:'remoteTree'|'remoteEntity'}` (deduplicated, so the inbox only grows when something changed). No runtime upgrade needed. Never saved.
+- **F1** over a component/script header → `Action::OpenDocs("nord/components/component-<type>.html")` in the browser (scripts → `nord/manual/scripting.html`).

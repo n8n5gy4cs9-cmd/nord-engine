@@ -49,6 +49,7 @@ See [Scripting](scripting.html). A script's `static attributes` show up in the i
 A prefab is a saved entity (with children). Scenes reference it with `"prefab": { "path": "prefabs/coin.prefab.json", "overrides": {…} }`.
 `overrides` is **deep-merged** onto the prefab root; an object with numeric keys patches array items by index
 (`{"components": {"0": {"tint": "#f00"}}}`). Instance fields (`name`, `transform`, `tags`, `enabled`) win over the prefab's.
+**Overrides in the Inspector (like Unity).** Select a prefab instance: the Inspector shows the prefab *with the instance's overrides applied*. A field that differs from the prefab gets a blue **●** marker and a **✕ Revert to prefab value** button; **Revert all overrides** resets the whole instance. Editing a field writes only the difference into `overrides` (components, scripts, behaviors, effects, layer); name, transform, tags and enabled stay on the instance.
 At runtime: `await this.scene.spawn('prefabs/bullet.prefab.json', { pos: [x, y, 0], overrides: {…} })`.
 
 ## Scenes

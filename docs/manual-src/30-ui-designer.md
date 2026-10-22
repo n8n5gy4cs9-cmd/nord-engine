@@ -100,6 +100,9 @@ A 9-slice image is cut into a 3×3 grid: the **four corners** keep their size, t
 3. Or drag the guides: the **9-slice editor** below the fields shows the picture with four pink lines. Drag each to the inner edge of the decoration; the numbers and the preview update live.
 4. **Slice scale** enlarges the borders on screen (2 = double-size pixel art). Tick **Pixelated** for crisp pixel art.
 
+### Tint a white sprite to any colour
+Like Unity's `Image.color`: the **Tint (multiplies sprite)** field multiplies every pixel of the picture by a colour and keeps its transparency, so one white button/panel image can be red, blue or gold. Type a colour (`#ff5050`) or use the picker beside it. It works on *image* nodes (`"tint"`) and on any node's background image (`"image": { "src": "…", "tint": "#ff5050" }`), also with 9-slice. White stays the pure colour, black stays black, a coloured sprite is darkened/shifted (multiply, as in Unity). The tinted copy is made once in the browser and cached. Tints inside shared **skins/styles** are not applied yet; set it on the node.
+
 <figure class="shot"><img src="assets/screenshots/ui-designer-slice-editor.png" alt="9-slice editor with four draggable guides over panel.png" loading="lazy"><figcaption>The 9-slice editor: drag the guides, watch the preview.</figcaption></figure>
 
 ### Images on input fields

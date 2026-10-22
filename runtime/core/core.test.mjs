@@ -242,3 +242,17 @@ test('restart reloads saved scene, resumes, clears input/time and cancels old sc
   assert.equal(g.input.virtual.size,0);assert.equal(g.input.pointer.down,false);assert.deepEqual(g.input.stick,[0,0]);
   g.tick(.2);assert.equal(oldTimer,0);assert.equal(destroyed,1);assert.equal(starts,2);assert.equal(g.save.get('best'),123);
 });
+
+test('Inspector signal connections: event on one entity calls a script method on the target', async () => {
+  const got = [];
+  class Door extends NordScript { open(d) { got.push(['open', d]); } }
+  files['mod:door.js'] = Door;
+  files.sig = { name: 'sig', entities: [
+    ent('Door', { scripts: [{ path: 'door.js' }] }),
+    ent('Button', { connections: [{ event: 'pressed', target: 'door', method: 'open' }, { event: 'pressed', target: 'nope', method: 'x' }] }),
+  ] };
+  const g = mk({ onWarn: () => {} }); await g.loadScene('sig');
+  g.scene.find('Button').emit('pressed', 7);
+  assert.deepEqual(got, [['open', 7]]);
+  assert.deepEqual(g.scene.find('Button').toJSON().connections.length, 2);
+});

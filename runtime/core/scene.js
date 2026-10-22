@@ -49,6 +49,19 @@ export class Scene {
     const made = [];
     for (const d of this.data.entities ?? []) made.push(await this.#make(d, null));
     this.roots.push(...made);
+    for (const r of made) this.#wireConnections(r);
+  }
+
+  /** Inspector "Signals": when entity `e` emits `event`, call `method(data)` on the scripts of the target entity (default: itself). */
+  #wireConnections(root) {
+    for (const e of root.all()) {
+      for (const c of e._connData) {
+        if (!c.event || !c.method) continue;
+        const target = c.target ? this.findById(c.target) : e;
+        if (!target) { this.game.warn(`signal ${e.name}.${c.event}: target entity ${c.target} not found`); continue; }
+        e.on(c.event, (d) => target.callScripts(c.method, d));
+      }
+    }
   }
 
   async #make(data, parent, { regenIds = false } = {}) {
@@ -89,6 +102,7 @@ export class Scene {
     const e = await this.#make(data, parent, { regenIds: true });
     (parent ? parent.children : this.roots).push(e);
     this.#pending.push(e);
+    this.#wireConnections(e);
     return e;
   }
   /** Spawn a prefab file: `scene.spawn('prefabs/bullet.prefab.json', { pos: [x,y,0], overrides: {...} })`. */

@@ -18,6 +18,7 @@ pub mod palette;
 pub mod particles;
 pub mod preview;
 pub mod project;
+pub mod remote;
 pub mod settings;
 pub mod sprite;
 pub mod timeline;

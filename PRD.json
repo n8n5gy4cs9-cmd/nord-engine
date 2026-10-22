@@ -1986,6 +1986,12 @@
       "status": "done"
     },
     {
+      "id": "M8-32",
+      "milestone": "M8",
+      "title": "Unity-style editor: Run This Scene (F6) / F5, Console collapse, script-field Inspector + signal connections, prefab override markers + revert, remote scene tree while playing, F1 component docs, UI image tint",
+      "status": "done"
+    },
+    {
       "id": "M10-01",
       "milestone": "M10",
       "title": "Spec: docs/CONSTRUCT_PARITY.md — map each Construct 3 editor feature to Nord equivalent, scope + non-goals (no copying Construct code/assets; clean-room, original names where practical)",

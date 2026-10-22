@@ -107,5 +107,10 @@ The welcome screen filters both starter templates and samples with **Featured**,
 * **Assets**: right-click folders, files and the empty area for Open, Open with default app, Rename (F2), Duplicate, Delete, Reveal in Finder, Copy path and **New folder / UI scene / script / graph**.
 * **View ▸ Layout** switches between ready-made panel arrangements: Default, 2D game, 3D game, Coding, Visual scripting + UI.
 * While the game runs the toolbar shows **Pause** and **Step** (advance one frame), next to Stop and Reload.
+* **Run like Unity:** **F5** = Play / Stop the whole project, **F6** = **Run this scene** (the scene open in the editor, ignoring the project's start scene; also the **Scene** toolbar button, Project menu and Cmd+K palette). Cmd+R still works. Needs *Upgrade runtime* in projects copied before this feature (the game page reads `?scene=`).
+* **Console ▸ Collapse** (on by default) shows identical lines once with a count, `(12) coin collected`, like Unity. Switch it off to see every line in order. **Clear on Play** (on by default) empties the console at every Play.
+* **Cmd+Shift+P** pauses/resumes the running game, **Cmd+Alt+P** steps one frame (as in Unity).
+* **Remote scene tree:** while the game runs, **Hierarchy** and **Inspector** show the *live* entities of the running game (blue "LIVE" header). Click an entity to see its transform, components and script attributes; edit a value and it changes in the running game at once. Right-click for Activate/Deactivate, Duplicate, Destroy. Live edits are **never saved**; stop the game and they are gone. (Desktop editor only; not in the web editor.)
+* **F1** while the pointer is over a component header (or script) in the Inspector opens that component's manual page in your browser; each component also has a **Docs (F1)** button.
 * Double-click a `.ui.json` in Assets to open it in the [UI Designer](ui-designer.html), a `.graph.json` in the [Graph editor](graph.html).
 

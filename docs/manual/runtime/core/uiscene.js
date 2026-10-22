@@ -117,6 +117,32 @@ export function imageDecl(img, base = '') {
   if (img.pixelated) out.push(['image-rendering', 'pixelated']);
   return out;
 }
+const tintCache = new Map();
+/**
+ * Unity-style `Image.color`: multiply a sprite's pixels by a colour (white sprite -> any colour, alpha kept).
+ * Resolves to a PNG data URL (cached per url+colour), or the original url if canvas is unavailable or the image fails.
+ */
+export function tintImage(url, color) {
+  const doc = globalThis.document;
+  if (!doc || !color) return Promise.resolve(url);
+  const key = `${color}|${url}`;
+  if (!tintCache.has(key)) tintCache.set(key, new Promise((res) => {
+    const im = new globalThis.Image();
+    im.onload = () => {
+      try {
+        const c = doc.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
+        const g = c.getContext('2d'); g.drawImage(im, 0, 0);
+        g.globalCompositeOperation = 'multiply'; g.fillStyle = color; g.fillRect(0, 0, c.width, c.height);
+        g.globalCompositeOperation = 'destination-in'; g.drawImage(im, 0, 0); // multiply also painted transparent pixels: restore the sprite's alpha
+        res(c.toDataURL());
+      } catch { res(url); }
+    };
+    im.onerror = () => res(url);
+    im.src = url;
+  }));
+  return tintCache.get(key);
+}
+
 /** Declaration object → [css-property, value] pairs (aliases, camelCase, tokens, images, px). */
 export function declPairs(decl, base = '') {
   const out = [];
@@ -338,6 +364,16 @@ class Screen {
     if (def.name) { if (!this.byName.has(def.name)) this.byName.set(def.name, n); }
     this._style(el, def, parent);
     { const base = this.mgr.assetBase; const img = t === 'image' ? (def.slice || ['tile', 'stretch', 'slice', 'center'].includes(def.mode) ? def : null) : def.image; for (const [k, v] of imageDecl(img, base)) el.style.setProperty(k, v); }
+    { // tint (Unity Image.color): re-skin the sprite once the multiplied copy is ready
+      const imgDef = t === 'image' ? def : typeof def.image === 'string' ? { src: def.image } : def.image;
+      if (imgDef?.tint && imgDef.src) {
+        const base = this.mgr.assetBase;
+        tintImage(this.mgr.url(imgDef.src), imgDef.tint).then((u) => {
+          if (el.tagName === 'IMG') el.src = u;
+          else for (const [k, v] of imageDecl({ ...imgDef, src: u }, base)) el.style.setProperty(k, v);
+        });
+      }
+    }
     if (def.text !== undefined) { this._setText(n, def.text); this._watch(n, def); } else if (def.bind) this._watch(n, def);
     if (t === 'bar') n.value = def.value ?? 1;
     if (def.color) n.color = def.color;

@@ -29,6 +29,8 @@ pub struct Field {
     pub label: String,
     pub ty: FieldType,
     pub default: Value,
+    /// tooltip text (script `description`/`tooltip` attribute), empty when none
+    pub hint: String,
 }
 
 pub fn default_for(ty: &FieldType) -> Value {
@@ -93,6 +95,7 @@ fn dsl(s: &str) -> Vec<Field> {
                 label: label_of(name),
                 ty,
                 default,
+                hint: String::new(),
             })
         })
         .collect()
@@ -334,11 +337,18 @@ fn attr_field(name: &str, v: &Value) -> Option<Field> {
         .and_then(Value::as_str)
         .map(String::from)
         .unwrap_or_else(|| label_of(name));
+    let hint = o
+        .get("description")
+        .or_else(|| o.get("tooltip"))
+        .and_then(Value::as_str)
+        .unwrap_or("")
+        .to_string();
     Some(Field {
         name: name.into(),
         label,
         ty,
         default,
+        hint,
     })
 }
 
@@ -393,7 +403,7 @@ export default class P extends NordScript {
     speed:     { type: 'number', default: 220, min: 0, max: 1000, label: 'Move speed' }, // px/s
     jumpForce: { type: 'number', default: 520 },
     sfxJump:   { type: 'asset', assetType: 'audio', default: 'assets/audio/sfx/jump.wav' },
-    mode: { type: 'enum', options: ['a', 'b'], default: 'b' },
+    mode: { type: 'enum', options: ['a', 'b'], default: 'b', description: 'How it works' },
     tint: { type: 'color', default: '#ff0000', },
     pts: { type: 'array', of: 'vec2' },
   };
@@ -412,6 +422,7 @@ export default class P extends NordScript {
         assert_eq!(f[2].ty, FieldType::Asset("audio".into()));
         assert_eq!(f[3].ty, FieldType::Enum(vec!["a".into(), "b".into()]));
         assert_eq!(f[3].default, json!("b"));
+        assert_eq!(f[3].hint, "How it works");
         assert_eq!(f[5].ty, FieldType::Array(Box::new(FieldType::Vec2)));
     }
 }

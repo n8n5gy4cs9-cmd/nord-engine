@@ -1550,3 +1550,117 @@ fn workshop_hub_categories_and_level_tab_are_available() {
     assert!(category_matches("All", "old-basic-example", "2d", ""));
     assert_eq!(nord_editor::app::Tab::Level2d.title(), "2D Level");
 }
+
+#[test]
+fn console_collapses_duplicate_lines_with_a_count() {
+    let mut st = state_with_scene("console-collapse");
+    for _ in 0..3 {
+        st.log(nord_editor::state::LogLevel::Info, "coin collected");
+    }
+    st.log(nord_editor::state::LogLevel::Info, "other");
+    let mut h = Harness::new_ui_state(|ui, st: &mut EditorState| panels::console::ui(st, ui), st);
+    loaders(&h);
+    h.run();
+    h.get_by_label("(3) coin collected");
+    h.get_by_label("other");
+    h.get_by_label("Collapse").click();
+    h.run();
+    assert_eq!(h.get_all_by_label("coin collected").count(), 3);
+}
+
+#[test]
+fn f5_plays_and_f6_runs_the_open_scene() {
+    use nord_editor::state::Action;
+    let d = temp_project("f6", nord_core::ProjectType::TwoD);
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1400.0, 900.0))
+        .build_state(
+            |ctx, app: &mut App| {
+                app.frame_ui(ctx, None);
+            },
+            App::new(false),
+        );
+    h.run_steps(3);
+    h.state_mut().st.push(Action::OpenPath(d));
+    h.run_steps(3);
+    let scene = h.state().st.scene_file.clone().expect("project opens its start scene");
+    h.press_key(egui::Key::F6);
+    h.run_steps(3);
+    assert!(h.state().st.is_playing(), "F6 starts the game");
+    assert_eq!(h.state().st.play_scene.as_deref(), Some(scene.as_str()));
+    h.press_key(egui::Key::F5); // F5 while playing stops, like Cmd+R
+    h.run_steps(3);
+    assert!(!h.state().st.is_playing());
+    h.press_key(egui::Key::F5);
+    h.run_steps(3);
+    assert!(h.state().st.is_playing());
+    assert_eq!(h.state().st.play_scene, None, "F5 runs the whole project (start scene)");
+}
+
+#[test]
+fn prefab_instance_marks_overrides_and_reverts_them() {
+    use nord_core::scene::{Component, Entity, PrefabRef, Prefab};
+    let mut st = state_with_scene("prefab-ov");
+    let root = st.root.clone().unwrap();
+    let mut base = Entity::new("Coin");
+    base.components.push(Component {
+        kind: "sprite".into(),
+        fields: serde_json::json!({"texture": "a.png", "tint": "#ffffff"})
+            .as_object()
+            .unwrap()
+            .clone(),
+    });
+    std::fs::create_dir_all(root.join("prefabs")).unwrap();
+    std::fs::write(
+        root.join("prefabs/coin.prefab.json"),
+        serde_json::to_string(&Prefab { format: 1, root: base }).unwrap(),
+    )
+    .unwrap();
+    let mut inst = Entity::new("Coin 1");
+    inst.prefab = Some(PrefabRef {
+        path: "prefabs/coin.prefab.json".into(),
+        overrides: serde_json::json!({"components": {"0": {"tint": "#ff0000"}}})
+            .as_object()
+            .unwrap()
+            .clone(),
+    });
+    let id = inst.id.clone();
+    st.scene.as_mut().unwrap().entities.push(inst);
+    st.selection = vec![id];
+    let mut h = Harness::new_ui_state(|ui, st: &mut EditorState| panels::inspector::ui(st, ui), st);
+    loaders(&h);
+    h.run();
+    h.get_by_label("● Tint"); // overridden field is marked
+    h.get_by_label_contains("Revert all overrides");
+    h.get_by_label("Revert to prefab value").click();
+    h.run_steps(3);
+    let ov = &h.state().scene.as_ref().unwrap().entities[0].prefab.as_ref().unwrap().overrides;
+    assert!(ov.is_empty(), "reverting the only override clears it: {ov:?}");
+}
+
+#[test]
+fn remote_tree_follows_the_running_game() {
+    let mut st = state_with_scene("remote");
+    assert!(st.remote.handle(&serde_json::json!({
+        "t": "remoteTree", "scene": "main",
+        "nodes": [{"id":"a","name":"Player","en":true,"d":0},{"id":"b","name":"Gun","en":true,"d":1}]
+    })));
+    st.remote.sel = Some("a".into());
+    assert!(st.remote.handle(&serde_json::json!({
+        "t": "remoteEntity", "id": "a", "name": "Player", "en": true, "tags": [],
+        "pos": [1.0, 2.0, 0.0], "rot": [0.0,0.0,0.0], "scale": [1.0,1.0,1.0],
+        "comps": [{"type":"sprite","data":{"tint":"#fff"}}], "scripts": [], "vars": {}
+    })));
+    let mut h = Harness::new_ui_state(
+        |ui, st: &mut EditorState| {
+            panels::remote::tree_ui(st, ui);
+            panels::remote::inspector_ui(st, ui);
+        },
+        st,
+    );
+    loaders(&h);
+    h.run();
+    h.get_by_label("Gun");
+    h.get_by_label_contains("LIVE  main");
+    h.get_by_label("Sprite");
+}

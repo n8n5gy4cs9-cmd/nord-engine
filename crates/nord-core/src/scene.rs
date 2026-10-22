@@ -46,6 +46,15 @@ fn yes() -> bool {
     true
 }
 
+/// `event` emitted on the owning entity calls `method(data)` on the scripts of `target` (entity id; empty = the entity itself).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Connection {
+    pub event: String,
+    #[serde(default)]
+    pub target: String,
+    pub method: String,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Entity {
     pub id: String,
@@ -68,6 +77,9 @@ pub struct Entity {
     /// Visual effect stack (`{type, ...params}`), applied by the runtime (docs/EFFECTS.md)
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub effects: Vec<Value>,
+    /// Inspector signal connections: entity event -> method on a target entity's scripts
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub connections: Vec<Connection>,
     #[serde(default)]
     pub children: Vec<Entity>,
     #[serde(default)]
@@ -87,6 +99,7 @@ impl Entity {
             scripts: vec![],
             behaviors: vec![],
             effects: vec![],
+            connections: vec![],
             children: vec![],
             prefab: None,
         }

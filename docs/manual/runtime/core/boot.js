@@ -53,3 +53,9 @@ export function errorOverlay(container) {
     el: box,
   };
 }
+
+/** Editor "Run This Scene" (F6): the dev page URL carries `?scene=scenes/x.scene.json`; only plain relative scene paths are honoured. */
+export function devSceneOverride(project) {
+  const p = new URLSearchParams(globalThis.location?.search ?? '').get('scene');
+  return p && /^[\w./-]+\.json$/.test(p) && !p.includes('..') && !p.startsWith('/') ? p : project.startScene;
+}

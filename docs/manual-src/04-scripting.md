@@ -51,6 +51,9 @@ An exception in any hook is caught, shown in the Console (and an on-screen overl
 ## Attributes
 `static attributes` declares inspector-editable parameters. Types: `number, int, bool, string, color, vec2, vec3, enum (options), entity, asset (assetType), curve, array`.
 Values from the scene are validated, clamped to `min`/`max`, and unknown keys warn. Read them from `this.attrs`.
+The Inspector shows each attribute with the right widget: a **slider** when both `min` and `max` are set, a drop-down for `enum`, a colour picker, asset/entity pickers, and so on. Hover the label for its type and range. Add `description: '…'` (or `tooltip`) to an attribute to show your own tooltip.
+
+**Signals from the Inspector.** Select an entity ▸ **Signals ▸ + Connect**: pick an *event* name, a *target* entity (or `(self)`) and a *method*. When the entity emits that event (`this.entity.emit('pressed', data)`) the runtime calls `method(data)` on every script of the target that has it. Stored as `connections` on the entity (see the project format). Unknown targets log a warning.
 Full table: [Project format → attribute types](project-format.html#attribute-types).
 
 ## The entity API

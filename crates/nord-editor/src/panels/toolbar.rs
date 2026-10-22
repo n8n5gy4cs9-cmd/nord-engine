@@ -34,10 +34,17 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     egui::Button::new(if running { "Stop" } else { "Play" })
                         .fill(ui.visuals().selection.bg_fill),
                 )
-                .on_hover_text(format!("Play / stop ({})", st.settings.key_label(true)))
+                .on_hover_text(format!("Play / stop (F5, {})", st.settings.key_label(true)))
                 .clicked()
             {
                 st.push(if running { Action::Stop } else { Action::Play });
+            }
+            if ui
+                .add_enabled(!busy && st.scene_file.is_some(), egui::Button::new("Scene"))
+                .on_hover_text("Run this scene only (F6)")
+                .clicked()
+            {
+                st.push(Action::PlayScene);
             }
             ui.add_enabled_ui(running, |ui| {
                 if icons::button(

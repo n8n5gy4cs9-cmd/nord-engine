@@ -16,6 +16,9 @@
 <li>Raw HTML still works (<code>ui.panel/label/button…</code>, an <code>html</code> node, or your own markup). UI scenes are the recommended path.</li>
 <li>DOM overlay for menus/HUDs; Babylon GUI (<code>game.gui.scene(def, { entity })</code>) only for UI that lives inside the 3D world.</li>
 </ul>
+<blockquote>
+<p><strong>Tint:</strong> an image node or a node&#39;s <code>image</code> may carry <code>tint: &#39;#rrggbb&#39;</code>; the sprite pixels are multiplied by it (Unity <code>Image.color</code>), alpha kept. See <code>tintImage()</code> in <code>runtime/core/uiscene.js</code>.</p>
+</blockquote>
 <h2 id="file-format-version-1">File format (version 1)<a class="anchor" href="#file-format-version-1">#</a></h2>
 <pre class="code" data-lang="json"><code>{ &quot;version&quot;: 1, &quot;name&quot;: &quot;menu&quot;, &quot;theme&quot;: { &quot;accent&quot;: &quot;#f7d89b&quot; },
   &quot;root&quot;: { &quot;type&quot;: &quot;panel&quot;, &quot;name&quot;: &quot;root&quot;, &quot;anchor&quot;: &quot;fill&quot;, &quot;children&quot;: [ …nodes… ] } }</code></pre>

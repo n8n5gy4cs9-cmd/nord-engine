@@ -288,6 +288,14 @@ impl App {
             }
             // browsers keep Cmd/Ctrl+P (print), +K (search) and +1..4 (tabs): the web build uses Alt for those (M11-04)
             let nav = crate::platform::nav_modifiers();
+            // Unity: Cmd+Shift+P pause, Cmd+Alt+P step (checked before Cmd+P quick open)
+            if st.is_playing() {
+                if i.consume_key(cmd | Modifiers::SHIFT, Key::P) {
+                    st.push(Action::PauseGame);
+                } else if i.consume_key(cmd | Modifiers::ALT, Key::P) {
+                    st.push(Action::StepGame);
+                }
+            }
             if i.consume_key(nav, Key::P) {
                 st.push(Action::QuickOpen);
             }
@@ -303,6 +311,11 @@ impl App {
                 });
             } else if i.consume_key(nav, stop) {
                 st.push(Action::Stop);
+            }
+            if i.consume_key(Modifiers::NONE, Key::F5) {
+                st.push(if st.is_playing() { Action::Stop } else { Action::Play });
+            } else if i.consume_key(Modifiers::NONE, Key::F6) {
+                st.push(Action::PlayScene);
             }
             if i.consume_key(cmd, Key::Comma) {
                 st.push(Action::Settings);
@@ -354,6 +367,15 @@ impl App {
     }
 
     /// Show the Game tab and (re)load the game page.
+    fn start_play(&mut self) {
+        let st = &mut self.st;
+        if st.project.is_some() && is_rust(st) {
+            start_rust_build(st, true); // builds, then `finish_rust_build` starts the game
+        } else if st.project.is_some() && st.ensure_server().is_some() {
+            self.begin_play();
+        }
+    }
+
     fn begin_play(&mut self) {
         let st = &mut self.st;
         if st.ensure_server().is_none() {
@@ -368,6 +390,9 @@ impl App {
         }
         st.game_nonce += 1;
         st.game_paused = false;
+        if st.console_ui.clear_on_play {
+            st.console.clear();
+        }
         st.log(LogLevel::Build, "Play");
         self.show_tab(Tab::Game);
     }
@@ -535,12 +560,23 @@ impl App {
             Action::SetTool(t) => st.tool = t,
             Action::ToggleSnap => st.settings.snap = !st.settings.snap,
             Action::ToggleGrid => st.settings.grid = !st.settings.grid,
-            Action::Play => {
-                if st.project.is_some() && is_rust(st) {
-                    start_rust_build(st, true); // builds, then `finish_rust_build` starts the game
-                } else if st.project.is_some() && st.ensure_server().is_some() {
-                    self.begin_play();
+            Action::OpenDocs(page) => match st.ensure_server() {
+                Some(base) if st.engine_root.is_some() => {
+                    crate::viewport::webview::open_in_browser(&format!("{base}/__docs/{page}"))
                 }
+                _ => st.toast("Manual not found (engine folder missing)"),
+            },
+            Action::PlayScene => {
+                if let Some(f) = st.scene_file.clone() {
+                    st.play_scene = Some(f);
+                    self.start_play();
+                } else {
+                    st.toast("Open a scene first");
+                }
+            }
+            Action::Play => {
+                st.play_scene = None;
+                self.start_play();
             }
             Action::Stop => {
                 st.stop();
@@ -773,7 +809,8 @@ impl App {
                 } else {
                     Action::Play
                 };
-                act(ui, &format!("Play / stop  ({rk})"), play_action, st);
+                act(ui, &format!("Play / stop  (F5, {rk})"), play_action, st);
+                act(ui, "Run this scene  (F6)", Action::PlayScene, st);
                 act(ui, &format!("Stop  ({sk})"), Action::Stop, st);
                 act(ui, "Validate", Action::Build("validate".into()), st);
                 if is_rust(st) {
@@ -958,6 +995,8 @@ impl TabViewer for Viewer<'_> {
     fn ui(&mut self, ui: &mut egui::Ui, t: &mut Tab) {
         let st = &mut *self.st;
         match t {
+            Tab::Hierarchy if st.is_playing() => panels::remote::tree_ui(st, ui),
+            Tab::Inspector if st.is_playing() => panels::remote::inspector_ui(st, ui),
             Tab::Hierarchy => panels::hierarchy::ui(st, ui),
             Tab::Inspector => panels::inspector::ui(st, ui),
             Tab::Assets => panels::assets::ui(st, ui),
@@ -1118,7 +1157,10 @@ pub fn game_tab(
         ui.set_min_size(egui::vec2(total.x, game_h));
         if running {
             let base = st.ensure_server().unwrap_or_default();
-            let url = format!("{base}/?n={}", st.game_nonce);
+            let url = match &st.play_scene {
+                Some(sc) => format!("{base}/?n={}&scene={sc}", st.game_nonce),
+                None => format!("{base}/?n={}", st.game_nonce),
+            };
             let fixed = Some({
                 let d = st
                     .project
@@ -1237,7 +1279,16 @@ impl App {
         }
         self.shortcuts(ctx);
         for m in self.st.pump_hub() {
-            self.st.handle_viewport(&m);
+            if !self.st.remote.handle(&m) {
+                self.st.handle_viewport(&m);
+            }
+        }
+        let playing = self.st.is_playing();
+        for js in self.st.remote.take_js(playing) {
+            self.web.eval("game", &js);
+        }
+        if playing {
+            ctx.request_repaint_after(Duration::from_millis(250));
         }
         self.run_actions(ctx);
         self.poll_rust_build(ctx);

@@ -7,6 +7,8 @@ Menus, HUDs and dialogs are **data**: a `ui/<name>.ui.json` file edited in the *
 * Raw HTML still works (`ui.panel/label/button…`, an `html` node, or your own markup). UI scenes are the recommended path.
 * DOM overlay for menus/HUDs; Babylon GUI (`game.gui.scene(def, { entity })`) only for UI that lives inside the 3D world.
 
+> **Tint:** an image node or a node's `image` may carry `tint: '#rrggbb'`; the sprite pixels are multiplied by it (Unity `Image.color`), alpha kept. See `tintImage()` in `runtime/core/uiscene.js`.
+
 ## File format (version 1)
 ```json
 { "version": 1, "name": "menu", "theme": { "accent": "#f7d89b" },

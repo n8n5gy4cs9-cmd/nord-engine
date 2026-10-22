@@ -68,7 +68,10 @@ Units: 2D = pixels, y down; 3D = metres, y up, left-handed (Babylon default). Ro
 rigidbody, collider, audioSource, audioListener, uiPanel/uiButton/uiLabel/uiImage/uiBar, trigger, path, spawner`.
 Each component has a JSON schema `{ type, fields:[{name,type,default,min,max,enum,label}] }` in
 `runtime/core/components/*.schema.json`; the **inspector is generated from schemas** (same for script `attributes`).
-Attribute types: `number, int, bool, string, color, vec2, vec3, enum, entity, asset(image|audio|model|json|prefab), curve, array<T>`.
+Optional attribute keys: `label`, `default`, `min`/`max`, `options` (enum), `assetType`, `description`/`tooltip` (Inspector tooltip). Attribute types: `number, int, bool, string, color, vec2, vec3, enum, entity, asset(image|audio|model|json|prefab), curve, array<T>`.
+
+### Signal connections (`connections`)
+`"connections": [{ "event": "pressed", "target": "<entity id, empty = itself>", "method": "open" }]` on an entity: when it emits `event`, the runtime calls `method(data)` on the target's scripts (Inspector ▸ Signals).
 
 ## Prefab
 Same as a scene with a single root entity: `{ "format":1, "root": {entity…} }`.

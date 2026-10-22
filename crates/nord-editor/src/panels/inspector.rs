@@ -77,7 +77,13 @@ pub fn field_ui(ui: &mut Ui, cx: &Ctx, ty: &FieldType, v: &mut Value, id: &str) 
     match ty {
         FieldType::Number { min, max } => {
             let mut x = num(v);
-            if drag(ui, &mut x, *min, *max, 0.05) {
+            let changed = match (min, max) {
+                (Some(a), Some(b)) if b > a => ui
+                    .add(egui::Slider::new(&mut x, *a..=*b).clamping(egui::SliderClamping::Never))
+                    .changed(),
+                _ => drag(ui, &mut x, *min, *max, 0.05),
+            };
+            if changed {
                 *v = json!(x);
                 ch = true;
             }
@@ -238,12 +244,46 @@ pub fn field_ui(ui: &mut Ui, cx: &Ctx, ty: &FieldType, v: &mut Value, id: &str) 
     ch
 }
 
+/// F1 pressed while the pointer is over `header` (Unity: F1 on a component opens its docs).
+pub fn f1_over(header: &egui::Response, ui: &Ui) -> bool {
+    header.hovered() && ui.input(|i| i.key_pressed(egui::Key::F1))
+}
+
+pub fn component_doc(kind: &str) -> String {
+    format!("nord/components/component-{kind}.html")
+}
+
+/// Short "type (range)" text shown when hovering a field name, like Unity's attribute tooltips.
+fn type_hint(ty: &FieldType) -> String {
+    match ty {
+        FieldType::Number { min, max } => match (min, max) {
+            (Some(a), Some(b)) => format!("number, {a} to {b}"),
+            (Some(a), None) => format!("number, min {a}"),
+            (None, Some(b)) => format!("number, max {b}"),
+            _ => "number".into(),
+        },
+        FieldType::Int => "integer".into(),
+        FieldType::Bool => "bool".into(),
+        FieldType::Str => "string".into(),
+        FieldType::Color => "color".into(),
+        FieldType::Vec2 => "vec2".into(),
+        FieldType::Vec3 => "vec3".into(),
+        FieldType::Enum(o) => format!("enum: {}", o.join(" | ")),
+        FieldType::Entity => "entity reference".into(),
+        FieldType::Asset(k) => format!("asset ({k})"),
+        FieldType::Curve => "curve".into(),
+        FieldType::Array(i) => format!("array of {}", type_hint(i)),
+    }
+}
+
+/// `base`: the same component/script in the prefab; fields that differ get a blue marker and a revert button.
 fn fields_ui(
     ui: &mut Ui,
     cx: &Ctx,
     fields: &[Field],
     data: &mut Map<String, Value>,
     id: &str,
+    base: Option<&Map<String, Value>>,
 ) -> bool {
     let mut ch = false;
     egui::Grid::new(format!("g-{id}"))
@@ -251,7 +291,21 @@ fn fields_ui(
         .spacing([8.0, 4.0])
         .show(ui, |ui| {
             for f in fields {
-                ui.label(&f.label);
+                let overridden = base.filter(|b| {
+                    b.get(&f.name).unwrap_or(&f.default) != data.get(&f.name).unwrap_or(&f.default)
+                });
+                let lr = ui.label(if overridden.is_some() {
+                    egui::RichText::new(format!("● {}", f.label))
+                        .strong()
+                        .color(egui::Color32::from_rgb(110, 170, 255))
+                } else {
+                    egui::RichText::new(&f.label)
+                });
+                if !f.hint.is_empty() {
+                    lr.on_hover_text(&f.hint);
+                } else {
+                    lr.on_hover_text(type_hint(&f.ty));
+                }
                 let mut cur = data
                     .get(&f.name)
                     .cloned()
@@ -260,8 +314,23 @@ fn fields_ui(
                 if cur.is_null() {
                     cur = f.default.clone();
                 }
-                if field_ui(ui, cx, &f.ty, &mut cur, &format!("{id}.{}", f.name)) {
-                    data.insert(f.name.clone(), cur);
+                let mut revert = false;
+                ui.horizontal(|ui| {
+                    if field_ui(ui, cx, &f.ty, &mut cur, &format!("{id}.{}", f.name)) {
+                        data.insert(f.name.clone(), cur.clone());
+                        ch = true;
+                    }
+                    if overridden.is_some()
+                        && icons::button(ui, "x", "Revert to prefab value", false).clicked()
+                    {
+                        revert = true;
+                    }
+                });
+                if let (true, Some(b)) = (revert, base) {
+                    match b.get(&f.name) {
+                        Some(v) => data.insert(f.name.clone(), v.clone()),
+                        None => data.remove(&f.name),
+                    };
                     ch = true;
                 }
                 ui.end_row();
@@ -284,13 +353,38 @@ fn fields_ui(
 }
 
 pub fn ui(st: &mut EditorState, ui: &mut Ui) {
-    let Some(orig) = st.selected().cloned() else {
+    let Some(inst) = st.selected().cloned() else {
         ui.weak(if st.scene.is_some() {
             "Select an entity"
         } else {
             "No scene open"
         });
         return;
+    };
+    // prefab instance: edit the prefab merged with its overrides, store the difference (docs: Prefab overrides)
+    let base_ent: Option<Entity> = inst.prefab.as_ref().and_then(|p| {
+        let txt = nord_core::vfs::read_to_string(st.root.as_ref()?.join(&p.path)).ok()?;
+        serde_json::from_str::<nord_core::scene::Prefab>(&txt)
+            .ok()
+            .map(|pf| pf.root)
+    });
+    let orig = match &base_ent {
+        Some(b) => crate::prefab::effective(&inst, b),
+        None => inst.clone(),
+    };
+    let base_comp = |i: usize, kind: &str| {
+        base_ent
+            .as_ref()
+            .and_then(|b| b.components.get(i))
+            .filter(|c| c.kind == kind)
+            .map(|c| &c.fields)
+    };
+    let base_script = |i: usize, path: &str| {
+        base_ent
+            .as_ref()
+            .and_then(|b| b.scripts.get(i))
+            .filter(|s| s.path == path)
+            .map(|s| &s.attributes)
     };
     let is3d = st.is_3d();
     let entities: Vec<(String, String)> = st
@@ -326,6 +420,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     };
 
     let mut e: Entity = orig.clone();
+    let mut docs: Option<String> = None;
     egui::ScrollArea::vertical()
         .auto_shrink([false; 2])
         .show(ui, |ui| {
@@ -391,15 +486,23 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             for (i, c) in e.components.iter_mut().enumerate() {
                 let id = format!("c{i}");
                 let fields = schema::component_fields(&c.kind);
-                egui::CollapsingHeader::new(schema::label_of(&c.kind))
+                let r = egui::CollapsingHeader::new(schema::label_of(&c.kind))
                     .id_salt(&id)
                     .default_open(true)
                     .show(ui, |ui| {
-                        fields_ui(ui, &cx, &fields, &mut c.fields, &id);
-                        if ui.small_button("Remove component").clicked() {
-                            remove_comp = Some(i);
-                        }
+                        fields_ui(ui, &cx, &fields, &mut c.fields, &id, base_comp(i, &c.kind));
+                        ui.horizontal(|ui| {
+                            if ui.small_button("Remove component").clicked() {
+                                remove_comp = Some(i);
+                            }
+                            if ui.small_button("Docs (F1)").clicked() {
+                                docs = Some(component_doc(&c.kind));
+                            }
+                        });
                     });
+                if f1_over(&r.header_response, ui) {
+                    docs = Some(component_doc(&c.kind));
+                }
             }
             if let Some(i) = remove_comp {
                 e.components.remove(i);
@@ -427,7 +530,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             for (i, s) in e.scripts.iter_mut().enumerate() {
                 let id = format!("s{i}");
                 let name = s.path.rsplit('/').next().unwrap_or(&s.path).to_string();
-                egui::CollapsingHeader::new(format!("📜 {name}"))
+                let r = egui::CollapsingHeader::new(format!("📜 {name}"))
                     .id_salt(&id)
                     .default_open(true)
                     .show(ui, |ui| {
@@ -436,13 +539,23 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                         if fields.is_empty() {
                             ui.weak("No `static attributes` declared");
                         }
-                        fields_ui(ui, &cx, &fields, &mut s.attributes, &id);
+                        fields_ui(
+                            ui,
+                            &cx,
+                            &fields,
+                            &mut s.attributes,
+                            &id,
+                            base_script(i, &s.path),
+                        );
                         ui.horizontal(|ui| {
                             if ui.small_button("Remove script").clicked() {
                                 remove_script = Some(i);
                             }
                         });
                     });
+                if f1_over(&r.header_response, ui) {
+                    docs = Some("nord/manual/scripting.html".into());
+                }
             }
             if let Some(i) = remove_script {
                 e.scripts.remove(i);
@@ -461,19 +574,106 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     ui.weak("No scripts in scripts/");
                 }
             });
+            ui.separator();
+            egui::CollapsingHeader::new(format!("Signals ({})", e.connections.len()))
+                .id_salt("signals")
+                .default_open(!e.connections.is_empty())
+                .show(ui, |ui| {
+                    ui.weak(
+                        "When this entity emits an event, call a method on a script of the target.",
+                    );
+                    let mut del = None;
+                    for (i, c) in e.connections.iter_mut().enumerate() {
+                        ui.horizontal(|ui| {
+                            ui.add(
+                                egui::TextEdit::singleline(&mut c.event)
+                                    .hint_text("event")
+                                    .desired_width(80.0),
+                            );
+                            ui.label("→");
+                            let name = cx
+                                .entities
+                                .iter()
+                                .find(|(id, _)| *id == c.target)
+                                .map_or("(self)".to_string(), |(_, n)| n.clone());
+                            egui::ComboBox::from_id_salt(format!("sigt{i}"))
+                                .selected_text(name)
+                                .width(90.0)
+                                .show_ui(ui, |ui| {
+                                    if ui.selectable_label(c.target.is_empty(), "(self)").clicked()
+                                    {
+                                        c.target.clear();
+                                    }
+                                    for (id, n) in &cx.entities {
+                                        if ui.selectable_label(c.target == *id, n).clicked() {
+                                            c.target = id.clone();
+                                        }
+                                    }
+                                });
+                            ui.add(
+                                egui::TextEdit::singleline(&mut c.method)
+                                    .hint_text("method")
+                                    .desired_width(80.0),
+                            );
+                            if icons::button(ui, "x", "Remove connection", false).clicked() {
+                                del = Some(i);
+                            }
+                        });
+                    }
+                    if let Some(i) = del {
+                        e.connections.remove(i);
+                    }
+                    if ui.small_button("+ Connect").clicked() {
+                        e.connections.push(nord_core::scene::Connection {
+                            event: String::new(),
+                            target: String::new(),
+                            method: String::new(),
+                        });
+                    }
+                });
             if let Some(p) = &e.prefab {
                 ui.separator();
                 ui.label(format!("Prefab instance: {}", p.path));
                 ui.weak(format!("{} override(s)", p.overrides.len()));
+                if let Some(b) = &base_ent {
+                    if !p.overrides.is_empty() && ui.button("Revert all overrides").clicked() {
+                        e.components = b.components.clone();
+                        e.scripts = b.scripts.clone();
+                        e.behaviors = b.behaviors.clone();
+                        e.effects = b.effects.clone();
+                        e.layer = b.layer;
+                    }
+                } else {
+                    ui.weak("Prefab file not found or unreadable");
+                }
             }
         });
 
+    if let Some(page) = docs {
+        st.push(crate::state::Action::OpenDocs(page));
+    }
     if e != orig {
         let id = orig.id.clone();
+        let ov = base_ent
+            .as_ref()
+            .map(|b| crate::prefab::overrides_for(&inst, b, &e));
         st.edit("Edit entity", Some(&format!("insp:{id}")), |l| {
             if let Some(slot) = scene_ops::find_mut(l, &id) {
                 let children = std::mem::take(&mut slot.children);
-                *slot = e;
+                match ov {
+                    // instance keeps only name/transform/flags + the override patch
+                    Some(ov) => {
+                        slot.name = e.name;
+                        slot.enabled = e.enabled;
+                        slot.tags = e.tags;
+                        slot.transform = e.transform;
+                        slot.connections = e.connections;
+                        if let Some(p) = slot.prefab.as_mut() {
+                            p.overrides = ov;
+                        }
+                    }
+                    None => *slot = e,
+                }
                 slot.children = children;
             }
         });

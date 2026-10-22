@@ -206,6 +206,10 @@ pub enum Action {
     Focus,
     SetTool(Tool),
     Play,
+    /// Run only the scene open in the editor (F6)
+    PlayScene,
+    /// Open a page of the HTML manual (path under `docs/manual/`), e.g. `nord/components/component-sprite.html` (F1 in the Inspector)
+    OpenDocs(String),
     Stop,
     Reload,
     QuickOpen,
@@ -300,6 +304,8 @@ pub struct EditorState {
     pub code: crate::code::CodeState,
     pub assets_ui: crate::panels::assets::AssetsUi,
     pub console_ui: crate::panels::console::ConsoleUi,
+    /// live entities of the running game (docs: Remote scene tree)
+    pub remote: crate::panels::remote::Remote,
     pub library: crate::panels::library::LibraryUi,
     pub docs_ui: crate::panels::docs::DocsUi,
     pub hub: crate::panels::hub::HubUi,
@@ -332,6 +338,8 @@ pub struct EditorState {
     pub status_msg: Option<(String, Instant)>,
     /// bumps on Play/Reload so the Game webview reloads
     pub game_nonce: u32,
+    /// scene path passed to the game page as `?scene=` for Run This Scene; None = project start scene
+    pub play_scene: Option<String>,
     pub game_paused: bool,
     /// set by Stop: keeps the play-mode tint for a moment while the game view is torn down
     pub stopping: Option<Instant>,
@@ -386,6 +394,7 @@ impl EditorState {
             code: Default::default(),
             assets_ui: Default::default(),
             console_ui: Default::default(),
+            remote: Default::default(),
             library: Default::default(),
             docs_ui: Default::default(),
             hub: Default::default(),
@@ -413,6 +422,7 @@ impl EditorState {
             base_visuals: None,
             status_msg: None,
             game_nonce: 0,
+            play_scene: None,
             game_paused: false,
             stopping: None,
             rust_job: None,

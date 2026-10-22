@@ -78,6 +78,8 @@ export default class Spinner extends NordScript {
 <h2 id="attributes">Attributes<a class="anchor" href="#attributes">#</a></h2>
 <p><code>static attributes</code> declares inspector-editable parameters. Types: <code>number, int, bool, string, color, vec2, vec3, enum (options), entity, asset (assetType), curve, array</code>.
 Values from the scene are validated, clamped to <code>min</code>/<code>max</code>, and unknown keys warn. Read them from <code>this.attrs</code>.
+The Inspector shows each attribute with the right widget: a <strong>slider</strong> when both <code>min</code> and <code>max</code> are set, a drop-down for <code>enum</code>, a colour picker, asset/entity pickers, and so on. Hover the label for its type and range. Add <code>description: &#39;…&#39;</code> (or <code>tooltip</code>) to an attribute to show your own tooltip.</p>
+<p><strong>Signals from the Inspector.</strong> Select an entity ▸ <strong>Signals ▸ + Connect</strong>: pick an <em>event</em> name, a <em>target</em> entity (or <code>(self)</code>) and a <em>method</em>. When the entity emits that event (<code>this.entity.emit(&#39;pressed&#39;, data)</code>) the runtime calls <code>method(data)</code> on every script of the target that has it. Stored as <code>connections</code> on the entity (see the project format). Unknown targets log a warning.
 Full table: <a href="../reference/project-format.html#attribute-types">Project format → attribute types</a>.</p>
 <h2 id="the-entity-api">The entity API<a class="anchor" href="#the-entity-api">#</a></h2>
 <p><code>this.entity</code> has: <code>name, id, tags, enabled, parent, children, pos, rot, scale, worldPos</code>, <code>find(name)</code>, <code>findByTag(tag)</code>, <code>hasTag</code>, <code>getComponent(type)</code>,
