@@ -392,9 +392,11 @@ impl App {
                     st.push(Action::Delete);
                 }
                 for (k, t) in [
+                    (Key::Q, Tool::Hand),
                     (Key::W, Tool::Move),
                     (Key::E, Tool::Rotate),
                     (Key::R, Tool::Scale),
+                    (Key::T, Tool::Rect),
                 ] {
                     if i.consume_key(Modifiers::NONE, k) {
                         st.push(Action::SetTool(t));
@@ -802,7 +804,40 @@ impl App {
                     ui.close_menu();
                 }
             });
-            ui.menu_button("View", |ui| {
+            ui.menu_button("Assets", |ui| {
+                for (label, k) in [
+                    ("Create ▸ Folder", "folder"),
+                    ("Create ▸ Script", "script"),
+                    ("Create ▸ UI screen", "ui"),
+                    ("Create ▸ Graph", "graph"),
+                ] {
+                    if ui.button(label).clicked() {
+                        panels::assets::create_asset(st, k);
+                        st.push(Action::ShowTab(Tab::Assets));
+                        ui.close_menu();
+                    }
+                }
+                ui.separator();
+                act(ui, "Show assets", Action::ShowTab(Tab::Assets), st);
+                act(ui, "Library", Action::ShowTab(Tab::Library), st);
+            });
+            ui.menu_button("GameObject", |ui| {
+                let three = st.is_3d();
+                panels::hierarchy::create_menu(st, ui, three, None);
+            });
+            ui.menu_button("Component", |ui| {
+                egui::ScrollArea::vertical()
+                    .max_height(400.0)
+                    .show(ui, |ui| {
+                        for k in crate::schema::COMPONENT_TYPES {
+                            if ui.button(crate::schema::label_of(k)).clicked() {
+                                st.add_component_to_selection(k);
+                                ui.close_menu();
+                            }
+                        }
+                    });
+            });
+            ui.menu_button("Window", |ui| {
                 for t in [
                     Tab::Scene,
                     Tab::Game,
@@ -865,6 +900,12 @@ impl App {
                 act(ui, "Add / upgrade FPS Creator…", Action::FpsInstall, st);
             });
             ui.menu_button("Help", |ui| {
+                act(
+                    ui,
+                    "Manual (F1 in Inspector: component docs)",
+                    Action::OpenDocs("index.html".into()),
+                    st,
+                );
                 act(ui, "Documentation", Action::ShowTab(Tab::Docs), st);
                 act(ui, "Command palette  (Cmd+K)", Action::Palette, st);
                 act(ui, "About", Action::About, st);

@@ -296,6 +296,28 @@ fn duplicate(st: &mut EditorState, root: &Path, e: &Entry) {
     }
 }
 
+/// Assets ▸ Create menu entry: a new folder/script/UI/graph in the folder shown in the Assets panel.
+pub fn create_asset(st: &mut EditorState, kind: &str) {
+    let Some(root) = st.root.clone() else {
+        st.toast("Open a project first");
+        return;
+    };
+    let dir = st.assets_ui.dir.clone();
+    match kind {
+        "folder" => create_in(st, &root, &dir, "folder", "", None),
+        "script" => create_in(st, &root, &dir, "new-script", "js", Some(NEW_SCRIPT)),
+        "ui" => create_in(st, &root, &dir, "new-screen", "ui.json", Some(BLANK_UI)),
+        _ => create_in(
+            st,
+            &root,
+            &dir,
+            "new-graph",
+            "graph.json",
+            Some(BLANK_GRAPH),
+        ),
+    }
+}
+
 /// Create a file/folder inside `dir` and start renaming it.
 fn create_in(
     st: &mut EditorState,

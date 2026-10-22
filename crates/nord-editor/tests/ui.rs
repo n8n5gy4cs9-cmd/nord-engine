@@ -1583,7 +1583,12 @@ fn f5_plays_and_f6_runs_the_open_scene() {
     h.run_steps(3);
     h.state_mut().st.push(Action::OpenPath(d));
     h.run_steps(3);
-    let scene = h.state().st.scene_file.clone().expect("project opens its start scene");
+    let scene = h
+        .state()
+        .st
+        .scene_file
+        .clone()
+        .expect("project opens its start scene");
     h.press_key(egui::Key::F6);
     h.run_steps(3);
     assert!(h.state().st.is_playing(), "F6 starts the game");
@@ -1594,12 +1599,16 @@ fn f5_plays_and_f6_runs_the_open_scene() {
     h.press_key(egui::Key::F5);
     h.run_steps(3);
     assert!(h.state().st.is_playing());
-    assert_eq!(h.state().st.play_scene, None, "F5 runs the whole project (start scene)");
+    assert_eq!(
+        h.state().st.play_scene,
+        None,
+        "F5 runs the whole project (start scene)"
+    );
 }
 
 #[test]
 fn prefab_instance_marks_overrides_and_reverts_them() {
-    use nord_core::scene::{Component, Entity, PrefabRef, Prefab};
+    use nord_core::scene::{Component, Entity, Prefab, PrefabRef};
     let mut st = state_with_scene("prefab-ov");
     let root = st.root.clone().unwrap();
     let mut base = Entity::new("Coin");
@@ -1613,7 +1622,11 @@ fn prefab_instance_marks_overrides_and_reverts_them() {
     std::fs::create_dir_all(root.join("prefabs")).unwrap();
     std::fs::write(
         root.join("prefabs/coin.prefab.json"),
-        serde_json::to_string(&Prefab { format: 1, root: base }).unwrap(),
+        serde_json::to_string(&Prefab {
+            format: 1,
+            root: base,
+        })
+        .unwrap(),
     )
     .unwrap();
     let mut inst = Entity::new("Coin 1");
@@ -1634,8 +1647,15 @@ fn prefab_instance_marks_overrides_and_reverts_them() {
     h.get_by_label_contains("Revert all overrides");
     h.get_by_label("Revert to prefab value").click();
     h.run_steps(3);
-    let ov = &h.state().scene.as_ref().unwrap().entities[0].prefab.as_ref().unwrap().overrides;
-    assert!(ov.is_empty(), "reverting the only override clears it: {ov:?}");
+    let ov = &h.state().scene.as_ref().unwrap().entities[0]
+        .prefab
+        .as_ref()
+        .unwrap()
+        .overrides;
+    assert!(
+        ov.is_empty(),
+        "reverting the only override clears it: {ov:?}"
+    );
 }
 
 #[test]
@@ -1671,7 +1691,13 @@ fn unity_layouts_show_scene_and_game_together() {
     for k in ["unity", "wide", "tall"] {
         let d = layout_dock(k);
         let tabs: Vec<_> = d.iter_all_tabs().map(|(_, t)| *t).collect();
-        for t in [Tab::Scene, Tab::Game, Tab::Hierarchy, Tab::Inspector, Tab::Console] {
+        for t in [
+            Tab::Scene,
+            Tab::Game,
+            Tab::Hierarchy,
+            Tab::Inspector,
+            Tab::Console,
+        ] {
             assert!(tabs.contains(&t), "{k} misses {t:?}");
         }
     }

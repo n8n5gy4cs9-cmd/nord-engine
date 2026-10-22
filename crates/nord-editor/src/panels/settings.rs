@@ -28,6 +28,27 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
         let mut content_changed = false;
         egui::Window::new("Settings").open(&mut open).default_width(560.0).default_height(560.0).vscroll(true).show(ctx, |ui| {
             let s = &mut st.settings;
+            egui::CollapsingHeader::new("Shortcuts (Unity defaults)").show(ui, |ui| {
+                egui::Grid::new("shortcuts").num_columns(2).show(ui, |ui| {
+                    for (k, what) in [
+                        ("Q / W / E / R / T", "Hand / Move / Rotate / Scale / Rect tool"),
+                        ("F", "Frame selected"),
+                        ("Cmd+D / Cmd+C / Cmd+V", "Duplicate / Copy / Paste"),
+                        ("Cmd+Z / Shift+Cmd+Z", "Undo / Redo"),
+                        ("Delete", "Delete selected"),
+                        ("F5 / F6", "Play / Run this scene"),
+                        ("Cmd+S", "Save all"),
+                        ("Cmd+P / Cmd+K", "Quick open / Command palette"),
+                        ("Cmd+1..4", "Scene / Game / Code / Assets"),
+                        ("Cmd+,", "Settings"),
+                    ] {
+                        ui.monospace(k);
+                        ui.label(what);
+                        ui.end_row();
+                    }
+                });
+                ui.weak("Rebinding: todo (G0-4).");
+            });
             egui::Grid::new("settings").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
                 ui.label("Skin (fonts)");
                 egui::ComboBox::from_id_salt("skin").selected_text(st.themes.skin(&s.skin).name.clone()).show_ui(ui, |ui| {

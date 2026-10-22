@@ -124,7 +124,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
 }
 
 /// Unity-style GameObject menu: presets for both 2D and 3D projects.
-fn create_menu(st: &mut EditorState, ui: &mut Ui, three: bool, parent: Option<String>) {
+pub(crate) fn create_menu(st: &mut EditorState, ui: &mut Ui, three: bool, parent: Option<String>) {
     let mut pick = None;
     let mut item = |ui: &mut Ui, label: &str, kind: &'static str| {
         if ui.button(label).clicked() {

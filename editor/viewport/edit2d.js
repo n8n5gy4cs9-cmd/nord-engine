@@ -286,7 +286,9 @@ function drawGizmo() {
   ctx.restore();
   const tool = state.settings.tool;
   ctx.lineWidth = 2;
-  if (tool === 'move') {
+  if (tool === 'hand') {
+    // Q: view tool, no gizmo
+  } else if (tool === 'move') {
     ctx.strokeStyle = '#ff5f5f'; ctx.fillStyle = '#ff5f5f'; line(sx, sy, sx + GIZMO, sy); tri(sx + GIZMO, sy, 0);
     ctx.strokeStyle = '#5fff7f'; ctx.fillStyle = '#5fff7f'; line(sx, sy, sx, sy + GIZMO); tri(sx, sy + GIZMO, 1);
     ctx.fillStyle = '#ffe066'; ctx.fillRect(sx - 6, sy - 6, 12, 12);
@@ -336,6 +338,7 @@ function handleAt(sx, sy) {
   const [ox, oy] = toScreen(it.w.x, it.w.y);
   const tool = state.settings.tool;
   const d = Math.hypot(sx - ox, sy - oy);
+  if (tool === 'hand') return null;
   if (tool === 'move') {
     if (Math.abs(sx - ox) <= 7 && Math.abs(sy - oy) <= 7) return 'free';
     if (sy > oy - 6 && sy < oy + 6 && sx > ox && sx < ox + GIZMO + 12) return 'x';
@@ -364,7 +367,7 @@ function onDown(ev) {
   const r = canvas.getBoundingClientRect();
   const sx = ev.clientX - r.left, sy = ev.clientY - r.top;
   mouse = { x: sx, y: sy };
-  if (ev.button === 1 || ev.button === 2 || (ev.button === 0 && space)) {
+  if (ev.button === 1 || ev.button === 2 || (ev.button === 0 && (space || state.settings.tool === 'hand'))) {
     drag = { kind: 'pan', sx, sy, cx: cam.x, cy: cam.y };
     canvas.setPointerCapture?.(ev.pointerId);
     return;

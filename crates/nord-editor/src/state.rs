@@ -166,9 +166,13 @@ impl Settings {
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Tool {
+    /// Q: view tool (drag pans)
+    Hand,
     Move,
     Rotate,
     Scale,
+    /// T: rect tool (2D/UI handles; scale handles in 3D)
+    Rect,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -590,6 +594,25 @@ impl EditorState {
             scene_ops::insert(l, parent.as_deref(), idx, e);
         });
         self.select(Some(id));
+    }
+
+    /// Component menu: add a component with default values to the selected entity (one undo step).
+    pub fn add_component_to_selection(&mut self, kind: &str) {
+        let Some(id) = self.selection.first().cloned() else {
+            self.toast("Select an entity first");
+            return;
+        };
+        let mut fields = serde_json::Map::new();
+        crate::schema::merge_defaults(&crate::schema::component_fields(kind), &mut fields);
+        let comp = nord_core::scene::Component {
+            kind: kind.to_string(),
+            fields,
+        };
+        self.edit("Add component", None, |l| {
+            if let Some(e) = scene_ops::find_mut(l, &id) {
+                e.components.push(comp);
+            }
+        });
     }
 
     /// Hierarchy ▸ Create: a ready-made entity (name, components) under `parent` (Unity's GameObject menu).
@@ -1064,7 +1087,7 @@ impl EditorState {
     pub fn viewport_settings_msg(&self) -> Value {
         json!({
             "t": "settings",
-            "tool": match self.tool { Tool::Move => "move", Tool::Rotate => "rotate", Tool::Scale => "scale" },
+            "tool": match self.tool { Tool::Hand => "hand", Tool::Move => "move", Tool::Rotate => "rotate", Tool::Scale => "scale", Tool::Rect => "rect" },
             "snap": self.settings.snap,
             "snapMove": self.settings.snap_move,
             "snapRot": self.settings.snap_rot,
@@ -1190,9 +1213,11 @@ impl EditorState {
                     m["shift"].as_bool().unwrap_or(false),
                 );
                 let a = match (m["key"].as_str().unwrap_or(""), cmd) {
+                    ("q", false) => Some(Action::SetTool(Tool::Hand)),
                     ("w", false) => Some(Action::SetTool(Tool::Move)),
                     ("e", false) => Some(Action::SetTool(Tool::Rotate)),
                     ("r", false) => Some(Action::SetTool(Tool::Scale)),
+                    ("t", false) => Some(Action::SetTool(Tool::Rect)),
                     ("f", false) => Some(Action::Focus),
                     ("delete" | "backspace", false) => Some(Action::Delete),
                     ("z", true) if shift => Some(Action::Redo),

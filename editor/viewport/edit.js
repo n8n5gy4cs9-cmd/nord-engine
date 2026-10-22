@@ -71,7 +71,7 @@ addEventListener('keydown', (e) => {
   if (e.target && /input|textarea/i.test(e.target.tagName)) return;
   const k = e.key.toLowerCase();
   const cmd = e.metaKey || e.ctrlKey;
-  const wanted = ['w', 'e', 'r', 'f', 'delete', 'backspace'].includes(k) && !cmd && !e.altKey || (cmd && ['z', 'd', 's', 'c', 'v', 'p', 'k'].includes(k));
+  const wanted = ['q', 'w', 'e', 'r', 't', 'f', 'delete', 'backspace'].includes(k) && !cmd && !e.altKey || (cmd && ['z', 'd', 's', 'c', 'v', 'p', 'k'].includes(k));
   if (wanted) { e.preventDefault(); send({ t: 'key', key: k, cmd, shift: e.shiftKey }); }
 });
 

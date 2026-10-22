@@ -92,9 +92,11 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             }
             ui.separator();
             for (t, ic, tip) in [
+                (Tool::Hand, "hand", "Hand (Q)"),
                 (Tool::Move, "move", "Move (W)"),
                 (Tool::Rotate, "rotate-cw", "Rotate (E)"),
                 (Tool::Scale, "scaling", "Scale (R)"),
+                (Tool::Rect, "box-select", "Rect (T)"),
             ] {
                 if icons::button(ui, ic, tip, st.tool == t).clicked() {
                     st.push(Action::SetTool(t));

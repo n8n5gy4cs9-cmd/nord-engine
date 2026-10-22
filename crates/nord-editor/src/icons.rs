@@ -26,6 +26,7 @@ icons!(
     "move",
     "rotate-cw",
     "scaling",
+    "hand",
     "grid-3x3",
     "magnet",
     "plus",

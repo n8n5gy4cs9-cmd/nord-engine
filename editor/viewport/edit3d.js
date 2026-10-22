@@ -210,7 +210,9 @@ function applyGizmos(node) {
   const g = gizmoManager.gizmos, t = state.settings.tool;
   g.positionGizmo.attachedNode = t === 'move' ? node : null;
   g.rotationGizmo.attachedNode = t === 'rotate' ? node : null;
-  g.scaleGizmo.attachedNode = t === 'scale' ? node : null;
+  g.scaleGizmo.attachedNode = t === 'scale' || t === 'rect' ? node : null;
+  const ptr = camera?.inputs?.attached?.pointers;
+  if (ptr) { ptr.buttons = t === 'hand' ? [0, 1, 2] : [1, 2]; ptr.panningMouseButton = t === 'hand' ? 0 : 1; } // Q hand: LMB drag pans
 }
 
 export function setSettings() {

@@ -5,12 +5,12 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "â€
 
 ## G0 Foundations
 - [x] G0-1 Unity layout presets (2 by 3, Tall, Wide) in View â–¸ Layout (custom save/load: dock state already persists)
-- [~] G0-2 Scene and Game side by side via the Unity layouts; Play still switches to the Game tab (keep Scene visible when side by side: todo)
-- [ ] G0-3 Menu bar: File / Edit / Assets / GameObject / Component / Window / Help like Unity
-- [ ] G0-4 Shortcut table in Settings (rebindable) matching Unity defaults
+- [x] G0-2 Scene and Game side by side via the Unity layouts (Play only activates Game inside its own dock leaf, so Scene stays visible)
+- [x] G0-3 Menu bar: File / Edit / Assets / GameObject / Component / Window (was View) / Project / Help like Unity
+- [~] G0-4 Shortcut table in Settings matching Unity defaults (read-only list done; rebinding todo)
 ## G1 Scene view
 - [ ] G1-1 Navigation: Alt+LMB orbit, MMB/Alt+Cmd pan, wheel zoom, RMB fly + WASD (3D); pan/zoom (2D)
-- [ ] G1-2 Tools Q hand, W move, E rotate, R scale, T rect; gizmo handles drawn in viewport
+- [~] G1-2 Tools Q hand, W move, E rotate, R scale, T rect (keys, toolbar, 2D+3D viewport done; dedicated rect handles todo)
 - [ ] G1-3 Local/Global + Pivot/Center toggles
 - [ ] G1-4 Snapping (hold Ctrl, step settings) incl. vertex-ish snap to grid
 - [ ] G1-5 Multi-select, marquee select, Shift/Ctrl add/toggle, selection outline
@@ -79,3 +79,11 @@ bottom Assets panel = folder tree + large folder tiles, filter drop-down + searc
 - [ ] G9-6 Assets panel: folder tree + large folder tiles, type filter + search + Library toggle
 - [ ] G9-7 Slim status bar (selected property/path left, counters right); icon set consistent (Lucide, already vendored)
 
+## G10 Unity-style coding (owner request, do later)
+Keep the current NordScript API; add helpers/libraries so scripts feel like Unity C# (behaviour only, no Unity code).
+- [ ] G10-1 Singleton helper (`Singleton.get(Class)` / `static instance`) + persistent-across-scenes option
+- [ ] G10-2 GameManager / AudioManager / SceneManager-style ready-made services (`Game.loadScene`, `Game.pause`, score/state store, events)
+- [ ] G10-3 Unity-like API names: `GetComponent`, `Find`, `FindWithTag`, `Instantiate`, `Destroy`, `Time.deltaTime`, `Input.GetKey`, `Mathf`, `Vector2/3`, coroutines (`StartCoroutine`/`yield WaitForSeconds`)
+- [ ] G10-4 Lifecycle aliases: Awake/Start/Update/FixedUpdate/LateUpdate/OnEnable/OnDisable/OnDestroy, OnCollisionEnter/OnTriggerEnter
+- [ ] G10-5 `[SerializeField]`-style attributes, ScriptableObject-like data assets, Object pool, simple event bus/UnityEvent
+- [ ] G10-6 Script templates ("New script" menu: MonoBehaviour-like, Singleton, GameManager) + manual chapter + examples

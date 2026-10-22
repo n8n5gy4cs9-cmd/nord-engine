@@ -1,5 +1,6 @@
 # Changelog
 
+- 2026-10-22 — Godotize G0-2/G0-3 + G1-2: Unity menu bar (Assets, GameObject, Component, Window), Settings shortcut table, Q Hand / T Rect tools (keys, toolbar, 2D+3D viewport). New task group G10 (Unity-style coding helpers).
 - 2026-10-22 — Godotize G0-1: Unity-style layouts (2 by 3, Wide, Tall) in View ▸ Layout. Plan/tasks: `docs/GODOTIZE_PLAN.md`, `godotize-nordengine-tasks.md`.
 
 - 2026-10-22 — M8-32 Unity-style editor: F5 Play/Stop + F6 *Run this scene* (`?scene=` override), Console *Collapse* with counts, Inspector sliders/tooltips for script attributes + *Signals* (entity `connections`), prefab override markers with per-field and *Revert all*, remote (live) Hierarchy/Inspector while playing with live editing, F1 on a component opens its manual page, UI Designer image **tint** (Unity `Image.color` multiply), Console *Clear on Play*, Cmd+Shift+P pause / Cmd+Alt+P step. Core JS tests + headless UI tests added; native window interaction unverified (see KNOWN_ISSUES).
