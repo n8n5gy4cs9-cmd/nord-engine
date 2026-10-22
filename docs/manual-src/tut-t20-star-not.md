@@ -224,6 +224,6 @@ Choose co-op before the next encounter. P2 helps in combat; P1 handles travel an
 Copy `GUIDE.md`, `assets.md`, `SOURCE.md` and `COPYING` from the example into your project. They explain controls, reuse, source attribution and the game-code licence. When you redistribute a modified GPL game, keep the source and licence obligations in mind; the new artwork/audio and font have their own permissions recorded alongside them.
 
 ## 18. Share the finished game
-Use NordEditor Export or `nord build my-star-not`. Share the complete output folder. Keep your editable project and source attribution separately. The game uses only local runtime, artwork and audio files.
+Use the editor's Export or `nord build my-star-not`. Share the complete output folder. Keep your editable project and source attribution separately. The game uses only local runtime, artwork and audio files.
 
 For your next, bigger game, use [the design and folder-structure guide](tut-t21-project-design.html) to choose one small vertical slice before expanding the content.

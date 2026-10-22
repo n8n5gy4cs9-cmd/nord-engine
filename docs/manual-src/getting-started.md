@@ -4,7 +4,7 @@ section: Start here
 order: 1
 summary: A complete first-hour guide - install, tour the editor, learn the mental model, change a real game, export it.
 ---
-Nord is an **editor**, like Unity or Godot. You open **NordEditor**, click through windows, press **▶ Play**, and see your game run. This guide takes about an hour and ends with a game you changed, understood and exported.
+Nord is an **editor**, like Unity or Godot. You open **Nord Engine**, click through windows, press **▶ Play**, and see your game run. This guide takes about an hour and ends with a game you changed, understood and exported.
 
 ::: dummies
 **Is `nord` a command I must type?** No. Everything in this guide is done by clicking in the editor. A small companion program also called `nord` exists for people who want to automate things (build servers, scripts). It is optional, and [Part 11](#part-11-the-optional-nord-command) explains exactly what it is. If you never open a terminal, you miss nothing.

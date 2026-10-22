@@ -165,7 +165,7 @@ Open the local address the command prints. Leave the terminal running while you 
 You should see a notebook list, a note page, drawing tools and a white drawing page. If an icon is missing, check the PNG path. If an import fails, the app displays the reason. If the whole page cannot start, read the browser Console for the first missing file or syntax error.
 
 ## 15. Export the finished app
-When you choose to share it, use NordEditor Export or:
+When you choose to share it, use the editor's Export or:
 
 ```bash
 nord export my-notepaint --target html

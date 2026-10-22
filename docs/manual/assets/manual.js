@@ -112,7 +112,7 @@ if (lives.length) {
     box.append(bar, out);
     bar.children[1].onclick = () => copyCode(bar.children[1], get());
     bar.children[0].onclick = () => {
-      if (location.protocol === 'file:') { out.textContent = 'To run this example, open Docs in NordEditor or serve this manual with a local web server. Reading, search and highlighting work here offline.'; return; }
+      if (location.protocol === 'file:') { out.textContent = 'To run this example, open Docs in the Nord editor or serve this manual with a local web server. Reading, search and highlighting work here offline.'; return; }
       out.textContent = '';
       const f = document.createElement('iframe'); f.hidden = true; f.sandbox = 'allow-scripts allow-same-origin';
       const onMsg = (e) => { if (e.source !== f.contentWindow) return; const s = document.createElement('span'); if (e.data.err) s.className = 'err'; s.textContent = e.data.line + '\n'; out.append(s); if (e.data.done) { removeEventListener('message', onMsg); f.remove(); } };

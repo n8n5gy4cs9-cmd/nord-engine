@@ -7,7 +7,7 @@ summary: Render the provided synthwave shader in Play/export, add audio, click t
 **Example:** `examples/shader-terrain/` — Shader Terrain Lab. It uses your provided “another synthwave sunset thing” GLSL, preserved as `terrain.glsl`, with a small WebGL2 host. It has audio, freeze/resume, click picking and a falling cube.
 
 ## 1. Open the example and press Play
-Open `examples/shader-terrain` in NordEditor. Press **Play**. The HTML tier loads `index.html`, which mounts the app. To recreate it in your own folder, copy the files listed below; no game engine scene is needed.
+Open `examples/shader-terrain` in the Nord editor. Press **Play**. The HTML tier loads `index.html`, which mounts the app. To recreate it in your own folder, copy the files listed below; no game engine scene is needed.
 
 ```text
 my-shader-app/
@@ -76,7 +76,7 @@ Gravity changes the cube's height. When its bottom reaches the sampled ground he
 This is deliberately a small **height-probe demonstration**. It is not a complete terrain physics mesh or full depth-occlusion renderer. For large objects, steep terrain, rolling contact or a character walking everywhere, create a matching mesh/collider or a more complete collision model. A shader image by itself cannot supply a Havok/Matter collider automatically.
 
 ## 7. Export it
-Use NordEditor **Export… → HTML**, or:
+Use the editor's **Export… → HTML**, or:
 
 ```bash
 nord export my-shader-app --target html

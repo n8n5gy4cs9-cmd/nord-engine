@@ -44,7 +44,7 @@ Three things to take from it:
 
 | Word | What it means | Where you meet it |
 |---|---|---|
-| **Editor** | The desktop program where you build. | NordEditor, before you press Play. |
+| **Editor** | The desktop program where you build. | The Nord Engine app, before you press Play. |
 | **Project** | A folder with everything about one game. | The folder you picked in the hub. |
 | **Scene** | One screen or level, saved as a file. | `scenes/main.scene.json`. |
 | **Entity** | One thing in a scene: a hero, a coin, a camera, a label. | The Hierarchy list. |
