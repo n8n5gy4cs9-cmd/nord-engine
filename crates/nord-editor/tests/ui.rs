@@ -745,7 +745,7 @@ fn game_view_stays_inside_its_panel() {
 fn game_view_anchor_top_and_bottom() {
     let d = temp_project("gameanchor", nord_core::ProjectType::TwoD);
     let mut h = Harness::builder()
-        .with_size(egui::vec2(1400.0, 900.0))
+        .with_size(egui::vec2(2600.0, 900.0))
         .build_state(
             |ctx, app: &mut App| {
                 app.frame_ui(ctx, None);
