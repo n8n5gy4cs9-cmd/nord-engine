@@ -52,3 +52,8 @@ design and MIT code** as the structural reference and **Unity's workflow** as th
 - Everything offline; no CDNs. Tests per feature: kittest UI test + JS unit test; verify in the real editor window when on macOS (`cargo run -p nord-editor`), screenshots into `docs/screenshots/`.
 - Keep scene/prefab JSON format backward compatible (minor additions only; major = ADR).
 - Update docs with every change: manual chapter, `docs/EDITOR_UI.md`, CHANGELOG, tasks, HANDOFF, then `node tools/build-manual.mjs`.
+
+## Look (G9): PlayCanvas-style aesthetics
+Owner reference: the PlayCanvas editor (dark blue-grey, orange accent, vertical tool rail, UPPERCASE collapsible panel headers, floating viewport top bar with Play,
+folder-tile Assets panel). Re-create the *look* with our own theme/icons (no PlayCanvas code/assets). Tasks: G9-1…G9-7 in `godotize-nordengine-tasks.md`. Do it after G1–G2 so the structure exists first; theme work (G9-1/2) is cheap and can go early.
+

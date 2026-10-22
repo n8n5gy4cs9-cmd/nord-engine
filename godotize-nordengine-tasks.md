@@ -64,3 +64,18 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "�
 - [ ] G8-3 Playwright suites T36/T38/T40–T43 after UI conversion
 - [ ] G8-4 Walk KNOWN_ISSUES.md; close or document each; owner-only items listed
 - [ ] G8-5 Verify native egui parts on macOS (F5/F6, remote tree, F1) and record in KNOWN_ISSUES
+## G9 Look: PlayCanvas-style UI aesthetics (owner reference screenshot: PlayCanvas editor)
+Target look (own theme + icons, no PlayCanvas assets/code copied; behaviour only): dark blue-grey panels (#20292b / #293538 range) with thin
+dividers; narrow **vertical tool rail** on the far left (Move/Rotate/Scale, World/Local, Snap, Focus, Camera, Lights…) with an orange active
+accent; panel headers = small orange ▼ collapse arrow + UPPERCASE title (HIERARCHY, ASSETS, SETTINGS) with + / copy / delete icons on the right;
+Hierarchy = tree with dot/expand icons and a search field; viewport has a floating top bar (scene tabs, Perspective drop-down, gizmo/settings/fullscreen
+and a big Play button); Inspector = collapsible UPPERCASE sections with flat dark inputs, label-left/value-right rows with unit suffix chips (Divisions, Size);
+bottom Assets panel = folder tree + large folder tiles, filter drop-down + search + Library toggle; slim status bar at the bottom.
+- [ ] G9-1 New egui theme "PlayCanvas" (colours, 2px rounding, flat inputs, orange accent) in `assets/themes/themes.json`, set as default
+- [ ] G9-2 Panel header style: orange collapse arrow + UPPERCASE title + right-aligned action icons (all docks)
+- [ ] G9-3 Left vertical tool rail (move/rotate/scale, world/local, snap, focus, camera, lights) driving the Scene view tools
+- [ ] G9-4 Floating viewport top bar: scene tabs, Perspective/Ortho drop-down, gizmo + settings + fullscreen buttons, big Play button
+- [ ] G9-5 Inspector: collapsible UPPERCASE sections, flat inputs with unit chips, label-left/value-right rows
+- [ ] G9-6 Assets panel: folder tree + large folder tiles, type filter + search + Library toggle
+- [ ] G9-7 Slim status bar (selected property/path left, counters right); icon set consistent (Lucide, already vendored)
+
