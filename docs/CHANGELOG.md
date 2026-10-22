@@ -1,5 +1,6 @@
 # Changelog
 
+- 2026-10-22 — Godotize G3: Prefab mode (edit a prefab alone, auto-save on exit), prefab variants (`variantOf` + `overrides`; core `Prefab` gained two optional fields; runtime resolves them), Create variant, Apply all keeps a variant's link.
 - 2026-10-22 — Godotize wrap-up: New scene dialog + templates, Game-view screenshot (📷), First-10-minutes checklist, Inspector lock, Signals method picker, strict Clippy clean (G8-2), Unity layouts fixed (Inspector gets a real column; Wide = Scene over Game), new manual chapter *Unity-style workflow* with offscreen-rendered screenshots (`crates/nord-editor/tests/shots.rs`), material `uvScale` default 1.
 - 2026-10-22 — Godotize G4/G5/G6 (part): model import scale; Build Settings window (scenes in build, start scene, platforms, Build And Run) + exporter `export.excludeScenes`; Game view resolution drop-down, scale slider, Maximize on Play, Error Pause, Stats overlay; UI Designer anchor preset grid + more preview sizes.
 - 2026-10-22 — Godotize G4 (part): material assets (`*.mat.json`, new asset type, Inspector editor + preview, `material.asset`, uvOffset), texture import filter/wrap (Inspector + Babylon), Assets ★ favourites + Find references; G8-1 schema test count fixed (23).

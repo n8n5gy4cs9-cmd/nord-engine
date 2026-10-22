@@ -26,11 +26,11 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "�
 - [ ] G2-6 Object/texture/material pickers with thumbnails and drag & drop
 - [~] G2-7 Inspector lock (padlock) done; Debug mode todo
 ## G3 Prefabs
-- [ ] G3-1 Prefab mode (open prefab in isolation, breadcrumb, Save/Auto save) — todo
+- [x] G3-1 Prefab mode: Assets/Inspector ▸ Open prefab edits the prefab on its own (breadcrumb ◀ Scene › Prefab, Save, auto-save on exit)
 - [~] G3-2 Inspector Apply all / Revert all done (writes the prefab file); per-field Apply to prefab todo
 - [x] G3-3 Drag Hierarchy entity into Assets (or right-click ▸ Create prefab) = prefab; Unpack; Unpack completely
-- [ ] G3-4 Nested prefabs + prefab variants
-- [ ] G3-5 Overrides for children and added/removed components (not only field values)
+- [x] G3-4 Prefab variants (`variantOf` + `overrides`, runtime + editor; Create variant in Assets/Inspector); nested prefabs: instances inside prefabs expand at runtime and unpack completely
+- [~] G3-5 Added/removed components already round-trip (array override replaces); overrides on prefab children todo (children of an instance are not shown in the Hierarchy)
 ## G4 Project, materials, import
 - [x] G4-1 Project browser: thumbnail size slider + type filter (existed), ★ favourites filter, Find references (context menu)
 - [x] G4-2 Material assets `*.mat.json` + Inspector (colour, textures, tiling/offset, normal, emissive; no custom shader yet), Babylon runtime loads them

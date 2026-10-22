@@ -242,6 +242,11 @@ pub enum Action {
     /// File ▸ Build Settings…
     BuildSettings,
     NewScene,
+    /// Edit a prefab on its own (Prefab mode)
+    OpenPrefab(String),
+    ExitPrefab,
+    /// Create a variant of a prefab file
+    PrefabVariant(String),
     Tutorial,
     Screenshot,
     /// Window ▸ Layout presets ("default", "2d", "3d", "coding", "visual")
@@ -352,6 +357,8 @@ pub struct EditorState {
     pub fun_ui: crate::panels::fun::FunUi,
     /// Inspector padlock: entity id the Inspector stays on
     pub inspector_lock: Option<String>,
+    /// Prefab mode: the prefab being edited instead of the scene
+    pub prefab_mode: Option<crate::prefab::PrefabMode>,
     pub layout_ui: crate::panels::layout::LayoutUi,
     pub sprite: crate::panels::sprite::SpriteUi,
     pub particles_ui: crate::panels::particles::ParticlesUi,
@@ -447,6 +454,7 @@ impl EditorState {
             build_ui: Default::default(),
             fun_ui: Default::default(),
             inspector_lock: None,
+            prefab_mode: None,
             layout_ui: Default::default(),
             sprite: Default::default(),
             particles_ui: Default::default(),
@@ -904,6 +912,7 @@ impl EditorState {
     }
 
     pub fn open_scene(&mut self, rel: &str) -> Result<(), String> {
+        self.prefab_mode = None;
         let root = self.root.clone().ok_or("no project")?;
         let path = root.join(rel);
         let s: Scene = nord_core::io::load_json(&path).map_err(|e| e.to_string())?;
@@ -971,6 +980,10 @@ impl EditorState {
     }
 
     pub fn save(&mut self) {
+        if self.prefab_mode.is_some() {
+            self.save_prefab_mode();
+            return;
+        }
         let (Some(root), Some(f), Some(s)) = (&self.root, &self.scene_file, &self.scene) else {
             return;
         };

@@ -917,6 +917,12 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     if ui.button("Unpack completely").clicked() {
                         prefab_op = Some((pid.clone(), 2));
                     }
+                    if ui.button("Open prefab").clicked() {
+                        prefab_op = Some((pid.clone(), 3));
+                    }
+                    if ui.button("Create variant").clicked() {
+                        prefab_op = Some((pid.clone(), 4));
+                    }
                 });
                 if let Some(b) = &base_ent {
                     if !p.overrides.is_empty() && ui.button("Revert all overrides").clicked() {
@@ -936,9 +942,16 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         st.push(crate::state::Action::OpenDocs(page));
     }
     if let Some((id, op)) = prefab_op {
-        match op {
-            0 => st.apply_prefab(&id),
-            n => st.unpack_prefab(&id, n == 2),
+        let path = st
+            .scene
+            .as_ref()
+            .and_then(|s| scene_ops::find(&s.entities, &id))
+            .and_then(|e| e.prefab.as_ref().map(|p| p.path.clone()));
+        match (op, path) {
+            (0, _) => st.apply_prefab(&id),
+            (3, Some(p)) => st.push(crate::state::Action::OpenPrefab(p)),
+            (4, Some(p)) => st.push(crate::state::Action::PrefabVariant(p)),
+            (n, _) => st.unpack_prefab(&id, n == 2),
         }
         return;
     }

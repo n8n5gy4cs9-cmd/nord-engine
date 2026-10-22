@@ -691,6 +691,11 @@ impl App {
                 st.fun_ui.new_scene_open = true;
                 st.fun_ui.new_name.clear();
             }
+            Action::OpenPrefab(p) => st.open_prefab_mode(&p),
+            Action::ExitPrefab => st.exit_prefab_mode(),
+            Action::PrefabVariant(p) => {
+                st.make_variant(&p);
+            }
             Action::Tutorial => st.fun_ui.tutorial_open = true,
             Action::Screenshot => self.web.eval("game", panels::fun::SHOT_JS),
             Action::DesktopSettings => st.desktop_ui.open = true,
@@ -1177,7 +1182,27 @@ fn viewport_bar(st: &mut crate::state::EditorState, ui: &mut egui::Ui) {
                 .trim_end_matches(".scene")
                 .to_string()
         });
-        ui.label(egui::RichText::new(scene).strong());
+        if let Some(pm) = &st.prefab_mode {
+            // Prefab mode breadcrumb: Scene › Prefab, with Save and Back
+            let name = pm.path.rsplit('/').next().unwrap_or(&pm.path).to_string();
+            if ui
+                .link("◀ Scene")
+                .on_hover_text("Leave Prefab mode (saves first)")
+                .clicked()
+            {
+                st.push(Action::ExitPrefab);
+            }
+            ui.label(
+                egui::RichText::new(format!("› Prefab: {name}"))
+                    .strong()
+                    .color(ui.visuals().hyperlink_color),
+            );
+            if ui.small_button("Save").clicked() {
+                st.push(Action::Save);
+            }
+        } else {
+            ui.label(egui::RichText::new(scene).strong());
+        }
         ui.separator();
         ui.weak(if st.is_3d() {
             "Perspective"

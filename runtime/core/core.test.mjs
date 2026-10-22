@@ -307,3 +307,12 @@ test('Mathf / Vector3 / UnityEvent', () => {
   assert.ok(SceneManager);
   assert.ok(UnityInput);
 });
+
+test('prefab variants: variantOf + overrides on top of the base root', async () => {
+  files['p/base.json'] = { format: 1, root: { name: 'Base', transform: { pos: [0, 0, 0] }, components: [{ type: 'sprite', tint: '#fff' }] } };
+  files['p/var.json'] = { format: 1, variantOf: 'p/base.json', overrides: { components: { 0: { tint: '#f00' } } }, root: { name: 'ignored' } };
+  files.s = { name: 's', entities: [{ id: 'a', name: 'A', prefab: { path: 'p/var.json' } }] };
+  const g = mk(); await g.loadScene('s');
+  const a = g.scene.find('A') ?? g.scene.find('Base');
+  assert.equal(a.components[0].data.tint, '#f00');
+});

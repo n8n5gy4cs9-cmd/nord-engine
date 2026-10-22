@@ -1628,6 +1628,8 @@ fn prefab_instance_marks_overrides_and_reverts_them() {
         serde_json::to_string(&Prefab {
             format: 1,
             root: base,
+            variant_of: None,
+            overrides: Default::default(),
         })
         .unwrap(),
     )
@@ -1728,4 +1730,31 @@ fn make_apply_and_unpack_prefab() {
     st.unpack_prefab(&id, false);
     let e = nord_editor::scene_ops::find(&st.scene.as_ref().unwrap().entities, &id).unwrap();
     assert!(e.prefab.is_none());
+}
+
+#[test]
+fn prefab_variant_and_prefab_mode() {
+    let mut st = state_with_scene("prefab-variant");
+    st.add_entity(None);
+    let id = st.selection[0].clone();
+    let base = st.make_prefab(&id, "prefabs").expect("prefab");
+    let var = st.make_variant(&base).expect("variant");
+    let f = st.read_prefab_file(&var).unwrap();
+    assert_eq!(f.variant_of.as_deref(), Some(base.as_str()));
+    // variant overrides apply on top of the base root
+    let mut f2 = f.clone();
+    f2.overrides = serde_json::json!({"layer": 3}).as_object().unwrap().clone();
+    let root = st.root.clone().unwrap();
+    std::fs::write(root.join(&var), serde_json::to_string_pretty(&f2).unwrap()).unwrap();
+    assert_eq!(st.read_prefab(&var).unwrap().layer, 3);
+    assert_eq!(st.read_prefab(&base).unwrap().layer, 0);
+    // Prefab mode: edit the base on its own, auto-save on exit, scene comes back
+    let before = st.scene.as_ref().unwrap().entities.len();
+    st.open_prefab_mode(&base);
+    assert_eq!(st.scene.as_ref().unwrap().entities.len(), 1);
+    st.edit("t", None, |l| l[0].name = "Renamed".into());
+    st.exit_prefab_mode();
+    assert!(st.prefab_mode.is_none());
+    assert_eq!(st.scene.as_ref().unwrap().entities.len(), before);
+    assert_eq!(st.read_prefab(&base).unwrap().name, "Renamed");
 }

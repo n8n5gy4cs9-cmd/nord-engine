@@ -152,6 +152,12 @@ impl Scene {
 pub struct Prefab {
     pub format: u32,
     pub root: Entity,
+    /// Prefab variant: path of the base prefab. The runtime and editor then use the base's root with `overrides` applied
+    /// (`root` is a copy of the base root kept for tools that do not know variants).
+    #[serde(default, rename = "variantOf", skip_serializing_if = "Option::is_none")]
+    pub variant_of: Option<String>,
+    #[serde(default, skip_serializing_if = "Map::is_empty")]
+    pub overrides: Map<String, Value>,
 }
 
 /// Unique 8-char base36 id (time + counter hashed; no rand dependency needed).

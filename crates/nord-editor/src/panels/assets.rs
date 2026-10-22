@@ -182,6 +182,8 @@ const OP_REFRESH: u8 = 11;
 const OP_NEW_GRAPH: u8 = 12;
 const OP_NEW_MATERIAL: u8 = 16;
 const OP_FAVORITE: u8 = 17;
+const OP_OPEN_PREFAB: u8 = 19;
+const OP_VARIANT: u8 = 20;
 const OP_FIND_REFS: u8 = 18;
 const OP_NEW_MONO: u8 = 13;
 const OP_NEW_SINGLETON: u8 = 14;
@@ -226,6 +228,10 @@ fn entry_menu(ui: &mut Ui, e: &Entry, out: &mut Option<(Entry, u8)>) {
         item(ui, "Duplicate   ⌘/Ctrl+D", OP_DUP);
         item(ui, "Delete   Del", OP_DELETE);
         ui.separator();
+    }
+    if e.kind == AssetType::Prefab && !e.is_dir {
+        item(ui, "Open prefab (Prefab mode)", OP_OPEN_PREFAB);
+        item(ui, "Create variant", OP_VARIANT);
     }
     if !e.is_dir {
         item(ui, "★ Favourite on/off", OP_FAVORITE);
@@ -398,6 +404,8 @@ fn handle_op(st: &mut EditorState, ui: &Ui, root: &Path, e: Entry, op: u8) {
         OP_NEW_FOLDER => create_in(st, root, &e.rel, "folder", "", None),
         OP_NEW_UI => create_in(st, root, &e.rel, "new-screen", "ui.json", Some(BLANK_UI)),
         OP_NEW_SCRIPT => create_in(st, root, &e.rel, "new-script", "js", Some(NEW_SCRIPT)),
+        OP_OPEN_PREFAB => st.push(Action::OpenPrefab(e.rel.clone())),
+        OP_VARIANT => st.push(Action::PrefabVariant(e.rel.clone())),
         OP_FAVORITE => {
             let f = &mut st.settings.asset_favorites;
             if let Some(i) = f.iter().position(|p| *p == e.rel) {

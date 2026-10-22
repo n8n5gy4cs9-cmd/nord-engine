@@ -4,6 +4,13 @@ use crate::{scene_ops, state::EditorState};
 use nord_core::scene::Entity;
 use serde_json::{Map, Value};
 
+/// A prefab opened for editing on its own (Prefab mode); `back_*` is the scene we return to.
+pub struct PrefabMode {
+    pub path: String,
+    pub back_scene: nord_core::scene::Scene,
+    pub back_dirty: bool,
+}
+
 /// Entity keys the Inspector can override (name/transform/enabled/tags stay on the instance itself).
 pub const KEYS: [&str; 5] = ["components", "scripts", "behaviors", "effects", "layer"];
 
@@ -139,16 +146,149 @@ pub fn unpack_entity(inst: &Entity, base: &Entity) -> Entity {
 pub fn file_for(e: &Entity) -> Option<String> {
     let mut root = e.clone();
     root.prefab = None;
-    serde_json::to_string_pretty(&nord_core::scene::Prefab { format: 1, root }).ok()
+    serde_json::to_string_pretty(&nord_core::scene::Prefab {
+        format: 1,
+        root,
+        variant_of: None,
+        overrides: Map::new(),
+    })
+    .ok()
 }
 
 impl EditorState {
-    /// Read a prefab file's root entity.
-    pub fn read_prefab(&self, path: &str) -> Option<Entity> {
+    /// The prefab file as stored (variants unresolved).
+    pub fn read_prefab_file(&self, path: &str) -> Option<nord_core::scene::Prefab> {
         let txt = nord_core::vfs::read_to_string(self.root.as_ref()?.join(path)).ok()?;
-        serde_json::from_str::<nord_core::scene::Prefab>(&txt)
+        serde_json::from_str(&txt).ok()
+    }
+
+    /// A prefab's root entity; a variant resolves to its base root with the variant's overrides applied.
+    pub fn read_prefab(&self, path: &str) -> Option<Entity> {
+        self.resolve_prefab(path, 0)
+    }
+
+    fn resolve_prefab(&self, path: &str, depth: u8) -> Option<Entity> {
+        let pf = self.read_prefab_file(path)?;
+        match pf.variant_of.as_deref() {
+            Some(base) if depth < 8 => {
+                let mut v = serde_json::to_value(self.resolve_prefab(base, depth + 1)?).ok()?;
+                apply(&mut v, &Value::Object(pf.overrides));
+                serde_json::from_value(v).ok()
+            }
+            _ => Some(pf.root),
+        }
+    }
+
+    /// Prefab ▸ Create variant: a new prefab file that points at `path` and only stores its own overrides.
+    pub fn make_variant(&mut self, path: &str) -> Option<String> {
+        let root = self.root.clone()?;
+        let base = self.read_prefab(path)?;
+        let stem = path
+            .rsplit('/')
+            .next()
+            .unwrap_or(path)
+            .trim_end_matches(".prefab.json");
+        let dir = path.rsplit_once('/').map_or("prefabs", |(d, _)| d);
+        let mut n = 1;
+        let rel = loop {
+            let name = if n == 1 {
+                format!("{stem}-variant.prefab.json")
+            } else {
+                format!("{stem}-variant-{n}.prefab.json")
+            };
+            let rel = format!("{dir}/{name}");
+            if !root.join(&rel).exists() {
+                break rel;
+            }
+            n += 1;
+        };
+        let pf = nord_core::scene::Prefab {
+            format: 1,
+            root: base,
+            variant_of: Some(path.to_string()),
+            overrides: Map::new(),
+        };
+        let body = serde_json::to_string_pretty(&pf).ok()?;
+        if nord_core::vfs::write(root.join(&rel), body).is_err() {
+            self.toast("Could not write the variant");
+            return None;
+        }
+        self.refresh_assets();
+        self.toast(format!("Variant created: {rel}"));
+        Some(rel)
+    }
+
+    /// Prefab mode: edit a prefab's root entity on its own (the scene is parked and comes back on exit).
+    pub fn open_prefab_mode(&mut self, path: &str) {
+        if self.prefab_mode.is_some() {
+            self.exit_prefab_mode();
+        }
+        let Some(pf) = self.read_prefab_file(path) else {
+            self.toast("Prefab file not found");
+            return;
+        };
+        if pf.variant_of.is_some() {
+            self.toast(
+                "Variants are edited through their overrides (instance Inspector ▸ Apply all)",
+            );
+            return;
+        }
+        let Some(back) = self.scene.take() else {
+            return;
+        };
+        let mut s = nord_core::scene::Scene::new(path.rsplit('/').next().unwrap_or(path));
+        s.entities = vec![pf.root];
+        self.prefab_mode = Some(PrefabMode {
+            path: path.to_string(),
+            back_scene: back,
+            back_dirty: self.dirty,
+        });
+        self.scene = Some(s);
+        self.selection.clear();
+        self.undo.clear();
+        self.dirty = false;
+        self.rev += 1;
+    }
+
+    /// Write the prefab being edited back to its file (keeps any other keys of the file).
+    pub fn save_prefab_mode(&mut self) {
+        let (Some(pm), Some(root), Some(s)) = (&self.prefab_mode, self.root.clone(), &self.scene)
+        else {
+            return;
+        };
+        let Some(e) = s.entities.first() else { return };
+        let path = root.join(&pm.path);
+        let mut v: Value = nord_core::vfs::read_to_string(&path)
             .ok()
-            .map(|p| p.root)
+            .and_then(|t| serde_json::from_str(&t).ok())
+            .unwrap_or_else(|| serde_json::json!({"format": 1}));
+        v["root"] = serde_json::to_value(e).unwrap_or(Value::Null);
+        let ok = serde_json::to_string_pretty(&v)
+            .is_ok_and(|t| nord_core::vfs::write(&path, t + "\n").is_ok());
+        let p = pm.path.clone();
+        if ok {
+            self.dirty = false;
+            self.toast(format!("Saved {p}"));
+        } else {
+            self.toast("Could not save the prefab");
+        }
+    }
+
+    /// Leave prefab mode (saving first: Auto Save) and restore the parked scene.
+    pub fn exit_prefab_mode(&mut self) {
+        if self.prefab_mode.is_none() {
+            return;
+        }
+        if self.dirty {
+            self.save_prefab_mode();
+        }
+        if let Some(pm) = self.prefab_mode.take() {
+            self.scene = Some(pm.back_scene);
+            self.dirty = pm.back_dirty;
+            self.selection.clear();
+            self.undo.clear();
+            self.rev += 1;
+        }
     }
 
     /// Hierarchy → Project drop / context menu: save entity `id` as `<dir>/<name>.prefab.json` and turn it into an instance.
@@ -265,8 +405,34 @@ impl EditorState {
         merged.name = base.name.clone();
         merged.transform = base.transform.clone();
         merged.children = base.children.clone();
-        let Some(body) = file_for(&merged) else {
-            return;
+        // a variant keeps its link: store the difference to its own base, not a full root
+        let variant = self
+            .read_prefab_file(&p.path)
+            .and_then(|f| f.variant_of.clone().map(|b| (b, f)));
+        let body = if let Some((b, mut file)) = variant {
+            let Some(bv) = self
+                .read_prefab(&b)
+                .and_then(|e| serde_json::to_value(e).ok())
+            else {
+                return;
+            };
+            let Ok(mv) = serde_json::to_value(&merged) else {
+                return;
+            };
+            file.overrides = match diff(&bv, &mv) {
+                Some(Value::Object(m)) => m,
+                _ => Map::new(),
+            };
+            file.root = merged.clone();
+            let Ok(t) = serde_json::to_string_pretty(&file) else {
+                return;
+            };
+            t
+        } else {
+            let Some(body) = file_for(&merged) else {
+                return;
+            };
+            body
         };
         if nord_core::vfs::write(root.join(&p.path), body).is_err() {
             self.toast("Could not write the prefab file");
