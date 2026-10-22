@@ -1703,3 +1703,27 @@ fn unity_layouts_show_scene_and_game_together() {
         }
     }
 }
+
+#[test]
+fn make_apply_and_unpack_prefab() {
+    let mut st = state_with_scene("prefab-ops");
+    st.add_entity(None);
+    let id = st.selection[0].clone();
+    let rel = st.make_prefab(&id, "prefabs").expect("prefab created");
+    let root = st.root.clone().unwrap();
+    assert!(root.join(&rel).exists());
+    let e = nord_editor::scene_ops::find(&st.scene.as_ref().unwrap().entities, &id).unwrap();
+    assert_eq!(e.prefab.as_ref().unwrap().path, rel);
+    // an override, then Apply all writes it into the file and clears the override
+    st.edit("t", None, |l| {
+        let slot = nord_editor::scene_ops::find_mut(l, &id).unwrap();
+        slot.prefab.as_mut().unwrap().overrides =
+            serde_json::json!({"layer": 7}).as_object().unwrap().clone();
+    });
+    st.apply_prefab(&id);
+    let saved = std::fs::read_to_string(root.join(&rel)).unwrap();
+    assert!(saved.contains("\"layer\": 7"), "{saved}");
+    st.unpack_prefab(&id, false);
+    let e = nord_editor::scene_ops::find(&st.scene.as_ref().unwrap().entities, &id).unwrap();
+    assert!(e.prefab.is_none());
+}

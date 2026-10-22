@@ -1,5 +1,6 @@
 //! Prefab instance overrides for the Inspector (Unity-style): show the prefab merged with the instance's overrides, and turn
 //! edits back into a minimal `overrides` patch. `apply` mirrors `applyOverrides` in `runtime/core/scene.js`.
+use crate::{scene_ops, state::EditorState};
 use nord_core::scene::Entity;
 use serde_json::{Map, Value};
 
@@ -121,6 +122,168 @@ pub fn overrides_for(inst: &Entity, base: &Entity, edited: &Entity) -> Map<Strin
     ov
 }
 
+/// An instance turned into plain entities ("Unpack"): prefab root + overrides, instance id/name/transform, the prefab's children
+/// with fresh ids, no prefab link.
+pub fn unpack_entity(inst: &Entity, base: &Entity) -> Entity {
+    let mut out = effective(inst, base);
+    out.children = base
+        .children
+        .iter()
+        .map(crate::scene_ops::clone_fresh)
+        .collect();
+    out.prefab = None;
+    out
+}
+
+/// Prefab file content for `e` (a scene entity, link stripped, children kept).
+pub fn file_for(e: &Entity) -> Option<String> {
+    let mut root = e.clone();
+    root.prefab = None;
+    serde_json::to_string_pretty(&nord_core::scene::Prefab { format: 1, root }).ok()
+}
+
+impl EditorState {
+    /// Read a prefab file's root entity.
+    pub fn read_prefab(&self, path: &str) -> Option<Entity> {
+        let txt = nord_core::vfs::read_to_string(self.root.as_ref()?.join(path)).ok()?;
+        serde_json::from_str::<nord_core::scene::Prefab>(&txt)
+            .ok()
+            .map(|p| p.root)
+    }
+
+    /// Hierarchy → Project drop / context menu: save entity `id` as `<dir>/<name>.prefab.json` and turn it into an instance.
+    pub fn make_prefab(&mut self, id: &str, dir: &str) -> Option<String> {
+        let root = self.root.clone()?;
+        let e = scene_ops::find(&self.scene.as_ref()?.entities, id)?.clone();
+        if e.prefab.is_some() {
+            self.toast("Already a prefab instance");
+            return None;
+        }
+        let stem: String = e
+            .name
+            .chars()
+            .map(|c| {
+                if c.is_alphanumeric() || c == '-' {
+                    c
+                } else {
+                    '-'
+                }
+            })
+            .collect();
+        let dir = if dir.is_empty() { "prefabs" } else { dir };
+        let mut n = 1;
+        let rel = loop {
+            let name = if n == 1 {
+                format!("{stem}.prefab.json")
+            } else {
+                format!("{stem}-{n}.prefab.json")
+            };
+            let rel = format!("{dir}/{name}");
+            if !root.join(&rel).exists() {
+                break rel;
+            }
+            n += 1;
+        };
+        let body = file_for(&e)?;
+        let _ = nord_core::vfs::create_dir_all(root.join(dir));
+        if nord_core::vfs::write(root.join(&rel), body).is_err() {
+            self.toast("Could not write the prefab file");
+            return None;
+        }
+        let rel2 = rel.clone();
+        self.edit("Create prefab", None, |l| {
+            if let Some(slot) = scene_ops::find_mut(l, id) {
+                slot.children.clear();
+                slot.components.clear();
+                slot.scripts.clear();
+                slot.behaviors.clear();
+                slot.effects.clear();
+                slot.prefab = Some(nord_core::scene::PrefabRef {
+                    path: rel2,
+                    overrides: Default::default(),
+                });
+            }
+        });
+        self.refresh_assets();
+        self.toast(format!("Prefab created: {rel}"));
+        Some(rel)
+    }
+
+    /// Prefab ▸ Unpack. `completely` also unpacks prefab instances nested in the prefab's children.
+    pub fn unpack_prefab(&mut self, id: &str, completely: bool) {
+        let Some(inst) = self
+            .scene
+            .as_ref()
+            .and_then(|s| scene_ops::find(&s.entities, id))
+            .cloned()
+        else {
+            return;
+        };
+        let Some(base) = inst.prefab.as_ref().and_then(|p| self.read_prefab(&p.path)) else {
+            self.toast("Prefab file not found");
+            return;
+        };
+        let mut out = unpack_entity(&inst, &base);
+        if completely {
+            fn deep(st: &EditorState, e: &mut Entity) {
+                for c in &mut e.children {
+                    if let Some(b) = c.prefab.as_ref().and_then(|p| st.read_prefab(&p.path)) {
+                        *c = unpack_entity(c, &b);
+                    }
+                    deep(st, c);
+                }
+            }
+            deep(self, &mut out);
+        }
+        let id = id.to_string();
+        self.edit("Unpack prefab", None, |l| {
+            if let Some(slot) = scene_ops::find_mut(l, &id) {
+                *slot = out;
+            }
+        });
+    }
+
+    /// Overrides ▸ Apply all: write the instance (with its overrides) back into the prefab file and clear the overrides.
+    pub fn apply_prefab(&mut self, id: &str) {
+        let Some(inst) = self
+            .scene
+            .as_ref()
+            .and_then(|s| scene_ops::find(&s.entities, id))
+            .cloned()
+        else {
+            return;
+        };
+        let (Some(p), Some(root)) = (inst.prefab.clone(), self.root.clone()) else {
+            return;
+        };
+        let Some(base) = self.read_prefab(&p.path) else {
+            self.toast("Prefab file not found");
+            return;
+        };
+        let mut merged = effective(&inst, &base);
+        merged.id = base.id.clone();
+        merged.name = base.name.clone();
+        merged.transform = base.transform.clone();
+        merged.children = base.children.clone();
+        let Some(body) = file_for(&merged) else {
+            return;
+        };
+        if nord_core::vfs::write(root.join(&p.path), body).is_err() {
+            self.toast("Could not write the prefab file");
+            return;
+        }
+        let id = id.to_string();
+        self.edit("Apply prefab overrides", None, |l| {
+            if let Some(slot) = scene_ops::find_mut(l, &id) {
+                if let Some(pr) = slot.prefab.as_mut() {
+                    pr.overrides.clear();
+                }
+            }
+        });
+        self.toast(format!("Applied to {}", p.path));
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -141,6 +304,27 @@ mod tests {
             attributes: json!({"value": 1}).as_object().unwrap().clone(),
         });
         e
+    }
+
+    #[test]
+    fn unpack_applies_overrides_and_drops_the_link() {
+        let mut b = base();
+        b.children.push(Entity::new("Child"));
+        let mut inst = Entity::new("Coin 2");
+        inst.prefab = Some(PrefabRef {
+            path: "p.prefab.json".into(),
+            overrides: json!({"components": {"0": {"tint": "#f00"}}})
+                .as_object()
+                .unwrap()
+                .clone(),
+        });
+        let u = unpack_entity(&inst, &b);
+        assert!(u.prefab.is_none());
+        assert_eq!(u.name, "Coin 2");
+        assert_eq!(u.components[0].fields["tint"], json!("#f00"));
+        assert_eq!(u.children.len(), 1);
+        assert_ne!(u.children[0].id, b.children[0].id);
+        assert!(file_for(&u).unwrap().contains("\"format\": 1"));
     }
 
     #[test]

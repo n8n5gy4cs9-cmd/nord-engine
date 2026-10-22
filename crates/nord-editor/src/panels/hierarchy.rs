@@ -364,6 +364,19 @@ fn row(
             st.hierarchy_rename = Some((e.id.clone(), e.name.clone()));
             ui.close_menu();
         }
+        if e.prefab.is_some() {
+            if ui.button("Unpack prefab").clicked() {
+                st.unpack_prefab(&e.id, false);
+                ui.close_menu();
+            }
+            if ui.button("Unpack prefab completely").clicked() {
+                st.unpack_prefab(&e.id, true);
+                ui.close_menu();
+            }
+        } else if ui.button("Create prefab").clicked() {
+            st.make_prefab(&e.id, "prefabs");
+            ui.close_menu();
+        }
         if ui.button("Create empty parent").clicked() {
             st.select(Some(e.id.clone()));
             st.group_selected();

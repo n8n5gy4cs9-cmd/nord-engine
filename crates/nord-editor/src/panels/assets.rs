@@ -467,6 +467,20 @@ fn move_asset(st: &mut EditorState, from: &str, to_dir: &str) {
 }
 
 pub fn ui(st: &mut EditorState, ui: &mut Ui) {
+    ui_inner(st, ui);
+    // Hierarchy → Assets: dropping an entity here turns it into a prefab in the folder being shown
+    let zone = ui.interact(
+        ui.min_rect(),
+        ui.id().with("prefab_drop"),
+        egui::Sense::hover(),
+    );
+    if let Some(id) = zone.dnd_release_payload::<String>() {
+        let dir = st.assets_ui.dir.clone();
+        st.make_prefab(&id, &dir);
+    }
+}
+
+fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
     let Some(root) = st.root.clone() else {
         ui.weak("No project open");
         return;

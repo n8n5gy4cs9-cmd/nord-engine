@@ -1,5 +1,6 @@
 # Changelog
 
+- 2026-10-22 — Godotize G3 (part): Create prefab (context menu or drag Hierarchy → Assets), Unpack / Unpack completely, Inspector *Apply all* writes overrides into the prefab file; unit + UI tests.
 - 2026-10-22 — Godotize G9 finished: Scene view top bar with big Play button, orange collapse arrows, unit suffixes in the Inspector Transform, Library button in Assets. Not yet seen in the native window.
 - 2026-10-22 — Godotize G9 (part): default "PlayCanvas" editor theme (blue-grey, orange accent, 2px corners; old Graphite default migrates), vertical tool rail, coloured type icons + filled amber folders, UPPERCASE panel/inspector headers, status bar with selection and entity count. Not yet seen in the native window.
 - 2026-10-22 — Godotize G2 (part): Hierarchy Active checkbox + blue prefab names; Inspector component ⋮ menu (reset/copy/paste/move/remove/docs); searchable Add Component.

@@ -26,9 +26,9 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "�
 - [ ] G2-6 Object/texture/material pickers with thumbnails and drag & drop
 - [ ] G2-7 Inspector lock + Debug mode
 ## G3 Prefabs
-- [ ] G3-1 Prefab mode (open prefab in isolation, breadcrumb, Save/Auto save)
-- [ ] G3-2 Overrides menu: Apply all / Revert all / per-field Apply to prefab
-- [ ] G3-3 Drag Hierarchy entity into Project = create prefab; Unpack; Unpack completely
+- [ ] G3-1 Prefab mode (open prefab in isolation, breadcrumb, Save/Auto save) — todo
+- [~] G3-2 Inspector Apply all / Revert all done (writes the prefab file); per-field Apply to prefab todo
+- [x] G3-3 Drag Hierarchy entity into Assets (or right-click ▸ Create prefab) = prefab; Unpack; Unpack completely
 - [ ] G3-4 Nested prefabs + prefab variants
 - [ ] G3-5 Overrides for children and added/removed components (not only field values)
 ## G4 Project, materials, import

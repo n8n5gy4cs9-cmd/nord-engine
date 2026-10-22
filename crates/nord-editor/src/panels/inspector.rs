@@ -421,6 +421,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
 
     let mut e: Entity = orig.clone();
     let mut docs: Option<String> = None;
+    let mut prefab_op: Option<(String, u8)> = None;
     egui::ScrollArea::vertical()
         .auto_shrink([false; 2])
         .show(ui, |ui| {
@@ -699,6 +700,18 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 ui.separator();
                 ui.label(format!("Prefab instance: {}", p.path));
                 ui.weak(format!("{} override(s)", p.overrides.len()));
+                let pid = e.id.clone();
+                ui.horizontal_wrapped(|ui| {
+                    if ui.button("Apply all").clicked() {
+                        prefab_op = Some((pid.clone(), 0));
+                    }
+                    if ui.button("Unpack").clicked() {
+                        prefab_op = Some((pid.clone(), 1));
+                    }
+                    if ui.button("Unpack completely").clicked() {
+                        prefab_op = Some((pid.clone(), 2));
+                    }
+                });
                 if let Some(b) = &base_ent {
                     if !p.overrides.is_empty() && ui.button("Revert all overrides").clicked() {
                         e.components = b.components.clone();
@@ -715,6 +728,13 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
 
     if let Some(page) = docs {
         st.push(crate::state::Action::OpenDocs(page));
+    }
+    if let Some((id, op)) = prefab_op {
+        match op {
+            0 => st.apply_prefab(&id),
+            n => st.unpack_prefab(&id, n == 2),
+        }
+        return;
     }
     if e != orig {
         let id = orig.id.clone();
