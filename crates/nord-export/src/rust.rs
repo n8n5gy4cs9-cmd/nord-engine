@@ -15,8 +15,39 @@ use std::{
 const WASM_FLAGS: &str =
     r#"target.wasm32-unknown-unknown.rustflags=["-C","link-arg=--allow-undefined"]"#;
 
+/// Directories where `rustup`/`cargo install` put tools. A double-clicked macOS app does not inherit the shell's PATH, so
+/// `~/.cargo/bin` (Windows: `%USERPROFILE%\.cargo\bin`) would otherwise be invisible to the editor.
+fn cargo_bin_dirs() -> Vec<PathBuf> {
+    let home = |k: &str| std::env::var_os(k).map(PathBuf::from);
+    let mut dirs = vec![];
+    if let Some(h) = home("CARGO_HOME") {
+        dirs.push(h.join("bin"));
+    }
+    if let Some(h) = home("HOME").or_else(|| home("USERPROFILE")) {
+        dirs.push(h.join(".cargo").join("bin"));
+    }
+    dirs
+}
+
+/// `Command::new(name)` whose PATH also contains the cargo bin directories (appended, so an explicit PATH entry still wins).
+fn tool(name: &str) -> Command {
+    let mut cmd = Command::new(name);
+    let mut paths: Vec<PathBuf> = std::env::var_os("PATH")
+        .map(|p| std::env::split_paths(&p).collect())
+        .unwrap_or_default();
+    for d in cargo_bin_dirs() {
+        if !paths.contains(&d) {
+            paths.push(d);
+        }
+    }
+    if let Ok(joined) = std::env::join_paths(paths) {
+        cmd.env("PATH", joined);
+    }
+    cmd
+}
+
 fn tool_exists(name: &str, arg: &str) -> bool {
-    Command::new(name)
+    tool(name)
         .arg(arg)
         .stdout(Stdio::null())
         .stderr(Stdio::null())
@@ -25,7 +56,7 @@ fn tool_exists(name: &str, arg: &str) -> bool {
 }
 
 fn wasm_target_installed() -> bool {
-    Command::new("rustup")
+    tool("rustup")
         .args(["target", "list", "--installed"])
         .output()
         .map(|o| String::from_utf8_lossy(&o.stdout).contains("wasm32-unknown-unknown"))
@@ -52,7 +83,7 @@ pub fn cargo_build(
     if !wasm_target_installed() {
         bail!("the wasm32 target is missing: run `rustup target add wasm32-unknown-unknown`");
     }
-    let mut cmd = Command::new("cargo");
+    let mut cmd = tool("cargo");
     cmd.current_dir(project)
         .args([
             "build",
@@ -144,7 +175,7 @@ pub fn optimize_wasm(wasm: &Path) -> String {
     }
     let before = fs::metadata(wasm).map_or(0, |m| m.len());
     let tmp = wasm.with_extension("opt.wasm");
-    let ok = Command::new("wasm-opt")
+    let ok = tool("wasm-opt")
         .args(["-Oz", "--all-features", "-o"])
         .arg(&tmp)
         .arg(wasm)
@@ -179,7 +210,7 @@ pub fn bindgen(wasm: &Path, out: &Path) -> Result<()> {
     if !tool_exists("wasm-bindgen", "--version") {
         bail!("wasm-bindgen CLI not found: `cargo install wasm-bindgen-cli --version <the wasm-bindgen version in your Cargo.lock>`");
     }
-    let st = Command::new("wasm-bindgen")
+    let st = tool("wasm-bindgen")
         .args([
             "--target",
             "web",
@@ -201,6 +232,20 @@ pub fn bindgen(wasm: &Path, out: &Path) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn tool_path_includes_cargo_bin() {
+        let cmd = tool("cargo");
+        let path = cmd
+            .get_envs()
+            .find(|(k, _)| *k == "PATH")
+            .and_then(|(_, v)| v.map(|v| v.to_owned()))
+            .expect("PATH set");
+        let dirs: Vec<PathBuf> = std::env::split_paths(&path).collect();
+        for d in cargo_bin_dirs() {
+            assert!(dirs.contains(&d), "{} missing from PATH", d.display());
+        }
+    }
 
     #[test]
     fn parses_short_diagnostics() {

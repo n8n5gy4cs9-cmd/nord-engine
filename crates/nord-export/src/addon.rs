@@ -19,13 +19,20 @@ pub struct Meta {
 }
 
 fn valid_id(id: &str) -> bool {
-    !id.is_empty() && id.len() <= 64 && id.chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '-' || c == '_')
+    !id.is_empty()
+        && id.len() <= 64
+        && id
+            .chars()
+            .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '-' || c == '_')
 }
 
 /// Read + validate `<dir>/addon.json`.
 pub fn read_meta(dir: &Path) -> Result<Meta> {
     let p = dir.join("addon.json");
-    let v: Value = serde_json::from_slice(&fs::read(&p).with_context(|| format!("{} not found", p.display()))?).with_context(|| format!("{}: invalid JSON", p.display()))?;
+    let v: Value = serde_json::from_slice(
+        &fs::read(&p).with_context(|| format!("{} not found", p.display()))?,
+    )
+    .with_context(|| format!("{}: invalid JSON", p.display()))?;
     let s = |k: &str| v[k].as_str().map(String::from);
     let id = s("id").context("addon.json: \"id\" is required")?;
     if !valid_id(&id) {
@@ -39,7 +46,13 @@ pub fn read_meta(dir: &Path) -> Result<Meta> {
     if !["plugin", "behavior", "effect", "mixed"].contains(&kind.as_str()) {
         bail!("addon.json: type must be plugin, behavior, effect or mixed");
     }
-    Ok(Meta { name: s("name").unwrap_or_else(|| id.clone()), version: s("version").unwrap_or_else(|| "0.1.0".into()), id, kind, main })
+    Ok(Meta {
+        name: s("name").unwrap_or_else(|| id.clone()),
+        version: s("version").unwrap_or_else(|| "0.1.0".into()),
+        id,
+        kind,
+        main,
+    })
 }
 
 fn files(dir: &Path) -> Vec<(PathBuf, String)> {
@@ -52,7 +65,11 @@ fn files(dir: &Path) -> Vec<(PathBuf, String)> {
             if n.starts_with('.') || n == "node_modules" {
                 continue;
             }
-            let r = if rel.is_empty() { n } else { format!("{rel}/{n}") };
+            let r = if rel.is_empty() {
+                n
+            } else {
+                format!("{rel}/{n}")
+            };
             if e.path().is_dir() {
                 go(&e.path(), &r, out);
             } else {
@@ -68,9 +85,12 @@ fn files(dir: &Path) -> Vec<(PathBuf, String)> {
 /// Zip an addon folder into `<out or cwd>/<id>-<version>.nordaddon`.
 pub fn pack(dir: &Path, out: Option<&Path>) -> Result<PathBuf> {
     let m = read_meta(dir)?;
-    let target = out.map(Path::to_path_buf).unwrap_or_else(|| PathBuf::from(format!("{}-{}.{EXT}", m.id, m.version)));
+    let target = out
+        .map(Path::to_path_buf)
+        .unwrap_or_else(|| PathBuf::from(format!("{}-{}.{EXT}", m.id, m.version)));
     let mut z = zip::ZipWriter::new(fs::File::create(&target)?);
-    let opt = zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::Deflated);
+    let opt = zip::write::SimpleFileOptions::default()
+        .compression_method(zip::CompressionMethod::Deflated);
     for (p, r) in files(dir) {
         z.start_file(r.as_str(), opt)?;
         z.write_all(&fs::read(p)?)?;
@@ -81,7 +101,9 @@ pub fn pack(dir: &Path, out: Option<&Path>) -> Result<PathBuf> {
 
 /// Install a folder or a `.nordaddon` file into `<project>/addons/<id>/` and register it in `nord.project.json` (`addons`).
 pub fn install(src: &Path, project: &Path) -> Result<Meta> {
-    let staging = project.join(".nord").join(format!("addon-staging-{}", std::process::id()));
+    let staging = project
+        .join(".nord")
+        .join(format!("addon-staging-{}", std::process::id()));
     let _ = fs::remove_dir_all(&staging);
     fs::create_dir_all(&staging)?;
     let result = (|| -> Result<Meta> {
@@ -92,10 +114,14 @@ pub fn install(src: &Path, project: &Path) -> Result<Meta> {
                 fs::copy(p, d)?;
             }
         } else {
-            let mut z = zip::ZipArchive::new(fs::File::open(src).with_context(|| src.display().to_string())?)?;
+            let mut z = zip::ZipArchive::new(
+                fs::File::open(src).with_context(|| src.display().to_string())?,
+            )?;
             for i in 0..z.len() {
                 let mut f = z.by_index(i)?;
-                let Some(rel) = f.enclosed_name() else { bail!("unsafe path in package: {}", f.name()) };
+                let Some(rel) = f.enclosed_name() else {
+                    bail!("unsafe path in package: {}", f.name())
+                };
                 if f.is_dir() {
                     continue;
                 }
@@ -135,7 +161,10 @@ pub fn install(src: &Path, project: &Path) -> Result<Meta> {
 /// Addons registered in the project, with their metadata (missing/invalid ones are reported as errors in the second list).
 pub fn list(project: &Path) -> (Vec<Meta>, Vec<String>) {
     let (mut ok, mut bad) = (vec![], vec![]);
-    for rel in nord_core::io::load_project(project).map(|p| p.addons).unwrap_or_default() {
+    for rel in nord_core::io::load_project(project)
+        .map(|p| p.addons)
+        .unwrap_or_default()
+    {
         match read_meta(&project.join(&rel)) {
             Ok(m) => ok.push(m),
             Err(e) => bad.push(format!("{rel}: {e}")),
@@ -156,7 +185,11 @@ mod tests {
         nord_core::project::create(&proj, nord_core::ProjectType::TwoD).unwrap();
         let a = d.join("dice");
         fs::create_dir_all(&a).unwrap();
-        fs::write(a.join("addon.json"), r#"{"id":"dice","name":"Dice","version":"1.2.0","type":"plugin"}"#).unwrap();
+        fs::write(
+            a.join("addon.json"),
+            r#"{"id":"dice","name":"Dice","version":"1.2.0","type":"plugin"}"#,
+        )
+        .unwrap();
         fs::write(a.join("addon.js"), "export function register() {}").unwrap();
         let pkg = pack(&a, Some(&d.join("dice.nordaddon"))).unwrap();
         let m = install(&pkg, &proj).unwrap();
@@ -166,7 +199,10 @@ mod tests {
         let (ok, bad) = list(&proj);
         assert_eq!(ok.len(), 1);
         assert!(bad.is_empty());
-        assert_eq!(nord_core::io::load_project(&proj).unwrap().addons, vec!["addons/dice".to_string()]);
+        assert_eq!(
+            nord_core::io::load_project(&proj).unwrap().addons,
+            vec!["addons/dice".to_string()]
+        );
         // validation
         fs::write(a.join("addon.json"), r#"{"id":"Bad Id"}"#).unwrap();
         assert!(read_meta(&a).is_err());

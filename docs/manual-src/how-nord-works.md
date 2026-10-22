@@ -133,7 +133,7 @@ Pick the type when you create a project; it is stored in `nord.project.json` as 
 
 For a first game, **choose `2d`**. It has the fewest moving parts. You can make a 3D project later; nothing is lost.
 
-The Rust types do not read all of Nord's JavaScript features. [The Rust guide](rust-wasm.html) lists what they support.
+The Rust types need **Rust installed** on your computer (with the WebAssembly target). Nord runs Rust's own build tool, `cargo`, and packages the result for the browser; it does not include a Rust compiler. They also do not read all of Nord's JavaScript features. [The Rust guide](rust-wasm.html) covers setup, what has been tested and what they support.
 
 ## Part 5: Nord's tools sit on top
 

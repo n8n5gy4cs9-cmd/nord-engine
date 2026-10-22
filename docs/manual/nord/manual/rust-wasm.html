@@ -9,9 +9,62 @@
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
 <div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html" class="cur" aria-current="page">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="debugger.html">Debugger and profiler</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Rust / WASM</h1>
-<p>Choose a Rust tier when you want to write the game or app in Rust. Nord builds that Rust program into WebAssembly so a browser can run it.</p>
+<p>Choose a Rust tier when you want to write the game or app in Rust. Nord does not contain its own Rust compiler: it runs <strong><code>cargo</code></strong> (Rust&#39;s standard build tool) on your project, then packages the result as WebAssembly so a browser can run it. That means <strong>you must install Rust first</strong>; the steps are in <a href="#before-you-start">Before you start</a>.</p>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>JavaScript NordScript examples do not paste into a Rust project. Start from a Rust template and follow its Rust entry point. Compiling is the step that turns Rust source into a runnable program.</p>
-</aside><p>Two Rust project types sit beside the JS tiers. Both run natively (<code>cargo run</code>) <strong>and</strong> in the browser as WebAssembly. The reasoning is recorded in <a href="../appendix/decisions.html">Design decisions</a>.</p>
+</aside><h2 id="before-you-start">Before you start<a class="anchor" href="#before-you-start">#</a></h2>
+<p>You need the items below on your computer. JavaScript projects need none of them.</p>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>macOS</th>
+<th>Windows</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>A C toolchain</strong> (some Rust libraries compile helper programs while building)</td>
+<td><code>xcode-select --install</code> (Xcode Command Line Tools)</td>
+<td>Visual Studio Build Tools (search for it on Microsoft&#39;s site) with the <strong>Desktop development with C++</strong> workload</td>
+</tr>
+<tr>
+<td><strong>Rust</strong> (includes <code>cargo</code>)</td>
+<td><code>curl --proto &#39;=https&#39; --tlsv1.2 -sSf https://sh.rustup.rs | sh</code></td>
+<td>Download and run <code>rustup-init.exe</code> from the Rust website (search for &quot;rustup&quot;)</td>
+</tr>
+<tr>
+<td><strong>The WebAssembly target</strong></td>
+<td><code>rustup target add wasm32-unknown-unknown</code></td>
+<td>same</td>
+</tr>
+<tr>
+<td><strong><code>wasm-bindgen</code> CLI</strong> (Rust <em>apps</em> only)</td>
+<td><code>cargo install wasm-bindgen-cli --version X</code></td>
+<td>same</td>
+</tr>
+</tbody></table>
+<p><code>X</code> must equal the <code>wasm-bindgen</code> version in your project&#39;s <code>Cargo.lock</code>. Open a new terminal after installing Rust so it is on your PATH.</p>
+<p>Optional: <code>wasm-opt</code> (from binaryen) makes release builds smaller when you use <code>--optimize</code>.</p>
+<p>Check your setup with the command-line tool:</p>
+<pre class="code" data-lang="bash"><code>nord doctor</code></pre>
+<p>It prints whether <code>cargo</code> and the <code>wasm32</code> target are present (the editor finds <code>cargo</code> in <code>~/.cargo/bin</code> on macOS or <code>%USERPROFILE%\.cargo\bin</code> on Windows even when it was started by double-clicking, not from a terminal). If <code>wasm32</code> says <em>missing</em>, run the <code>rustup target add</code> line above.</p>
+<aside class="box tip"><div class="box-title">Tip</div><p>The <strong>first build is slow</strong> (it compiles macroquad, rapier or egui from scratch, often several minutes). Later builds only recompile your own code and take seconds. The Bevy starter template is the slowest.</p>
+</aside><h2 id="what-happens-when-you-build">What happens when you build<a class="anchor" href="#what-happens-when-you-build">#</a></h2>
+<ol>
+<li>Nord runs <code>cargo build</code> for the <code>wasm32-unknown-unknown</code> target. Compiler errors are shown in the <strong>Console</strong> with clickable <code>file:line</code> links.</li>
+<li><strong>Rust game (<code>wasm-game</code>):</strong> the compiled <code>game.wasm</code> is placed in <code>target/web/</code>. <strong>Rust app (<code>wasm-app</code>):</strong> <code>wasm-bindgen</code> turns the output into <code>app.js</code> + <code>app_bg.wasm</code>.</li>
+<li>For a <strong>web export</strong>, Nord also copies your scenes and assets next to it, adds the loader page, runs the <a href="export.html">offline check</a> and can zip the result. Nothing is downloaded from the internet.</li>
+<li>In the editor, pressing <strong>Play</strong> on a Rust project does steps 1 and 2 first, then shows the result.</li>
+</ol>
+<p>Nord passes the extra linker flag that newer Rust versions (1.93 and later) need for WebAssembly, so you do not have to configure it.</p>
+<h2 id="what-has-been-tested">What has been tested<a class="anchor" href="#what-has-been-tested">#</a></h2>
+<p>Honest status, so you know what to trust:</p>
+<ul>
+<li><strong>Verified on macOS (Apple silicon):</strong> creating a Rust game from the template and building it with <code>nord build-rust</code> and <code>nord export --target web-wasm-game</code> while the editor tool runs with the minimal PATH a double-clicked app gets. The export produced a 3.4 MB <code>game.wasm</code>, the macroquad loader, scenes and assets. This is the same code path the editor&#39;s Play button uses.</li>
+<li><strong>Verified on Linux:</strong> the bundled Rust examples (a platformer and a physics toy box) run in a real browser engine with physics, tilemaps, sprite animation, camera follow, input and egui labels. The Rust arcade game from <a href="../tutorials/tut-t37-advanced-rust-wasm.html">T37</a> exports to real WebAssembly.</li>
+<li><strong>Windows:</strong> the build code uses only <code>cargo</code>, <code>rustup</code>, <code>wasm-bindgen</code> and <code>wasm-opt</code> found on PATH (including <code>%USERPROFILE%\.cargo\bin</code>), so it is expected to work, but a full Windows build has not been run yet.</li>
+<li><strong>Not yet verified:</strong> Rust <em>app</em> (<code>wasm-app</code>) builds on macOS and Windows, the editor&#39;s Play-then-build button in a real editor window, audio output from Rust projects, and particle emitters in a visual scene. If something misbehaves there, build with <code>nord build-rust</code> and run <code>nord serve</code> instead, and please report it (<a href="../appendix/known-issues.html">Known issues</a>).</li>
+</ul>
+<p>Two Rust project types sit beside the JS tiers. Both run natively (<code>cargo run</code>) <strong>and</strong> in the browser as WebAssembly. The reasoning is recorded in <a href="../appendix/decisions.html">Design decisions</a>.</p>
 <ul>
 <li><strong><code>wasm-game</code></strong> — macroquad + rapier2d; uses the <em>same scene JSON, prefabs and assets</em> as the JS 2D tier.</li>
 <li><strong><code>wasm-app</code></strong> — eframe/egui for tools and dashboards.</li>
@@ -71,13 +124,16 @@ The full list is in <code>docs/RUST_TIER.md</code> in the repository.</p>
 <h2 id="supported-components-2d">Supported components (2D)<a class="anchor" href="#supported-components-2d">#</a></h2>
 <p>sprite, animatedSprite, text, tilemap (+ collider runs), parallax, particles (CPU), camera, rigidbody, collider, trigger, ui label/bar/button/panel (egui), audioSource (autoplay).
 <strong>Not yet:</strong> lights, 3D, spawner/path components, joints, animation events. Units: pixels, y down, degrees; physics runs in metres at 32 px/m.</p>
-<h2 id="gotchas">Gotchas<a class="anchor" href="#gotchas">#</a></h2>
+<h2 id="gotchas-and-common-errors">Gotchas and common errors<a class="anchor" href="#gotchas-and-common-errors">#</a></h2>
 <ul>
+<li><strong><code>error: can&#39;t find crate for std</code> or <code>wasm32-unknown-unknown target may not be installed</code></strong> — run <code>rustup target add wasm32-unknown-unknown</code>.</li>
+<li><strong><code>wasm-bindgen</code> version mismatch</strong> (apps) — install the CLI at exactly the version in <code>Cargo.lock</code>: <code>cargo install wasm-bindgen-cli --version &lt;that version&gt;</code>.</li>
+<li><strong>Build seems stuck</strong> — the first build is slow; watch the Console for progress lines.</li>
 <li>Audio is WAV/OGG only.</li>
 <li>macroquad&#39;s JS bundle logs a harmless <code>register_plugin is not defined</code> error.</li>
 <li>The page must serve <code>nord.project.json</code>, scenes and assets next to <code>index.html</code> (the export does).</li>
 </ul>
 <aside class="box tip"><div class="box-title">Tip</div><p>Desktop apps in Rust: <code>nord_app_wasm::desktop::Desktop</code> gives files, dialogs, notifications, clipboard, storage with the same permission manifest as JS apps (web builds fall back gracefully). See <a href="desktop-apps.html">Desktop apps</a>.</p>
 </aside>
-<div class="pager"><a href="library.html"><small>← Previous</small>The library</a><a href="export.html"><small>Next →</small>Export &amp; hosting</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#layout">Layout </a><a href="#scripts">Scripts </a><a href="#building-and-exporting">Building and exporting </a><a href="#supported-components-2d">Supported components (2D) </a><a href="#gotchas">Gotchas </a></aside></div>
+<div class="pager"><a href="library.html"><small>← Previous</small>The library</a><a href="export.html"><small>Next →</small>Export &amp; hosting</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#before-you-start">Before you start </a><a href="#what-happens-when-you-build">What happens when you build </a><a href="#what-has-been-tested">What has been tested </a><a href="#layout">Layout </a><a href="#scripts">Scripts </a><a href="#building-and-exporting">Building and exporting </a><a href="#supported-components-2d">Supported components (2D) </a><a href="#gotchas-and-common-errors">Gotchas and common errors </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

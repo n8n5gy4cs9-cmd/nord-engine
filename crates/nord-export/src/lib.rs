@@ -9,8 +9,8 @@ pub mod rust;
 
 use anyhow::{bail, Context, Result};
 use base64::Engine as _;
-use nord_core::{assets, io, offline, validate, ProjectType};
 use nord_core::vfs::{self as fs, PathExt};
+use nord_core::{assets, io, offline, validate, ProjectType};
 use std::{
     path::{Path, PathBuf},
     process::Command,
@@ -286,7 +286,9 @@ fn run_node(engine: &Path, spec: &serde_json::Value, tmp: &Path) -> Result<()> {
 /// `node tools/compile-sheets.mjs <out> --annotate`; `None` when the build has no event sheets.
 fn compile_event_sheets(engine: &Path, out: &Path) -> Result<Option<String>> {
     let mut files = vec![];
-    walk(out, "", &mut files, &|r| r.starts_with("vendor/") || r.starts_with("runtime/"));
+    walk(out, "", &mut files, &|r| {
+        r.starts_with("vendor/") || r.starts_with("runtime/")
+    });
     if !files.iter().any(|(_, r)| r.ends_with(".events.json")) {
         return Ok(None);
     }
@@ -294,12 +296,20 @@ fn compile_event_sheets(engine: &Path, out: &Path) -> Result<Option<String>> {
     if !script.v_exists() {
         bail!("tools/compile-sheets.mjs not found");
     }
-    let o = Command::new("node").arg(&script).arg(out).arg("--annotate").output().context("Node.js not found")?;
+    let o = Command::new("node")
+        .arg(&script)
+        .arg(out)
+        .arg("--annotate")
+        .output()
+        .context("Node.js not found")?;
     if !o.status.success() {
         bail!("{}", String::from_utf8_lossy(&o.stderr).trim());
     }
     let text = String::from_utf8_lossy(&o.stdout);
-    Ok(Some(format!("event sheets: {}", text.lines().last().unwrap_or("compiled").trim())))
+    Ok(Some(format!(
+        "event sheets: {}",
+        text.lines().last().unwrap_or("compiled").trim()
+    )))
 }
 
 fn mime(path: &str) -> &'static str {
@@ -468,8 +478,8 @@ fn optimize(out: &Path) -> Result<Vec<String>> {
 // ---- main entry --------------------------------------------------------------------------------------------------
 
 pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
-    let project = fs::canonicalize(project)
-        .with_context(|| format!("project {}", project.display()))?;
+    let project =
+        fs::canonicalize(project).with_context(|| format!("project {}", project.display()))?;
     let issues = validate::validate_project(&project);
     if !issues.is_empty() {
         bail!(
@@ -679,11 +689,14 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
     }
 
     // 5a. event sheets → JavaScript (ahead of time); the runtime falls back to interpreting when a module is missing
-    if o.compile_events && !o.single_file && out.join("runtime/core/eventsheet/expr.js").v_exists() {
+    if o.compile_events && !o.single_file && out.join("runtime/core/eventsheet/expr.js").v_exists()
+    {
         match compile_event_sheets(engine, &out) {
             Ok(Some(msg)) => notes.push(msg),
             Ok(None) => {}
-            Err(e) => notes.push(format!("event sheets not compiled (they run interpreted): {e}")),
+            Err(e) => notes.push(format!(
+                "event sheets not compiled (they run interpreted): {e}"
+            )),
         }
     }
 
@@ -828,23 +841,40 @@ pub fn size_checks(files: &[(String, u64)]) -> Vec<String> {
     if mb(total) > 100.0 {
         notes.push(format!("check: build is {:.0} MB — large for the web; try --optimize, shorter music, smaller textures", mb(total)));
     }
-    for (p, n) in files.iter().filter(|(p, n)| mb(*n) > 8.0 && !p.starts_with("vendor/") && !p.starts_with("runtime/")).take(5) {
+    for (p, n) in files
+        .iter()
+        .filter(|(p, n)| mb(*n) > 8.0 && !p.starts_with("vendor/") && !p.starts_with("runtime/"))
+        .take(5)
+    {
         notes.push(format!("check: {p} is {:.1} MB", mb(*n)));
     }
     notes
 }
 
 fn pwa_icon(project: &Path, engine: &Path, proj: &nord_core::Project) -> Option<PathBuf> {
-    let configured = proj.export.get("web").and_then(|w| w["icon"].as_str()).map(|s| project.join(s));
-    [configured, Some(project.join("icon.png")), Some(engine.join("assets/brand/logo-512.png"))]
-        .into_iter()
-        .flatten()
-        .find(|p| p.v_is_file())
+    let configured = proj
+        .export
+        .get("web")
+        .and_then(|w| w["icon"].as_str())
+        .map(|s| project.join(s));
+    [
+        configured,
+        Some(project.join("icon.png")),
+        Some(engine.join("assets/brand/logo-512.png")),
+    ]
+    .into_iter()
+    .flatten()
+    .find(|p| p.v_is_file())
 }
 
 /// `manifest.webmanifest`, `sw.js` and the tags in index.html that make the build installable and playable offline.
 fn write_pwa(project: &Path, engine: &Path, out: &Path, proj: &nord_core::Project) -> Result<()> {
-    let web = proj.export.get("web").and_then(|w| w.get("pwa")).cloned().unwrap_or_default();
+    let web = proj
+        .export
+        .get("web")
+        .and_then(|w| w.get("pwa"))
+        .cloned()
+        .unwrap_or_default();
     let display = web["display"].as_str().unwrap_or("fullscreen");
     let bg = css_safe(&proj.display.background);
     let mut icons = vec![];
@@ -863,7 +893,10 @@ fn write_pwa(project: &Path, engine: &Path, out: &Path, proj: &nord_core::Projec
     if let Some(o) = web["orientation"].as_str() {
         m["orientation"] = serde_json::json!(o);
     }
-    io::write_atomic(&out.join("manifest.webmanifest"), serde_json::to_string_pretty(&m)?.as_bytes())?;
+    io::write_atomic(
+        &out.join("manifest.webmanifest"),
+        serde_json::to_string_pretty(&m)?.as_bytes(),
+    )?;
 
     // service worker: precache every file of this build; the cache name changes when any file changes, so updates replace old caches
     let mut files = vec![];
@@ -890,7 +923,9 @@ self.addEventListener('fetch', (e) => {{ if (e.request.method !== 'GET') return;
     let html = fs::read_to_string(&idx).context("index.html")?;
     let head = format!("<link rel=\"manifest\" href=\"manifest.webmanifest\"><meta name=\"theme-color\" content=\"{bg}\">");
     let reg = "<script>if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});</script>";
-    let html = html.replacen("</head>", &format!("{head}</head>"), 1).replacen("</body>", &format!("{reg}</body>"), 1);
+    let html = html
+        .replacen("</head>", &format!("{head}</head>"), 1)
+        .replacen("</body>", &format!("{reg}</body>"), 1);
     io::write_atomic(&idx, html.as_bytes())?;
     Ok(())
 }
@@ -1158,24 +1193,51 @@ mod tests {
         let proj = d.join("game");
         nord_core::project::create(&proj, ProjectType::TwoD).unwrap();
         let out = d.join("out");
-        let r = build(&proj, &engine(), &Opts { out: Some(out.clone()), pwa: true, ..Opts::default() }).unwrap();
+        let r = build(
+            &proj,
+            &engine(),
+            &Opts {
+                out: Some(out.clone()),
+                pwa: true,
+                ..Opts::default()
+            },
+        )
+        .unwrap();
         assert!(r.notes.iter().any(|n| n.starts_with("pwa:")));
-        let m: serde_json::Value = serde_json::from_slice(&fs::read(out.join("manifest.webmanifest")).unwrap()).unwrap();
+        let m: serde_json::Value =
+            serde_json::from_slice(&fs::read(out.join("manifest.webmanifest")).unwrap()).unwrap();
         assert_eq!(m["display"], "fullscreen");
         assert_eq!(m["start_url"], "./");
         assert!(out.join(m["icons"][0]["src"].as_str().unwrap()).v_is_file());
         let sw = fs::read_to_string(out.join("sw.js")).unwrap();
-        assert!(sw.contains("\"runtime/phaser/index.js\"") && sw.contains("manifest.webmanifest") && !sw.contains("\"sw.js\""));
+        assert!(
+            sw.contains("\"runtime/phaser/index.js\"")
+                && sw.contains("manifest.webmanifest")
+                && !sw.contains("\"sw.js\"")
+        );
         let html = fs::read_to_string(out.join("index.html")).unwrap();
         assert!(html.contains("rel=\"manifest\"") && html.contains("serviceWorker"));
         // single-file builds cannot be PWAs
-        let e = build(&proj, &engine(), &Opts { out: Some(d.join("o2")), pwa: true, single_file: true, ..Opts::default() }).unwrap_err();
+        let e = build(
+            &proj,
+            &engine(),
+            &Opts {
+                out: Some(d.join("o2")),
+                pwa: true,
+                single_file: true,
+                ..Opts::default()
+            },
+        )
+        .unwrap_err();
         assert!(format!("{e}").contains("--pwa"));
     }
 
     #[test]
     fn size_checks_flag_big_files() {
-        let n = size_checks(&[("assets/music/a.mp3".into(), 20 << 20), ("vendor/x.js".into(), 30 << 20)]);
+        let n = size_checks(&[
+            ("assets/music/a.mp3".into(), 20 << 20),
+            ("vendor/x.js".into(), 30 << 20),
+        ]);
         assert_eq!(n.len(), 1 + 0);
         assert!(n.iter().any(|s| s.contains("a.mp3")));
     }
