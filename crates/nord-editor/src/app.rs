@@ -815,6 +815,9 @@ impl App {
                 for (label, k) in [
                     ("Create ▸ Folder", "folder"),
                     ("Create ▸ Script", "script"),
+                    ("Create ▸ MonoBehaviour script", "mono"),
+                    ("Create ▸ Singleton script", "singleton"),
+                    ("Create ▸ GameManager script", "manager"),
                     ("Create ▸ UI screen", "ui"),
                     ("Create ▸ Graph", "graph"),
                 ] {

@@ -19,6 +19,7 @@ export class Input {
   setVirtual(action, on) { on ? this.virtual.add(action) : this.virtual.delete(action); }
   /** Call once per frame before scripts update: snapshots action state so pressed/released work. */
   beginFrame() {
+    this.heldPrev = this.heldSnap ?? new Set(); this.heldSnap = new Set(this.held); // raw-key edges for Unity-style GetKeyDown/Up
     this.prev = this.cur;
     this.cur = new Set(this.virtual);
     for (const [a, codes] of Object.entries(this.actions)) if (codes.some((c) => this.held.has(c))) this.cur.add(a);

@@ -256,3 +256,54 @@ test('Inspector signal connections: event on one entity calls a script method on
   assert.deepEqual(got, [['open', 7]]);
   assert.deepEqual(g.scene.find('Button').toJSON().connections.length, 2);
 });
+
+// ---------- Unity-style layer (G10) ----------
+import { MonoBehaviour, Singleton, GameManager, Mathf, Vector3, Time, UnityInput, WaitForSeconds, SerializeField, UnityEvent, SceneManager } from './index.js';
+
+test('MonoBehaviour: Unity lifecycle names, attributes as fields, coroutines', async () => {
+  const log = [];
+  class P extends MonoBehaviour {
+    static attributes = SerializeField({ speed: 5 });
+    Awake() { log.push('Awake'); } Start() { log.push(`Start ${this.speed}`); } Update() { log.push('Update'); } OnDestroy() { log.push('OnDestroy'); }
+    *Routine() { log.push('r0'); yield new WaitForSeconds(0.1); log.push('r1'); yield null; log.push('r2'); }
+  }
+  files['mod:p.js'] = P;
+  files.s = { name: 's', entities: [ent('P', { scripts: [{ path: 'p.js', attributes: { speed: 7 } }] })] };
+  const g = mk(); await g.loadScene('s');
+  assert.deepEqual(log, ['Awake', 'Start 7']);
+  const p = g.scene.find('P').scripts[0];
+  p.StartCoroutine(p.Routine());
+  g.tick(0.05); assert.equal(log.at(-1), 'Update'); assert.ok(!log.includes('r1'));
+  g.tick(0.06); assert.ok(log.includes('r1'));
+  g.tick(0.016); assert.ok(log.includes('r2'));
+  assert.equal(p.GetComponent(P), p);
+  assert.equal(Time.timeScale, 1);
+  p.Destroy(); g.tick(0.016);
+  assert.equal(log.at(-1), 'OnDestroy');
+});
+
+test('Singleton: instance, duplicate destroyed, GameManager state', async () => {
+  class S extends Singleton {}
+  files['mod:s.js'] = S; files['mod:gm.js'] = GameManager;
+  files.s = { name: 's', entities: [ent('A', { scripts: [{ path: 's.js' }, { path: 'gm.js' }] }), ent('B', { scripts: [{ path: 's.js' }] })] };
+  const g = mk({ onError: (e) => { throw e; } }); await g.loadScene('s');
+  assert.equal(S.instance.entity.name, 'A');
+  g.tick(0.016);
+  assert.ok(g.scene.find('B') === null);
+  const seen = [];
+  g.events.on('score', (d) => seen.push(d.score));
+  GameManager.instance.AddScore(5); GameManager.instance.AddScore(2);
+  assert.deepEqual(seen, [5, 7]);
+  GameManager.instance.LoseLife(); assert.equal(GameManager.instance.lives, 2);
+});
+
+test('Mathf / Vector3 / UnityEvent', () => {
+  assert.equal(Mathf.MoveTowards(0, 10, 3), 3);
+  assert.equal(Mathf.PingPong(3.5, 2), 0.5);
+  assert.equal(Mathf.DeltaAngle(350, 10), 20);
+  assert.equal(new Vector3(3, 4, 0).magnitude, 5);
+  assert.deepEqual(Vector3.Lerp(Vector3.zero, new Vector3(2, 2, 2), 0.5).toArray(), [1, 1, 1]);
+  const ev = new UnityEvent(); let n = 0; ev.AddListener(() => n++); ev.Invoke(); assert.equal(n, 1);
+  assert.ok(SceneManager);
+  assert.ok(UnityInput);
+});

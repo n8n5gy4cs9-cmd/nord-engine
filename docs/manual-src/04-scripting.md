@@ -106,6 +106,30 @@ Imports *of* the script (helper modules) are not re-fetched — reload the page 
 * The library has `util-debug.js` (FPS/entity counters) — see the [catalog](library-catalog.html#utilities).
 * Use `game.timeScale = 0.1` to watch fast things; `game.pause()` to freeze.
 
+## Unity-style scripting
+
+Prefer Unity's names? `import { MonoBehaviour, Singleton, GameManager, Mathf, Vector3, Time, UnityInput, WaitForSeconds } from 'nord'`. Plain `NordScript` scripts keep working; this layer is optional (`runtime/core/unity.js`, behaviour modelled on Unity's public API, no Unity code).
+
+```js
+import { MonoBehaviour, SerializeField, Time, Mathf, WaitForSeconds, UnityInput as Input } from 'nord';
+
+export default class Player extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 5, jump: { default: 3, min: 0, max: 10 } }); // [SerializeField]; readable as this.speed
+  Awake() {}
+  Start() { this.StartCoroutine(this.Blink()); }
+  Update() { this.Translate(Input.GetAxis('Horizontal') * this.speed * Time.deltaTime); }
+  OnTriggerEnter(other) { if (other.CompareTag('coin')) this.Destroy(other); }
+  *Blink() { while (true) { this.SetActive(false); yield new WaitForSeconds(0.1); this.SetActive(true); yield new WaitForSeconds(0.4); } }
+}
+```
+
+* **Lifecycle:** `Awake, Start, Update, FixedUpdate, LateUpdate, OnEnable, OnDisable, OnDestroy, OnCollisionEnter/Exit, OnTriggerEnter/Exit`. Do not also define the lower-case Nord names in the same class.
+* **Lookup / spawn:** `GetComponent(type|Class)`, `GetComponentInChildren/InParent`, `Find(name)`, `FindWithTag`, `FindObjectOfType(Class)`, `Instantiate(prefabPath, {pos})` (returns a Promise), `Destroy(obj, delay)`, `SetActive`, `CompareTag`, `Invoke/InvokeRepeating/CancelInvoke`, `StartCoroutine/StopCoroutine` (`yield null`, `WaitForSeconds`, `WaitUntil`, `WaitWhile`, nested coroutines).
+* **Statics:** `Time` (`deltaTime, time, timeScale, fixedDeltaTime`), `UnityInput` (`GetKey, GetKeyDown, GetKeyUp, GetAxis, GetButton…`; rename on import with `UnityInput as Input`), `Mathf`, `Vector2/Vector3`, `Debug`, `PlayerPrefs`, `SceneManager.LoadScene`, `EventBus`, `UnityEvent`, `ScriptableObject.Load(path)` (shared JSON data assets), `ObjectPool` (prefab pool).
+* **Singleton:** `class Score extends Singleton {}` then `Score.instance` anywhere; a duplicate destroys itself; `static persistent = true` survives scene loads.
+* **GameManager / AudioManager:** ready-made persistent singletons. `GameManager.instance.AddScore(10)`, `LoseLife()`, `SetState('gameover')`, `Pause()/Resume()`, `LoadScene(path)`, `SaveHighScore()`; events `score, lives, state, gameover` on `game.events`. `AudioManager.instance.PlaySfx(path)`, `PlayMusic(path)`.
+* **Templates:** Assets ▸ Create ▸ MonoBehaviour / Singleton / GameManager script (also in the Project right-click menu).
+
 ## Scripts in Rust
 The Rust tiers use a `Script` trait instead — see [Rust / WASM](rust-wasm.html).
 

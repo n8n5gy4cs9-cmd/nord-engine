@@ -28,5 +28,6 @@ export { registerPlugin, registerObjectAces } from './eventsheet/aces.js';
 export { registerDataType, dataTypes } from './eventsheet/objects.js';
 export { compile as compileExpression } from './eventsheet/expr.js';
 export { Behavior, registerBehavior, behaviors } from './behaviors/index.js';
+export * from './unity.js';
 import './behaviors/builtin.js';
 import './behaviors/builtin2.js';

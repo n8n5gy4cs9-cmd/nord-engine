@@ -1,5 +1,6 @@
 # Changelog
 
+- 2026-10-22 — Godotize G10 Unity-style coding: `runtime/core/unity.js` (MonoBehaviour, Singleton, GameManager, AudioManager, Mathf, Vector2/3, Time, UnityInput, PlayerPrefs, SceneManager, coroutines, UnityEvent, EventBus, ScriptableObject, ObjectPool, SerializeField), script templates in Assets menus, manual section, 3 new core tests.
 - 2026-10-22 — Godotize G1-1/3/4/5/6: Scene view navigation (Alt+LMB orbit/pan), Ctrl-snap, Local/Global + Pivot/Center toolbar toggles, multi-select with marquee + outlines, Frame all (Shift+F). Viewport JS not run in a browser yet (Playwright missing on this machine).
 - 2026-10-22 — Godotize G0-2/G0-3 + G1-2: Unity menu bar (Assets, GameObject, Component, Window), Settings shortcut table, Q Hand / T Rect tools (keys, toolbar, 2D+3D viewport). New task group G10 (Unity-style coding helpers).
 - 2026-10-22 — Godotize G0-1: Unity-style layouts (2 by 3, Wide, Tall) in View ▸ Layout. Plan/tasks: `docs/GODOTIZE_PLAN.md`, `godotize-nordengine-tasks.md`.

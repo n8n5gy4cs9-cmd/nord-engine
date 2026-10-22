@@ -9386,5 +9386,6 @@
   "runtime/core/timeline.js",
   "runtime/core/ui.js",
   "runtime/core/uiscene.js",
+  "runtime/core/unity.js",
   "runtime/core/util.js"
 ]

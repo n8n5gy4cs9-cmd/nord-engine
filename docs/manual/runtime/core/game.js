@@ -21,6 +21,7 @@ export class Game {
    */
   constructor(project, opts = {}) {
     this.project = project;
+    Game.current = this; // Unity-style statics (Time, Input, SceneManager…) read the running game
     this.backend = opts.backend ?? null;
     this.fetchJSON = opts.fetchJSON ?? (async (p) => (await fetch(p)).json());
     this.importScript = opts.importScript ?? ((p) => import(/* @vite-ignore */ new URL(p, document.baseURI).href));
