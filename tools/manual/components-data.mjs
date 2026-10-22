@@ -140,5 +140,12 @@ export const COMPONENTS = {
     handle: ['spawn() → Promise<Entity>', 'on — boolean, set false to pause', 'live — Set of alive spawned entities'],
     example: { type: 'spawner', prefab: 'prefabs/coin.prefab.json', interval: 2, max: 5 },
   },
+  graph: {
+    tier: 'both', summary: 'Runs a visual-scripting graph file (`graphs/*.graph.json`) on this entity. *This entity* in the graph is the owner. Built in the Graph tab.',
+    dummies: 'A little program drawn as boxes and wires that this entity follows.',
+    notes: ['Scene-level graphs (no owner) are listed in the scene settings: `"graphs": ["graphs/game.graph.json"]`.'],
+    handle: ['g — the running Graph (stop(), vars)'],
+    example: { type: 'graph', file: 'graphs/player.graph.json' },
+  },
 };
-export const COMPONENT_ORDER = ['sprite', 'animatedSprite', 'text', 'tilemap', 'parallax', 'particles', 'camera', 'light', 'mesh', 'model', 'material', 'skybox', 'postProcess', 'rigidbody', 'collider', 'trigger', 'audioSource', 'audioListener', 'uiPanel', 'uiLabel', 'uiImage', 'uiBar', 'uiButton', 'path', 'spawner'];
+export const COMPONENT_ORDER = ['sprite', 'animatedSprite', 'text', 'tilemap', 'parallax', 'particles', 'camera', 'light', 'mesh', 'model', 'material', 'skybox', 'postProcess', 'rigidbody', 'collider', 'trigger', 'audioSource', 'audioListener', 'uiPanel', 'uiLabel', 'uiImage', 'uiBar', 'uiButton', 'path', 'spawner', 'graph'];

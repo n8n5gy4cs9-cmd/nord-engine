@@ -212,6 +212,11 @@ pub enum Action {
     Palette,
     Settings,
     ResetLayout,
+    /// Window ▸ Layout presets ("default", "2d", "3d", "coding", "visual")
+    Layout(String),
+    /// Pause / resume the running game, or advance it one frame while paused
+    PauseGame,
+    StepGame,
     ResetSettings,
     Export,
     DesktopSettings,
@@ -285,6 +290,11 @@ pub struct EditorState {
     pub skip_viewport_sync: bool,
     pub hierarchy_filter: String,
     pub collapsed: std::collections::HashSet<String>,
+    /// file the UI Designer / Graph tab should show (`?file=` of the embedded page); set by the Assets menu and page IPC
+    pub designer_file: Option<String>,
+    /// (entity id, text) while an entity is being renamed in the Hierarchy
+    pub hierarchy_rename: Option<(String, String)>,
+    pub graph_file: Option<String>,
     pub engine_root: Option<PathBuf>,
     pub themes: Arc<crate::theme::Themes>,
     pub code: crate::code::CodeState,
@@ -322,6 +332,7 @@ pub struct EditorState {
     pub status_msg: Option<(String, Instant)>,
     /// bumps on Play/Reload so the Game webview reloads
     pub game_nonce: u32,
+    pub game_paused: bool,
     /// set by Stop: keeps the play-mode tint for a moment while the game view is torn down
     pub stopping: Option<Instant>,
     /// running `cargo build` for a Rust (wasm-game / wasm-app) project; `None` when idle
@@ -367,6 +378,9 @@ impl EditorState {
             skip_viewport_sync: false,
             hierarchy_filter: String::new(),
             collapsed: Default::default(),
+            designer_file: None,
+            hierarchy_rename: None,
+            graph_file: None,
             engine_root: crate::platform::engine_root(),
             themes: Arc::new(crate::theme::Themes::load()),
             code: Default::default(),
@@ -399,6 +413,7 @@ impl EditorState {
             base_visuals: None,
             status_msg: None,
             game_nonce: 0,
+            game_paused: false,
             stopping: None,
             rust_job: None,
             viewport_ready: false,
@@ -565,6 +580,91 @@ impl EditorState {
             scene_ops::insert(l, parent.as_deref(), idx, e);
         });
         self.select(Some(id));
+    }
+
+    /// Hierarchy ▸ Create: a ready-made entity (name, components) under `parent` (Unity's GameObject menu).
+    pub fn add_preset(&mut self, kind: &str, parent: Option<String>) {
+        let (name, comps): (&str, Vec<Value>) = match kind {
+            "empty" => ("Empty", vec![]),
+            "camera" => ("Camera", vec![json!({"type":"camera"})]),
+            "text" => (
+                "Text",
+                vec![json!({"type":"text","text":"Hello","size":24})],
+            ),
+            "light" => ("Light", vec![json!({"type":"light","kind":"point"})]),
+            "audio" => ("Audio Source", vec![json!({"type":"audioSource"})]),
+            "spawner" => ("Spawner", vec![json!({"type":"spawner","interval":1})]),
+            "trigger" => (
+                "Trigger Zone",
+                vec![json!({"type":"trigger","shape":"box"})],
+            ),
+            "graph" => (
+                "Graph",
+                vec![json!({"type":"graph","file":"graphs/main.graph.json"})],
+            ),
+            "ui-label" => ("UI Label", vec![json!({"type":"uiLabel","text":"Label"})]),
+            "ui-button" => (
+                "UI Button",
+                vec![json!({"type":"uiButton","text":"Button"})],
+            ),
+            "ui-panel" => ("UI Panel", vec![json!({"type":"uiPanel","w":200,"h":120})]),
+            "cube" => (
+                "Cube",
+                vec![
+                    json!({"type":"mesh","shape":"box"}),
+                    json!({"type":"material"}),
+                ],
+            ),
+            "sphere" => (
+                "Sphere",
+                vec![
+                    json!({"type":"mesh","shape":"sphere"}),
+                    json!({"type":"material"}),
+                ],
+            ),
+            "ground" => (
+                "Ground",
+                vec![
+                    json!({"type":"mesh","shape":"ground","size":[20,0.2,20]}),
+                    json!({"type":"material"}),
+                ],
+            ),
+            "sun" => (
+                "Directional Light",
+                vec![json!({"type":"light","kind":"directional","intensity":1.2})],
+            ),
+            _ => return,
+        };
+        let mut e = Entity::new(name);
+        for c in comps {
+            if let Ok(c) = serde_json::from_value(c) {
+                e.components.push(c);
+            }
+        }
+        let id = e.id.clone();
+        self.edit("Create", None, |l| {
+            scene_ops::insert(l, parent.as_deref(), usize::MAX, e);
+        });
+        self.select(Some(id));
+    }
+
+    /// Wrap the selected entities in a new empty parent ("Create Empty Parent").
+    pub fn group_selected(&mut self) {
+        let ids = self.selection.clone();
+        if ids.is_empty() {
+            return;
+        }
+        let g = Entity::new("Group");
+        let gid = g.id.clone();
+        let first = ids[0].clone();
+        self.edit("Group", None, |l| {
+            let parent = scene_ops::parent_of(l, &first);
+            scene_ops::insert(l, parent.as_deref(), usize::MAX, g);
+            for id in &ids {
+                scene_ops::reparent(l, id, Some(&gid), usize::MAX);
+            }
+        });
+        self.select(Some(gid));
     }
 
     /// Dropping an asset on the hierarchy: image -> sprite entity, model -> model entity, prefab -> instance,
@@ -883,6 +983,7 @@ impl EditorState {
     }
 
     pub fn stop(&mut self) {
+        self.game_paused = false;
         if let Some(p) = self.play.as_mut() {
             if p.running {
                 self.stopping = Some(Instant::now());
@@ -969,6 +1070,29 @@ impl EditorState {
                 self.viewport_ready = true;
                 self.send_viewport(self.viewport_scene_msg());
                 self.send_viewport(self.viewport_settings_msg());
+            }
+            // embedded pages (UI Designer, Graph) ask the editor to open a project file in the code editor / another tab
+            Some("open-file") => {
+                if let (Some(root), Some(p)) = (self.root.clone(), m["path"].as_str()) {
+                    if !p.contains("..") && !p.starts_with('/') {
+                        let line = m["line"].as_u64().map(|l| l as usize);
+                        self.push(Action::OpenFile(root.join(p), line));
+                    }
+                }
+            }
+            Some("open-tab") => {
+                let file = m["file"].as_str().map(String::from);
+                match m["tab"].as_str() {
+                    Some("uidesigner") => {
+                        self.designer_file = file;
+                        self.push(Action::ShowTab(crate::app::Tab::UiDesigner));
+                    }
+                    Some("graph") => {
+                        self.graph_file = file;
+                        self.push(Action::ShowTab(crate::app::Tab::Graph));
+                    }
+                    _ => {}
+                }
             }
             Some("select") => {
                 let id = m["id"].as_str().map(String::from);

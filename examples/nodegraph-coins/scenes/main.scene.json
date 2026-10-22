@@ -1,0 +1,480 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {
+    "graphs": [
+      "graphs/game.graph.json"
+    ]
+  },
+  "entities": [
+    {
+      "id": "eeeeeee1",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          180,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "zoom": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee2",
+      "name": "Background",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          180,
+          -10
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            640,
+            360
+          ],
+          "tint": "#243447",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee3",
+      "name": "Player",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          180,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/circle.png",
+          "size": [
+            28,
+            28
+          ],
+          "tint": "#88c0d0"
+        },
+        {
+          "type": "graph",
+          "file": "graphs/player.graph.json"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee4",
+      "name": "Coin 1",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          120,
+          80,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/circle.png",
+          "size": [
+            16,
+            16
+          ],
+          "tint": "#ebcb8b"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee5",
+      "name": "Coin 2",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          520,
+          70,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/circle.png",
+          "size": [
+            16,
+            16
+          ],
+          "tint": "#ebcb8b"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee6",
+      "name": "Coin 3",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          80,
+          280,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/circle.png",
+          "size": [
+            16,
+            16
+          ],
+          "tint": "#ebcb8b"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee7",
+      "name": "Coin 4",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          300,
+          300,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/circle.png",
+          "size": [
+            16,
+            16
+          ],
+          "tint": "#ebcb8b"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee8",
+      "name": "Coin 5",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          560,
+          290,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/circle.png",
+          "size": [
+            16,
+            16
+          ],
+          "tint": "#ebcb8b"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeee9",
+      "name": "Coin 6",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          430,
+          150,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/circle.png",
+          "size": [
+            16,
+            16
+          ],
+          "tint": "#ebcb8b"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeea",
+      "name": "Coin 7",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          200,
+          170,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/circle.png",
+          "size": [
+            16,
+            16
+          ],
+          "tint": "#ebcb8b"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeeb",
+      "name": "Coin 8",
+      "enabled": true,
+      "tags": [
+        "coin"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          330,
+          60,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/circle.png",
+          "size": [
+            16,
+            16
+          ],
+          "tint": "#ebcb8b"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "eeeeeeec",
+      "name": "Title",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          24,
+          50
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "text",
+          "text": "Node Graph demo",
+          "size": 14,
+          "color": "#7a9caa"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

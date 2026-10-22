@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T46 Node graph — build a coin collector with no code — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a><a href="tut-t38-coastline-sprint.html">T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t39-vector-patrol.html">T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t40-jengatedris.html">T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t41-nord-office.html">T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t42-paper-worlds.html">T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><a href="tut-t43-rss-river.html">T43 RSS River — build a calm reader with a physical paper view</a><a href="tut-t44-ui-designer.html">T44 Menus and HUDs with the UI Designer</a><a href="tut-t45-ui-skins-9slice.html">T45 One style for every button, and 9-slice images</a><a href="tut-t46-node-graph-coins.html" class="cur" aria-current="page">T46 Node graph — build a coin collector with no code</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T46 Node graph — build a coin collector with no code</h1>
+<p><strong>Result:</strong> a small 2D game: arrow keys move the player, touching a coin collects it, the HUD counts, and five coins show <strong>You win!</strong> with a <em>Play again</em> button.
+<strong>Start from:</strong> <em>New project ▸ Node graph: coin collector</em> (or open <code>examples/nodegraph-coins</code> and read along). Allow 30 minutes.</p>
+<figure class="shot"><img src="../../assets/screenshots/graph-example-win.png" alt="Coin Collector win screen" loading="lazy"><figcaption>The finished game.</figcaption></figure><aside class="box dummies"><div class="box-title">For dummy developers</div><p>You will not type code. You connect boxes. The game has two graphs: <strong>player</strong> (what the blue circle does) and <strong>game</strong> (loads the score screen and handles <em>Play again</em>).</p>
+</aside><h2 id="1-look-at-what-is-in-the-project">1. Look at what is in the project<a class="anchor" href="#1-look-at-what-is-in-the-project">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>scenes/main.scene.json</code></td>
+<td>Camera, background, a Player entity with the <strong>graph</strong> component, eight Coin entities tagged <code>coin</code>. The scene also lists <code>graphs/game.graph.json</code>.</td>
+</tr>
+<tr>
+<td><code>graphs/player.graph.json</code></td>
+<td>Movement and coin pickup.</td>
+</tr>
+<tr>
+<td><code>graphs/game.graph.json</code></td>
+<td>Loads the HUD on start, restarts on the <em>restart</em> action.</td>
+</tr>
+<tr>
+<td><code>ui/hud.ui.json</code></td>
+<td>The score label, the hidden win panel and its button (made in the <a href="../manual/ui-designer.html">UI Designer</a>), skinned with <code>assets/ui/skin/pixel.skin.json</code>.</td>
+</tr>
+</tbody></table>
+<p>Press <strong>Play</strong> and move with the arrow keys or WASD.</p>
+<h2 id="2-read-the-movement-chain">2. Read the movement chain<a class="anchor" href="#2-read-the-movement-chain">#</a></h2>
+<p>Open the <strong>Graph</strong> tab and the file <code>graphs/player.graph.json</code> (double-click it in Assets).</p>
+<figure class="shot"><img src="../../assets/screenshots/graph-editor-overview.png" alt="The player graph" loading="lazy"><figcaption>The player graph. Top-left: movement. Below: coin pickup.</figcaption></figure><p>Follow the top group from left to right:</p>
+<ol>
+<li><strong>On Update</strong> fires every frame and gives <code>dt</code> (seconds since the last frame).</li>
+<li><strong>Direction Vector</strong> reads the left/right/up/down actions as one vector.</li>
+<li><strong>A × B</strong> multiplies <code>dt</code> by 180 (the speed in pixels per second).</li>
+<li><strong>Vector × Number</strong> scales the direction by that amount.</li>
+<li><strong>Move By</strong> adds the result to <em>this entity&#39;s</em> position.</li>
+</ol>
+<p>Change the <code>180</code> in the multiply node to <code>300</code>, <strong>Save</strong>, press <strong>Play</strong>: faster player, no code touched.</p>
+<h2 id="3-read-the-pickup-chain">3. Read the pickup chain<a class="anchor" href="#3-read-the-pickup-chain">#</a></h2>
+<p>Every frame <strong>On Update</strong> also runs <strong>For Each</strong> over <strong>Find Entities By Tag</strong> <code>coin</code>. For each coin:</p>
+<ol>
+<li><strong>Get Position</strong> (this entity) and <strong>Get Position</strong> (the coin) feed <strong>Distance</strong>.</li>
+<li><strong>Compare</strong> <code>&lt;</code> 22 decides a <strong>Branch (If)</strong>.</li>
+<li><em>then</em>: <strong>Destroy Entity</strong> (the coin) ▸ <strong>Add To Variable</strong> <code>score</code> +1 ▸ <strong>Play Sound</strong> ▸ <strong>Set UI Variable</strong> (<code>hud</code>, <code>score</code>).</li>
+<li>A second <strong>Compare</strong> <code>score ≥ 5</code> and <strong>Branch</strong> run <strong>Set UI Node Property</strong>: the <code>win</code> panel becomes visible.</li>
+</ol>
+<p>The score label in the UI file contains <code>{score}</code>; <strong>Set UI Variable</strong> fills it. Nothing else connects the graph to the label.</p>
+<h2 id="4-change-the-rules">4. Change the rules<a class="anchor" href="#4-change-the-rules">#</a></h2>
+<p>Try these, saving and playing after each:</p>
+<ul>
+<li><strong>Different goal:</strong> change <code>5</code> in the second Compare to <code>8</code> (there are eight coins).</li>
+<li><strong>Coins that cost points:</strong> add a second <strong>Add To Variable</strong> with <code>amount -1</code> before the first one.</li>
+<li><strong>Slow-mo on pickup:</strong> after <strong>Play Sound</strong>, add <strong>Set Time Scale</strong> <code>0.3</code>, <strong>Delay</strong> <code>0.5</code>, <strong>Set Time Scale</strong> <code>1</code>.</li>
+<li><strong>Spawn effects:</strong> use <strong>Spawn Prefab</strong> at the coin&#39;s position (create a prefab first).</li>
+<li><strong>A timer:</strong> add <strong>On Timer</strong> (1 second) ▸ <strong>Add To Variable</strong> <code>time</code>, and show it with <strong>Set UI Variable</strong>.</li>
+</ul>
+<h2 id="5-connect-a-new-button">5. Connect a new button<a class="anchor" href="#5-connect-a-new-button">#</a></h2>
+<p>Open <code>ui/hud.ui.json</code> in the UI Designer, add a button, set its <strong>Action</strong> to <code>quit</code>. The <strong>Actions</strong> tab shows <em>⚠ nothing listens</em>. In the Graph tab add <strong>On UI Action</strong> (<code>quit</code>) ▸ <strong>Load Scene</strong> (<code>scenes/menu.scene.json</code>). Back in the Designer, Refresh the Actions tab: it now shows <code>graphs/…:NN</code> with an <strong>Open</strong> button.</p>
+<h2 id="what-you-learned">What you learned<a class="anchor" href="#what-you-learned">#</a></h2>
+<ul>
+<li>Events start flows; flow wires order the work; value wires carry data.</li>
+<li>Pure nodes (math, vectors, find) compute on demand.</li>
+<li>Graphs, UI files and skins cooperate through <strong>action names</strong> and <strong>variables</strong>.</li>
+<li>The reference for every node: <a href="../guides/graph-reference.html">Node graph reference</a>; the guide: <a href="../manual/graph.html">Node graphs</a>.</li>
+</ul>
+<div class="pager"><a href="tut-t45-ui-skins-9slice.html"><small>← Previous</small>T45 One style for every button, and 9-slice images</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-look-at-what-is-in-the-project">1. Look at what is in the project </a><a href="#2-read-the-movement-chain">2. Read the movement chain </a><a href="#3-read-the-pickup-chain">3. Read the pickup chain </a><a href="#4-change-the-rules">4. Change the rules </a><a href="#5-connect-a-new-button">5. Connect a new button </a><a href="#what-you-learned">What you learned </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -174,7 +174,12 @@ async fn reload(State(a): State<App>) -> Sse<impl Stream<Item = Result<Event, In
 }
 
 fn room_tx(a: &App, room: &str) -> Option<broadcast::Sender<String>> {
-    if room.is_empty() || room.len() > 64 || !room.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_') {
+    if room.is_empty()
+        || room.len() > 64
+        || !room
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+    {
         return None;
     }
     let mut m = a.rooms.lock().unwrap();
@@ -184,17 +189,31 @@ fn room_tx(a: &App, room: &str) -> Option<broadcast::Sender<String>> {
             return None;
         }
     }
-    Some(m.entry(room.to_string()).or_insert_with(|| broadcast::channel(64).0).clone())
+    Some(
+        m.entry(room.to_string())
+            .or_insert_with(|| broadcast::channel(64).0)
+            .clone(),
+    )
 }
 
 /// Multiplayer signalling relay: everything POSTed to a room is delivered to every SSE subscriber of that room (peers filter by `to`).
 async fn signal_get(State(a): State<App>, UrlPath(room): UrlPath<String>) -> Response {
-    let Some(tx) = room_tx(&a, &room) else { return StatusCode::BAD_REQUEST.into_response() };
-    let s = BroadcastStream::new(tx.subscribe()).filter_map(|m| async move { m.ok() }).map(|m| Ok::<_, Infallible>(Event::default().data(m)));
-    Sse::new(s).keep_alive(axum::response::sse::KeepAlive::new()).into_response()
+    let Some(tx) = room_tx(&a, &room) else {
+        return StatusCode::BAD_REQUEST.into_response();
+    };
+    let s = BroadcastStream::new(tx.subscribe())
+        .filter_map(|m| async move { m.ok() })
+        .map(|m| Ok::<_, Infallible>(Event::default().data(m)));
+    Sse::new(s)
+        .keep_alive(axum::response::sse::KeepAlive::new())
+        .into_response()
 }
 
-async fn signal_post(State(a): State<App>, UrlPath(room): UrlPath<String>, body: String) -> StatusCode {
+async fn signal_post(
+    State(a): State<App>,
+    UrlPath(room): UrlPath<String>,
+    body: String,
+) -> StatusCode {
     if body.len() > 65536 {
         return StatusCode::PAYLOAD_TOO_LARGE;
     }
@@ -331,7 +350,25 @@ async fn fpsc_ls(State(a): State<App>, Query(q): Query<FpscQuery>) -> Response {
     }
 }
 
-async fn fpsc_save(State(a): State<App>, headers: axum::http::HeaderMap, Query(q): Query<FpscQuery>, body: Bytes) -> Response {
+#[derive(serde::Deserialize)]
+struct UsageQuery {
+    q: String,
+}
+
+/// UI Designer: where is this action/file name used in project code?
+async fn api_usages(State(a): State<App>, Query(q): Query<UsageQuery>) -> Response {
+    match nord_core::fpsc::usages(&a.project, &q.q) {
+        Ok(v) => Json(v).into_response(),
+        Err(e) => (StatusCode::BAD_REQUEST, e.to_string()).into_response(),
+    }
+}
+
+async fn fpsc_save(
+    State(a): State<App>,
+    headers: axum::http::HeaderMap,
+    Query(q): Query<FpscQuery>,
+    body: Bytes,
+) -> Response {
     if !fpsc_write_allowed(&headers) {
         return StatusCode::FORBIDDEN.into_response();
     }
@@ -341,7 +378,11 @@ async fn fpsc_save(State(a): State<App>, headers: axum::http::HeaderMap, Query(q
     }
 }
 
-async fn fpsc_install(State(a): State<App>, headers: axum::http::HeaderMap, Query(q): Query<FpscQuery>) -> Response {
+async fn fpsc_install(
+    State(a): State<App>,
+    headers: axum::http::HeaderMap,
+    Query(q): Query<FpscQuery>,
+) -> Response {
     if !fpsc_write_allowed(&headers) {
         return StatusCode::FORBIDDEN.into_response();
     }
@@ -585,7 +626,11 @@ pub fn router(project: PathBuf, engine: PathBuf) -> (Router, Arc<Hub>) {
             post(level2d_publish).layer(DefaultBodyLimit::max(16 << 20)),
         )
         .route("/api/fpsc/ls", get(fpsc_ls))
-        .route("/api/fpsc/save", post(fpsc_save).layer(DefaultBodyLimit::max(nord_core::fpsc::MAX_BYTES)))
+        .route("/api/usages", get(api_usages))
+        .route(
+            "/api/fpsc/save",
+            post(fpsc_save).layer(DefaultBodyLimit::max(nord_core::fpsc::MAX_BYTES)),
+        )
         .route("/api/fpsc/install", post(fpsc_install))
         .route("/api/log", get(log_get).post(log_post))
         .route("/api/ipc", get(ipc_get).post(ipc_post))
@@ -655,7 +700,9 @@ impl Drop for Lan {
 
 /// Local IPv4 address used for outbound traffic (UDP connect sends nothing). Empty when offline.
 pub fn lan_ips() -> Vec<String> {
-    let Ok(s) = std::net::UdpSocket::bind("0.0.0.0:0") else { return vec![] };
+    let Ok(s) = std::net::UdpSocket::bind("0.0.0.0:0") else {
+        return vec![];
+    };
     if s.connect("192.0.2.1:9").is_err() {
         return vec![];
     }
@@ -670,19 +717,30 @@ fn random_token() -> String {
     let mut out = String::new();
     for _ in 0..2 {
         let mut h = std::collections::hash_map::RandomState::new().build_hasher();
-        h.write_u128(std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map_or(0, |d| d.as_nanos()));
+        h.write_u128(
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map_or(0, |d| d.as_nanos()),
+        );
         out += &format!("{:016x}", h.finish());
     }
     out
 }
 
-async fn lan_guard(State(tok): State<Arc<String>>, req: axum::extract::Request, next: axum::middleware::Next) -> Response {
+async fn lan_guard(
+    State(tok): State<Arc<String>>,
+    req: axum::extract::Request,
+    next: axum::middleware::Next,
+) -> Response {
     let cookie_ok = req
         .headers()
         .get(header::COOKIE)
         .and_then(|v| v.to_str().ok())
         .is_some_and(|c| c.split(';').any(|p| p.trim() == format!("nordk={tok}")));
-    let query_ok = req.uri().query().is_some_and(|q| q.split('&').any(|p| p == format!("k={tok}")));
+    let query_ok = req
+        .uri()
+        .query()
+        .is_some_and(|q| q.split('&').any(|p| p == format!("k={tok}")));
     if !cookie_ok && !query_ok {
         return StatusCode::FORBIDDEN.into_response();
     }
@@ -697,24 +755,46 @@ async fn lan_guard(State(tok): State<Arc<String>>, req: axum::extract::Request, 
 
 async fn lan_static(State(a): State<App>, uri: Uri) -> Response {
     let p = uri.path();
-    let hidden = p.split('/').any(|c| c.starts_with('.')) || ["/__docs", "/__edit", "/editor", "/api", "/__desktop"].iter().any(|x| p.starts_with(x));
+    let hidden = p.split('/').any(|c| c.starts_with('.'))
+        || ["/__docs", "/__edit", "/editor", "/api", "/__desktop"]
+            .iter()
+            .any(|x| p.starts_with(x));
     if hidden {
         return StatusCode::NOT_FOUND.into_response();
     }
     static_files(State(a), uri).await
 }
 
-pub fn lan_router(project: PathBuf, engine: PathBuf, token: String) -> (Router, Arc<Hub>, broadcast::Sender<Vec<String>>) {
+pub fn lan_router(
+    project: PathBuf,
+    engine: PathBuf,
+    token: String,
+) -> (Router, Arc<Hub>, broadcast::Sender<Vec<String>>) {
     let (tx, _) = broadcast::channel(16);
     let (edit_tx, _) = broadcast::channel(4);
-    let hub = Arc::new(Hub { logs: Mutex::new(vec![]), inbox: Mutex::new(vec![]), edit_tx, reload_tx: tx.clone() });
-    let app = App { desktop: Arc::default(), project: Arc::new(project), engine: Arc::new(engine), tx: tx.clone(), hub: hub.clone(), rooms: Arc::default() };
+    let hub = Arc::new(Hub {
+        logs: Mutex::new(vec![]),
+        inbox: Mutex::new(vec![]),
+        edit_tx,
+        reload_tx: tx.clone(),
+    });
+    let app = App {
+        desktop: Arc::default(),
+        project: Arc::new(project),
+        engine: Arc::new(engine),
+        tx: tx.clone(),
+        hub: hub.clone(),
+        rooms: Arc::default(),
+    };
     let r = Router::new()
         .route("/__reload", get(reload))
         .route("/__signal/:room", get(signal_get).post(signal_post))
         .route("/api/log", post(log_post))
         .fallback(lan_static)
-        .layer(axum::middleware::from_fn_with_state(Arc::new(token), lan_guard))
+        .layer(axum::middleware::from_fn_with_state(
+            Arc::new(token),
+            lan_guard,
+        ))
         .with_state(app);
     (r, hub, tx)
 }
@@ -737,12 +817,27 @@ pub fn start_lan(project: PathBuf, engine: PathBuf, port: u16) -> anyhow::Result
             };
             let _ = ptx.send(Ok(l.local_addr().map(|a| a.port()).unwrap_or(0)));
             watch(project, tx);
-            let _ = axum::serve(l, r).with_graceful_shutdown(async move { let _ = stop_rx.await; }).await;
+            let _ = axum::serve(l, r)
+                .with_graceful_shutdown(async move {
+                    let _ = stop_rx.await;
+                })
+                .await;
         });
     });
-    let port = prx.recv()?.map_err(|e| anyhow::anyhow!("cannot listen: {e}"))?;
-    let urls = lan_ips().into_iter().map(|ip| format!("http://{ip}:{port}/?k={token}")).collect();
-    Ok(Lan { port, token, urls, hub, shutdown: Some(stop_tx) })
+    let port = prx
+        .recv()?
+        .map_err(|e| anyhow::anyhow!("cannot listen: {e}"))?;
+    let urls = lan_ips()
+        .into_iter()
+        .map(|ip| format!("http://{ip}:{port}/?k={token}"))
+        .collect();
+    Ok(Lan {
+        port,
+        token,
+        urls,
+        hub,
+        shutdown: Some(stop_tx),
+    })
 }
 
 #[cfg(test)]
@@ -904,22 +999,72 @@ mod tests {
         let lan = start_lan(d.clone(), d.clone(), 0).unwrap();
         let base = format!("http://127.0.0.1:{}", lan.port);
         let c = reqwest::Client::builder().build().unwrap();
-        assert_eq!(c.get(format!("{base}/")).send().await.unwrap().status(), 403, "no token");
-        let ok = c.get(format!("{base}/?k={}", lan.token)).send().await.unwrap();
+        assert_eq!(
+            c.get(format!("{base}/")).send().await.unwrap().status(),
+            403,
+            "no token"
+        );
+        let ok = c
+            .get(format!("{base}/?k={}", lan.token))
+            .send()
+            .await
+            .unwrap();
         assert_eq!(ok.status(), 200);
-        let cookie = ok.headers().get("set-cookie").unwrap().to_str().unwrap().split(';').next().unwrap().to_string();
+        let cookie = ok
+            .headers()
+            .get("set-cookie")
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .split(';')
+            .next()
+            .unwrap()
+            .to_string();
         assert!(ok.text().await.unwrap().contains("game"));
-        for p in ["/.nord/history/secret.json", "/__edit/cmd", "/api/project", "/__desktop/call", "/__docs/index.html"] {
-            let r = c.get(format!("{base}{p}")).header("cookie", &cookie).send().await.unwrap();
+        for p in [
+            "/.nord/history/secret.json",
+            "/__edit/cmd",
+            "/api/project",
+            "/__desktop/call",
+            "/__docs/index.html",
+        ] {
+            let r = c
+                .get(format!("{base}{p}"))
+                .header("cookie", &cookie)
+                .send()
+                .await
+                .unwrap();
             assert_eq!(r.status(), 404, "{p}");
         }
-        assert_eq!(c.get(format!("{base}/")).header("cookie", "nordk=wrong").send().await.unwrap().status(), 403);
-        let r = c.post(format!("{base}/api/log")).header("cookie", &cookie).header("content-type", "application/json").body(r#"{"level":"info","text":"hi"}"#).send().await.unwrap();
+        assert_eq!(
+            c.get(format!("{base}/"))
+                .header("cookie", "nordk=wrong")
+                .send()
+                .await
+                .unwrap()
+                .status(),
+            403
+        );
+        let r = c
+            .post(format!("{base}/api/log"))
+            .header("cookie", &cookie)
+            .header("content-type", "application/json")
+            .body(r#"{"level":"info","text":"hi"}"#)
+            .send()
+            .await
+            .unwrap();
         assert_eq!(r.status(), 204);
-        assert_eq!(lan.hub.logs.lock().unwrap().len(), 1, "phone console reaches the hub");
+        assert_eq!(
+            lan.hub.logs.lock().unwrap().len(),
+            1,
+            "phone console reaches the hub"
+        );
         drop(lan);
         tokio::time::sleep(Duration::from_millis(300)).await;
-        assert!(c.get(format!("{base}/?k=x")).send().await.is_err(), "server stops when Lan is dropped");
+        assert!(
+            c.get(format!("{base}/?k=x")).send().await.is_err(),
+            "server stops when Lan is dropped"
+        );
         let _ = std::fs::remove_dir_all(&d);
     }
 
@@ -933,14 +1078,43 @@ mod tests {
         tokio::spawn(async move { axum::serve(l, r).await.unwrap() });
         let base = format!("http://127.0.0.1:{port}");
         let c = reqwest::Client::new();
-        let mut sub = c.get(format!("{base}/__signal/room-1")).send().await.unwrap();
+        let mut sub = c
+            .get(format!("{base}/__signal/room-1"))
+            .send()
+            .await
+            .unwrap();
         assert_eq!(sub.status(), 200);
-        let post = c.post(format!("{base}/__signal/room-1")).body(r#"{"type":"hello","from":"a"}"#).send().await.unwrap();
+        let post = c
+            .post(format!("{base}/__signal/room-1"))
+            .body(r#"{"type":"hello","from":"a"}"#)
+            .send()
+            .await
+            .unwrap();
         assert_eq!(post.status(), 204);
-        let chunk = tokio::time::timeout(Duration::from_secs(3), sub.chunk()).await.unwrap().unwrap().unwrap();
+        let chunk = tokio::time::timeout(Duration::from_secs(3), sub.chunk())
+            .await
+            .unwrap()
+            .unwrap()
+            .unwrap();
         assert!(String::from_utf8_lossy(&chunk).contains(r#""type":"hello""#));
-        assert_eq!(c.post(format!("{base}/__signal/bad%20room")).body("x").send().await.unwrap().status(), 400);
-        assert_eq!(c.post(format!("{base}/__signal/room-1")).body("x".repeat(70000)).send().await.unwrap().status(), 413);
+        assert_eq!(
+            c.post(format!("{base}/__signal/bad%20room"))
+                .body("x")
+                .send()
+                .await
+                .unwrap()
+                .status(),
+            400
+        );
+        assert_eq!(
+            c.post(format!("{base}/__signal/room-1"))
+                .body("x".repeat(70000))
+                .send()
+                .await
+                .unwrap()
+                .status(),
+            413
+        );
         let _ = std::fs::remove_dir_all(&d);
     }
 }

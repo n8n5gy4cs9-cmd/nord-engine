@@ -1,0 +1,1128 @@
+{
+  "last_node_id": 20,
+  "last_link_id": 23,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "event/update",
+      "pos": [
+        40,
+        40
+      ],
+      "size": [
+        230,
+        70
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            1,
+            6
+          ],
+          "shape": 5
+        },
+        {
+          "name": "dt",
+          "type": "number",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {},
+      "widgets_values": []
+    },
+    {
+      "id": 2,
+      "type": "input/vec",
+      "pos": [
+        40,
+        230
+      ],
+      "size": [
+        230,
+        186
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "vec",
+          "type": "vec3",
+          "links": [
+            3
+          ]
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "links": null
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "links": null
+        }
+      ],
+      "properties": {
+        "left": "left",
+        "right": "right",
+        "up": "up",
+        "down": "down"
+      },
+      "widgets_values": [
+        "left",
+        "right",
+        "up",
+        "down"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "math/mul",
+      "pos": [
+        290,
+        300
+      ],
+      "size": [
+        230,
+        118
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "a",
+          "type": "number",
+          "link": 2
+        },
+        {
+          "name": "b",
+          "type": "number",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result",
+          "type": "number",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "a": 0,
+        "b": 180
+      },
+      "widgets_values": [
+        0,
+        180
+      ]
+    },
+    {
+      "id": 4,
+      "type": "vec/scale",
+      "pos": [
+        540,
+        230
+      ],
+      "size": [
+        230,
+        94
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vec",
+          "type": "vec3",
+          "link": 3
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result",
+          "type": "vec3",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "scale": 1
+      },
+      "widgets_values": [
+        1
+      ]
+    },
+    {
+      "id": 5,
+      "type": "entity/translate",
+      "pos": [
+        800,
+        40
+      ],
+      "size": [
+        230,
+        90
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 1,
+          "shape": 5
+        },
+        {
+          "name": "entity",
+          "type": "entity",
+          "link": null
+        },
+        {
+          "name": "delta",
+          "type": "vec3",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": null,
+          "shape": 5
+        }
+      ],
+      "properties": {},
+      "widgets_values": []
+    },
+    {
+      "id": 6,
+      "type": "entity/find-tag",
+      "pos": [
+        40,
+        480
+      ],
+      "size": [
+        230,
+        74
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "tag",
+          "type": "string",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "entities",
+          "type": "array",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "tag": "coin"
+      },
+      "widgets_values": [
+        "coin"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "flow/foreach",
+      "pos": [
+        290,
+        480
+      ],
+      "size": [
+        230,
+        110
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 6,
+          "shape": 5
+        },
+        {
+          "name": "array",
+          "type": "array",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "body",
+          "type": "exec",
+          "links": [
+            8
+          ],
+          "shape": 5
+        },
+        {
+          "name": "item",
+          "type": "any",
+          "links": [
+            9,
+            15
+          ]
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "links": null
+        },
+        {
+          "name": "done",
+          "type": "exec",
+          "links": null,
+          "shape": 5
+        }
+      ],
+      "properties": {},
+      "widgets_values": []
+    },
+    {
+      "id": 8,
+      "type": "entity/get-pos",
+      "pos": [
+        40,
+        660
+      ],
+      "size": [
+        230,
+        110
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "entity",
+          "type": "entity",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "pos",
+          "type": "vec3",
+          "links": [
+            10
+          ]
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "links": null
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "links": null
+        },
+        {
+          "name": "z",
+          "type": "number",
+          "links": null
+        }
+      ],
+      "properties": {},
+      "widgets_values": []
+    },
+    {
+      "id": 9,
+      "type": "entity/get-pos",
+      "pos": [
+        40,
+        810
+      ],
+      "size": [
+        230,
+        110
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "entity",
+          "type": "entity",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "pos",
+          "type": "vec3",
+          "links": [
+            11
+          ]
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "links": null
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "links": null
+        },
+        {
+          "name": "z",
+          "type": "number",
+          "links": null
+        }
+      ],
+      "properties": {},
+      "widgets_values": []
+    },
+    {
+      "id": 10,
+      "type": "vec/distance",
+      "pos": [
+        290,
+        700
+      ],
+      "size": [
+        230,
+        70
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "a",
+          "type": "vec3",
+          "link": 10
+        },
+        {
+          "name": "b",
+          "type": "vec3",
+          "link": 11
+        }
+      ],
+      "outputs": [
+        {
+          "name": "distance",
+          "type": "number",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "properties": {},
+      "widgets_values": []
+    },
+    {
+      "id": 11,
+      "type": "logic/compare",
+      "pos": [
+        540,
+        700
+      ],
+      "size": [
+        230,
+        142
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "a",
+          "type": "any",
+          "link": 12
+        },
+        {
+          "name": "b",
+          "type": "any",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result",
+          "type": "boolean",
+          "links": [
+            13
+          ]
+        }
+      ],
+      "properties": {
+        "op": "<",
+        "a": 0,
+        "b": 22
+      },
+      "widgets_values": [
+        "<",
+        0,
+        22
+      ]
+    },
+    {
+      "id": 12,
+      "type": "flow/branch",
+      "pos": [
+        560,
+        480
+      ],
+      "size": [
+        230,
+        94
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 8,
+          "shape": 5
+        },
+        {
+          "name": "condition",
+          "type": "boolean",
+          "link": 13
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            14
+          ],
+          "shape": 5
+        },
+        {
+          "name": "else",
+          "type": "exec",
+          "links": null,
+          "shape": 5
+        }
+      ],
+      "properties": {
+        "condition": true
+      },
+      "widgets_values": [
+        true
+      ]
+    },
+    {
+      "id": 13,
+      "type": "entity/destroy",
+      "pos": [
+        820,
+        480
+      ],
+      "size": [
+        230,
+        70
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 14,
+          "shape": 5
+        },
+        {
+          "name": "entity",
+          "type": "entity",
+          "link": 15
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            16
+          ],
+          "shape": 5
+        }
+      ],
+      "properties": {},
+      "widgets_values": []
+    },
+    {
+      "id": 14,
+      "type": "var/add",
+      "pos": [
+        1080,
+        480
+      ],
+      "size": [
+        230,
+        118
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 16,
+          "shape": 5
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            17
+          ],
+          "shape": 5
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "links": [
+            19
+          ]
+        }
+      ],
+      "properties": {
+        "name": "score",
+        "amount": 1
+      },
+      "widgets_values": [
+        "score",
+        1
+      ]
+    },
+    {
+      "id": 15,
+      "type": "audio/play",
+      "pos": [
+        1080,
+        700
+      ],
+      "size": [
+        230,
+        162
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 17,
+          "shape": 5
+        },
+        {
+          "name": "clip",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "volume",
+          "type": "number",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            18
+          ],
+          "shape": 5
+        }
+      ],
+      "properties": {
+        "bus": "sfx",
+        "clip": "assets/audio/sfx/click.wav",
+        "volume": 1
+      },
+      "widgets_values": [
+        "sfx",
+        "assets/audio/sfx/click.wav",
+        1
+      ]
+    },
+    {
+      "id": 16,
+      "type": "ui/set-var",
+      "pos": [
+        1340,
+        480
+      ],
+      "size": [
+        230,
+        158
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 18,
+          "shape": 5
+        },
+        {
+          "name": "screen",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "value",
+          "type": "any",
+          "link": 19
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            22
+          ],
+          "shape": 5
+        }
+      ],
+      "properties": {
+        "screen": "hud",
+        "name": "score"
+      },
+      "widgets_values": [
+        "hud",
+        "score"
+      ]
+    },
+    {
+      "id": 17,
+      "type": "var/get",
+      "pos": [
+        1080,
+        900
+      ],
+      "size": [
+        230,
+        74
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "any",
+          "links": [
+            20
+          ]
+        }
+      ],
+      "properties": {
+        "name": "score"
+      },
+      "widgets_values": [
+        "score"
+      ]
+    },
+    {
+      "id": 18,
+      "type": "logic/compare",
+      "pos": [
+        1340,
+        900
+      ],
+      "size": [
+        230,
+        142
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "a",
+          "type": "any",
+          "link": 20
+        },
+        {
+          "name": "b",
+          "type": "any",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "result",
+          "type": "boolean",
+          "links": [
+            21
+          ]
+        }
+      ],
+      "properties": {
+        "op": ">=",
+        "a": 0,
+        "b": 5
+      },
+      "widgets_values": [
+        ">=",
+        0,
+        5
+      ]
+    },
+    {
+      "id": 19,
+      "type": "flow/branch",
+      "pos": [
+        1600,
+        480
+      ],
+      "size": [
+        230,
+        94
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 22,
+          "shape": 5
+        },
+        {
+          "name": "condition",
+          "type": "boolean",
+          "link": 21
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            23
+          ],
+          "shape": 5
+        },
+        {
+          "name": "else",
+          "type": "exec",
+          "links": null,
+          "shape": 5
+        }
+      ],
+      "properties": {
+        "condition": true
+      },
+      "widgets_values": [
+        true
+      ]
+    },
+    {
+      "id": 20,
+      "type": "ui/set-prop",
+      "pos": [
+        1860,
+        480
+      ],
+      "size": [
+        230,
+        182
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 23,
+          "shape": 5
+        },
+        {
+          "name": "screen",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "node",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "value",
+          "type": "any",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": null,
+          "shape": 5
+        }
+      ],
+      "properties": {
+        "property": "visible",
+        "screen": "hud",
+        "node": "win",
+        "value": true
+      },
+      "widgets_values": [
+        "visible",
+        "hud",
+        "win"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      5,
+      0,
+      "exec"
+    ],
+    [
+      2,
+      1,
+      1,
+      3,
+      0,
+      "number"
+    ],
+    [
+      3,
+      2,
+      0,
+      4,
+      0,
+      "vec3"
+    ],
+    [
+      4,
+      3,
+      0,
+      4,
+      1,
+      "number"
+    ],
+    [
+      5,
+      4,
+      0,
+      5,
+      2,
+      "vec3"
+    ],
+    [
+      6,
+      1,
+      0,
+      7,
+      0,
+      "exec"
+    ],
+    [
+      7,
+      6,
+      0,
+      7,
+      1,
+      "array"
+    ],
+    [
+      8,
+      7,
+      0,
+      12,
+      0,
+      "exec"
+    ],
+    [
+      9,
+      7,
+      1,
+      9,
+      0,
+      "any"
+    ],
+    [
+      10,
+      8,
+      0,
+      10,
+      0,
+      "vec3"
+    ],
+    [
+      11,
+      9,
+      0,
+      10,
+      1,
+      "vec3"
+    ],
+    [
+      12,
+      10,
+      0,
+      11,
+      0,
+      "number"
+    ],
+    [
+      13,
+      11,
+      0,
+      12,
+      1,
+      "boolean"
+    ],
+    [
+      14,
+      12,
+      0,
+      13,
+      0,
+      "exec"
+    ],
+    [
+      15,
+      7,
+      1,
+      13,
+      1,
+      "any"
+    ],
+    [
+      16,
+      13,
+      0,
+      14,
+      0,
+      "exec"
+    ],
+    [
+      17,
+      14,
+      0,
+      15,
+      0,
+      "exec"
+    ],
+    [
+      18,
+      15,
+      0,
+      16,
+      0,
+      "exec"
+    ],
+    [
+      19,
+      14,
+      1,
+      16,
+      3,
+      "number"
+    ],
+    [
+      20,
+      17,
+      0,
+      18,
+      0,
+      "any"
+    ],
+    [
+      21,
+      18,
+      0,
+      19,
+      1,
+      "boolean"
+    ],
+    [
+      22,
+      16,
+      0,
+      19,
+      0,
+      "exec"
+    ],
+    [
+      23,
+      19,
+      0,
+      20,
+      0,
+      "exec"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4,
+  "nord": {
+    "version": 1,
+    "vars": {
+      "score": {
+        "default": 0
+      }
+    }
+  }
+}

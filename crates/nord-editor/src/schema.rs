@@ -109,7 +109,7 @@ pub fn label_of(name: &str) -> String {
     out
 }
 
-pub const COMPONENT_TYPES: [&str; 25] = [
+pub const COMPONENT_TYPES: [&str; 26] = [
     "sprite",
     "animatedSprite",
     "text",
@@ -132,6 +132,7 @@ pub const COMPONENT_TYPES: [&str; 25] = [
     "trigger",
     "path",
     "spawner",
+    "graph",
     "parallax",
     "skybox",
     "postProcess",
@@ -161,6 +162,7 @@ pub fn component_fields(kind: &str) -> Vec<Field> {
         "uiImage" => return [dsl("src:asset(image)"), dsl(UI_POS)].concat(),
         "uiBar" => return [dsl("value:number=1 color:color"), dsl(UI_POS)].concat(),
         "uiButton" => return [dsl("text:string=\"Button\" event:string"), dsl(UI_POS)].concat(),
+        "graph" => "file:asset(json)",
         "path" => "points:array<vec3> loop:bool",
         "spawner" => "prefab:asset(prefab) interval:number=1 max:int offset:vec3 jitter:vec3 autostart:bool=true",
         "parallax" => "texture:asset(image) factor:number=0.5 fit:bool=true scale:number=1",

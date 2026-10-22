@@ -34,6 +34,7 @@ pub enum Tab {
     Fps,
     Level2d,
     UiDesigner,
+    Graph,
 }
 
 impl Tab {
@@ -59,6 +60,7 @@ impl Tab {
             Tab::Fps => "FPS Level",
             Tab::Level2d => "2D Level",
             Tab::UiDesigner => "UI Designer",
+            Tab::Graph => "Graph",
         }
     }
 }
@@ -73,6 +75,7 @@ pub fn default_dock() -> DockState<Tab> {
         Tab::Fps,
         Tab::Level2d,
         Tab::UiDesigner,
+        Tab::Graph,
         Tab::Animation,
         Tab::Sprite,
         Tab::Particles,
@@ -93,6 +96,57 @@ pub fn default_dock() -> DockState<Tab> {
             Tab::Docs,
         ],
     );
+    dock
+}
+
+/// Layout presets (Window ▸ Layout): same tabs, different arrangement for the job at hand.
+pub fn layout_dock(kind: &str) -> DockState<Tab> {
+    let (main, left, right, bottom): (Vec<Tab>, Vec<Tab>, Vec<Tab>, Vec<Tab>) = match kind {
+        "2d" => (
+            vec![
+                Tab::Scene,
+                Tab::Game,
+                Tab::Level2d,
+                Tab::Animation,
+                Tab::Sprite,
+                Tab::Particles,
+                Tab::Timeline,
+            ],
+            vec![Tab::Hierarchy],
+            vec![Tab::Inspector],
+            vec![Tab::Assets, Tab::Console, Tab::Library],
+        ),
+        "3d" => (
+            vec![Tab::Scene, Tab::Game, Tab::Fps],
+            vec![Tab::Hierarchy, Tab::Assets],
+            vec![Tab::Inspector],
+            vec![Tab::Console, Tab::Project, Tab::History],
+        ),
+        "coding" => (
+            vec![Tab::Code, Tab::Game, Tab::Scene],
+            vec![Tab::Assets, Tab::Hierarchy],
+            vec![Tab::Inspector],
+            vec![Tab::Console, Tab::Docs, Tab::Library],
+        ),
+        "visual" => (
+            vec![
+                Tab::Graph,
+                Tab::UiDesigner,
+                Tab::Events,
+                Tab::Scene,
+                Tab::Game,
+            ],
+            vec![Tab::Hierarchy, Tab::Assets],
+            vec![Tab::Inspector],
+            vec![Tab::Console, Tab::Library],
+        ),
+        _ => return default_dock(),
+    };
+    let mut dock = DockState::new(main);
+    let s = dock.main_surface_mut();
+    let [center, _] = s.split_left(NodeIndex::root(), 0.2, left);
+    let [center, _] = s.split_right(center, 0.78, right);
+    let [_, _] = s.split_below(center, 0.72, bottom);
     dock
 }
 
@@ -313,6 +367,7 @@ impl App {
             p.running = true;
         }
         st.game_nonce += 1;
+        st.game_paused = false;
         st.log(LogLevel::Build, "Play");
         self.show_tab(Tab::Game);
     }
@@ -494,6 +549,7 @@ impl App {
             }
             Action::Reload => {
                 st.game_nonce += 1;
+                st.game_paused = false;
             }
             Action::QuickOpen => {
                 st.palette.mode = PMode::Files;
@@ -505,6 +561,25 @@ impl App {
                 st.palette.query.clear();
             }
             Action::Settings => st.settings_open = true,
+            Action::Layout(kind) => {
+                self.dock = layout_dock(&kind);
+                st.toast(format!("Layout: {kind}"));
+            }
+            Action::PauseGame => {
+                st.game_paused = !st.game_paused;
+                let js = format!(
+                    "(()=>{{const g=window.__nord;if(g)g.{}();}})()",
+                    if st.game_paused { "pause" } else { "resume" }
+                );
+                self.web.eval("game", &js);
+            }
+            Action::StepGame => {
+                st.game_paused = true;
+                self.web.eval(
+                    "game",
+                    "(()=>{const g=window.__nord;if(!g)return;g.pause();g.scene?.tick(1/60);})()",
+                );
+            }
             Action::ResetLayout => {
                 self.dock = default_dock();
                 st.toast("Panel layout reset");
@@ -664,6 +739,7 @@ impl App {
                     Tab::Fps,
                     Tab::Level2d,
                     Tab::UiDesigner,
+                    Tab::Graph,
                     Tab::History,
                     Tab::Project,
                     Tab::Hierarchy,
@@ -676,6 +752,17 @@ impl App {
                     act(ui, t.title(), Action::ShowTab(t), st);
                 }
                 ui.separator();
+                ui.menu_button("Layout", |ui| {
+                    for (label, k) in [
+                        ("Default", "default"),
+                        ("2D game", "2d"),
+                        ("3D game", "3d"),
+                        ("Coding", "coding"),
+                        ("Visual scripting + UI", "visual"),
+                    ] {
+                        act(ui, label, Action::Layout(k.into()), st);
+                    }
+                });
                 act(ui, "Reset layout", Action::ResetLayout, st);
                 act(ui, "Settings…", Action::Settings, st);
             });
@@ -885,6 +972,7 @@ impl TabViewer for Viewer<'_> {
             Tab::Layout => panels::layout::ui(st, ui),
             Tab::Level2d => panels::level2d::ui(st, ui, self.web, self.frame, self.overlay),
             Tab::UiDesigner => panels::uidesigner::ui(st, ui, self.web, self.frame, self.overlay),
+            Tab::Graph => panels::graph::ui(st, ui, self.web, self.frame, self.overlay),
             Tab::Fps => panels::fps::ui(st, ui, self.web, self.frame, self.overlay),
             Tab::History => panels::history::ui(st, ui),
             Tab::Project => panels::project::ui(st, ui),

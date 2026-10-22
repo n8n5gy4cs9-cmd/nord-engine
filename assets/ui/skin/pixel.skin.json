@@ -89,6 +89,39 @@
       "color": "$accent",
       "textShadow": "0 3px 0 #0c1424"
     },
+    "input": {
+      "image": {
+        "src": "assets/ui/skin/field.png",
+        "slice": [
+          4,
+          4,
+          4,
+          4
+        ],
+        "scale": 3,
+        "pixelated": true
+      },
+      "color": "$fg",
+      "background": "none",
+      "padding": "2px 6px",
+      "outline": "none",
+      "focus": {
+        "image": {
+          "src": "assets/ui/skin/button-hover.png",
+          "slice": [
+            5,
+            5,
+            5,
+            5
+          ],
+          "scale": 3,
+          "pixelated": true
+        }
+      }
+    },
+    "select": {
+      "extends": "input"
+    },
     "bar": {
       "image": {
         "src": "assets/ui/skin/bar-back.png",

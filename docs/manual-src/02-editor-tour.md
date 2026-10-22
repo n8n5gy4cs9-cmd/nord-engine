@@ -101,3 +101,11 @@ Projects that use the FPS Creator addon get an extra **FPS Level** tab: a grid l
 ## Find 2D, 3D and physics projects
 
 The welcome screen filters both starter templates and samples with **Featured**, **All**, **2D**, **3D**, **FPS**, **Physics**, **Apps**, and **Rust**. Featured shows a short curated set; searching also reaches older examples. Choose the **2D Platform Workshop**, **2D Top-down Workshop** or **Machine Workshop** template to begin in the [2D Level Creator](level-creator-2d.html).
+
+## Everyday shortcuts (new)
+* **Hierarchy ▸ ＋ Create** adds ready-made entities (Empty, Camera, Light, Text, UI Label/Button/Panel, Audio source, Spawner, Trigger zone, Graph, and in 3D Cube, Sphere, Ground, Directional light). **Right-click ▸ Create child**, **Create empty parent** (also *Group selected*), **Rename (F2)**, Duplicate (Cmd/Ctrl+D), Delete (Del).
+* **Assets**: right-click folders, files and the empty area for Open, Open with default app, Rename (F2), Duplicate, Delete, Reveal in Finder, Copy path and **New folder / UI scene / script / graph**.
+* **View ▸ Layout** switches between ready-made panel arrangements: Default, 2D game, 3D game, Coding, Visual scripting + UI.
+* While the game runs the toolbar shows **Pause** and **Step** (advance one frame), next to Stop and Reload.
+* Double-click a `.ui.json` in Assets to open it in the [UI Designer](ui-designer.html), a `.graph.json` in the [Graph editor](graph.html).
+

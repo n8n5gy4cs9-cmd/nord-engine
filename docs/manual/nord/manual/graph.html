@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Node graphs (visual scripting) — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="debugger.html">Debugger and profiler</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a><a href="ui-designer.html">UI Designer</a><a href="graph.html" class="cur" aria-current="page">Node graphs (visual scripting)</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Node graphs (visual scripting)</h1>
+<p>A <strong>node graph</strong> is a program you draw. Boxes (<em>nodes</em>) do one thing each; wires carry the flow of time and the values between them. Use graphs for game rules, enemy behaviour, UI reactions and scene flow, or mix them with scripts and event sheets. The canvas is litegraph.js (MIT); the nodes and the runner are Nord&#39;s own, so a graph can use everything in the engine.</p>
+<figure class="shot"><img src="../../assets/screenshots/graph-editor-overview.png" alt="The Graph editor showing the player graph of the Coin Collector example" loading="lazy"><figcaption>The <b>Graph</b> tab: node palette (left), the canvas (middle), variables, selection info and problems (right). This is the player graph from the <i>Coin Collector</i> example.</figcaption></figure><aside class="box dummies"><div class="box-title">For dummy developers</div><p>Think of a recipe. <strong>Events</strong> are the &quot;when&quot;: <em>when the game starts, when a button is pressed, every frame</em>. <strong>Flow wires</strong> (white arrows) say &quot;then do this next&quot;. <strong>Value wires</strong> (coloured dots) hand numbers, text or objects from one node to another. If a node has no white arrows (like <em>A + B</em>), it is just a calculator that answers when asked.</p>
+</aside><h2 id="open-the-graph-editor">Open the Graph editor<a class="anchor" href="#open-the-graph-editor">#</a></h2>
+<ul>
+<li><strong>View ▸ Graph</strong>, command palette ▸ <em>Graph editor</em>, or double-click any <code>*.graph.json</code> in <strong>Assets</strong>.</li>
+<li><strong>Assets ▸ right-click ▸ New graph</strong> creates a blank one; <strong>Hierarchy ▸ Create ▸ Graph (visual script)</strong> creates an entity that already runs a graph file.</li>
+<li>Layout preset: <strong>View ▸ Layout ▸ Visual scripting + UI</strong>.</li>
+</ul>
+<h2 id="your-first-graph-in-two-minutes">Your first graph in two minutes<a class="anchor" href="#your-first-graph-in-two-minutes">#</a></h2>
+<ol>
+<li>In the Graph tab press <strong>Templates… ▸ Hello (On Start → Log)</strong>. Two nodes appear, connected: <em>On Start</em> → <em>Log</em>.</li>
+<li>Change the Log&#39;s <code>message</code> widget to anything you like. <strong>Save</strong> as <code>graphs/hello.graph.json</code>.</li>
+<li>In the Hierarchy create an entity with <strong>Create ▸ Graph (visual script)</strong> and set its <code>file</code> to <code>graphs/hello.graph.json</code>.</li>
+<li><strong>Play</strong>. Your message appears in the Console.</li>
+</ol>
+<h2 id="reading-a-graph">Reading a graph<a class="anchor" href="#reading-a-graph">#</a></h2>
+<ul>
+<li><strong>Red</strong> nodes are <strong>events</strong>: they start a chain. <strong>Blue/yellow/purple…</strong> colours group the categories (Flow, Variables, Math, Entity, UI…).</li>
+<li>Left side of a node = inputs, right side = outputs. A <strong>white arrow</strong> pin is a flow pin; the first output of most flow nodes is named <strong>then</strong>.</li>
+<li>The <strong>widgets</strong> inside a node (numbers, text boxes, drop-downs) are the values used when the matching input has <strong>no wire</strong>.</li>
+<li>Hover pins for their type. Wires only connect compatible types; <strong>any</strong> connects to everything.</li>
+</ul>
+<figure class="shot"><img src="../../assets/screenshots/graph-editor-selected.png" alt="A node selected: the right panel lists its pins and types" loading="lazy"><figcaption>Select a node to see its type, category and every pin in the right panel.</figcaption></figure><h2 id="adding-nodes">Adding nodes<a class="anchor" href="#adding-nodes">#</a></h2>
+<ul>
+<li><strong>Search</strong> the palette on the left and double-click an entry, or <strong>drag</strong> it onto the canvas.</li>
+<li>Or double-click an empty spot on the canvas to open litegraph&#39;s search box (type a few letters, press Enter).</li>
+<li>Drag from an output pin and release on empty canvas to get a menu of nodes that fit.</li>
+</ul>
+<figure class="shot"><img src="../../assets/screenshots/graph-palette-search.png" alt="The palette filtered by the word vector" loading="lazy"><figcaption>Filtering the palette: all nodes whose name, type or category contain "vector".</figcaption></figure><h2 id="events-how-a-flow-starts">Events: how a flow starts<a class="anchor" href="#events-how-a-flow-starts">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Event node</th>
+<th>Fires when</th>
+<th>Outputs</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>On Start</strong></td>
+<td>the first frame the graph runs</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>On Update</strong></td>
+<td>every frame</td>
+<td><code>dt</code> seconds</td>
+</tr>
+<tr>
+<td><strong>On Input Action</strong></td>
+<td>an action (<code>jump</code>, <code>fire</code>…) is pressed / released / held</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>On UI Action</strong></td>
+<td>a UI button&#39;s <strong>Action</strong> name is pressed (<a href="ui-designer.html">UI Designer</a>)</td>
+<td><code>payload</code></td>
+</tr>
+<tr>
+<td><strong>On Game Event</strong> / <strong>On Entity Event</strong></td>
+<td><code>game.events.emit(name)</code> / <code>entity.emit(name)</code></td>
+<td><code>data</code></td>
+</tr>
+<tr>
+<td><strong>On Collision / Trigger</strong></td>
+<td>the physics reports a hit on this entity</td>
+<td><code>other</code>, <code>info</code></td>
+</tr>
+<tr>
+<td><strong>On Timer</strong></td>
+<td>every N seconds</td>
+<td><code>count</code></td>
+</tr>
+<tr>
+<td><strong>On Destroy</strong></td>
+<td>the entity is destroyed</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Custom Event</strong></td>
+<td>another chain uses <strong>Call Custom Event</strong></td>
+<td><code>a</code>, <code>b</code></td>
+</tr>
+</tbody></table>
+<h2 id="flow-ordering-choices-loops-waiting">Flow: ordering, choices, loops, waiting<a class="anchor" href="#flow-ordering-choices-loops-waiting">#</a></h2>
+<p><em>Branch (If)</em>, <em>Sequence</em> (three steps), <em>Switch</em>, <em>For Loop</em>, <em>For Each</em>, <em>While</em>, <em>Do Once</em>, <em>Flip Flop</em>, <em>Delay</em>, <em>Wait Until</em>, <em>Call Custom Event</em>, <em>Run Graph File</em>, <em>Stop Graph</em>. Waiting nodes pause only their own chain.</p>
+<h2 id="variables">Variables<a class="anchor" href="#variables">#</a></h2>
+<p>Open the <strong>Variables</strong> panel (right): add a name and a default (<code>0</code>, <code>&quot;text&quot;</code>, <code>[1,2,3]</code>). Use <strong>Get Variable</strong>, <strong>Set Variable</strong> and <strong>Add To Variable</strong> (choose the name in the widget). Every running graph has its own copy. Other places data lives: <strong>Entity Variable</strong> nodes (<code>entity.vars</code>) and <strong>Save: Get/Set</strong> (persistent save data).</p>
+<h2 id="the-built-in-node-families">The built-in node families<a class="anchor" href="#the-built-in-node-families">#</a></h2>
+<p><strong>Math</strong> (+ − × ÷, clamp, lerp, remap, random, time) · <strong>Logic</strong> (compare, and/or/not, select) · <strong>Vector</strong> (make/split, add, scale, length, normalize, distance, lerp) · <strong>Text</strong> (join, format <code>{a}</code>, to text/number) · <strong>Array</strong> · <strong>Entity</strong> (find by name/tag, position, rotation, scale, enable, destroy, spawn prefab, clone, tween, set component value) · <strong>Physics</strong> (velocity, impulse, grounded) · <strong>Input</strong> (action held/pressed, axis, direction vector, pointer) · <strong>UI</strong> (load screen, show/hide, set text/variable/property, skin) · <strong>Audio</strong> (sound, music, volume) · <strong>Game</strong> (load scene, restart, pause, time scale, emit event, log). The full table with every pin is in the <a href="../guides/graph-reference.html">Node graph reference</a>.</p>
+<h2 id="anything-the-engine-can-do-the-advanced-nodes">Anything the engine can do: the Advanced nodes<a class="anchor" href="#anything-the-engine-can-do-the-advanced-nodes">#</a></h2>
+<p>If there is no ready-made node, reach the engine directly:</p>
+<ul>
+<li><strong>Get Property / Set Property</strong>: read or write any path on any object, e.g. <code>pos.0</code> or <code>vars.hp</code>.</li>
+<li><strong>Call Method</strong>: call any function (scripts, components, services) and use its result.</li>
+<li><strong>Game / Scene Service</strong>: <code>game</code>, <code>scene</code>, <code>input</code>, <code>audio</code>, <code>ui</code>, <code>physics</code>, <code>events</code>, <code>save</code>.</li>
+<li><strong>Entity Script</strong> and <strong>Entity Component</strong>: get your own script instance or a component&#39;s data.</li>
+<li><strong>JavaScript Expression</strong> (a value) and <strong>Run JavaScript</strong> (statements): variables <code>a b c d ctx game scene entity vars</code> are available.</li>
+</ul>
+<h2 id="attach-and-run">Attach and run<a class="anchor" href="#attach-and-run">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>How</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>graph</code> component on an entity (<code>file</code>)</td>
+<td>one entity&#39;s behaviour; <em>this entity</em> is the owner</td>
+</tr>
+<tr>
+<td>Scene setting <code>&quot;graphs&quot;: [...]</code></td>
+<td>game rules and HUD, no owner</td>
+</tr>
+<tr>
+<td><em>Run Graph File</em> node</td>
+<td>reuse a graph from another graph</td>
+</tr>
+</tbody></table>
+<h2 id="checking-your-work">Checking your work<a class="anchor" href="#checking-your-work">#</a></h2>
+<ul>
+<li><strong>Validate</strong> lists unknown nodes, graphs with no event, and <strong>flow nodes no event can reach</strong> (&quot;never runs&quot;).</li>
+<li><strong>Log</strong> nodes print to the Console. Runtime errors are shown there as <code>graph &lt;file&gt;</code>; the rest of the game keeps running.</li>
+<li>An infinite loop is stopped after 200 000 steps with a clear error instead of freezing the game.</li>
+</ul>
+<h2 id="example-coin-collector">Example: Coin Collector<a class="anchor" href="#example-coin-collector">#</a></h2>
+<p>Open <strong>New project ▸ Node graph: coin collector</strong> (or <code>examples/nodegraph-coins</code>). No scripts: the player graph moves the player, finds coins, picks them up and updates the HUD; the scene graph loads the HUD made in the UI Designer. Follow <a href="../tutorials/tut-t46-node-graph-coins.html">T46</a>.</p>
+<figure class="shot"><img src="../../assets/screenshots/graph-example-win.png" alt="The Coin Collector game after collecting five coins: You win! and a Play again button" loading="lazy"><figcaption>The finished example: a sliced-skin HUD, the win panel and a restart button, all driven by graphs.</figcaption></figure><h2 id="see-also">See also<a class="anchor" href="#see-also">#</a></h2>
+<p><a href="../guides/graph-reference.html">Node graph reference</a> · <a href="../tutorials/tut-t46-node-graph-coins.html">T46 Coin Collector</a> · <a href="ui-designer.html">UI Designer</a> · <a href="event-sheets.html">Event sheets</a> · <a href="scripting.html">Scripting</a></p>
+<div class="pager"><a href="ui-designer.html"><small>← Previous</small>UI Designer</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#open-the-graph-editor">Open the Graph editor </a><a href="#your-first-graph-in-two-minutes">Your first graph in two minutes </a><a href="#reading-a-graph">Reading a graph </a><a href="#adding-nodes">Adding nodes </a><a href="#events-how-a-flow-starts">Events: how a flow starts </a><a href="#flow-ordering-choices-loops-waiting">Flow: ordering, choices, loops, waiting </a><a href="#variables">Variables </a><a href="#the-built-in-node-families">The built-in node families </a><a href="#anything-the-engine-can-do-the-advanced-nodes">Anything the engine can do: the Advanced nodes </a><a href="#attach-and-run">Attach and run </a><a href="#checking-your-work">Checking your work </a><a href="#example-coin-collector">Example: Coin Collector </a><a href="#see-also">See also </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

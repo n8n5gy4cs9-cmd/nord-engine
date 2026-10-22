@@ -1,0 +1,1205 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Node graph reference — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="cookbook.html" class="active" aria-current="page">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Guides</div><details open><summary>Guides</summary><a href="cookbook.html">Cookbook</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a><a href="cheat-sheet-nordjs.html">Cheat sheet — nord.js</a><a href="cheat-sheet-export.html">Cheat sheet — export</a><a href="ui-scenes.html">UI scenes reference</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a><a href="glossary.html">Glossary</a><a href="graph-reference.html" class="cur" aria-current="page">Node graph reference</a><a href="shortcuts.html">Keyboard shortcuts</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a></details><details><summary>Appendix</summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details></nav><main id="content"><div class="crumb">Guides / Nord Engine</div><h1>Node graph reference</h1>
+<p>A <strong>graph</strong> is a program drawn as boxes (nodes) and wires. It is saved as <code>graphs/&lt;name&gt;.graph.json</code> by the <strong>Graph</strong> tab and run by the engine with no code. Decision: ADR-032. The canvas is <strong>litegraph.js</strong> (MIT, <code>vendor/litegraph</code>); the node library and the runner are Nord&#39;s own (<code>runtime/core/graph/</code>), so a graph can reach everything in the engine: entities, components, input, physics, audio, save data, UI scenes, events, scenes, and — through the <em>Advanced</em> nodes — any property, method or JavaScript.</p>
+<h2 id="concepts">Concepts<a class="anchor" href="#concepts">#</a></h2>
+<ul>
+<li><strong>Event nodes</strong> (red) start a flow: <em>On Start</em>, <em>On Update</em>, <em>On Input Action</em>, <em>On UI Action</em>, <em>On Game Event</em>, <em>On Entity Event</em>, <em>On Collision / Trigger</em>, <em>On Timer</em>, <em>On Destroy</em>, <em>Custom Event</em>.</li>
+<li><strong>Flow pins</strong> (white arrows) run nodes in order. <strong>Data pins</strong> (coloured dots) carry values: <code>number</code>, <code>string</code>, <code>boolean</code>, <code>vec3</code>, <code>entity</code>, <code>array</code>, <code>object</code>, <code>color</code>, <code>any</code>. Compatible types connect (<code>any</code> fits everything; numbers/booleans/text convert).</li>
+<li><strong>Pure nodes</strong> (no flow pins: Math, Logic, Vector, Text, Get Variable, Find Entity…) are evaluated on demand when something reads their output.</li>
+<li>An <strong>unconnected input</strong> uses the value typed in the node&#39;s widget. A connected input uses the wire.</li>
+<li><strong>Variables</strong> live in the <em>Variables</em> panel of the graph (name + default). <em>Get/Set/Add To Variable</em> nodes use them; each running graph has its own copy.</li>
+<li>A <strong>target</strong> input left empty means <em>this entity</em> (the entity the graph is attached to).</li>
+<li>Flow nodes can wait: <em>Delay</em>, <em>Wait Until</em>, <em>Tween Position</em> pause only their own chain; the game and other chains keep running.</li>
+</ul>
+<h2 id="running-a-graph">Running a graph<a class="anchor" href="#running-a-graph">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>How</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><code>graph</code> component</strong> on an entity: <code>{ &quot;type&quot;: &quot;graph&quot;, &quot;file&quot;: &quot;graphs/player.graph.json&quot; }</code></td>
+<td>Behaviour of one entity (movement, enemy AI). <em>This entity</em> = the owner.</td>
+</tr>
+<tr>
+<td><strong>Scene setting</strong> <code>&quot;settings&quot;: { &quot;graphs&quot;: [&quot;graphs/game.graph.json&quot;] }</code></td>
+<td>Game rules, HUD, scene flow. No owner entity.</td>
+</tr>
+<tr>
+<td><strong>Run Graph File</strong> node</td>
+<td>Call a reusable graph from another graph (arguments <code>a</code>, <code>b</code> become variables).</td>
+</tr>
+<tr>
+<td>Code: <code>await attachGraph(game, scene, &#39;graphs/x.graph.json&#39;, entity)</code></td>
+<td>From a script. Returns the graph (<code>.stop()</code>, <code>.vars</code>).</td>
+</tr>
+</tbody></table>
+<p>Inspector: add the <strong>graph</strong> component (Add component ▸ graph) or use <strong>Hierarchy ▸ Create ▸ Graph (visual script)</strong>.</p>
+<h2 id="the-graph-editor">The Graph editor<a class="anchor" href="#the-graph-editor">#</a></h2>
+<p>Search the palette (left) or double-click the canvas; drag from a pin to connect; <strong>Del</strong> deletes; <strong>Ctrl/Cmd+D</strong> duplicates; <strong>Ctrl/Cmd+S</strong> saves; <strong>F</strong> fits the view. <strong>Templates</strong> start common graphs. <strong>Arrange</strong> tidies nodes left to right. <strong>Validate</strong> reports unknown nodes, missing events, and flow nodes that no event can reach.</p>
+<h2 id="errors-and-limits">Errors and limits<a class="anchor" href="#errors-and-limits">#</a></h2>
+<p>An error in one node is reported to the Console and the editor overlay (as <code>graph &lt;file&gt;</code>); other chains keep running. A single flow stops with an error after 200 000 steps (infinite loop guard). Pure-node cycles are detected.</p>
+<h2 id="escape-hatches-the-advanced-category">Escape hatches (the <em>Advanced</em> category)<a class="anchor" href="#escape-hatches-the-advanced-category">#</a></h2>
+<p><em>Get/Set Property</em> (<code>pos.0</code>, <code>vars.hp</code>, any path), <em>Call Method</em> (any function on any object, awaits promises), <em>Game / Scene Service</em> (game, scene, input, audio, ui, physics, events, save), <em>Entity Script</em> and <em>Entity Component</em> (reach your own scripts and component data), <em>JavaScript Expression</em> and <em>Run JavaScript</em> (<code>a b c d ctx game scene entity vars</code>).</p>
+<h2 id="node-list">Node list<a class="anchor" href="#node-list">#</a></h2>
+<!-- GENERATED NODES --><h3 id="events">Events<a class="anchor" href="#events">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>On Start</strong> <em>(event → then)</em></td>
+<td><code>event/start</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>On Update</strong> <em>(event → then)</em></td>
+<td><code>event/update</code></td>
+<td>—</td>
+<td>dt:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>On Input Action</strong> <em>(event → then)</em></td>
+<td><code>event/key</code></td>
+<td>—</td>
+<td>—</td>
+<td>action=&quot;jump&quot;, mode (pressed</td>
+</tr>
+<tr>
+<td><strong>On UI Action</strong> <em>(event → then)</em></td>
+<td><code>event/ui</code></td>
+<td>—</td>
+<td>payload:any</td>
+<td>action=&quot;play&quot;</td>
+</tr>
+<tr>
+<td><strong>On Game Event</strong> <em>(event → then)</em></td>
+<td><code>event/game</code></td>
+<td>—</td>
+<td>data:any</td>
+<td>name=&quot;my-event&quot;</td>
+</tr>
+<tr>
+<td><strong>On Entity Event</strong> <em>(event → then)</em></td>
+<td><code>event/entity</code></td>
+<td>—</td>
+<td>data:any</td>
+<td>name=&quot;click&quot;</td>
+</tr>
+<tr>
+<td><strong>On Collision / Trigger</strong> <em>(event → then)</em></td>
+<td><code>event/collision</code></td>
+<td>—</td>
+<td>other:entity, info:object</td>
+<td>method (onCollisionEnter</td>
+</tr>
+<tr>
+<td><strong>On Timer</strong> <em>(event → then)</em></td>
+<td><code>event/timer</code></td>
+<td>—</td>
+<td>count:number</td>
+<td>seconds=1, repeat=true</td>
+</tr>
+<tr>
+<td><strong>On Destroy</strong> <em>(event → then)</em></td>
+<td><code>event/destroy</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Custom Event</strong> <em>(event → then)</em></td>
+<td><code>event/custom</code></td>
+<td>—</td>
+<td>a:any, b:any</td>
+<td>name=&quot;my-custom&quot;</td>
+</tr>
+</tbody></table>
+<h3 id="flow">Flow<a class="anchor" href="#flow">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Branch (If)</strong> <em>(flow → then / else)</em></td>
+<td><code>flow/branch</code></td>
+<td>condition:boolean=true</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Sequence</strong> <em>(flow → then / then 2 / then 3)</em></td>
+<td><code>flow/sequence</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Delay</strong> <em>(flow → then)</em></td>
+<td><code>flow/delay</code></td>
+<td>seconds:number=1</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Wait Until</strong> <em>(flow → then)</em></td>
+<td><code>flow/wait-until</code></td>
+<td>condition:boolean=false</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>For Loop</strong> <em>(flow → body / done)</em></td>
+<td><code>flow/for</code></td>
+<td>first:number=0, last:number=9</td>
+<td>index:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>For Each</strong> <em>(flow → body / done)</em></td>
+<td><code>flow/foreach</code></td>
+<td>array:array</td>
+<td>item:any, index:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>While</strong> <em>(flow → body / done)</em></td>
+<td><code>flow/while</code></td>
+<td>condition:boolean=false</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Do Once</strong> <em>(flow → then)</em></td>
+<td><code>flow/once</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Flip Flop</strong> <em>(flow → A / B)</em></td>
+<td><code>flow/flipflop</code></td>
+<td>—</td>
+<td>isA:boolean</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Switch</strong> <em>(flow → case 1 / case 2 / case 3 / default)</em></td>
+<td><code>flow/switch</code></td>
+<td>value:any</td>
+<td>—</td>
+<td>case0=&quot;a&quot;, case1=&quot;b&quot;, case2=&quot;c&quot;</td>
+</tr>
+<tr>
+<td><strong>Call Custom Event</strong> <em>(flow → then)</em></td>
+<td><code>flow/call-event</code></td>
+<td>name:string=&quot;my-custom&quot;, a:any, b:any</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Run Graph File</strong> <em>(flow → then)</em></td>
+<td><code>flow/call-graph</code></td>
+<td>file:string=&quot;graphs/other.graph.json&quot;, a:any, b:any</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Stop Graph</strong> <em>(flow → then)</em></td>
+<td><code>flow/stop</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3 id="variables">Variables<a class="anchor" href="#variables">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Get Variable</strong> <em>(pure)</em></td>
+<td><code>var/get</code></td>
+<td>—</td>
+<td>value:any</td>
+<td>name=&quot;score&quot;</td>
+</tr>
+<tr>
+<td><strong>Set Variable</strong> <em>(flow → then)</em></td>
+<td><code>var/set</code></td>
+<td>value:any</td>
+<td>value:any</td>
+<td>name=&quot;score&quot;</td>
+</tr>
+<tr>
+<td><strong>Add To Variable</strong> <em>(flow → then)</em></td>
+<td><code>var/add</code></td>
+<td>amount:number=1</td>
+<td>value:number</td>
+<td>name=&quot;score&quot;</td>
+</tr>
+<tr>
+<td><strong>Get Entity Variable</strong> <em>(pure)</em></td>
+<td><code>var/entity-get</code></td>
+<td>entity:entity</td>
+<td>value:any</td>
+<td>name=&quot;hp&quot;</td>
+</tr>
+<tr>
+<td><strong>Set Entity Variable</strong> <em>(flow → then)</em></td>
+<td><code>var/entity-set</code></td>
+<td>entity:entity, value:any</td>
+<td>—</td>
+<td>name=&quot;hp&quot;</td>
+</tr>
+<tr>
+<td><strong>Save: Get</strong> <em>(pure)</em></td>
+<td><code>save/get</code></td>
+<td>key:string=&quot;best&quot;, default:any</td>
+<td>value:any</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Save: Set</strong> <em>(flow → then)</em></td>
+<td><code>save/set</code></td>
+<td>key:string=&quot;best&quot;, value:any</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3 id="math">Math<a class="anchor" href="#math">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Number</strong> <em>(pure)</em></td>
+<td><code>const/number</code></td>
+<td>—</td>
+<td>value:number</td>
+<td>value=0</td>
+</tr>
+<tr>
+<td><strong>A + B</strong> <em>(pure)</em></td>
+<td><code>math/add</code></td>
+<td>a:number=0, b:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>A − B</strong> <em>(pure)</em></td>
+<td><code>math/sub</code></td>
+<td>a:number=0, b:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>A × B</strong> <em>(pure)</em></td>
+<td><code>math/mul</code></td>
+<td>a:number=0, b:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>A ÷ B</strong> <em>(pure)</em></td>
+<td><code>math/div</code></td>
+<td>a:number=0, b:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>A mod B</strong> <em>(pure)</em></td>
+<td><code>math/mod</code></td>
+<td>a:number=0, b:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>A ^ B</strong> <em>(pure)</em></td>
+<td><code>math/pow</code></td>
+<td>a:number=0, b:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Min</strong> <em>(pure)</em></td>
+<td><code>math/min</code></td>
+<td>a:number=0, b:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Max</strong> <em>(pure)</em></td>
+<td><code>math/max</code></td>
+<td>a:number=0, b:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Atan2(A, B)</strong> <em>(pure)</em></td>
+<td><code>math/atan2</code></td>
+<td>a:number=0, b:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Abs</strong> <em>(pure)</em></td>
+<td><code>math/abs</code></td>
+<td>value:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Floor</strong> <em>(pure)</em></td>
+<td><code>math/floor</code></td>
+<td>value:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Ceil</strong> <em>(pure)</em></td>
+<td><code>math/ceil</code></td>
+<td>value:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Round</strong> <em>(pure)</em></td>
+<td><code>math/round</code></td>
+<td>value:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Sin</strong> <em>(pure)</em></td>
+<td><code>math/sin</code></td>
+<td>value:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Cos</strong> <em>(pure)</em></td>
+<td><code>math/cos</code></td>
+<td>value:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Sqrt</strong> <em>(pure)</em></td>
+<td><code>math/sqrt</code></td>
+<td>value:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Sign</strong> <em>(pure)</em></td>
+<td><code>math/sign</code></td>
+<td>value:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Negate</strong> <em>(pure)</em></td>
+<td><code>math/negate</code></td>
+<td>value:number=0</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Clamp</strong> <em>(pure)</em></td>
+<td><code>math/clamp</code></td>
+<td>value:number=0, min:number=0, max:number=1</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Lerp</strong> <em>(pure)</em></td>
+<td><code>math/lerp</code></td>
+<td>a:number=0, b:number=1, t:number=0.5</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Remap</strong> <em>(pure)</em></td>
+<td><code>math/remap</code></td>
+<td>value:number=0, from min:number=0, from max:number=1, to min:number=0, to max:number=100</td>
+<td>result:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Random Number</strong> <em>(pure)</em></td>
+<td><code>math/random</code></td>
+<td>min:number=0, max:number=1</td>
+<td>value:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Random Integer</strong> <em>(pure)</em></td>
+<td><code>math/random-int</code></td>
+<td>min:number=0, max:number=10</td>
+<td>value:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Time</strong> <em>(pure)</em></td>
+<td><code>math/time</code></td>
+<td>—</td>
+<td>elapsed:number, delta:number</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3 id="logic">Logic<a class="anchor" href="#logic">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Boolean</strong> <em>(pure)</em></td>
+<td><code>const/boolean</code></td>
+<td>—</td>
+<td>value:boolean</td>
+<td>value=true</td>
+</tr>
+<tr>
+<td><strong>Compare</strong> <em>(pure)</em></td>
+<td><code>logic/compare</code></td>
+<td>a:any=0, b:any=0</td>
+<td>result:boolean</td>
+<td>op (==</td>
+</tr>
+<tr>
+<td><strong>And</strong> <em>(pure)</em></td>
+<td><code>logic/and</code></td>
+<td>a:boolean=true, b:boolean=true</td>
+<td>result:boolean</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Or</strong> <em>(pure)</em></td>
+<td><code>logic/or</code></td>
+<td>a:boolean=false, b:boolean=false</td>
+<td>result:boolean</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Not</strong> <em>(pure)</em></td>
+<td><code>logic/not</code></td>
+<td>value:boolean=false</td>
+<td>result:boolean</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Select (A ? B : C)</strong> <em>(pure)</em></td>
+<td><code>logic/select</code></td>
+<td>condition:boolean=true, if true:any, if false:any</td>
+<td>value:any</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Is Valid</strong> <em>(pure)</em></td>
+<td><code>logic/is-valid</code></td>
+<td>value:any</td>
+<td>valid:boolean</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3 id="vector">Vector<a class="anchor" href="#vector">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Vector3</strong> <em>(pure)</em></td>
+<td><code>const/vec3</code></td>
+<td>x:number=0, y:number=0, z:number=0</td>
+<td>vec:vec3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Split Vector3</strong> <em>(pure)</em></td>
+<td><code>vec/split</code></td>
+<td>vec:vec3</td>
+<td>x:number, y:number, z:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Vector A + B</strong> <em>(pure)</em></td>
+<td><code>vec/add</code></td>
+<td>a:vec3, b:vec3</td>
+<td>result:vec3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Vector A − B</strong> <em>(pure)</em></td>
+<td><code>vec/sub</code></td>
+<td>a:vec3, b:vec3</td>
+<td>result:vec3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Vector × Number</strong> <em>(pure)</em></td>
+<td><code>vec/scale</code></td>
+<td>vec:vec3, scale:number=1</td>
+<td>result:vec3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Vector Length</strong> <em>(pure)</em></td>
+<td><code>vec/length</code></td>
+<td>vec:vec3</td>
+<td>length:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Normalize</strong> <em>(pure)</em></td>
+<td><code>vec/normalize</code></td>
+<td>vec:vec3</td>
+<td>result:vec3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Distance</strong> <em>(pure)</em></td>
+<td><code>vec/distance</code></td>
+<td>a:vec3, b:vec3</td>
+<td>distance:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Vector Lerp</strong> <em>(pure)</em></td>
+<td><code>vec/lerp</code></td>
+<td>a:vec3, b:vec3, t:number=0.5</td>
+<td>result:vec3</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3 id="text">Text<a class="anchor" href="#text">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Text</strong> <em>(pure)</em></td>
+<td><code>const/string</code></td>
+<td>—</td>
+<td>value:string</td>
+<td>value=&quot;hello&quot;</td>
+</tr>
+<tr>
+<td><strong>Color</strong> <em>(pure)</em></td>
+<td><code>const/color</code></td>
+<td>—</td>
+<td>color:color</td>
+<td>color=&quot;#88c0d0&quot;</td>
+</tr>
+<tr>
+<td><strong>Join Text</strong> <em>(pure)</em></td>
+<td><code>text/concat</code></td>
+<td>a:any=&quot;&quot;, b:any=&quot;&quot;</td>
+<td>text:string</td>
+<td>separator=&quot;&quot;</td>
+</tr>
+<tr>
+<td><strong>Format Text</strong> <em>(pure)</em></td>
+<td><code>text/format</code></td>
+<td>a:any, b:any, c:any</td>
+<td>text:string</td>
+<td>template=&quot;Score: {a}&quot;</td>
+</tr>
+<tr>
+<td><strong>To Text</strong> <em>(pure)</em></td>
+<td><code>text/to-string</code></td>
+<td>value:any</td>
+<td>text:string</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>To Number</strong> <em>(pure)</em></td>
+<td><code>text/to-number</code></td>
+<td>text:any</td>
+<td>number:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Text Length</strong> <em>(pure)</em></td>
+<td><code>text/length</code></td>
+<td>text:string=&quot;&quot;</td>
+<td>length:number</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3 id="array">Array<a class="anchor" href="#array">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Make Array</strong> <em>(pure)</em></td>
+<td><code>array/make</code></td>
+<td>a:any, b:any, c:any, d:any</td>
+<td>array:array</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Array Get</strong> <em>(pure)</em></td>
+<td><code>array/get</code></td>
+<td>array:array, index:number=0</td>
+<td>item:any</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Array Length</strong> <em>(pure)</em></td>
+<td><code>array/length</code></td>
+<td>array:array</td>
+<td>length:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Random Item</strong> <em>(pure)</em></td>
+<td><code>array/random</code></td>
+<td>array:array</td>
+<td>item:any</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Array Push</strong> <em>(flow → then)</em></td>
+<td><code>array/push</code></td>
+<td>array:array, item:any</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3 id="entity">Entity<a class="anchor" href="#entity">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>This Entity</strong> <em>(pure)</em></td>
+<td><code>entity/self</code></td>
+<td>—</td>
+<td>entity:entity</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Find Entity By Name</strong> <em>(pure)</em></td>
+<td><code>entity/find</code></td>
+<td>name:string=&quot;Player&quot;</td>
+<td>entity:entity</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Find Entities By Tag</strong> <em>(pure)</em></td>
+<td><code>entity/find-tag</code></td>
+<td>tag:string=&quot;enemy&quot;</td>
+<td>entities:array</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Get Position</strong> <em>(pure)</em></td>
+<td><code>entity/get-pos</code></td>
+<td>entity:entity</td>
+<td>pos:vec3, x:number, y:number, z:number</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Set Position</strong> <em>(flow → then)</em></td>
+<td><code>entity/set-pos</code></td>
+<td>entity:entity, pos:vec3</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Move By</strong> <em>(flow → then)</em></td>
+<td><code>entity/translate</code></td>
+<td>entity:entity, delta:vec3</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Get Rotation</strong> <em>(pure)</em></td>
+<td><code>entity/get-rot</code></td>
+<td>entity:entity</td>
+<td>rot:vec3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Set Rotation</strong> <em>(flow → then)</em></td>
+<td><code>entity/set-rot</code></td>
+<td>entity:entity, rot:vec3</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Set Scale</strong> <em>(flow → then)</em></td>
+<td><code>entity/set-scale</code></td>
+<td>entity:entity, scale:vec3</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Set Enabled</strong> <em>(flow → then)</em></td>
+<td><code>entity/set-enabled</code></td>
+<td>entity:entity, enabled:boolean=true</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Destroy Entity</strong> <em>(flow → then)</em></td>
+<td><code>entity/destroy</code></td>
+<td>entity:entity</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Spawn Prefab</strong> <em>(flow → then)</em></td>
+<td><code>entity/spawn</code></td>
+<td>prefab:string=&quot;prefabs/bullet.prefab.json&quot;, pos:vec3</td>
+<td>entity:entity</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Clone Entity</strong> <em>(flow → then)</em></td>
+<td><code>entity/clone</code></td>
+<td>entity:entity</td>
+<td>entity:entity</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Has Tag</strong> <em>(pure)</em></td>
+<td><code>entity/has-tag</code></td>
+<td>entity:entity, tag:string=&quot;enemy&quot;</td>
+<td>result:boolean</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Get Name</strong> <em>(pure)</em></td>
+<td><code>entity/name</code></td>
+<td>entity:entity</td>
+<td>name:string</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Set Component Value</strong> <em>(flow → then)</em></td>
+<td><code>entity/set-component</code></td>
+<td>entity:entity, value:any</td>
+<td>—</td>
+<td>component=&quot;sprite&quot;, key=&quot;tint&quot;</td>
+</tr>
+<tr>
+<td><strong>Tween Position</strong> <em>(flow → then)</em></td>
+<td><code>entity/tween</code></td>
+<td>entity:entity, to:vec3, seconds:number=1</td>
+<td>—</td>
+<td>ease (quadOut</td>
+</tr>
+</tbody></table>
+<h3 id="physics">Physics<a class="anchor" href="#physics">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Set Velocity</strong> <em>(flow → then)</em></td>
+<td><code>physics/velocity</code></td>
+<td>entity:entity, velocity:vec3</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Apply Impulse</strong> <em>(flow → then)</em></td>
+<td><code>physics/impulse</code></td>
+<td>entity:entity, impulse:vec3</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Get Velocity</strong> <em>(pure)</em></td>
+<td><code>physics/get-velocity</code></td>
+<td>entity:entity</td>
+<td>velocity:vec3</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Is Grounded</strong> <em>(pure)</em></td>
+<td><code>physics/grounded</code></td>
+<td>entity:entity</td>
+<td>grounded:boolean</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3 id="input">Input<a class="anchor" href="#input">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Action Held</strong> <em>(pure)</em></td>
+<td><code>input/down</code></td>
+<td>—</td>
+<td>down:boolean</td>
+<td>action=&quot;jump&quot;</td>
+</tr>
+<tr>
+<td><strong>Action Pressed</strong> <em>(pure)</em></td>
+<td><code>input/pressed</code></td>
+<td>—</td>
+<td>pressed:boolean</td>
+<td>action=&quot;jump&quot;</td>
+</tr>
+<tr>
+<td><strong>Axis</strong> <em>(pure)</em></td>
+<td><code>input/axis</code></td>
+<td>—</td>
+<td>value:number</td>
+<td>negative=&quot;left&quot;, positive=&quot;right&quot;</td>
+</tr>
+<tr>
+<td><strong>Direction Vector</strong> <em>(pure)</em></td>
+<td><code>input/vec</code></td>
+<td>—</td>
+<td>vec:vec3, x:number, y:number</td>
+<td>left=&quot;left&quot;, right=&quot;right&quot;, up=&quot;up&quot;, down=&quot;down&quot;</td>
+</tr>
+<tr>
+<td><strong>Pointer</strong> <em>(pure)</em></td>
+<td><code>input/pointer</code></td>
+<td>—</td>
+<td>x:number, y:number, down:boolean</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3 id="ui">UI<a class="anchor" href="#ui">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Load UI Screen</strong> <em>(flow → then)</em></td>
+<td><code>ui/load</code></td>
+<td>file:string=&quot;ui/menu.ui.json&quot;</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Show / Hide Screen</strong> <em>(flow → then)</em></td>
+<td><code>ui/show</code></td>
+<td>screen:string=&quot;menu&quot;, visible:boolean=true</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Set UI Text</strong> <em>(flow → then)</em></td>
+<td><code>ui/set-text</code></td>
+<td>screen:string=&quot;menu&quot;, node:string=&quot;score&quot;, text:any</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Set UI Variable</strong> <em>(flow → then)</em></td>
+<td><code>ui/set-var</code></td>
+<td>screen:string=&quot;menu&quot;, name:string=&quot;score&quot;, value:any</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Set UI Node Property</strong> <em>(flow → then)</em></td>
+<td><code>ui/set-prop</code></td>
+<td>screen:string=&quot;menu&quot;, node:string=&quot;play&quot;, value:any</td>
+<td>—</td>
+<td>property (text</td>
+</tr>
+<tr>
+<td><strong>Get UI Value</strong> <em>(pure)</em></td>
+<td><code>ui/get-value</code></td>
+<td>screen:string=&quot;menu&quot;, node:string=&quot;name&quot;</td>
+<td>value:any</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Use UI Skin</strong> <em>(flow → then)</em></td>
+<td><code>ui/skin</code></td>
+<td>file:string=&quot;ui/skin.json&quot;</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3 id="audio">Audio<a class="anchor" href="#audio">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Play Sound</strong> <em>(flow → then)</em></td>
+<td><code>audio/play</code></td>
+<td>clip:string=&quot;assets/audio/sfx/click.wav&quot;, volume:number=1</td>
+<td>—</td>
+<td>bus (sfx</td>
+</tr>
+<tr>
+<td><strong>Play Music</strong> <em>(flow → then)</em></td>
+<td><code>audio/music</code></td>
+<td>clip:string=&quot;assets/audio/music.mp3&quot;</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Stop Music</strong> <em>(flow → then)</em></td>
+<td><code>audio/stop-music</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Set Volume</strong> <em>(flow → then)</em></td>
+<td><code>audio/volume</code></td>
+<td>volume:number=1</td>
+<td>—</td>
+<td>bus (master</td>
+</tr>
+</tbody></table>
+<h3 id="game">Game<a class="anchor" href="#game">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Load Scene</strong> <em>(flow → then)</em></td>
+<td><code>game/load-scene</code></td>
+<td>scene:string=&quot;scenes/main.scene.json&quot;</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Restart Scene</strong> <em>(flow → then)</em></td>
+<td><code>game/restart</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Pause / Resume</strong> <em>(flow → then)</em></td>
+<td><code>game/pause</code></td>
+<td>paused:boolean=true</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Set Time Scale</strong> <em>(flow → then)</em></td>
+<td><code>game/timescale</code></td>
+<td>scale:number=1</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Emit Game Event</strong> <em>(flow → then)</em></td>
+<td><code>game/emit</code></td>
+<td>name:string=&quot;my-event&quot;, data:any</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Emit Entity Event</strong> <em>(flow → then)</em></td>
+<td><code>game/emit-entity</code></td>
+<td>entity:entity, name:string=&quot;click&quot;, data:any</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Log</strong> <em>(flow → then)</em></td>
+<td><code>game/log</code></td>
+<td>message:any</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Open URL</strong> <em>(flow → then)</em></td>
+<td><code>game/quit-browser</code></td>
+<td>url:string=&quot;…://&quot;</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3 id="advanced">Advanced<a class="anchor" href="#advanced">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Type id</th>
+<th>Inputs</th>
+<th>Outputs</th>
+<th>Settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Get Property</strong> <em>(pure)</em></td>
+<td><code>adv/get-prop</code></td>
+<td>object:any, path:string=&quot;pos.0&quot;</td>
+<td>value:any</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Set Property</strong> <em>(flow → then)</em></td>
+<td><code>adv/set-prop</code></td>
+<td>object:any, path:string=&quot;name&quot;, value:any</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Call Method</strong> <em>(flow → then)</em></td>
+<td><code>adv/call</code></td>
+<td>object:any, method:string=&quot;emit&quot;, a:any, b:any, c:any</td>
+<td>result:any</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Game / Scene Service</strong> <em>(pure)</em></td>
+<td><code>adv/game</code></td>
+<td>—</td>
+<td>object:any</td>
+<td>service (game</td>
+</tr>
+<tr>
+<td><strong>Entity Script</strong> <em>(pure)</em></td>
+<td><code>adv/script</code></td>
+<td>entity:entity</td>
+<td>script:object</td>
+<td>class=&quot;&quot;</td>
+</tr>
+<tr>
+<td><strong>Entity Component</strong> <em>(pure)</em></td>
+<td><code>adv/component</code></td>
+<td>entity:entity</td>
+<td>component:object</td>
+<td>type=&quot;sprite&quot;</td>
+</tr>
+<tr>
+<td><strong>JavaScript Expression</strong> <em>(pure)</em></td>
+<td><code>adv/js-expr</code></td>
+<td>a:any, b:any, c:any, d:any</td>
+<td>result:any</td>
+<td>code=&quot;a + b&quot;</td>
+</tr>
+<tr>
+<td><strong>Run JavaScript</strong> <em>(flow → then)</em></td>
+<td><code>adv/js</code></td>
+<td>a:any, b:any, c:any, d:any</td>
+<td>result:any</td>
+<td>code=&quot;console.log(game.time.elapsed)&quot;</td>
+</tr>
+<tr>
+<td><strong>Reroute</strong> <em>(pure)</em></td>
+<td><code>util/reroute</code></td>
+<td>in:any</td>
+<td>out:any</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Comment</strong> <em>(pure)</em></td>
+<td><code>util/comment</code></td>
+<td>—</td>
+<td>—</td>
+<td>text=&quot;Note&quot;</td>
+</tr>
+</tbody></table>
+<!-- END GENERATED NODES --><h2 id="credits">Credits<a class="anchor" href="#credits">#</a></h2>
+<p>Canvas: litegraph.js © Javi Agenjo, MIT (<code>vendor/litegraph/LICENSE</code>). Graph model inspired by Unity Visual Scripting / GraphView and Unreal Blueprints (concepts only; no code copied — Unity&#39;s C# reference repository is reference-only).</p>
+<div class="pager"><a href="glossary.html"><small>← Previous</small>Glossary</a><a href="shortcuts.html"><small>Next →</small>Keyboard shortcuts</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#concepts">Concepts </a><a href="#running-a-graph">Running a graph </a><a href="#the-graph-editor">The Graph editor </a><a href="#errors-and-limits">Errors and limits </a><a href="#escape-hatches-the-advanced-category">Escape hatches (the Advanced category) </a><a href="#node-list">Node list </a><a href="#credits">Credits </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

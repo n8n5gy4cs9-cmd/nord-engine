@@ -112,4 +112,6 @@ Welcome starts with a curated Featured set. Starter templates and samples indepe
 
 Creator game templates **Two Floors — Dungeon Creator** and **Tiny Tank Patrol — NES-style Arena** appear under Featured/2D. Projects with any `levels/*.level2d.json` open directly on 2D Level. Level exposes the controller path and its attributes JSON; object Inspector exposes actor-specific scripts. Choose another bank sprite, reselect an object and use **Use bank sprite** to replace its art while keeping values/scripts. Full manual tutorials T28–T30 cover machine, dungeon and tank workflows.
 
+**Graph tab:** litegraph canvas + Nord nodes (`editor/graph/`), see `docs/GRAPH.md`. **Hierarchy:** Create menu (presets), F2 rename, Create empty parent. **View ▸ Layout:** presets. **Toolbar:** Pause / Step while playing.
+
 **UI Designer tab:** embedded page `editor/uidesigner/` (like FPS/2D Level): palette, tree with drag reorder, live preview using the real runtime, property inspector, JSON tab, undo/redo, saves `ui/*.ui.json`. See `docs/UI_SCENES.md`.

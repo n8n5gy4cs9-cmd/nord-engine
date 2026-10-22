@@ -6,6 +6,7 @@ import { Rng } from './util.js';
 import { Scene } from './scene.js';
 import { resolveAttributes } from './script.js';
 import { EventSheet } from './eventsheet/sheet.js';
+import { attachGraph } from './graph/runner.js';
 import { I18n, Accessibility } from './i18n.js';
 import { Debugger } from './debug.js';
 import { Effects } from './effects.js';
@@ -126,6 +127,7 @@ export class Game {
     if (scene.settings.timelines) scene.systems.push(scene.timelines = new Timelines(scene, scene.settings.timelines));
     const sheet = scene.settings.eventSheet ?? scene.data.eventSheet;
     if (sheet) scene.systems.push(scene.eventSheet = await EventSheet.load(scene, sheet));
+    for (const p of scene.settings.graphs ?? []) await attachGraph(this, scene, p); // scene-level graphs (no entity)
     scene.start();
     this.events.emit('sceneLoad', scene.name);
     return scene;

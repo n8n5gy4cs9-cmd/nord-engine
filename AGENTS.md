@@ -41,6 +41,7 @@ Bundled versions as of **2026-10-22**. Source of truth: `vendor/VENDOR.json` (we
 | wry / tao | 0.50.5 / 0.33.0 | webview / window shell |
 | CodeMirror | 6 | code editor |
 | esbuild-wasm | 0.25.10 | export minify/bundle |
+| litegraph.js (core) | 0.7.18 | node-graph editor (Graph tab) |
 | marked | 18.1.0 | manual markdown |
 | Lucide | 1.55.0 | icons |
 | Fonts (fontsource) | 5.3.0 | bundled typefaces |

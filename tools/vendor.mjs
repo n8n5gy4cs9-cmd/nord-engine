@@ -27,6 +27,7 @@ const LIBS = [
   { name: 'havok', pkg: '@babylonjs/havok@1.3.14', license: 'MIT wrapper (Havok wasm free for use with Babylon.js)', files: [['lib/umd/HavokPhysics_umd.js'], ['lib/umd/HavokPhysics.wasm'], ['LICENSE.md']] },
   { name: 'playcanvas', pkg: 'playcanvas@2.23.2', license: 'MIT', optional: true, files: [['build/playcanvas.min.js'], ['LICENSE']] },
   { name: 'esbuild-wasm', pkg: 'esbuild-wasm@0.25.10', license: 'MIT', files: [['lib/browser.js'], ['esbuild.wasm'], ['LICENSE.md']] },
+  { name: 'litegraph', pkg: 'litegraph.js@0.7.18', license: 'MIT', files: [['build/litegraph.core.js'], ['css/litegraph.css'], ['LICENSE']] },
   { name: 'marked', pkg: 'marked@18.1.0', license: 'MIT', files: [['lib/marked.umd.js'], ['LICENSE.md']] },
   { name: 'fonts', pkg: '@fontsource/inter@5.3.0', license: 'OFL-1.1', to: 'fonts/inter', files: [['files/inter-latin-400-normal.woff2'], ['files/inter-latin-500-normal.woff2'], ['files/inter-latin-600-normal.woff2'], ['files/inter-latin-700-normal.woff2'], ['LICENSE']] },
   { name: 'fonts', pkg: '@fontsource/jetbrains-mono@5.3.0', license: 'OFL-1.1', to: 'fonts/jetbrains-mono', files: [['files/jetbrains-mono-latin-400-normal.woff2'], ['files/jetbrains-mono-latin-700-normal.woff2'], ['LICENSE']] },
@@ -114,6 +115,11 @@ for (const L of LIBS) {
       if (alt && /licen/i.test(from)) src = path.join(pkgDir, alt); else { console.warn(`!! ${L.pkg}: missing ${from}`); continue; }
     }
     copy(src, path.join(base, path.basename(src)), L.name, version, L.license);
+  }
+  if (L.name === 'litegraph') { // Nord patch: let the editor keep text/labels visible when zoomed out
+    const f = path.join(base, 'litegraph.core.js'); let t = fs.readFileSync(f, 'utf8');
+    t = '/* Nord patch: the two `ds.scale < 0.6/0.5` low-quality thresholds read LiteGraph.low_quality_scale (tools/vendor.mjs). */\n' + t.replace(/this\.ds\.scale < 0\.6/g, 'this.ds.scale < (LiteGraph.low_quality_scale ?? 0.6)').replace(/this\.ds\.scale < 0\.5/g, 'this.ds.scale < (LiteGraph.low_quality_scale ?? 0.5)');
+    fs.writeFileSync(f, t); entries.find((e) => e.file.endsWith('litegraph.core.js')).patched = true;
   }
   console.log('vendored', L.pkg);
 }

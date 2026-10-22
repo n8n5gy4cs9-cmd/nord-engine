@@ -38,8 +38,8 @@ const FIELDS = {
   select: [['options', 'Options (a,b,c)', 'list'], ['value', 'Value', 'text'], ['on.changed', 'Action', 'text']],
   spacer: [], html: [['html', 'HTML', 'area']], instance: [['ref', 'File', 'text']],
 };
-const IMG = [['image.src', 'Image', 'text'], ['image.mode', 'Image mode', ['', 'slice', 'stretch', 'tile', 'fit', 'cover', 'center']], ['image.slice', '9-slice L T R B', 'nums'], ['image.scale', 'Slice scale', 'num'], ['image.pixelated', 'Pixelated', 'bool']];
-const IMGNODE = [['src', 'Image', 'text'], ['mode', 'Mode', ['', 'slice', 'stretch', 'tile', 'fit', 'cover', 'center']], ['slice', '9-slice L T R B', 'nums'], ['scale', 'Slice scale', 'num']];
+const IMG = [['image.src', 'Image', 'img'], ['image.mode', 'Image mode', ['', 'slice', 'stretch', 'tile', 'fit', 'cover', 'center']], ['image.slice', '9-slice L T R B', 'nums'], ['image.scale', 'Slice scale', 'num'], ['image.pixelated', 'Pixelated', 'bool']];
+const IMGNODE = [['src', 'Image', 'img'], ['mode', 'Mode', ['', 'slice', 'stretch', 'tile', 'fit', 'cover', 'center']], ['slice', '9-slice L T R B', 'nums'], ['scale', 'Slice scale', 'num']];
 const tail = [['visible', 'Visible', 'bool', true], ['disabled', 'Disabled', 'bool'], ['bind.text', 'Bind text var', 'text'], ['tooltip', 'Tooltip', 'text']];
 
 const SKINS = { '': null };
@@ -49,6 +49,32 @@ let rafPending = false;
 
 const status = (m, bad) => { const s = $('#status'); s.textContent = m; s.className = bad ? 'bad' : ''; };
 const clone = (o) => JSON.parse(JSON.stringify(o));
+
+// ── talk to the editor / project (works in the Nord editor tab; in a plain browser the paths are just shown) ──
+const ipc = (m) => fetch('/api/ipc', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(m) }).catch(() => {});
+const openInEditor = (file, line) => { ipc({ t: 'open-file', path: file, line }); status(`Opening ${file}${line ? ':' + line : ''} in the code editor…`); };
+const usageCache = new Map();
+/** Code that mentions `name` as a quoted string or `ui:name` (definition files .ui.json/.skin.json do not count). */
+async function usagesOf(name) {
+  const hit = usageCache.get(name); if (hit && Date.now() - hit.t < 8000) return hit.list;
+  let list = null;
+  try {
+    const r = await fetch('/api/usages?q=' + encodeURIComponent(name));
+    if (r.ok) {
+      const q = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), re = new RegExp(`(['"\`])${q}\\1|ui:${q}\\b`);
+      list = (await r.json()).filter((h) => !/\.(ui|skin)\.json$/.test(h.file) && re.test(h.text));
+    }
+  } catch { /* plain static server: no search */ }
+  usageCache.set(name, { t: Date.now(), list }); return list;
+}
+const snippet = (a) => `menu.on('${a}', () => {\n  // TODO: what should "${a}" do?\n});`;
+function modal(title, build) {
+  const back = el('div', { className: 'modal' }, document.body);
+  const box = el('div', { className: 'box' }, back); const h = el('div', { className: 'mh' }, box); el('b', { textContent: title }, h);
+  const close = el('button', { textContent: '✕' }, h); const body = el('div', { className: 'mb' }, box);
+  const done = () => back.remove(); close.onclick = done; back.onclick = (e) => { if (e.target === back) done(); };
+  build(body, done); return done;
+}
 const get = (o, p) => p.split('.').reduce((a, k) => a?.[k], o);
 const put = (o, p, v) => {
   const ks = p.split('.'); const last = ks.pop(); let t = o;
@@ -82,6 +108,8 @@ function renderStage() {
   st.style.transform = `scale(${S.scale})`; st.parentElement.style.width = w * S.scale + 'px'; st.parentElement.style.height = h * S.scale + 'px';
   const screen = mgr.build(S.def, { name: 'preview' });
   screen.host.style.pointerEvents = 'auto';
+  // nodes that start hidden in the game stay visible here (ghosted) so they can be edited
+  for (const e of screen.rootEl.querySelectorAll('.n')) if (e.__nord?.def.visible === false) { e.hidden = false; e.style.opacity = '.55'; e.style.outline = '1px dashed #ebcb8b'; }
   if (S.sel) { const n = [...screen.byName.values()].find((x) => x.def === S.sel) ?? findEl(screen.rootEl, S.sel); if (n) (n.el ?? n).style.outline = '2px dashed #88c0d0'; }
 }
 function findEl(root, def) { for (const e of root.querySelectorAll('.n')) if (e.__nord?.def === def) return e; return null; }
@@ -120,6 +148,7 @@ function renderProps() {
     let inp;
     if (Array.isArray(kind)) { inp = el('select', {}, f); for (const o of kind) el('option', { value: o, textContent: o || '—' }, inp); inp.value = cur ?? ''; } else if (kind === 'bool') { inp = el('input', { type: 'checkbox', checked: cur ?? dflt ?? false }, f); inp.style.width = 'auto'; } else if (kind === 'area') inp = el('textarea', { value: cur ?? '' }, f);
     else if (kind === 'list') inp = el('input', { value: (cur ?? []).join(',') }, f);
+    else if (kind === 'img') { inp = el('input', { value: cur ?? '', placeholder: 'assets/ui/panel.png' }, f); }
     else if (kind === 'nums') inp = el('input', { value: Array.isArray(cur) ? cur.join(' ') : cur ?? '', placeholder: '8 8 8 8' }, f);
     else inp = el('input', { type: kind === 'num' ? 'number' : 'text', step: 'any', value: Array.isArray(cur) ? cur.join(' ') : cur ?? '' }, f);
     const read = () => {
@@ -131,6 +160,8 @@ function renderProps() {
       if ((key === 'margin' || key === 'padding') && v !== '' && !isNaN(v)) return Number(v);
       return v;
     };
+    if (kind === 'img') imageExtras(p, f, inp, key, n);
+    if (key.startsWith('on.') && cur) actionUsage(p, String(cur), n);
     inp.onfocus = () => { inp._cp = true; };
     inp.oninput = () => { if (inp.type === 'checkbox' || inp.tagName === 'SELECT') return; if (inp._cp) { checkpoint(); inp._cp = false; } put(n, key, read()); renderStage(); renderTree(); };
     inp.onchange = () => { if (inp._cp !== false && (inp.type === 'checkbox' || inp.tagName === 'SELECT')) checkpoint(); put(n, key, read()); refresh(); };
@@ -155,9 +186,9 @@ function sliceEditor(parent, n, src) {
     const g = cv.getContext('2d');
     const draw = () => {
       g.clearRect(0, 0, W, H); g.fillStyle = '#3b4252'; g.fillRect(0, 0, W, H); g.imageSmoothingEnabled = false; g.drawImage(img, 0, 0, W, H);
-      g.strokeStyle = '#ff6b9a'; g.lineWidth = 1; g.beginPath();
-      g.moveTo(sl[0] * sc + .5, 0); g.lineTo(sl[0] * sc + .5, H); g.moveTo(W - sl[2] * sc - .5, 0); g.lineTo(W - sl[2] * sc - .5, H);
-      g.moveTo(0, sl[1] * sc + .5); g.lineTo(W, sl[1] * sc + .5); g.moveTo(0, H - sl[3] * sc - .5); g.lineTo(W, H - sl[3] * sc - .5); g.stroke();
+      g.strokeStyle = '#ff6b9a'; g.lineWidth = 2;
+      const line = (x0, y0, x1, y1) => { g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke(); };
+      line(sl[0] * sc, 0, sl[0] * sc, H); line(W - sl[2] * sc, 0, W - sl[2] * sc, H); line(0, sl[1] * sc, W, sl[1] * sc); line(0, H - sl[3] * sc, W, H - sl[3] * sc);
     };
     draw();
     let drag = -1;
@@ -167,6 +198,96 @@ function sliceEditor(parent, n, src) {
     cv.onpointerup = () => { if (drag >= 0) { drag = -1; refresh(); } };
   };
 }
+// ── where is this action handled? ──
+async function actionUsage(parent, action, n) {
+  const box = el('div', { className: 'usage' }, parent); box.textContent = 'Searching code…';
+  const list = await usagesOf(action);
+  box.textContent = '';
+  if (list === null) { el('small', { textContent: `Search is available in the Nord editor. Look for  menu.on('${action}', …)  in your script.` }, box); return; }
+  if (!list.length) {
+    el('small', { className: 'bad', textContent: `⚠ No code listens to "${action}" yet.` }, box);
+    const b = el('button', { textContent: 'Copy code snippet' }, box); b.onclick = () => { navigator.clipboard?.writeText(snippet(action)); status('Snippet copied — paste it in the script that loads this UI file'); };
+    return;
+  }
+  el('small', { textContent: `✓ Handled in ${list.length} place${list.length > 1 ? 's' : ''}:` }, box);
+  for (const h of list.slice(0, 4)) {
+    const row = el('div', { className: 'hit' }, box);
+    el('code', { textContent: `${h.file}:${h.line}` }, row); el('span', { textContent: ' ' + h.text }, row);
+    const o = el('button', { textContent: 'Open' }, row); o.onclick = () => openInEditor(h.file, h.line);
+  }
+}
+async function fillActions() {
+  const box = $('#actionsList'); box.textContent = 'Searching code…';
+  const rows = []; walk(S.def.root, (nd) => { for (const [ev, a] of Object.entries(nd.on ?? {})) rows.push({ nd, ev, a }); });
+  const found = await Promise.all(rows.map((r) => usagesOf(r.a)));
+  box.textContent = '';
+  if (!rows.length) { box.textContent = 'No actions yet. Select a button and type an Action name in Properties.'; }
+  rows.forEach((r, i) => {
+    const row = el('div', { className: 'arow' }, box); const list = found[i];
+    el('b', { textContent: r.a }, row); el('small', { textContent: `${r.nd.name ?? r.nd.type} · ${r.ev}` }, row);
+    if (list === null) el('small', { textContent: 'search needs the Nord editor' }, row);
+    else if (!list.length) { el('small', { className: 'bad', textContent: '⚠ nothing listens' }, row); const b = el('button', { textContent: 'Copy snippet' }, row); b.onclick = () => navigator.clipboard?.writeText(snippet(r.a)); }
+    else { const h = list[0]; const o = el('button', { textContent: `Open ${h.file}:${h.line}` }, row); o.onclick = () => openInEditor(h.file, h.line); if (list.length > 1) el('small', { textContent: `+${list.length - 1} more` }, row); }
+    const sel = el('button', { textContent: 'Select node', title: 'Show this node in the Properties panel' }, row); sel.onclick = () => { S.sel = r.nd; refresh(); };
+  });
+  // checks: missing images, buttons with no action
+  const bad = []; const imgs = [];
+  walk(S.def.root, (nd) => { const src = nd.type === 'image' ? nd.src : typeof nd.image === 'string' ? nd.image : nd.image?.src; if (src) imgs.push([nd, src]); if (nd.type === 'button' && !nd.on?.pressed) bad.push(`Button "${nd.name ?? nd.text}" has no Action, so pressing it does nothing in code.`); });
+  await Promise.all(imgs.map(([nd, src]) => new Promise((res) => { const im = new Image(); im.onload = res; im.onerror = () => { bad.push(`Image not found: ${src} (node "${nd.name ?? nd.type}")`); res(); }; im.src = '/' + src.replace(/^\//, ''); })));
+  const ck = $('#checkList'); ck.textContent = '';
+  for (const m of bad) el('li', { className: 'bad', textContent: m }, ck);
+  if (!bad.length) el('li', { textContent: '✓ All images exist and every button has an action.' }, ck);
+}
+$('#actionsRefresh').onclick = () => { usageCache.clear(); fillActions(); };
+$('#openScript').onclick = async () => {
+  const base = ($('#file').value || 'menu').split('/').pop();
+  const list = await usagesOf(base);
+  if (list === null) return status('Needs the Nord editor (project search)', true);
+  if (!list.length) return status(`No script loads ${base} yet — in code: await createUI(root).load('${$('#file').value}')`, true);
+  if (list.length === 1) return openInEditor(list[0].file, list[0].line);
+  modal('Scripts that load this UI file', (body, done) => { for (const h of list) { const r = el('div', { className: 'hit' }, body); el('code', { textContent: `${h.file}:${h.line}` }, r); el('span', { textContent: ' ' + h.text }, r); const o = el('button', { textContent: 'Open' }, r); o.onclick = () => { openInEditor(h.file, h.line); done(); }; } });
+};
+
+// ── images: browse, upload, preview, verify ──
+function imageExtras(parent, row, inp, key, n) {
+  const prev = el('div', { className: 'imgprev' }, parent);
+  const btn = el('button', { textContent: 'Browse project images…', className: 'wide' }, row);
+  const info = el('small', {}, prev); const th = el('img', {}, prev);
+  const set = (v) => { checkpoint(); put(n, key, v); if (key === 'image.src' && !n.image.mode && !n.image.slice) { /* plain stretched image */ } refresh(); };
+  const verify = () => {
+    const v = inp.value.trim(); if (!v) { info.textContent = 'No image. Pick one with Browse, or type a path like assets/ui/panel.png'; th.removeAttribute('src'); th.style.display = 'none'; return; }
+    th.style.display = ''; th.onload = () => { info.className = ''; info.textContent = `✓ found · ${th.naturalWidth}×${th.naturalHeight}px`; };
+    th.onerror = () => { info.className = 'bad'; info.textContent = `✗ not found: ${v}. Check the path (relative to the project root).`; th.style.display = 'none'; };
+    th.src = '/' + v.replace(/^\//, '') + '?t=' + Date.now();
+  };
+  verify(); inp.addEventListener('input', verify);
+  btn.onclick = () => pickImage((v) => set(v));
+  inp.addEventListener('dragover', (e) => e.preventDefault());
+  inp.addEventListener('drop', async (e) => { const f = e.dataTransfer?.files?.[0]; if (!f) return; e.preventDefault(); const v = await uploadImage(f); if (v) set(v); });
+}
+async function uploadImage(file) {
+  const name = file.name.replace(/[^a-zA-Z0-9_.-]/g, '-');
+  if (!/\.(png|jpe?g|webp|gif)$/i.test(name)) { status('Use a PNG, JPG, WebP or GIF image', true); return null; }
+  const path = 'assets/ui/' + name;
+  const r = await fetch('/api/fpsc/save?path=' + encodeURIComponent(path), { method: 'POST', headers: { 'x-nord-fpsc': '1' }, body: await file.arrayBuffer() });
+  if (!r.ok) { status('Upload failed: ' + await r.text(), true); return null; }
+  status(`Copied into the project as ${path}`); return path;
+}
+function pickImage(onPick) {
+  modal('Choose an image', async (body, done) => {
+    const bar = el('div', { className: 'pbar' }, body);
+    const q = el('input', { placeholder: 'Filter…' }, bar);
+    const up = el('button', { textContent: 'Add from computer…', className: 'pri' }, bar);
+    const file = el('input', { type: 'file', accept: 'image/png,image/jpeg,image/webp,image/gif', hidden: true }, bar);
+    up.onclick = () => file.click(); file.onchange = async () => { const v = await uploadImage(file.files[0]); if (v) { onPick(v); done(); } };
+    const grid = el('div', { className: 'pgrid' }, body); grid.textContent = 'Loading…';
+    let all = [];
+    try { all = (await (await fetch('/api/assets')).json()).filter((a) => a.type === 'image' || a.type === 'spritesheet'); } catch { grid.textContent = 'The project image list needs the Nord editor. Type the path instead, or use "Add from computer".'; return; }
+    const draw = () => { grid.textContent = ''; const f = q.value.toLowerCase(); const list = all.filter((a) => a.path.toLowerCase().includes(f)).slice(0, 300); if (!list.length) grid.textContent = 'No images yet — use "Add from computer…".'; for (const a of list) { const c = el('button', { className: 'pimg', title: a.path }, grid); el('img', { src: '/' + a.path, loading: 'lazy' }, c); el('small', { textContent: a.path.split('/').pop() }, c); c.onclick = () => { onPick(a.path); done(); }; } };
+    q.oninput = draw; draw();
+  });
+}
+
 function shift(n, d) { const r = find(S.def.root, n); if (!r.parent) return; const a = r.parent.children, i = a.indexOf(n), j = i + d; if (j < 0 || j >= a.length) return; checkpoint(); [a[i], a[j]] = [a[j], a[i]]; refresh(); }
 
 function addNode(type) {
@@ -222,6 +343,7 @@ function newFile() {
 
 for (const t of NODE_TYPES) el('button', { textContent: t, onclick: () => addNode(t) }, $('#palette'));
 for (const k of Object.keys(THEMES)) el('option', { value: k, textContent: k }, $('#theme'));
+$('#tabActions').addEventListener('click', fillActions);
 $('#skin').onchange = async () => { checkpoint(); const v = $('#skin').value; if (v) S.def.skin = v; else delete S.def.skin; await loadSkin(v); refresh(); };
 $('#skinLoad').onclick = async () => { await loadSkin($('#skinFile').value.trim()); refresh(); };
 $('#skinApply').onclick = applySkinText;
@@ -234,7 +356,7 @@ $('#theme').onchange = () => { S.def.theme = { ...THEMES[$('#theme').value] }; c
 $('#size').onchange = refresh;
 $('#new').onclick = newFile; $('#open').onclick = open; $('#save').onclick = save;
 $('#undo').onclick = () => restore(S.undo, S.redo); $('#redo').onclick = () => restore(S.redo, S.undo);
-for (const b of document.querySelectorAll('.tabs button')) b.onclick = () => { document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x === b)); $('#props').hidden = b.dataset.tab !== 'props'; $('#jsonBox').hidden = b.dataset.tab !== 'json'; $('#stylesBox').hidden = b.dataset.tab !== 'styles'; };
+for (const b of document.querySelectorAll('.tabs button')) b.onclick = () => { document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x === b)); $('#props').hidden = b.dataset.tab !== 'props'; $('#jsonBox').hidden = b.dataset.tab !== 'json'; $('#stylesBox').hidden = b.dataset.tab !== 'styles'; $('#actionsBox').hidden = b.dataset.tab !== 'actions'; };
 $('#applyJson').onclick = () => { try { const d = JSON.parse($('#json').value); const bad = validate(d); if (bad.length) return status(bad[0], true); checkpoint(); S.def = d; S.sel = d.root; refresh(); status('JSON applied'); } catch (e) { status('JSON error: ' + e.message, true); } };
 addEventListener('keydown', (e) => {
   const mod = e.metaKey || e.ctrlKey; if (!mod || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
@@ -246,6 +368,7 @@ addEventListener('resize', refresh);
 (async () => {
   const l = await list();
   newFile();
-  const first = l.find((e) => e.name === 'menu.ui.json') ?? l[0];
+  const want = new URLSearchParams(location.search).get('file');
+  const first = want ? { name: want.replace(/^ui\//, '') } : l.find((e) => e.name === 'menu.ui.json') ?? l[0];
   if (first) { $('#file').value = 'ui/' + first.name; await open(); } else $('#file').value = 'ui/menu.ui.json';
 })();

@@ -52,7 +52,7 @@
         "type": {
           "enum": ["sprite", "animatedSprite", "text", "tilemap", "particles", "camera", "light", "mesh", "model", "material",
                    "rigidbody", "collider", "audioSource", "audioListener", "uiPanel", "uiButton", "uiLabel", "uiImage", "uiBar",
-                   "trigger", "path", "spawner"]
+                   "trigger", "path", "spawner", "graph"]
         }
       }
     }

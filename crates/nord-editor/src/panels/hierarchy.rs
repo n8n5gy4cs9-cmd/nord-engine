@@ -14,6 +14,10 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         return;
     }
     ui.horizontal(|ui| {
+        let three = st.is_3d();
+        ui.menu_button("＋ Create", |ui| {
+            create_menu(st, ui, three, st.selection.first().cloned())
+        });
         if icons::button(ui, "plus", "Add entity", false).clicked() {
             let parent = st.selection.first().cloned();
             st.add_entity(parent);
@@ -119,6 +123,46 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     }
 }
 
+/// Unity-style GameObject menu: presets for both 2D and 3D projects.
+fn create_menu(st: &mut EditorState, ui: &mut Ui, three: bool, parent: Option<String>) {
+    let mut pick = None;
+    let mut item = |ui: &mut Ui, label: &str, kind: &'static str| {
+        if ui.button(label).clicked() {
+            pick = Some(kind);
+            ui.close_menu();
+        }
+    };
+    item(ui, "Empty", "empty");
+    if three {
+        ui.separator();
+        item(ui, "Cube", "cube");
+        item(ui, "Sphere", "sphere");
+        item(ui, "Ground", "ground");
+        item(ui, "Directional light", "sun");
+    }
+    ui.separator();
+    item(ui, "Camera", "camera");
+    item(ui, "Light", "light");
+    item(ui, "Text", "text");
+    ui.separator();
+    item(ui, "UI Label", "ui-label");
+    item(ui, "UI Button", "ui-button");
+    item(ui, "UI Panel", "ui-panel");
+    ui.separator();
+    item(ui, "Audio source", "audio");
+    item(ui, "Spawner", "spawner");
+    item(ui, "Trigger zone", "trigger");
+    item(ui, "Graph (visual script)", "graph");
+    ui.separator();
+    if ui.button("Group selected").clicked() {
+        st.group_selected();
+        ui.close_menu();
+    }
+    if let Some(k) = pick {
+        st.add_preset(k, parent);
+    }
+}
+
 fn node(
     st: &mut EditorState,
     ui: &mut Ui,
@@ -201,6 +245,43 @@ fn row(
     } else {
         e.name.clone()
     };
+    let renaming = st
+        .hierarchy_rename
+        .as_ref()
+        .is_some_and(|(id, _)| *id == e.id);
+    if renaming {
+        let mut commit = false;
+        let mut cancel = false;
+        ui.horizontal(|ui| {
+            ui.add(icons::icon(icon, 14.0, tint));
+            if let Some((_, buf)) = st.hierarchy_rename.as_mut() {
+                let r = ui.add(egui::TextEdit::singleline(buf).desired_width(f32::INFINITY));
+                r.request_focus();
+                if r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
+                    commit = true;
+                } else if ui.input(|i| i.key_pressed(egui::Key::Escape)) {
+                    cancel = true;
+                } else if r.lost_focus() {
+                    commit = true; // clicking elsewhere keeps the typed name, like Unity
+                }
+            }
+        });
+        if commit {
+            if let Some((id, name)) = st.hierarchy_rename.take() {
+                let name = name.trim().to_string();
+                if !name.is_empty() {
+                    st.edit("Rename", None, |l| {
+                        if let Some(x) = scene_ops::find_mut(l, &id) {
+                            x.name = name;
+                        }
+                    });
+                }
+            }
+        } else if cancel {
+            st.hierarchy_rename = None;
+        }
+        return;
+    }
     let resp = ui
         .horizontal(|ui| {
             ui.add(icons::icon(icon, 14.0, tint));
@@ -247,7 +328,29 @@ fn row(
     if resp.double_clicked() {
         st.push(crate::state::Action::Focus);
     }
+    // F2 renames the selected entity (Unity/Godot); handled on the row that is selected and hovered panel
+    if selected
+        && st.hierarchy_rename.is_none()
+        && !ui.ctx().wants_keyboard_input()
+        && ui.input(|i| i.key_pressed(egui::Key::F2))
+    {
+        st.hierarchy_rename = Some((e.id.clone(), e.name.clone()));
+    }
     resp.context_menu(|ui| {
+        let three = st.is_3d();
+        ui.menu_button("Create child", |ui| {
+            create_menu(st, ui, three, Some(e.id.clone()))
+        });
+        if ui.button("Rename   F2").clicked() {
+            st.hierarchy_rename = Some((e.id.clone(), e.name.clone()));
+            ui.close_menu();
+        }
+        if ui.button("Create empty parent").clicked() {
+            st.select(Some(e.id.clone()));
+            st.group_selected();
+            ui.close_menu();
+        }
+        ui.separator();
         for (i, t) in ["Add child", "Duplicate", "Delete", "Copy", "Paste"]
             .iter()
             .enumerate()

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>UI docs demos</title>
+<style>html,body{margin:0;background:#1d2733;color:#e8f0ff;font:14px system-ui}#root{position:relative;width:960px;height:540px;margin:20px;overflow:hidden}.cap{position:absolute;font:12px system-ui;color:#9fb0c8}</style></head>
+<body><div id="root"></div>
+<script type="module">
+import { createUI } from '/runtime/core/uiscene.js';
+const demo = new URLSearchParams(location.search).get('demo') ?? 'gallery';
+const ui = createUI(document.getElementById('root'), { assetBase: '/', base: '/' });
+await ui.useSkin('assets/ui/skin/pixel.skin.json');
+const L = (text, o = {}) => ({ type: 'label', text, size: 14, color: '#9fb0c8', ...o });
+const root = (children) => ({ version: 1, name: demo, root: { type: 'panel', name: 'root', anchor: 'fill', style: { background: 'none', border: 'none', boxShadow: 'none', padding: 0 }, children } });
+const PANEL = 'assets/ui/skin/panel.png';
+const defs = {
+  // the same panel.png at three sizes: stretched vs 9-slice
+  slice: root([
+    L('Stretch  (mode: "stretch")', { anchor: 'tl', x: 24, y: 14, size: 16, color: '#e8f0ff' }), L('9-slice  (slice: [8,8,8,8], scale: 2)', { anchor: 'tl', x: 24, y: 280, size: 16, color: '#e8f0ff' }),
+    ...[[120, 80, 24], [260, 80, 190], [120, 170, 500]].flatMap(([w, h, x], i) => [
+      { type: 'image', src: PANEL, mode: 'stretch', w, h, anchor: 'tl', x, y: 50 }, { type: 'image', src: PANEL, mode: 'slice', slice: [8, 8, 8, 8], scale: 2, w, h, anchor: 'tl', x, y: 316 },
+      L(`${w}×${h}`, { anchor: 'tl', x, y: 50 + h + 8 }), L(`${w}×${h}`, { anchor: 'tl', x, y: 316 + h + 8 }),
+    ]),
+  ]),
+  anchors: root([
+    { type: 'panel', name: 'frame', anchor: 'c', w: 640, h: 380, style: { padding: 0 }, class: 'frame', children: ['tl', 't', 'tr', 'l', 'c', 'r', 'bl', 'b', 'br'].map((a) => ({ type: 'label', text: a === 'c' ? 'c  (centre)' : a, anchor: a, size: 18, bold: true, color: '#7fb0e8', style: { padding: '6px 10px', margin: '8px' } })) },
+    L('anchor: "tl" … "br"  — each label is pinned to that point of its parent', { anchor: 'b', y: -8 }),
+  ]),
+  gallery: root([
+    { type: 'grid', cols: 4, gap: 18, anchor: 'tl', x: 24, y: 16, w: 912, children: [
+      { type: 'vbox', gap: 6, children: [L('panel'), { type: 'panel', w: 200, h: 70 }] },
+      { type: 'vbox', gap: 6, children: [L('label · rich text'), { type: 'label', text: '[b]Bold[/b] [color=#ebcb8b]gold[/color] [size=22]big[/size]', size: 16, color: '#e8f0ff' }] },
+      { type: 'vbox', gap: 6, children: [L('button'), { type: 'button', text: 'Play' }, { type: 'button', text: 'Danger', class: 'danger' }] },
+      { type: 'vbox', gap: 6, children: [L('bar'), { type: 'bar', value: 0.65, w: 200 }] },
+      { type: 'vbox', gap: 6, children: [L('input'), { type: 'input', value: 'Player one', w: 200 }] },
+      { type: 'vbox', gap: 6, children: [L('select'), { type: 'select', options: ['Easy', 'Normal', 'Hard'], value: 'Normal', w: 200 }] },
+      { type: 'vbox', gap: 6, children: [L('checkbox'), { type: 'checkbox', text: 'Sound on', checked: true }] },
+      { type: 'vbox', gap: 6, children: [L('slider'), { type: 'slider', value: 0.4, w: 200 }] },
+      { type: 'vbox', gap: 6, children: [L('hbox'), { type: 'hbox', gap: 8, children: [{ type: 'button', text: 'A' }, { type: 'button', text: 'B' }, { type: 'button', text: 'C' }] }] },
+      { type: 'vbox', gap: 6, children: [L('grid (2 columns)'), { type: 'grid', cols: 2, gap: 6, children: ['1', '2', '3', '4'].map((t) => ({ type: 'button', text: t })) }] },
+      { type: 'vbox', gap: 6, children: [L('image (fit)'), { type: 'image', src: 'assets/sprites/circle.png', mode: 'fit', w: 80, h: 60 }] },
+      { type: 'vbox', gap: 6, children: [L('canvas'), { type: 'canvas', w: 200, h: 60, name: 'cv', style: { background: '#0c1424', border: '2px solid #3f6fa8' } }] },
+    ] },
+  ]),
+  input: root([
+    { type: 'vbox', gap: 14, anchor: 'c', w: 460, children: [
+      L('input with a sliced image  (skin rule  "input": { image: field.png, slice: [4,4,4,4] })', { size: 14, color: '#e8f0ff' }),
+      { type: 'input', value: 'Type here…', size: 20 },
+      L('same input, plain (no image):', { color: '#e8f0ff' }),
+      { type: 'input', value: 'Plain input', style: { background: '#101a2c', border: '2px solid #3f6fa8', borderImage: 'none', padding: '8px' } },
+      L('select + checkbox use the same rules', { color: '#e8f0ff' }), { type: 'hbox', gap: 14, children: [{ type: 'select', options: ['One', 'Two'] }, { type: 'checkbox', text: 'Remember me' }] },
+    ] },
+  ]),
+};
+await ui.load(defs[demo]);
+const cv = document.querySelector('[data-nord-ui]').shadowRoot.getElementById('cv'); if (cv) { const g = cv.getContext('2d'); g.fillStyle = '#7fb0e8'; g.fillRect(10, 10, 60, 40); g.fillStyle = '#ebcb8b'; g.beginPath(); g.arc(130, 30, 20, 0, 7); g.fill(); }
+window.__ready = true;
+</script></body></html>

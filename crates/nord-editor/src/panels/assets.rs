@@ -155,6 +155,7 @@ pub fn import_files(st: &mut EditorState, files: &[PathBuf]) {
 }
 
 const BLANK_UI: &str = "{\n  \"version\": 1,\n  \"name\": \"screen\",\n  \"theme\": {},\n  \"root\": { \"type\": \"panel\", \"name\": \"root\", \"anchor\": \"fill\", \"style\": { \"background\": \"none\", \"border\": \"none\", \"boxShadow\": \"none\", \"padding\": 0 }, \"children\": [] }\n}\n";
+const BLANK_GRAPH: &str = "{\n \"last_node_id\": 1,\n \"last_link_id\": 0,\n \"nodes\": [{ \"id\": 1, \"type\": \"event/start\", \"pos\": [60, 80], \"size\": [200, 60], \"flags\": {}, \"order\": 0, \"mode\": 0, \"inputs\": [], \"outputs\": [{ \"name\": \"then\", \"type\": \"exec\", \"links\": null, \"shape\": 5 }], \"properties\": {} }],\n \"links\": [],\n \"groups\": [],\n \"config\": {},\n \"extra\": {},\n \"version\": 0.4,\n \"nord\": { \"version\": 1, \"vars\": {} }\n}\n";
 const NEW_SCRIPT: &str = "import { NordScript } from 'nord';\n\nexport default class extends NordScript {\n  start() {}\n  update(dt) {}\n}\n";
 
 /// Context-menu operations shared by the folder tree, the grid/list and the empty background.
@@ -170,6 +171,7 @@ const OP_NEW_UI: u8 = 8;
 const OP_NEW_SCRIPT: u8 = 9;
 const OP_IMPORT: u8 = 10;
 const OP_REFRESH: u8 = 11;
+const OP_NEW_GRAPH: u8 = 12;
 
 fn reveal_label() -> &'static str {
     if cfg!(target_os = "macos") {
@@ -198,6 +200,7 @@ fn entry_menu(ui: &mut Ui, e: &Entry, out: &mut Option<(Entry, u8)>) {
         item(ui, "New folder", OP_NEW_FOLDER);
         item(ui, "New UI scene (.ui.json)", OP_NEW_UI);
         item(ui, "New script (.js)", OP_NEW_SCRIPT);
+        item(ui, "New graph (.graph.json)", OP_NEW_GRAPH);
         ui.separator();
     }
     if !e.rel.is_empty() {
@@ -227,6 +230,7 @@ fn background_menu(ui: &mut Ui, dir: &str, out: &mut Option<(Entry, u8)>) {
     item(ui, "New folder", OP_NEW_FOLDER);
     item(ui, "New UI scene (.ui.json)", OP_NEW_UI);
     item(ui, "New script (.js)", OP_NEW_SCRIPT);
+    item(ui, "New graph (.graph.json)", OP_NEW_GRAPH);
     ui.separator();
     item(ui, "Import files…", OP_IMPORT);
     item(ui, "Refresh", OP_REFRESH);
@@ -332,6 +336,14 @@ fn handle_op(st: &mut EditorState, ui: &Ui, root: &Path, e: Entry, op: u8) {
         OP_NEW_FOLDER => create_in(st, root, &e.rel, "folder", "", None),
         OP_NEW_UI => create_in(st, root, &e.rel, "new-screen", "ui.json", Some(BLANK_UI)),
         OP_NEW_SCRIPT => create_in(st, root, &e.rel, "new-script", "js", Some(NEW_SCRIPT)),
+        OP_NEW_GRAPH => create_in(
+            st,
+            root,
+            &e.rel,
+            "new-graph",
+            "graph.json",
+            Some(BLANK_GRAPH),
+        ),
         OP_IMPORT => {
             if let Some(files) = crate::platform::pick_files() {
                 import_files(st, &files);
@@ -760,6 +772,17 @@ fn open_entry(st: &mut EditorState, e: &Entry) {
     let Some(root) = st.root.clone() else { return };
     if e.is_dir {
         st.assets_ui.dir = e.rel.clone();
+        return;
+    }
+    // UI scenes and graphs open in their visual editors
+    if e.rel.ends_with(".ui.json") {
+        st.designer_file = Some(e.rel.clone());
+        st.push(Action::ShowTab(crate::app::Tab::UiDesigner));
+        return;
+    }
+    if e.rel.ends_with(".graph.json") {
+        st.graph_file = Some(e.rel.clone());
+        st.push(Action::ShowTab(crate::app::Tab::Graph));
         return;
     }
     match e.kind {

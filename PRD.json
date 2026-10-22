@@ -1968,6 +1968,24 @@
       "status": "done"
     },
     {
+      "id": "M8-29",
+      "milestone": "M8",
+      "title": "Node graphs: litegraph vendored, node library + runner + component, Graph tab, example, docs",
+      "status": "done"
+    },
+    {
+      "id": "M8-30",
+      "milestone": "M8",
+      "title": "UI Designer: actions lookup, open script, image picker/upload, input images, docs with screenshots",
+      "status": "done"
+    },
+    {
+      "id": "M8-31",
+      "milestone": "M8",
+      "title": "Editor usability: Hierarchy Create/F2/group, layout presets, pause/step",
+      "status": "done"
+    },
+    {
       "id": "M10-01",
       "milestone": "M10",
       "title": "Spec: docs/CONSTRUCT_PARITY.md — map each Construct 3 editor feature to Nord equivalent, scope + non-goals (no copying Construct code/assets; clean-room, original names where practical)",

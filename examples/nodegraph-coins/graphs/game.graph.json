@@ -1,0 +1,237 @@
+{
+  "last_node_id": 5,
+  "last_link_id": 3,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "event/start",
+      "pos": [
+        40,
+        40
+      ],
+      "size": [
+        230,
+        50
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            1
+          ],
+          "shape": 5
+        }
+      ],
+      "properties": {},
+      "widgets_values": []
+    },
+    {
+      "id": 2,
+      "type": "ui/load",
+      "pos": [
+        300,
+        40
+      ],
+      "size": [
+        230,
+        94
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 1,
+          "shape": 5
+        },
+        {
+          "name": "file",
+          "type": "string",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            2
+          ],
+          "shape": 5
+        }
+      ],
+      "properties": {
+        "file": "ui/hud.ui.json"
+      },
+      "widgets_values": [
+        "ui/hud.ui.json"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "ui/set-var",
+      "pos": [
+        560,
+        40
+      ],
+      "size": [
+        230,
+        158
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 2,
+          "shape": 5
+        },
+        {
+          "name": "screen",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "value",
+          "type": "any",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": null,
+          "shape": 5
+        }
+      ],
+      "properties": {
+        "screen": "hud",
+        "name": "score",
+        "value": 0
+      },
+      "widgets_values": [
+        "hud",
+        "score"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "event/ui",
+      "pos": [
+        40,
+        260
+      ],
+      "size": [
+        230,
+        94
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            3
+          ],
+          "shape": 5
+        },
+        {
+          "name": "payload",
+          "type": "any",
+          "links": null
+        }
+      ],
+      "properties": {
+        "action": "restart"
+      },
+      "widgets_values": [
+        "restart"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "game/restart",
+      "pos": [
+        300,
+        260
+      ],
+      "size": [
+        230,
+        50
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 3,
+          "shape": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": null,
+          "shape": 5
+        }
+      ],
+      "properties": {},
+      "widgets_values": []
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "exec"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      0,
+      "exec"
+    ],
+    [
+      3,
+      4,
+      0,
+      5,
+      0,
+      "exec"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4,
+  "nord": {
+    "version": 1,
+    "vars": {}
+  }
+}

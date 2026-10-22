@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>UI Designer — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="debugger.html">Debugger and profiler</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a><a href="ui-designer.html" class="cur" aria-current="page">UI Designer</a><a href="graph.html">Node graphs (visual scripting)</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>UI Designer</h1>
+<p>The <strong>UI Designer</strong> is where you build every screen the player clicks: main menu, HUD, pause screen, settings, dialogs. You draw a tree of <strong>nodes</strong>, see the result live, and save it as a <code>ui/&lt;name&gt;.ui.json</code> file. Your game loads that file with one line of code. This chapter is the full reference; for a short guided build, follow <a href="../tutorials/tut-t44-ui-designer.html">T44</a> and <a href="../tutorials/tut-t45-ui-skins-9slice.html">T45</a>.</p>
+<figure class="shot"><img src="../../assets/screenshots/ui-designer-overview.png" alt="UI Designer: node palette and tree on the left, live preview in the middle, Properties on the right" loading="lazy"><figcaption>The UI Designer: <b>Add node</b> palette and <b>Tree</b> (left), the live <b>Preview</b> (middle) and <b>Properties</b> (right). The preview is the real game UI, not a mock-up.</figcaption></figure><aside class="box dummies"><div class="box-title">For dummy developers</div><p>A UI file is a family tree of boxes. A <strong>vbox</strong> stacks its children top to bottom, an <strong>hbox</strong> left to right. A <strong>label</strong> shows text, a <strong>button</strong> can be pressed. You give a button an <strong>Action</strong> name such as <code>play</code>; your code says &quot;when <code>play</code> happens, do this&quot;.</p>
+</aside><h2 id="open-the-designer">Open the Designer<a class="anchor" href="#open-the-designer">#</a></h2>
+<ul>
+<li><strong>View ▸ UI Designer</strong>, or the command palette (<strong>Cmd/Ctrl+K</strong>, type &quot;UI Designer&quot;).</li>
+<li>In the <strong>Assets</strong> panel, double-click any <code>*.ui.json</code> file. Right-click a folder ▸ <strong>New UI scene</strong> creates a blank one.</li>
+<li>Layout presets: <strong>View ▸ Layout ▸ Visual scripting + UI</strong> gives the Designer, Graph and Scene tabs room to breathe.</li>
+</ul>
+<h2 id="the-window">The window<a class="anchor" href="#the-window">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Toolbar</strong></td>
+<td>File name box, <strong>Open script</strong>, <strong>New</strong>, <strong>Open</strong>, <strong>Save</strong> (Ctrl/Cmd+S), <strong>Undo/Redo</strong>, preview <strong>size</strong>, colour <strong>Theme</strong>, <strong>Skin</strong>.</td>
+</tr>
+<tr>
+<td><strong>Add node</strong></td>
+<td>Click a type to add it inside the selected container (or beside the selected node).</td>
+</tr>
+<tr>
+<td><strong>Tree</strong></td>
+<td>The structure. Click to select, <strong>drag a row onto another</strong> to move it into a container or reorder.</td>
+</tr>
+<tr>
+<td><strong>Preview</strong></td>
+<td>Click an element to select it. <strong>Drag</strong> anchored elements to move them. Elements that start hidden in the game are shown ghosted (dashed outline) so you can still edit them.</td>
+</tr>
+<tr>
+<td><strong>Properties</strong></td>
+<td>Every setting of the selected node. Changes appear instantly. <strong>Duplicate / Up / Down / Delete</strong> are at the bottom.</td>
+</tr>
+<tr>
+<td><strong>JSON</strong></td>
+<td>The raw file. Edit and <strong>Apply JSON</strong> for bulk changes.</td>
+</tr>
+<tr>
+<td><strong>Styles</strong></td>
+<td>The shared skin (see <a href="#skins">Styles</a>).</td>
+</tr>
+<tr>
+<td><strong>Actions</strong></td>
+<td>Every action in the file and the code that handles it (see <a href="#actions">Connecting buttons to code</a>).</td>
+</tr>
+</tbody></table>
+<h2 id="node-types">Node types<a class="anchor" href="#node-types">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/ui-node-gallery.png" alt="Every node type rendered with the pixel skin" loading="lazy"><figcaption>All node types, rendered with the sample pixel skin.</figcaption></figure><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Use it for</th>
+<th>Notable settings</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>panel</code></td>
+<td>A framed container (window, card).</td>
+<td><code>layout</code> vbox/hbox, <code>gap</code>, <code>padding</code></td>
+</tr>
+<tr>
+<td><code>vbox</code> <code>hbox</code></td>
+<td>Stack children vertically / horizontally.</td>
+<td><code>gap</code>, <code>align</code>, <code>justify</code>, <code>grow</code> on children</td>
+</tr>
+<tr>
+<td><code>grid</code></td>
+<td>Rows and columns.</td>
+<td><code>cols</code>, <code>gap</code></td>
+</tr>
+<tr>
+<td><code>center</code> <code>scroll</code></td>
+<td>Centre one child; a scrolling area.</td>
+<td><code>h</code> for scroll</td>
+</tr>
+<tr>
+<td><code>box</code></td>
+<td>Plain unstyled element with an HTML <code>tag</code> (<code>main</code>, <code>nav</code>, <code>h1</code>…). Page-style UIs.</td>
+<td><code>tag</code></td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td>Text.</td>
+<td><code>text</code>, <code>size</code>, <code>color</code>, <code>bold</code>, <code>italic</code>, <code>align</code>, rich text</td>
+</tr>
+<tr>
+<td><code>button</code></td>
+<td>Something to press.</td>
+<td><code>text</code>, <strong><code>on.pressed</code> (Action)</strong>, <code>toggle</code>, <code>image</code></td>
+</tr>
+<tr>
+<td><code>image</code></td>
+<td>A picture.</td>
+<td><code>src</code>, <code>mode</code> (fit, cover, stretch, tile, slice), <code>slice</code>, <code>scale</code></td>
+</tr>
+<tr>
+<td><code>bar</code></td>
+<td>Progress/health bar.</td>
+<td><code>value</code> 0–1, <code>color</code>, <code>bind.value</code></td>
+</tr>
+<tr>
+<td><code>slider</code></td>
+<td>Draggable value.</td>
+<td><code>min</code>, <code>max</code>, <code>step</code>, <code>value</code>, <strong><code>on.changed</code></strong></td>
+</tr>
+<tr>
+<td><code>input</code></td>
+<td>A text field (also number, colour, file, password, multi-line).</td>
+<td><code>inputType</code>, <code>placeholder</code>, <code>value</code>, <strong><code>on.changed</code></strong></td>
+</tr>
+<tr>
+<td><code>checkbox</code> <code>select</code></td>
+<td>Tick box; drop-down list.</td>
+<td><code>checked</code>; <code>options</code>; <strong><code>on.toggled</code>/<code>on.changed</code></strong></td>
+</tr>
+<tr>
+<td><code>canvas</code></td>
+<td>A drawing surface for your own game code.</td>
+<td><code>w</code>, <code>h</code></td>
+</tr>
+<tr>
+<td><code>spacer</code> <code>html</code></td>
+<td>Flexible gap; raw HTML snippet.</td>
+<td><code>grow</code>; <code>html</code></td>
+</tr>
+<tr>
+<td><code>instance</code></td>
+<td>Another UI file placed inside this one.</td>
+<td><code>ref</code></td>
+</tr>
+</tbody></table>
+<p>Every node also has <strong>Name</strong> (how code finds it), <strong>Visible</strong>, <strong>Disabled</strong>, <strong>Tooltip</strong>, <strong>CSS class</strong> (for skins) and <strong>Bind text var</strong> (live data, see below).</p>
+<h2 id="layout-anchors-and-containers">Layout: anchors and containers<a class="anchor" href="#layout-anchors-and-containers">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/ui-anchors.png" alt="Nine labels pinned to the nine anchor points of a panel" loading="lazy"><figcaption>The nine <b>anchors</b>: tl, t, tr, l, c, r, bl, b, br. An anchored node is pinned to that point of its parent; X/Y then offset it.</figcaption></figure><ul>
+<li><strong>Anchor</strong> pins a node to a point of its parent (<code>tl</code> top-left … <code>br</code> bottom-right, <code>c</code> centre, <code>fill</code> stretches over the whole parent). <strong>X / Y</strong> move it from that point. Leave Anchor empty for a node that simply flows inside a vbox/hbox/grid.</li>
+<li><strong>Width / Height</strong> accept numbers (pixels) or CSS sizes such as <code>70%</code>. <strong>Grow</strong> makes a child take the remaining space in a vbox/hbox.</li>
+<li><strong>Margin</strong> and <strong>Padding</strong>: one number, or four (<code>top right bottom left</code>). <strong>Gap</strong> is the space between children. <strong>Align items / Justify</strong> place children inside a container.</li>
+<li>Test other screens with the <strong>Preview</strong> size box (960×540, 1280×720, phone 390×844, 1920×1080).</li>
+</ul>
+<h2 id="text">Text<a class="anchor" href="#text">#</a></h2>
+<ul>
+<li><code>{score}</code> in a label&#39;s text is replaced by a value you set from code: <code>menu.set(&#39;score&#39;, 12)</code>. Only changed values touch the page.</li>
+<li><code>@menu.play</code> looks the string up in your language tables (Localisation).</li>
+<li>Rich text: <code>[b]bold[/b]</code>, <code>[i]</code>, <code>[u]</code>, <code>[color=#f7d89b]gold[/color]</code>, <code>[size=28]big[/size]</code>, <code>[br]</code> (new line). It is parsed into safe elements, never raw HTML.</li>
+</ul>
+<h2 id="images">Inserting images<a class="anchor" href="#images">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/ui-designer-image-picker.png" alt="The image picker listing the project's images" loading="lazy"><figcaption><b>Browse project images…</b> lists every image in your project with a thumbnail.</figcaption></figure><p>Any node can show an image. The setting is called <strong>Image</strong> in Properties (on an <code>image</code> node it is <strong>Image</strong> plus Mode). Four ways to choose a file:</p>
+<ol>
+<li><strong>Browse project images…</strong> opens the picker. Click a thumbnail.</li>
+<li><strong>Add from computer…</strong> (in the picker) copies a PNG, JPG, WebP or GIF into your project as <code>assets/ui/&lt;name&gt;</code> and selects it.</li>
+<li><strong>Drag a file</strong> from Finder/Explorer onto the Image field: same copy, same result.</li>
+<li><strong>Type the path</strong>, relative to the project root: <code>assets/ui/panel.png</code>.</li>
+</ol>
+<p>Below the field Nord tells you the result immediately: <strong>✓ found · 24×24px</strong> with a small preview, or <strong>✗ not found: <path></strong>. Fix the path until you see the tick. The <strong>Actions</strong> tab also lists every missing image in the file (<em>Checks</em>).</p>
+<p>Which images work where? <strong>Every node.</strong> A button, panel, label, bar, canvas, even <code>input</code>, <code>select</code> and <code>checkbox</code> can carry an image; it becomes the node&#39;s background. An <code>image</code> node shows a picture on its own.</p>
+<h3 id="image-modes">Image modes<a class="anchor" href="#image-modes">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>stretch</code></td>
+<td>Fill the node exactly (distorts).</td>
+</tr>
+<tr>
+<td><code>fit</code></td>
+<td>Keep the aspect ratio inside the node.</td>
+</tr>
+<tr>
+<td><code>cover</code></td>
+<td>Fill the node, crop the overflow.</td>
+</tr>
+<tr>
+<td><code>tile</code></td>
+<td>Repeat; <strong>Slice scale</strong> sets the tile size.</td>
+</tr>
+<tr>
+<td><code>center</code></td>
+<td>Natural size, centred.</td>
+</tr>
+<tr>
+<td><code>slice</code></td>
+<td><strong>9-slice</strong>, below.</td>
+</tr>
+</tbody></table>
+<h3 id="9-slice-stretch-without-distorting-the-corners">9-slice (stretch without distorting the corners)<a class="anchor" href="#9-slice-stretch-without-distorting-the-corners">#</a></h3>
+<figure class="shot"><img src="../../assets/screenshots/ui-nine-slice-compare.png" alt="The same panel image stretched (top) and 9-sliced (bottom) at three sizes" loading="lazy"><figcaption>The same 24×24 image at three sizes. Top: <code>stretch</code> smears the border. Bottom: <code>slice</code> keeps the corners and edges crisp.</figcaption></figure><p>A 9-slice image is cut into a 3×3 grid: the <strong>four corners</strong> keep their size, the <strong>four edges</strong> stretch along one direction, the <strong>middle</strong> fills. One small picture therefore becomes any window or button size.</p>
+<ol>
+<li>Select the node, choose the image, set <strong>Image mode</strong> to <code>slice</code>.</li>
+<li>Type <strong>9-slice L T R B</strong>: the border widths in <em>source pixels</em>, left, top, right, bottom (<code>8 8 8 8</code>; one number applies to all sides).</li>
+<li>Or drag the guides: the <strong>9-slice editor</strong> below the fields shows the picture with four pink lines. Drag each to the inner edge of the decoration; the numbers and the preview update live.</li>
+<li><strong>Slice scale</strong> enlarges the borders on screen (2 = double-size pixel art). Tick <strong>Pixelated</strong> for crisp pixel art.</li>
+</ol>
+<figure class="shot"><img src="../../assets/screenshots/ui-designer-slice-editor.png" alt="9-slice editor with four draggable guides over panel.png" loading="lazy"><figcaption>The 9-slice editor: drag the guides, watch the preview.</figcaption></figure><h3 id="images-on-input-fields">Images on input fields<a class="anchor" href="#images-on-input-fields">#</a></h3>
+<figure class="shot"><img src="../../assets/screenshots/ui-input-image.png" alt="A text input drawn with a sliced field image next to a plain input" loading="lazy"><figcaption>Top: an <code>input</code> whose skin rule uses <code>field.png</code> as a 9-slice. Below: the same node with a plain border.</figcaption></figure><p>Text fields, drop-downs and checkboxes accept images exactly like buttons do. Because you usually want <em>every</em> field to look the same, put the image in a <strong>skin rule</strong> instead of on each node:</p>
+<pre class="code" data-lang="json"><code>&quot;input&quot;:  { &quot;image&quot;: { &quot;src&quot;: &quot;assets/ui/skin/field.png&quot;, &quot;slice&quot;: [4,4,4,4], &quot;scale&quot;: 3, &quot;pixelated&quot;: true },
+            &quot;color&quot;: &quot;$fg&quot;, &quot;background&quot;: &quot;none&quot;, &quot;padding&quot;: &quot;2px 6px&quot;,
+            &quot;focus&quot;: { &quot;image&quot;: { &quot;src&quot;: &quot;assets/ui/skin/button-hover.png&quot;, &quot;slice&quot;: [5,5,5,5], &quot;scale&quot;: 3 } } },
+&quot;select&quot;: { &quot;extends&quot;: &quot;input&quot; }</code></pre>
+<p>The text starts inside the sliced border automatically. The <code>focus</code> state swaps the image while the field is being typed in. Typing, the cursor, selection and <code>on.changed</code> all keep working because the node is still a real input.</p>
+<h2 id="skins">Skins: one style for many nodes<a class="anchor" href="#skins">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/ui-designer-styles.png" alt="The Styles tab showing the skin JSON" loading="lazy"><figcaption>The <b>Styles</b> tab edits the skin file (here <code>pixel.skin.json</code>).</figcaption></figure><p>A <strong>skin</strong> is one JSON file of rules that style <em>all</em> nodes. A rule named <code>button</code> styles every button; <code>.danger</code> is a variant you attach by typing <code>danger</code> into a node&#39;s <strong>CSS class</strong>. Rules can <code>extends</code> other rules, define <code>hover</code>, <code>pressed</code>, <code>disabled</code> and <code>focus</code> states, use <code>$tokens</code>, and set images (including 9-slice) per state. Choose the skin in the toolbar <strong>Skin</strong> box (it is saved as <code>&quot;skin&quot;</code> in the file), or apply it in code once: <code>ui.useSkin(&#39;ui/skin.json&#39;)</code>. The complete skin format is in <a href="../guides/ui-scenes.html#styles">UI scenes</a> and the walkthrough in <a href="../tutorials/tut-t45-ui-skins-9slice.html">T45</a>.</p>
+<h2 id="actions">Connecting buttons to code<a class="anchor" href="#actions">#</a></h2>
+<p>A button does nothing by itself. It announces an <strong>Action</strong> name, and your code listens:</p>
+<pre class="code" data-lang="js"><code>const menu = await createUI(root).load('ui/menu.ui.json');   // in a scene script: this.ui.load(...)
+menu.on('play', () =&gt; startGame());                            // runs when a node's Action is &quot;play&quot;</code></pre>
+<ol>
+<li>Select the button, type a name into <strong>Action</strong> (<code>play</code>).</li>
+<li>Right below the field the Designer searches your project and shows <strong>where that action is handled</strong>: <code>app.js:94 — menu.on(&#39;play&#39;, …)</code> with an <strong>Open</strong> button that jumps to that line in the code editor.</li>
+<li>If nothing handles it you see <strong>⚠ No code listens to &quot;play&quot; yet</strong> and a <strong>Copy code snippet</strong> button. Paste the snippet into the script that loads this UI file.</li>
+<li>The <strong>Actions</strong> tab lists <em>every</em> action in the file: where it is handled, <strong>Open</strong> the code, <strong>Select node</strong>, or copy a snippet for the missing ones. It also lists problems (images not found, buttons without an action).</li>
+<li><strong>Open script</strong> (toolbar) opens the script that loads this UI file, so you can add handlers there.</li>
+</ol>
+<figure class="shot"><img src="../../assets/screenshots/ui-designer-actions.png" alt="The Actions tab: restart is handled in graphs/game.graph.json, with an Open button" loading="lazy"><figcaption>The <b>Actions</b> tab. Here <code>restart</code> is handled by a node graph; <b>Open</b> jumps to it.</figcaption></figure>
+<figure class="shot"><img src="../../assets/screenshots/ui-designer-action-missing.png" alt="A new button with Action 'two' and the warning that no code listens to it" loading="lazy"><figcaption>A new button with the action <code>two</code>: Nord warns that nothing listens yet and offers a snippet.</figcaption></figure><p>Actions are also emitted as the game event <code>ui:&lt;action&gt;</code>, so <strong>event sheets</strong> (<em>On game event → ui:play</em>) and <strong>graphs</strong> (<em>On UI Action</em>) can react without any JavaScript. The search finds handlers in scripts, event sheets, graphs and scenes. (It needs the Nord editor; in a plain browser tab you will see the snippet instead.)</p>
+<p>Other ways to get data in and out:</p>
+<ul>
+<li><code>node.on(&#39;pressed&#39;, fn)</code> / <code>&#39;changed&#39;</code> / <code>&#39;input&#39;</code> / <code>&#39;toggled&#39;</code> on a single node.</li>
+<li><code>menu.$(&#39;score&#39;).text = &#39;Score 12&#39;</code>, <code>.value</code>, <code>.visible</code>, <code>.disabled</code>, <code>.color</code>, <code>.index</code>.</li>
+<li><strong>Bind text var</strong>: put <code>{hp}</code> in a label and call <code>menu.set(&#39;hp&#39;, 50)</code>; or <strong>Bind</strong> a bar&#39;s <code>value</code> to a variable.</li>
+</ul>
+<h2 id="saving-and-loading">Saving and loading<a class="anchor" href="#saving-and-loading">#</a></h2>
+<ul>
+<li><strong>Save</strong> writes <code>ui/&lt;name&gt;.ui.json</code>; the file box accepts any name (<code>menu</code> → <code>ui/menu.ui.json</code>).</li>
+<li>Load it from a script with <code>await this.ui.load(&#39;ui/menu.ui.json&#39;)</code>, from an HTML project with <code>createUI(root).load(...)</code>, or from a graph with the <strong>Load UI Screen</strong> node.</li>
+<li>Several screens can be open at once: <code>ui.only(&#39;pause&#39;)</code> shows one and hides the others.</li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Image shows <strong>✗ not found</strong></td>
+<td>Path is relative to the project root; use <strong>Browse</strong> to pick a real file.</td>
+</tr>
+<tr>
+<td>Image appears but the corners are blurry/distorted</td>
+<td>Set <strong>Image mode</strong> to <code>slice</code>, fill <strong>9-slice L T R B</strong>, tick <strong>Pixelated</strong> for pixel art.</td>
+</tr>
+<tr>
+<td>Button does nothing in the game</td>
+<td>Give it an <strong>Action</strong> and add <code>menu.on(&#39;&lt;action&gt;&#39;, …)</code>; check the <strong>Actions</strong> tab.</td>
+</tr>
+<tr>
+<td>&quot;No code listens&quot; although my code exists</td>
+<td>The name must appear as a quoted string, e.g. <code>menu.on(&#39;play&#39;</code>. Computed names are not found by the search.</td>
+</tr>
+<tr>
+<td>Text field loses focus when I press keys in the game</td>
+<td>Use <code>if (menu.typing) return;</code> at the top of your key handler.</td>
+</tr>
+<tr>
+<td>Style from my skin does not apply</td>
+<td>The node&#39;s own <strong>style</strong> wins over skin rules; remove it, or check the rule name (<code>button</code>, <code>.danger</code>).</td>
+</tr>
+<tr>
+<td>Hidden panel invisible in the Designer</td>
+<td>Not any more: hidden nodes are shown ghosted. They are hidden only in the running game.</td>
+</tr>
+</tbody></table>
+<h2 id="see-also">See also<a class="anchor" href="#see-also">#</a></h2>
+<p><a href="../guides/ui-scenes.html">UI scenes reference</a> · <a href="../tutorials/tut-t44-ui-designer.html">T44 Menus and HUDs</a> · <a href="../tutorials/tut-t45-ui-skins-9slice.html">T45 Skins and 9-slice</a> · <a href="graph.html">Node graphs</a> · <a href="ui.html">UI &amp; HUD basics</a></p>
+<div class="pager"><a href="level-creator-2d.html"><small>← Previous</small>2D Level Creator — sprites, maps and physics</a><a href="graph.html"><small>Next →</small>Node graphs (visual scripting)</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#open-the-designer">Open the Designer </a><a href="#the-window">The window </a><a href="#node-types">Node types </a><a href="#layout-anchors-and-containers">Layout: anchors and containers </a><a href="#text">Text </a><a href="#images">Inserting images </a><a href="#skins">Skins: one style for many nodes </a><a href="#actions">Connecting buttons to code </a><a href="#saving-and-loading">Saving and loading </a><a href="#troubleshooting">Troubleshooting </a><a href="#see-also">See also </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -7,7 +7,7 @@ use serde_json::{json, Value};
 use std::path::{Component, Path, PathBuf};
 
 /// Folders (relative to the project) the editor page may read/write.
-pub const ALLOWED_DIRS: [&str; 3] = ["levels", "fpsc", "ui"];
+pub const ALLOWED_DIRS: [&str; 4] = ["levels", "fpsc", "ui", "graphs"];
 /// File extensions the editor may write.
 const ALLOWED_EXT: [&str; 17] = [
     "json", "js", "md", "txt", "png", "jpg", "jpeg", "webp", "gif", "glb", "gltf", "bin", "wav",
@@ -44,7 +44,9 @@ pub fn safe_path(project: &Path, rel: &str) -> Result<PathBuf> {
             _ => return Err(err(format!("bad path: {rel}"))),
         }
     }
-    if parts.len() < 2 || !ALLOWED_DIRS.contains(&parts[0].as_str()) {
+    // `assets/ui/…` is also writable (images uploaded from the UI Designer)
+    let ui_assets = parts.len() >= 3 && parts[0] == "assets" && parts[1] == "ui";
+    if parts.len() < 2 || !(ALLOWED_DIRS.contains(&parts[0].as_str()) || ui_assets) {
         return Err(err(format!(
             "only {} may be written",
             ALLOWED_DIRS.join(" and ")
@@ -202,9 +204,112 @@ const README: &str = "# fpsc/ — your FPS Creator content\n\n- `bank.json` regi
 /// Tiny fallback so install works even if the template folder is missing from an engine checkout.
 const STARTER_LEVEL: &str = r#"{"format":"fpsc-level/1","name":"Level 1","w":24,"d":24,"settings":{"sky":"day","ground":"grass"},"layers":[{"name":"Ground","cells":{"4,4":{"f":"floor_concrete","c":"ceiling_tiles"}},"edges":{}}],"entities":[{"id":"ps1","type":"player_start","x":18,"z":18,"layer":0,"rot":0,"props":{}}]}"#;
 
+/// Where is `needle` (an action / event / file name) used in project code? Scans scripts, event sheets, graphs and scenes
+/// (never vendor/library folders). Returns `[{ file, line, text }]`, at most 80, code files before data files.
+pub fn usages(project: &Path, needle: &str) -> Result<Vec<Value>> {
+    if needle.is_empty()
+        || needle.len() > 80
+        || !needle
+            .chars()
+            .all(|c| c.is_alphanumeric() || "_-.:/".contains(c))
+    {
+        return Err(err("bad search text"));
+    }
+    const SKIP: [&str; 9] = [
+        "vendor",
+        "node_modules",
+        "target",
+        "dist",
+        "lib",
+        "docs",
+        "assets",
+        "library",
+        "runtime",
+    ];
+    fn walk(dir: &Path, depth: usize, out: &mut Vec<PathBuf>) {
+        let Ok(rd) = std::fs::read_dir(dir) else {
+            return;
+        };
+        for e in rd.flatten() {
+            let name = e.file_name().to_string_lossy().into_owned();
+            if name.starts_with('.') || SKIP.contains(&name.as_str()) {
+                continue;
+            }
+            let p = e.path();
+            if p.is_dir() {
+                if depth < 6 {
+                    walk(&p, depth + 1, out);
+                }
+            } else if matches!(
+                p.extension().and_then(|x| x.to_str()),
+                Some("js" | "mjs" | "ts" | "json")
+            ) {
+                out.push(p);
+            }
+        }
+    }
+    let mut files = vec![];
+    walk(project, 0, &mut files);
+    let mut hits: Vec<(bool, Value)> = vec![];
+    for f in files {
+        let Ok(md) = std::fs::metadata(&f) else {
+            continue;
+        };
+        if md.len() > 600_000 {
+            continue;
+        }
+        let Ok(text) = std::fs::read_to_string(&f) else {
+            continue;
+        };
+        let rel = f
+            .strip_prefix(project)
+            .unwrap_or(&f)
+            .to_string_lossy()
+            .replace('\\', "/");
+        let data = rel.ends_with(".json");
+        for (i, line) in text.lines().enumerate() {
+            if line.contains(needle) && hits.len() < 400 {
+                let t: String = line.trim().chars().take(180).collect();
+                hits.push((data, json!({ "file": rel, "line": i + 1, "text": t })));
+            }
+        }
+    }
+    hits.sort_by_key(|(d, _)| *d);
+    Ok(hits.into_iter().map(|(_, v)| v).take(80).collect())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn ui_assets_and_graphs_are_writable() {
+        let p = Path::new("/proj");
+        assert!(safe_path(p, "graphs/a.graph.json").is_ok());
+        assert!(safe_path(p, "ui/menu.ui.json").is_ok());
+        assert!(safe_path(p, "assets/ui/panel.png").is_ok());
+        assert!(safe_path(p, "assets/other/panel.png").is_err());
+        assert!(safe_path(p, "scripts/a.js").is_err());
+    }
+
+    #[test]
+    fn usages_finds_quoted_names_in_code() {
+        let d = std::env::temp_dir().join(format!("nord-usages-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&d);
+        std::fs::create_dir_all(d.join("lib")).unwrap();
+        std::fs::write(
+            d.join("app.js"),
+            "menu.on('play', () => {});\nconst x = 1;\n",
+        )
+        .unwrap();
+        std::fs::write(d.join("lib/nord-ui.js"), "'play'").unwrap();
+        let hits = usages(&d, "play").unwrap();
+        assert_eq!(hits.len(), 1);
+        assert_eq!(hits[0]["file"], "app.js");
+        assert_eq!(hits[0]["line"], 1);
+        assert!(usages(&d, "bad name").is_err());
+        let _ = std::fs::remove_dir_all(&d);
+    }
 
     #[test]
     fn jail() {

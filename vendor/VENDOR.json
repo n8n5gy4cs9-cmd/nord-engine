@@ -68,6 +68,11 @@
     "engine-docs": {
       "version": "Phaser 4.2.1 / Babylon 9.30.0",
       "license": "MIT / Apache-2.0"
+    },
+    "litegraph": {
+      "version": "0.7.18",
+      "license": "MIT",
+      "patched": "low_quality_scale threshold (see tools/vendor.mjs)"
     }
   },
   "files": {
@@ -390,6 +395,9 @@
     "vendor/engine-docs/babylonjs.d.ts.gz": "a961b4dd856e2ae2e5504800ef4d4d941e87f5a5a6d1ae43c280cf2ce52086be",
     "vendor/engine-docs/phaser-LICENSE.txt": "d59c20a9deb5dc240614b428dce5246ae561d15efeeebea0e069d73f0a78fbff",
     "vendor/engine-docs/phaser-snapshot.json.gz": "eb98bbbf5fb96889048ad837a92745edec5e6f66c8d6605fa2817bd94fe1a920",
-    "vendor/engine-docs/phaser.d.ts.gz": "b7752a4117bf95f1a452e36d715af9cb7b6f1561a4fa493a6b29f4a1d68dc794"
+    "vendor/engine-docs/phaser.d.ts.gz": "b7752a4117bf95f1a452e36d715af9cb7b6f1561a4fa493a6b29f4a1d68dc794",
+    "vendor/litegraph/litegraph.core.js": "64669daed54b69823d4595412be4a9e9d996d56fec96f0ced514067d32e992dd",
+    "vendor/litegraph/litegraph.css": "565cee8d54e7dfd16295f0ec7b19f910a739c0f42d5263198e3416a38a6006b3",
+    "vendor/litegraph/LICENSE": "1b38cc30fe774bcc77538ab99eb460f4e1c8a47c4fddc6e991ee3b5cc2a96bb9"
   }
 }

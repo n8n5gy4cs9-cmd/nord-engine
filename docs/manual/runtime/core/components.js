@@ -1,5 +1,6 @@
 // Backend-independent components: DOM ui* widgets, spawner, path. Registered by every backend's boot via registerCoreComponents().
 import { registerComponent } from './entity.js';
+import { attachGraph } from './graph/runner.js';
 
 export function registerCoreComponents(game) {
   const ui = () => game.ui;
@@ -31,6 +32,15 @@ export function registerCoreComponents(game) {
   });
 
   registerComponent('audioListener', {});
+
+  // graph: runs a visual-scripting graph file (graphs/*.graph.json) on this entity. data: { file }
+  registerComponent('graph', {
+    create(e, d, comp) {
+      if (!d.file) return;
+      attachGraph(game, e.scene, d.file, e).then((g) => { comp.g = g; if (e.destroyed) g.stop(); }).catch((err) => game.reportError(err, { constructor: { name: `graph ${d.file}` } }, 'load'));
+    },
+    destroy(comp) { comp.g?.destroy(); },
+  });
 
   // spawner: periodically spawns a prefab at the entity's position. data: { prefab, interval, max, offset:[x,y,z], autostart, jitter }
   registerComponent('spawner', {

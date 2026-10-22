@@ -11,6 +11,8 @@ summary: Design a main menu and a HUD visually, save them as ui/*.ui.json, and c
 A UI file describes boxes. Boxes can hold other boxes. You draw them in the Designer, give the important ones a **name**, and your code talks to them by that name.
 :::
 
+<figure class="shot"><img src="assets/screenshots/ui-designer-overview.png" alt="The UI Designer with a HUD file open" loading="lazy"><figcaption>The UI Designer: tree, preview and properties. Full reference: <a href="ui-designer.html">UI Designer</a>.</figcaption></figure>
+
 ## 1. Open the Designer and make a menu
 Open **View ▸ UI Designer**. Type `ui/menu.ui.json` in the file box and press **New**. The Designer starts you with a title, two buttons and a score label. The big preview is the real game UI; click any element to select it, drag anchored elements to move them. The **Tree** on the left shows the structure, **Properties** on the right shows the selected node.
 
@@ -46,6 +48,11 @@ async start() {
   this.menu.on('play', () => this.game.events.emit('start-game'));
 }
 ```
+
+### Where is "play" handled?
+Type the action into the button's **Action** field. Under it the Designer shows where your code handles it, with an **Open** button that jumps to the line. If it says **⚠ No code listens**, use **Copy code snippet** and paste it where you load the file. The **Actions** tab shows this for every button at once.
+
+<figure class="shot"><img src="assets/screenshots/ui-designer-action-missing.png" alt="No code listens to the action two yet" loading="lazy"><figcaption>A new button with action <code>two</code>: not handled yet.</figcaption></figure>
 
 ## 4. Talk to the UI from code (and back)
 ```js

@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "name": "hud",
+  "skin": "assets/ui/skin/pixel.skin.json",
+  "theme": {},
+  "root": {
+    "type": "panel",
+    "name": "root",
+    "anchor": "fill",
+    "style": {
+      "background": "none",
+      "border": "none",
+      "boxShadow": "none",
+      "padding": 0
+    },
+    "children": [
+      {
+        "type": "label",
+        "name": "score",
+        "text": "Coins: {score}",
+        "anchor": "tl",
+        "x": 16,
+        "y": 12,
+        "size": 26,
+        "bold": true
+      },
+      {
+        "type": "label",
+        "name": "help",
+        "text": "Arrow keys / WASD to move · collect 5 coins",
+        "anchor": "bl",
+        "x": 16,
+        "y": -12,
+        "size": 15
+      },
+      {
+        "type": "vbox",
+        "name": "win",
+        "anchor": "c",
+        "gap": 12,
+        "visible": false,
+        "class": "card",
+        "style": {
+          "padding": 24,
+          "alignItems": "center"
+        },
+        "children": [
+          {
+            "type": "label",
+            "name": "winText",
+            "text": "You win!",
+            "class": "title",
+            "size": 40
+          },
+          {
+            "type": "button",
+            "name": "restart",
+            "text": "Play again",
+            "on": {
+              "pressed": "restart"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

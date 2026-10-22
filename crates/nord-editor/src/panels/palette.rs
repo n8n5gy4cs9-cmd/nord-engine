@@ -106,6 +106,9 @@ pub const COMMANDS: &[(&str, CmdFn)] = &[
     ("View: UI Designer", || {
         Action::ShowTab(crate::app::Tab::UiDesigner)
     }),
+    ("View: Graph editor", || {
+        Action::ShowTab(crate::app::Tab::Graph)
+    }),
     ("View: FPS Level editor", || {
         Action::ShowTab(crate::app::Tab::Fps)
     }),

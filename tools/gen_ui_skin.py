@@ -18,6 +18,8 @@ panel = frame(24, '#2b3a55', '#0c1424', '#46628e', '#1d2940', 5)
 panel.save(f'{OUT}/panel.png')
 for name, fill, hi, lo in (('button', '#3f6fa8', '#7fb0e8', '#2a4d7a'), ('button-hover', '#4f86c6', '#a5ccf5', '#35629a'), ('button-down', '#2f5788', '#4f86c6', '#274a73'), ('button-danger', '#a8434f', '#e88a93', '#7a2a33')):
     frame(16, fill, '#0c1424', hi, lo, 3).save(f'{OUT}/{name}.png')
+field = frame(12, '#101a2c', '#0c1424', '#1d2940', '#2f4468', 2)  # inset text field (dark inside, light lower edge)
+field.save(f'{OUT}/field.png')
 bar = Image.new('RGBA', (8, 8), (0, 0, 0, 0)); d = ImageDraw.Draw(bar)
 d.rectangle((0, 0, 7, 7), fill='#0c1424'); d.rectangle((1, 1, 6, 6), fill='#1d2940'); bar.save(f'{OUT}/bar-back.png')
 skin = {
@@ -30,6 +32,9 @@ skin = {
                "disabled": {"opacity": 0.5}},
     ".danger": {"extends": "button", "image": {"src": "assets/ui/skin/button-danger.png", "slice": [5, 5, 5, 5], "scale": 3, "pixelated": True}},
     ".title": {"fontSize": 40, "fontWeight": 800, "color": "$accent", "textShadow": "0 3px 0 #0c1424"},
+    "input": {"image": {"src": "assets/ui/skin/field.png", "slice": [4, 4, 4, 4], "scale": 3, "pixelated": True}, "color": "$fg", "background": "none", "padding": "2px 6px", "outline": "none",
+              "focus": {"image": {"src": "assets/ui/skin/button-hover.png", "slice": [5, 5, 5, 5], "scale": 3, "pixelated": True}}},
+    "select": {"extends": "input"},
     "bar": {"image": {"src": "assets/ui/skin/bar-back.png", "slice": [2, 2, 2, 2], "scale": 2, "pixelated": True}, "height": 20}
   }
 }

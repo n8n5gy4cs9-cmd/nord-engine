@@ -11,7 +11,7 @@
   <strong>UI Designer</strong>
   <input id="file" list="files" placeholder="ui/menu.ui.json" spellcheck="false">
   <datalist id="files"></datalist>
-  <button id="new">New</button><button id="open">Open</button><button id="save" class="pri">Save</button>
+  <button id="openScript" title="Open the script that loads this UI file in the code editor">Open script</button><button id="new">New</button><button id="open">Open</button><button id="save" class="pri">Save</button>
   <span class="sep"></span>
   <button id="undo" title="Ctrl+Z">Undo</button><button id="redo" title="Ctrl+Shift+Z">Redo</button>
   <span class="sep"></span>
@@ -27,9 +27,10 @@
   </aside>
   <section id="center"><div id="stageWrap"><div id="stage"></div></div></section>
   <aside id="right">
-    <div class="tabs"><button data-tab="props" class="on">Properties</button><button data-tab="json">JSON</button><button data-tab="styles">Styles</button></div>
+    <div class="tabs"><button data-tab="props" class="on">Properties</button><button data-tab="json">JSON</button><button data-tab="styles">Styles</button><button data-tab="actions" id="tabActions">Actions</button></div>
     <div id="props"></div>
     <div id="stylesBox" hidden><p>Shared rules for every node: type names (<code>button</code>), classes (<code>.danger</code>), states (<code>hover</code> <code>pressed</code> <code>disabled</code>), tokens (<code>$accent</code>), <code>extends</code> and <code>image</code> with 9-slice.</p><input id="skinFile" placeholder="ui/skin.json" spellcheck="false"><textarea id="skinJson" spellcheck="false"></textarea><div class="acts"><button id="skinLoad">Load</button><button id="skinApply">Apply</button><button id="skinSave" class="pri">Save skin</button></div></div>
+    <div id="actionsBox" hidden><p>Every <b>Action</b> name in this file and the code that handles it. Buttons talk to your game through these names: <code>menu.on('play', () => …)</code>.</p><div class="acts"><button id="actionsRefresh">Refresh</button></div><div id="actionsList"></div><h3>Checks</h3><ul id="checkList"></ul></div>
     <div id="jsonBox" hidden><textarea id="json" spellcheck="false"></textarea><button id="applyJson">Apply JSON</button></div>
   </aside>
 </main>

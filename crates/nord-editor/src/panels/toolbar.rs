@@ -52,6 +52,22 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 }
             });
             ui.add_enabled_ui(running, |ui| {
+                if ui
+                    .selectable_label(st.game_paused, "Pause")
+                    .on_hover_text("Pause / resume the running game")
+                    .clicked()
+                {
+                    st.push(Action::PauseGame);
+                }
+                if ui
+                    .button("Step")
+                    .on_hover_text("Advance one frame (pauses first)")
+                    .clicked()
+                {
+                    st.push(Action::StepGame);
+                }
+            });
+            ui.add_enabled_ui(running, |ui| {
                 if icons::button(ui, "refresh-cw", "Reload game", false).clicked() {
                     st.push(Action::Reload);
                 }

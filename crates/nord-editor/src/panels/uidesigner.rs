@@ -19,7 +19,10 @@ pub fn ui(
     let Some(base) = st.ensure_server() else {
         return;
     };
-    let url = format!("{base}/editor/uidesigner/index.html");
+    let url = match &st.designer_file {
+        Some(f) => format!("{base}/editor/uidesigner/index.html?file={f}"),
+        None => format!("{base}/editor/uidesigner/index.html"),
+    };
     ui.horizontal(|ui| {
         if ui.button("Open in browser").clicked() {
             open_in_browser(&url);

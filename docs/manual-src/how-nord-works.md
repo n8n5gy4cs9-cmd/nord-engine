@@ -104,6 +104,7 @@ Nord stands on these open-source libraries. Versions are the ones bundled with N
 | **tao** | 0.33.0 | Opens native windows for the game player. |
 | **CodeMirror** | 6 | The code editor with highlighting and autocomplete. |
 | **esbuild (WASM)** | 0.25.10 | Minifies and bundles a game into a single file when you export (optional). |
+| **litegraph.js** | 0.7.18 | Draws the node canvas of the Graph editor. |
 | **marked** | 18.1.0 | Turns Markdown into pages (this manual). |
 | **Lucide** | 1.55.0 | The icons. |
 | **Fonts** | 5.3.0 | The bundled typefaces. |

@@ -187,3 +187,11 @@ Wry 0.50.5 omits WebKit's host pointer-lock callback, so native FPS games always
 
 **Consequences.** One rule restyles every button; variants are named classes, not numbered slots. Slicing costs nothing per frame. Atlas sub-rects are not supported yet (use one PNG per slice image).
 
+## ADR-032 Node graphs: litegraph canvas + Nord runner (2026-10-22)
+
+**Context.** Owner asked for a Unity GraphView / visual-scripting clone that can handle any engine code, UI or situation, cloning `jagenjo/litegraph.js` (MIT). Unity's C# reference repo is reference-only, so only its ideas (graph of typed ports, entry events, flow vs data) informed the design.
+
+**Decision.** Vendor litegraph.js core 0.7.18 (`vendor/litegraph`, one tiny documented patch: `low_quality_scale`, reapplied by `tools/vendor.mjs`) for the editor only. Nord owns the semantics: one data-driven node spec (`runtime/core/graph/nodes.js`, ~140 nodes) shared by the editor (`editor/graph/`) and the runner (`runtime/core/graph/runner.js`, flow = exec pins + async/latent nodes, data = pull-evaluated pure nodes). Graphs run via the `graph` component or `scene.settings.graphs`; *Advanced* nodes (get/set property, call method, engine services, JS) make every engine API reachable. Files live in `graphs/*.graph.json` (litegraph serialisation + `nord.vars`).
+
+**Consequences.** No code generation or build step; hot-editable. Errors are per chain, loops are capped. New nodes are one `def(...)` call and appear in editor, runner and the generated docs (`tools/make-graph-reference.mjs`).
+

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nord Graph Editor</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="/vendor/litegraph/litegraph.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="top">
+  <strong>Graph</strong>
+  <input id="file" list="files" placeholder="graphs/player.graph.json" spellcheck="false">
+  <datalist id="files"></datalist>
+  <select id="tpl" title="Start from a template"><option value="">Templates…</option></select>
+  <button id="new">New</button><button id="open">Open</button><button id="save" class="pri">Save</button>
+  <span class="sep"></span>
+  <button id="fit" title="Zoom to fit (F)">Fit</button>
+  <button id="arrange" title="Tidy the selected nodes into a column">Arrange</button>
+  <button id="check">Validate</button>
+  <span id="status"></span>
+</header>
+<main>
+  <aside id="left">
+    <input id="search" placeholder="Search nodes…" spellcheck="false">
+    <div id="palette"></div>
+  </aside>
+  <section id="stage"><canvas id="cv"></canvas><div id="hint">Double-click or right-click the canvas to add a node · drag from a pin to connect · Del deletes · Ctrl+D duplicates</div></section>
+  <aside id="right">
+    <h3>Variables</h3>
+    <div id="vars"></div>
+    <button id="addvar">+ Variable</button>
+    <h3>Selected node</h3>
+    <div id="sel">Nothing selected.</div>
+    <h3>Problems</h3>
+    <ul id="problems"></ul>
+  </aside>
+</main>
+<script src="/vendor/litegraph/litegraph.core.js"></script>
+<script type="module" src="graph.js"></script>
+</body>
+</html>

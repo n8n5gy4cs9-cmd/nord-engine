@@ -185,7 +185,7 @@ class Node {
   get disabled() { return !!this.el.disabled; }
   set disabled(v) { const t = this.el.querySelector('input') ?? this.el; t.disabled = !!v; }
   set color(v) { (this.def.type === 'bar' ? this.el.firstChild : this.el).style[this.def.type === 'bar' ? 'background' : 'color'] = v; }
-  set src(v) { this.el.src = v; }
+  set src(v) { this.el.src = this.screen.mgr.url(v); }
   /** Set several properties at once: node.set({ text: 'Go', visible: true, style: { opacity: .5 } }). */
   set(props) { for (const [k, v] of Object.entries(props)) { if (k === 'style') Object.assign(this.el.style, v); else this[k] = v; } return this; }
   css(style) { Object.assign(this.el.style, style); return this; }
@@ -311,7 +311,7 @@ class Screen {
       case 'button': el = d.createElement('button'); el.type = 'button'; break;
       case 'image':
         if (def.slice || ['tile', 'stretch', 'slice', 'center'].includes(def.mode)) el = d.createElement('div'); // sliced/tiled images are CSS backgrounds
-        else { el = d.createElement('img'); el.src = def.src ?? ''; el.alt = def.alt ?? ''; el.draggable = false; if (def.fit || def.mode) el.style.objectFit = def.fit ?? (def.mode === 'fit' ? 'contain' : def.mode); }
+        else { el = d.createElement('img'); el.src = this.mgr.url(def.src ?? ''); el.alt = def.alt ?? ''; el.draggable = false; if (def.fit || def.mode) el.style.objectFit = def.fit ?? (def.mode === 'fit' ? 'contain' : def.mode); }
         break;
       case 'bar': el = d.createElement('div'); el.appendChild(d.createElement('i')); break;
       case 'slider': el = d.createElement('input'); el.type = 'range'; el.min = def.min ?? 0; el.max = def.max ?? 1; el.step = def.step ?? 0.01; el.value = def.value ?? 0; break;
@@ -400,6 +400,8 @@ export class UIManager {
     for (const sc of this.screens.values()) sc.skinEl.textContent = this.skinCss;
     return this;
   }
+  /** Project-relative asset path → URL (applies `assetBase` unless the path is absolute). */
+  url(p) { return (/^(\/|[a-z]+:|data:)/i.test(p) ? '' : this.assetBase) + p; }
   /** Register a UI definition under a name so `instance` nodes and `load('name')` can find it. */
   define(name, def) { this._defs.set(name, def); return this; }
   async _def(src, fresh = false) {

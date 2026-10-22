@@ -1,0 +1,140 @@
+{
+  "tokens": {
+    "fg": "#e8f0ff",
+    "accent": "#7fb0e8",
+    "good": "#6fcf7a",
+    "font-ui": "system-ui, sans-serif"
+  },
+  "styles": {
+    "panel": {
+      "image": {
+        "src": "assets/ui/skin/panel.png",
+        "slice": [
+          8,
+          8,
+          8,
+          8
+        ],
+        "scale": 2,
+        "pixelated": true
+      },
+      "padding": 4,
+      "boxShadow": "none"
+    },
+    "button": {
+      "image": {
+        "src": "assets/ui/skin/button.png",
+        "slice": [
+          5,
+          5,
+          5,
+          5
+        ],
+        "scale": 3,
+        "pixelated": true
+      },
+      "color": "$fg",
+      "fontWeight": 700,
+      "padding": "4px 14px",
+      "borderRadius": 0,
+      "background": "none",
+      "hover": {
+        "image": {
+          "src": "assets/ui/skin/button-hover.png",
+          "slice": [
+            5,
+            5,
+            5,
+            5
+          ],
+          "scale": 3,
+          "pixelated": true
+        }
+      },
+      "pressed": {
+        "image": {
+          "src": "assets/ui/skin/button-down.png",
+          "slice": [
+            5,
+            5,
+            5,
+            5
+          ],
+          "scale": 3,
+          "pixelated": true
+        },
+        "transform": "translateY(1px)"
+      },
+      "disabled": {
+        "opacity": 0.5
+      }
+    },
+    ".danger": {
+      "extends": "button",
+      "image": {
+        "src": "assets/ui/skin/button-danger.png",
+        "slice": [
+          5,
+          5,
+          5,
+          5
+        ],
+        "scale": 3,
+        "pixelated": true
+      }
+    },
+    ".title": {
+      "fontSize": 40,
+      "fontWeight": 800,
+      "color": "$accent",
+      "textShadow": "0 3px 0 #0c1424"
+    },
+    "input": {
+      "image": {
+        "src": "assets/ui/skin/field.png",
+        "slice": [
+          4,
+          4,
+          4,
+          4
+        ],
+        "scale": 3,
+        "pixelated": true
+      },
+      "color": "$fg",
+      "background": "none",
+      "padding": "2px 6px",
+      "outline": "none",
+      "focus": {
+        "image": {
+          "src": "assets/ui/skin/button-hover.png",
+          "slice": [
+            5,
+            5,
+            5,
+            5
+          ],
+          "scale": 3,
+          "pixelated": true
+        }
+      }
+    },
+    "select": {
+      "extends": "input"
+    },
+    "bar": {
+      "image": {
+        "src": "assets/ui/skin/bar-back.png",
+        "slice": [
+          2,
+          2,
+          2,
+          2
+        ],
+        "scale": 2,
+        "pixelated": true
+      },
+      "height": 20
+    }
+  }
+}

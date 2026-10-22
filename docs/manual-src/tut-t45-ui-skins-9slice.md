@@ -11,6 +11,8 @@ summary: Restyle all buttons at once with a skin file, add variants and hover st
 A **skin** is one file of rules such as "all buttons look like this". You do not paint each button. A **9-slice** image is a picture cut into 3×3 pieces: the four corners never stretch, so a small frame can become a big window and still look crisp.
 :::
 
+<figure class="shot"><img src="assets/screenshots/ui-nine-slice-compare.png" alt="The same panel stretched and 9-sliced" loading="lazy"><figcaption>The same 24×24 picture at three sizes: stretched (top) and 9-sliced (bottom).</figcaption></figure>
+
 ## 1. Why not style-1, style-2?
 Numbered slots tell you nothing and break when you reorder them. Nord skins work like this instead:
 
@@ -64,8 +66,17 @@ Copy the sample art from `assets/ui/skin/` (`panel.png`, `button.png`, `button-h
 * `scale` multiplies those borders on screen (3 turns a 16 px pixel-art button into a chunky 48 px one).
 * `pixelated` keeps pixel art sharp.
 
+<figure class="shot"><img src="assets/screenshots/ui-designer-image-picker.png" alt="Choosing an image in the Designer" loading="lazy"><figcaption><b>Browse project images…</b>, <b>Add from computer…</b>, or drag a file onto the Image field.</figcaption></figure>
+
 ### Find the slice numbers visually
 Select any node that has an image in the Designer. The **9-slice editor** under Properties shows the picture with four pink guides. Drag them to the edge of the decoration; the numbers and the preview update live.
+
+<figure class="shot"><img src="assets/screenshots/ui-designer-slice-editor.png" alt="The 9-slice editor" loading="lazy"><figcaption>Drag the four guides; the preview updates live.</figcaption></figure>
+
+### Input fields too
+A text input, drop-down or checkbox can use images exactly like a button. Put the image in the skin (rule `input`) and every field gets it, with a different image for the `focus` state.
+
+<figure class="shot"><img src="assets/screenshots/ui-input-image.png" alt="A sliced text input" loading="lazy"><figcaption>An <code>input</code> drawn with a 9-slice image; it still types, selects and fires <code>on.changed</code>.</figcaption></figure>
 
 ## 5. Images that are not sliced
 An `image` node has a `mode`:
