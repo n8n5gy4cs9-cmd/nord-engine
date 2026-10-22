@@ -293,7 +293,12 @@ fn row(
                     }
                 });
             }
-            ui.add(icons::icon(icon, 14.0, tint));
+            let icon_tint = if e.enabled {
+                icons::kind_color(icon, tint)
+            } else {
+                tint
+            };
+            ui.add(icons::icon(icon, 14.0, icon_tint));
             let text = if e.prefab.is_some() {
                 egui::RichText::new(label).color(egui::Color32::from_rgb(110, 170, 255))
             } else {

@@ -425,7 +425,7 @@ fn tree(st: &mut EditorState, ui: &mut Ui, rel: &str, depth: usize, ctx: &mut Op
             ui.add(icons::icon(
                 if open { "folder-open" } else { "folder" },
                 14.0,
-                ui.visuals().text_color(),
+                icons::kind_color("folder", ui.visuals().text_color()),
             ));
             let r = ui.selectable_label(sel, &d.name);
             if r.clicked() {
@@ -855,7 +855,7 @@ fn open_entry(st: &mut EditorState, e: &Entry) {
 
 fn kind_icon(k: AssetType, dir: bool) -> &'static str {
     if dir {
-        return "folder";
+        return "folder-fill";
     }
     match k {
         AssetType::Image | AssetType::Spritesheet => "image",
@@ -917,9 +917,10 @@ fn draw_thumb(st: &mut EditorState, ui: &mut Ui, root: &Path, e: &Entry, rect: e
             }
         }
     }
-    let c = ui.visuals().weak_text_color();
-    let r = egui::Rect::from_center_size(rect.center(), Vec2::splat(rect.width() * 0.55));
+    let name = kind_icon(e.kind, e.is_dir);
+    let c = icons::kind_color(name, ui.visuals().weak_text_color());
+    let r = egui::Rect::from_center_size(rect.center(), Vec2::splat(rect.width() * 0.62));
     // The cell already owns its layout space. `ui.put` would advance the wrapped
     // row's cursor again, pushing each following tile down into a staircase.
-    icons::icon(kind_icon(e.kind, e.is_dir), r.width(), c).paint_at(ui, r);
+    icons::icon(name, r.width(), c).paint_at(ui, r);
 }

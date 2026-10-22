@@ -128,7 +128,29 @@ impl Themes {
         graphite.code.gutter = "#858585".into();
         graphite.code.line_highlight = "#252525".into();
         graphite.code.selection = "#35495d".into();
-        cat.themes.insert(0, graphite);
+        cat.themes.insert(0, graphite.clone());
+        // PlayCanvas-style editor palette: blue-grey panels, thin dividers, orange accent.
+        let mut pc = graphite;
+        pc.id = "playcanvas".into();
+        pc.name = "PlayCanvas".into();
+        pc.ui = UiColors {
+            bg: "#1b2325".into(),
+            panel: "#20292b".into(),
+            panel2: "#293538".into(),
+            border: "#151c1e".into(),
+            fg: "#e3e8ea".into(),
+            fg_dim: "#8a9a9e".into(),
+            accent: "#ff6600".into(),
+            good: "#5ec47a".into(),
+            warn: "#ffc04a".into(),
+            bad: "#ff5a5a".into(),
+        };
+        pc.code.bg = "#1b2325".into();
+        pc.code.fg = "#dfe5e7".into();
+        pc.code.gutter = "#6c7b7f".into();
+        pc.code.line_highlight = "#222c2e".into();
+        pc.code.selection = "#3a4a4e".into();
+        cat.themes.insert(0, pc);
         Self { cat }
     }
     pub fn skins(&self) -> &[Skin] {
@@ -213,7 +235,7 @@ impl Themes {
         v.menu_corner_radius = egui::CornerRadius::same(6);
         v.selection.bg_fill = bg.lerp_to_gamma(accent, 0.28);
         v.selection.stroke = egui::Stroke::new(1.0_f32, fg);
-        let rounding = egui::CornerRadius::same(5);
+        let rounding = egui::CornerRadius::same(if theme == "playcanvas" { 2 } else { 5 });
         for (w, fill) in [
             (&mut v.widgets.noninteractive, panel),
             (&mut v.widgets.inactive, panel2),

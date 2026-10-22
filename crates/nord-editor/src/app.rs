@@ -1080,7 +1080,7 @@ impl TabViewer for Viewer<'_> {
     type Tab = Tab;
 
     fn title(&mut self, t: &mut Tab) -> egui::WidgetText {
-        t.title().into()
+        t.title().to_uppercase().into()
     }
 
     fn closeable(&mut self, _: &mut Tab) -> bool {
@@ -1424,6 +1424,10 @@ impl App {
                 .show(ctx, |ui| panels::toolbar::ui(&mut self.st, ui));
             if self.st.project.is_some() {
                 egui::TopBottomPanel::bottom("status").show(ctx, |ui| status_bar(&mut self.st, ui));
+                egui::SidePanel::left("tool_rail")
+                    .resizable(false)
+                    .exact_width(34.0)
+                    .show(ctx, |ui| panels::toolbar::rail(&mut self.st, ui));
             }
         }
         let overlay = self.overlays_open(ctx);
@@ -1561,6 +1565,20 @@ fn status_bar(st: &mut EditorState, ui: &mut egui::Ui) {
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             if let Some(p) = &st.project {
                 ui.weak(format!("{} · {}", p.name, p.kind.as_str()));
+            }
+            if let Some(s) = &st.scene {
+                ui.weak(format!(
+                    "{} entities",
+                    crate::scene_ops::flatten(&s.entities).len()
+                ));
+            }
+            if let Some(id) = st.selection.first() {
+                let name = st
+                    .scene
+                    .as_ref()
+                    .and_then(|s| crate::scene_ops::find(&s.entities, id))
+                    .map_or("", |e| e.name.as_str());
+                ui.label(format!("▸ {name}"));
             }
         });
     });

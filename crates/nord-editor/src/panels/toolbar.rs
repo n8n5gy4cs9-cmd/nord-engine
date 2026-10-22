@@ -165,3 +165,39 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         }
     });
 }
+
+/// PlayCanvas-style vertical tool rail: transform tools, gizmo space, snap, focus, grid. Active tool is orange.
+pub fn rail(st: &mut EditorState, ui: &mut Ui) {
+    ui.vertical_centered(|ui| {
+        ui.spacing_mut().item_spacing.y = 4.0;
+        for (t, ic, tip) in [
+            (Tool::Hand, "hand", "Hand (Q)"),
+            (Tool::Move, "move", "Move (W)"),
+            (Tool::Rotate, "rotate-cw", "Rotate (E)"),
+            (Tool::Scale, "scaling", "Scale (R)"),
+            (Tool::Rect, "box-select", "Rect (T)"),
+        ] {
+            if icons::button(ui, ic, tip, st.tool == t).clicked() {
+                st.push(Action::SetTool(t));
+            }
+        }
+        ui.separator();
+        let (sp, tip) = if st.settings.space_local {
+            ("box", "Gizmo space: Local (click for Global)")
+        } else {
+            ("globe", "Gizmo space: Global (click for Local)")
+        };
+        if icons::button(ui, sp, tip, st.settings.space_local).clicked() {
+            st.push(Action::ToggleSpace);
+        }
+        if icons::button(ui, "magnet", "Snap (hold Ctrl)", st.settings.snap).clicked() {
+            st.push(Action::ToggleSnap);
+        }
+        if icons::button(ui, "grid-3x3", "Grid", st.settings.grid).clicked() {
+            st.push(Action::ToggleGrid);
+        }
+        if icons::button(ui, "crosshair", "Focus selected (F)", false).clicked() {
+            st.push(Action::Focus);
+        }
+    });
+}

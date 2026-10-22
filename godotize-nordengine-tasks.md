@@ -71,13 +71,13 @@ accent; panel headers = small orange ▼ collapse arrow + UPPERCASE title (HIERA
 Hierarchy = tree with dot/expand icons and a search field; viewport has a floating top bar (scene tabs, Perspective drop-down, gizmo/settings/fullscreen
 and a big Play button); Inspector = collapsible UPPERCASE sections with flat dark inputs, label-left/value-right rows with unit suffix chips (Divisions, Size);
 bottom Assets panel = folder tree + large folder tiles, filter drop-down + search + Library toggle; slim status bar at the bottom.
-- [ ] G9-1 New egui theme "PlayCanvas" (colours, 2px rounding, flat inputs, orange accent) in `assets/themes/themes.json`, set as default
-- [ ] G9-2 Panel header style: orange collapse arrow + UPPERCASE title + right-aligned action icons (all docks)
-- [ ] G9-3 Left vertical tool rail (move/rotate/scale, world/local, snap, focus, camera, lights) driving the Scene view tools
+- [x] G9-1 New egui theme
+- [~] G9-2 Panel headers: UPPERCASE dock tab titles done; orange arrow + right-aligned action icons todo
+- [x] G9-3 Left vertical tool rail
 - [ ] G9-4 Floating viewport top bar: scene tabs, Perspective/Ortho drop-down, gizmo + settings + fullscreen buttons, big Play button
-- [ ] G9-5 Inspector: collapsible UPPERCASE sections, flat inputs with unit chips, label-left/value-right rows
-- [ ] G9-6 Assets panel: folder tree + large folder tiles, type filter + search + Library toggle
-- [ ] G9-7 Slim status bar (selected property/path left, counters right); icon set consistent (Lucide, already vendored)
+- [~] G9-5 Inspector: UPPERCASE section headers + 2px flat widgets done; unit chips todo
+- [~] G9-6 Assets: coloured type icons + filled amber folder tiles (tree + tiles existed); Library toggle todo
+- [~] G9-7 Status bar shows selection + entity count; coloured icons in hierarchy/assets; full icon pass todo
 
 ## G10 Unity-style coding (owner request, do later)
 Keep the current NordScript API; add helpers/libraries so scripts feel like Unity C# (behaviour only, no Unity code).

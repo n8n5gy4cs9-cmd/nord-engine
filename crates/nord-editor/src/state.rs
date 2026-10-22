@@ -99,7 +99,7 @@ impl Default for Settings {
     fn default() -> Self {
         Self {
             skin: "modern".into(),
-            theme: "graphite".into(),
+            theme: "playcanvas".into(),
             appearance_version: 1,
             ui_scale: 1.0,
             code_font_size: 13.0,
@@ -163,6 +163,12 @@ impl Settings {
                 self.theme = "graphite".into();
             }
             self.appearance_version = 1;
+        }
+        if self.appearance_version == 1 {
+            if self.theme == "graphite" {
+                self.theme = "playcanvas".into(); // the previous default; explicit other choices are kept
+            }
+            self.appearance_version = 2;
         }
     }
     pub fn save(&self) {
@@ -1322,7 +1328,7 @@ mod appearance_tests {
 
     #[test]
     fn upgrade_default_once_and_keep_custom_themes_and_play_color() {
-        for (old, expected) in [("nord", "graphite"), ("dracula", "dracula")] {
+        for (old, expected) in [("nord", "playcanvas"), ("dracula", "dracula")] {
             let mut s: Settings = serde_json::from_value(serde_json::json!({
                 "theme": old, "play_tint": [20, 40, 80]
             }))

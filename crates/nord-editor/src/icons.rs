@@ -12,6 +12,7 @@ macro_rules! icons {
                 "flip-horizontal" => Some(include_str!("../../../assets/icons/nord/flip-horizontal.svg")),
                 "flip-vertical" => Some(include_str!("../../../assets/icons/nord/flip-vertical.svg")),
                 "line" => Some(include_str!("../../../assets/icons/nord/line.svg")),
+                "folder-fill" => Some(include_str!("../../../assets/icons/nord/folder-fill.svg")),
                 "box-select" => Some(include_str!("../../../assets/icons/nord/box-select.svg")),
                 _ => None,
             }
@@ -27,6 +28,7 @@ icons!(
     "rotate-cw",
     "scaling",
     "hand",
+    "globe",
     "grid-3x3",
     "magnet",
     "plus",
@@ -96,6 +98,24 @@ pub fn source(name: &'static str) -> ImageSource<'static> {
     }
 }
 
+/// Colour of a type icon (PlayCanvas-style coloured asset/entity icons). `fallback` is used for icons without a colour.
+pub fn kind_color(name: &str, fallback: Color32) -> Color32 {
+    match name {
+        "folder" | "folder-open" | "folder-fill" => Color32::from_rgb(232, 168, 56),
+        "image" => Color32::from_rgb(108, 203, 122),
+        "music" => Color32::from_rgb(181, 140, 240),
+        "box" | "boxes" => Color32::from_rgb(76, 201, 216),
+        "map" => Color32::from_rgb(255, 138, 61),
+        "package" => Color32::from_rgb(90, 169, 255),
+        "film" | "video" => Color32::from_rgb(224, 123, 208),
+        "file-code" => Color32::from_rgb(121, 184, 255),
+        "lightbulb" => Color32::from_rgb(255, 214, 90),
+        "type" => Color32::from_rgb(160, 180, 200),
+        "component" => Color32::from_rgb(159, 179, 217),
+        _ => fallback,
+    }
+}
+
 pub fn icon(name: &'static str, size: f32, tint: Color32) -> Image<'static> {
     Image::new(source(name))
         .fit_to_exact_size(Vec2::splat(size))
@@ -121,7 +141,12 @@ pub fn button(ui: &mut Ui, name: &'static str, tip: &str, selected: bool) -> egu
         };
         ui.painter().rect_filled(rect, v.corner_radius, fill);
         let r = egui::Rect::from_center_size(rect.center(), Vec2::splat(16.0));
-        icon(name, 16.0, v.fg_stroke.color).paint_at(ui, r);
+        let c = if selected {
+            ui.visuals().hyperlink_color
+        } else {
+            v.fg_stroke.color
+        };
+        icon(name, 16.0, c).paint_at(ui, r);
     }
     resp.on_hover_cursor(egui::CursorIcon::PointingHand)
         .on_hover_text(tip)

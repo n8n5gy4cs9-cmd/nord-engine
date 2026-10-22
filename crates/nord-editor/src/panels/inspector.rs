@@ -448,7 +448,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 }
             });
             ui.separator();
-            egui::CollapsingHeader::new("Transform")
+            egui::CollapsingHeader::new("TRANSFORM")
                 .default_open(true)
                 .show(ui, |ui| {
                     egui::Grid::new("xf").num_columns(2).show(ui, |ui| {
@@ -487,7 +487,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             for (i, c) in e.components.iter_mut().enumerate() {
                 let id = format!("c{i}");
                 let fields = schema::component_fields(&c.kind);
-                let r = egui::CollapsingHeader::new(schema::label_of(&c.kind))
+                let r = egui::CollapsingHeader::new(schema::label_of(&c.kind).to_uppercase())
                     .id_salt(&id)
                     .default_open(true)
                     .show(ui, |ui| {

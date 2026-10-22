@@ -122,9 +122,9 @@ fn inspector_renders_every_component_type() {
         .build_ui_state(|ui, st: &mut EditorState| panels::inspector::ui(st, ui), st);
     loaders(&h);
     h.run();
-    h.get_by_label("Sprite");
-    h.get_by_label("Spawner");
-    h.get_by_label("Post Process");
+    h.get_by_label("SPRITE");
+    h.get_by_label("SPAWNER");
+    h.get_by_label("POST PROCESS");
     assert_eq!(h.state().selection, vec![id]);
 }
 
@@ -912,7 +912,7 @@ fn reset_settings_and_layout_restore_defaults() {
     h.state_mut().st.push(Action::ResetSettings);
     h.run_steps(3);
     let app = h.state();
-    assert_eq!(app.st.settings.theme, "graphite");
+    assert_eq!(app.st.settings.theme, "playcanvas");
     assert_eq!(app.st.settings.run_key, "R");
     assert!(!app.st.settings.use_cached_content);
     assert!(app.dock.iter_all_tabs().count() > 4, "layout not reset");
@@ -923,6 +923,7 @@ fn changing_theme_during_play_restores_the_new_theme_on_stop() {
     use nord_editor::state::Action;
     let mut app = App::new(false);
     app.st = state_with_scene("theme-play");
+    app.st.settings.theme = "graphite".into(); // neutral grey, so the play tint is easy to tell apart
     let mut h = Harness::builder()
         .with_size(egui::vec2(1200.0, 800.0))
         .build_state(|ctx, app: &mut App| app.frame_ui(ctx, None), app);
