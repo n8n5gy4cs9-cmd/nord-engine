@@ -175,7 +175,7 @@ function makeSky(dir, node) {
 const isFpsHost = (e) => (e.scripts ?? []).find((s) => /fpsc\/level-script\.js$/.test(s.path));
 const levels = new Map();
 function getLevel(path) {
-  if (!levels.has(path)) { levels.set(path, null); fetch('/' + path).then((r) => r.json()).then((j) => { levels.set(path, j); if (state.scene) setScene(); }).catch(() => {}); }
+  if (!levels.has(path)) { levels.set(path, null); fetch('/' + path).then((r) => r.json()).then((j) => { levels.set(path, j); if (state.scene) { setScene(); focus(true); } }).catch(() => {}); }
   return levels.get(path);
 }
 
@@ -196,7 +196,7 @@ function buildFps(e, node) {
     for (const [k, c] of Object.entries(ly.cells ?? {})) {
       if (!c.f) continue;
       const [x, z] = k.split(',').map(Number);
-      add('#7d8590', C, 0.1, C, (x + 0.5) * C, y0 - 0.05 + (typeof c.h === 'number' ? c.h : 0), (z + 0.5) * C);
+      add('#7d8590', C, 0.1, C, (x + 0.5) * C, y0 - 0.02 + (typeof c.h === 'number' ? c.h : 0), (z + 0.5) * C);
     }
     for (const [k, pc] of Object.entries(ly.edges ?? {})) {
       const [xs, zs, o] = k.split(','); const x = +xs, z = +zs;
@@ -379,6 +379,7 @@ export function focus(all) {
     for (const r of roots) { const b = r.getHierarchyBoundingVectors(true); min = B.Vector3.Minimize(min, b.min); max = B.Vector3.Maximize(max, b.max); }
     camera.setTarget(min.add(max).scale(0.5));
     camera.radius = Math.max(2, max.subtract(min).length() * 1.2);
+    camera.beta = Math.min(camera.beta, 1.0); // look down at ~55° like Unity's default Scene view, not along the ground
     return;
   }
   const n = nodes.get(state.selection[0]);
