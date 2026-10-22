@@ -9,11 +9,10 @@
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
 <div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html" class="cur" aria-current="page">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="debugger.html">Debugger and profiler</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Welcome</h1>
-<p>Nord Engine is a personal engine plus a native editor. You build a game or app visually (hierarchy, inspector, viewport), script it in
-JavaScript (or Rust), and <strong>export a static folder</strong> that runs in any browser — or wrap it into a Mac app.</p>
+<p>Nord Engine is a game and app editor, in the spirit of Unity or Godot. You build visually (Hierarchy, Inspector, Scene view), add behaviour with ready-made tools, event sheets or scripts in JavaScript (or Rust), and <strong>export a static folder</strong> that runs in any web browser, or wrap it into a desktop app.</p>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>Think of Nord as a workshop. The <strong>editor</strong> is the workbench where you arrange things. The <strong>runtime</strong> is the little engine that makes
 your game move when it is played. <strong>Export</strong> packs everything into one folder you can put on any website.</p>
-</aside><p>New here? Start with <a href="../start/getting-started.html">Getting started</a> and <a href="../start/how-nord-works.html">How Nord works</a>.</p>
+</aside><p>New here? Read <a href="../start/getting-started.html">Getting started</a> first (about an hour, all by clicking), then <a href="../start/how-nord-works.html">How Nord works</a>. Nord also includes level-building tools: the <a href="level-creator-2d.html">2D Level Creator</a> and the <a href="fps-creator.html">FPS Creator</a>.</p>
 <h2 id="the-tiers">The tiers<a class="anchor" href="#the-tiers">#</a></h2>
 <p>You pick a tier per project (<code>type</code> in <code>nord.project.json</code>). All tiers share the same project folder layout and scene format.</p>
 <table>
@@ -56,28 +55,66 @@ your game move when it is played. <strong>Export</strong> packs everything into 
 <td>tools, dashboards, native-feeling apps</td>
 </tr>
 </tbody></table>
-<p><code>nord doctor</code> checks your toolchain and recommends a tier. Start with <strong>Nord&#39;s own API</strong>
+<p>The <strong>Rust</strong> project types need the Rust toolchain installed (the optional <code>nord doctor</code> command checks this and recommends a type). For a first project choose <strong>2D</strong>. Start with <strong>Nord&#39;s own API</strong>
 (<code>NordScript</code>, <code>entity.*</code>, <code>game.*</code>). Raw engine objects are only reachable through the <code>entity.native</code> escape hatch.</p>
-<h2 id="install-and-first-launch-macos">Install and first launch (macOS)<a class="anchor" href="#install-and-first-launch-macos">#</a></h2>
+<h2 id="open-the-editor">Open the editor<a class="anchor" href="#open-the-editor">#</a></h2>
 <ol>
-<li>Build or open the app: <code>./build.sh</code> produces the editor <code>.app</code>; <code>./run.sh [project]</code> runs it from source.</li>
-<li>A splash screen shows for at least two seconds, then the <strong>project hub</strong> opens: <em>New</em> (template picker), <em>Open</em>, <em>Recent</em>, <em>Examples</em>, <em>Tutorials</em>.</li>
+<li>Open <strong>NordEditor.app</strong>, or from a source checkout run <code>./run.sh</code> (add a project path to open it directly). <code>./build.sh</code> builds the app.</li>
+<li>A splash screen shows briefly, then the <strong>project hub</strong> opens: <em>New</em> (templates), <em>Recent</em>, <em>Examples</em> and <em>Tutorials</em>.</li>
 <li>Pick a template (for example <strong>Platformer</strong>) and press <strong>▶ Play</strong> (Cmd+R).</li>
 </ol>
-<p>Optional command line (the <code>nord</code> tool ships next to the editor and is not on your PATH by default; see <a href="../start/getting-started.html#part-11-the-optional-nord-command">Getting started, Part 11</a>):</p>
-<pre class="code" data-lang=""><code>nord new my-game -t platformer
-nord serve my-game          # dev server with live reload on http://localhost:4173
-nord build my-game          # static export into my-game/dist</code></pre>
+<p>The step-by-step version, with a tour of every panel, is <a href="../start/getting-started.html">Getting started</a>.</p>
 <aside class="box tip"><div class="box-title">Tip</div><p>The whole manual is offline and also lives inside the editor&#39;s <strong>Docs</strong> tab. Press <code>/</code> anywhere on this site to search.</p>
+</aside><aside class="box dummies"><div class="box-title">For dummy developers</div><p>There is also an optional command-line program called <code>nord</code>, used for automation and build servers. You never need it to make a game. See <a href="../start/getting-started.html#part-11-the-optional-nord-command">Getting started, Part 11</a>.</p>
 </aside><h2 id="how-this-manual-is-organised">How this manual is organised<a class="anchor" href="#how-this-manual-is-organised">#</a></h2>
+<p>The manual has 29 chapters. You can read in order or jump to the one you need.</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Chapters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>The basics</strong></td>
+<td><a href="editor-tour.html">Editor tour</a> · <a href="projects-scenes.html">Projects and scenes</a> · <a href="scripting.html">Scripting</a> · <a href="input.html">Input</a> · <a href="assets.html">Assets</a> · <a href="library.html">Library</a></td>
+</tr>
+<tr>
+<td><strong>Making things</strong></td>
+<td><a href="2d.html">2D</a> · <a href="3d.html">3D</a> · <a href="physics.html">Physics</a> · <a href="audio.html">Audio</a> · <a href="ui.html">UI</a></td>
+</tr>
+<tr>
+<td><strong>Build without code</strong></td>
+<td><a href="event-sheets.html">Event sheets</a> · <a href="behaviors.html">Behaviors</a> · <a href="level-creator-2d.html">2D Level Creator</a> · <a href="fps-creator.html">FPS Creator</a></td>
+</tr>
+<tr>
+<td><strong>Art and polish</strong></td>
+<td><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a> · <a href="layout-editor.html">Layout, layers and objects</a> · <a href="effects-particles-timelines.html">Effects, particles and timelines</a></td>
+</tr>
+<tr>
+<td><strong>Test and fix</strong></td>
+<td><a href="debugger.html">Debugger and profiler</a> · <a href="performance.html">Performance</a> · <a href="preview-history-tools.html">Preview, history and project tools</a></td>
+</tr>
+<tr>
+<td><strong>Extend</strong></td>
+<td><a href="addons-data-localisation.html">Addons, data objects and languages</a> · <a href="rust-wasm.html">Rust / WASM</a></td>
+</tr>
+<tr>
+<td><strong>Ship</strong></td>
+<td><a href="export.html">Export and hosting</a> · <a href="desktop-apps.html">Desktop apps</a> · <a href="web-editor.html">Run the editor in a browser</a></td>
+</tr>
+<tr>
+<td><strong>Look things up</strong></td>
+<td><a href="reference.html">Reference overview</a> · <a href="../appendix/appendix.html">Appendix</a></td>
+</tr>
+</tbody></table>
+<p>Other sections of this site:</p>
 <ul>
-<li><strong>Manual</strong> — chapters 1–17, read in order or jump around.</li>
-<li><strong>Tutorials</strong> — T01–T18, each builds something and points to a runnable project.</li>
-<li><strong>Guides</strong> — cheat sheets, cookbook, glossary, shortcuts.</li>
-<li><strong>API / Components / Reference</strong> — generated from public source contracts, with curated usage notes: JS classes, every component, the CLI, the library catalog.</li>
+<li><strong>Tutorials</strong> - <a href="../tutorials/tutorials.html">43 lessons</a>, from &quot;Hello Nord&quot; to complete games, with learning paths and filters.</li>
+<li><strong>Guides</strong> - <a href="../guides/cookbook.html">cheat sheets, cookbook, glossary and shortcuts</a>.</li>
+<li><strong>API, Components, Reference</strong> - generated from the source: JS classes, every component, the CLI and the library catalog.</li>
 </ul>
-<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Every concept page can hide a purple <strong>For dummies</strong> box like this one. Plain-language
-explanations are shown by default; the top-bar switch hides them once you know the ropes.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Every concept page can hide a purple <strong>For dummies</strong> box like this one. Plain-language explanations are shown by default; the top-bar switch hides them once you know the ropes.</p>
 </aside>
-<div class="pager"><span></span><a href="editor-tour.html"><small>Next →</small>Editor tour</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#the-tiers">The tiers </a><a href="#install-and-first-launch-macos">Install and first launch (macOS) </a><a href="#how-this-manual-is-organised">How this manual is organised </a></aside></div>
+<div class="pager"><span></span><a href="editor-tour.html"><small>Next →</small>Editor tour</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#the-tiers">The tiers </a><a href="#open-the-editor">Open the editor </a><a href="#how-this-manual-is-organised">How this manual is organised </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

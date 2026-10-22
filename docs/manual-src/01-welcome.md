@@ -2,17 +2,16 @@
 title: Welcome
 section: Manual
 order: 1
-summary: What Nord is, the three tiers, install and first launch.
+summary: What Nord is, the project types, how to open it, and a map of every chapter.
 ---
-Nord Engine is a personal engine plus a native editor. You build a game or app visually (hierarchy, inspector, viewport), script it in
-JavaScript (or Rust), and **export a static folder** that runs in any browser — or wrap it into a Mac app.
+Nord Engine is a game and app editor, in the spirit of Unity or Godot. You build visually (Hierarchy, Inspector, Scene view), add behaviour with ready-made tools, event sheets or scripts in JavaScript (or Rust), and **export a static folder** that runs in any web browser, or wrap it into a desktop app.
 
 ::: dummies
 Think of Nord as a workshop. The **editor** is the workbench where you arrange things. The **runtime** is the little engine that makes
 your game move when it is played. **Export** packs everything into one folder you can put on any website.
 :::
 
-New here? Start with [Getting started](getting-started.html) and [How Nord works](how-nord-works.html).
+New here? Read [Getting started](getting-started.html) first (about an hour, all by clicking), then [How Nord works](how-nord-works.html). Nord also includes level-building tools: the [2D Level Creator](level-creator-2d.html) and the [FPS Creator](fps-creator.html).
 
 ## The tiers
 
@@ -26,33 +25,44 @@ You pick a tier per project (`type` in `nord.project.json`). All tiers share the
 | Rust game | `wasm-game` | macroquad + rapier2d compiled to WebAssembly | CPU-heavy 2D sims, Rust-only logic |
 | Rust app | `wasm-app` | eframe/egui compiled to WebAssembly | tools, dashboards, native-feeling apps |
 
-`nord doctor` checks your toolchain and recommends a tier. Start with **Nord's own API**
+The **Rust** project types need the Rust toolchain installed (the optional `nord doctor` command checks this and recommends a type). For a first project choose **2D**. Start with **Nord's own API**
 (`NordScript`, `entity.*`, `game.*`). Raw engine objects are only reachable through the `entity.native` escape hatch.
 
-## Install and first launch (macOS)
-
-1. Build or open the app: `./build.sh` produces the editor `.app`; `./run.sh [project]` runs it from source.
-2. A splash screen shows for at least two seconds, then the **project hub** opens: *New* (template picker), *Open*, *Recent*, *Examples*, *Tutorials*.
+## Open the editor
+1. Open **NordEditor.app**, or from a source checkout run `./run.sh` (add a project path to open it directly). `./build.sh` builds the app.
+2. A splash screen shows briefly, then the **project hub** opens: *New* (templates), *Recent*, *Examples* and *Tutorials*.
 3. Pick a template (for example **Platformer**) and press **▶ Play** (Cmd+R).
 
-Optional command line (the `nord` tool ships next to the editor and is not on your PATH by default; see [Getting started, Part 11](getting-started.html#part-11-the-optional-nord-command)):
-```
-nord new my-game -t platformer
-nord serve my-game          # dev server with live reload on http://localhost:4173
-nord build my-game          # static export into my-game/dist
-```
+The step-by-step version, with a tour of every panel, is [Getting started](getting-started.html).
 
 ::: tip
 The whole manual is offline and also lives inside the editor's **Docs** tab. Press `/` anywhere on this site to search.
 :::
 
+::: dummies
+There is also an optional command-line program called `nord`, used for automation and build servers. You never need it to make a game. See [Getting started, Part 11](getting-started.html#part-11-the-optional-nord-command).
+:::
+
 ## How this manual is organised
-* **Manual** — chapters 1–17, read in order or jump around.
-* **Tutorials** — T01–T18, each builds something and points to a runnable project.
-* **Guides** — cheat sheets, cookbook, glossary, shortcuts.
-* **API / Components / Reference** — generated from public source contracts, with curated usage notes: JS classes, every component, the CLI, the library catalog.
+The manual has 29 chapters. You can read in order or jump to the one you need.
+
+| Group | Chapters |
+|---|---|
+| **The basics** | [Editor tour](editor-tour.html) · [Projects and scenes](projects-scenes.html) · [Scripting](scripting.html) · [Input](input.html) · [Assets](assets.html) · [Library](library.html) |
+| **Making things** | [2D](2d.html) · [3D](3d.html) · [Physics](physics.html) · [Audio](audio.html) · [UI](ui.html) |
+| **Build without code** | [Event sheets](event-sheets.html) · [Behaviors](behaviors.html) · [2D Level Creator](level-creator-2d.html) · [FPS Creator](fps-creator.html) |
+| **Art and polish** | [Sprites, animation and tilemaps](sprites-animation-tilemaps.html) · [Layout, layers and objects](layout-editor.html) · [Effects, particles and timelines](effects-particles-timelines.html) |
+| **Test and fix** | [Debugger and profiler](debugger.html) · [Performance](performance.html) · [Preview, history and project tools](preview-history-tools.html) |
+| **Extend** | [Addons, data objects and languages](addons-data-localisation.html) · [Rust / WASM](rust-wasm.html) |
+| **Ship** | [Export and hosting](export.html) · [Desktop apps](desktop-apps.html) · [Run the editor in a browser](web-editor.html) |
+| **Look things up** | [Reference overview](reference.html) · [Appendix](../appendix/appendix.html) |
+
+Other sections of this site:
+
+* **Tutorials** - [43 lessons](tutorials.html), from "Hello Nord" to complete games, with learning paths and filters.
+* **Guides** - [cheat sheets, cookbook, glossary and shortcuts](cookbook.html).
+* **API, Components, Reference** - generated from the source: JS classes, every component, the CLI and the library catalog.
 
 ::: dummies
-Every concept page can hide a purple **For dummies** box like this one. Plain-language
-explanations are shown by default; the top-bar switch hides them once you know the ropes.
+Every concept page can hide a purple **For dummies** box like this one. Plain-language explanations are shown by default; the top-bar switch hides them once you know the ropes.
 :::
