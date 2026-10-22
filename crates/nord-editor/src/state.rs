@@ -242,6 +242,7 @@ pub enum Action {
     /// File ▸ Build Settings…
     BuildSettings,
     NewScene,
+    Profiler,
     /// Edit a prefab on its own (Prefab mode)
     OpenPrefab(String),
     ExitPrefab,
@@ -1213,6 +1214,7 @@ impl EditorState {
                     _ => {}
                 }
             }
+            Some("profiler") => self.fun_ui.profiler.data = Some(m.clone()),
             Some("shot") => {
                 if let Some(d) = m["data"].as_str() {
                     self.save_screenshot(d);

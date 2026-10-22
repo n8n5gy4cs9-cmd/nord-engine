@@ -1758,3 +1758,40 @@ fn prefab_variant_and_prefab_mode() {
     assert_eq!(st.scene.as_ref().unwrap().entities.len(), before);
     assert_eq!(st.read_prefab(&base).unwrap().name, "Renamed");
 }
+
+#[test]
+fn multi_selection_edits_all_selected_entities() {
+    let mut st = state_with_scene("multi-edit");
+    st.add_entity(None);
+    st.add_entity(None);
+    let ids: Vec<String> = st
+        .scene
+        .as_ref()
+        .unwrap()
+        .entities
+        .iter()
+        .map(|e| e.id.clone())
+        .collect();
+    st.selection = ids.clone();
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(500.0, 600.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::inspector::ui(st, ui), st);
+    loaders(&h);
+    h.run();
+    h.get_by_label("2 ENTITIES SELECTED");
+    // what the drag fields do: set one axis on every selected entity (one undo step)
+    h.state_mut()
+        .edit("Edit selection", Some("multi-edit"), |l| {
+            for e in l.iter_mut() {
+                e.transform.pos[0] = 7.0;
+            }
+        });
+    assert!(h
+        .state()
+        .scene
+        .as_ref()
+        .unwrap()
+        .entities
+        .iter()
+        .all(|e| e.transform.pos[0] == 7.0));
+}

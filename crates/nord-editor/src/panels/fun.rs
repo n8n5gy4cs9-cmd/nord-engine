@@ -13,6 +13,34 @@ pub struct FunUi {
     /// set once the game has been started from this editor session (tutorial step)
     pub played: bool,
     pub shots: u32,
+    pub profiler: Profiler,
+}
+
+/// Window ▸ Profiler: polls the running game's debugger (`game.enableDebug()`), shows fps, frame time graph, objects, draw calls.
+#[derive(Default)]
+pub struct Profiler {
+    pub open: bool,
+    pub last_poll: Option<std::time::Instant>,
+    pub data: Option<serde_json::Value>,
+}
+
+pub const PROFILER_JS: &str = "(()=>{const g=window.__nord;if(!g)return;const d=g.debug??g.enableDebug();const s=d.stats();fetch('/api/ipc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({t:'profiler',fps:s.fps,ms:s.frameMs,worst:s.worstMs,objects:s.objects,draws:s.drawCalls??null,heap:s.heapMB??null,slow:s.slowFrames,frames:d.frames.slice(-120),costs:s.costs.slice(0,8).map(c=>({l:c.label,ms:c.ms,n:c.calls}))})}).catch(()=>{});})()";
+
+impl Profiler {
+    /// JS to run now (every 0.5 s while open and the game runs).
+    pub fn poll(&mut self, playing: bool) -> Option<&'static str> {
+        if !self.open || !playing {
+            return None;
+        }
+        if self
+            .last_poll
+            .is_some_and(|t| t.elapsed().as_secs_f32() < 0.5)
+        {
+            return None;
+        }
+        self.last_poll = Some(std::time::Instant::now());
+        Some(PROFILER_JS)
+    }
 }
 
 pub const TEMPLATES: [&str; 4] = [
@@ -178,7 +206,88 @@ impl EditorState {
 /// JS run inside the game page: posts the canvas as a PNG data URL to the editor.
 pub const SHOT_JS: &str = "(()=>{const c=document.querySelector('canvas');if(!c)return;requestAnimationFrame(()=>{try{fetch('/api/ipc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({t:'shot',data:c.toDataURL('image/png')})});}catch(e){}});})()";
 
+fn profiler_window(st: &mut EditorState, ctx: &egui::Context) {
+    if !st.fun_ui.profiler.open {
+        return;
+    }
+    let mut open = true;
+    let playing = st.is_playing();
+    egui::Window::new("Profiler")
+        .open(&mut open)
+        .default_width(420.0)
+        .show(ctx, |ui| {
+            let Some(d) = st.fun_ui.profiler.data.clone().filter(|_| playing) else {
+                ui.weak(if playing {
+                    "Waiting for the game…"
+                } else {
+                    "Press Play to profile the running game"
+                });
+                return;
+            };
+            let n = |k: &str| d[k].as_f64().unwrap_or(0.0);
+            ui.label(format!(
+                "{:.0} fps · {:.2} ms avg · worst {:.1} ms · {} objects{}{} · {} slow frames",
+                n("fps"),
+                n("ms"),
+                n("worst"),
+                n("objects") as u64,
+                d["draws"]
+                    .as_f64()
+                    .map_or(String::new(), |v| format!(" · {v} draws")),
+                d["heap"]
+                    .as_f64()
+                    .map_or(String::new(), |v| format!(" · {v:.1} MB")),
+                n("slow") as u64
+            ));
+            let frames: Vec<f32> = d["frames"]
+                .as_array()
+                .map(|a| a.iter().map(|v| v.as_f64().unwrap_or(0.0) as f32).collect())
+                .unwrap_or_default();
+            let (rect, _) = ui
+                .allocate_exact_size(egui::vec2(ui.available_width(), 70.0), egui::Sense::hover());
+            let p = ui.painter_at(rect);
+            p.rect_filled(rect, 2.0, ui.visuals().extreme_bg_color);
+            let max = frames.iter().copied().fold(33.0_f32, f32::max);
+            let w = rect.width() / frames.len().max(1) as f32;
+            for (i, ms) in frames.iter().enumerate() {
+                let h = rect.height() * (ms / max);
+                let c = if *ms > 33.0 {
+                    egui::Color32::from_rgb(255, 90, 90)
+                } else {
+                    ui.visuals().hyperlink_color
+                };
+                p.rect_filled(
+                    egui::Rect::from_min_max(
+                        egui::pos2(rect.left() + i as f32 * w, rect.bottom() - h),
+                        egui::pos2(rect.left() + (i as f32 + 1.0) * w - 1.0, rect.bottom()),
+                    ),
+                    0.0,
+                    c,
+                );
+            }
+            ui.weak(format!(
+                "frame time, last {} frames (scale 0–{:.0} ms)",
+                frames.len(),
+                max
+            ));
+            ui.separator();
+            for c in d["costs"].as_array().into_iter().flatten() {
+                ui.label(format!(
+                    "{:.2} ms ×{} · {}",
+                    c["ms"].as_f64().unwrap_or(0.0),
+                    c["n"].as_u64().unwrap_or(0),
+                    c["l"].as_str().unwrap_or("")
+                ));
+            }
+        });
+    if !open {
+        st.fun_ui.profiler.open = false;
+    }
+    ctx.request_repaint_after(std::time::Duration::from_millis(500));
+}
+
 pub fn windows(st: &mut EditorState, ctx: &egui::Context) {
+    profiler_window(st, ctx);
     if st.fun_ui.new_scene_open {
         let mut open = true;
         let mut go = false;

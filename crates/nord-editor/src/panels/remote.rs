@@ -179,6 +179,68 @@ pub fn tree_ui(st: &mut EditorState, ui: &mut Ui) {
     r.cmds.extend(cmd);
 }
 
+/// Copy a live entity's state (`remoteEntity` message) into the scene entity: transform, active flag, and the values of
+/// component fields / script attributes the scene entity already has.
+pub fn apply_detail(e: &mut nord_core::scene::Entity, d: &Value) {
+    let arr3 = |k: &str| -> Option<[f64; 3]> {
+        let a = d[k].as_array()?;
+        Some([
+            a.first()?.as_f64()?,
+            a.get(1)?.as_f64().unwrap_or(0.0),
+            a.get(2).and_then(Value::as_f64).unwrap_or(0.0),
+        ])
+    };
+    if let Some(p) = arr3("pos") {
+        e.transform.pos = p;
+    }
+    if let Some(r) = arr3("rot") {
+        e.transform.rot = r;
+    }
+    if let Some(s) = arr3("scale") {
+        e.transform.scale = s;
+    }
+    if let Some(en) = d["en"].as_bool() {
+        e.enabled = en;
+    }
+    for (i, c) in d["comps"].as_array().into_iter().flatten().enumerate() {
+        if let (Some(sc), Some(data)) = (e.components.get_mut(i), c["data"].as_object()) {
+            if sc.kind == c["type"].as_str().unwrap_or("") {
+                for (k, v) in data {
+                    if sc.fields.contains_key(k) {
+                        sc.fields.insert(k.clone(), v.clone());
+                    }
+                }
+            }
+        }
+    }
+    for (i, s) in d["scripts"].as_array().into_iter().flatten().enumerate() {
+        if let (Some(ss), Some(attrs)) = (e.scripts.get_mut(i), s["attrs"].as_object()) {
+            for (k, v) in attrs {
+                if ss.attributes.contains_key(k) {
+                    ss.attributes.insert(k.clone(), v.clone());
+                }
+            }
+        }
+    }
+}
+
+impl EditorState {
+    /// Inspector (play mode) ▸ Apply to scene: keep the live values of entity `id` in the saved scene.
+    pub fn apply_remote_to_scene(&mut self, id: &str, d: &Value) {
+        let d = d.clone();
+        let ok = self.edit("Apply live values to scene", None, |l| {
+            if let Some(e) = crate::scene_ops::find_mut(l, id) {
+                apply_detail(e, &d);
+            }
+        });
+        self.toast(if ok {
+            "Applied to the scene (save to keep it)"
+        } else {
+            "Nothing to apply (entity not in the open scene, or no changes)"
+        });
+    }
+}
+
 pub fn inspector_ui(st: &mut EditorState, ui: &mut Ui) {
     let r = &mut st.remote;
     let (Some(id), Some(d)) = (r.sel.clone(), r.detail.clone()) else {
@@ -191,6 +253,7 @@ pub fn inspector_ui(st: &mut EditorState, ui: &mut Ui) {
     };
     let mut cmds = vec![];
     let mut docs = None;
+    let mut apply = false;
     egui::ScrollArea::vertical()
         .id_salt("remote-insp")
         .auto_shrink([false; 2])
@@ -212,6 +275,13 @@ pub fn inspector_ui(st: &mut EditorState, ui: &mut Ui) {
                 }
             });
             ui.weak(format!("id {id}"));
+            if ui
+                .button("Apply to scene")
+                .on_hover_text("Write these live values into the scene entity (transform, active, existing fields)")
+                .clicked()
+            {
+                apply = true;
+            }
             ui.separator();
             for (label, key) in [("Position", "pos"), ("Rotation", "rot"), ("Scale", "scale")] {
                 let mut v: Vec<f64> = d[key]
@@ -265,6 +335,9 @@ pub fn inspector_ui(st: &mut EditorState, ui: &mut Ui) {
             }
         });
     st.remote.cmds.extend(cmds);
+    if apply {
+        st.apply_remote_to_scene(&id, &d);
+    }
     if let Some(p) = docs {
         st.push(crate::state::Action::OpenDocs(p));
     }
@@ -290,4 +363,27 @@ fn edit_map(ui: &mut Ui, cx: &Ctx, data: &Value, id: &str, mut set: impl FnMut(&
                 ui.end_row();
             }
         });
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use nord_core::scene::{Component, Entity};
+    use serde_json::json;
+
+    #[test]
+    fn live_values_apply_to_existing_fields_only() {
+        let mut e = Entity::new("Coin");
+        e.components.push(Component {
+            kind: "sprite".into(),
+            fields: json!({"tint": "#fff"}).as_object().unwrap().clone(),
+        });
+        let d = json!({"pos": [5, 6, 0], "en": false,
+            "comps": [{"type": "sprite", "data": {"tint": "#f00", "runtimeOnly": 1}}]});
+        apply_detail(&mut e, &d);
+        assert_eq!(e.transform.pos, [5.0, 6.0, 0.0]);
+        assert!(!e.enabled);
+        assert_eq!(e.components[0].fields["tint"], json!("#f00"));
+        assert!(!e.components[0].fields.contains_key("runtimeOnly"));
+    }
 }

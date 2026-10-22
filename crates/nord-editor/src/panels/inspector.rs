@@ -163,6 +163,18 @@ pub fn field_ui(ui: &mut Ui, cx: &Ctx, ty: &FieldType, v: &mut Value, id: &str) 
         }
         FieldType::Asset(kind) => {
             let cur = v.as_str().unwrap_or("").to_string();
+            // thumbnail of the current image next to the picker
+            if kind == "image" && !cur.is_empty() {
+                let root: Option<String> =
+                    ui.ctx().data(|d| d.get_temp(egui::Id::new("project_root")));
+                if let Some(root) = root {
+                    ui.add(
+                        egui::Image::new(format!("file://{root}/{cur}"))
+                            .fit_to_exact_size(egui::vec2(22.0, 22.0))
+                            .corner_radius(2),
+                    );
+                }
+            }
             let resp = egui::ComboBox::from_id_salt(id)
                 .width(ui.available_width())
                 .selected_text(if cur.is_empty() {
@@ -487,7 +499,108 @@ fn texture_import_ui(st: &mut EditorState, ui: &mut Ui, rel: &str) {
     }
 }
 
+/// Several entities selected: shared Active / Layer / Transform. Mixed values show "—"; editing a field sets it on all of them.
+fn multi_ui(st: &mut EditorState, ui: &mut Ui) {
+    let ids = st.selection.clone();
+    let ents: Vec<Entity> = st
+        .scene
+        .as_ref()
+        .map(|s| {
+            ids.iter()
+                .filter_map(|id| scene_ops::find(&s.entities, id).cloned())
+                .collect()
+        })
+        .unwrap_or_default();
+    if ents.len() < 2 {
+        return;
+    }
+    ui.label(egui::RichText::new(format!("{} ENTITIES SELECTED", ents.len())).strong());
+    ui.separator();
+    let mut edits: Vec<(&'static str, usize, f64)> = vec![];
+    let mut active = None;
+    let all_on = ents.iter().all(|e| e.enabled);
+    let any_on = ents.iter().any(|e| e.enabled);
+    let mut on = all_on;
+    let label = if all_on || !any_on {
+        "Active"
+    } else {
+        "Active (mixed)"
+    };
+    if ui.checkbox(&mut on, label).changed() {
+        active = Some(on);
+    }
+    egui::Grid::new("multi-xf").num_columns(2).show(ui, |ui| {
+        for (label, key) in [("Position", "pos"), ("Rotation", "rot"), ("Scale", "scale")] {
+            ui.label(label);
+            ui.horizontal(|ui| {
+                for axis in 0..3 {
+                    let vals: Vec<f64> = ents
+                        .iter()
+                        .map(|e| match key {
+                            "pos" => e.transform.pos[axis],
+                            "rot" => e.transform.rot[axis],
+                            _ => e.transform.scale[axis],
+                        })
+                        .collect();
+                    let mixed = vals.iter().any(|v| (*v - vals[0]).abs() > 1e-9);
+                    let mut v = vals[0];
+                    ui.weak(["x", "y", "z"][axis]);
+                    let mut dv =
+                        DragValue::new(&mut v).speed(if key == "scale" { 0.01 } else { 0.5 });
+                    if mixed {
+                        dv = dv.custom_formatter(|_, _| "—".to_string());
+                    }
+                    if ui.add(dv).changed() {
+                        edits.push((key, axis, v));
+                    }
+                }
+            });
+            ui.end_row();
+        }
+    });
+    if active.is_some() || !edits.is_empty() {
+        st.edit("Edit selection", Some("multi-edit"), |l| {
+            for id in &ids {
+                if let Some(e) = scene_ops::find_mut(l, id) {
+                    if let Some(a) = active {
+                        e.enabled = a;
+                    }
+                    for (key, axis, v) in &edits {
+                        match *key {
+                            "pos" => e.transform.pos[*axis] = *v,
+                            "rot" => e.transform.rot[*axis] = *v,
+                            _ => e.transform.scale[*axis] = *v,
+                        }
+                    }
+                }
+            }
+        });
+    }
+    ui.separator();
+    ui.menu_button("+ Add component to all", |ui| {
+        for k in schema::COMPONENT_TYPES {
+            if ui.button(schema::label_of(k)).clicked() {
+                for id in &ids {
+                    st.selection = vec![id.clone()];
+                    st.add_component_to_selection(k);
+                }
+                st.selection = ids.clone();
+                ui.close_menu();
+            }
+        }
+    });
+}
+
 pub fn ui(st: &mut EditorState, ui: &mut Ui) {
+    if let Some(r) = &st.root {
+        let r = r.to_string_lossy().into_owned();
+        ui.ctx()
+            .data_mut(|d| d.insert_temp(egui::Id::new("project_root"), r));
+    }
+    if st.selection.len() > 1 && st.inspector_lock.is_none() {
+        multi_ui(st, ui);
+        return;
+    }
     if st.selection.is_empty() {
         if let Some(rel) = st.assets_ui.selected.clone().filter(|r| {
             matches!(

@@ -79,6 +79,7 @@ pub const COMMANDS: &[(&str, CmdFn)] = &[
     ("Edit: Duplicate", || Action::Duplicate),
     ("Edit: Delete", || Action::Delete),
     ("Entity: Add empty entity", || Action::AddEntity(None)),
+    ("Window: Profiler", || Action::Profiler),
     ("File: New scene…", || Action::NewScene),
     ("Help: First 10 minutes", || Action::Tutorial),
     ("Game: Screenshot", || Action::Screenshot),

@@ -22,8 +22,8 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "�
 - [~] G2-2 Active checkbox + blue prefab name done; lock/hide toggles todo (need a scene-format field)
 - [~] G2-3 Inspector component ⋮ menu (Reset, Copy/Paste values, Move up/down, Docs, Remove) done; per-component enable toggle todo
 - [~] G2-4 Add Component popup is searchable; categories todo
-- [ ] G2-5 Multi-object edit (mixed values shown as —)
-- [ ] G2-6 Object/texture/material pickers with thumbnails and drag & drop
+- [x] G2-5 Multi-object edit: Active / Transform for all selected (mixed shows —), Add component to all
+- [~] G2-6 Image pickers show a thumbnail of the current texture (drag & drop onto slots existed); material/model thumbnails in the dropdown todo
 - [~] G2-7 Inspector lock (padlock) done; Debug mode todo
 ## G3 Prefabs
 - [x] G3-1 Prefab mode: Assets/Inspector ▸ Open prefab edits the prefab on its own (breadcrumb ◀ Scene › Prefab, Save, auto-save on exit)
@@ -53,8 +53,8 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "�
 ## G7 Fun features
 - [x] G7-1 File ▸ New scene… dialog with templates (empty, 2D, 3D, UI host)
 - [x] G7-2 Find References / project search (Project tab, Assets right-click ▸ Find references; existed since M10)
-- [ ] G7-3 Play-mode "Apply to scene" for remote edits
-- [~] G7-4 Stats overlay in the Game view (fps, frame ms, objects, draws); dedicated Profiler panel todo
+- [x] G7-3 Play mode ▸ Inspector *Apply to scene*: live transform/active/field values written into the scene entity
+- [x] G7-4 Window ▸ Profiler: fps, frame-time graph, objects, draw calls, memory, top event-sheet costs (polls the game debugger)
 - [x] G7-5 Game view 📷 screenshot → `screenshots/shot-N.png` (GIF recorder todo)
 - [x] G7-6 Help ▸ First 10 minutes checklist (ticks itself)
 - [x] G7-7 Signals: ▾ method picker from the target's script source

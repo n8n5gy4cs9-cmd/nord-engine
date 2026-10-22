@@ -696,6 +696,7 @@ impl App {
             Action::PrefabVariant(p) => {
                 st.make_variant(&p);
             }
+            Action::Profiler => st.fun_ui.profiler.open = !st.fun_ui.profiler.open,
             Action::Tutorial => st.fun_ui.tutorial_open = true,
             Action::Screenshot => self.web.eval("game", panels::fun::SHOT_JS),
             Action::DesktopSettings => st.desktop_ui.open = true,
@@ -915,6 +916,7 @@ impl App {
                         act(ui, label, Action::Layout(k.into()), st);
                     }
                 });
+                act(ui, "Profiler", Action::Profiler, st);
                 act(ui, "Reset layout", Action::ResetLayout, st);
                 act(ui, "Settings…", Action::Settings, st);
             });
@@ -1530,6 +1532,9 @@ impl App {
             }
         }
         let playing = self.st.is_playing();
+        if let Some(js) = self.st.fun_ui.profiler.poll(playing) {
+            self.web.eval("game", js);
+        }
         for js in self.st.remote.take_js(playing) {
             self.web.eval("game", &js);
         }
