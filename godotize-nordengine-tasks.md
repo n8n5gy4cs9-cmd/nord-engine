@@ -10,7 +10,7 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "â€
 - [~] G0-4 Shortcut table in Settings matching Unity defaults (read-only list done; rebinding todo)
 ## G1 Scene view
 - [x] G1-1 Navigation: Alt+LMB orbit, Alt+Cmd+LMB / MMB pan, wheel zoom, hold RMB = mouse look + WASD fly (Q/E down/up, Shift x3, speed 9 u/s accelerating, wheel = fly speed), Alt+RMB zoom (3D, as Unity's SceneViewMotion.cs); Alt+LMB / MMB / RMB pan, wheel zoom (2D). Headless test: tools/viewport-fly-test.mjs
-- [~] G1-2 Tools Q hand, W move, E rotate, R scale, T rect (keys, toolbar, 2D+3D viewport done; dedicated rect handles todo)
+- [x] G1-2 Tools Q hand, W move, E rotate, R scale, T rect: 2D axis/plane move, rotate ring, axis+uniform scale, Rect tool with 8 resize handles about the opposite edge (Godot canvas_item select-mode logic; tools/viewport-rect-test.mjs); 3D Babylon gizmos with plane handles + uniform scale cube
 - [~] G1-3 Local/Global (3D move/rotate gizmos follow the object) + Pivot/Center toolbar toggles; Center is stored but has no effect until multi-object gizmos exist
 - [x] G1-4 Snapping: hold Ctrl/Cmd to toggle snap while dragging (2D + 3D); step values from settings (vertex snap not done)
 - [~] G1-5 Multi-select: Shift/Ctrl/Cmd toggle (2D+3D), 2D marquee, selection outlines (3D mesh outline, 2D dashed); gizmo/drag still moves only the primary object; 3D marquee todo

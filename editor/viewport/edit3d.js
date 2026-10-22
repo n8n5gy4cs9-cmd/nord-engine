@@ -49,6 +49,8 @@ export async function init() {
   gizmoManager.usePointerToAttachGizmos = false;
   gizmoManager.positionGizmoEnabled = true; gizmoManager.rotationGizmoEnabled = true; gizmoManager.scaleGizmoEnabled = true;
   const g = gizmoManager.gizmos;
+  g.positionGizmo.planarGizmoEnabled = true; // Unity/Godot: little squares between the arrows move on a plane
+  g.scaleGizmo.uniformScaleGizmo.isEnabled = true; // centre cube = uniform scale
   g.positionGizmo.updateGizmoRotationToMatchAttachedMesh = false;
   g.rotationGizmo.updateGizmoRotationToMatchAttachedMesh = false;
   for (const k of ['positionGizmo', 'rotationGizmo', 'scaleGizmo']) {

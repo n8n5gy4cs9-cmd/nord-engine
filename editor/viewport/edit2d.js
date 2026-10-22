@@ -308,7 +308,10 @@ function drawGizmo() {
   ctx.restore();
   const tool = state.settings.tool;
   ctx.lineWidth = 2;
-  if (tool === 'hand') {
+  if (tool === 'rect') {
+    ctx.fillStyle = '#ffffff'; ctx.strokeStyle = '#4fa3ff'; ctx.lineWidth = 1.5;
+    for (const h of rectHandles(it)) { ctx.fillRect(h.sx - 4, h.sy - 4, 8, 8); ctx.strokeRect(h.sx - 4, h.sy - 4, 8, 8); }
+  } else if (tool === 'hand') {
     // Q: view tool, no gizmo
   } else if (tool === 'move') {
     ctx.strokeStyle = '#ff5f5f'; ctx.fillStyle = '#ff5f5f'; line(sx, sy, sx + GIZMO, sy); tri(sx + GIZMO, sy, 0);
@@ -366,6 +369,17 @@ export function draw() {
   hudEl.textContent = `2D · ${Math.round(cam.zoom * 100)}% · ${Math.round(mx)}, ${Math.round(my)} · ${state.settings.tool}${state.settings.snap ? ' · snap' : ''}`;
 }
 
+// ---------- Rect tool (T): 8 resize handles on the bounding box, like Godot's canvas_item select mode / Unity's Rect tool ----------
+const RECT_H = [[-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0]];
+function rectHandles(it) {
+  const { w, h } = sizeOf(it.e), a = it.w.rot * R, c = Math.cos(a), s = Math.sin(a);
+  return RECT_H.map(([hx, hy]) => {
+    const lx = hx * w / 2 * it.w.sx, ly = hy * h / 2 * it.w.sy;
+    const [sx, sy] = toScreen(it.w.x + lx * c - ly * s, it.w.y + lx * s + ly * c);
+    return { hx, hy, sx, sy };
+  });
+}
+
 // ---------- interaction ----------
 function handleAt(sx, sy) {
   const it = selected();
@@ -374,6 +388,10 @@ function handleAt(sx, sy) {
   const tool = state.settings.tool;
   const d = Math.hypot(sx - ox, sy - oy);
   if (tool === 'hand') return null;
+  if (tool === 'rect') {
+    for (const h of rectHandles(it)) if (Math.abs(sx - h.sx) <= 7 && Math.abs(sy - h.sy) <= 7) return `r${h.hx},${h.hy}`;
+    return null;
+  }
   if (tool === 'move') {
     if (Math.abs(sx - ox) <= 7 && Math.abs(sy - oy) <= 7) return 'free';
     if (sy > oy - 6 && sy < oy + 6 && sx > ox && sx < ox + GIZMO + 12) return 'x';
@@ -396,6 +414,7 @@ function startDrag(kind, it, sx, sy) {
   drag = { kind, id: e.id, sx, sy, t0: JSON.parse(JSON.stringify(e.transform)), w0: { ...it.w }, parentW: it.parentW, moved: false, last: 0 };
   const [wx, wy] = toWorld(sx, sy);
   drag.a0 = Math.atan2(wy - it.w.y, wx - it.w.x);
+  if (kind[0] === 'r' && kind.includes(',')) { [drag.hx, drag.hy] = kind.slice(1).split(',').map(Number); drag.size = sizeOf(e); drag.kind = 'rect'; }
 }
 
 function onDown(ev) {
@@ -434,7 +453,7 @@ function onDown(ev) {
   send({ t: 'select', id: state.selection[0] ?? null, ids: state.selection });
   draw();
   const picked = selected();
-  if (picked && state.settings.tool === 'move') startDrag('free', picked, sx, sy);
+  if (picked && (state.settings.tool === 'move' || state.settings.tool === 'rect')) startDrag('free', picked, sx, sy);
 }
 
 function emit(final) {
@@ -475,6 +494,22 @@ function onMove(ev) {
     let nx = snapTo(drag.t0.pos[0] + lx, state.settings.snapMove), ny = snapTo(drag.t0.pos[1] + ly, state.settings.snapMove);
     if (!p) { const gx = nearGuide('x', nx), gy = nearGuide('y', ny); if (gx !== null) nx = gx; if (gy !== null) ny = gy; } // snap to guides
     e.transform.pos = [nx, ny, drag.t0.pos[2]];
+  } else if (drag.kind === 'rect') {
+    // resize about the opposite edge/corner (it stays put in the world): scale = old scale x factor, position follows
+    drag.moved = true;
+    const { w, h } = drag.size, w0 = drag.w0, s0 = drag.t0.scale, r = w0.rot * R, c = Math.cos(r), sn = Math.sin(r);
+    const ddx = wx - w0.x, ddy = wy - w0.y;
+    const lx = (ddx * c + ddy * sn) / (w0.sx || 1), ly = (-ddx * sn + ddy * c) / (w0.sy || 1);
+    let kx = drag.hx ? Math.max(0.01, drag.hx * (lx + drag.hx * w / 2) / w) : 1, ky = drag.hy ? Math.max(0.01, drag.hy * (ly + drag.hy * h / 2) / h) : 1;
+    if (ev.shiftKey && (drag.hx || drag.hy)) { const k = drag.hx && drag.hy ? Math.max(kx, ky) : (drag.hx ? kx : ky); kx = ky = k; }
+    const nsx = snapTo(s0[0] * kx, state.settings.snapScale), nsy = snapTo(s0[1] * ky, state.settings.snapScale);
+    kx = nsx / s0[0]; ky = nsy / s0[1];
+    const fx = -drag.hx * w / 2 * (1 - kx) * w0.sx, fy = -drag.hy * h / 2 * (1 - ky) * w0.sy; // world-space shift of the centre, pre-rotation
+    let ox = fx * c - fy * sn, oy = fx * sn + fy * c;
+    const p = drag.parentW;
+    if (p) { const a = -p.rot * R, pc = Math.cos(a), ps = Math.sin(a); [ox, oy] = [(ox * pc - oy * ps) / (p.sx || 1), (ox * ps + oy * pc) / (p.sy || 1)]; }
+    e.transform.scale = [nsx, nsy, s0[2]];
+    e.transform.pos = [drag.t0.pos[0] + ox, drag.t0.pos[1] + oy, drag.t0.pos[2]];
   } else if (drag.kind === 'rot') {
     const a = Math.atan2(wy - drag.w0.y, wx - drag.w0.x);
     let deg = drag.t0.rot[2] + (a - drag.a0) / R;
