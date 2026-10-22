@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Cheat sheet — command line — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="cookbook.html" class="active" aria-current="page">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Guides</div><details open><summary>Guides</summary><a href="cookbook.html">Cookbook</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a><a href="cheat-sheet-nordjs.html">Cheat sheet — nord.js</a><a href="cheat-sheet-export.html">Cheat sheet — export</a><a href="cheat-sheet-cli.html" class="cur" aria-current="page">Cheat sheet — command line</a><a href="glossary.html">Glossary</a><a href="shortcuts.html">Keyboard shortcuts</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a></details><details><summary>Appendix</summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details></nav><main id="content"><div class="crumb">Guides / Nord Engine</div><h1>Cheat sheet — command line</h1>
+<p><code>nord</code> is Nord&#39;s optional <strong>command-line tool</strong>. It does the same project jobs as the editor without a window, which suits scripts, build servers and people who like terminals. You never need it to make a game. This page lists every command.</p>
+<h2 id="how-to-run-nord">How to run <code>nord</code><a class="anchor" href="#how-to-run-nord">#</a></h2>
+<p>The program is installed <strong>next to the editor</strong>, but it is <strong>not on your PATH</strong>. So typing <code>nord</code> in a new terminal says &quot;command not found&quot; until you either use the full path or add a shortcut.</p>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>Where <code>nord</code> is</th>
+<th>Run it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>macOS</strong></td>
+<td>Inside the app: <code>Nord Engine.app/Contents/MacOS/nord</code></td>
+<td><code>&quot;/Applications/Nord Engine.app/Contents/MacOS/nord&quot; doctor</code> (keep the quotes: the name has a space)</td>
+</tr>
+<tr>
+<td><strong>Windows</strong></td>
+<td>In the unzipped folder, next to <code>nord-editor.exe</code>: <code>NordEngine\nord.exe</code></td>
+<td><code>C:\Path\To\NordEngine\nord.exe doctor</code></td>
+</tr>
+<tr>
+<td><strong>Linux</strong></td>
+<td>In the extracted folder, next to <code>nord-editor</code>: <code>nord-engine/nord</code></td>
+<td><code>./nord-engine/nord doctor</code></td>
+</tr>
+<tr>
+<td><strong>From a source checkout</strong></td>
+<td><code>target/release/nord</code> after <code>cargo build --release -p nord-cli</code></td>
+<td><code>./target/release/nord doctor</code></td>
+</tr>
+</tbody></table>
+<h3 id="make-plain-nord-work">Make plain <code>nord</code> work<a class="anchor" href="#make-plain-nord-work">#</a></h3>
+<p><strong>macOS or Linux:</strong> create a symbolic link once.</p>
+<pre class="code" data-lang="bash"><code>sudo ln -s &quot;/Applications/Nord Engine.app/Contents/MacOS/nord&quot; /usr/local/bin/nord</code></pre>
+<p>On Linux point the link at your extracted <code>nord-engine/nord</code> (for example into <code>~/.local/bin</code>, which needs no <code>sudo</code>).</p>
+<p><strong>Windows:</strong> add the <code>NordEngine</code> folder to your user <strong>PATH</strong> (Start menu → &quot;Edit environment variables for your account&quot; → <em>Path</em> → <em>Edit</em> → <em>New</em>), then open a new terminal.</p>
+<p>Check it works:</p>
+<pre class="code" data-lang="bash"><code>nord --version
+nord doctor</code></pre>
+<p><code>nord doctor</code> prints whether <code>node</code>, <code>cargo</code>, the WebAssembly target and <code>ffmpeg</code> were found, where the engine files are, and which project types you can use.</p>
+<aside class="box tip"><div class="box-title">Tip</div><p>Every command also has built-in help: <code>nord --help</code> lists commands and <code>nord build --help</code> lists that command&#39;s options.</p>
+</aside><h2 id="projects">Projects<a class="anchor" href="#projects">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Show engine info</td>
+<td><code>nord info</code></td>
+</tr>
+<tr>
+<td>Check your toolchain</td>
+<td><code>nord doctor</code></td>
+</tr>
+<tr>
+<td>New empty web project</td>
+<td><code>nord new my-game</code></td>
+</tr>
+<tr>
+<td>New 2D game from a template</td>
+<td><code>nord new my-game -t 2d</code></td>
+</tr>
+<tr>
+<td>New project from a starter</td>
+<td><code>nord new my-game -t platformer</code> (any id from the hub&#39;s templates, such as <code>fps-arena</code>)</td>
+</tr>
+<tr>
+<td>New Rust game or app</td>
+<td><code>nord new my-game -t wasm-game</code> or <code>-t wasm-app</code></td>
+</tr>
+<tr>
+<td>Validate scenes, ids and missing files</td>
+<td><code>nord check my-game</code></td>
+</tr>
+<tr>
+<td>Make asset thumbnails</td>
+<td><code>nord thumbs my-game</code></td>
+</tr>
+</tbody></table>
+<p><code>-t</code> accepts <code>html</code>, <code>2d</code>, <code>3d</code>, <code>wasm-game</code>, <code>wasm-app</code> or a starter id. The default is <code>html</code>. The project folder defaults to <code>.</code> (the current folder) for every command below that takes one.</p>
+<h2 id="run-and-test">Run and test<a class="anchor" href="#run-and-test">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Dev server with live reload</td>
+<td><code>nord serve my-game</code> → open <code>http://localhost:4173</code></td>
+</tr>
+<tr>
+<td>Another port</td>
+<td><code>nord serve my-game -p 8080</code></td>
+</tr>
+<tr>
+<td>Test on a phone on the same Wi-Fi</td>
+<td><code>nord serve my-game --lan</code> (prints a link with a secret token; only the game is shared)</td>
+</tr>
+<tr>
+<td>Build a Rust project for the dev server</td>
+<td><code>nord build-rust my-game</code> (add <code>--release</code> for an optimised build)</td>
+</tr>
+</tbody></table>
+<h2 id="export-web">Export (web)<a class="anchor" href="#export-web">#</a></h2>
+<p><code>nord export</code> is the same command as <code>nord build</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Static web build into <code>my-game/dist</code></td>
+<td><code>nord build my-game</code></td>
+</tr>
+<tr>
+<td>Choose the output folder</td>
+<td><code>nord build my-game -o ../site</code></td>
+</tr>
+<tr>
+<td>Smaller files</td>
+<td><code>nord build my-game --minify --optimize</code></td>
+</tr>
+<tr>
+<td>Also make a zip (itch.io style)</td>
+<td><code>nord build my-game --zip</code></td>
+</tr>
+<tr>
+<td>One file that opens by double-click</td>
+<td><code>nord build my-game --single-file</code></td>
+</tr>
+<tr>
+<td>Installable offline web app</td>
+<td><code>nord build my-game --pwa</code></td>
+</tr>
+<tr>
+<td>Keep event sheets as JSON</td>
+<td><code>nord build my-game --no-compile-events</code></td>
+</tr>
+<tr>
+<td>Pick the target yourself</td>
+<td><code>nord build my-game -t web-2d</code></td>
+</tr>
+</tbody></table>
+<p>Targets for <code>-t</code>: <code>auto</code> (default, from the project type), <code>html</code>, <code>web-2d</code>, <code>web-3d</code>, <code>web-3d-pc</code>, <code>web-wasm-game</code>, <code>web-wasm-app</code>. Rust targets need Rust installed: see <a href="../manual/rust-wasm.html">Rust / WASM</a>.</p>
+<h2 id="desktop-apps">Desktop apps<a class="anchor" href="#desktop-apps">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>macOS app</td>
+<td><code>nord bundle-mac my-game --name &quot;My Game&quot; --icon icon.png</code></td>
+</tr>
+<tr>
+<td>macOS app plus <code>.dmg</code></td>
+<td><code>nord bundle-mac my-game --name &quot;My Game&quot; --dmg</code></td>
+</tr>
+<tr>
+<td>Windows bundle (folder + zip)</td>
+<td><code>nord bundle-portable my-game --os windows --name &quot;My Game&quot;</code></td>
+</tr>
+<tr>
+<td>Linux bundle (folder + tar.gz)</td>
+<td><code>nord bundle-portable my-game --os linux --name &quot;My Game&quot;</code></td>
+</tr>
+<tr>
+<td>Skip the archive</td>
+<td>add <code>--no-archive</code></td>
+</tr>
+</tbody></table>
+<p><code>INPUT</code> can be a project folder (built first) or an existing <code>nord build</code> output folder. Use <code>--out</code> to choose where the result goes and <code>--player</code> to name a specific <code>nord-player</code> program. See <a href="../manual/desktop-apps.html">Desktop apps</a>.</p>
+<h2 id="addons-and-creator-tools">Addons and creator tools<a class="anchor" href="#addons-and-creator-tools">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Zip an addon folder</td>
+<td><code>nord addon pack library/addons/dice</code></td>
+</tr>
+<tr>
+<td>Install an addon into a project</td>
+<td><code>nord addon install library/addons/dice -p my-game</code></td>
+</tr>
+<tr>
+<td>List a project&#39;s addons</td>
+<td><code>nord addon list my-game</code></td>
+</tr>
+<tr>
+<td>Add the FPS Creator to a project</td>
+<td><code>nord fpsc init my-game</code> (add <code>--start</code> to make its scene the start scene)</td>
+</tr>
+</tbody></table>
+<h2 id="checks-and-maintenance">Checks and maintenance<a class="anchor" href="#checks-and-maintenance">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Fail if files mention an outside website</td>
+<td><code>nord check-offline dist</code></td>
+</tr>
+<tr>
+<td>Allow one host on purpose</td>
+<td><code>nord check-offline dist --allow cdn.example.com</code> (or a <code>.offline-allow</code> file in the folder)</td>
+</tr>
+<tr>
+<td>Verify bundled libraries are unchanged</td>
+<td><code>nord vendor --verify</code></td>
+</tr>
+</tbody></table>
+<h2 id="common-problems">Common problems<a class="anchor" href="#common-problems">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>What you see</th>
+<th>Try this</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>nord: command not found</code></td>
+<td>Use the full path above, or make the link or PATH entry.</td>
+</tr>
+<tr>
+<td><code>engine root not found</code></td>
+<td>Set the <code>NORD_ROOT</code> environment variable to the folder that holds the engine files (inside the app: <code>Contents/Resources</code>).</td>
+</tr>
+<tr>
+<td><code>cargo not found</code> or <code>wasm32 target is missing</code></td>
+<td>Install Rust and run <code>rustup target add wasm32-unknown-unknown</code>.</td>
+</tr>
+<tr>
+<td>A blank page from a folder build</td>
+<td>Serve it (<code>nord serve</code>, or any web server) or build with <code>--single-file</code>.</td>
+</tr>
+</tbody></table>
+<p>More detail for each command is in the generated <a href="../reference/cli.html">command reference</a>.</p>
+<div class="pager"><a href="cheat-sheet-export.html"><small>← Previous</small>Cheat sheet — export</a><a href="glossary.html"><small>Next →</small>Glossary</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#how-to-run-nord">How to run nord </a><a href="#projects">Projects </a><a href="#run-and-test">Run and test </a><a href="#export-web">Export (web) </a><a href="#desktop-apps">Desktop apps </a><a href="#addons-and-creator-tools">Addons and creator tools </a><a href="#checks-and-maintenance">Checks and maintenance </a><a href="#common-problems">Common problems </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

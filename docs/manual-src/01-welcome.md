@@ -29,7 +29,7 @@ The **Rust** project types need the Rust toolchain installed (the optional `nord
 (`NordScript`, `entity.*`, `game.*`). Raw engine objects are only reachable through the `entity.native` escape hatch.
 
 ## Open the editor
-1. Open **NordEditor.app**, or from a source checkout run `./run.sh` (add a project path to open it directly). `./build.sh` builds the app.
+1. Open **Nord Engine.app**, or from a source checkout run `./run.sh` (add a project path to open it directly). `./build.sh` builds the app.
 2. A splash screen shows briefly, then the **project hub** opens: *New* (templates), *Recent*, *Examples* and *Tutorials*.
 3. Pick a template (for example **Platformer**) and press **▶ Play** (Cmd+R).
 

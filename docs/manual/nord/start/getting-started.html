@@ -50,7 +50,7 @@
 </ul>
 <hr>
 <h2 id="part-1-install-and-open-the-editor">Part 1: Install and open the editor<a class="anchor" href="#part-1-install-and-open-the-editor">#</a></h2>
-<p><strong>macOS (recommended).</strong> Open <strong>NordEditor.app</strong>. If you are working from this repository instead, run <code>./run.sh</code> in the repo folder to start the editor from source, or <code>./build.sh</code> to produce the <code>.app</code>. The first compile of the editor takes a few minutes; later starts are quick.</p>
+<p><strong>macOS (recommended).</strong> Open <strong>Nord Engine.app</strong>. If you are working from this repository instead, run <code>./run.sh</code> in the repo folder to start the editor from source, or <code>./build.sh</code> to produce the <code>.app</code>. The first compile of the editor takes a few minutes; later starts are quick.</p>
 <p><strong>Windows and Linux.</strong> Build with <code>./build.sh</code> (Linux) or <code>build-win.sh</code> (see <code>docs/BUILD_WINDOWS.md</code> in the repository). The editor is the <code>nord-editor</code> program in the output folder.</p>
 <p>A splash screen shows for a moment, then the <strong>project hub</strong> opens.</p>
 <aside class="box tip"><div class="box-title">Tip</div><p>Everything here works <strong>offline</strong>. The manual you are reading is also inside the editor: click <strong>Docs</strong> in the hub or in any project.</p>
@@ -367,9 +367,28 @@ export default class Pulse extends NordScript {
 <li><strong>Tinkerers</strong> - people who prefer a terminal to menus.</li>
 </ul>
 <p><strong>It is not how you use the engine.</strong> Creating, editing, playing and exporting from the editor needs no terminal.</p>
-<p><strong>Where it lives.</strong> It ships inside the app, next to the editor. On macOS that is <code>NordEditor.app/Contents/MacOS/nord</code>; in a source checkout it is built with <code>cargo build --release -p nord-cli</code> and lands in <code>target/release/nord</code>. It is <strong>not on your PATH automatically</strong>, so typing <code>nord</code> in a fresh terminal says &quot;command not found&quot; until you add it, for example:</p>
-<pre class="code" data-lang="bash"><code>sudo ln -s /Applications/NordEditor.app/Contents/MacOS/nord /usr/local/bin/nord</code></pre>
-<p>Adjust the path to wherever your app is. Without installing, run it by its full path.</p>
+<p><strong>Where it lives.</strong> It ships inside the app, right next to the editor, but it is <strong>not on your PATH</strong>, so typing <code>nord</code> in a fresh terminal says &quot;command not found&quot;. Call it by its full path:</p>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>Run it</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>macOS</strong></td>
+<td><code>&quot;/Applications/Nord Engine.app/Contents/MacOS/nord&quot; doctor</code> (keep the quotes; the app&#39;s name has a space)</td>
+</tr>
+<tr>
+<td><strong>Windows</strong></td>
+<td><code>C:\Path\To\NordEngine\nord.exe doctor</code> (the folder you unzipped, beside <code>nord-editor.exe</code>)</td>
+</tr>
+<tr>
+<td><strong>Linux</strong></td>
+<td><code>./nord-engine/nord doctor</code> (the extracted folder, beside <code>nord-editor</code>)</td>
+</tr>
+</tbody></table>
+<p>To type just <code>nord</code>, add a shortcut. On macOS: <code>sudo ln -s &quot;/Applications/Nord Engine.app/Contents/MacOS/nord&quot; /usr/local/bin/nord</code>. On Windows: add the <code>NordEngine</code> folder to your user PATH. The <a href="../guides/cheat-sheet-cli.html">command line cheat sheet</a> has every step and every command.</p>
 <table>
 <thead>
 <tr>
@@ -402,7 +421,7 @@ export default class Pulse extends NordScript {
 <td>Toolbar → <strong>Export…</strong>; writes <code>my-game/dist</code>.</td>
 </tr>
 </tbody></table>
-<p><code>nord --help</code> lists everything else, including the bundling and addon commands.</p>
+<p><code>nord --help</code> lists everything else, including the bundling and addon commands. All of them are on the <a href="../guides/cheat-sheet-cli.html">command line cheat sheet</a>.</p>
 <h2 id="if-you-get-stuck">If you get stuck<a class="anchor" href="#if-you-get-stuck">#</a></h2>
 <table>
 <thead>

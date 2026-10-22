@@ -31,7 +31,7 @@ Nord is an **editor**, like Unity or Godot. You open **NordEditor**, click throu
 
 ## Part 1: Install and open the editor
 
-**macOS (recommended).** Open **NordEditor.app**. If you are working from this repository instead, run `./run.sh` in the repo folder to start the editor from source, or `./build.sh` to produce the `.app`. The first compile of the editor takes a few minutes; later starts are quick.
+**macOS (recommended).** Open **Nord Engine.app**. If you are working from this repository instead, run `./run.sh` in the repo folder to start the editor from source, or `./build.sh` to produce the `.app`. The first compile of the editor takes a few minutes; later starts are quick.
 
 **Windows and Linux.** Build with `./build.sh` (Linux) or `build-win.sh` (see `docs/BUILD_WINDOWS.md` in the repository). The editor is the `nord-editor` program in the output folder.
 
@@ -286,13 +286,15 @@ You may have seen commands such as `nord new` or `nord build` in places. Here is
 
 **It is not how you use the engine.** Creating, editing, playing and exporting from the editor needs no terminal.
 
-**Where it lives.** It ships inside the app, next to the editor. On macOS that is `NordEditor.app/Contents/MacOS/nord`; in a source checkout it is built with `cargo build --release -p nord-cli` and lands in `target/release/nord`. It is **not on your PATH automatically**, so typing `nord` in a fresh terminal says "command not found" until you add it, for example:
+**Where it lives.** It ships inside the app, right next to the editor, but it is **not on your PATH**, so typing `nord` in a fresh terminal says "command not found". Call it by its full path:
 
-```bash
-sudo ln -s /Applications/NordEditor.app/Contents/MacOS/nord /usr/local/bin/nord
-```
+| System | Run it |
+|---|---|
+| **macOS** | `"/Applications/Nord Engine.app/Contents/MacOS/nord" doctor` (keep the quotes; the app's name has a space) |
+| **Windows** | `C:\Path\To\NordEngine\nord.exe doctor` (the folder you unzipped, beside `nord-editor.exe`) |
+| **Linux** | `./nord-engine/nord doctor` (the extracted folder, beside `nord-editor`) |
 
-Adjust the path to wherever your app is. Without installing, run it by its full path.
+To type just `nord`, add a shortcut. On macOS: `sudo ln -s "/Applications/Nord Engine.app/Contents/MacOS/nord" /usr/local/bin/nord`. On Windows: add the `NordEngine` folder to your user PATH. The [command line cheat sheet](cheat-sheet-cli.html) has every step and every command.
 
 | Command | Does the same as |
 |---|---|
@@ -303,7 +305,7 @@ Adjust the path to wherever your app is. Without installing, run it by its full 
 | `nord check my-game` | Validate ids, scenes and missing files. |
 | `nord build my-game` | Toolbar → **Export…**; writes `my-game/dist`. |
 
-`nord --help` lists everything else, including the bundling and addon commands.
+`nord --help` lists everything else, including the bundling and addon commands. All of them are on the [command line cheat sheet](cheat-sheet-cli.html).
 
 ## If you get stuck
 

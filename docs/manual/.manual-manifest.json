@@ -9233,6 +9233,7 @@
   "nord/components/component-uiImage.html",
   "nord/components/component-uiLabel.html",
   "nord/components/component-uiPanel.html",
+  "nord/guides/cheat-sheet-cli.html",
   "nord/guides/cheat-sheet-export.html",
   "nord/guides/cheat-sheet-fps-level.html",
   "nord/guides/cheat-sheet-nordjs.html",
