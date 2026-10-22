@@ -1,5 +1,6 @@
 # Changelog
 
+- 2026-10-22 — Godotize G1-7/8: drag assets from Assets into the Scene view (ghost + drop placement), Gizmos menu (grid, icons, colliders; 3D collider wireframes).
 - 2026-10-22 — Godotize G6 (part): event-sheet *Find in sheet*, graph Group / minimap / Docs (F1), UI Designer Copy/Paste.
 - 2026-10-22 — Godotize G2-5/6, G7-3/4: multi-object Inspector, image thumbnails in pickers, play-mode *Apply to scene*, Window ▸ Profiler.
 - 2026-10-22 — Godotize G3: Prefab mode (edit a prefab alone, auto-save on exit), prefab variants (`variantOf` + `overrides`; core `Prefab` gained two optional fields; runtime resolves them), Create variant, Apply all keeps a variant's link.

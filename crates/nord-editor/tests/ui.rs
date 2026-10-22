@@ -1795,3 +1795,19 @@ fn multi_selection_edits_all_selected_entities() {
         .iter()
         .all(|e| e.transform.pos[0] == 7.0));
 }
+
+#[test]
+fn asset_dropped_on_the_scene_view_becomes_an_entity_at_that_spot() {
+    let mut st = state_with_scene("scene-drop");
+    st.handle_viewport(
+        &serde_json::json!({"t":"addAsset","path":"assets/hero.png","pos":[12.0, 34.0, 0.0]}),
+    );
+    let e = &st.scene.as_ref().unwrap().entities;
+    assert_eq!(e.len(), 1);
+    assert_eq!(e[0].transform.pos, [12.0, 34.0, 0.0]);
+    assert_eq!(e[0].components[0].kind, "sprite");
+    // the viewport settings carry the new Gizmos toggles
+    let m = st.viewport_settings_msg();
+    assert_eq!(m["icons"], true);
+    assert_eq!(m["colliders"], true);
+}

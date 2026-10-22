@@ -200,13 +200,24 @@ function buildEntity(e, parentNode, token) {
   const light = comp(e, 'light');
   if (light) {
     const m = B.MeshBuilder.CreateSphere(e.id + '.light', { diameter: 0.35 }, scene);
+    iconMeshes.push(m);
     const mt = new B.StandardMaterial(e.id + 'lm', scene); mt.emissiveColor = hex(light.color, '#ffe9a8'); mt.disableLighting = true; m.material = mt; m.parent = node; tag(m, e.id);
     visual = true;
   }
   const cam = comp(e, 'camera');
   if (cam) {
     const m = marker(e.id + '.cam', e.id, node, '#ffd166', 0.6); m.scaling.z = 1.5;
+    iconMeshes.push(m);
     visual = true;
+  }
+  const col = comp(e, 'collider') ?? comp(e, 'trigger');
+  if (col) { // collider outline (toggle: Gizmos ▸ Colliders)
+    const s = col.size ?? [1, 1, 1], o = col.offset ?? [0, 0, 0];
+    const cm = col.shape === 'sphere' || col.shape === 'circle' ? B.MeshBuilder.CreateSphere(e.id + '.col', { diameter: (col.radius ?? 0.5) * 2, segments: 8 }, scene)
+      : B.MeshBuilder.CreateBox(e.id + '.col', { width: s[0], height: s[1], depth: s[2] }, scene);
+    const cmat = new B.StandardMaterial(e.id + 'colm', scene); cmat.wireframe = true; cmat.disableLighting = true; cmat.emissiveColor = B.Color3.FromHexString(col.trigger || comp(e, 'trigger') ? '#c792ea' : '#6bff8a');
+    cm.material = cmat; cm.parent = node; cm.position.set(o[0], o[1], o[2]); cm.isPickable = false;
+    colliderMeshes.push(cm);
   }
   if (!visual) marker(e.id + '.mk', e.id, node);
   for (const c of e.children ?? []) buildEntity(c, node, token);
@@ -214,14 +225,17 @@ function buildEntity(e, parentNode, token) {
 
 export function setScene() {
   buildToken++;
+  iconMeshes = []; colliderMeshes = [];
   for (const { node } of nodes.values()) { node.getChildMeshes(false).forEach((m) => m.dispose()); }
   for (const { node } of [...nodes.values()].reverse()) node.dispose();
   nodes.clear();
   for (const e of state.scene?.entities ?? []) buildEntity(e, null, buildToken);
   setSelection();
+  setSettings();
 }
 
 let outlined = [];
+let iconMeshes = [], colliderMeshes = [], ghostMesh = null;
 export function setSelection() {
   const id = state.selection[0];
   const n = nodes.get(id);
@@ -250,6 +264,8 @@ function applyGizmos(node) {
 export function setSettings() {
   const s = state.settings;
   gridMesh?.setEnabled(!!s.grid);
+  for (const m of iconMeshes) if (!m.isDisposed()) m.setEnabled(s.icons !== false);
+  for (const m of colliderMeshes) if (!m.isDisposed()) m.setEnabled(s.colliders !== false);
   const g = gizmoManager?.gizmos;
   if (g) {
     const snap = !!s.snap !== ctrlHeld;
@@ -260,6 +276,30 @@ export function setSettings() {
     g.rotationGizmo.updateGizmoRotationToMatchAttachedMesh = !!s.local;
   }
   setSelection();
+}
+
+// Drag an asset over the Scene view: ghost marker on the ground plane (y = 0), drop = new entity there.
+function groundPoint(x, y) {
+  const ray = scene.createPickingRay(x, y, B.Matrix.Identity(), camera);
+  if (Math.abs(ray.direction.y) < 1e-6) return camera.getTarget().clone();
+  const t = -ray.origin.y / ray.direction.y;
+  return t > 0 ? ray.origin.add(ray.direction.scale(t)) : camera.getTarget().clone();
+}
+const snap3 = (v) => (state.settings.snap !== ctrlHeld && state.settings.snapMove > 0 ? Math.round(v / state.settings.snapMove) * state.settings.snapMove : v);
+export function dropPreview(m) {
+  if (m.off) { ghostMesh?.setEnabled(false); return; }
+  if (!ghostMesh) {
+    ghostMesh = B.MeshBuilder.CreateBox('dropghost', { size: 0.8 }, scene);
+    const mat = new B.StandardMaterial('dropghostm', scene); mat.emissiveColor = B.Color3.FromHexString('#4fa3ff'); mat.alpha = 0.45; mat.disableLighting = true;
+    ghostMesh.material = mat; ghostMesh.isPickable = false;
+  }
+  const p = groundPoint(m.x, m.y);
+  ghostMesh.position.set(snap3(p.x), 0.4, snap3(p.z)); ghostMesh.setEnabled(true);
+}
+export function dropAsset(m) {
+  ghostMesh?.setEnabled(false);
+  const p = groundPoint(m.x, m.y);
+  send({ t: 'addAsset', path: m.path, pos: [snap3(p.x), 0, snap3(p.z)] });
 }
 
 export function focus(all) {

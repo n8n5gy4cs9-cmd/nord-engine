@@ -28,7 +28,8 @@ The menu bar follows Unity: **File** (New scene, Build Settings), **Edit**, **As
 * **Local / Global** and **Pivot / Center** toggles sit in the toolbar and on the tool rail. Local makes the move and rotate gizmos follow the object. (Center is stored for later; it has no effect yet.)
 * **Snapping:** the magnet button turns snapping on; hold **Ctrl/Cmd** while dragging to flip it for one drag. Step sizes are in Settings.
 * **Selecting:** click, Shift/Ctrl+click to add or remove, and in 2D drag on empty space for a marquee. Selected objects are outlined. A drag or gizmo still moves only the main selected object.
-* The bar above the Scene has the scene name, projection, gizmo toggles and a big **Play** button.
+* **Drag an asset** from Assets over the Scene view to see a ghost; drop it to create an entity there (snapping applies).
+* The bar above the Scene has the scene name, projection, a **Gizmos ▾** menu (grid, camera/light icons, collider outlines), the Local/Global, snap and frame buttons, and a big **Play** button.
 
 ## Inspector, Hierarchy and prefabs
 Each Hierarchy row has an **Active** checkbox; prefab instances are blue. Every Inspector component has a **⋮** menu (Reset, Copy / Paste values, Move up / down, Docs, Remove), and **+ Add component** is searchable. The padlock at the top keeps the Inspector on one entity while you click around. Under **Signals**, a ▾ next to the method box lists the methods found in the target's scripts.

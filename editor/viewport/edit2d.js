@@ -183,7 +183,7 @@ function drawEntity(it) {
     ctx.fillText(t.text ?? '', 0, 0); drawn = true;
   }
   const l = comp(e, 'light');
-  if (l) {
+  if (l && state.settings.icons !== false) {
     const g = ctx.createRadialGradient(0, 0, 0, 0, 0, l.radius ?? 100);
     g.addColorStop(0, (l.color ?? '#ffe9a8') + '88'); g.addColorStop(1, (l.color ?? '#ffe9a8') + '00');
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, l.radius ?? 100, 0, 7); ctx.fill(); drawn = true;
@@ -197,12 +197,12 @@ function drawEntity(it) {
   }
   const cm = comp(e, 'camera');
   ctx.lineWidth = 1 / cam.zoom;
-  if (cm) {
+  if (cm && state.settings.icons !== false) {
     const d = state.project?.display ?? { width: 1280, height: 720 };
     ctx.strokeStyle = '#ffd166'; ctx.strokeRect(-d.width / 2, -d.height / 2, d.width, d.height); drawn = true;
   }
   const col = comp(e, 'collider') ?? comp(e, 'trigger');
-  if (col) {
+  if (col && state.settings.colliders !== false) {
     ctx.strokeStyle = col.trigger || comp(e, 'trigger') ? '#c792ea' : '#6bff8a';
     if (col.shape === 'circle') { ctx.beginPath(); ctx.arc(col.offset?.[0] ?? 0, col.offset?.[1] ?? 0, col.radius ?? 16, 0, 7); ctx.stroke(); }
     else { const [cw, ch] = col.size ?? [32, 32]; ctx.strokeRect((col.offset?.[0] ?? 0) - cw / 2, (col.offset?.[1] ?? 0) - ch / 2, cw, ch); }
@@ -337,6 +337,7 @@ export function draw() {
     ctx.fillStyle = 'rgba(79,163,255,.15)'; ctx.strokeStyle = '#4fa3ff'; ctx.lineWidth = 1;
     ctx.fillRect(drag.sx, drag.sy, drag.x - drag.sx, drag.y - drag.sy); ctx.strokeRect(drag.sx + .5, drag.sy + .5, drag.x - drag.sx, drag.y - drag.sy);
   }
+  drawGhost();
   drawRulers();
   const hudEl = document.getElementById('hud');
   const [mx, my] = toWorld(mouse.x, mouse.y);
@@ -511,6 +512,31 @@ export function setScene() {
   draw();
 }
 export function setSelection() { draw(); }
+
+// Drag an asset from the Assets panel over the Scene view: ghost preview, then drop = new entity at that spot.
+let ghost = null;
+const IMG = /\.(png|jpe?g|gif|webp|svg|avif)$/i;
+export function dropPreview(m) {
+  ghost = m.off ? null : { x: m.x, y: m.y, path: m.path };
+  draw();
+}
+export function dropAsset(m) {
+  ghost = null;
+  const [wx, wy] = toWorld(m.x, m.y);
+  send({ t: 'addAsset', path: m.path, pos: [snapTo(wx, state.settings.snapMove), snapTo(wy, state.settings.snapMove), 0] });
+  draw();
+}
+function drawGhost() {
+  if (!ghost) return;
+  ctx.save(); ctx.globalAlpha = 0.6;
+  if (IMG.test(ghost.path)) {
+    const r = getImage(ghost.path);
+    if (r.ok) { const w = r.img.naturalWidth * cam.zoom, h = r.img.naturalHeight * cam.zoom; ctx.drawImage(r.img, ghost.x - w / 2, ghost.y - h / 2, w, h); ctx.restore(); return; }
+  }
+  ctx.strokeStyle = '#4fa3ff'; ctx.setLineDash([4, 3]); ctx.strokeRect(ghost.x - 16, ghost.y - 16, 32, 32);
+  ctx.beginPath(); ctx.moveTo(ghost.x - 8, ghost.y); ctx.lineTo(ghost.x + 8, ghost.y); ctx.moveTo(ghost.x, ghost.y - 8); ctx.lineTo(ghost.x, ghost.y + 8); ctx.stroke();
+  ctx.restore();
+}
 export function setSettings() { draw(); }
 export function focus(all) {
   if (all || !selected()) {

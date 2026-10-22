@@ -13,7 +13,7 @@ export const state = {
   project: null,
   scene: null,
   selection: [],
-  settings: { tool: 'move', snap: false, snapMove: 1, snapRot: 15, snapScale: 0.1, grid: true },
+  settings: { tool: 'move', icons: true, colliders: true, snap: false, snapMove: 1, snapRot: 15, snapScale: 0.1, grid: true },
   rev: -1,
 };
 
@@ -44,6 +44,8 @@ export function onMessage(m) {
       break;
     case 'select': state.selection = m.ids ?? (m.id ? [m.id] : []); backend?.setSelection?.(); break;
     case 'settings': Object.assign(state.settings, m); delete state.settings.t; backend?.setSettings?.(); break;
+    case 'dropPreview': backend?.dropPreview?.(m); break;
+    case 'dropAsset': backend?.dropAsset?.(m); break;
     case 'focus': backend?.focus?.(!!m.all); break;
     case 'view': backend?.setView?.(m); break;
     case 'thumbs': backend?.thumbs?.(m.items ?? []); break;

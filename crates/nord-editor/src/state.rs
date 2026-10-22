@@ -78,6 +78,9 @@ pub struct Settings {
     pub snap_rot: f64,
     pub snap_scale: f64,
     pub grid: bool,
+    /// Gizmos menu: camera / light icons and collider outlines in the Scene view
+    pub show_icons: bool,
+    pub show_colliders: bool,
     /// Assets panel ★ favourites (project-relative paths)
     pub asset_favorites: Vec<String>,
     pub window: Option<[f32; 4]>, // x, y, w, h
@@ -118,6 +121,8 @@ impl Default for Settings {
             snap_rot: 15.0,
             snap_scale: 0.1,
             grid: true,
+            show_icons: true,
+            show_colliders: true,
             asset_favorites: vec![],
             window: None,
             tint: true,
@@ -1152,6 +1157,8 @@ impl EditorState {
             "snapRot": self.settings.snap_rot,
             "snapScale": self.settings.snap_scale,
             "grid": self.settings.grid,
+            "icons": self.settings.show_icons,
+            "colliders": self.settings.show_colliders,
             "local": self.settings.space_local,
             "center": self.settings.pivot_center,
         })
@@ -1212,6 +1219,23 @@ impl EditorState {
                         self.push(Action::ShowTab(crate::app::Tab::Graph));
                     }
                     _ => {}
+                }
+            }
+            Some("addAsset") => {
+                // Assets → Scene view drop: new entity from the asset, placed where it was dropped
+                if let (Some(path), Some(p)) = (m["path"].as_str(), m["pos"].as_array()) {
+                    let pos: Vec<f64> = p.iter().filter_map(Value::as_f64).collect();
+                    let before = self.selection.clone();
+                    self.add_asset_entity(path);
+                    if pos.len() == 3 && self.selection != before {
+                        if let Some(id) = self.selection.first().cloned() {
+                            self.edit("Place dropped asset", None, |l| {
+                                if let Some(e) = scene_ops::find_mut(l, &id) {
+                                    e.transform.pos = [pos[0], pos[1], pos[2]];
+                                }
+                            });
+                        }
+                    }
                 }
             }
             Some("profiler") => self.fun_ui.profiler.data = Some(m.clone()),

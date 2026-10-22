@@ -15,8 +15,8 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "�
 - [x] G1-4 Snapping: hold Ctrl/Cmd to toggle snap while dragging (2D + 3D); step values from settings (vertex snap not done)
 - [~] G1-5 Multi-select: Shift/Ctrl/Cmd toggle (2D+3D), 2D marquee, selection outlines (3D mesh outline, 2D dashed); gizmo/drag still moves only the primary object; 3D marquee todo
 - [~] G1-6 Frame selected (F) and Frame all (Shift+F, Edit menu, palette) done; 2D/3D mode switch follows the project type; view cube/axis gizmo todo
-- [ ] G1-7 Drag assets from Project into Scene view (sprite, model, prefab, audio) with ghost preview
-- [ ] G1-8 Draw modes / gizmo toggles (grid, icons, colliders, lights)
+- [~] G1-7 Drag an asset from Assets over the Scene view: ghost preview (sprite image in 2D, marker on the ground plane in 3D), drop = new entity placed there (snap-aware). Built on egui's drag state because the native web view eats pointer events — NOT verified in the native window; sprite/model/prefab/audio entities via the existing asset→entity rules
+- [x] G1-8 Viewport bar ▸ Gizmos ▾: Grid, camera/light icons, collider outlines (2D + new 3D wireframes)
 ## G2 Hierarchy and Inspector
 - [x] G2-1 Drag reorder + re-parent with drop lines; multi-select
 - [~] G2-2 Active checkbox + blue prefab name done; lock/hide toggles todo (need a scene-format field)
@@ -91,5 +91,5 @@ Keep the current NordScript API; add helpers/libraries so scripts feel like Unit
 G10 done 2026-10-22: `runtime/core/unity.js` (+ core.test.mjs tests), templates in Assets menu, manual chapter 4 section. Not run in a browser/editor yet.
 
 ## Status 2026-10-22 (end of session)
-Done: G0-1..3, G1-1/2/4, G2-1/5, G3-1/3/4, G4-1/2, G5-1/3/4, G7-1..7, G8-1/2, G9-1..6, G10 all. Partial: G0-4, G1-3/5/6, G2-2/3/4/6/7, G3-2/5, G4-3/4/5/6, G5-2, G6-1..5, G8-4, G9-7. Not started: G1-7/8, G6-6, G8-3/5.
+Done: G0-1..3, G1-1/2/4, G2-1/5, G3-1/3/4, G4-1/2, G5-1/3/4, G7-1..7, G8-1/2, G9-1..6, G10 all. Partial: G0-4, G1-3/5/6/7, G2-2/3/4/6/7, G3-2/5, G4-3/4/5/6, G5-2, G6-1..5, G8-4, G9-7. Not started: G6-6, G8-3/5.
 Screenshots for the docs are rendered offscreen: `DUMP_SHOTS=$PWD/docs/screenshots cargo test -p nord-editor --test shots -- --ignored` (webview panes are not part of the images).

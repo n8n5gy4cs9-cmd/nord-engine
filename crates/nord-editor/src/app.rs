@@ -203,6 +203,8 @@ pub struct App {
     pub st: EditorState,
     pub dock: DockState<Tab>,
     pub web: WebPanes,
+    /// last asset-drag position over the Scene view (path, x, y relative to the view)
+    drop_last: Option<(String, f32, f32)>,
     splash_start: Option<Instant>,
     sent_rev: u64,
     sent_sel: Vec<String>,
@@ -239,6 +241,7 @@ impl App {
             st: EditorState::new(),
             dock: load_dock(),
             web: WebPanes::default(),
+            drop_last: None,
             splash_start: splash.then(Instant::now),
             sent_rev: 0,
             sent_sel: vec![],
@@ -1231,6 +1234,11 @@ fn viewport_bar(st: &mut crate::state::EditorState, ui: &mut egui::Ui) {
         if crate::icons::button(ui, "crosshair", "Frame all (Shift+F)", false).clicked() {
             st.push(Action::FocusAll);
         }
+        ui.menu_button("Gizmos ▾", |ui| {
+            ui.checkbox(&mut st.settings.grid, "Grid");
+            ui.checkbox(&mut st.settings.show_icons, "Camera / light icons");
+            ui.checkbox(&mut st.settings.show_colliders, "Collider outlines");
+        });
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             let playing = st.is_playing();
             let accent = ui.visuals().hyperlink_color;
@@ -1477,6 +1485,43 @@ impl eframe::App for App {
 }
 
 impl App {
+    /// Dragging an asset from the Assets panel over the Scene view: tell the viewport to show a ghost; on release, to drop.
+    /// (The Scene view is a native web view that eats pointer events, so this runs off egui's own drag-and-drop state.)
+    fn scene_drop(&mut self, ctx: &Context) {
+        use crate::panels::inspector::AssetDrag;
+        let payload = egui::DragAndDrop::payload::<AssetDrag>(ctx).map(|p| p.0.clone());
+        let rect = self.web.rects.get("scene").copied();
+        let pos = ctx.pointer_latest_pos();
+        let rel = |r: egui::Rect, p: egui::Pos2| (p.x - r.min.x, p.y - r.min.y);
+        match (&payload, rect, pos) {
+            (Some(path), Some(r), Some(p)) if r.contains(p) => {
+                let (x, y) = rel(r, p);
+                self.drop_last = Some((path.clone(), x, y));
+                self.st
+                    .send_viewport(serde_json::json!({"t":"dropPreview","path":path,"x":x,"y":y}));
+            }
+            (Some(_), _, _) => {
+                if self.drop_last.take().is_some() {
+                    self.st
+                        .send_viewport(serde_json::json!({"t":"dropPreview","off":true}));
+                }
+            }
+            (None, _, _) => {
+                // payload gone = released (or cancelled): drop where the ghost last was
+                if let Some((path, x, y)) = self.drop_last.take() {
+                    if ctx.input(|i| !i.key_pressed(egui::Key::Escape)) {
+                        self.st.send_viewport(
+                            serde_json::json!({"t":"dropAsset","path":path,"x":x,"y":y}),
+                        );
+                    } else {
+                        self.st
+                            .send_viewport(serde_json::json!({"t":"dropPreview","off":true}));
+                    }
+                }
+            }
+        }
+    }
+
     fn overlays_open(&self, ctx: &Context) -> bool {
         ctx.memory(|m| m.any_popup_open())
             || self.st.palette.mode != PMode::Closed
@@ -1697,6 +1742,7 @@ impl App {
             }
         }
         let overlay = self.overlays_open(ctx);
+        self.scene_drop(ctx);
         self.web.end_frame(overlay);
         // keep polling the hub (game logs, viewport events) while a server runs
         if self.st.play.is_some() {
