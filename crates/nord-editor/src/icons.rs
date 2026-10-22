@@ -116,6 +116,32 @@ pub fn kind_color(name: &str, fallback: Color32) -> Color32 {
     }
 }
 
+/// Collapsing-header arrow in the accent colour (PlayCanvas-style orange ▼ / ▶): `CollapsingHeader::new(..).icon(icons::accent_arrow)`.
+pub fn accent_arrow(ui: &mut Ui, openness: f32, response: &egui::Response) {
+    let c = if response.hovered() {
+        ui.visuals().strong_text_color()
+    } else {
+        ui.visuals().hyperlink_color
+    };
+    let r = response.rect;
+    let (cx, cy, s) = (r.center().x, r.center().y, r.width().min(r.height()) * 0.28);
+    let pts = if openness > 0.5 {
+        vec![
+            egui::pos2(cx - s, cy - s * 0.6),
+            egui::pos2(cx + s, cy - s * 0.6),
+            egui::pos2(cx, cy + s * 0.8),
+        ]
+    } else {
+        vec![
+            egui::pos2(cx - s * 0.6, cy - s),
+            egui::pos2(cx - s * 0.6, cy + s),
+            egui::pos2(cx + s * 0.8, cy),
+        ]
+    };
+    ui.painter()
+        .add(egui::Shape::convex_polygon(pts, c, egui::Stroke::NONE));
+}
+
 pub fn icon(name: &'static str, size: f32, tint: Color32) -> Image<'static> {
     Image::new(source(name))
         .fit_to_exact_size(Vec2::splat(size))

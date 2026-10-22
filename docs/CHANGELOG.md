@@ -1,5 +1,6 @@
 # Changelog
 
+- 2026-10-22 — Godotize G9 finished: Scene view top bar with big Play button, orange collapse arrows, unit suffixes in the Inspector Transform, Library button in Assets. Not yet seen in the native window.
 - 2026-10-22 — Godotize G9 (part): default "PlayCanvas" editor theme (blue-grey, orange accent, 2px corners; old Graphite default migrates), vertical tool rail, coloured type icons + filled amber folders, UPPERCASE panel/inspector headers, status bar with selection and entity count. Not yet seen in the native window.
 - 2026-10-22 — Godotize G2 (part): Hierarchy Active checkbox + blue prefab names; Inspector component ⋮ menu (reset/copy/paste/move/remove/docs); searchable Add Component.
 - 2026-10-22 — Godotize G10 Unity-style coding: `runtime/core/unity.js` (MonoBehaviour, Singleton, GameManager, AudioManager, Mathf, Vector2/3, Time, UnityInput, PlayerPrefs, SceneManager, coroutines, UnityEvent, EventBus, ScriptableObject, ObjectPool, SerializeField), script templates in Assets menus, manual section, 3 new core tests.

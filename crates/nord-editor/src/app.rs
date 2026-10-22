@@ -1132,12 +1132,68 @@ impl TabViewer for Viewer<'_> {
                         "{base}/__edit?mode={}",
                         if st.is_3d() { "3d" } else { "2d" }
                     );
+                    viewport_bar(st, ui);
                     self.web.show(ui, self.frame, "scene", &url, self.overlay);
                 }
             }
             Tab::Game => game_tab(st, ui, self.web, self.frame, self.overlay),
         }
     }
+}
+
+/// PlayCanvas-style bar on top of the Scene view: scene name, projection, gizmo toggles and a big Play button.
+/// (Laid out above the native webview rather than floating over it, which the webview would cover.)
+fn viewport_bar(st: &mut crate::state::EditorState, ui: &mut egui::Ui) {
+    use crate::state::Action;
+    ui.horizontal(|ui| {
+        let scene = st.scene_file.as_deref().map_or("scene".to_string(), |f| {
+            let n = f.rsplit('/').next().unwrap_or(f);
+            n.trim_end_matches(".json")
+                .trim_end_matches(".scene")
+                .to_string()
+        });
+        ui.label(egui::RichText::new(scene).strong());
+        ui.separator();
+        ui.weak(if st.is_3d() {
+            "Perspective"
+        } else {
+            "Orthographic 2D"
+        });
+        ui.separator();
+        if crate::icons::button(
+            ui,
+            "globe",
+            "Gizmo space: Local / Global",
+            st.settings.space_local,
+        )
+        .clicked()
+        {
+            st.push(Action::ToggleSpace);
+        }
+        if crate::icons::button(ui, "magnet", "Snap", st.settings.snap).clicked() {
+            st.push(Action::ToggleSnap);
+        }
+        if crate::icons::button(ui, "grid-3x3", "Grid", st.settings.grid).clicked() {
+            st.push(Action::ToggleGrid);
+        }
+        if crate::icons::button(ui, "crosshair", "Frame all (Shift+F)", false).clicked() {
+            st.push(Action::FocusAll);
+        }
+        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+            let playing = st.is_playing();
+            let accent = ui.visuals().hyperlink_color;
+            let btn = egui::Button::new(
+                egui::RichText::new(if playing { "■  STOP" } else { "▶  PLAY" })
+                    .strong()
+                    .color(egui::Color32::WHITE),
+            )
+            .fill(accent)
+            .min_size(egui::vec2(96.0, 26.0));
+            if ui.add(btn).on_hover_text("F5 — Play / Stop").clicked() {
+                st.push(if playing { Action::Stop } else { Action::Play });
+            }
+        });
+    });
 }
 
 /// The Game tab: toolbar (console / size / fullscreen), the embedded game webview and an optional console strip under it.

@@ -449,6 +449,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             });
             ui.separator();
             egui::CollapsingHeader::new("TRANSFORM")
+                .icon(crate::icons::accent_arrow)
                 .default_open(true)
                 .show(ui, |ui| {
                     egui::Grid::new("xf").num_columns(2).show(ui, |ui| {
@@ -468,12 +469,15 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                 };
                                 for &i in axes {
                                     ui.weak(["x", "y", "z"][i]);
+                                    let unit = match label {
+                                        "Rotation" => "°",
+                                        "Scale" => "×",
+                                        _ => " u",
+                                    };
                                     ui.add(
-                                        DragValue::new(&mut arr[i]).speed(if label == "Scale" {
-                                            0.01
-                                        } else {
-                                            0.5
-                                        }),
+                                        DragValue::new(&mut arr[i])
+                                            .suffix(unit)
+                                            .speed(if label == "Scale" { 0.01 } else { 0.5 }),
                                     );
                                 }
                             });
@@ -489,6 +493,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 let fields = schema::component_fields(&c.kind);
                 let r = egui::CollapsingHeader::new(schema::label_of(&c.kind).to_uppercase())
                     .id_salt(&id)
+                    .icon(crate::icons::accent_arrow)
                     .default_open(true)
                     .show(ui, |ui| {
                         fields_ui(ui, &cx, &fields, &mut c.fields, &id, base_comp(i, &c.kind));
@@ -590,6 +595,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 let name = s.path.rsplit('/').next().unwrap_or(&s.path).to_string();
                 let r = egui::CollapsingHeader::new(format!("📜 {name}"))
                     .id_salt(&id)
+                    .icon(crate::icons::accent_arrow)
                     .default_open(true)
                     .show(ui, |ui| {
                         ui.weak(&s.path);

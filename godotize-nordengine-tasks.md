@@ -72,11 +72,11 @@ Hierarchy = tree with dot/expand icons and a search field; viewport has a floati
 and a big Play button); Inspector = collapsible UPPERCASE sections with flat dark inputs, label-left/value-right rows with unit suffix chips (Divisions, Size);
 bottom Assets panel = folder tree + large folder tiles, filter drop-down + search + Library toggle; slim status bar at the bottom.
 - [x] G9-1 New egui theme
-- [~] G9-2 Panel headers: UPPERCASE dock tab titles done; orange arrow + right-aligned action icons todo
+- [x] G9-2 Panel headers: UPPERCASE dock tab titles + orange collapse arrows in the Inspector (right-aligned header icons only where panels already had toolbars)
 - [x] G9-3 Left vertical tool rail
-- [ ] G9-4 Floating viewport top bar: scene tabs, Perspective/Ortho drop-down, gizmo + settings + fullscreen buttons, big Play button
-- [~] G9-5 Inspector: UPPERCASE section headers + 2px flat widgets done; unit chips todo
-- [~] G9-6 Assets: coloured type icons + filled amber folder tiles (tree + tiles existed); Library toggle todo
+- [x] G9-4 Viewport top bar (laid out above the native webview, since a floating egui layer would be covered by it): scene tabs, Perspective/Ortho drop-down, gizmo + settings + fullscreen buttons, big Play button
+- [x] G9-5 Inspector: UPPERCASE sections, flat 2px widgets, unit suffixes (u, °, ×)
+- [x] G9-6 Assets: coloured type icons + filled amber folder tiles, Library button
 - [~] G9-7 Status bar shows selection + entity count; coloured icons in hierarchy/assets; full icon pass todo
 
 ## G10 Unity-style coding (owner request, do later)

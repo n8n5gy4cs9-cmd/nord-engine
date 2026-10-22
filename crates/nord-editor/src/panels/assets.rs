@@ -513,6 +513,16 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             let dir = st.assets_ui.dir.clone();
             create_in(st, &root, &dir, "folder", "", None);
         }
+        if icons::button(
+            ui,
+            "library",
+            "Library (ready-made assets and scripts)",
+            false,
+        )
+        .clicked()
+        {
+            st.push(crate::state::Action::ShowTab(crate::app::Tab::Library));
+        }
         ui.add(
             egui::TextEdit::singleline(&mut st.assets_ui.search)
                 .hint_text("Search…")
