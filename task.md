@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 288/301 tasks (96%)** · updated 2026-10-22
+**Overall: 289/302 tasks (96%)** · updated 2026-10-22
 
 | Milestone | Progress |
 |---|---|
@@ -17,7 +17,7 @@
 | M7 Docs | 31/31 (100%) |
 | M8 Polish & portability | 27/32 (84%) |
 | M9 Desktop apps | 16/16 (100%) |
-| M10 Construct-style editor | 35/35 (100%) |
+| M10 Construct-style editor | 36/36 (100%) |
 | M11 Web editor | 14/16 (88%) |
 | M12 FPS Creator addon | 30/31 (97%) |
 
@@ -325,6 +325,7 @@ _features cloned from Construct 3's editor (construct.net/en/make-games/games-ed
 - [x] **M10-33** Manual + tutorials for all M10 features (event sheets first-game tutorial, behaviors, layout editor, effects, debugger); rebuild docs/manual
 - [x] **M10-34** Tests: event-sheet compiler unit tests, behaviors headless Chromium tests, egui_kittest for new panels; wire to CI
 - [x] **M10-35** Rendering plugin objects: Tiled Background, 9-Patch, Spritefont, Drawing Canvas, Video
+- [x] **M10-36** Hierarchy shows non-entity game parts (Environment, Managers, FPS level contents); Scene view draws skybox, FPS level, paths, particles, spawners
 
 ## M11 — Web editor
 _the editor in a browser and on a Linux server (wasm egui + server mode); plan docs/WEB_EDITOR_PLAN.md_

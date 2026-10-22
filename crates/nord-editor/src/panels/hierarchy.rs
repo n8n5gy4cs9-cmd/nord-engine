@@ -61,6 +61,9 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     }
                 }
             }
+            if filter.is_empty() {
+                virtual_rows(st, ui, &mut clicked);
+            }
             // drop on empty space = move to root end
             let (_, resp) = ui.allocate_exact_size(
                 egui::vec2(ui.available_width(), ui.available_height().max(24.0)),
@@ -163,6 +166,64 @@ pub(crate) fn create_menu(st: &mut EditorState, ui: &mut Ui, three: bool, parent
     }
 }
 
+/// Read-only rows for what the game shows that is not an entity (Environment, Managers; see virt.rs).
+fn virtual_rows(st: &mut EditorState, ui: &mut Ui, clicked: &mut Option<(String, bool)>) {
+    let (Some(p), Some(s)) = (&st.project, &st.scene) else {
+        return;
+    };
+    let rows = crate::virt::scene_nodes(p, s);
+    ui.add_space(4.0);
+    for n in &rows {
+        vnode(st, ui, n, clicked);
+    }
+}
+
+fn vnode(
+    st: &mut EditorState,
+    ui: &mut Ui,
+    n: &crate::virt::VNode,
+    clicked: &mut Option<(String, bool)>,
+) {
+    let open = n.children.is_empty() || !st.collapsed.contains(&n.id);
+    ui.horizontal(|ui| {
+        if !n.children.is_empty() {
+            let chev = if open {
+                "chevron-down"
+            } else {
+                "chevron-right"
+            };
+            if ui
+                .add(icons::icon(chev, 12.0, ui.visuals().text_color()).sense(Sense::click()))
+                .clicked()
+            {
+                if open {
+                    st.collapsed.insert(n.id.clone());
+                } else {
+                    st.collapsed.remove(&n.id);
+                }
+            }
+        }
+        ui.add(icons::icon(n.icon, 14.0, ui.visuals().weak_text_color()));
+        let selected = st.selection.contains(&n.id);
+        let text = egui::RichText::new(&n.name)
+            .italics()
+            .color(ui.visuals().weak_text_color());
+        let r = ui
+            .selectable_label(selected, text)
+            .on_hover_text("Read-only: part of the game, not a scene entity");
+        if r.clicked() {
+            *clicked = Some((n.id.clone(), false));
+        }
+    });
+    if open && !n.children.is_empty() {
+        ui.indent(("vhier", &n.id), |ui| {
+            for c in &n.children {
+                vnode(st, ui, c, clicked);
+            }
+        });
+    }
+}
+
 fn node(
     st: &mut EditorState,
     ui: &mut Ui,
@@ -171,7 +232,18 @@ fn node(
     clicked: &mut Option<(String, bool)>,
     ctx_action: &mut Option<(String, u8)>,
 ) {
-    if e.children.is_empty() {
+    let host = match &st.root {
+        Some(r)
+            if e.scripts
+                .iter()
+                .any(|s| s.path.ends_with("fpsc/level-script.js")) =>
+        {
+            let r = r.clone();
+            crate::virt::host_cached(&mut st.virt_cache, &r, e)
+        }
+        _ => Default::default(),
+    };
+    if e.children.is_empty() && host.is_empty() {
         row(st, ui, e, pending, clicked, ctx_action);
     } else {
         let open = !st.collapsed.contains(&e.id);
@@ -197,6 +269,9 @@ fn node(
             ui.indent(("hier", &e.id), |ui| {
                 for c in &e.children {
                     node(st, ui, c, pending, clicked, ctx_action);
+                }
+                for v in host.iter() {
+                    vnode(st, ui, v, clicked);
                 }
             });
         }

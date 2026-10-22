@@ -335,6 +335,8 @@ pub struct EditorState {
     pub last_autosave: Instant,
     pub recover: Option<String>,
     pub script_cache: HashMap<String, (web_time::SystemTime, Vec<crate::schema::Field>)>,
+    /// read-only Hierarchy rows parsed from FPS level files (virt.rs)
+    pub virt_cache: crate::virt::Cache,
     /// viewport asked us not to echo the scene back after its own edit
     pub skip_viewport_sync: bool,
     pub hierarchy_filter: String,
@@ -437,6 +439,7 @@ impl EditorState {
             last_autosave: Instant::now(),
             recover: None,
             script_cache: HashMap::new(),
+            virt_cache: Default::default(),
             skip_viewport_sync: false,
             hierarchy_filter: String::new(),
             collapsed: Default::default(),

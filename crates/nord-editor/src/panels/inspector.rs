@@ -649,6 +649,25 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             }
         });
     }
+    if let Some(id) = st
+        .selection
+        .first()
+        .filter(|id| crate::virt::is_virtual(id))
+        .cloned()
+    {
+        if let (Some(p), Some(sc)) = (&st.project, &st.scene) {
+            let rows = crate::virt::all(st.root.as_deref(), p, sc);
+            if let Some(n) = crate::virt::find(&rows, &id) {
+                ui.heading(&n.name);
+                ui.weak("Part of the game, not a scene entity (read-only).");
+                ui.separator();
+                for l in &n.info {
+                    ui.label(l);
+                }
+                return;
+            }
+        }
+    }
     let Some(inst) = locked.or_else(|| st.selected().cloned()) else {
         ui.weak(if st.scene.is_some() {
             "Select an entity"

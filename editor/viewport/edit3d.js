@@ -160,6 +160,70 @@ async function getContainer(path) {
   return containers.get(path);
 }
 
+
+// ---- things the game shows that are not plain meshes: skybox, FPS level contents, paths (Scene view = Game view) ----
+function makeSky(dir, node) {
+  const f = (n) => `/${dir}/${n}.png`;
+  const tex = new B.CubeTexture('', scene, null, false, [f('px'), f('py'), f('pz'), f('nx'), f('ny'), f('nz')]);
+  tex.coordinatesMode = B.Texture.SKYBOX_MODE;
+  const box = B.MeshBuilder.CreateBox('sky', { size: 900 }, scene);
+  const m = new B.StandardMaterial('sky', scene);
+  m.backFaceCulling = false; m.reflectionTexture = tex; m.disableLighting = true; m.diffuseColor = m.specularColor = B.Color3.Black();
+  box.material = m; box.infiniteDistance = true; box.isPickable = false; box.parent = node;
+}
+
+const isFpsHost = (e) => (e.scripts ?? []).find((s) => /fpsc\/level-script\.js$/.test(s.path));
+const levels = new Map();
+function getLevel(path) {
+  if (!levels.has(path)) { levels.set(path, null); fetch('/' + path).then((r) => r.json()).then((j) => { levels.set(path, j); if (state.scene) setScene(); }).catch(() => {}); }
+  return levels.get(path);
+}
+
+/** Simple lit preview of an FPS level: floors, walls/doors, ceilings off, items as coloured markers. */
+function buildFps(e, node) {
+  const sc = isFpsHost(e);
+  const lv = getLevel(sc.attributes?.level ?? 'levels/level1.fpsl.json');
+  if (!lv) return;
+  const C = lv.cell ?? 4, H = lv.story ?? 3.2;
+  const parts = new Map(); // colour -> boxes
+  const add = (col, w, h, d, x, y, z) => {
+    const b = B.MeshBuilder.CreateBox('f', { width: w, height: h, depth: d }, scene);
+    b.position.set(x, y, z); b.bakeCurrentTransformIntoVertices();
+    (parts.get(col) ?? parts.set(col, []).get(col)).push(b);
+  };
+  (lv.layers ?? []).forEach((ly, i) => {
+    const y0 = i * H;
+    for (const [k, c] of Object.entries(ly.cells ?? {})) {
+      if (!c.f) continue;
+      const [x, z] = k.split(',').map(Number);
+      add('#7d8590', C, 0.1, C, (x + 0.5) * C, y0 - 0.05 + (typeof c.h === 'number' ? c.h : 0), (z + 0.5) * C);
+    }
+    for (const [k, pc] of Object.entries(ly.edges ?? {})) {
+      const [xs, zs, o] = k.split(','); const x = +xs, z = +zs;
+      const kind = String(pc.k ?? 'wall');
+      const col = /door|gate|secret/.test(kind) ? '#c98a3d' : /window|glass|bars|fence|chain|rail/.test(kind) ? '#6fb3d9' : '#d9cfb8';
+      const t = 0.2;
+      if (o === 'H') add(col, C, H, t, (x + 0.5) * C, y0 + H / 2, z * C); else add(col, t, H, C, x * C, y0 + H / 2, (z + 0.5) * C);
+    }
+  });
+  const markCol = (t) => (/player/.test(t) ? '#3da5ff' : /light/.test(t) ? '#ffe066' : /enemy|soldier|guard|zombie|runner|robot|drone|turret|mech|boss|heavy|sniper/.test(t) ? '#ff5252' : /key|medkit|ammo|armor|pickup|coin|gem|weapon/.test(t) ? '#4ade80' : /exit|checkpoint|teleport|spawn/.test(t) ? '#c792ea' : '#b0b8c4');
+  for (const it of lv.entities ?? []) add(markCol(String(it.type)), 0.6, 1.6, 0.6, it.x, (it.layer ?? 0) * H + 0.8, it.z);
+  for (const [col, boxes] of parts) {
+    const m = B.Mesh.MergeMeshes(boxes, true, true);
+    if (!m) continue;
+    const mat = new B.StandardMaterial('fm', scene); mat.diffuseColor = B.Color3.FromHexString(col); mat.specularColor = new B.Color3(0.05, 0.05, 0.05);
+    m.material = mat; m.parent = node; tag(m, e.id);
+  }
+}
+
+function buildPath(e, node, p) {
+  const pts = (p.points ?? []).map((q) => new B.Vector3(q[0], q[1], q[2] ?? 0));
+  if (pts.length < 2) return;
+  if (p.loop) pts.push(pts[0]);
+  const l = B.MeshBuilder.CreateLines(e.id + '.path', { points: pts }, scene);
+  l.color = B.Color3.FromHexString('#ffd166'); l.parent = node; l.isPickable = false; iconMeshes.push(l);
+}
+
 function buildEntity(e, parentNode, token) {
   const node = new B.TransformNode(e.name || e.id, scene);
   node.parent = parentNode;
@@ -219,6 +283,11 @@ function buildEntity(e, parentNode, token) {
     cm.material = cmat; cm.parent = node; cm.position.set(o[0], o[1], o[2]); cm.isPickable = false;
     colliderMeshes.push(cm);
   }
+  const sky = comp(e, 'skybox');
+  if (sky) makeSky(sky.path ?? 'assets/skybox/day', node);
+  const path = comp(e, 'path');
+  if (path) buildPath(e, node, path);
+  if (isFpsHost(e)) { buildFps(e, node); visual = true; }
   if (!visual) marker(e.id + '.mk', e.id, node);
   for (const c of e.children ?? []) buildEntity(c, node, token);
 }

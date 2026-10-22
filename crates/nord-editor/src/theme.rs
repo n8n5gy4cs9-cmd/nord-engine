@@ -250,9 +250,9 @@ impl Themes {
             w.fg_stroke = egui::Stroke::new(1.0_f32, fg);
         }
         v.widgets.noninteractive.fg_stroke = egui::Stroke::new(1.0_f32, dim);
-        v.widgets.inactive.bg_stroke = egui::Stroke::new(1.0, panel2);
-        v.widgets.hovered.bg_stroke = egui::Stroke::new(1.0, dim.linear_multiply(0.6));
-        v.widgets.active.bg_stroke = egui::Stroke::new(1.0, accent);
+        v.widgets.inactive.bg_stroke = egui::Stroke::new(1.0_f32, panel2);
+        v.widgets.hovered.bg_stroke = egui::Stroke::new(1.0_f32, dim.linear_multiply(0.6));
+        v.widgets.active.bg_stroke = egui::Stroke::new(1.0_f32, accent);
         ctx.set_visuals(v);
     }
 

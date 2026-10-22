@@ -2202,6 +2202,12 @@
       "status": "done"
     },
     {
+      "id": "M10-36",
+      "milestone": "M10",
+      "title": "Hierarchy shows non-entity game parts (Environment, Managers, FPS level contents); Scene view draws skybox, FPS level, paths, particles, spawners",
+      "status": "done"
+    },
+    {
       "id": "M11-01",
       "milestone": "M11",
       "title": "W0 spike: build nord-editor for wasm32 (eframe web), render hub + hierarchy in headless Chromium; record wasm size, start time, WebGL2/WebGPU; feature-gate native-only deps (wry, nord-desktop native, rfd native)",

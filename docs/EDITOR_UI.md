@@ -73,6 +73,7 @@ crates/nord-serve/      dev server + Hub (shared by `nord serve` and the editor)
 - Shortcuts: see Settings window (`panels/settings.rs::SHORTCUTS`). Palette = Cmd+K, quick open = Cmd+P.
 - Inspector: schemas for the 25 built-in component types; unknown fields are shown with a guessed widget. Script attributes come from
   `static attributes = {…}` parsed leniently (no JS evaluation). All attribute types: number/int/bool/string/color/vec2/vec3/enum/entity/asset/curve/array<T>.
+- Hierarchy **virtual rows** (italic, read-only, ids `v:…`): Environment, Managers, and FPS-level contents under the host entity — game parts that are not scene entities; the Scene view draws them too (skybox, FPS level, paths). See `virt.rs`.
 - Hierarchy: drag onto a row = reparent (top 30 % = insert before), drop on empty space = move to root, assets dropped on empty space become entities.
 - Assets: drag the divider to widen the folder tree; its scroll area fills the chosen width and scrolls long paths. The thumbnail grid keeps tiles aligned in rows at every size, including icon placeholders and loaded thumbnails. Lazy worker-thread thumbnails (images/spritesheets/audio via nord-core, models via the 3D viewport), OS file drop imports.
 - Game console: `[Play]` pages post `console.*` to the server; click `file.js:12` in a line to open it at that line.

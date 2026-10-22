@@ -195,8 +195,30 @@ function drawEntity(it) {
     ctx.fillStyle = '#7aa2ff'; ctx.font = `${12}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(u.text ?? u.type ?? 'UI', 0, 0); drawn = true;
   }
-  const cm = comp(e, 'camera');
   ctx.lineWidth = 1 / cam.zoom;
+  const pa = comp(e, 'particles');
+  if (pa && state.settings.icons !== false) { // emitter: faint cloud + label
+    ctx.fillStyle = (pa.color1 ?? '#ffb347') + '55'; ctx.beginPath(); ctx.arc(0, 0, 24, 0, 7); ctx.fill();
+    ctx.fillStyle = '#ffb347'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('✦', 0, 0); drawn = true;
+  }
+  const pt = comp(e, 'path');
+  if (pt?.points?.length > 1) {
+    ctx.strokeStyle = '#ffd166'; ctx.beginPath();
+    pt.points.forEach((q, i) => (i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])));
+    if (pt.loop) ctx.closePath();
+    ctx.stroke(); drawn = true;
+  }
+  const sp = comp(e, 'spawner');
+  if (sp && state.settings.icons !== false) {
+    ctx.strokeStyle = '#c792ea'; ctx.setLineDash([3 / cam.zoom, 3 / cam.zoom]); ctx.beginPath(); ctx.arc(0, 0, 14, 0, 7); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#c792ea'; ctx.font = '11px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('spawn', 0, 0); drawn = true;
+  }
+  const px = comp(e, 'parallax');
+  if (px?.texture && !drawn) {
+    const r = getImage(px.texture);
+    if (r.ok) { ctx.globalAlpha *= 0.6; ctx.drawImage(r.img, -r.img.naturalWidth / 2, -r.img.naturalHeight / 2); ctx.globalAlpha = 1; drawn = true; }
+  }
+  const cm = comp(e, 'camera');
   if (cm && state.settings.icons !== false) {
     const d = state.project?.display ?? { width: 1280, height: 720 };
     ctx.strokeStyle = '#ffd166'; ctx.strokeRect(-d.width / 2, -d.height / 2, d.width, d.height); drawn = true;
