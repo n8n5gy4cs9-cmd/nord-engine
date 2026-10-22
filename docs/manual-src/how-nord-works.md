@@ -10,22 +10,29 @@ This page explains what is going on behind the Play button, and which other peop
 
 ## The whole picture on one screen
 
-```
- YOU                       NORD EDITOR                      YOUR GAME FOLDER
- click, type,   ───────►   windows, panels, tools  ───────► scenes, scripts,
- press Play                (a desktop program)              pictures, sounds
-                                  │
-                                  │ Play / Export
-                                  ▼
-                        THE GAME PLAYER (a web page)
-                        Nord's own code (nord.js)
-                           + a drawing library
-                           + a physics library
-                                  │
-                                  ▼
-               what you see and hear: a game in the editor,
-               a browser tab, or a stand-alone window
-```
+<div class="flow" role="img" aria-label="You use the Nord editor, which saves your game folder. Play or Export runs the game player, made of nord.js plus a drawing library plus a physics library, which produces a game in the editor, a browser tab or a stand-alone window.">
+<div class="row">
+<div class="node you"><b>1 · You</b>Click, type, press Play<small>No terminal needed</small></div>
+<div class="arrow">→</div>
+<div class="node"><b>2 · Nord editor</b>Windows, panels, tools<small>A desktop program</small></div>
+<div class="arrow">⇄</div>
+<div class="node files"><b>3 · Your game folder</b>Scenes, scripts, pictures, sounds<small>Plain files you own</small></div>
+</div>
+<div class="down"><span>Play / Export</span><i>↓</i></div>
+<div class="node player"><b>4 · The game player</b>A small web page that runs your game
+<div class="stack">
+<div class="chip">Nord's own code<em>nord.js</em></div>
+<div class="chip">+ a drawing library<em>Phaser · Babylon.js</em></div>
+<div class="chip">+ a physics library<em>Havok · Arcade · Matter</em></div>
+</div></div>
+<div class="down"><i>↓</i></div>
+<div class="out">
+<div class="node"><b>5 · In the editor</b>Game tab<small>Test as you build</small></div>
+<div class="node"><b>5 · In a browser</b>Browser tab<small>Share the exported folder</small></div>
+<div class="node"><b>5 · On the desktop</b>Stand-alone window<small>A Mac app, for example</small></div>
+</div>
+<p class="hint">Click a box to highlight it.</p>
+</div>
 
 Three things to take from it:
 

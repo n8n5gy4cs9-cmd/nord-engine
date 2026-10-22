@@ -129,3 +129,5 @@ try{ await (async()=>{ ${get()}
     };
   }
 }
+
+(function(){document.querySelectorAll('.flow').forEach(function(f){var n=f.querySelectorAll('.node');n.forEach(function(el){el.tabIndex=0;el.addEventListener('click',function(){n.forEach(function(o){o.classList.toggle('on',o===el&&!o.classList.contains('on'))})})})})})();
