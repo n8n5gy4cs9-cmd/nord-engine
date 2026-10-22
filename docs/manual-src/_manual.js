@@ -131,3 +131,7 @@ try{ await (async()=>{ ${get()}
 }
 
 (function(){document.querySelectorAll('.flow').forEach(function(f){var n=f.querySelectorAll('.node');n.forEach(function(el){el.tabIndex=0;el.addEventListener('click',function(){n.forEach(function(o){o.classList.toggle('on',o===el&&!o.classList.contains('on'))})})})})})();
+(function(){var g=document.querySelector('.tgrid');if(!g)return;var cards=[].slice.call(g.children),q=document.querySelector('.tsearch'),cnt=document.querySelector('.tcount'),empty=document.querySelector('.tempty'),f='all',l='all';
+function run(){var s=q.value.trim().toLowerCase(),n=0;cards.forEach(function(c){var ok=(f==='all'||c.dataset.tags.split(' ').indexOf(f)>-1)&&(l==='all'||c.dataset.level===l)&&(!s||s.split(/\s+/).every(function(w){return c.dataset.q.indexOf(w)>-1}));c.hidden=!ok;if(ok)n++});cnt.textContent=n+' of '+cards.length+' tutorials';empty.hidden=n>0}
+function bind(sel,attr,set){document.querySelectorAll(sel).forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll(sel).forEach(function(o){o.classList.toggle('on',o===b)});set(b.dataset[attr]);run()})})}
+bind('.tf','f',function(v){f=v});bind('.tl','l',function(v){l=v});q.addEventListener('input',run);run()})();
