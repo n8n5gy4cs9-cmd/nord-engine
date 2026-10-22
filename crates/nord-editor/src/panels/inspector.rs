@@ -483,6 +483,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 });
             // components
             let mut remove_comp = None;
+            let mut move_comp: Option<(usize, i32)> = None;
             for (i, c) in e.components.iter_mut().enumerate() {
                 let id = format!("c{i}");
                 let fields = schema::component_fields(&c.kind);
@@ -492,12 +493,51 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     .show(ui, |ui| {
                         fields_ui(ui, &cx, &fields, &mut c.fields, &id, base_comp(i, &c.kind));
                         ui.horizontal(|ui| {
-                            if ui.small_button("Remove component").clicked() {
-                                remove_comp = Some(i);
-                            }
-                            if ui.small_button("Docs (F1)").clicked() {
-                                docs = Some(component_doc(&c.kind));
-                            }
+                            ui.menu_button("⋮", |ui| {
+                                let clip_id = egui::Id::new("component_clipboard");
+                                if ui.button("Reset").clicked() {
+                                    c.fields.clear();
+                                    schema::merge_defaults(&fields, &mut c.fields);
+                                    ui.close_menu();
+                                }
+                                if ui.button("Copy values").clicked() {
+                                    let v = (c.kind.clone(), c.fields.clone());
+                                    ui.ctx().data_mut(|d| d.insert_temp(clip_id, v));
+                                    ui.close_menu();
+                                }
+                                let clip: Option<(
+                                    String,
+                                    serde_json::Map<String, serde_json::Value>,
+                                )> = ui.ctx().data(|d| d.get_temp(clip_id));
+                                let can_paste = clip.as_ref().is_some_and(|(k, _)| *k == c.kind);
+                                if ui
+                                    .add_enabled(can_paste, egui::Button::new("Paste values"))
+                                    .clicked()
+                                {
+                                    if let Some((_, f)) = clip {
+                                        c.fields = f;
+                                    }
+                                    ui.close_menu();
+                                }
+                                ui.separator();
+                                if ui.button("Move up").clicked() {
+                                    move_comp = Some((i, -1));
+                                    ui.close_menu();
+                                }
+                                if ui.button("Move down").clicked() {
+                                    move_comp = Some((i, 1));
+                                    ui.close_menu();
+                                }
+                                ui.separator();
+                                if ui.button("Docs (F1)").clicked() {
+                                    docs = Some(component_doc(&c.kind));
+                                    ui.close_menu();
+                                }
+                                if ui.button("Remove component").clicked() {
+                                    remove_comp = Some(i);
+                                    ui.close_menu();
+                                }
+                            });
                         });
                     });
                 if f1_over(&r.header_response, ui) {
@@ -507,11 +547,29 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             if let Some(i) = remove_comp {
                 e.components.remove(i);
             }
+            if let Some((i, d)) = move_comp {
+                let j = i as i32 + d;
+                if j >= 0 && (j as usize) < e.components.len() {
+                    e.components.swap(i, j as usize);
+                }
+            }
             ui.menu_button("+ Add component", |ui| {
+                let sid = egui::Id::new("add_component_search");
+                let mut q: String = ui.ctx().data(|d| d.get_temp(sid)).unwrap_or_default();
+                let r = ui.add(egui::TextEdit::singleline(&mut q).hint_text("Search components…"));
+                r.request_focus();
+                ui.ctx().data_mut(|d| d.insert_temp(sid, q.clone()));
+                let ql = q.to_lowercase();
                 egui::ScrollArea::vertical()
                     .max_height(300.0)
                     .show(ui, |ui| {
                         for k in schema::COMPONENT_TYPES {
+                            if !ql.is_empty()
+                                && !schema::label_of(k).to_lowercase().contains(&ql)
+                                && !k.to_lowercase().contains(&ql)
+                            {
+                                continue;
+                            }
                             if ui.button(schema::label_of(k)).clicked() {
                                 let mut fields = Map::new();
                                 schema::merge_defaults(&schema::component_fields(k), &mut fields);

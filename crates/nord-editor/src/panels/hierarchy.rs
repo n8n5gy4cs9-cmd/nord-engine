@@ -284,8 +284,22 @@ fn row(
     }
     let resp = ui
         .horizontal(|ui| {
+            let mut on = e.enabled;
+            if ui.checkbox(&mut on, "").on_hover_text("Active").changed() {
+                let id = e.id.clone();
+                st.edit("Toggle active", None, |l| {
+                    if let Some(x) = scene_ops::find_mut(l, &id) {
+                        x.enabled = on;
+                    }
+                });
+            }
             ui.add(icons::icon(icon, 14.0, tint));
-            ui.selectable_label(selected, label)
+            let text = if e.prefab.is_some() {
+                egui::RichText::new(label).color(egui::Color32::from_rgb(110, 170, 255))
+            } else {
+                egui::RichText::new(label)
+            };
+            ui.selectable_label(selected, text)
                 .interact(Sense::click_and_drag())
         })
         .inner;

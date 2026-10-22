@@ -18,10 +18,10 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "�
 - [ ] G1-7 Drag assets from Project into Scene view (sprite, model, prefab, audio) with ghost preview
 - [ ] G1-8 Draw modes / gizmo toggles (grid, icons, colliders, lights)
 ## G2 Hierarchy and Inspector
-- [ ] G2-1 Drag reorder + re-parent with drop lines; multi-select
-- [ ] G2-2 Active checkbox, prefab icon + blue name, lock/hide toggles per row
-- [ ] G2-3 Inspector component cards: enable toggle, ⋮ menu (Reset, Copy/Paste values, Move up/down, Remove)
-- [ ] G2-4 Add Component searchable popup with categories
+- [x] G2-1 Drag reorder + re-parent with drop lines; multi-select
+- [~] G2-2 Active checkbox + blue prefab name done; lock/hide toggles todo (need a scene-format field)
+- [~] G2-3 Inspector component ⋮ menu (Reset, Copy/Paste values, Move up/down, Docs, Remove) done; per-component enable toggle todo
+- [~] G2-4 Add Component popup is searchable; categories todo
 - [ ] G2-5 Multi-object edit (mixed values shown as —)
 - [ ] G2-6 Object/texture/material pickers with thumbnails and drag & drop
 - [ ] G2-7 Inspector lock + Debug mode
