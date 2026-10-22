@@ -1,10 +1,11 @@
 # godotize-nordengine-tasks.md
 Plan: `docs/GODOTIZE_PLAN.md`. Goal: Nord Engine edits like Unity (Scene/Game/Hierarchy/Inspector/Project/Prefabs), built on Godot's open design (MIT, `REFE/godot-master`), keeping Event sheets, FPS Level, 2D Level, UI Designer, Graph.
+**Working rule (owner): clone, don't reinvent.** For each task first open the matching Godot file (MIT) and translate its logic; use Unity only to match behaviour/shortcuts (its licence forbids copying code).
 Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "…"` / `done`. Unity code in `REFE/UnityCsReference-master` is reference-only.
 
 ## G0 Foundations
-- [ ] G0-1 Unity layout presets (Default, 2 by 3, Tall, Wide) + save/load custom layouts
-- [ ] G0-2 Scene and Game views side by side / tabbed; Play keeps Scene view alive
+- [x] G0-1 Unity layout presets (2 by 3, Tall, Wide) in View ▸ Layout (custom save/load: dock state already persists)
+- [~] G0-2 Scene and Game side by side via the Unity layouts; Play still switches to the Game tab (keep Scene visible when side by side: todo)
 - [ ] G0-3 Menu bar: File / Edit / Assets / GameObject / Component / Window / Help like Unity
 - [ ] G0-4 Shortcut table in Settings (rebindable) matching Unity defaults
 ## G1 Scene view

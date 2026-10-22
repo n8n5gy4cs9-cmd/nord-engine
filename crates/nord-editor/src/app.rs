@@ -100,7 +100,44 @@ pub fn default_dock() -> DockState<Tab> {
 }
 
 /// Layout presets (Window ▸ Layout): same tabs, different arrangement for the job at hand.
+/// Unity's stock layouts: Scene + Game side by side ("2 by 3"), Game under Scene ("Wide"), Hierarchy/Inspector stacked ("Tall").
+fn unity_dock(kind: &str) -> DockState<Tab> {
+    let mut dock = DockState::new(vec![Tab::Scene]);
+    let s = dock.main_surface_mut();
+    let bottom = vec![
+        Tab::Assets,
+        Tab::Console,
+        Tab::Project,
+        Tab::Library,
+        Tab::History,
+    ];
+    match kind {
+        "wide" => {
+            let [scene, _] = s.split_below(NodeIndex::root(), 0.55, vec![Tab::Game]);
+            let [scene, _] = s.split_left(scene, 0.18, vec![Tab::Hierarchy]);
+            let [scene, _] = s.split_right(scene, 0.8, vec![Tab::Inspector]);
+            let _ = s.split_below(scene, 0.7, bottom);
+        }
+        "tall" => {
+            let [scene, _] = s.split_right(NodeIndex::root(), 0.5, vec![Tab::Game]);
+            let [scene, _] = s.split_left(scene, 0.2, vec![Tab::Hierarchy, Tab::Assets]);
+            let [scene, _] = s.split_right(scene, 0.78, vec![Tab::Inspector]);
+            let _ = s.split_below(scene, 0.78, vec![Tab::Console, Tab::Project]);
+        }
+        _ => {
+            let [scene, _] = s.split_right(NodeIndex::root(), 0.5, vec![Tab::Game]);
+            let [scene, _] = s.split_left(scene, 0.17, vec![Tab::Hierarchy]);
+            let [scene, _] = s.split_right(scene, 0.8, vec![Tab::Inspector]);
+            let _ = s.split_below(scene, 0.68, bottom);
+        }
+    }
+    dock
+}
+
 pub fn layout_dock(kind: &str) -> DockState<Tab> {
+    if matches!(kind, "unity" | "wide" | "tall") {
+        return unity_dock(kind);
+    }
     let (main, left, right, bottom): (Vec<Tab>, Vec<Tab>, Vec<Tab>, Vec<Tab>) = match kind {
         "2d" => (
             vec![
@@ -313,7 +350,11 @@ impl App {
                 st.push(Action::Stop);
             }
             if i.consume_key(Modifiers::NONE, Key::F5) {
-                st.push(if st.is_playing() { Action::Stop } else { Action::Play });
+                st.push(if st.is_playing() {
+                    Action::Stop
+                } else {
+                    Action::Play
+                });
             } else if i.consume_key(Modifiers::NONE, Key::F6) {
                 st.push(Action::PlayScene);
             }
@@ -791,6 +832,9 @@ impl App {
                 ui.menu_button("Layout", |ui| {
                     for (label, k) in [
                         ("Default", "default"),
+                        ("Unity 2 by 3 (Scene + Game)", "unity"),
+                        ("Unity Wide", "wide"),
+                        ("Unity Tall", "tall"),
                         ("2D game", "2d"),
                         ("3D game", "3d"),
                         ("Coding", "coding"),

@@ -1664,3 +1664,15 @@ fn remote_tree_follows_the_running_game() {
     h.get_by_label_contains("LIVE  main");
     h.get_by_label("Sprite");
 }
+
+#[test]
+fn unity_layouts_show_scene_and_game_together() {
+    use nord_editor::app::{layout_dock, Tab};
+    for k in ["unity", "wide", "tall"] {
+        let d = layout_dock(k);
+        let tabs: Vec<_> = d.iter_all_tabs().map(|(_, t)| *t).collect();
+        for t in [Tab::Scene, Tab::Game, Tab::Hierarchy, Tab::Inspector, Tab::Console] {
+            assert!(tabs.contains(&t), "{k} misses {t:?}");
+        }
+    }
+}

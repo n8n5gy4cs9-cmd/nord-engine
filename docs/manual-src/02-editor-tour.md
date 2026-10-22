@@ -107,6 +107,7 @@ The welcome screen filters both starter templates and samples with **Featured**,
 * **Assets**: right-click folders, files and the empty area for Open, Open with default app, Rename (F2), Duplicate, Delete, Reveal in Finder, Copy path and **New folder / UI scene / script / graph**.
 * **View ▸ Layout** switches between ready-made panel arrangements: Default, 2D game, 3D game, Coding, Visual scripting + UI.
 * While the game runs the toolbar shows **Pause** and **Step** (advance one frame), next to Stop and Reload.
+* **Unity layouts:** View ▸ Layout ▸ *Unity 2 by 3 / Wide / Tall* put Scene and Game side by side with Hierarchy, Inspector and Project/Console around them.
 * **Run like Unity:** **F5** = Play / Stop the whole project, **F6** = **Run this scene** (the scene open in the editor, ignoring the project's start scene; also the **Scene** toolbar button, Project menu and Cmd+K palette). Cmd+R still works. Needs *Upgrade runtime* in projects copied before this feature (the game page reads `?scene=`).
 * **Console ▸ Collapse** (on by default) shows identical lines once with a count, `(12) coin collected`, like Unity. Switch it off to see every line in order. **Clear on Play** (on by default) empties the console at every Play.
 * **Cmd+Shift+P** pauses/resumes the running game, **Cmd+Alt+P** steps one frame (as in Unity).
