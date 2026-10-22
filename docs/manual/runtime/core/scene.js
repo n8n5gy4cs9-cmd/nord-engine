@@ -85,9 +85,18 @@ export class Scene {
     return e;
   }
 
+  /** Prefab root entity; a variant (`variantOf` + `overrides`) is its base prefab's root with the overrides applied (nesting up to 8 deep). */
+  async #prefabRoot(path, depth = 0) {
+    const pf = await this.game.loadJSON(path);
+    if (pf.variantOf && depth < 8) {
+      const root = await this.#prefabRoot(pf.variantOf, depth + 1);
+      return applyOverrides(root, pf.overrides ?? {});
+    }
+    return structuredClone(pf.root);
+  }
+
   async #expandPrefab(data) {
-    const pf = await this.game.loadJSON(data.prefab.path);
-    const root = structuredClone(pf.root);
+    const root = await this.#prefabRoot(data.prefab.path);
     applyOverrides(root, data.prefab.overrides ?? {});
     // instance-level fields on the scene entity win over prefab root
     const merged = { ...root, id: data.id, transform: { ...root.transform, ...data.transform }, prefab: null };

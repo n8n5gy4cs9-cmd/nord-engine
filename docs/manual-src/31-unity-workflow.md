@@ -35,6 +35,10 @@ Each Hierarchy row has an **Active** checkbox; prefab instances are blue. Every 
 
 **Prefabs:** right-click an entity ▸ **Create prefab**, or drag it from the Hierarchy onto the Assets panel. The entity becomes an instance. Changed fields show a blue marker and a revert button; the Inspector offers **Apply all** (write the instance's overrides into the prefab file), **Revert all overrides**, **Unpack** and **Unpack completely** (also unpacks nested prefabs).
 
+**Prefab mode and variants:** right-click a prefab in Assets (or press *Open prefab* on an instance) to edit it on its own; the bar above the Scene shows **◀ Scene › Prefab: name** and leaving saves automatically. **Create variant** makes a new prefab that points at the original (`variantOf`) and stores only its own overrides, so later changes to the original flow into the variant.
+
+**Several objects at once:** select more than one entity and the Inspector shows **Active** and **Transform** for all of them (mixed values show "—"; typing a value sets it on every one) and **Add component to all**.
+
 ## Materials and import settings
 **Assets ▸ Create ▸ Material** makes a `*.mat.json` file. Select it to edit it in the Inspector, then set a `material` component's **asset** field to share it.
 
@@ -52,6 +56,10 @@ Select an image to set **Filter** (nearest = crisp pixels) and **Wrap**; select 
 <figure class="shot"><img src="assets/screenshots/ed-build-settings.png" alt="The Build Settings window with scenes in build and a platform list" loading="lazy"><figcaption>Build Settings.</figcaption></figure>
 
 The Game view toolbar has a **Resolution** drop-down (phone, 16:9, 4:3, portrait…), a scale slider, **Maximize on Play**, **Error Pause** (pauses the game when an error is logged), a **📷** screenshot button (saved in `screenshots/`) and **Stats** (an fps overlay).
+
+**Profiler and play-mode edits:** **Window ▸ Profiler** shows fps, a frame-time graph, object count, draw calls, memory and the slowest event-sheet blocks of the running game. While playing, the Inspector edits the live entity; **Apply to scene** writes its transform, active flag and existing field values into the saved scene.
+
+**Tools:** event sheets have *Find in sheet*; the node graph has *Group*, a minimap, *Docs* (F1) and *Arrange*; the UI Designer has an anchor preset grid and Copy / Paste (Ctrl/Cmd+C / V).
 
 ## Shortcuts and the checklist
 Settings lists the default shortcuts. **Help ▸ First 10 minutes** shows a checklist that ticks itself as you make an entity, attach a script, press Play, save and build.

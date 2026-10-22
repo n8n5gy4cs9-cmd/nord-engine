@@ -16,3 +16,4 @@ h3{margin:10px 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06e
 #vars .v{display:grid;grid-template-columns:1fr 1fr 22px;gap:4px;margin:3px 0}#vars input{width:100%}
 #sel{font-size:12px;line-height:1.5}#sel small{display:block;opacity:.7}
 #problems{padding-left:16px;margin:0}#problems li{margin:3px 0}
+#mini{position:absolute;right:10px;bottom:10px;width:180px;height:110px;background:#0d1117cc;border:1px solid #384050;border-radius:4px;cursor:pointer}

@@ -380,6 +380,8 @@ pub struct EventsUi {
     last_edit: Option<Instant>,
     picker: Option<Picker>,
     new_name: String,
+    /// "Find in sheet": only events/groups whose JSON contains this text are shown
+    pub find: String,
     /// set by load/undo/redo so the diff at the end of the frame is not recorded as a user edit
     skip_record: bool,
 }
@@ -399,6 +401,8 @@ struct Ctx {
     vars: Vec<String>,
     /// declared data objects (name, plugin type) from the sheet and `settings.dataObjects`
     data: Vec<(String, String)>,
+    /// lower-case "Find in sheet" text (empty = show everything)
+    find: String,
 }
 
 /// `{type:"object", name, plugin}` declarations anywhere in the sheet.
@@ -706,7 +710,13 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         objects: entity_names(st),
         vars,
         data,
+        find: st.events.find.to_lowercase(),
     };
+    ui.add(
+        egui::TextEdit::singleline(&mut st.events.find)
+            .hint_text("Find in sheet…")
+            .desired_width(f32::INFINITY),
+    );
     let mut ops: Vec<Op> = vec![];
     egui::ScrollArea::vertical()
         .auto_shrink([false, false])
@@ -870,6 +880,9 @@ fn nodes(ui: &mut Ui, list: &mut [Value], parent: &mut Path, cx: &Ctx, ops: &mut
     for i in 0..list.len() {
         let mut path = parent.clone();
         path.push(i);
+        if !cx.find.is_empty() && !list[i].to_string().to_lowercase().contains(&cx.find) {
+            continue; // hidden by Find in sheet
+        }
         let ty = list[i]["type"].as_str().unwrap_or("event").to_string();
         match ty.as_str() {
             "group" => group(ui, &mut list[i], &path, cx, ops),

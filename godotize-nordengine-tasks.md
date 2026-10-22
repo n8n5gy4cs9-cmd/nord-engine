@@ -45,11 +45,11 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "�
 - [x] G5-4 Error Pause, Clear on Play, Play focused (Maximize on Play)
 ## G6 Improve existing tools
 - [~] G6-1 UI Designer: anchor preset grid + more preview resolutions done; canvas scaler and on-canvas rect handles todo
-- [ ] G6-2 UI Designer: Layout groups, sprite-state buttons, tint in skins, copy/paste/undo polish, UI prefabs
-- [ ] G6-3 Graph: comments/groups, reroute, categorised search-to-add, subgraphs, minimap, auto-layout
-- [ ] G6-4 Graph: variables panel, live flow highlight while playing, F1 node docs
-- [ ] G6-5 Event sheets: Inspector-style param editors, search, debug highlight, F1 docs
-- [ ] G6-6 FPS Level + 2D Level editors: share Scene-view navigation/snapping/hotkeys
+- [~] G6-2 UI Designer: Copy/Paste nodes (buttons + Ctrl/Cmd+C/V) done; vbox/hbox layout panels and undo existed; sprite-state buttons, skin tint, UI prefabs todo
+- [~] G6-3 Graph: Group button, minimap, reroute/comment nodes, auto-arrange and node search existed/added; subgraphs todo
+- [~] G6-4 Graph: variables panel existed; F1 / Docs button opens the node reference; live flow highlight while playing todo
+- [~] G6-5 Event sheets: Find in sheet added (ACE picker search existed); Inspector-style param editors, debug highlight, F1 docs todo
+- [ ] G6-6 FPS Level + 2D Level editors: share Scene-view navigation/snapping/hotkeys — not started
 ## G7 Fun features
 - [x] G7-1 File ▸ New scene… dialog with templates (empty, 2D, 3D, UI host)
 - [x] G7-2 Find References / project search (Project tab, Assets right-click ▸ Find references; existed since M10)
@@ -91,5 +91,5 @@ Keep the current NordScript API; add helpers/libraries so scripts feel like Unit
 G10 done 2026-10-22: `runtime/core/unity.js` (+ core.test.mjs tests), templates in Assets menu, manual chapter 4 section. Not run in a browser/editor yet.
 
 ## Status 2026-10-22 (end of session)
-Done: G0-1..3, G1-1/2/4 (+partial 3/5/6), G2-1, G3-3, G4-1/2, G5-1/3/4, G7-1/2/5/6/7, G8-1/2, G9-1..6, G10 all. Partial: G0-4, G1-3/5/6, G2-2/3/4/7, G3-2, G4-3/4/5/6, G5-2, G6-1, G7-4, G8-4, G9-7. Not started: G1-7/8, G2-5/6, G3-1/4/5, G6-2..6, G7-3, G8-3/5.
+Done: G0-1..3, G1-1/2/4, G2-1/5, G3-1/3/4, G4-1/2, G5-1/3/4, G7-1..7, G8-1/2, G9-1..6, G10 all. Partial: G0-4, G1-3/5/6, G2-2/3/4/6/7, G3-2/5, G4-3/4/5/6, G5-2, G6-1..5, G8-4, G9-7. Not started: G1-7/8, G6-6, G8-3/5.
 Screenshots for the docs are rendered offscreen: `DUMP_SHOTS=$PWD/docs/screenshots cargo test -p nord-editor --test shots -- --ignored` (webview panes are not part of the images).

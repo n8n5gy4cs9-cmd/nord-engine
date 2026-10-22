@@ -170,6 +170,41 @@ function arrange() {
 }
 $('#fit').onclick = fit; $('#arrange').onclick = arrange;
 
+// ── groups, docs (F1), minimap ──
+$('#group').onclick = () => {
+  const sel = Object.values(canvas.selected_nodes ?? {});
+  if (!sel.length) return status('Select some nodes first', true);
+  const x0 = Math.min(...sel.map((n) => n.pos[0])), y0 = Math.min(...sel.map((n) => n.pos[1])), x1 = Math.max(...sel.map((n) => n.pos[0] + n.size[0])), y1 = Math.max(...sel.map((n) => n.pos[1] + n.size[1]));
+  const g = new LiteGraph.LGraphGroup(prompt('Group title', 'Group') ?? 'Group');
+  g.pos = [x0 - 20, y0 - 50]; g.size = [x1 - x0 + 40, y1 - y0 + 70];
+  graph.add(g); canvas.setDirty(true, true); S.dirty = true;
+};
+function openDocs() {
+  const sel = Object.values(canvas.selected_nodes ?? {})[0];
+  const spec = sel && NODES[sel.type];
+  window.open('/__docs/nord/guides/graph-reference.html', '_blank');
+}
+$('#docs').onclick = openDocs;
+addEventListener('keydown', (e) => { if (e.key === 'F1') { e.preventDefault(); openDocs(); } });
+const mini = $('#mini'), mctx = mini.getContext('2d');
+function drawMini() {
+  mctx.clearRect(0, 0, mini.width, mini.height);
+  const ns = graph._nodes; if (!ns.length) return;
+  const x0 = Math.min(...ns.map((n) => n.pos[0])), y0 = Math.min(...ns.map((n) => n.pos[1])), x1 = Math.max(...ns.map((n) => n.pos[0] + n.size[0])), y1 = Math.max(...ns.map((n) => n.pos[1] + n.size[1]));
+  const k = Math.min((mini.width - 10) / Math.max(1, x1 - x0), (mini.height - 10) / Math.max(1, y1 - y0));
+  mini._m = { x0, y0, k };
+  mctx.fillStyle = '#88c0d0aa';
+  for (const n of ns) mctx.fillRect(5 + (n.pos[0] - x0) * k, 5 + (n.pos[1] - y0) * k, Math.max(2, n.size[0] * k), Math.max(2, n.size[1] * k));
+  const sc = canvas.ds.scale, w = $('#stage').clientWidth / sc, h = $('#stage').clientHeight / sc, vx = -canvas.ds.offset[0], vy = -canvas.ds.offset[1];
+  mctx.strokeStyle = '#ebcb8b'; mctx.strokeRect(5 + (vx - x0) * k, 5 + (vy - y0) * k, w * k, h * k);
+}
+mini.onclick = (e) => {
+  const m = mini._m; if (!m) return;
+  const r = mini.getBoundingClientRect(), gx = (e.clientX - r.left - 5) / m.k + m.x0, gy = (e.clientY - r.top - 5) / m.k + m.y0;
+  const sc = canvas.ds.scale; canvas.ds.offset = [-(gx - $('#stage').clientWidth / sc / 2), -(gy - $('#stage').clientHeight / sc / 2)]; canvas.setDirty(true, true);
+};
+setInterval(drawMini, 400);
+
 // ── templates ──
 const link = (a, out, b, inp) => { const o = a.outputs.findIndex((x) => x.name === out), i = b.inputs.findIndex((x) => x.name === inp); if (o >= 0 && i >= 0) a.connect(o, b, i); };
 const put = (type, x, y, props = {}) => { const n = LG.createNode(type); n.pos = [x, y]; graph.add(n); for (const [k, v] of Object.entries(props)) { n.properties[k] = v; const w = n.widgets?.find((w) => w.name === k); if (w) w.value = v; } return n; };

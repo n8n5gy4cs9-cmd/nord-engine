@@ -16,6 +16,8 @@
   <button id="new">New</button><button id="open">Open</button><button id="save" class="pri">Save</button>
   <span class="sep"></span>
   <button id="fit" title="Zoom to fit (F)">Fit</button>
+  <button id="group" title="Draw a titled group around the selected nodes">Group</button>
+  <button id="docs" title="Open the manual page for the selected node (F1)">Docs</button>
   <button id="arrange" title="Tidy the selected nodes into a column">Arrange</button>
   <button id="check">Validate</button>
   <span id="status"></span>
@@ -25,7 +27,7 @@
     <input id="search" placeholder="Search nodes…" spellcheck="false">
     <div id="palette"></div>
   </aside>
-  <section id="stage"><canvas id="cv"></canvas><div id="hint">Double-click or right-click the canvas to add a node · drag from a pin to connect · Del deletes · Ctrl+D duplicates</div></section>
+  <section id="stage"><canvas id="cv"></canvas><canvas id="mini" width="180" height="110" title="Minimap: click to jump"></canvas><div id="hint">Double-click or right-click the canvas to add a node · drag from a pin to connect · Del deletes · Ctrl+D duplicates</div></section>
   <aside id="right">
     <h3>Variables</h3>
     <div id="vars"></div>

@@ -149,6 +149,21 @@ function anchorGrid(f, select, n) {
   fill.onclick = () => { checkpoint(); put(n, 'anchor', 'fill'); select.value = 'fill'; refresh(); };
 }
 
+// Copy / paste nodes (Ctrl/Cmd+C, Ctrl/Cmd+V while not typing). Paste goes into the selected container, else next to the selection.
+function copyNode(n) { if (n === S.def.root) return status('The root cannot be copied', true); S.clip = JSON.stringify(n); status('Copied ' + (n.name || n.type)); }
+function pasteNode(into) {
+  if (!S.clip) return status('Nothing copied yet', true);
+  const c = JSON.parse(S.clip); if (c.name) c.name += '2';
+  checkpoint();
+  if (CONTAINERS.has(into.type)) (into.children ??= []).push(c);
+  else { const r = find(S.def.root, into); (r.parent ?? S.def.root).children.splice(((r.parent ?? S.def.root).children.indexOf(into)) + 1, 0, c); }
+  S.sel = c; refresh();
+}
+addEventListener('keydown', (e) => {
+  if (!(e.metaKey || e.ctrlKey) || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || !S.sel) return;
+  if (e.key === 'c') { copyNode(S.sel); } else if (e.key === 'v') { e.preventDefault(); pasteNode(S.sel); }
+});
+
 function renderProps() {
   const p = $('#props'); p.textContent = '';
   const n = S.sel; if (!n) { p.textContent = 'Select a node.'; return; }
@@ -190,6 +205,7 @@ function renderProps() {
   const acts = el('div', { className: 'acts' }, p);
   const btn = (t, f) => { el('button', { textContent: t, onclick: f }, acts); };
   btn('Duplicate', () => { const r = find(S.def.root, n); if (!r.parent) return; checkpoint(); const c = clone(n); if (c.name) c.name += '2'; r.parent.children.splice(r.parent.children.indexOf(n) + 1, 0, c); S.sel = c; refresh(); });
+  btn('Copy', () => copyNode(n)); btn('Paste', () => pasteNode(n));
   btn('Up', () => shift(n, -1)); btn('Down', () => shift(n, 1));
   btn('Delete', () => { const r = find(S.def.root, n); if (!r.parent) return; checkpoint(); r.parent.children.splice(r.parent.children.indexOf(n), 1); S.sel = r.parent; refresh(); });
 }
