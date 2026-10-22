@@ -774,13 +774,15 @@ fn game_view_anchor_top_and_bottom() {
         "anchor does not move the game view: {ys:?}"
     );
     h.state_mut().st.settings.game_anchor = [0.5, 0.0];
+    h.state_mut().st.settings.game_offset = [0.0, 0.0];
+    h.run_steps(3);
+    let base = h.state().web.rects["game"].min.y; // the toolbar may wrap differently by now
     h.state_mut().st.settings.game_offset = [40.0, 30.0];
     h.run_steps(3);
     let r = h.state().web.rects["game"];
     assert!(
-        r.min.y > ys[0] + 29.0 && r.min.y < ys[0] + 31.0,
-        "y offset ignored: {r:?} vs {}",
-        ys[0]
+        r.min.y > base + 29.0 && r.min.y < base + 31.0,
+        "y offset ignored: {r:?} vs {base}"
     );
 }
 
