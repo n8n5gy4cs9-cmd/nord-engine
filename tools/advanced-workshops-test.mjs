@@ -30,12 +30,12 @@ try{
  await post('/api/step',{id:started.id,tile:0});assert.equal((await (await fetch(base+'/api/board')).json()).board.length,1);
  const {errors}=await withPage(`${projects}/circuit-vault`,async page=>{
   await waitReady(page);await page.locator('#api').fill(base);await page.locator('#start').click();
-  await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('Stage 1/6'));
+  await page.waitForFunction(()=>document.querySelector('[data-nord-ui]').shadowRoot.querySelector('#status').textContent.includes('Stage 1/6'));
   for(let round=1;round<=6;round++){
    for(let i=0;i<round;i++){await page.locator('[data-tile="0"]').click();await page.waitForTimeout(40);}
-   if(round<6)await page.waitForFunction(r=>document.querySelector('#status').textContent.includes('Stage '+r+'/6'),round+1);
+   if(round<6)await page.waitForFunction(r=>document.querySelector('[data-nord-ui]').shadowRoot.querySelector('#status').textContent.includes('Stage '+r+'/6'),round+1);
   }
-  await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('VAULT OPEN'));
+  await page.waitForFunction(()=>document.querySelector('[data-nord-ui]').shadowRoot.querySelector('#status').textContent.includes('VAULT OPEN'));
   assert.equal(await page.locator('#board b').count(),0,'leaderboard uses text, never player HTML');
   await page.screenshot({path:`${ROOT}/docs/screenshots/ed-advanced-circuit-vault.png`});
  });assert.deepEqual(errors,[]);console.log('Node HTTP validation, real cross-origin UI requests, six-stage win and leaderboard OK');

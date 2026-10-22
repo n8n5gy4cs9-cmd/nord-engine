@@ -4,32 +4,36 @@
 //   menu.on('start', () => …);  menu.get('score').text = '12';  menu.set('score', 12);
 // No dependencies. Standalone (plain HTML projects) or via `game.ui.load(...)`. Spec: docs/UI_SCENES.md
 export const UI_VERSION = 1;
-export const NODE_TYPES = ['panel', 'vbox', 'hbox', 'grid', 'center', 'scroll', 'label', 'button', 'image', 'bar', 'slider', 'input', 'checkbox', 'select', 'spacer', 'html', 'instance'];
-export const CONTAINERS = new Set(['panel', 'vbox', 'hbox', 'grid', 'center', 'scroll']);
+export const NODE_TYPES = ['box', 'panel', 'vbox', 'hbox', 'grid', 'center', 'scroll', 'label', 'button', 'image', 'canvas', 'bar', 'slider', 'input', 'checkbox', 'select', 'spacer', 'html', 'instance'];
+export const CONTAINERS = new Set(['box', 'panel', 'vbox', 'hbox', 'grid', 'center', 'scroll']);
 const ANCHOR = { tl: [0, 0], t: [0.5, 0], tr: [1, 0], l: [0, 0.5], c: [0.5, 0.5], r: [1, 0.5], bl: [0, 1], b: [0.5, 1], br: [1, 1] };
 
 export const UI_CSS = `
 :host{all:initial;position:absolute;inset:0;display:block;pointer-events:none;font-family:var(--nord-font-ui,Inter,system-ui,sans-serif);color:var(--nord-fg,#eceff4);font-size:16px;line-height:1.25}
+:host(.page){position:relative;inset:auto;pointer-events:auto;font:inherit;color:inherit;line-height:normal}
 *{box-sizing:border-box}
 .n{pointer-events:auto;position:relative;min-width:0}
 .n[hidden]{display:none!important}
 .root{position:absolute;inset:0;pointer-events:none}.root>.n{pointer-events:auto}
+.root.page{position:static;pointer-events:auto}
 .a{position:absolute}.a.fill{inset:0}
-.panel{background:var(--nord-panel,#3b4252);border:1px solid var(--nord-border,#4c566a);border-radius:8px;padding:12px;box-shadow:0 4px 16px #0006}
 .vbox,.hbox,.center{display:flex}.vbox{flex-direction:column}.hbox{flex-direction:row}.center{align-items:center;justify-content:center}
 .grid{display:grid}.scroll{overflow:auto}
-.panel.vbox,.panel.hbox{display:flex}
-.label{pointer-events:none;white-space:pre-wrap;text-shadow:0 1px 3px #000a}
-.button{background:var(--nord-accent,#88c0d0);color:var(--nord-bg,#2e3440);border:0;border-radius:6px;padding:8px 16px;font:600 1em var(--nord-font-ui,Inter,system-ui,sans-serif);cursor:pointer}
-.button:hover{filter:brightness(1.1)}.button:active{transform:translateY(1px)}.button:disabled{opacity:.45;cursor:default;filter:none}
-.button.on{outline:2px solid var(--nord-fg,#eceff4)}
-.image{pointer-events:none;display:block}
-.bar{background:var(--nord-bg,#2e3440);border:1px solid var(--nord-border,#4c566a);border-radius:4px;overflow:hidden;height:16px;min-width:40px}
-.bar>i{display:block;height:100%;background:var(--nord-good,#a3be8c);transform-origin:left;transform:scaleX(1);transition:transform .08s linear}
-.input,.select{background:var(--nord-bg,#2e3440);color:inherit;border:1px solid var(--nord-border,#4c566a);border-radius:6px;padding:6px 10px;font:inherit}
-.slider{accent-color:var(--nord-accent,#88c0d0)}
+.image,.canvas{display:block}
+.bar>i{display:block;height:100%;transform-origin:left;transform:scaleX(1);transition:transform .08s linear}
 .checkbox{display:inline-flex;gap:8px;align-items:center;cursor:pointer}
-.checkbox input{accent-color:var(--nord-accent,#88c0d0);width:1.1em;height:1.1em}
+/* Cosmetic defaults sit at zero specificity (:where), so a project stylesheet always wins. */
+:where(.panel){background:var(--nord-panel,#3b4252);border:1px solid var(--nord-border,#4c566a);border-radius:8px;padding:12px;box-shadow:0 4px 16px #0006}
+:where(.label){white-space:pre-wrap;text-shadow:0 1px 3px #000a;pointer-events:none}
+:where(.page .label){text-shadow:none;pointer-events:auto}
+:where(.button){background:var(--nord-accent,#88c0d0);color:var(--nord-bg,#2e3440);border:0;border-radius:6px;padding:8px 16px;font:600 1em var(--nord-font-ui,Inter,system-ui,sans-serif);cursor:pointer}
+:where(.button:hover){filter:brightness(1.1)}:where(.button:active){transform:translateY(1px)}
+:where(.button:disabled){opacity:.45;cursor:default;filter:none}
+:where(.button.on){outline:2px solid var(--nord-fg,#eceff4)}
+:where(.bar){background:var(--nord-bg,#2e3440);border:1px solid var(--nord-border,#4c566a);border-radius:4px;overflow:hidden;height:16px;min-width:40px}
+:where(.bar>i){background:var(--nord-good,#a3be8c)}
+:where(.input,.select){background:var(--nord-bg,#2e3440);color:inherit;border:1px solid var(--nord-border,#4c566a);border-radius:6px;padding:6px 10px;font:inherit}
+:where(.slider,.checkbox input){accent-color:var(--nord-accent,#88c0d0)}
 `;
 
 const num = (v, u = 'px') => (typeof v === 'number' ? v + u : v);
@@ -132,6 +136,11 @@ class Screen {
     this.shadow = this.host.shadowRoot ?? this.host.attachShadow({ mode: 'open' });
     styleInto(this.doc, this.shadow);
     this.rootEl = this.doc.createElement('div'); this.rootEl.className = 'root';
+    if (def.page) { this.host.classList.add('page'); this.rootEl.classList.add('page'); }
+    if (def.body && this.doc.body) Object.assign(this.doc.body.style, def.body);
+    // Project stylesheets (e.g. style.css) are linked inside the shadow root; `ready` resolves when they loaded.
+    const links = (def.styles ?? []).map((href) => new Promise((res) => { const l = this.doc.createElement('link'); l.rel = 'stylesheet'; l.href = href; l.onload = l.onerror = res; this.shadow.appendChild(l); }));
+    this.ready = Promise.all(links);
     this.shadow.appendChild(this.rootEl);
     if (def.theme) for (const [k, v] of Object.entries(def.theme)) this.host.style.setProperty(k.startsWith('--') ? k : `--nord-${k}`, v);
     const frag = this.doc.createDocumentFragment();
@@ -141,6 +150,8 @@ class Screen {
     this.visible = def.visible !== false;
     this.host.style.display = this.visible ? '' : 'none';
   }
+  /** True while a text field inside this screen has focus (use it to ignore game keys). */
+  get typing() { return /^(INPUT|TEXTAREA|SELECT)$/.test(this.shadow.activeElement?.tagName ?? ''); }
   /** Node handle by name (or null). */
   get(name) { return this.byName.get(name) ?? null; }
   $(name) { const n = this.byName.get(name); if (!n) throw new Error(`UI "${this.name}": no node named "${name}"`); return n; }
@@ -196,7 +207,7 @@ class Screen {
     let s = n.el.dataset.raw ?? '';
     if (s.startsWith('@') && this.t) s = this.t(s.slice(1)) ?? s;
     if (s.includes('{')) s = s.replace(/\{(\w+)\}/g, (_, k) => this.vars[k] ?? '');
-    if (n.def.type === 'label') { if (n.def.rich === false) { if (n.el.textContent !== s) n.el.textContent = s; } else if (n.el.__last !== s) { n.el.__last = s; richText(this.doc, n.el, s); } } else if (n.el.__last !== s) { n.el.__last = s; if (n.def.type === 'button' || n.def.type === 'checkbox') { const tgt = n.def.type === 'checkbox' ? n.el.lastChild : n.el; tgt.textContent = s; } else n.el.textContent = s; }
+    if (n.def.type === 'label') { if (n.def.rich === false) { if (n.el.textContent !== s) n.el.textContent = s; } else if (n.el.__last !== s) { n.el.__last = s; richText(this.doc, n.el, s); } } else if (n.el.__last !== s) { n.el.__last = s; if (n.def.type === 'button' || n.def.type === 'checkbox') { const tgt = n.def.type === 'checkbox' ? n.el.lastChild : n.el; if (s.includes('[')) richText(this.doc, tgt, s); else tgt.textContent = s; } else n.el.textContent = s; }
   }
   _watch(n, def) {
     const raw = def.text;
@@ -223,13 +234,24 @@ class Screen {
       case 'image': el = d.createElement('img'); el.src = def.src ?? ''; el.alt = def.alt ?? ''; el.draggable = false; if (def.fit) el.style.objectFit = def.fit; break;
       case 'bar': el = d.createElement('div'); el.appendChild(d.createElement('i')); break;
       case 'slider': el = d.createElement('input'); el.type = 'range'; el.min = def.min ?? 0; el.max = def.max ?? 1; el.step = def.step ?? 0.01; el.value = def.value ?? 0; break;
-      case 'input': el = d.createElement('input'); el.type = def.password ? 'password' : 'text'; if (def.placeholder) el.placeholder = def.placeholder; if (def.value !== undefined) el.value = def.value; break;
+      case 'input':
+        el = d.createElement(def.multiline ? 'textarea' : 'input');
+        if (!def.multiline) el.type = def.password ? 'password' : def.inputType ?? 'text';
+        if (def.placeholder) el.placeholder = def.placeholder;
+        if (def.accept) el.accept = def.accept;
+        if (def.maxlength) el.maxLength = def.maxlength;
+        if (def.checked) el.checked = true;
+        if (def.value !== undefined) el.value = def.value;
+        break;
       case 'select': el = d.createElement('select'); for (const o of def.options ?? []) { const op = d.createElement('option'); const [v, l] = Array.isArray(o) ? o : [o, o]; op.value = v; op.textContent = l; el.appendChild(op); } if (def.value !== undefined) el.value = def.value; break;
       case 'checkbox': { el = d.createElement('label'); const i = d.createElement('input'); i.type = 'checkbox'; i.checked = !!def.checked; el.appendChild(i); el.appendChild(d.createElement('span')); break; }
       case 'html': el = d.createElement('div'); el.innerHTML = def.html ?? ''; break; // escape hatch: your own markup, still inside the shadow root
-      default: el = d.createElement('div');
+      case 'canvas': el = d.createElement('canvas'); if (def.w) el.width = def.w; if (def.h) el.height = def.h; break;
+      default: el = d.createElement(def.tag ?? 'div');
     }
-    el.classList.add('n', t); if (def.class) for (const c of String(def.class).split(/\s+/)) if (c) el.classList.add(c);
+    el.classList.add('n', t);
+    if (def.name) el.id = def.name; // shadow-scoped id: project CSS (#status) and browser tests can use it
+    if (def.attrs) for (const [k, v] of Object.entries(def.attrs)) el.setAttribute(k, v); if (def.class) for (const c of String(def.class).split(/\s+/)) if (c) el.classList.add(c);
     if (t === 'panel' && def.layout) el.classList.add(def.layout === 'hbox' ? 'hbox' : 'vbox');
     const n = new Node(this, def, el, parent);
     if (def.name) { if (!this.byName.has(def.name)) this.byName.set(def.name, n); }
@@ -261,7 +283,7 @@ class Screen {
       }
       if (def.margin !== undefined && a === 'fill') s.inset = box(def.margin);
     } else if (def.margin !== undefined) s.margin = box(def.margin);
-    if (def.w !== undefined) s.width = num(def.w); if (def.h !== undefined) s.height = num(def.h);
+    if (t !== 'canvas') { if (def.w !== undefined) s.width = num(def.w); if (def.h !== undefined) s.height = num(def.h); } else if (def.w || def.h) s.maxWidth = '100%';
     if (def.minW !== undefined) s.minWidth = num(def.minW); if (def.maxW !== undefined) s.maxWidth = num(def.maxW);
     if (def.grow !== undefined) s.flexGrow = def.grow;
     if (def.padding !== undefined) s.padding = box(def.padding);
@@ -302,7 +324,9 @@ export class UIManager {
   async load(src, opts = {}) {
     const def = await this._def(src);
     await this._preload(def.root);
-    return this.build(def, { name: typeof src === 'string' && !opts.name ? def.name ?? src : undefined, ...opts });
+    const s = this.build(def, { name: typeof src === 'string' && !opts.name ? def.name ?? src : undefined, ...opts });
+    await s.ready;
+    return s;
   }
   /** Synchronous build from an object (instances must already be defined/loaded). */
   build(def, opts = {}) {

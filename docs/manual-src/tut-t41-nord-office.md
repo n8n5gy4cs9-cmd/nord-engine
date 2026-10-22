@@ -35,6 +35,8 @@ Open these files from the Assets panel in Nord's editor:
 | File | What it owns |
 | --- | --- |
 | `rules.js` | Map, collision, movement, tasks, morale, shift rules and AI |
+| `ui/office.ui.json` | Page layout, text and form fields, edited in the UI Designer |
+| `lib/nord-ui.js` | The Nord UI runtime that builds the UI file |
 | `app.js` | Canvas rendering, keyboard, task UI, solo loop and network client |
 | `server.mjs` | Authoritative rooms, sessions, input expiry and host controls |
 | `server-kit.mjs` | Node HTTP transport, JSON parsing and static allowlist |
@@ -42,7 +44,7 @@ Open these files from the Assets panel in Nord's editor:
 | `index.html` | Generated mount entry point |
 | `nord.project.json` | Nord HTML project and export identity |
 
-Change the opening description in `app.js`, then stop and start Play. Open the Console if a syntax error prevents the page mounting. This project has no engine Scene hierarchy because the HTML tier owns its application lifecycle through `mount(root)`; the canvas map is the game's one level. For scene-based 2D/3D scripting and `game.restart()`, see T33, T34 and T39. Here Start/Restart replaces the shift's data and leaves the page and connections alive.
+Change the opening description in `ui/office.ui.json` (or the UI Designer), then stop and start Play. Open the Console if a syntax error prevents the page mounting. This project has no engine Scene hierarchy because the HTML tier owns its application lifecycle through `mount(root)`; the canvas map is the game's one level. For scene-based 2D/3D scripting and `game.restart()`, see T33, T34 and T39. Here Start/Restart replaces the shift's data and leaves the page and connections alive.
 
 ## 3. Build a tile grid with meaningful stations
 
@@ -164,7 +166,7 @@ For example, Kirpich's active-piece geometry and staged lock/clear transitions d
 
 Test movement against desks and walls, near/far interactions, wrong and correct puzzle answers, coffee timing, task cancellation, prank cooldown, AI routing, morale loss, victory and restart. In two browsers verify that both see movement, ownership, score and the same result. Stop Node to test connection-error messages, then restart it and rejoin. The repository browser tests cover real keyboard movement, task clicks, pranks, AI completion and two-client snapshots; rule tests cover both win and loss and HTTP host restrictions.
 
-Export the client using Nord's HTML target and serve it over HTTP. Solo practice remains entirely local and offline. Keep the downloaded `server.mjs`, `server-kit.mjs`, `rules.js`, `index.html`, `app.js` and `style.css` together to host multiplayer. The server serves its own client files; it is a separate running process from the static export.
+Export the client using Nord's HTML target and serve it over HTTP. Solo practice remains entirely local and offline. Keep the downloaded `server.mjs`, `server-kit.mjs`, `rules.js`, `index.html`, `app.js`, `ui/office.ui.json`, `lib/nord-ui.js` and `style.css` together to host multiplayer. The server serves its own client files; it is a separate running process from the static export.
 
 A useful next feature is interpolation between snapshots. Keep the last two server positions in a view-only structure and blend their screen coordinates; leave collisions and task distance authoritative. Another is adding a fourth puzzle type: define its state in `rules.js`, add its DOM controls in `app.js`, and test success, failure and cancellation before increasing the number of stations.
 
@@ -180,6 +182,7 @@ The walkthrough covers the app/game modules, shared helpers used by them, page, 
 | --- | --- |
 | [rules.js](#walk-rules-js) | Build all office rules: map, players, movement, tasks, pranks, pathfinding and shift results. |
 | [app.js](#walk-app-js) | Connect every HTML control, puzzle panel, canvas layer and polling path to the shared office rules. |
+| [ui/office.ui.json](#walk-ui-office-ui-json) | Describe the office page as data: title, four controls, map canvas, task panel, the online form with tickets and log, and the footer. |
 | [server.mjs](#walk-server-mjs) | Implement the complete room API, host controls and stale-input safety. |
 | [server-kit.mjs](#walk-server-kit-mjs) | Read the entire package-free HTTP adapter shared by the game servers. |
 | [index.html](#walk-index-html) | Read the complete Nord page entry point and its failure path. |
@@ -614,11 +617,11 @@ export function publicOffice(s, id) {
 
 Connect every HTML control, puzzle panel, canvas layer and polling path to the shared office rules.
 
-#### 2.1 — Declare the page and the available rule operations
+#### 2.1 — Imports, load the UI file and name the handles
 
-**Read:** `app.js`, lines 1–38.
+**Read:** `app.js`, lines 1–36.
 
-<!-- taught-source: nord-office/app.js:1-38 -->
+<!-- taught-source: nord-office/app.js:1-36 -->
 
 ```js
 import {
@@ -635,77 +638,13 @@ import {
   cancelJob,
   nearby,
 } from './rules.js';
-export function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <link rel="stylesheet" href="style.css" />
-    <main>
-      <header>
-        <h1>NORD ENGINE OFFICE</h1>
-        <p>Ship the engine. Fix the coffee. Survive your interns.</p>
-      </header>
-      <nav>
-        <button id="solo">Solo + AI practice</button>
-        <button id="start">Start / Restart shift</button>
-        <button id="bot">Toggle AI coworker</button>
-        <button id="pause">Pause solo</button>
-      </nav>
-      <section class="layout">
-        <div>
-          <canvas width="768" height="512" aria-label="Office game map"></canvas>
-          <h2 id="hud"></h2>
-          <p>
-            WASD / arrows: walk · E: work nearby · X: introduce a bug · Esc: cancel task
-          </p>
-          <div id="task"></div>
-          <p id="result"></p>
-        </div>
-```
-
-**What and why:** Imports enumerate the exact local rule functions that the host can invoke. The header/navigation provide solo, shift, AI and pause controls. The canvas size matches 24 by 16 tiles at 32 pixels. The task/result containers separate dynamic interaction from the map so a rendered sprite is not responsible for validating a fix.
-
-**Try it / expected result:** Find work/cancel controls in the page and later in command(). Trace one control from its ID to the rule call.
-
-#### 2.2 — Collect online details without replacing solo play
-
-**Read:** `app.js`, lines 39–87.
-
-<!-- taught-source: nord-office/app.js:39-87 -->
-
-```js
-        <aside>
-          <h2>Invite interns</h2>
-          <label>
-            Name
-            <input id="name" value="Intern" maxlength="20" />
-          </label>
-          <label>
-            Room
-            <input id="room" value="NORD" maxlength="8" />
-          </label>
-          <label>
-            Server
-            <input id="server" />
-          </label>
-          <button id="join">Join online office</button>
-          <p id="network">
-            Run node server.mjs to host friends. Solo works without a server.
-          </p>
-          <h2>Tickets</h2>
-          <div id="tickets"></div>
-          <h2>Office log</h2>
-          <div id="log"></div>
-          <p>
-            Host starts the shift. Finish 12 tasks in 150 seconds. Too many open bugs
-            drain morale. X pranks a fixed nearby station, with a 15-second cooldown.
-          </p>
-          <p>Ada is a local pathfinding AI coworker, no account or API key needed.</p>
-        </aside>
-      </section>
-      <footer>Crowelian 2026 + Sonnet · Original code and canvas graphics</footer>
-    </main>
-  `;
-  const $ = (id) => root.querySelector('#' + id),
-    ctx = root.querySelector('canvas').getContext('2d'),
+import { createUI } from './lib/nord-ui.js';
+export async function mount(root) {
+  // Layout, text and fields live in ui/office.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/office.ui.json');
+  // $('name') = the DOM element with that id (null for ids made later in code, like the coffee meter)
+  const $ = (id) => menu.shadow.getElementById(id),
+    ctx = $('map').getContext('2d'),
     keys = new Set();
   let s = newOffice(),
     you = 'solo',
@@ -723,15 +662,15 @@ export function mount(root) {
     location.port === '4383' ? location.origin : 'http://127.0.0.1:4383';
 ```
 
-**What and why:** The sidebar exposes name, room and server plus ticket/log outputs. It explains host ownership and AI behaviour. These are presentation promises implemented later, not a server hidden in the page. After markup, canvas context, held keys and fresh office state are created; the local human and Ada are added explicitly.
+**What and why:** Imports give the host access to the rules, helpers and the Nord UI runtime. mount is async because createUI(root).load fetches the UI file, links the stylesheet inside an isolated shadow root and builds every node before the first line of game code runs. The $ helper returns the real DOM element of a node you named in the file, so existing logic can keep using .value, .textContent and .onclick without searching the page. The map context and key set follow.
 
-**Try it / expected result:** Choose Solo practice without running Node. The page should still start a complete local shift.
+**Try it / expected result:** Open the UI file in the UI Designer, rename a node and reload Play. The Console should name the missing node on the first lookup instead of silently doing nothing; rename it back afterwards.
 
-#### 2.3 — Use one command interface for local and online rules
+#### 2.2 — Use one command interface for local and online rules
 
-**Read:** `app.js`, lines 88–126.
+**Read:** `app.js`, lines 37–75.
 
-<!-- taught-source: nord-office/app.js:88-126 -->
+<!-- taught-source: nord-office/app.js:37-75 -->
 
 ```js
   const player = () => s.players.find((p) => p.id === you);
@@ -779,11 +718,11 @@ export function mount(root) {
 
 **Try it / expected result:** Compare a local repair with an online repair. Both should reach jobStep, but only the online one goes through HTTP.
 
-#### 2.4 — Create sessions and keep shared pause honest
+#### 2.3 — Create sessions and keep shared pause honest
 
-**Read:** `app.js`, lines 127–163.
+**Read:** `app.js`, lines 76–112.
 
-<!-- taught-source: nord-office/app.js:127-163 -->
+<!-- taught-source: nord-office/app.js:76-112 -->
 
 ```js
   $('solo').onclick = () => {
@@ -829,11 +768,11 @@ export function mount(root) {
 
 **Try it / expected result:** Join two browsers and click Pause in one. It should explain that the shared shift continues rather than freezing the other player.
 
-#### 2.5 — Find an eligible station and handle keyboard intent
+#### 2.4 — Find an eligible station and handle keyboard intent
 
-**Read:** `app.js`, lines 164–189.
+**Read:** `app.js`, lines 113–138.
 
-<!-- taught-source: nord-office/app.js:164-189 -->
+<!-- taught-source: nord-office/app.js:113-138 -->
 
 ```js
   function work() {
@@ -844,7 +783,7 @@ export function mount(root) {
     else say('Walk closer to a red station with an unclaimed ticket.');
   }
   const down = (e) => {
-    if (/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) return;
+    if (menu.typing) return;
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code))
       e.preventDefault();
     keys.add(e.code);
@@ -868,11 +807,11 @@ export function mount(root) {
 
 **Try it / expected result:** Hold E and verify it does not repeatedly claim/complete a task. Move away from a claimed station and watch it become available again.
 
-#### 2.6 — Rebuild only when the task changes
+#### 2.5 — Rebuild only when the task changes
 
-**Read:** `app.js`, lines 190–229.
+**Read:** `app.js`, lines 139–178.
 
-<!-- taught-source: nord-office/app.js:190-229 -->
+<!-- taught-source: nord-office/app.js:139-178 -->
 
 ```js
   function drawTask() {
@@ -921,11 +860,11 @@ export function mount(root) {
 
 **Try it / expected result:** Click the first correct wire colour. The panel should advance to step two; the score should still be unchanged.
 
-#### 2.7 — Paint tiles and station status
+#### 2.6 — Paint tiles and station status
 
-**Read:** `app.js`, lines 230–263.
+**Read:** `app.js`, lines 179–212.
 
-<!-- taught-source: nord-office/app.js:230-263 -->
+<!-- taught-source: nord-office/app.js:179-212 -->
 
 ```js
   function draw() {
@@ -968,11 +907,11 @@ export function mount(root) {
 
 **Try it / expected result:** Change the alert ring radius visually. You should still need to stand within the same rule distance to press E.
 
-#### 2.8 — Paint people and derive the HUD
+#### 2.7 — Paint people and derive the HUD
 
-**Read:** `app.js`, lines 264–291.
+**Read:** `app.js`, lines 213–240.
 
-<!-- taught-source: nord-office/app.js:264-291 -->
+<!-- taught-source: nord-office/app.js:213-240 -->
 
 ```js
     for (const p of s.players) {
@@ -1009,11 +948,11 @@ export function mount(root) {
 
 **Try it / expected result:** Inspect a client snapshot while another intern moves. The same player record should drive both its name and avatar position.
 
-#### 2.9 — Update text only when needed and animate coffee from time
+#### 2.8 — Update text only when needed and animate coffee from time
 
-**Read:** `app.js`, lines 292–312.
+**Read:** `app.js`, lines 241–261.
 
-<!-- taught-source: nord-office/app.js:292-312 -->
+<!-- taught-source: nord-office/app.js:241-261 -->
 
 ```js
     const nextStatus =
@@ -1043,11 +982,11 @@ export function mount(root) {
 
 **Try it / expected result:** Pour just outside the green interval. The animated meter should not grant success merely because the button was clicked.
 
-#### 2.10 — Choose local simulation or online snapshots, then dispose
+#### 2.9 — Choose local simulation or online snapshots, then dispose
 
-**Read:** `app.js`, lines 313–366.
+**Read:** `app.js`, lines 262–315.
 
-<!-- taught-source: nord-office/app.js:313-366 -->
+<!-- taught-source: nord-office/app.js:262-315 -->
 
 ```js
   function frame(now) {
@@ -1101,7 +1040,7 @@ export function mount(root) {
     window.removeEventListener('keydown', down);
     window.removeEventListener('keyup', up);
     window.removeEventListener('blur', blur);
-    root.replaceChildren();
+    menu.destroy();
   };
 }
 ```
@@ -1111,11 +1050,127 @@ export function mount(root) {
 **Try it / expected result:** Temporarily stop Node and observe the connection message. Rejoin after restarting it; do not expect memory-only rooms to survive a process restart.
 
 
-### 3. server.mjs {#walk-server-mjs}
+### 3. ui/office.ui.json {#walk-ui-office-ui-json}
+
+Describe the office page as data: title, four controls, map canvas, task panel, the online form with tickets and log, and the footer.
+
+#### 3.1 — Page settings, header and controls
+
+**Read:** `ui/office.ui.json`, lines 1–22.
+
+<!-- taught-source: nord-office/ui/office.ui.json:1-22 -->
+
+```json
+{
+  "version": 1,
+  "name": "office",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#0b1421"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "box", "tag": "header", "children": [
+      { "type": "label", "tag": "h1", "text": "NORD ENGINE OFFICE" },
+      { "type": "label", "tag": "p", "text": "Ship the engine. Fix the coffee. Survive your interns." }
+    ] },
+    { "type": "box", "tag": "nav", "children": [
+      { "name": "solo", "type": "button", "text": "Solo + AI practice" },
+      { "name": "start", "type": "button", "text": "Start / Restart shift" },
+      { "name": "bot", "type": "button", "text": "Toggle AI coworker" },
+      { "name": "pause", "type": "button", "text": "Pause solo" }
+    ] },
+```
+
+**What and why:** Page settings link the stylesheet inside the shadow root and set body colours. The header box holds the title and tagline as labels with semantic tags. The nav box lists solo, start, bot and pause buttons, each with a name used by app.js.
+
+**Try it / expected result:** Rename the tagline in the Designer and reload Play. Only the file changes; app.js is untouched.
+
+#### 3.2 — Map canvas, HUD and task panel
+
+**Read:** `ui/office.ui.json`, lines 23–30.
+
+<!-- taught-source: nord-office/ui/office.ui.json:23-30 -->
+
+```json
+    { "class": "layout", "type": "box", "tag": "section", "children": [
+      { "type": "box", "children": [
+        { "type": "canvas", "w": 768, "h": 512, "attrs": {"aria-label": "Office game map"}, "name": "map" },
+        { "name": "hud", "type": "label", "tag": "h2" },
+        { "type": "label", "tag": "p", "text": "WASD / arrows: walk · E: work nearby · X: introduce a bug · Esc: cancel task" },
+        { "name": "task", "type": "box" },
+        { "name": "result", "type": "label", "tag": "p" }
+      ] },
+```
+
+**What and why:** The layout box places a div with the 768 by 512 map canvas named map, the hud heading, a help paragraph, an empty task box and a result paragraph. The task box starts empty on purpose: app.js builds its buttons when a task begins.
+
+**Try it / expected result:** Select the map canvas and change its Width and Height to 640 and 427, keeping the 3:2 ratio. The drawing scales through CSS but game coordinates stay the same.
+
+#### 3.3 — Online form, tickets and log
+
+**Read:** `ui/office.ui.json`, lines 31–54.
+
+<!-- taught-source: nord-office/ui/office.ui.json:31-54 -->
+
+```json
+      { "type": "box", "tag": "aside", "children": [
+        { "type": "label", "tag": "h2", "text": "Invite interns" },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Name" },
+          { "name": "name", "type": "input", "value": "Intern", "maxlength": "20" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Room" },
+          { "name": "room", "type": "input", "value": "NORD", "maxlength": "8" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Server" },
+          { "name": "server", "type": "input" }
+        ] },
+        { "name": "join", "type": "button", "text": "Join online office" },
+        { "name": "network", "type": "label", "tag": "p", "text": "Run node server.mjs to host friends. Solo works without a server." },
+        { "type": "label", "tag": "h2", "text": "Tickets" },
+        { "name": "tickets", "type": "box" },
+        { "type": "label", "tag": "h2", "text": "Office log" },
+        { "name": "log", "type": "box" },
+        { "type": "label", "tag": "p", "text": "Host starts the shift. Finish 12 tasks in 150 seconds. Too many open bugs drain morale. X pranks a fixed nearby station, with a 15-second cooldown." },
+        { "type": "label", "tag": "p", "text": "Ada is a local pathfinding AI coworker, no account or API key needed." }
+      ] }
+    ] },
+```
+
+**What and why:** The aside holds the labelled name, room and server inputs, the join button, the network message and the empty tickets and log containers that the game fills while playing. The final paragraphs are plain labels with explanatory text.
+
+**Try it / expected result:** Change the room input's maxlength to 4 and try to type a longer room code online; the field refuses extra characters.
+
+#### 3.4 — Footer
+
+**Read:** `ui/office.ui.json`, lines 55–59.
+
+<!-- taught-source: nord-office/ui/office.ui.json:55-59 -->
+
+```json
+    { "type": "box", "tag": "footer", "children": [
+      { "type": "label", "tag": "span", "text": "Crowelian 2026 + Sonnet · Original code and canvas graphics" }
+    ] }
+  ] }
+}
+```
+
+**What and why:** The footer is a single label inside a footer box, styled by the existing stylesheet through its tag. No code touches it. Because the footer is data rather than code, a translator or designer can change its wording, style class or tag without reading the game logic, and the Designer preview shows the result instantly.
+
+**Try it / expected result:** Edit the footer credit text in the JSON tab, apply it and save.
+
+
+### 4. server.mjs {#walk-server-mjs}
 
 Implement the complete room API, host controls and stale-input safety.
 
-#### 3.1 — Create a room and add its host
+#### 4.1 — Create a room and add its host
 
 **Read:** `server.mjs`, lines 1–41.
 
@@ -1169,7 +1224,7 @@ export function createOfficeServer({
 
 **Try it / expected result:** Join the same room twice with different names. Both should see one room with one Ada, not one bot per browser.
 
-#### 3.2 — Resolve identity and accept only finite axes
+#### 4.2 — Resolve identity and accept only finite axes
 
 **Read:** `server.mjs`, lines 42–56.
 
@@ -1197,7 +1252,7 @@ export function createOfficeServer({
 
 **Try it / expected result:** Inspect /api/input in the Network panel: it sends dx/dy, not a claimed x/y position or a claimed score.
 
-#### 3.3 — Authorize shared controls and route task intentions
+#### 4.3 — Authorize shared controls and route task intentions
 
 **Read:** `server.mjs`, lines 57–80.
 
@@ -1234,7 +1289,7 @@ export function createOfficeServer({
 
 **Try it / expected result:** Try Start from the second human client. It should return a host-only error without resetting the running shift.
 
-#### 3.4 — Stop abandoned movement and release abandoned work
+#### 4.4 — Stop abandoned movement and release abandoned work
 
 **Read:** `server.mjs`, lines 81–118.
 
@@ -1286,11 +1341,11 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 **Try it / expected result:** Close a moving client. It should stop after input expiry, then disappear and release work after session expiry.
 
 
-### 4. server-kit.mjs {#walk-server-kit-mjs}
+### 5. server-kit.mjs {#walk-server-kit-mjs}
 
 Read the entire package-free HTTP adapter shared by the game servers.
 
-#### 4.1 — Create an HTTP response boundary
+#### 5.1 — Create an HTTP response boundary
 
 **Read:** `server-kit.mjs`, lines 1–39.
 
@@ -1342,7 +1397,7 @@ export function serve({
 
 **Try it / expected result:** Open the game through its Node server, then through Nord Play with the same Server address. Both supported origins should receive JSON.
 
-#### 4.2 — Parse a bounded API message
+#### 5.2 — Parse a bounded API message
 
 **Read:** `server-kit.mjs`, lines 40–68.
 
@@ -1384,7 +1439,7 @@ export function serve({
 
 **Try it / expected result:** Send an invalid action with the browser Network panel and inspect its HTTP status; distinguish transport validation from the game-specific unknown-action error.
 
-#### 4.3 — Serve only named public files and own the tick
+#### 5.3 — Serve only named public files and own the tick
 
 **Read:** `server-kit.mjs`, lines 69–103.
 
@@ -1433,11 +1488,11 @@ export const roomCode = (value) =>
 **Try it / expected result:** Request server.mjs in the browser URL. It should return Not found; the source is distributed through the archive rather than this static allowlist.
 
 
-### 5. index.html {#walk-index-html}
+### 6. index.html {#walk-index-html}
 
 Read the complete Nord page entry point and its failure path.
 
-#### 5.1 — Load the local runtime and start the app
+#### 6.1 — Load the local runtime and start the app
 
 **Read:** `index.html`, lines 1–8.
 
@@ -1459,11 +1514,11 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 **Try it / expected result:** Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name.
 
 
-### 6. nord.project.json {#walk-nord-project-json}
+### 7. nord.project.json {#walk-nord-project-json}
 
 Read every project field that tells Nord which host, display and services to use.
 
-#### 6.1 — Identify the project and choose its presentation
+#### 7.1 — Identify the project and choose its presentation
 
 **Read:** `nord.project.json`, lines 1–22.
 
@@ -1498,7 +1553,7 @@ Read every project field that tells Nord which host, display and services to use
 
 **Try it / expected result:** Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.
 
-#### 6.2 — Distinguish scene actions from HTML event handling
+#### 7.2 — Distinguish scene actions from HTML event handling
 
 **Read:** `nord.project.json`, lines 23–64.
 
@@ -1554,34 +1609,27 @@ Read every project field that tells Nord which host, display and services to use
 **Try it / expected result:** For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input.
 
 
-### 7. style.css {#walk-style-css}
+### 8. style.css {#walk-style-css}
 
 Read every stylesheet rule, grouped by the UI responsibility it controls.
 
-#### 7.1 — Set the app foundation and reusable visual language
+#### 8.1 — Set the app foundation and reusable visual language
 
-**Read:** `style.css`, lines 1–37.
+**Read:** `style.css`, lines 1–30.
 
-<!-- taught-source: nord-office/style.css:1-37 -->
+<!-- taught-source: nord-office/style.css:1-30 -->
 
 ```css
-html {
-  background: #0b1421;
-}
-html,
-body {
-  height: auto;
-  min-height: 100%;
+:host {
+  display: block;
+  min-height: 100vh;
+  color: #e3edf4;
+  font: 15px system-ui;
 }
 * {
   box-sizing: border-box;
 }
-body {
-  background: #0b1421;
-  color: #e3edf4;
-  font: 15px system-ui;
-  margin: 0;
-}
+
 main {
   max-width: 1150px;
   margin: auto;
@@ -1604,15 +1652,15 @@ nav {
 }
 ```
 
-**What and why:** The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.
+**What and why:** The opening rules give the host element (:host, the page root that holds the UI) its colour, font and minimum height; the document background and margin come from the body block of the UI file, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies. The sheet is linked from inside the UI file's shadow root, so selectors such as main, nav and #status match the nodes you named there.
 
 **Try it / expected result:** Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change.
 
-#### 7.2 — Place the map next to connection controls
+#### 8.2 — Place the map next to connection controls
 
-**Read:** `style.css`, lines 38–84.
+**Read:** `style.css`, lines 31–77.
 
-<!-- taught-source: nord-office/style.css:38-84 -->
+<!-- taught-source: nord-office/style.css:31-77 -->
 
 ```css
 .layout {
@@ -1668,11 +1716,11 @@ p {
 
 **Try it / expected result:** Resize the window: the map may scale, but a worker should not gain a different walking speed.
 
-#### 7.3 — Style task feedback and a readable coffee target
+#### 8.3 — Style task feedback and a readable coffee target
 
-**Read:** `style.css`, lines 85–119.
+**Read:** `style.css`, lines 78–112.
 
-<!-- taught-source: nord-office/style.css:85-119 -->
+<!-- taught-source: nord-office/style.css:78-112 -->
 
 ```css
 #task {
@@ -1742,64 +1790,13 @@ import {
   cancelJob,
   nearby,
 } from './rules.js';
-export function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <link rel="stylesheet" href="style.css" />
-    <main>
-      <header>
-        <h1>NORD ENGINE OFFICE</h1>
-        <p>Ship the engine. Fix the coffee. Survive your interns.</p>
-      </header>
-      <nav>
-        <button id="solo">Solo + AI practice</button>
-        <button id="start">Start / Restart shift</button>
-        <button id="bot">Toggle AI coworker</button>
-        <button id="pause">Pause solo</button>
-      </nav>
-      <section class="layout">
-        <div>
-          <canvas width="768" height="512" aria-label="Office game map"></canvas>
-          <h2 id="hud"></h2>
-          <p>
-            WASD / arrows: walk · E: work nearby · X: introduce a bug · Esc: cancel task
-          </p>
-          <div id="task"></div>
-          <p id="result"></p>
-        </div>
-        <aside>
-          <h2>Invite interns</h2>
-          <label>
-            Name
-            <input id="name" value="Intern" maxlength="20" />
-          </label>
-          <label>
-            Room
-            <input id="room" value="NORD" maxlength="8" />
-          </label>
-          <label>
-            Server
-            <input id="server" />
-          </label>
-          <button id="join">Join online office</button>
-          <p id="network">
-            Run node server.mjs to host friends. Solo works without a server.
-          </p>
-          <h2>Tickets</h2>
-          <div id="tickets"></div>
-          <h2>Office log</h2>
-          <div id="log"></div>
-          <p>
-            Host starts the shift. Finish 12 tasks in 150 seconds. Too many open bugs
-            drain morale. X pranks a fixed nearby station, with a 15-second cooldown.
-          </p>
-          <p>Ada is a local pathfinding AI coworker, no account or API key needed.</p>
-        </aside>
-      </section>
-      <footer>Crowelian 2026 + Sonnet · Original code and canvas graphics</footer>
-    </main>
-  `;
-  const $ = (id) => root.querySelector('#' + id),
-    ctx = root.querySelector('canvas').getContext('2d'),
+import { createUI } from './lib/nord-ui.js';
+export async function mount(root) {
+  // Layout, text and fields live in ui/office.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/office.ui.json');
+  // $('name') = the DOM element with that id (null for ids made later in code, like the coffee meter)
+  const $ = (id) => menu.shadow.getElementById(id),
+    ctx = $('map').getContext('2d'),
     keys = new Set();
   let s = newOffice(),
     you = 'solo',
@@ -1899,7 +1896,7 @@ export function mount(root) {
     else say('Walk closer to a red station with an unclaimed ticket.');
   }
   const down = (e) => {
-    if (/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) return;
+    if (menu.typing) return;
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code))
       e.preventDefault();
     keys.add(e.code);
@@ -2091,7 +2088,7 @@ export function mount(root) {
     window.removeEventListener('keydown', down);
     window.removeEventListener('keyup', up);
     window.removeEventListener('blur', blur);
-    root.replaceChildren();
+    menu.destroy();
   };
 }
 ```
@@ -2724,23 +2721,16 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 <summary>Complete style.css</summary>
 
 ```css
-html {
-  background: #0b1421;
-}
-html,
-body {
-  height: auto;
-  min-height: 100%;
+:host {
+  display: block;
+  min-height: 100vh;
+  color: #e3edf4;
+  font: 15px system-ui;
 }
 * {
   box-sizing: border-box;
 }
-body {
-  background: #0b1421;
-  color: #e3edf4;
-  font: 15px system-ui;
-  margin: 0;
-}
+
 main {
   max-width: 1150px;
   margin: auto;
@@ -2842,6 +2832,73 @@ footer {
   main {
     padding: 8px;
   }
+}
+```
+
+</details>
+
+<details>
+<summary>Complete ui/office.ui.json</summary>
+
+```json
+{
+  "version": 1,
+  "name": "office",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#0b1421"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "box", "tag": "header", "children": [
+      { "type": "label", "tag": "h1", "text": "NORD ENGINE OFFICE" },
+      { "type": "label", "tag": "p", "text": "Ship the engine. Fix the coffee. Survive your interns." }
+    ] },
+    { "type": "box", "tag": "nav", "children": [
+      { "name": "solo", "type": "button", "text": "Solo + AI practice" },
+      { "name": "start", "type": "button", "text": "Start / Restart shift" },
+      { "name": "bot", "type": "button", "text": "Toggle AI coworker" },
+      { "name": "pause", "type": "button", "text": "Pause solo" }
+    ] },
+    { "class": "layout", "type": "box", "tag": "section", "children": [
+      { "type": "box", "children": [
+        { "type": "canvas", "w": 768, "h": 512, "attrs": {"aria-label": "Office game map"}, "name": "map" },
+        { "name": "hud", "type": "label", "tag": "h2" },
+        { "type": "label", "tag": "p", "text": "WASD / arrows: walk · E: work nearby · X: introduce a bug · Esc: cancel task" },
+        { "name": "task", "type": "box" },
+        { "name": "result", "type": "label", "tag": "p" }
+      ] },
+      { "type": "box", "tag": "aside", "children": [
+        { "type": "label", "tag": "h2", "text": "Invite interns" },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Name" },
+          { "name": "name", "type": "input", "value": "Intern", "maxlength": "20" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Room" },
+          { "name": "room", "type": "input", "value": "NORD", "maxlength": "8" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Server" },
+          { "name": "server", "type": "input" }
+        ] },
+        { "name": "join", "type": "button", "text": "Join online office" },
+        { "name": "network", "type": "label", "tag": "p", "text": "Run node server.mjs to host friends. Solo works without a server." },
+        { "type": "label", "tag": "h2", "text": "Tickets" },
+        { "name": "tickets", "type": "box" },
+        { "type": "label", "tag": "h2", "text": "Office log" },
+        { "name": "log", "type": "box" },
+        { "type": "label", "tag": "p", "text": "Host starts the shift. Finish 12 tasks in 150 seconds. Too many open bugs drain morale. X pranks a fixed nearby station, with a 15-second cooldown." },
+        { "type": "label", "tag": "p", "text": "Ada is a local pathfinding AI coworker, no account or API key needed." }
+      ] }
+    ] },
+    { "type": "box", "tag": "footer", "children": [
+      { "type": "label", "tag": "span", "text": "Crowelian 2026 + Sonnet · Original code and canvas graphics" }
+    ] }
+  ] }
 }
 ```
 

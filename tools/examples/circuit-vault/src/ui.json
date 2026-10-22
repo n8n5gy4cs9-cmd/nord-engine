@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "name": "vault",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#090e20",
+    "color": "#dce8ff",
+    "font": "17px system-ui"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "label", "tag": "h1", "text": "CIRCUIT VAULT" },
+    { "type": "label", "tag": "p", "text": "Memorise the numbered circuit. Repeat it to unlock six vault stages." },
+    { "type": "box", "tag": "label", "children": [
+      { "type": "label", "tag": "span", "text": "Pilot" },
+      { "type": "input", "name": "pilot", "maxlength": 20, "value": "Pilot" }
+    ] },
+    { "type": "box", "tag": "label", "children": [
+      { "type": "label", "tag": "span", "text": "API" },
+      { "type": "input", "name": "api", "value": "http://127.0.0.1:4381" }
+    ] },
+    { "type": "button", "name": "start", "text": "New heist" },
+    { "type": "button", "name": "replay", "text": "Replay sequence", "disabled": true },
+    { "type": "label", "tag": "p", "text": "Start the local Node server, then choose New heist.", "name": "status", "attrs": {"role": "status"} },
+    { "type": "box", "name": "tiles", "children": [
+      { "type": "button", "text": "1[br][size=13]CYAN[/size]", "attrs": {"data-tile": "0"} },
+      { "type": "button", "text": "2[br][size=13]PINK[/size]", "attrs": {"data-tile": "1"} },
+      { "type": "button", "text": "3[br][size=13]GOLD[/size]", "attrs": {"data-tile": "2"} },
+      { "type": "button", "text": "4[br][size=13]GREEN[/size]", "attrs": {"data-tile": "3"} }
+    ] },
+    { "type": "label", "tag": "h2", "text": "Local leaderboard" },
+    { "type": "box", "tag": "ol", "name": "board" },
+    { "type": "label", "tag": "p", "text": "Node remembers the top ten until you stop the process." }
+  ] }
+}

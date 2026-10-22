@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "name": "menu",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#0a1522"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "box", "tag": "h1", "children": [
+      { "type": "label", "tag": "span", "text": "JengaTedris" },
+      { "type": "label", "tag": "small", "text": "GRID / TOPPLE / BATTLE" }
+    ] },
+    { "type": "box", "tag": "nav", "children": [
+      { "name": "grid", "type": "button", "text": "Grid run" },
+      { "name": "chaos", "type": "button", "text": "Physics tower" },
+      { "name": "pause", "type": "button", "text": "Pause / Resume" },
+      { "name": "restart", "type": "button", "text": "Restart" }
+    ] },
+    { "class": "layout", "type": "box", "tag": "section", "children": [
+      { "type": "canvas", "w": 300, "h": 600, "attrs": {"aria-label": "Game board"}, "name": "board" },
+      { "type": "box", "tag": "aside", "children": [
+        { "name": "status", "type": "label", "tag": "h2" },
+        { "name": "stats", "type": "label", "tag": "p" },
+        { "name": "next", "type": "canvas", "w": 200, "h": 160 },
+        { "type": "label", "tag": "p", "text": "Grid: arrows move/down, ↑ rotate, Space drop, C hold. Clear 20 rows!" },
+        { "type": "label", "tag": "p", "text": "Physics: ← → push, Q / E rotate, ↓ slam. Survive 18 rigid pieces; no row clears." },
+        { "type": "label", "tag": "h2", "text": "Battle a friend" },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Name" },
+          { "name": "name", "type": "input", "value": "Builder", "maxlength": "20" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Room" },
+          { "name": "room", "type": "input", "value": "NORD", "maxlength": "8" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Server" },
+          { "name": "server", "type": "input" }
+        ] },
+        { "name": "join", "type": "button", "text": "Join battle" },
+        { "name": "ready", "type": "button", "text": "Ready / Rematch" },
+        { "name": "leave", "type": "button", "text": "Leave battle" },
+        { "name": "network", "type": "label", "tag": "p", "text": "Start node server.mjs for multiplayer. Same room, two browsers, both Ready." },
+        { "name": "rival", "type": "canvas", "w": 150, "h": 300 },
+        { "type": "label", "tag": "p", "text": "Two or more cleared rows send garbage to your rival. The server owns both boards." }
+      ] }
+    ] },
+    { "type": "box", "tag": "footer", "children": [
+      { "type": "label", "tag": "span", "text": "Original game · Crowelian 2026 + Sonnet · Best grid score:" },
+      { "name": "best", "type": "label", "tag": "b" }
+    ] }
+  ] }
+}

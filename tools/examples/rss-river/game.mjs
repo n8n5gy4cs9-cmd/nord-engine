@@ -14,7 +14,7 @@ export default () => ({
     files: deskFiles(
       'rss-river',
       ['app.js', 'feeds.js', 'river.js', 'style.css', 'demo.xml'],
-      { desktop: true },
+      { desktop: true, ui: 'reader' },
     ).concat([
       { from: 'tools/examples/rss-river/src/.offline-allow', to: '.offline-allow' },
     ]),

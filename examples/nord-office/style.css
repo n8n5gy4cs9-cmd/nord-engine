@@ -1,20 +1,13 @@
-html {
-  background: #0b1421;
-}
-html,
-body {
-  height: auto;
-  min-height: 100%;
+:host {
+  display: block;
+  min-height: 100vh;
+  color: #e3edf4;
+  font: 15px system-ui;
 }
 * {
   box-sizing: border-box;
 }
-body {
-  background: #0b1421;
-  color: #e3edf4;
-  font: 15px system-ui;
-  margin: 0;
-}
+
 main {
   max-width: 1150px;
   margin: auto;

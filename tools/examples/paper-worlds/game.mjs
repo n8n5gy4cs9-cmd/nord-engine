@@ -8,7 +8,7 @@ export default () => ({
     files: deskFiles(
       'paper-worlds',
       ['app.js', 'model.js', 'flat.js', 'world.js', 'portfolio.html', 'style.css'],
-      { phaser: true },
+      { phaser: true, ui: 'desk' },
     ),
   },
   readme:

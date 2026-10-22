@@ -12,64 +12,13 @@ import {
   cancelJob,
   nearby,
 } from './rules.js';
-export function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <link rel="stylesheet" href="style.css" />
-    <main>
-      <header>
-        <h1>NORD ENGINE OFFICE</h1>
-        <p>Ship the engine. Fix the coffee. Survive your interns.</p>
-      </header>
-      <nav>
-        <button id="solo">Solo + AI practice</button>
-        <button id="start">Start / Restart shift</button>
-        <button id="bot">Toggle AI coworker</button>
-        <button id="pause">Pause solo</button>
-      </nav>
-      <section class="layout">
-        <div>
-          <canvas width="768" height="512" aria-label="Office game map"></canvas>
-          <h2 id="hud"></h2>
-          <p>
-            WASD / arrows: walk · E: work nearby · X: introduce a bug · Esc: cancel task
-          </p>
-          <div id="task"></div>
-          <p id="result"></p>
-        </div>
-        <aside>
-          <h2>Invite interns</h2>
-          <label>
-            Name
-            <input id="name" value="Intern" maxlength="20" />
-          </label>
-          <label>
-            Room
-            <input id="room" value="NORD" maxlength="8" />
-          </label>
-          <label>
-            Server
-            <input id="server" />
-          </label>
-          <button id="join">Join online office</button>
-          <p id="network">
-            Run node server.mjs to host friends. Solo works without a server.
-          </p>
-          <h2>Tickets</h2>
-          <div id="tickets"></div>
-          <h2>Office log</h2>
-          <div id="log"></div>
-          <p>
-            Host starts the shift. Finish 12 tasks in 150 seconds. Too many open bugs
-            drain morale. X pranks a fixed nearby station, with a 15-second cooldown.
-          </p>
-          <p>Ada is a local pathfinding AI coworker, no account or API key needed.</p>
-        </aside>
-      </section>
-      <footer>Crowelian 2026 + Sonnet · Original code and canvas graphics</footer>
-    </main>
-  `;
-  const $ = (id) => root.querySelector('#' + id),
-    ctx = root.querySelector('canvas').getContext('2d'),
+import { createUI } from './lib/nord-ui.js';
+export async function mount(root) {
+  // Layout, text and fields live in ui/office.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/office.ui.json');
+  // $('name') = the DOM element with that id (null for ids made later in code, like the coffee meter)
+  const $ = (id) => menu.shadow.getElementById(id),
+    ctx = $('map').getContext('2d'),
     keys = new Set();
   let s = newOffice(),
     you = 'solo',
@@ -169,7 +118,7 @@ export function mount(root) {
     else say('Walk closer to a red station with an unclaimed ticket.');
   }
   const down = (e) => {
-    if (/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) return;
+    if (menu.typing) return;
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code))
       e.preventDefault();
     keys.add(e.code);
@@ -361,6 +310,6 @@ export function mount(root) {
     window.removeEventListener('keydown', down);
     window.removeEventListener('keyup', up);
     window.removeEventListener('blur', blur);
-    root.replaceChildren();
+    menu.destroy();
   };
 }

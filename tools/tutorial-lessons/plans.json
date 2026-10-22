@@ -760,15 +760,9 @@
       "parts": [
         {
           "at": null,
-          "title": "Create the board and mode controls",
-          "why": "Imports select rules and optional physics. The mounted page declares mode/restart/pause buttons, a full-size game canvas, status fields, a next/hold preview and local control explanations. IDs are the link to the wiring below. The same canvas renders grid or physics, but each mode keeps its own rules.",
-          "try": "Find each button ID and its later onclick assignment; no button should rely on its visible text as a program identifier."
-        },
-        {
-          "at": "          <h2>Battle a friend",
-          "title": "Describe and collect battle connection details",
-          "why": "The remaining markup adds player name, room and API address, plus Join/Ready/Leave and an opponent canvas. Inputs are ordinary HTML so typing a room should not move a piece. Footer best-score text is a display target. The next code obtains canvas contexts and a Set for held physics controls, chooses a local default API address and initializes the local run.",
-          "try": "Click the room input and press A/D. The text should change without shifting the active piece."
+          "title": "Imports, load the UI file and name the handles",
+          "why": "Imports give the host access to the rules, helpers and the Nord UI runtime. mount is async because createUI(root).load fetches the UI file, links the stylesheet inside an isolated shadow root and builds every node before the first line of game code runs. The $ helper returns the real DOM element of a node you named in the file, so existing logic can keep using .value, .textContent and .onclick without searching the page. The canvas and keys set follow.",
+          "try": "Open the UI file in the UI Designer, rename a node and reload Play. The Console should name the missing node on the first lookup instead of silently doing nothing; rename it back afterwards."
         },
         {
           "at": "  let best =",
@@ -817,6 +811,30 @@
           "title": "Choose one clock owner and stop cleanly",
           "why": "Local grid/physics advance only when unpaused. Best score belongs only to local grid mode and is persisted defensively. Online mode polls about five times a second with a busy guard, rather than also running local gravity. draw and the next animation request continue for UI responsiveness. Getters expose state to checks; teardown stops future frames, destroys physics, removes listeners and clears the root.",
           "try": "Compare a battle snapshot in two browsers: gravity should agree because Node owns it. Closing/reopening Play must not retain the old frame loop."
+        }
+      ]
+    },
+    {
+      "file": "ui/menu.ui.json",
+      "intro": "Describe the whole page as data: header, mode buttons, board canvas, side panel with the battle form and footer. Semantic tags keep the existing stylesheet working.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Page settings, header and mode buttons",
+          "why": "The file declares version 1, marks the screen as a page so it flows in the document, links style.css inside its own shadow root and sets the body colours. The root is a box with tag main. Header text and the four mode buttons are nodes with names; box nodes can carry a semantic tag such as h1 or nav, so CSS rules written for those tags still apply.",
+          "try": "Add a fifth button inside the nav box in the Designer, name it help and save. Reload Play and look for it beside Restart; it does nothing until app.js listens for it. Delete it again."
+        },
+        {
+          "at": "\"class\": \"layout\"",
+          "title": "Board canvas and the side panel",
+          "why": "A canvas node creates the 300 by 600 board with an aria-label and the name board, which app.js reads with $('board'). The aside box holds the status, stats, next-piece canvas, instructions, and the battle form: labelled inputs for name, room and server plus join, ready and leave buttons and the rival canvas. Every field the code reads has a name.",
+          "try": "Change the Room default from NORD to LAB and reload. The input starts with the new value without any change to app.js."
+        },
+        {
+          "at": "\"tag\": \"footer\"",
+          "title": "Footer and the best-score label",
+          "why": "The footer is a box with the credit text and a label named best. The game writes the best grid score into it with textContent. Keeping dynamic values in named labels means the layout can change freely while the game keeps working.",
+          "try": "Rename the footer text in the Designer and reload Play. The best score still appears because the node name is unchanged."
         }
       ]
     },
@@ -911,7 +929,7 @@
         {
           "at": null,
           "title": "Set the app foundation and reusable visual language",
-          "why": "The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.",
+          "why": "The opening rules give the host element (:host, the page root that holds the UI) its colour, font and minimum height; the document background and margin come from the body block of the UI file, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies. The sheet is linked from inside the UI file's shadow root, so selectors such as main, nav and #status match the nodes you named there.",
           "try": "Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change."
         },
         {
@@ -1002,15 +1020,9 @@
       "parts": [
         {
           "at": null,
-          "title": "Declare the page and the available rule operations",
-          "why": "Imports enumerate the exact local rule functions that the host can invoke. The header/navigation provide solo, shift, AI and pause controls. The canvas size matches 24 by 16 tiles at 32 pixels. The task/result containers separate dynamic interaction from the map so a rendered sprite is not responsible for validating a fix.",
-          "try": "Find work/cancel controls in the page and later in command(). Trace one control from its ID to the rule call."
-        },
-        {
-          "at": "        <aside>",
-          "title": "Collect online details without replacing solo play",
-          "why": "The sidebar exposes name, room and server plus ticket/log outputs. It explains host ownership and AI behaviour. These are presentation promises implemented later, not a server hidden in the page. After markup, canvas context, held keys and fresh office state are created; the local human and Ada are added explicitly.",
-          "try": "Choose Solo practice without running Node. The page should still start a complete local shift."
+          "title": "Imports, load the UI file and name the handles",
+          "why": "Imports give the host access to the rules, helpers and the Nord UI runtime. mount is async because createUI(root).load fetches the UI file, links the stylesheet inside an isolated shadow root and builds every node before the first line of game code runs. The $ helper returns the real DOM element of a node you named in the file, so existing logic can keep using .value, .textContent and .onclick without searching the page. The map context and key set follow.",
+          "try": "Open the UI file in the UI Designer, rename a node and reload Play. The Console should name the missing node on the first lookup instead of silently doing nothing; rename it back afterwards."
         },
         {
           "at": "  const player =",
@@ -1059,6 +1071,36 @@
           "title": "Choose local simulation or online snapshots, then dispose",
           "why": "The loop computes clamped seconds and a directional intention from the held-key Set. Solo assigns those axes and calls tickOffice; online sends input, then requests a snapshot, about ten times per second with a busy guard. It never also runs local authoritative rules online. draw remains common. The final getters support inspection; cleanup stops future frames, removes listeners and clears the mount root.",
           "try": "Temporarily stop Node and observe the connection message. Rejoin after restarting it; do not expect memory-only rooms to survive a process restart."
+        }
+      ]
+    },
+    {
+      "file": "ui/office.ui.json",
+      "intro": "Describe the office page as data: title, four controls, map canvas, task panel, the online form with tickets and log, and the footer.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Page settings, header and controls",
+          "why": "Page settings link the stylesheet inside the shadow root and set body colours. The header box holds the title and tagline as labels with semantic tags. The nav box lists solo, start, bot and pause buttons, each with a name used by app.js.",
+          "try": "Rename the tagline in the Designer and reload Play. Only the file changes; app.js is untouched."
+        },
+        {
+          "at": "\"class\": \"layout\"",
+          "title": "Map canvas, HUD and task panel",
+          "why": "The layout box places a div with the 768 by 512 map canvas named map, the hud heading, a help paragraph, an empty task box and a result paragraph. The task box starts empty on purpose: app.js builds its buttons when a task begins.",
+          "try": "Select the map canvas and change its Width and Height to 640 and 427, keeping the 3:2 ratio. The drawing scales through CSS but game coordinates stay the same."
+        },
+        {
+          "at": "\"tag\": \"aside\"",
+          "title": "Online form, tickets and log",
+          "why": "The aside holds the labelled name, room and server inputs, the join button, the network message and the empty tickets and log containers that the game fills while playing. The final paragraphs are plain labels with explanatory text.",
+          "try": "Change the room input's maxlength to 4 and try to type a longer room code online; the field refuses extra characters."
+        },
+        {
+          "at": "\"tag\": \"footer\"",
+          "title": "Footer",
+          "why": "The footer is a single label inside a footer box, styled by the existing stylesheet through its tag. No code touches it. Because the footer is data rather than code, a translator or designer can change its wording, style class or tag without reading the game logic, and the Designer preview shows the result instantly.",
+          "try": "Edit the footer credit text in the JSON tab, apply it and save."
         }
       ]
     },
@@ -1153,7 +1195,7 @@
         {
           "at": null,
           "title": "Set the app foundation and reusable visual language",
-          "why": "The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.",
+          "why": "The opening rules give the host element (:host, the page root that holds the UI) its colour, font and minimum height; the document background and margin come from the body block of the UI file, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies. The sheet is linked from inside the UI file's shadow root, so selectors such as main, nav and #status match the nodes you named there.",
           "try": "Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change."
         },
         {
@@ -1322,21 +1364,9 @@
       "parts": [
         {
           "at": null,
-          "title": "Create identity and document actions",
-          "why": "The imports give the host document, views and download operations. The header contains mode/save/export controls and uses the supplied mascot sheet through CSS. These controls are separate from painting so the same document can be acted on in either view. mount owns only the supplied root.",
-          "try": "Change the subtitle and reopen Play. It should not affect saves or board identity."
-        },
-        {
-          "at": "      <section class=\"workbench\">",
-          "title": "Declare tools and editing values",
-          "why": "The sidebar exposes board selection, tool, colour and text. IDs are read later by tool(), so choosing a tool changes data passed into flat.setTool rather than mutating a Phaser object directly from markup. Undo/Fit operate on document or camera respectively; their similar UI placement does not mean they have the same state owner.",
-          "try": "Follow the color input ID to tool(). Verify the same colour reaches newly drawn shapes, not existing ones."
-        },
-        {
-          "at": "          <h3>Make it playful",
-          "title": "Declare play/backup controls and both surfaces",
-          "why": "Minigame, shake and ride controls are explicit mode requests. PNG/JSON/import expose recovery tools. The titlebar/badge communicates which representation is active, while only one of the two canvases is visible. The status paragraph is the common error/progress outlet. None of these buttons silently writes files to a disk path.",
-          "try": "Find the hidden world canvas and the flat container; switch modes and observe visibility changing for the same page."
+          "title": "Imports, load the UI file and name the handles",
+          "why": "Imports give the host access to the rules, helpers and the Nord UI runtime. mount is async because createUI(root).load fetches the UI file, links the stylesheet inside an isolated shadow root and builds every node before the first line of game code runs. The $ helper returns the real DOM element of a node you named in the file, so existing logic can keep using .value, .textContent and .onclick without searching the page. The save helper and the document data come next.",
+          "try": "Open the UI file in the UI Designer, rename a node and reload Play. The Console should name the missing node on the first lookup instead of silently doing nothing; rename it back afterwards."
         },
         {
           "at": "  const $ =",
@@ -1373,6 +1403,36 @@
           "title": "Offer touch navigation and release the mounted app",
           "why": "The initial two-touch distance becomes a comparison baseline; a sufficiently smaller distance requests the same mode function as the button. Passive listeners do not claim to implement every browser gesture. Inspection getters expose current state, and teardown cancels autosave, writes pending edits, disposes both view owners and clears the root.",
           "try": "Use the button as the desktop fallback; on supported touch hardware, test the inward pinch. Close/reopen Play and ensure the previous autosave timer does not keep running."
+        }
+      ]
+    },
+    {
+      "file": "ui/desk.ui.json",
+      "intro": "Describe the drawing studio as data: brand header with actions, tool sidebar, the two drawing surfaces with title bar, and the footer.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Page settings, brand header and document actions",
+          "why": "Page settings link style.css inside the shadow root and set the body colours. The header box holds the brand (mascot span, title, tagline) and three buttons named mode, save and export. The mascot is an empty box styled by CSS.",
+          "try": "Change the tagline text in the Designer and reload Play. The studio updates without code."
+        },
+        {
+          "at": "\"class\": \"workbench\"",
+          "title": "Sidebar: boards, tools and play controls",
+          "why": "The workbench section starts with an aside. Select nodes carry their options as data: the board selector is filled by code, while the tool select lists pen, hand, rectangle, circle, sticky and text. Color is an input of type color, the label box is a multi-line input, and the toy buttons each have a name used by app.js. Divider rules are boxes with the hr tag.",
+          "try": "Add an option to the tool select in the JSON tab, for example [\"star\", \"Star\"], and note it appears in the sidebar; nothing draws a star until flat.js supports it, so remove it again."
+        },
+        {
+          "at": "\"class\": \"titlebar\"",
+          "title": "Title bar and the two drawing surfaces",
+          "why": "The right column has a title bar with a bold label and a badge, then the flat div that Phaser fills and the 3D canvas that Babylon uses. They are nodes with names so app.js can show and hide them. The file input for importing a desk is an input of type file with an accept filter.",
+          "try": "Make the badge text read 2D PAPER and reload Play; mode switches still replace it because the node name is the same."
+        },
+        {
+          "at": "\"tag\": \"footer\"",
+          "title": "Footer",
+          "why": "The footer is a label inside a box with the footer tag and carries the status line the app updates. Because the footer is data rather than code, a translator or designer can change its wording, style class or tag without reading the game logic, and the Designer preview shows the result instantly.",
+          "try": "Edit the footer text and save to see how little of the app depends on wording."
         }
       ]
     },
@@ -1503,7 +1563,7 @@
         {
           "at": null,
           "title": "Set the app foundation and reusable visual language",
-          "why": "The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.",
+          "why": "The opening rules give the host element (:host, the page root that holds the UI) its colour, font and minimum height; the document background and margin come from the body block of the UI file, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies. The sheet is linked from inside the UI file's shadow root, so selectors such as main, nav and #status match the nodes you named there.",
           "try": "Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change."
         },
         {
@@ -1570,15 +1630,9 @@
       "parts": [
         {
           "at": null,
-          "title": "Create the reading room header and source controls",
-          "why": "The imports select one schema/merge path, one 3D view owner and existing save/download helpers. Header controls make refresh, native fetch, 3D and backup explicit actions. The sidebar source selector and filters determine a view of cached data, not separate databases. This keeps search usable without networking.",
-          "try": "Disconnect networking and type in Search after loading the demo. Filtering cached content should still work."
-        },
-        {
-          "at": "        <div class=\"content\">",
-          "title": "Provide separate list, river and reading surfaces",
-          "why": "The list and river occupy one content area while the article pane remains readable alongside it. Status can report fetch failures without deleting current content. After markup, the host reads saved subscriptions/articles and keeps selected ID and river lifetime separately. Invalid top-level storage values fall back to defaults.",
-          "try": "Switch list/river and confirm the reading pane does not become a different copy of the article state."
+          "title": "Imports, load the UI file and name the handles",
+          "why": "Imports give the host access to the rules, helpers and the Nord UI runtime. mount is async because createUI(root).load fetches the UI file, links the stylesheet inside an isolated shadow root and builds every node before the first line of game code runs. The $ helper returns the real DOM element of a node you named in the file, so existing logic can keep using .value, .textContent and .onclick without searching the page. The save helper follows.",
+          "try": "Open the UI file in the UI Designer, rename a node and reload Play. The Console should name the missing node on the first lookup instead of silently doing nothing; rename it back afterwards."
         },
         {
           "at": "  const say =",
@@ -1627,6 +1681,36 @@
           "title": "Finish startup and release a replaced view",
           "why": "Backup serializes both subscriptions and article flags. Initial render happens before the demo fallback, and only an empty cache loads that local fixture. The inspection interface exposes current arrays/view for checks. Teardown marks the host inactive so a pending river request cannot attach later, disposes the view and clears the root.",
           "try": "Reload after starring an item. Existing cached data should appear without re-fetching news or replacing it with the demo."
+        }
+      ]
+    },
+    {
+      "file": "ui/reader.ui.json",
+      "intro": "Describe the reader as data: header with actions, source controls, the list and river surfaces, the reader pane and the footer.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Page settings and the header",
+          "why": "Page settings link style.css inside the shadow root and set the body colours. The header holds the brand block and a nav box with four buttons named refresh, native, mode and backup.",
+          "try": "Rename the Refresh feeds button text in the Designer and reload Play; the button still works because only its name matters to code."
+        },
+        {
+          "at": "\"class\": \"layout\"",
+          "title": "Source controls on the left",
+          "why": "The aside collects everything that filters the list: the feed select, search input, two checkbox inputs inside label boxes, buttons, the import file input, the custom feed URL input and the counts box. Checkboxes are inputs with inputType checkbox, so $('unread').checked works.",
+          "try": "Add a third checkbox named todo inside its own label box and save; it renders immediately but filters nothing until the code reads it."
+        },
+        {
+          "at": "\"class\": \"content\"",
+          "title": "List, river canvas and status bar",
+          "why": "The content column has a view bar with a heading and status label, the empty list box that app.js fills with article buttons, and the river canvas which starts hidden with visible false. The 3D river is shown by flipping its hidden property.",
+          "try": "Set the river canvas visible in the Designer and reload Play. It appears over the list; turn it off again."
+        },
+        {
+          "at": "\"tag\": \"article\"",
+          "title": "Reader pane and footer",
+          "why": "The article box shows a welcome message until a paper is selected; read() replaces its children with safe text nodes. The footer carries the local-first note. Because the footer is data rather than code, a translator or designer can change its wording, style class or tag without reading the game logic, and the Designer preview shows the result instantly.",
+          "try": "Change the welcome heading in the Designer. It shows until you open the first article."
         }
       ]
     },
@@ -1793,7 +1877,7 @@
         {
           "at": null,
           "title": "Set the app foundation and reusable visual language",
-          "why": "The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.",
+          "why": "The opening rules give the host element (:host, the page root that holds the UI) its colour, font and minimum height; the document background and margin come from the body block of the UI file, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies. The sheet is linked from inside the UI file's shadow root, so selectors such as main, nav and #status match the nodes you named there.",
           "try": "Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change."
         },
         {

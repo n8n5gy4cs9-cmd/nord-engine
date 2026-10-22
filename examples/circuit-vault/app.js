@@ -1,20 +1,15 @@
-export function mount(root) {
-root.innerHTML = `<link rel="stylesheet" href="style.css"><main><h1>CIRCUIT VAULT</h1>
-<p>Memorise the numbered circuit. Repeat it to unlock six vault stages.</p>
-<label>Pilot <input id="pilot" maxlength="20" value="Pilot"></label>
-<label>API <input id="api" value="http://127.0.0.1:4381"></label>
-<button id="start">New heist</button><button id="replay" disabled>Replay sequence</button>
-<p id="status" role="status">Start the local Node server, then choose New heist.</p>
-<div id="tiles">${['CYAN','PINK','GOLD','GREEN'].map((c,i)=>`<button data-tile="${i}">${i+1}<small>${c}</small></button>`).join('')}</div>
-<h2>Local leaderboard</h2><ol id="board"></ol><p>Node remembers the top ten until you stop the process.</p></main>`;
-const $ = s => root.querySelector(s);
+import { createUI } from './lib/nord-ui.js';
+export async function mount(root) {
+// The page is described in ui/vault.ui.json (edit it in the UI Designer); this file only wires it up.
+const menu = await createUI(root).load('ui/vault.ui.json');
+const $ = s => menu.shadow.querySelector(s); // ids come from the node names in the UI file
 let id, run, busy = false, generation = 0, replaying = false;
 const status = text => { $('#status').textContent = text; };
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 function controls() {
   $('#start').disabled = busy || replaying;
   $('#replay').disabled = busy || replaying || !run || run.done;
-  root.querySelectorAll('[data-tile]').forEach(b => b.disabled = busy || replaying || !run || run.done);
+  menu.shadow.querySelectorAll('[data-tile]').forEach(b => b.disabled = busy || replaying || !run || run.done);
 }
 async function api(route, body) {
   const base = new URL($('#api').value);
@@ -52,7 +47,7 @@ $('#start').onclick = async () => {
   catch (e) { status(`Connection failed: ${e.message}. Run node server.mjs and check the API field.`); }
   finally { busy = false;controls(); }
 };
-for (const button of root.querySelectorAll('[data-tile]')) button.onclick = async () => {
+for (const button of menu.shadow.querySelectorAll('[data-tile]')) button.onclick = async () => {
   if (busy || replaying || !run || run.done) return;busy = true;controls();const round = run.round;
   try { ({ run } = await api('/api/step', { id, tile: Number(button.dataset.tile) }));draw();
     if (run.done) await leaderboard();else if (run.round !== round) { busy = false;await replay(); }

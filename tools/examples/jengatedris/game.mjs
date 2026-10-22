@@ -6,6 +6,8 @@ files.push(
   { from: 'tools/examples/network-common/server-kit.mjs', to: 'server-kit.mjs' },
   { from: 'vendor/phaser/phaser.min.js', to: 'vendor/phaser/phaser.min.js' },
   { from: 'vendor/phaser/LICENSE.md', to: 'vendor/phaser/LICENSE.md' },
+  { from: 'tools/examples/jengatedris/src/ui.json', to: 'ui/menu.ui.json' },
+  { from: 'runtime/core/uiscene.js', to: 'lib/nord-ui.js' },
   { from: 'LICENSE', to: 'LICENSE' },
 );
 export default () => ({

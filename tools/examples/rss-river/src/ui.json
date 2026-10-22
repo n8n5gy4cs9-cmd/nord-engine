@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "name": "reader",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#101b2b"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "box", "tag": "header", "children": [
+      { "class": "brand", "type": "box", "children": [
+        { "class": "boat", "type": "label", "tag": "span" },
+        { "type": "box", "children": [
+          { "type": "label", "tag": "h1", "text": "RSS River" },
+          { "type": "label", "tag": "p", "text": "A quieter current for curious developers." }
+        ] }
+      ] },
+      { "type": "box", "tag": "nav", "children": [
+        { "name": "refresh", "type": "button", "text": "Refresh feeds" },
+        { "name": "native", "type": "button", "text": "Fetch with Nord host" },
+        { "name": "mode", "type": "button", "text": "3D paper river" },
+        { "name": "backup", "type": "button", "text": "Backup library" }
+      ] }
+    ] },
+    { "class": "layout", "type": "box", "tag": "section", "children": [
+      { "type": "box", "tag": "aside", "children": [
+        { "type": "label", "tag": "h3", "text": "SOURCES" },
+        { "name": "feed", "type": "select", "options": [["all", "All sources"]] },
+        { "name": "search", "type": "input", "placeholder": "Search titles & summaries" },
+        { "type": "box", "tag": "label", "children": [
+          { "name": "unread", "type": "input", "inputType": "checkbox" },
+          { "type": "label", "tag": "span", "text": "Unread only" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "name": "stars", "type": "input", "inputType": "checkbox" },
+          { "type": "label", "tag": "span", "text": "Starred only" }
+        ] },
+        { "name": "readall", "type": "button", "text": "Mark visible read" },
+        { "type": "box", "tag": "hr" },
+        { "type": "label", "tag": "h3", "text": "IMPORT A FEED" },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "RSS / Atom XML" },
+          { "name": "import", "type": "input", "inputType": "file", "accept": ".xml,.rss,.atom,.json" }
+        ] },
+        { "name": "custom", "type": "input", "placeholder": "https://example.org/feed.xml" },
+        { "name": "add", "type": "button", "text": "Add feed URL" },
+        { "name": "demo", "type": "button", "text": "Load local demo" },
+        { "type": "label", "tag": "p", "text": "Feeds refresh only when asked. Read cached news offline. If a site blocks browser CORS, import its XML or use Nord host fetch." },
+        { "name": "counts", "type": "box" }
+      ] },
+      { "class": "content", "type": "box", "children": [
+        { "class": "viewbar", "type": "box", "children": [
+          { "name": "heading", "type": "label", "tag": "b", "text": "Your reading room" },
+          { "name": "status", "type": "label", "tag": "span", "text": "Local cache ready" }
+        ] },
+        { "name": "list", "type": "box" },
+        { "name": "river", "type": "canvas", "visible": false }
+      ] },
+      { "name": "reader", "type": "box", "tag": "article", "children": [
+        { "class": "eyebrow", "type": "label", "tag": "p", "text": "SELECT A PAPER" },
+        { "type": "label", "tag": "h2", "text": "Welcome to the river." },
+        { "type": "label", "tag": "p", "text": "Your saved articles stay on this device. The initial demo is original tutorial content, clearly marked as local demo." }
+      ] }
+    ] },
+    { "type": "box", "tag": "footer", "children": [
+      { "type": "label", "tag": "span", "text": "Local-first RSS + Atom · no account · Crowelian 2026 + Sonnet" }
+    ] }
+  ] }
+}

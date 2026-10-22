@@ -40,11 +40,12 @@ Unzip the [download](assets/downloads/rss-river-source.zip) elsewhere. Some file
 | <span class="f">assets/dev-desk-sprites.png</span> | the desk art |
 | <span class="f">save.js</span> | tiny storage helper (the <span class="v">Save</span> class) |
 | <span class="f">nord-desktop.js</span> | lets Nord's app fetch feeds |
-| <span class="f">desk.js</span> | creates the 3D desk (walkthrough part 4 explains it) |
+| <span class="f">desk.js</span> | creates the 3D desk (walkthrough part 5 explains it) |
 | <span class="f">.offline-allow</span> | the three feed hosts the app may contact |
 | <span class="f">demo.xml</span>, <span class="f">style.css</span> | sample articles, page styling |
+| <span class="f">lib/nord-ui.js</span> | the Nord UI runtime (copy of <span class="f">runtime/core/uiscene.js</span>) |
 
-Then create three **empty** files for the code you write: `touch feeds.js river.js app.js` (in the project folder), refresh the <span class="ui">Assets</span> panel.
+Then create the **empty** files for the code you write: `mkdir ui && touch feeds.js river.js app.js ui/reader.ui.json` (in the project folder), refresh the <span class="ui">Assets</span> panel.
 
 ### Step 3 — index.html and project settings
 
@@ -67,13 +68,14 @@ Open <span class="f">nord.project.json</span> and add this block next to the oth
 "desktop": { "permissions": { "net": { "hosts": ["hnrss.org", "simonwillison.net", "github.blog"] } } }
 ```
 
-### Step 4 — Write the three code files in this order
+### Step 4 — Write the code files (and design the page) in this order
 
 | # | File | Job | Where the code is |
 |---|---|---|---|
 | 1 | <span class="f">feeds.js</span> | list of feeds, RSS/Atom → one article shape, merge rules. No page, no 3D. | paste parts [1.1 → 1.5](#walk-feeds-js) |
-| 2 | <span class="f">river.js</span> | turns articles into floating 3D papers | paste parts [3.1 → 3.4](#walk-river-js) |
-| 3 | <span class="f">app.js</span> | the reader screen: list, filters, refresh, save | paste parts [2.1 → 2.10](#walk-app-js) |
+| 2 | <span class="f">river.js</span> | turns articles into floating 3D papers | paste parts [4.1 → 4.4](#walk-river-js) |
+| 3 | <span class="f">ui/reader.ui.json</span> | the whole page as data: header, source controls, list, river canvas, reader pane. Build it in the **UI Designer** tab or copy it from the zip | read [3.1 → 3.4](#walk-ui-reader-ui-json) |
+| 4 | <span class="f">app.js</span> | the reader screen: list, filters, refresh, save; it loads the UI file | paste parts [2.1 → 2.9](#walk-app-js) |
 
 Why this order: <span class="f">app.js</span> imports from the other two (<span class="k">import</span> { <span class="v">parseFeed</span>, <span class="v">mergeArticles</span> } from './feeds.js'). Write what gets imported first. <span class="f">feeds.js</span> is plain functions: after pasting it you can test it in the Console without any page.
 
@@ -107,6 +109,8 @@ These endpoints were checked while building the tutorial. Feeds change and netwo
 | File | Responsibility |
 | --- | --- |
 | `feeds.js` | Default subscriptions, RSS/Atom parsing, safe links and merge rules |
+| `ui/reader.ui.json` | Reader layout, controls and text, edited in the UI Designer |
+| `lib/nord-ui.js` | The Nord UI runtime that builds the UI file |
 | `app.js` | Reader UI, filters, refresh/import, reading flags and local save |
 | `river.js` | Article textures, flow, importance and physics flicks |
 | `desk.js` | Shared Babylon/Havok desk, local script loading and downloads |
@@ -116,7 +120,7 @@ These endpoints were checked while building the tutorial. Feeds change and netwo
 | `.offline-allow` | Explicit feed hosts used as app data, not CDN dependencies |
 | `style.css` | Modern list, reading page, sidebar and responsive layout |
 
-Change the subtitle in `app.js` and stop/start Play to see it. Change an original demo title in `demo.xml` and click Load local demo to merge the updated entry. Use the Console for source errors. The guide's code blocks are editable/copyable CodeMirror views; the complete files at the end are the runnable solution.
+Change the subtitle in `ui/reader.ui.json` (or the UI Designer) and stop/start Play to see it. Change an original demo title in `demo.xml` and click Load local demo to merge the updated entry. Use the Console for source errors. The guide's code blocks are editable/copyable CodeMirror views; the complete files at the end are the runnable solution.
 
 This project is inspired by reader workflows in FreshRSS and NetNewsWire. Their repositories were consulted for product context; no PHP/Swift source or assets were copied. This app implements its own small browser data model and renderer rather than claiming to port a complete mature aggregator.
 
@@ -239,6 +243,7 @@ The walkthrough covers the app/game modules, shared helpers used by them, page, 
 | --- | --- |
 | [feeds.js](#walk-feeds-js) | Build all feed configuration, parsing, safe-link and cache-merge logic. |
 | [app.js](#walk-app-js) | Build the complete reader host, filters, both fetch paths, river lifetime and import/backup flow. |
+| [ui/reader.ui.json](#walk-ui-reader-ui-json) | Describe the reader as data: header with actions, source controls, the list and river surfaces, the reader pane and the footer. |
 | [river.js](#walk-river-js) | Follow every texture, pick, movement, physics and cleanup operation in the 3D reader. |
 | [desk.js](#walk-desk-js) | Build the complete reusable Babylon/Havok desk and browser-download helper. |
 | [save.js](#walk-save-js) | Understand the complete existing Nord Save helper bundled with this app. |
@@ -398,101 +403,23 @@ export function mergeArticles(old, items) {
 
 Build the complete reader host, filters, both fetch paths, river lifetime and import/backup flow.
 
-#### 2.1 — Create the reading room header and source controls
+#### 2.1 — Imports, load the UI file and name the handles
 
-**Read:** `app.js`, lines 1–54.
+**Read:** `app.js`, lines 1–19.
 
-<!-- taught-source: rss-river/app.js:1-54 -->
+<!-- taught-source: rss-river/app.js:1-19 -->
 
 ```js
 import { Save } from './save.js';
 import { DEFAULT_FEEDS, parseFeed, mergeArticles, safeLink } from './feeds.js';
 import { createRiver } from './river.js';
 import { download } from './desk.js';
+import { createUI } from './lib/nord-ui.js';
 export async function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <link rel="stylesheet" href="style.css" />
-    <main>
-      <header>
-        <div class="brand">
-          <span class="boat"></span>
-          <div>
-            <h1>RSS River</h1>
-            <p>A quieter current for curious developers.</p>
-          </div>
-        </div>
-        <nav>
-          <button id="refresh">Refresh feeds</button>
-          <button id="native">Fetch with Nord host</button>
-          <button id="mode">3D paper river</button>
-          <button id="backup">Backup library</button>
-        </nav>
-      </header>
-      <section class="layout">
-        <aside>
-          <h3>SOURCES</h3>
-          <select id="feed">
-            <option value="all">All sources</option>
-          </select>
-          <input id="search" placeholder="Search titles & summaries" />
-          <label>
-            <input id="unread" type="checkbox" />
-            Unread only
-          </label>
-          <label>
-            <input id="stars" type="checkbox" />
-            Starred only
-          </label>
-          <button id="readall">Mark visible read</button>
-          <hr />
-          <h3>IMPORT A FEED</h3>
-          <label>
-            RSS / Atom XML
-            <input id="import" type="file" accept=".xml,.rss,.atom,.json" />
-          </label>
-          <input id="custom" placeholder="https://example.org/feed.xml" />
-          <button id="add">Add feed URL</button>
-          <button id="demo">Load local demo</button>
-          <p>
-            Feeds refresh only when asked. Read cached news offline. If a site blocks
-            browser CORS, import its XML or use Nord host fetch.
-          </p>
-          <div id="counts"></div>
-        </aside>
-```
-
-**What and why:** The imports select one schema/merge path, one 3D view owner and existing save/download helpers. Header controls make refresh, native fetch, 3D and backup explicit actions. The sidebar source selector and filters determine a view of cached data, not separate databases. This keeps search usable without networking.
-
-**Try it / expected result:** Disconnect networking and type in Search after loading the demo. Filtering cached content should still work.
-
-#### 2.2 — Provide separate list, river and reading surfaces
-
-**Read:** `app.js`, lines 55–84.
-
-<!-- taught-source: rss-river/app.js:55-84 -->
-
-```js
-        <div class="content">
-          <div class="viewbar">
-            <b id="heading">Your reading room</b>
-            <span id="status">Local cache ready</span>
-          </div>
-          <div id="list"></div>
-          <canvas id="river" hidden></canvas>
-        </div>
-        <article id="reader">
-          <p class="eyebrow">SELECT A PAPER</p>
-          <h2>Welcome to the river.</h2>
-          <p>
-            Your saved articles stay on this device. The initial demo is original tutorial
-            content, clearly marked as local demo.
-          </p>
-        </article>
-      </section>
-      <footer>Local-first RSS + Atom · no account · Crowelian 2026 + Sonnet</footer>
-    </main>
-  `;
-  const $ = (id) => root.querySelector('#' + id),
+  // Layout, text and fields live in ui/reader.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/reader.ui.json');
+  // $('name') = the real DOM element of a node you named in the UI file
+  const $ = (id) => menu.$(id).el,
     save = new Save('rss-river');
   let feeds = save.get('feeds', DEFAULT_FEEDS),
     articles = save.get('articles', []),
@@ -504,15 +431,15 @@ export async function mount(root) {
   if (!Array.isArray(articles)) articles = [];
 ```
 
-**What and why:** The list and river occupy one content area while the article pane remains readable alongside it. Status can report fetch failures without deleting current content. After markup, the host reads saved subscriptions/articles and keeps selected ID and river lifetime separately. Invalid top-level storage values fall back to defaults.
+**What and why:** Imports give the host access to the rules, helpers and the Nord UI runtime. mount is async because createUI(root).load fetches the UI file, links the stylesheet inside an isolated shadow root and builds every node before the first line of game code runs. The $ helper returns the real DOM element of a node you named in the file, so existing logic can keep using .value, .textContent and .onclick without searching the page. The save helper follows.
 
-**Try it / expected result:** Switch list/river and confirm the reading pane does not become a different copy of the article state.
+**Try it / expected result:** Open the UI file in the UI Designer, rename a node and reload Play. The Console should name the missing node on the first lookup instead of silently doing nothing; rename it back afterwards.
 
-#### 2.3 — Persist carefully and create filter options
+#### 2.2 — Persist carefully and create filter options
 
-**Read:** `app.js`, lines 85–119.
+**Read:** `app.js`, lines 20–54.
 
-<!-- taught-source: rss-river/app.js:85-119 -->
+<!-- taught-source: rss-river/app.js:20-54 -->
 
 ```js
   const say = (t) => ($('status').textContent = t);
@@ -556,11 +483,11 @@ export async function mount(root) {
 
 **Try it / expected result:** Enable Starred only with no stars. You should see an empty state, not a broken render or an automatic network refresh.
 
-#### 2.4 — Open one article without trusting its markup
+#### 2.3 — Open one article without trusting its markup
 
-**Read:** `app.js`, lines 120–160.
+**Read:** `app.js`, lines 55–95.
 
-<!-- taught-source: rss-river/app.js:120-160 -->
+<!-- taught-source: rss-river/app.js:55-95 -->
 
 ```js
   function read(id) {
@@ -610,11 +537,11 @@ export async function mount(root) {
 
 **Try it / expected result:** Click a story, star it, then search for it. Its title and state should agree between the article pane and list.
 
-#### 2.5 — Rebuild an understandable list from filtered records
+#### 2.4 — Rebuild an understandable list from filtered records
 
-**Read:** `app.js`, lines 161–185.
+**Read:** `app.js`, lines 96–120.
 
-<!-- taught-source: rss-river/app.js:161-185 -->
+<!-- taught-source: rss-river/app.js:96-120 -->
 
 ```js
   function renderList() {
@@ -648,11 +575,11 @@ export async function mount(root) {
 
 **Try it / expected result:** Mark visible read with a source selected. Other-source unread counts should remain until you read them.
 
-#### 2.6 — Discard superseded asynchronous scenes
+#### 2.5 — Discard superseded asynchronous scenes
 
-**Read:** `app.js`, lines 186–224.
+**Read:** `app.js`, lines 121–159.
 
-<!-- taught-source: rss-river/app.js:186-224 -->
+<!-- taught-source: rss-river/app.js:121-159 -->
 
 ```js
   let riverVersion = 0;
@@ -700,11 +627,11 @@ export async function mount(root) {
 
 **Try it / expected result:** Double-click 3D or change filters rapidly. You should end with the latest view and one live Babylon engine.
 
-#### 2.7 — Fetch intentionally through browser or Nord host
+#### 2.6 — Fetch intentionally through browser or Nord host
 
-**Read:** `app.js`, lines 225–264.
+**Read:** `app.js`, lines 160–199.
 
-<!-- taught-source: rss-river/app.js:225-264 -->
+<!-- taught-source: rss-river/app.js:160-199 -->
 
 ```js
   async function refresh(native = false) {
@@ -753,11 +680,11 @@ export async function mount(root) {
 
 **Try it / expected result:** Refresh while one endpoint is unavailable. Read cached articles afterward and inspect the per-source error text.
 
-#### 2.8 — Wire batch actions and add subscriptions as data
+#### 2.7 — Wire batch actions and add subscriptions as data
 
-**Read:** `app.js`, lines 265–288.
+**Read:** `app.js`, lines 200–223.
 
-<!-- taught-source: rss-river/app.js:265-288 -->
+<!-- taught-source: rss-river/app.js:200-223 -->
 
 ```js
   $('refresh').onclick = () => refresh();
@@ -790,11 +717,11 @@ export async function mount(root) {
 
 **Try it / expected result:** Add the same endpoint twice. The second attempt should report Already subscribed rather than create duplicate source options.
 
-#### 2.9 — Use a real local feed fixture and restore backups
+#### 2.8 — Use a real local feed fixture and restore backups
 
-**Read:** `app.js`, lines 289–343.
+**Read:** `app.js`, lines 224–278.
 
-<!-- taught-source: rss-river/app.js:289-343 -->
+<!-- taught-source: rss-river/app.js:224-278 -->
 
 ```js
   async function demo() {
@@ -858,11 +785,11 @@ export async function mount(root) {
 
 **Try it / expected result:** Back up, import that JSON, then import a small XML feed. Verify the first restores state while the second adds a source.
 
-#### 2.10 — Finish startup and release a replaced view
+#### 2.9 — Finish startup and release a replaced view
 
-**Read:** `app.js`, lines 344–365.
+**Read:** `app.js`, lines 279–300.
 
-<!-- taught-source: rss-river/app.js:344-365 -->
+<!-- taught-source: rss-river/app.js:279-300 -->
 
 ```js
   $('backup').onclick = () =>
@@ -884,7 +811,7 @@ export async function mount(root) {
   return () => {
     alive = false;
     river?.dispose();
-    root.replaceChildren();
+    menu.destroy();
   };
 }
 ```
@@ -894,11 +821,140 @@ export async function mount(root) {
 **Try it / expected result:** Reload after starring an item. Existing cached data should appear without re-fetching news or replacing it with the demo.
 
 
-### 3. river.js {#walk-river-js}
+### 3. ui/reader.ui.json {#walk-ui-reader-ui-json}
+
+Describe the reader as data: header with actions, source controls, the list and river surfaces, the reader pane and the footer.
+
+#### 3.1 — Page settings and the header
+
+**Read:** `ui/reader.ui.json`, lines 1–27.
+
+<!-- taught-source: rss-river/ui/reader.ui.json:1-27 -->
+
+```json
+{
+  "version": 1,
+  "name": "reader",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#101b2b"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "box", "tag": "header", "children": [
+      { "class": "brand", "type": "box", "children": [
+        { "class": "boat", "type": "label", "tag": "span" },
+        { "type": "box", "children": [
+          { "type": "label", "tag": "h1", "text": "RSS River" },
+          { "type": "label", "tag": "p", "text": "A quieter current for curious developers." }
+        ] }
+      ] },
+      { "type": "box", "tag": "nav", "children": [
+        { "name": "refresh", "type": "button", "text": "Refresh feeds" },
+        { "name": "native", "type": "button", "text": "Fetch with Nord host" },
+        { "name": "mode", "type": "button", "text": "3D paper river" },
+        { "name": "backup", "type": "button", "text": "Backup library" }
+      ] }
+    ] },
+```
+
+**What and why:** Page settings link style.css inside the shadow root and set the body colours. The header holds the brand block and a nav box with four buttons named refresh, native, mode and backup.
+
+**Try it / expected result:** Rename the Refresh feeds button text in the Designer and reload Play; the button still works because only its name matters to code.
+
+#### 3.2 — Source controls on the left
+
+**Read:** `ui/reader.ui.json`, lines 28–53.
+
+<!-- taught-source: rss-river/ui/reader.ui.json:28-53 -->
+
+```json
+    { "class": "layout", "type": "box", "tag": "section", "children": [
+      { "type": "box", "tag": "aside", "children": [
+        { "type": "label", "tag": "h3", "text": "SOURCES" },
+        { "name": "feed", "type": "select", "options": [["all", "All sources"]] },
+        { "name": "search", "type": "input", "placeholder": "Search titles & summaries" },
+        { "type": "box", "tag": "label", "children": [
+          { "name": "unread", "type": "input", "inputType": "checkbox" },
+          { "type": "label", "tag": "span", "text": "Unread only" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "name": "stars", "type": "input", "inputType": "checkbox" },
+          { "type": "label", "tag": "span", "text": "Starred only" }
+        ] },
+        { "name": "readall", "type": "button", "text": "Mark visible read" },
+        { "type": "box", "tag": "hr" },
+        { "type": "label", "tag": "h3", "text": "IMPORT A FEED" },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "RSS / Atom XML" },
+          { "name": "import", "type": "input", "inputType": "file", "accept": ".xml,.rss,.atom,.json" }
+        ] },
+        { "name": "custom", "type": "input", "placeholder": "https://example.org/feed.xml" },
+        { "name": "add", "type": "button", "text": "Add feed URL" },
+        { "name": "demo", "type": "button", "text": "Load local demo" },
+        { "type": "label", "tag": "p", "text": "Feeds refresh only when asked. Read cached news offline. If a site blocks browser CORS, import its XML or use Nord host fetch." },
+        { "name": "counts", "type": "box" }
+      ] },
+```
+
+**What and why:** The aside collects everything that filters the list: the feed select, search input, two checkbox inputs inside label boxes, buttons, the import file input, the custom feed URL input and the counts box. Checkboxes are inputs with inputType checkbox, so $('unread').checked works.
+
+**Try it / expected result:** Add a third checkbox named todo inside its own label box and save; it renders immediately but filters nothing until the code reads it.
+
+#### 3.3 — List, river canvas and status bar
+
+**Read:** `ui/reader.ui.json`, lines 54–61.
+
+<!-- taught-source: rss-river/ui/reader.ui.json:54-61 -->
+
+```json
+      { "class": "content", "type": "box", "children": [
+        { "class": "viewbar", "type": "box", "children": [
+          { "name": "heading", "type": "label", "tag": "b", "text": "Your reading room" },
+          { "name": "status", "type": "label", "tag": "span", "text": "Local cache ready" }
+        ] },
+        { "name": "list", "type": "box" },
+        { "name": "river", "type": "canvas", "visible": false }
+      ] },
+```
+
+**What and why:** The content column has a view bar with a heading and status label, the empty list box that app.js fills with article buttons, and the river canvas which starts hidden with visible false. The 3D river is shown by flipping its hidden property.
+
+**Try it / expected result:** Set the river canvas visible in the Designer and reload Play. It appears over the list; turn it off again.
+
+#### 3.4 — Reader pane and footer
+
+**Read:** `ui/reader.ui.json`, lines 62–72.
+
+<!-- taught-source: rss-river/ui/reader.ui.json:62-72 -->
+
+```json
+      { "name": "reader", "type": "box", "tag": "article", "children": [
+        { "class": "eyebrow", "type": "label", "tag": "p", "text": "SELECT A PAPER" },
+        { "type": "label", "tag": "h2", "text": "Welcome to the river." },
+        { "type": "label", "tag": "p", "text": "Your saved articles stay on this device. The initial demo is original tutorial content, clearly marked as local demo." }
+      ] }
+    ] },
+    { "type": "box", "tag": "footer", "children": [
+      { "type": "label", "tag": "span", "text": "Local-first RSS + Atom · no account · Crowelian 2026 + Sonnet" }
+    ] }
+  ] }
+}
+```
+
+**What and why:** The article box shows a welcome message until a paper is selected; read() replaces its children with safe text nodes. The footer carries the local-first note. Because the footer is data rather than code, a translator or designer can change its wording, style class or tag without reading the game logic, and the Designer preview shows the result instantly.
+
+**Try it / expected result:** Change the welcome heading in the Designer. It shows until you open the first article.
+
+
+### 4. river.js {#walk-river-js}
 
 Follow every texture, pick, movement, physics and cleanup operation in the 3D reader.
 
-#### 3.1 — Wrap text into bounded canvas lines
+#### 4.1 — Wrap text into bounded canvas lines
 
 **Read:** `river.js`, lines 1–20.
 
@@ -931,7 +987,7 @@ export async function createRiver(canvas, articles, open) {
 
 **Try it / expected result:** Use a long title in a demo copy. It should wrap into bounded lines rather than painting across neighbouring paper edges.
 
-#### 3.2 — Paint each article and encode importance spatially
+#### 4.2 — Paint each article and encode importance spatially
 
 **Read:** `river.js`, lines 21–48.
 
@@ -972,7 +1028,7 @@ export async function createRiver(canvas, articles, open) {
 
 **Try it / expected result:** Star one story and reopen the river. Its paper should be larger/higher, and clicking it should open that same article ID.
 
-#### 3.3 — Route picks and animate only floating papers
+#### 4.3 — Route picks and animate only floating papers
 
 **Read:** `river.js`, lines 49–65.
 
@@ -1002,7 +1058,7 @@ export async function createRiver(canvas, articles, open) {
 
 **Try it / expected result:** Read one paper from the river, then flick it. Its original read flag remains even after its visual motion changes.
 
-#### 3.4 — Hand one paper over to a rigid body
+#### 4.4 — Hand one paper over to a rigid body
 
 **Read:** `river.js`, lines 66–96.
 
@@ -1047,11 +1103,11 @@ export async function createRiver(canvas, articles, open) {
 **Try it / expected result:** Press Flick twice on the same story. The second click should not create another body or duplicate the paper.
 
 
-### 4. desk.js {#walk-desk-js}
+### 5. desk.js {#walk-desk-js}
 
 Build the complete reusable Babylon/Havok desk and browser-download helper.
 
-#### 4.1 — Share pending local script loads
+#### 5.1 — Share pending local script loads
 
 **Read:** `desk.js`, lines 1–20.
 
@@ -1084,7 +1140,7 @@ export function loadScript(src) {
 
 **Try it / expected result:** Click the 3D mode button twice rapidly. There should be one ready view, not an undefined BABYLON error.
 
-#### 4.2 — Create one engine, scene and controllable camera
+#### 5.2 — Create one engine, scene and controllable camera
 
 **Read:** `desk.js`, lines 21–42.
 
@@ -1119,7 +1175,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 **Try it / expected result:** Compare orbit dragging with moving a paper: the camera changes the view without altering saved document coordinates.
 
-#### 4.3 — Light a surface and prepare shadow ownership
+#### 5.3 — Light a surface and prepare shadow ownership
 
 **Read:** `desk.js`, lines 43–62.
 
@@ -1152,7 +1208,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 **Try it / expected result:** Change the directional light direction temporarily and observe where shadows fall, while paper text remains readable.
 
-#### 4.4 — Load the packaged physics binary
+#### 5.4 — Load the packaged physics binary
 
 **Read:** `desk.js`, lines 63–77.
 
@@ -1180,7 +1236,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 **Try it / expected result:** Temporarily set physics false at the helper call. Static papers should still render, but there will be no physical sticky/flick response.
 
-#### 4.5 — Create a writable texture rather than a screenshot file
+#### 5.5 — Create a writable texture rather than a screenshot file
 
 **Read:** `desk.js`, lines 78–104.
 
@@ -1220,7 +1276,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 **Try it / expected result:** Draw a bold line in 2D and switch views. It should appear as actual texture content on the corresponding paper.
 
-#### 4.6 — Create a visible rigid sticky toy
+#### 5.6 — Create a visible rigid sticky toy
 
 **Read:** `desk.js`, lines 105–126.
 
@@ -1255,7 +1311,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 **Try it / expected result:** Increase restitution slightly and flick a sticky. It should bounce more without changing the original 2D note shape.
 
-#### 4.7 — Own the render loop and resize lifecycle
+#### 5.7 — Own the render loop and resize lifecycle
 
 **Read:** `desk.js`, lines 127–156.
 
@@ -1298,7 +1354,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 **Try it / expected result:** Switch back to 2D and observe that the old desk stops animating. Reopening 3D creates one fresh owner.
 
-#### 4.8 — Hand a browser a real downloadable object
+#### 5.8 — Hand a browser a real downloadable object
 
 **Read:** `desk.js`, lines 157–165.
 
@@ -1321,11 +1377,11 @@ export function download(name, content, type = 'application/json') {
 **Try it / expected result:** Download JSON and verify its suggested filename and contents. Cancel the save if you do not need another copy.
 
 
-### 5. save.js {#walk-save-js}
+### 6. save.js {#walk-save-js}
 
 Understand the complete existing Nord Save helper bundled with this app.
 
-#### 5.1 — Namespace slots and read versioned data
+#### 6.1 — Namespace slots and read versioned data
 
 **Read:** `save.js`, lines 1–20.
 
@@ -1358,7 +1414,7 @@ export class Save {
 
 **Try it / expected result:** Compare the Paper Worlds and RSS River storage prefixes in browser tools. Their saves should not overwrite each other.
 
-#### 5.2 — Read and write values, then define memory storage
+#### 6.2 — Read and write values, then define memory storage
 
 **Read:** `save.js`, lines 21–32.
 
@@ -1384,11 +1440,11 @@ export class MemoryStorage {
 **Try it / expected result:** Back up your document, reload the page and verify it returns. Then inspect how the app reports a failed write instead of assuming success.
 
 
-### 6. demo.xml {#walk-demo-xml}
+### 7. demo.xml {#walk-demo-xml}
 
 Read the complete original local RSS fixture; it is also an example of the input format.
 
-#### 6.1 — Recognize an RSS channel and stable item IDs
+#### 7.1 — Recognize an RSS channel and stable item IDs
 
 **Read:** `demo.xml`, lines 1–10.
 
@@ -1412,11 +1468,11 @@ Read the complete original local RSS fixture; it is also an example of the input
 **Try it / expected result:** Add a ninth item with a new GUID and load the demo again. Existing stars should remain and one new story should appear.
 
 
-### 7. .offline-allow {#walk--offline-allow}
+### 8. .offline-allow {#walk--offline-allow}
 
 Read the entire explicit feed-host allowlist.
 
-#### 7.1 — Distinguish intentional news endpoints from library dependencies
+#### 8.1 — Distinguish intentional news endpoints from library dependencies
 
 **Read:** `.offline-allow`, lines 1–3.
 
@@ -1433,11 +1489,11 @@ github.blog
 **Try it / expected result:** Add a custom source through the UI and compare the stored subscription with this file. They have different responsibilities.
 
 
-### 8. index.html {#walk-index-html}
+### 9. index.html {#walk-index-html}
 
 Read the complete Nord page entry point and its failure path.
 
-#### 8.1 — Load the local runtime and start the app
+#### 9.1 — Load the local runtime and start the app
 
 **Read:** `index.html`, lines 1–8.
 
@@ -1459,11 +1515,11 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 **Try it / expected result:** Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name.
 
 
-### 9. nord.project.json {#walk-nord-project-json}
+### 10. nord.project.json {#walk-nord-project-json}
 
 Read every project field that tells Nord which host, display and services to use.
 
-#### 9.1 — Identify the project and choose its presentation
+#### 10.1 — Identify the project and choose its presentation
 
 **Read:** `nord.project.json`, lines 1–22.
 
@@ -1498,7 +1554,7 @@ Read every project field that tells Nord which host, display and services to use
 
 **Try it / expected result:** Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.
 
-#### 9.2 — Distinguish scene actions from HTML event handling
+#### 10.2 — Distinguish scene actions from HTML event handling
 
 **Read:** `nord.project.json`, lines 23–75.
 
@@ -1565,31 +1621,27 @@ Read every project field that tells Nord which host, display and services to use
 **Try it / expected result:** For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input.
 
 
-### 10. style.css {#walk-style-css}
+### 11. style.css {#walk-style-css}
 
 Read every stylesheet rule, grouped by the UI responsibility it controls.
 
-#### 10.1 — Set the app foundation and reusable visual language
+#### 11.1 — Set the app foundation and reusable visual language
 
-**Read:** `style.css`, lines 1–68.
+**Read:** `style.css`, lines 1–64.
 
-<!-- taught-source: rss-river/style.css:1-68 -->
+<!-- taught-source: rss-river/style.css:1-64 -->
 
 ```css
-html,
-body {
-  height: auto;
-  min-height: 100%;
-  background: #101b2b;
+:host {
+  display: block;
+  min-height: 100vh;
+  color: #dce9ee;
+  font: 14px system-ui;
 }
 * {
   box-sizing: border-box;
 }
-body {
-  margin: 0;
-  color: #dce9ee;
-  font: 14px system-ui;
-}
+
 main {
   max-width: 1500px;
   padding: 22px;
@@ -1646,15 +1698,15 @@ nav button {
 }
 ```
 
-**What and why:** The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.
+**What and why:** The opening rules give the host element (:host, the page root that holds the UI) its colour, font and minimum height; the document background and margin come from the body block of the UI file, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies. The sheet is linked from inside the UI file's shadow root, so selectors such as main, nav and #status match the nodes you named there.
 
 **Try it / expected result:** Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change.
 
-#### 10.2 — Arrange source, list and reading columns
+#### 11.2 — Arrange source, list and reading columns
 
-**Read:** `style.css`, lines 69–125.
+**Read:** `style.css`, lines 65–121.
 
-<!-- taught-source: rss-river/style.css:69-125 -->
+<!-- taught-source: rss-river/style.css:65-121 -->
 
 ```css
 .layout {
@@ -1720,11 +1772,11 @@ hr {
 
 **Try it / expected result:** Narrow the window and observe which areas move before changing any article data.
 
-#### 10.3 — Give list entries useful reading states
+#### 11.3 — Give list entries useful reading states
 
-**Read:** `style.css`, lines 126–167.
+**Read:** `style.css`, lines 122–163.
 
-<!-- taught-source: rss-river/style.css:126-167 -->
+<!-- taught-source: rss-river/style.css:122-163 -->
 
 ```css
 #list {
@@ -1775,11 +1827,11 @@ hr {
 
 **Try it / expected result:** Read a story and then select another. The first should remain read while the selected border moves.
 
-#### 10.4 — Make article text calm and readable
+#### 11.4 — Make article text calm and readable
 
-**Read:** `style.css`, lines 168–211.
+**Read:** `style.css`, lines 164–207.
 
-<!-- taught-source: rss-river/style.css:168-211 -->
+<!-- taught-source: rss-river/style.css:164-207 -->
 
 ```css
 #reader {
@@ -1832,11 +1884,11 @@ footer {
 
 **Try it / expected result:** Open a long summary and inspect line length. The pane should remain useful even when the 3D river is hidden.
 
-#### 10.5 — Adapt columns at two viewport widths
+#### 11.5 — Adapt columns at two viewport widths
 
-**Read:** `style.css`, lines 212–236.
+**Read:** `style.css`, lines 208–232.
 
-<!-- taught-source: rss-river/style.css:212-236 -->
+<!-- taught-source: rss-river/style.css:208-232 -->
 
 ```css
 @media (max-width: 1050px) {
@@ -1871,11 +1923,11 @@ footer {
 **Try it / expected result:** Try both breakpoints, then restore a wide window. Your active story and reading flags should still be present.
 
 
-### 11. nord-desktop.js {#walk-nord-desktop-js}
+### 12. nord-desktop.js {#walk-nord-desktop-js}
 
 Read the complete bundled Nord bridge used by the optional host-fetch button.
 
-#### 11.1 — Normalize errors and choose request transports
+#### 12.1 — Normalize errors and choose request transports
 
 **Read:** `nord-desktop.js`, lines 1–34.
 
@@ -1922,7 +1974,7 @@ function httpTransport() {
 
 **Try it / expected result:** Find where RSS River calls desktop.http.fetch and where this module converts that call into a method/params request.
 
-#### 11.2 — Build bounded browser fallbacks
+#### 12.2 — Build bounded browser fallbacks
 
 **Read:** `nord-desktop.js`, lines 35–49.
 
@@ -1950,7 +2002,7 @@ function webTransport(appId) {
 
 **Try it / expected result:** Run a static browser export and inspect desktop.transport after readiness: it should choose web rather than claim a native host exists.
 
-#### 11.3 — Map supported browser operations explicitly
+#### 12.3 — Map supported browser operations explicitly
 
 **Read:** `nord-desktop.js`, lines 50–85.
 
@@ -1999,7 +2051,7 @@ function webTransport(appId) {
 
 **Try it / expected result:** Use Refresh feeds in a plain browser. A blocked publisher still needs XML import or a genuine Nord host, not this fallback.
 
-#### 11.4 — Deliver events and await transport readiness
+#### 12.4 — Deliver events and await transport readiness
 
 **Read:** `nord-desktop.js`, lines 86–111.
 
@@ -2038,7 +2090,7 @@ export function create(appId = 'web-app', force) {
 
 **Try it / expected result:** Call a bridge method just after app startup. It should wait for ready rather than failing because call is still null.
 
-#### 11.5 — Expose capability-shaped wrappers and the shared instance
+#### 12.5 — Expose capability-shaped wrappers and the shared instance
 
 **Read:** `nord-desktop.js`, lines 112–157.
 
@@ -2113,77 +2165,12 @@ import { Save } from './save.js';
 import { DEFAULT_FEEDS, parseFeed, mergeArticles, safeLink } from './feeds.js';
 import { createRiver } from './river.js';
 import { download } from './desk.js';
+import { createUI } from './lib/nord-ui.js';
 export async function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <link rel="stylesheet" href="style.css" />
-    <main>
-      <header>
-        <div class="brand">
-          <span class="boat"></span>
-          <div>
-            <h1>RSS River</h1>
-            <p>A quieter current for curious developers.</p>
-          </div>
-        </div>
-        <nav>
-          <button id="refresh">Refresh feeds</button>
-          <button id="native">Fetch with Nord host</button>
-          <button id="mode">3D paper river</button>
-          <button id="backup">Backup library</button>
-        </nav>
-      </header>
-      <section class="layout">
-        <aside>
-          <h3>SOURCES</h3>
-          <select id="feed">
-            <option value="all">All sources</option>
-          </select>
-          <input id="search" placeholder="Search titles & summaries" />
-          <label>
-            <input id="unread" type="checkbox" />
-            Unread only
-          </label>
-          <label>
-            <input id="stars" type="checkbox" />
-            Starred only
-          </label>
-          <button id="readall">Mark visible read</button>
-          <hr />
-          <h3>IMPORT A FEED</h3>
-          <label>
-            RSS / Atom XML
-            <input id="import" type="file" accept=".xml,.rss,.atom,.json" />
-          </label>
-          <input id="custom" placeholder="https://example.org/feed.xml" />
-          <button id="add">Add feed URL</button>
-          <button id="demo">Load local demo</button>
-          <p>
-            Feeds refresh only when asked. Read cached news offline. If a site blocks
-            browser CORS, import its XML or use Nord host fetch.
-          </p>
-          <div id="counts"></div>
-        </aside>
-        <div class="content">
-          <div class="viewbar">
-            <b id="heading">Your reading room</b>
-            <span id="status">Local cache ready</span>
-          </div>
-          <div id="list"></div>
-          <canvas id="river" hidden></canvas>
-        </div>
-        <article id="reader">
-          <p class="eyebrow">SELECT A PAPER</p>
-          <h2>Welcome to the river.</h2>
-          <p>
-            Your saved articles stay on this device. The initial demo is original tutorial
-            content, clearly marked as local demo.
-          </p>
-        </article>
-      </section>
-      <footer>Local-first RSS + Atom · no account · Crowelian 2026 + Sonnet</footer>
-    </main>
-  `;
-  const $ = (id) => root.querySelector('#' + id),
+  // Layout, text and fields live in ui/reader.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/reader.ui.json');
+  // $('name') = the real DOM element of a node you named in the UI file
+  const $ = (id) => menu.$(id).el,
     save = new Save('rss-river');
   let feeds = save.get('feeds', DEFAULT_FEEDS),
     articles = save.get('articles', []),
@@ -2471,7 +2458,7 @@ export async function mount(root) {
   return () => {
     alive = false;
     river?.dispose();
-    root.replaceChildren();
+    menu.destroy();
   };
 }
 ```
@@ -3175,20 +3162,16 @@ export class MemoryStorage {
 <summary>Complete style.css</summary>
 
 ```css
-html,
-body {
-  height: auto;
-  min-height: 100%;
-  background: #101b2b;
+:host {
+  display: block;
+  min-height: 100vh;
+  color: #dce9ee;
+  font: 14px system-ui;
 }
 * {
   box-sizing: border-box;
 }
-body {
-  margin: 0;
-  color: #dce9ee;
-  font: 14px system-ui;
-}
+
 main {
   max-width: 1500px;
   padding: 22px;
@@ -3410,6 +3393,86 @@ footer {
   #reader {
     margin-top: 12px;
   }
+}
+```
+
+</details>
+
+<details>
+<summary>Complete ui/reader.ui.json</summary>
+
+```json
+{
+  "version": 1,
+  "name": "reader",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#101b2b"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "box", "tag": "header", "children": [
+      { "class": "brand", "type": "box", "children": [
+        { "class": "boat", "type": "label", "tag": "span" },
+        { "type": "box", "children": [
+          { "type": "label", "tag": "h1", "text": "RSS River" },
+          { "type": "label", "tag": "p", "text": "A quieter current for curious developers." }
+        ] }
+      ] },
+      { "type": "box", "tag": "nav", "children": [
+        { "name": "refresh", "type": "button", "text": "Refresh feeds" },
+        { "name": "native", "type": "button", "text": "Fetch with Nord host" },
+        { "name": "mode", "type": "button", "text": "3D paper river" },
+        { "name": "backup", "type": "button", "text": "Backup library" }
+      ] }
+    ] },
+    { "class": "layout", "type": "box", "tag": "section", "children": [
+      { "type": "box", "tag": "aside", "children": [
+        { "type": "label", "tag": "h3", "text": "SOURCES" },
+        { "name": "feed", "type": "select", "options": [["all", "All sources"]] },
+        { "name": "search", "type": "input", "placeholder": "Search titles & summaries" },
+        { "type": "box", "tag": "label", "children": [
+          { "name": "unread", "type": "input", "inputType": "checkbox" },
+          { "type": "label", "tag": "span", "text": "Unread only" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "name": "stars", "type": "input", "inputType": "checkbox" },
+          { "type": "label", "tag": "span", "text": "Starred only" }
+        ] },
+        { "name": "readall", "type": "button", "text": "Mark visible read" },
+        { "type": "box", "tag": "hr" },
+        { "type": "label", "tag": "h3", "text": "IMPORT A FEED" },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "RSS / Atom XML" },
+          { "name": "import", "type": "input", "inputType": "file", "accept": ".xml,.rss,.atom,.json" }
+        ] },
+        { "name": "custom", "type": "input", "placeholder": "https://example.org/feed.xml" },
+        { "name": "add", "type": "button", "text": "Add feed URL" },
+        { "name": "demo", "type": "button", "text": "Load local demo" },
+        { "type": "label", "tag": "p", "text": "Feeds refresh only when asked. Read cached news offline. If a site blocks browser CORS, import its XML or use Nord host fetch." },
+        { "name": "counts", "type": "box" }
+      ] },
+      { "class": "content", "type": "box", "children": [
+        { "class": "viewbar", "type": "box", "children": [
+          { "name": "heading", "type": "label", "tag": "b", "text": "Your reading room" },
+          { "name": "status", "type": "label", "tag": "span", "text": "Local cache ready" }
+        ] },
+        { "name": "list", "type": "box" },
+        { "name": "river", "type": "canvas", "visible": false }
+      ] },
+      { "name": "reader", "type": "box", "tag": "article", "children": [
+        { "class": "eyebrow", "type": "label", "tag": "p", "text": "SELECT A PAPER" },
+        { "type": "label", "tag": "h2", "text": "Welcome to the river." },
+        { "type": "label", "tag": "p", "text": "Your saved articles stay on this device. The initial demo is original tutorial content, clearly marked as local demo." }
+      ] }
+    ] },
+    { "type": "box", "tag": "footer", "children": [
+      { "type": "label", "tag": "span", "text": "Local-first RSS + Atom · no account · Crowelian 2026 + Sonnet" }
+    ] }
+  ] }
 }
 ```
 

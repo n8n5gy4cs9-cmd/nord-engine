@@ -1,64 +1,12 @@
 import { newGrid, cells, ghost, COLORS, action, tickGrid, SHAPES } from './rules.js';
 import { createChaos } from './chaos.js';
-export function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <link rel="stylesheet" href="style.css" />
-    <main>
-      <h1>
-        JengaTedris
-        <small>GRID / TOPPLE / BATTLE</small>
-      </h1>
-      <nav>
-        <button id="grid">Grid run</button>
-        <button id="chaos">Physics tower</button>
-        <button id="pause">Pause / Resume</button>
-        <button id="restart">Restart</button>
-      </nav>
-      <section class="layout">
-        <canvas width="300" height="600" aria-label="Game board"></canvas>
-        <aside>
-          <h2 id="status"></h2>
-          <p id="stats"></p>
-          <canvas id="next" width="200" height="160"></canvas>
-          <p>Grid: arrows move/down, ↑ rotate, Space drop, C hold. Clear 20 rows!</p>
-          <p>
-            Physics: ← → push, Q / E rotate, ↓ slam. Survive 18 rigid pieces; no row
-            clears.
-          </p>
-          <h2>Battle a friend</h2>
-          <label>
-            Name
-            <input id="name" value="Builder" maxlength="20" />
-          </label>
-          <label>
-            Room
-            <input id="room" value="NORD" maxlength="8" />
-          </label>
-          <label>
-            Server
-            <input id="server" />
-          </label>
-          <button id="join">Join battle</button>
-          <button id="ready">Ready / Rematch</button>
-          <button id="leave">Leave battle</button>
-          <p id="network">
-            Start node server.mjs for multiplayer. Same room, two browsers, both Ready.
-          </p>
-          <canvas id="rival" width="150" height="300"></canvas>
-          <p>
-            Two or more cleared rows send garbage to your rival. The server owns both
-            boards.
-          </p>
-        </aside>
-      </section>
-      <footer>
-        Original game · Crowelian 2026 + Sonnet · Best grid score:
-        <b id="best"></b>
-      </footer>
-    </main>
-  `;
-  const $ = (id) => root.querySelector('#' + id),
-    canvas = root.querySelector('canvas'),
+import { createUI } from './lib/nord-ui.js';
+export async function mount(root) {
+  // Layout, text and fields live in ui/menu.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/menu.ui.json');
+  // $('name') = the real DOM element of a node you named in the UI file
+  const $ = (id) => menu.$(id).el,
+    canvas = $('board'),
     ctx = canvas.getContext('2d'),
     keys = new Set();
   $('server').value =
@@ -188,7 +136,7 @@ export function mount(root) {
     KeyC: 'hold',
   };
   const down = (e) => {
-    if (/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) return;
+    if (menu.typing) return;
     if (map[e.code] || e.code === 'KeyQ' || e.code === 'KeyE') e.preventDefault();
     keys.add(e.code);
     if (paused || mode === 'chaos') return;
@@ -322,6 +270,6 @@ export function mount(root) {
     window.removeEventListener('keydown', down);
     window.removeEventListener('keyup', up);
     window.removeEventListener('blur', blur);
-    root.replaceChildren();
+    menu.destroy();
   };
 }

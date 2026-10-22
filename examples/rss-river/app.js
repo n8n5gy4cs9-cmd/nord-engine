@@ -2,77 +2,12 @@ import { Save } from './save.js';
 import { DEFAULT_FEEDS, parseFeed, mergeArticles, safeLink } from './feeds.js';
 import { createRiver } from './river.js';
 import { download } from './desk.js';
+import { createUI } from './lib/nord-ui.js';
 export async function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <link rel="stylesheet" href="style.css" />
-    <main>
-      <header>
-        <div class="brand">
-          <span class="boat"></span>
-          <div>
-            <h1>RSS River</h1>
-            <p>A quieter current for curious developers.</p>
-          </div>
-        </div>
-        <nav>
-          <button id="refresh">Refresh feeds</button>
-          <button id="native">Fetch with Nord host</button>
-          <button id="mode">3D paper river</button>
-          <button id="backup">Backup library</button>
-        </nav>
-      </header>
-      <section class="layout">
-        <aside>
-          <h3>SOURCES</h3>
-          <select id="feed">
-            <option value="all">All sources</option>
-          </select>
-          <input id="search" placeholder="Search titles & summaries" />
-          <label>
-            <input id="unread" type="checkbox" />
-            Unread only
-          </label>
-          <label>
-            <input id="stars" type="checkbox" />
-            Starred only
-          </label>
-          <button id="readall">Mark visible read</button>
-          <hr />
-          <h3>IMPORT A FEED</h3>
-          <label>
-            RSS / Atom XML
-            <input id="import" type="file" accept=".xml,.rss,.atom,.json" />
-          </label>
-          <input id="custom" placeholder="https://example.org/feed.xml" />
-          <button id="add">Add feed URL</button>
-          <button id="demo">Load local demo</button>
-          <p>
-            Feeds refresh only when asked. Read cached news offline. If a site blocks
-            browser CORS, import its XML or use Nord host fetch.
-          </p>
-          <div id="counts"></div>
-        </aside>
-        <div class="content">
-          <div class="viewbar">
-            <b id="heading">Your reading room</b>
-            <span id="status">Local cache ready</span>
-          </div>
-          <div id="list"></div>
-          <canvas id="river" hidden></canvas>
-        </div>
-        <article id="reader">
-          <p class="eyebrow">SELECT A PAPER</p>
-          <h2>Welcome to the river.</h2>
-          <p>
-            Your saved articles stay on this device. The initial demo is original tutorial
-            content, clearly marked as local demo.
-          </p>
-        </article>
-      </section>
-      <footer>Local-first RSS + Atom · no account · Crowelian 2026 + Sonnet</footer>
-    </main>
-  `;
-  const $ = (id) => root.querySelector('#' + id),
+  // Layout, text and fields live in ui/reader.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/reader.ui.json');
+  // $('name') = the real DOM element of a node you named in the UI file
+  const $ = (id) => menu.$(id).el,
     save = new Save('rss-river');
   let feeds = save.get('feeds', DEFAULT_FEEDS),
     articles = save.get('articles', []),
@@ -360,6 +295,6 @@ export async function mount(root) {
   return () => {
     alive = false;
     river?.dispose();
-    root.replaceChildren();
+    menu.destroy();
   };
 }

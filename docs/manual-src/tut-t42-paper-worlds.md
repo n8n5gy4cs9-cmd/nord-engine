@@ -25,12 +25,14 @@ Open `app.js` in Nord's code editor. It implements `mount(root)` and wires the v
 | `flat.js` | Phaser canvas texture, tools, pan/zoom and Arcade minigames |
 | `world.js` | Babylon papers, sticky physics, drawn doors and graph ride |
 | `desk.js` | Local Babylon/Havok setup, lighting, texture and download helpers |
+| `ui/desk.ui.json` | Studio layout, tools and text, edited in the UI Designer |
+| `lib/nord-ui.js` | The Nord UI runtime that builds the UI file |
 | `app.js` | Menus, active board, Nord Save, import/export and view switching |
 | `portfolio.html` | Template for the exported 3D portfolio page |
 | `save.js` | Nord's existing versioned Save class, backed by localStorage |
 | `assets/dev-desk-sprites.png` | Supplied original stationery/mascot sprite sheet |
 
-**First edit:** change the subtitle in `app.js`, stop Play and start again. Use the Console for syntax errors. The complete source listings at the end match the downloadable project.
+**First edit:** change the subtitle in `ui/desk.ui.json` (or the UI Designer), stop Play and start again. Use the Console for syntax errors. The complete source listings at the end match the downloadable project.
 
 ## 2. Make drawing data independent of the renderer
 
@@ -154,6 +156,7 @@ The walkthrough covers the app/game modules, shared helpers used by them, page, 
 | [flat.js](#walk-flat-js) | Build the complete Phaser drawing interaction and both Arcade minigames. |
 | [world.js](#walk-world-js) | Build every 3D representation and interaction from the same saved boards. |
 | [app.js](#walk-app-js) | Build the entire document host: controls, document selection, async mode changes, persistence, exports and teardown. |
+| [ui/desk.ui.json](#walk-ui-desk-ui-json) | Describe the drawing studio as data: brand header with actions, tool sidebar, the two drawing surfaces with title bar, and the footer. |
 | [desk.js](#walk-desk-js) | Build the complete reusable Babylon/Havok desk and browser-download helper. |
 | [save.js](#walk-save-js) | Understand the complete existing Nord Save helper bundled with this app. |
 | [portfolio.html](#walk-portfolio-html) | Read the entire exported desk template that embeds your documents and opens directly in 3D. |
@@ -989,11 +992,11 @@ export async function createWorld(canvas, boards, select) {
 
 Build the entire document host: controls, document selection, async mode changes, persistence, exports and teardown.
 
-#### 4.1 — Create identity and document actions
+#### 4.1 — Imports, load the UI file and name the handles
 
-**Read:** `app.js`, lines 1–23.
+**Read:** `app.js`, lines 1–10.
 
-<!-- taught-source: paper-worlds/app.js:1-23 -->
+<!-- taught-source: paper-worlds/app.js:1-10 -->
 
 ```js
 import { Save } from './save.js';
@@ -1001,126 +1004,25 @@ import { newBoards, validateBoards, portfolioHTML } from './model.js';
 import { createFlat } from './flat.js';
 import { createWorld } from './world.js';
 import { download } from './desk.js';
+import { createUI } from './lib/nord-ui.js';
 export async function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <link rel="stylesheet" href="style.css" />
-    <main>
-      <header>
-        <div class="brand">
-          <span class="mascot"></span>
-          <div>
-            <h1>Paper Worlds</h1>
-            <p>A little room for big ideas.</p>
-          </div>
-        </div>
-        <div>
-          <button id="mode">Explore 3D desk</button>
-          <button id="save">Save</button>
-          <button id="export">Export desk</button>
-        </div>
-      </header>
+  // Layout, text and fields live in ui/desk.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/desk.ui.json');
+  // $('name') = the real DOM element of a node you named in the UI file
 ```
 
-**What and why:** The imports give the host document, views and download operations. The header contains mode/save/export controls and uses the supplied mascot sheet through CSS. These controls are separate from painting so the same document can be acted on in either view. mount owns only the supplied root.
+**What and why:** Imports give the host access to the rules, helpers and the Nord UI runtime. mount is async because createUI(root).load fetches the UI file, links the stylesheet inside an isolated shadow root and builds every node before the first line of game code runs. The $ helper returns the real DOM element of a node you named in the file, so existing logic can keep using .value, .textContent and .onclick without searching the page. The save helper and the document data come next.
 
-**Try it / expected result:** Change the subtitle and reopen Play. It should not affect saves or board identity.
+**Try it / expected result:** Open the UI file in the UI Designer, rename a node and reload Play. The Console should name the missing node on the first lookup instead of silently doing nothing; rename it back afterwards.
 
-#### 4.2 — Declare tools and editing values
+#### 4.2 — Choose document data before starting Phaser
 
-**Read:** `app.js`, lines 24–51.
+**Read:** `app.js`, lines 11–35.
 
-<!-- taught-source: paper-worlds/app.js:24-51 -->
-
-```js
-      <section class="workbench">
-        <aside>
-          <label>
-            YOUR BOARDS
-            <select id="boards"></select>
-          </label>
-          <label>
-            Tool
-            <select id="tool">
-              <option value="pen">Pen</option>
-              <option value="hand">Pan workspace</option>
-              <option value="rect">Rectangle / door</option>
-              <option value="circle">Circle</option>
-              <option value="sticky">Sticky note</option>
-              <option value="text">Text</option>
-            </select>
-          </label>
-          <label>
-            Ink
-            <input id="color" type="color" value="#32a7a0" />
-          </label>
-          <label>
-            Text / rectangle label
-            <textarea id="text" placeholder="Type door for a portal rectangle"></textarea>
-          </label>
-          <button id="undo">Undo last shape</button>
-          <button id="fit">Fit page</button>
-          <div class="rule"></div>
-```
-
-**What and why:** The sidebar exposes board selection, tool, colour and text. IDs are read later by tool(), so choosing a tool changes data passed into flat.setTool rather than mutating a Phaser object directly from markup. Undo/Fit operate on document or camera respectively; their similar UI placement does not mean they have the same state owner.
-
-**Try it / expected result:** Follow the color input ID to tool(). Verify the same colour reaches newly drawn shapes, not existing ones.
-
-#### 4.3 — Declare play/backup controls and both surfaces
-
-**Read:** `app.js`, lines 52–85.
-
-<!-- taught-source: paper-worlds/app.js:52-85 -->
+<!-- taught-source: paper-worlds/app.js:11-35 -->
 
 ```js
-          <h3>Make it playful</h3>
-          <button id="balls">Bounce circles</button>
-          <button id="maze">Play drawn maze</button>
-          <button id="stop">Stop minigame</button>
-          <button id="shake">Shake stickies</button>
-          <button id="ride">Ride pen graph</button>
-          <div class="rule"></div>
-          <button id="png">Download PNG</button>
-          <button id="json">Backup JSON</button>
-          <label>
-            Import desk JSON
-            <input id="import" type="file" accept=".json" />
-          </label>
-          <p>
-            Wheel zooms. Pan tool moves the workspace. In 3D drag to orbit and wheel to
-            zoom; click a paper to edit, a door to travel, a sticky to flick.
-          </p>
-        </aside>
-        <div>
-          <div class="titlebar">
-            <b id="title"></b>
-            <span id="badge">2D STUDIO</span>
-          </div>
-          <div id="flat"></div>
-          <canvas id="world" hidden></canvas>
-          <p id="status">
-            Draw a rectangle labelled door to link the next board. Draw a graph with the
-            pen for a camera ride.
-          </p>
-        </div>
-      </section>
-      <footer>10 boards · local-first · Crowelian 2026 + Sonnet</footer>
-    </main>
-  `;
-```
-
-**What and why:** Minigame, shake and ride controls are explicit mode requests. PNG/JSON/import expose recovery tools. The titlebar/badge communicates which representation is active, while only one of the two canvases is visible. The status paragraph is the common error/progress outlet. None of these buttons silently writes files to a disk path.
-
-**Try it / expected result:** Find the hidden world canvas and the flat container; switch modes and observe visibility changing for the same page.
-
-#### 4.4 — Choose document data before starting Phaser
-
-**Read:** `app.js`, lines 86–110.
-
-<!-- taught-source: paper-worlds/app.js:86-110 -->
-
-```js
-  const $ = (id) => root.querySelector('#' + id);
+  const $ = (id) => menu.$(id).el;
   const save = new Save('paper-worlds');
   let boards = save.get('boards', null),
     active = 0,
@@ -1151,11 +1053,11 @@ export async function mount(root) {
 
 **Try it / expected result:** Import a valid JSON backup after editing another board. New strokes should use the imported board array.
 
-#### 4.5 — Wire selections and serialize 3D transitions
+#### 4.3 — Wire selections and serialize 3D transitions
 
-**Read:** `app.js`, lines 111–169.
+**Read:** `app.js`, lines 36–94.
 
-<!-- taught-source: paper-worlds/app.js:111-169 -->
+<!-- taught-source: paper-worlds/app.js:36-94 -->
 
 ```js
   const options = () => {
@@ -1223,11 +1125,11 @@ export async function mount(root) {
 
 **Try it / expected result:** Double-click Explore 3D quickly. You should end with one active desk, not multiple render loops.
 
-#### 4.6 — Separate document edits, camera changes and toy actions
+#### 4.4 — Separate document edits, camera changes and toy actions
 
-**Read:** `app.js`, lines 170–214.
+**Read:** `app.js`, lines 95–139.
 
-<!-- taught-source: paper-worlds/app.js:170-214 -->
+<!-- taught-source: paper-worlds/app.js:95-139 -->
 
 ```js
   $('mode').onclick = () => mode(!in3d);
@@ -1281,11 +1183,11 @@ export async function mount(root) {
 
 **Try it / expected result:** Undo once after drawing, then use Fit. Only Undo should change shape count.
 
-#### 4.7 — Save revisions and export simple formats
+#### 4.5 — Save revisions and export simple formats
 
-**Read:** `app.js`, lines 215–233.
+**Read:** `app.js`, lines 140–158.
 
-<!-- taught-source: paper-worlds/app.js:215-233 -->
+<!-- taught-source: paper-worlds/app.js:140-158 -->
 
 ```js
   function persist() {
@@ -1313,11 +1215,11 @@ export async function mount(root) {
 
 **Try it / expected result:** Draw, wait for autosave and reload. Then compare a downloaded PNG with a JSON backup: only the JSON contains shape kinds and coordinates.
 
-#### 4.8 — Validate imported files and export a portfolio template
+#### 4.6 — Validate imported files and export a portfolio template
 
-**Read:** `app.js`, lines 234–269.
+**Read:** `app.js`, lines 159–194.
 
-<!-- taught-source: paper-worlds/app.js:234-269 -->
+<!-- taught-source: paper-worlds/app.js:159-194 -->
 
 ```js
   $('import').onchange = async () => {
@@ -1362,11 +1264,11 @@ export async function mount(root) {
 
 **Try it / expected result:** Import malformed JSON and confirm the old document remains. Export a valid desk and inspect that it contains all ten boards, not just the active PNG.
 
-#### 4.9 — Offer touch navigation and release the mounted app
+#### 4.7 — Offer touch navigation and release the mounted app
 
-**Read:** `app.js`, lines 270–314.
+**Read:** `app.js`, lines 195–239.
 
-<!-- taught-source: paper-worlds/app.js:270-314 -->
+<!-- taught-source: paper-worlds/app.js:195-239 -->
 
 ```js
   let pinch = 0;
@@ -1411,7 +1313,7 @@ export async function mount(root) {
     if (revision !== saved) persist();
     world?.dispose();
     flat.dispose();
-    root.replaceChildren();
+    menu.destroy();
   };
 }
 ```
@@ -1421,11 +1323,145 @@ export async function mount(root) {
 **Try it / expected result:** Use the button as the desktop fallback; on supported touch hardware, test the inward pinch. Close/reopen Play and ensure the previous autosave timer does not keep running.
 
 
-### 5. desk.js {#walk-desk-js}
+### 5. ui/desk.ui.json {#walk-ui-desk-ui-json}
+
+Describe the drawing studio as data: brand header with actions, tool sidebar, the two drawing surfaces with title bar, and the footer.
+
+#### 5.1 — Page settings, brand header and document actions
+
+**Read:** `ui/desk.ui.json`, lines 1–26.
+
+<!-- taught-source: paper-worlds/ui/desk.ui.json:1-26 -->
+
+```json
+{
+  "version": 1,
+  "name": "desk",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#101b2b"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "box", "tag": "header", "children": [
+      { "class": "brand", "type": "box", "children": [
+        { "class": "mascot", "type": "label", "tag": "span" },
+        { "type": "box", "children": [
+          { "type": "label", "tag": "h1", "text": "Paper Worlds" },
+          { "type": "label", "tag": "p", "text": "A little room for big ideas." }
+        ] }
+      ] },
+      { "type": "box", "children": [
+        { "name": "mode", "type": "button", "text": "Explore 3D desk" },
+        { "name": "save", "type": "button", "text": "Save" },
+        { "name": "export", "type": "button", "text": "Export desk" }
+      ] }
+    ] },
+```
+
+**What and why:** Page settings link style.css inside the shadow root and set the body colours. The header box holds the brand (mascot span, title, tagline) and three buttons named mode, save and export. The mascot is an empty box styled by CSS.
+
+**Try it / expected result:** Change the tagline text in the Designer and reload Play. The studio updates without code.
+
+#### 5.2 — Sidebar: boards, tools and play controls
+
+**Read:** `ui/desk.ui.json`, lines 27–63.
+
+<!-- taught-source: paper-worlds/ui/desk.ui.json:27-63 -->
+
+```json
+    { "class": "workbench", "type": "box", "tag": "section", "children": [
+      { "type": "box", "tag": "aside", "children": [
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "YOUR BOARDS" },
+          { "name": "boards", "type": "select", "options": [] }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Tool" },
+          { "name": "tool", "type": "select", "options": [["pen", "Pen"], ["hand", "Pan workspace"], ["rect", "Rectangle / door"], ["circle", "Circle"], ["sticky", "Sticky note"], ["text", "Text"]] }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Ink" },
+          { "name": "color", "type": "input", "inputType": "color", "value": "#32a7a0" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Text / rectangle label" },
+          { "name": "text", "type": "input", "multiline": true, "placeholder": "Type door for a portal rectangle" }
+        ] },
+        { "name": "undo", "type": "button", "text": "Undo last shape" },
+        { "name": "fit", "type": "button", "text": "Fit page" },
+        { "class": "rule", "type": "box" },
+        { "type": "label", "tag": "h3", "text": "Make it playful" },
+        { "name": "balls", "type": "button", "text": "Bounce circles" },
+        { "name": "maze", "type": "button", "text": "Play drawn maze" },
+        { "name": "stop", "type": "button", "text": "Stop minigame" },
+        { "name": "shake", "type": "button", "text": "Shake stickies" },
+        { "name": "ride", "type": "button", "text": "Ride pen graph" },
+        { "class": "rule", "type": "box" },
+        { "name": "png", "type": "button", "text": "Download PNG" },
+        { "name": "json", "type": "button", "text": "Backup JSON" },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Import desk JSON" },
+          { "name": "import", "type": "input", "inputType": "file", "accept": ".json" }
+        ] },
+        { "type": "label", "tag": "p", "text": "Wheel zooms. Pan tool moves the workspace. In 3D drag to orbit and wheel to zoom; click a paper to edit, a door to travel, a sticky to flick." }
+      ] },
+      { "type": "box", "children": [
+```
+
+**What and why:** The workbench section starts with an aside. Select nodes carry their options as data: the board selector is filled by code, while the tool select lists pen, hand, rectangle, circle, sticky and text. Color is an input of type color, the label box is a multi-line input, and the toy buttons each have a name used by app.js. Divider rules are boxes with the hr tag.
+
+**Try it / expected result:** Add an option to the tool select in the JSON tab, for example ["star", "Star"], and note it appears in the sidebar; nothing draws a star until flat.js supports it, so remove it again.
+
+#### 5.3 — Title bar and the two drawing surfaces
+
+**Read:** `ui/desk.ui.json`, lines 64–72.
+
+<!-- taught-source: paper-worlds/ui/desk.ui.json:64-72 -->
+
+```json
+        { "class": "titlebar", "type": "box", "children": [
+          { "name": "title", "type": "label", "tag": "b" },
+          { "name": "badge", "type": "label", "tag": "span", "text": "2D STUDIO" }
+        ] },
+        { "name": "flat", "type": "box" },
+        { "name": "world", "type": "canvas", "visible": false },
+        { "name": "status", "type": "label", "tag": "p", "text": "Draw a rectangle labelled door to link the next board. Draw a graph with the pen for a camera ride." }
+      ] }
+    ] },
+```
+
+**What and why:** The right column has a title bar with a bold label and a badge, then the flat div that Phaser fills and the 3D canvas that Babylon uses. They are nodes with names so app.js can show and hide them. The file input for importing a desk is an input of type file with an accept filter.
+
+**Try it / expected result:** Make the badge text read 2D PAPER and reload Play; mode switches still replace it because the node name is the same.
+
+#### 5.4 — Footer
+
+**Read:** `ui/desk.ui.json`, lines 73–77.
+
+<!-- taught-source: paper-worlds/ui/desk.ui.json:73-77 -->
+
+```json
+    { "type": "box", "tag": "footer", "children": [
+      { "type": "label", "tag": "span", "text": "10 boards · local-first · Crowelian 2026 + Sonnet" }
+    ] }
+  ] }
+}
+```
+
+**What and why:** The footer is a label inside a box with the footer tag and carries the status line the app updates. Because the footer is data rather than code, a translator or designer can change its wording, style class or tag without reading the game logic, and the Designer preview shows the result instantly.
+
+**Try it / expected result:** Edit the footer text and save to see how little of the app depends on wording.
+
+
+### 6. desk.js {#walk-desk-js}
 
 Build the complete reusable Babylon/Havok desk and browser-download helper.
 
-#### 5.1 — Share pending local script loads
+#### 6.1 — Share pending local script loads
 
 **Read:** `desk.js`, lines 1–20.
 
@@ -1458,7 +1494,7 @@ export function loadScript(src) {
 
 **Try it / expected result:** Click the 3D mode button twice rapidly. There should be one ready view, not an undefined BABYLON error.
 
-#### 5.2 — Create one engine, scene and controllable camera
+#### 6.2 — Create one engine, scene and controllable camera
 
 **Read:** `desk.js`, lines 21–42.
 
@@ -1493,7 +1529,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 **Try it / expected result:** Compare orbit dragging with moving a paper: the camera changes the view without altering saved document coordinates.
 
-#### 5.3 — Light a surface and prepare shadow ownership
+#### 6.3 — Light a surface and prepare shadow ownership
 
 **Read:** `desk.js`, lines 43–62.
 
@@ -1526,7 +1562,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 **Try it / expected result:** Change the directional light direction temporarily and observe where shadows fall, while paper text remains readable.
 
-#### 5.4 — Load the packaged physics binary
+#### 6.4 — Load the packaged physics binary
 
 **Read:** `desk.js`, lines 63–77.
 
@@ -1554,7 +1590,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 **Try it / expected result:** Temporarily set physics false at the helper call. Static papers should still render, but there will be no physical sticky/flick response.
 
-#### 5.5 — Create a writable texture rather than a screenshot file
+#### 6.5 — Create a writable texture rather than a screenshot file
 
 **Read:** `desk.js`, lines 78–104.
 
@@ -1594,7 +1630,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 **Try it / expected result:** Draw a bold line in 2D and switch views. It should appear as actual texture content on the corresponding paper.
 
-#### 5.6 — Create a visible rigid sticky toy
+#### 6.6 — Create a visible rigid sticky toy
 
 **Read:** `desk.js`, lines 105–126.
 
@@ -1629,7 +1665,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 **Try it / expected result:** Increase restitution slightly and flick a sticky. It should bounce more without changing the original 2D note shape.
 
-#### 5.7 — Own the render loop and resize lifecycle
+#### 6.7 — Own the render loop and resize lifecycle
 
 **Read:** `desk.js`, lines 127–156.
 
@@ -1672,7 +1708,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 **Try it / expected result:** Switch back to 2D and observe that the old desk stops animating. Reopening 3D creates one fresh owner.
 
-#### 5.8 — Hand a browser a real downloadable object
+#### 6.8 — Hand a browser a real downloadable object
 
 **Read:** `desk.js`, lines 157–165.
 
@@ -1695,11 +1731,11 @@ export function download(name, content, type = 'application/json') {
 **Try it / expected result:** Download JSON and verify its suggested filename and contents. Cancel the save if you do not need another copy.
 
 
-### 6. save.js {#walk-save-js}
+### 7. save.js {#walk-save-js}
 
 Understand the complete existing Nord Save helper bundled with this app.
 
-#### 6.1 — Namespace slots and read versioned data
+#### 7.1 — Namespace slots and read versioned data
 
 **Read:** `save.js`, lines 1–20.
 
@@ -1732,7 +1768,7 @@ export class Save {
 
 **Try it / expected result:** Compare the Paper Worlds and RSS River storage prefixes in browser tools. Their saves should not overwrite each other.
 
-#### 6.2 — Read and write values, then define memory storage
+#### 7.2 — Read and write values, then define memory storage
 
 **Read:** `save.js`, lines 21–32.
 
@@ -1758,11 +1794,11 @@ export class MemoryStorage {
 **Try it / expected result:** Back up your document, reload the page and verify it returns. Then inspect how the app reports a failed write instead of assuming success.
 
 
-### 7. portfolio.html {#walk-portfolio-html}
+### 8. portfolio.html {#walk-portfolio-html}
 
 Read the entire exported desk template that embeds your documents and opens directly in 3D.
 
-#### 7.1 — Style a standalone viewing surface
+#### 8.1 — Style a standalone viewing surface
 
 **Read:** `portfolio.html`, lines 1–34.
 
@@ -1809,7 +1845,7 @@ Read the entire exported desk template that embeds your documents and opens dire
 
 **Try it / expected result:** Open an exported desk from the served project folder and resize it. The canvas should fill the window and the header should remain reachable.
 
-#### 7.2 — Read embedded data and handle module failures
+#### 8.2 — Read embedded data and handle module failures
 
 **Read:** `portfolio.html`, lines 35–55.
 
@@ -1844,11 +1880,11 @@ Read the entire exported desk template that embeds your documents and opens dire
 **Try it / expected result:** Move only the HTML away from its modules on a test copy. Observe the missing-resource failure, then restore the full exported folder.
 
 
-### 8. index.html {#walk-index-html}
+### 9. index.html {#walk-index-html}
 
 Read the complete Nord page entry point and its failure path.
 
-#### 8.1 — Load the local runtime and start the app
+#### 9.1 — Load the local runtime and start the app
 
 **Read:** `index.html`, lines 1–8.
 
@@ -1870,11 +1906,11 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 **Try it / expected result:** Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name.
 
 
-### 9. nord.project.json {#walk-nord-project-json}
+### 10. nord.project.json {#walk-nord-project-json}
 
 Read every project field that tells Nord which host, display and services to use.
 
-#### 9.1 — Identify the project and choose its presentation
+#### 10.1 — Identify the project and choose its presentation
 
 **Read:** `nord.project.json`, lines 1–22.
 
@@ -1909,7 +1945,7 @@ Read every project field that tells Nord which host, display and services to use
 
 **Try it / expected result:** Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.
 
-#### 9.2 — Distinguish scene actions from HTML event handling
+#### 10.2 — Distinguish scene actions from HTML event handling
 
 **Read:** `nord.project.json`, lines 23–64.
 
@@ -1965,31 +2001,27 @@ Read every project field that tells Nord which host, display and services to use
 **Try it / expected result:** For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input.
 
 
-### 10. style.css {#walk-style-css}
+### 11. style.css {#walk-style-css}
 
 Read every stylesheet rule, grouped by the UI responsibility it controls.
 
-#### 10.1 — Set the app foundation and reusable visual language
+#### 11.1 — Set the app foundation and reusable visual language
 
-**Read:** `style.css`, lines 1–40.
+**Read:** `style.css`, lines 1–36.
 
-<!-- taught-source: paper-worlds/style.css:1-40 -->
+<!-- taught-source: paper-worlds/style.css:1-36 -->
 
 ```css
-html,
-body {
-  height: auto;
-  min-height: 100%;
-  background: #101b2b;
+:host {
+  display: block;
+  min-height: 100vh;
+  color: #dbe9ee;
+  font: 14px system-ui;
 }
 * {
   box-sizing: border-box;
 }
-body {
-  margin: 0;
-  color: #dbe9ee;
-  font: 14px system-ui;
-}
+
 main {
   max-width: 1400px;
   margin: auto;
@@ -2018,15 +2050,15 @@ header p {
 }
 ```
 
-**What and why:** The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.
+**What and why:** The opening rules give the host element (:host, the page root that holds the UI) its colour, font and minimum height; the document background and margin come from the body block of the UI file, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies. The sheet is linked from inside the UI file's shadow root, so selectors such as main, nav and #status match the nodes you named there.
 
 **Try it / expected result:** Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change.
 
-#### 10.2 — Use the supplied sheet and style controls
+#### 11.2 — Use the supplied sheet and style controls
 
-**Read:** `style.css`, lines 41–87.
+**Read:** `style.css`, lines 37–83.
 
-<!-- taught-source: paper-worlds/style.css:41-87 -->
+<!-- taught-source: paper-worlds/style.css:37-83 -->
 
 ```css
 .mascot {
@@ -2082,11 +2114,11 @@ aside button {
 
 **Try it / expected result:** Temporarily change the sprite background position to another cell, then restore the ghost.
 
-#### 10.3 — Create a studio layout without changing document coordinates
+#### 11.3 — Create a studio layout without changing document coordinates
 
-**Read:** `style.css`, lines 88–124.
+**Read:** `style.css`, lines 84–120.
 
-<!-- taught-source: paper-worlds/style.css:88-124 -->
+<!-- taught-source: paper-worlds/style.css:84-120 -->
 
 ```css
 .workbench {
@@ -2132,11 +2164,11 @@ h3 {
 
 **Try it / expected result:** Change sidebar width slightly and verify a saved stroke stays at its document position.
 
-#### 10.4 — Size surfaces, honor hidden state and adapt
+#### 11.4 — Size surfaces, honor hidden state and adapt
 
-**Read:** `style.css`, lines 125–162.
+**Read:** `style.css`, lines 121–158.
 
-<!-- taught-source: paper-worlds/style.css:125-162 -->
+<!-- taught-source: paper-worlds/style.css:121-158 -->
 
 ```css
 #flat,
@@ -2200,87 +2232,12 @@ import { newBoards, validateBoards, portfolioHTML } from './model.js';
 import { createFlat } from './flat.js';
 import { createWorld } from './world.js';
 import { download } from './desk.js';
+import { createUI } from './lib/nord-ui.js';
 export async function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <link rel="stylesheet" href="style.css" />
-    <main>
-      <header>
-        <div class="brand">
-          <span class="mascot"></span>
-          <div>
-            <h1>Paper Worlds</h1>
-            <p>A little room for big ideas.</p>
-          </div>
-        </div>
-        <div>
-          <button id="mode">Explore 3D desk</button>
-          <button id="save">Save</button>
-          <button id="export">Export desk</button>
-        </div>
-      </header>
-      <section class="workbench">
-        <aside>
-          <label>
-            YOUR BOARDS
-            <select id="boards"></select>
-          </label>
-          <label>
-            Tool
-            <select id="tool">
-              <option value="pen">Pen</option>
-              <option value="hand">Pan workspace</option>
-              <option value="rect">Rectangle / door</option>
-              <option value="circle">Circle</option>
-              <option value="sticky">Sticky note</option>
-              <option value="text">Text</option>
-            </select>
-          </label>
-          <label>
-            Ink
-            <input id="color" type="color" value="#32a7a0" />
-          </label>
-          <label>
-            Text / rectangle label
-            <textarea id="text" placeholder="Type door for a portal rectangle"></textarea>
-          </label>
-          <button id="undo">Undo last shape</button>
-          <button id="fit">Fit page</button>
-          <div class="rule"></div>
-          <h3>Make it playful</h3>
-          <button id="balls">Bounce circles</button>
-          <button id="maze">Play drawn maze</button>
-          <button id="stop">Stop minigame</button>
-          <button id="shake">Shake stickies</button>
-          <button id="ride">Ride pen graph</button>
-          <div class="rule"></div>
-          <button id="png">Download PNG</button>
-          <button id="json">Backup JSON</button>
-          <label>
-            Import desk JSON
-            <input id="import" type="file" accept=".json" />
-          </label>
-          <p>
-            Wheel zooms. Pan tool moves the workspace. In 3D drag to orbit and wheel to
-            zoom; click a paper to edit, a door to travel, a sticky to flick.
-          </p>
-        </aside>
-        <div>
-          <div class="titlebar">
-            <b id="title"></b>
-            <span id="badge">2D STUDIO</span>
-          </div>
-          <div id="flat"></div>
-          <canvas id="world" hidden></canvas>
-          <p id="status">
-            Draw a rectangle labelled door to link the next board. Draw a graph with the
-            pen for a camera ride.
-          </p>
-        </div>
-      </section>
-      <footer>10 boards · local-first · Crowelian 2026 + Sonnet</footer>
-    </main>
-  `;
-  const $ = (id) => root.querySelector('#' + id);
+  // Layout, text and fields live in ui/desk.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/desk.ui.json');
+  // $('name') = the real DOM element of a node you named in the UI file
+  const $ = (id) => menu.$(id).el;
   const save = new Save('paper-worlds');
   let boards = save.get('boards', null),
     active = 0,
@@ -2506,7 +2463,7 @@ export async function mount(root) {
     if (revision !== saved) persist();
     world?.dispose();
     flat.dispose();
-    root.replaceChildren();
+    menu.destroy();
   };
 }
 ```
@@ -3276,20 +3233,16 @@ export class MemoryStorage {
 <summary>Complete style.css</summary>
 
 ```css
-html,
-body {
-  height: auto;
-  min-height: 100%;
-  background: #101b2b;
+:host {
+  display: block;
+  min-height: 100vh;
+  color: #dbe9ee;
+  font: 14px system-ui;
 }
 * {
   box-sizing: border-box;
 }
-body {
-  margin: 0;
-  color: #dbe9ee;
-  font: 14px system-ui;
-}
+
 main {
   max-width: 1400px;
   margin: auto;
@@ -3437,6 +3390,91 @@ footer {
   header {
     flex-wrap: wrap;
   }
+}
+```
+
+</details>
+
+<details>
+<summary>Complete ui/desk.ui.json</summary>
+
+```json
+{
+  "version": 1,
+  "name": "desk",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#101b2b"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "box", "tag": "header", "children": [
+      { "class": "brand", "type": "box", "children": [
+        { "class": "mascot", "type": "label", "tag": "span" },
+        { "type": "box", "children": [
+          { "type": "label", "tag": "h1", "text": "Paper Worlds" },
+          { "type": "label", "tag": "p", "text": "A little room for big ideas." }
+        ] }
+      ] },
+      { "type": "box", "children": [
+        { "name": "mode", "type": "button", "text": "Explore 3D desk" },
+        { "name": "save", "type": "button", "text": "Save" },
+        { "name": "export", "type": "button", "text": "Export desk" }
+      ] }
+    ] },
+    { "class": "workbench", "type": "box", "tag": "section", "children": [
+      { "type": "box", "tag": "aside", "children": [
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "YOUR BOARDS" },
+          { "name": "boards", "type": "select", "options": [] }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Tool" },
+          { "name": "tool", "type": "select", "options": [["pen", "Pen"], ["hand", "Pan workspace"], ["rect", "Rectangle / door"], ["circle", "Circle"], ["sticky", "Sticky note"], ["text", "Text"]] }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Ink" },
+          { "name": "color", "type": "input", "inputType": "color", "value": "#32a7a0" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Text / rectangle label" },
+          { "name": "text", "type": "input", "multiline": true, "placeholder": "Type door for a portal rectangle" }
+        ] },
+        { "name": "undo", "type": "button", "text": "Undo last shape" },
+        { "name": "fit", "type": "button", "text": "Fit page" },
+        { "class": "rule", "type": "box" },
+        { "type": "label", "tag": "h3", "text": "Make it playful" },
+        { "name": "balls", "type": "button", "text": "Bounce circles" },
+        { "name": "maze", "type": "button", "text": "Play drawn maze" },
+        { "name": "stop", "type": "button", "text": "Stop minigame" },
+        { "name": "shake", "type": "button", "text": "Shake stickies" },
+        { "name": "ride", "type": "button", "text": "Ride pen graph" },
+        { "class": "rule", "type": "box" },
+        { "name": "png", "type": "button", "text": "Download PNG" },
+        { "name": "json", "type": "button", "text": "Backup JSON" },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Import desk JSON" },
+          { "name": "import", "type": "input", "inputType": "file", "accept": ".json" }
+        ] },
+        { "type": "label", "tag": "p", "text": "Wheel zooms. Pan tool moves the workspace. In 3D drag to orbit and wheel to zoom; click a paper to edit, a door to travel, a sticky to flick." }
+      ] },
+      { "type": "box", "children": [
+        { "class": "titlebar", "type": "box", "children": [
+          { "name": "title", "type": "label", "tag": "b" },
+          { "name": "badge", "type": "label", "tag": "span", "text": "2D STUDIO" }
+        ] },
+        { "name": "flat", "type": "box" },
+        { "name": "world", "type": "canvas", "visible": false },
+        { "name": "status", "type": "label", "tag": "p", "text": "Draw a rectangle labelled door to link the next board. Draw a graph with the pen for a camera ride." }
+      ] }
+    ] },
+    { "type": "box", "tag": "footer", "children": [
+      { "type": "label", "tag": "span", "text": "10 boards · local-first · Crowelian 2026 + Sonnet" }
+    ] }
+  ] }
 }
 ```
 

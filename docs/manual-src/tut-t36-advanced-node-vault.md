@@ -148,7 +148,7 @@ After a request the client replaces its displayed run with the server response. 
 
 Replay loops through the current sequence, adds the lit CSS class, waits 350 ms, removes it, then waits another 150 ms. The helper delay returns a Promise wrapping setTimeout. The generation token marks an animation's run, and starting a new heist increments it. The current buttons also prevent new heists while replay is running.
 
-The leaderboard uses created li elements and **textContent**, not innerHTML, for pilot names. A pilot called `<b>Pilot</b>` appears literally rather than becoming markup. innerHTML is used only for the fixed, developer-authored interface template.
+The leaderboard uses created li elements and **textContent**, not innerHTML, for pilot names. A pilot called `<b>Pilot</b>` appears literally rather than becoming markup. The page itself is not an HTML string: `ui/vault.ui.json` describes it and `createUI(root).load()` builds it (edit it in the UI Designer).
 
 **Checkpoint:** double-click a pad and compare the cursor with the intended single input. Then win a run under a name containing angle brackets; inspect the displayed text. It should not create HTML elements.
 
@@ -187,23 +187,18 @@ All browser, stylesheet, Node and rule-module source is included below. The [com
 ### app.js
 
 ```js
-export function mount(root) {
-root.innerHTML = `<link rel="stylesheet" href="style.css"><main><h1>CIRCUIT VAULT</h1>
-<p>Memorise the numbered circuit. Repeat it to unlock six vault stages.</p>
-<label>Pilot <input id="pilot" maxlength="20" value="Pilot"></label>
-<label>API <input id="api" value="http://127.0.0.1:4381"></label>
-<button id="start">New heist</button><button id="replay" disabled>Replay sequence</button>
-<p id="status" role="status">Start the local Node server, then choose New heist.</p>
-<div id="tiles">${['CYAN','PINK','GOLD','GREEN'].map((c,i)=>`<button data-tile="${i}">${i+1}<small>${c}</small></button>`).join('')}</div>
-<h2>Local leaderboard</h2><ol id="board"></ol><p>Node remembers the top ten until you stop the process.</p></main>`;
-const $ = s => root.querySelector(s);
+import { createUI } from './lib/nord-ui.js';
+export async function mount(root) {
+// The page is described in ui/vault.ui.json (edit it in the UI Designer); this file only wires it up.
+const menu = await createUI(root).load('ui/vault.ui.json');
+const $ = s => menu.shadow.querySelector(s); // ids come from the node names in the UI file
 let id, run, busy = false, generation = 0, replaying = false;
 const status = text => { $('#status').textContent = text; };
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 function controls() {
   $('#start').disabled = busy || replaying;
   $('#replay').disabled = busy || replaying || !run || run.done;
-  root.querySelectorAll('[data-tile]').forEach(b => b.disabled = busy || replaying || !run || run.done);
+  menu.shadow.querySelectorAll('[data-tile]').forEach(b => b.disabled = busy || replaying || !run || run.done);
 }
 async function api(route, body) {
   const base = new URL($('#api').value);
@@ -241,7 +236,7 @@ $('#start').onclick = async () => {
   catch (e) { status(`Connection failed: ${e.message}. Run node server.mjs and check the API field.`); }
   finally { busy = false;controls(); }
 };
-for (const button of root.querySelectorAll('[data-tile]')) button.onclick = async () => {
+for (const button of menu.shadow.querySelectorAll('[data-tile]')) button.onclick = async () => {
   if (busy || replaying || !run || run.done) return;busy = true;controls();const round = run.round;
   try { ({ run } = await api('/api/step', { id, tile: Number(button.dataset.tile) }));draw();
     if (run.done) await leaderboard();else if (run.round !== round) { busy = false;await replay(); }
@@ -443,7 +438,53 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 <summary>Complete style.css</summary>
 
 ```css
-body{margin:0;background:#090e20;color:#dce8ff;font:17px system-ui}main{max-width:820px;margin:3vh auto;padding:24px;background:#111b34;border:1px solid #365078;border-radius:20px}h1{letter-spacing:.15em;color:#7df4ff}button,input{font:inherit;padding:10px;border-radius:8px;border:1px solid #677eaa;margin:6px}button{cursor:pointer;background:#263c65;color:white}button:disabled{opacity:.45;cursor:default}label{display:inline-block}#api{width:230px}#tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}#tiles button{height:110px;font-size:36px;background:#135363}#tiles button:nth-child(2){background:#7d2e66}#tiles button:nth-child(3){background:#81641a}#tiles button:nth-child(4){background:#286042}small{display:block;font-size:13px}#tiles button.lit{opacity:1;filter:brightness(2);box-shadow:0 0 22px #acf}#status{min-height:48px;white-space:pre-wrap}ol{min-height:24px}
+:host{display:block;min-height:100vh;color:#dce8ff;font:17px system-ui}main{max-width:820px;margin:3vh auto;padding:24px;background:#111b34;border:1px solid #365078;border-radius:20px}h1{letter-spacing:.15em;color:#7df4ff}button,input{font:inherit;padding:10px;border-radius:8px;border:1px solid #677eaa;margin:6px}button{cursor:pointer;background:#263c65;color:white}button:disabled{opacity:.45;cursor:default}label{display:inline-block}#api{width:230px}#tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}#tiles button{height:110px;font-size:36px;background:#135363}#tiles button:nth-child(2){background:#7d2e66}#tiles button:nth-child(3){background:#81641a}#tiles button:nth-child(4){background:#286042}small{display:block;font-size:13px}#tiles button.lit{opacity:1;filter:brightness(2);box-shadow:0 0 22px #acf}#status{min-height:48px;white-space:pre-wrap}ol{min-height:24px}
+```
+
+</details>
+
+<details>
+<summary>Complete ui/vault.ui.json</summary>
+
+```json
+{
+  "version": 1,
+  "name": "vault",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#090e20",
+    "color": "#dce8ff",
+    "font": "17px system-ui"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "label", "tag": "h1", "text": "CIRCUIT VAULT" },
+    { "type": "label", "tag": "p", "text": "Memorise the numbered circuit. Repeat it to unlock six vault stages." },
+    { "type": "box", "tag": "label", "children": [
+      { "type": "label", "tag": "span", "text": "Pilot" },
+      { "type": "input", "name": "pilot", "maxlength": 20, "value": "Pilot" }
+    ] },
+    { "type": "box", "tag": "label", "children": [
+      { "type": "label", "tag": "span", "text": "API" },
+      { "type": "input", "name": "api", "value": "http://127.0.0.1:4381" }
+    ] },
+    { "type": "button", "name": "start", "text": "New heist" },
+    { "type": "button", "name": "replay", "text": "Replay sequence", "disabled": true },
+    { "type": "label", "tag": "p", "text": "Start the local Node server, then choose New heist.", "name": "status", "attrs": {"role": "status"} },
+    { "type": "box", "name": "tiles", "children": [
+      { "type": "button", "text": "1[br][size=13]CYAN[/size]", "attrs": {"data-tile": "0"} },
+      { "type": "button", "text": "2[br][size=13]PINK[/size]", "attrs": {"data-tile": "1"} },
+      { "type": "button", "text": "3[br][size=13]GOLD[/size]", "attrs": {"data-tile": "2"} },
+      { "type": "button", "text": "4[br][size=13]GREEN[/size]", "attrs": {"data-tile": "3"} }
+    ] },
+    { "type": "label", "tag": "h2", "text": "Local leaderboard" },
+    { "type": "box", "tag": "ol", "name": "board" },
+    { "type": "label", "tag": "p", "text": "Node remembers the top ten until you stop the process." }
+  ] }
+}
 ```
 
 </details>

@@ -40,6 +40,14 @@
 <td>Local Babylon/Havok setup, lighting, texture and download helpers</td>
 </tr>
 <tr>
+<td><code>ui/desk.ui.json</code></td>
+<td>Studio layout, tools and text, edited in the UI Designer</td>
+</tr>
+<tr>
+<td><code>lib/nord-ui.js</code></td>
+<td>The Nord UI runtime that builds the UI file</td>
+</tr>
+<tr>
 <td><code>app.js</code></td>
 <td>Menus, active board, Nord Save, import/export and view switching</td>
 </tr>
@@ -56,7 +64,7 @@
 <td>Supplied original stationery/mascot sprite sheet</td>
 </tr>
 </tbody></table>
-<p><strong>First edit:</strong> change the subtitle in <code>app.js</code>, stop Play and start again. Use the Console for syntax errors. The complete source listings at the end match the downloadable project.</p>
+<p><strong>First edit:</strong> change the subtitle in <code>ui/desk.ui.json</code> (or the UI Designer), stop Play and start again. Use the Console for syntax errors. The complete source listings at the end match the downloadable project.</p>
 <h2 id="2-make-drawing-data-independent-of-the-renderer">2. Make drawing data independent of the renderer<a class="anchor" href="#2-make-drawing-data-independent-of-the-renderer">#</a></h2>
 <p>A board has an ID, a title and a <code>shapes</code> array. Shapes store their kind, position, colour and geometry. A pen stroke is an array of points; a rectangle stores X/Y/width/height; text and stickies store a string. The supplied ten-board initializer includes one note, one door and a graph to make the first exploration useful.</p>
 <pre class="code" data-lang="js"><code>const sticky = {
@@ -135,6 +143,10 @@ save.set('boards', boards);</code></pre>
 <tr>
 <td><a href="#walk-app-js">app.js</a></td>
 <td>Build the entire document host: controls, document selection, async mode changes, persistence, exports and teardown.</td>
+</tr>
+<tr>
+<td><a href="#walk-ui-desk-ui-json">ui/desk.ui.json</a></td>
+<td>Describe the drawing studio as data: brand header with actions, tool sidebar, the two drawing surfaces with title bar, and the footer.</td>
 </tr>
 <tr>
 <td><a href="#walk-desk-js">desk.js</a></td>
@@ -789,106 +801,23 @@ export async function createWorld(canvas, boards, select) {
 <p><strong>Try it / expected result:</strong> Draw a rising/falling graph and ride it. Changing the stroke’s vertical shape should alter camera height, while no rigid-body vehicle is implied.</p>
 <h3 id="walk-app-js">4. app.js<a class="anchor" href="#walk-app-js">#</a></h3>
 <p>Build the entire document host: controls, document selection, async mode changes, persistence, exports and teardown.</p>
-<h4 id="4-1-create-identity-and-document-actions">4.1 — Create identity and document actions<a class="anchor" href="#4-1-create-identity-and-document-actions">#</a></h4>
-<p><strong>Read:</strong> <code>app.js</code>, lines 1–23.</p>
-<!-- taught-source: paper-worlds/app.js:1-23 --><pre class="code" data-lang="js"><code>import { Save } from './save.js';
+<h4 id="4-1-imports-load-the-ui-file-and-name-the-handles">4.1 — Imports, load the UI file and name the handles<a class="anchor" href="#4-1-imports-load-the-ui-file-and-name-the-handles">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 1–10.</p>
+<!-- taught-source: paper-worlds/app.js:1-10 --><pre class="code" data-lang="js"><code>import { Save } from './save.js';
 import { newBoards, validateBoards, portfolioHTML } from './model.js';
 import { createFlat } from './flat.js';
 import { createWorld } from './world.js';
 import { download } from './desk.js';
+import { createUI } from './lib/nord-ui.js';
 export async function mount(root) {
-  root.innerHTML = /* HTML */ `
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&gt;
-    &lt;main&gt;
-      &lt;header&gt;
-        &lt;div class=&quot;brand&quot;&gt;
-          &lt;span class=&quot;mascot&quot;&gt;&lt;/span&gt;
-          &lt;div&gt;
-            &lt;h1&gt;Paper Worlds&lt;/h1&gt;
-            &lt;p&gt;A little room for big ideas.&lt;/p&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div&gt;
-          &lt;button id=&quot;mode&quot;&gt;Explore 3D desk&lt;/button&gt;
-          &lt;button id=&quot;save&quot;&gt;Save&lt;/button&gt;
-          &lt;button id=&quot;export&quot;&gt;Export desk&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/header&gt;</code></pre>
-<p><strong>What and why:</strong> The imports give the host document, views and download operations. The header contains mode/save/export controls and uses the supplied mascot sheet through CSS. These controls are separate from painting so the same document can be acted on in either view. mount owns only the supplied root.</p>
-<p><strong>Try it / expected result:</strong> Change the subtitle and reopen Play. It should not affect saves or board identity.</p>
-<h4 id="4-2-declare-tools-and-editing-values">4.2 — Declare tools and editing values<a class="anchor" href="#4-2-declare-tools-and-editing-values">#</a></h4>
-<p><strong>Read:</strong> <code>app.js</code>, lines 24–51.</p>
-<!-- taught-source: paper-worlds/app.js:24-51 --><pre class="code" data-lang="js"><code>      &lt;section class=&quot;workbench&quot;&gt;
-        &lt;aside&gt;
-          &lt;label&gt;
-            YOUR BOARDS
-            &lt;select id=&quot;boards&quot;&gt;&lt;/select&gt;
-          &lt;/label&gt;
-          &lt;label&gt;
-            Tool
-            &lt;select id=&quot;tool&quot;&gt;
-              &lt;option value=&quot;pen&quot;&gt;Pen&lt;/option&gt;
-              &lt;option value=&quot;hand&quot;&gt;Pan workspace&lt;/option&gt;
-              &lt;option value=&quot;rect&quot;&gt;Rectangle / door&lt;/option&gt;
-              &lt;option value=&quot;circle&quot;&gt;Circle&lt;/option&gt;
-              &lt;option value=&quot;sticky&quot;&gt;Sticky note&lt;/option&gt;
-              &lt;option value=&quot;text&quot;&gt;Text&lt;/option&gt;
-            &lt;/select&gt;
-          &lt;/label&gt;
-          &lt;label&gt;
-            Ink
-            &lt;input id=&quot;color&quot; type=&quot;color&quot; value=&quot;#32a7a0&quot; /&gt;
-          &lt;/label&gt;
-          &lt;label&gt;
-            Text / rectangle label
-            &lt;textarea id=&quot;text&quot; placeholder=&quot;Type door for a portal rectangle&quot;&gt;&lt;/textarea&gt;
-          &lt;/label&gt;
-          &lt;button id=&quot;undo&quot;&gt;Undo last shape&lt;/button&gt;
-          &lt;button id=&quot;fit&quot;&gt;Fit page&lt;/button&gt;
-          &lt;div class=&quot;rule&quot;&gt;&lt;/div&gt;</code></pre>
-<p><strong>What and why:</strong> The sidebar exposes board selection, tool, colour and text. IDs are read later by tool(), so choosing a tool changes data passed into flat.setTool rather than mutating a Phaser object directly from markup. Undo/Fit operate on document or camera respectively; their similar UI placement does not mean they have the same state owner.</p>
-<p><strong>Try it / expected result:</strong> Follow the color input ID to tool(). Verify the same colour reaches newly drawn shapes, not existing ones.</p>
-<h4 id="4-3-declare-play-backup-controls-and-both-surfaces">4.3 — Declare play/backup controls and both surfaces<a class="anchor" href="#4-3-declare-play-backup-controls-and-both-surfaces">#</a></h4>
-<p><strong>Read:</strong> <code>app.js</code>, lines 52–85.</p>
-<!-- taught-source: paper-worlds/app.js:52-85 --><pre class="code" data-lang="js"><code>          &lt;h3&gt;Make it playful&lt;/h3&gt;
-          &lt;button id=&quot;balls&quot;&gt;Bounce circles&lt;/button&gt;
-          &lt;button id=&quot;maze&quot;&gt;Play drawn maze&lt;/button&gt;
-          &lt;button id=&quot;stop&quot;&gt;Stop minigame&lt;/button&gt;
-          &lt;button id=&quot;shake&quot;&gt;Shake stickies&lt;/button&gt;
-          &lt;button id=&quot;ride&quot;&gt;Ride pen graph&lt;/button&gt;
-          &lt;div class=&quot;rule&quot;&gt;&lt;/div&gt;
-          &lt;button id=&quot;png&quot;&gt;Download PNG&lt;/button&gt;
-          &lt;button id=&quot;json&quot;&gt;Backup JSON&lt;/button&gt;
-          &lt;label&gt;
-            Import desk JSON
-            &lt;input id=&quot;import&quot; type=&quot;file&quot; accept=&quot;.json&quot; /&gt;
-          &lt;/label&gt;
-          &lt;p&gt;
-            Wheel zooms. Pan tool moves the workspace. In 3D drag to orbit and wheel to
-            zoom; click a paper to edit, a door to travel, a sticky to flick.
-          &lt;/p&gt;
-        &lt;/aside&gt;
-        &lt;div&gt;
-          &lt;div class=&quot;titlebar&quot;&gt;
-            &lt;b id=&quot;title&quot;&gt;&lt;/b&gt;
-            &lt;span id=&quot;badge&quot;&gt;2D STUDIO&lt;/span&gt;
-          &lt;/div&gt;
-          &lt;div id=&quot;flat&quot;&gt;&lt;/div&gt;
-          &lt;canvas id=&quot;world&quot; hidden&gt;&lt;/canvas&gt;
-          &lt;p id=&quot;status&quot;&gt;
-            Draw a rectangle labelled door to link the next board. Draw a graph with the
-            pen for a camera ride.
-          &lt;/p&gt;
-        &lt;/div&gt;
-      &lt;/section&gt;
-      &lt;footer&gt;10 boards · local-first · Crowelian 2026 + Sonnet&lt;/footer&gt;
-    &lt;/main&gt;
-  `;</code></pre>
-<p><strong>What and why:</strong> Minigame, shake and ride controls are explicit mode requests. PNG/JSON/import expose recovery tools. The titlebar/badge communicates which representation is active, while only one of the two canvases is visible. The status paragraph is the common error/progress outlet. None of these buttons silently writes files to a disk path.</p>
-<p><strong>Try it / expected result:</strong> Find the hidden world canvas and the flat container; switch modes and observe visibility changing for the same page.</p>
-<h4 id="4-4-choose-document-data-before-starting-phaser">4.4 — Choose document data before starting Phaser<a class="anchor" href="#4-4-choose-document-data-before-starting-phaser">#</a></h4>
-<p><strong>Read:</strong> <code>app.js</code>, lines 86–110.</p>
-<!-- taught-source: paper-worlds/app.js:86-110 --><pre class="code" data-lang="js"><code>  const $ = (id) =&gt; root.querySelector('#' + id);
+  // Layout, text and fields live in ui/desk.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/desk.ui.json');
+  // $('name') = the real DOM element of a node you named in the UI file</code></pre>
+<p><strong>What and why:</strong> Imports give the host access to the rules, helpers and the Nord UI runtime. mount is async because createUI(root).load fetches the UI file, links the stylesheet inside an isolated shadow root and builds every node before the first line of game code runs. The $ helper returns the real DOM element of a node you named in the file, so existing logic can keep using .value, .textContent and .onclick without searching the page. The save helper and the document data come next.</p>
+<p><strong>Try it / expected result:</strong> Open the UI file in the UI Designer, rename a node and reload Play. The Console should name the missing node on the first lookup instead of silently doing nothing; rename it back afterwards.</p>
+<h4 id="4-2-choose-document-data-before-starting-phaser">4.2 — Choose document data before starting Phaser<a class="anchor" href="#4-2-choose-document-data-before-starting-phaser">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 11–35.</p>
+<!-- taught-source: paper-worlds/app.js:11-35 --><pre class="code" data-lang="js"><code>  const $ = (id) =&gt; menu.$(id).el;
   const save = new Save('paper-worlds');
   let boards = save.get('boards', null),
     active = 0,
@@ -915,9 +844,9 @@ export async function mount(root) {
   );</code></pre>
 <p><strong>What and why:</strong> The host reads a versioned save, optionally reads embedded document JSON, validates it and falls back to newBoards. Active index, revision and saved counters are host state. createFlat receives a getter for the current board and a change callback that marks unsaved edits. A captured fixed board object here would break selection/import later.</p>
 <p><strong>Try it / expected result:</strong> Import a valid JSON backup after editing another board. New strokes should use the imported board array.</p>
-<h4 id="4-5-wire-selections-and-serialize-3d-transitions">4.5 — Wire selections and serialize 3D transitions<a class="anchor" href="#4-5-wire-selections-and-serialize-3d-transitions">#</a></h4>
-<p><strong>Read:</strong> <code>app.js</code>, lines 111–169.</p>
-<!-- taught-source: paper-worlds/app.js:111-169 --><pre class="code" data-lang="js"><code>  const options = () =&gt; {
+<h4 id="4-3-wire-selections-and-serialize-3d-transitions">4.3 — Wire selections and serialize 3D transitions<a class="anchor" href="#4-3-wire-selections-and-serialize-3d-transitions">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 36–94.</p>
+<!-- taught-source: paper-worlds/app.js:36-94 --><pre class="code" data-lang="js"><code>  const options = () =&gt; {
     $('boards').replaceChildren(
       ...boards.map((b, i) =&gt; {
         const o = document.createElement('option');
@@ -978,9 +907,9 @@ export async function mount(root) {
   }</code></pre>
 <p><strong>What and why:</strong> options rebuilds the selector and title from document data. tool reads current editing values, then Fit sets the opening camera. modeChange chains asynchronous mode requests so rapid clicks cannot create orphaned engines. changeMode creates/replaces the world, refreshes the active texture and pauses Phaser, or hides/stops 3D and resumes Phaser. Errors stay visible in status.</p>
 <p><strong>Try it / expected result:</strong> Double-click Explore 3D quickly. You should end with one active desk, not multiple render loops.</p>
-<h4 id="4-6-separate-document-edits-camera-changes-and-toy-actions">4.6 — Separate document edits, camera changes and toy actions<a class="anchor" href="#4-6-separate-document-edits-camera-changes-and-toy-actions">#</a></h4>
-<p><strong>Read:</strong> <code>app.js</code>, lines 170–214.</p>
-<!-- taught-source: paper-worlds/app.js:170-214 --><pre class="code" data-lang="js"><code>  $('mode').onclick = () =&gt; mode(!in3d);
+<h4 id="4-4-separate-document-edits-camera-changes-and-toy-actions">4.4 — Separate document edits, camera changes and toy actions<a class="anchor" href="#4-4-separate-document-edits-camera-changes-and-toy-actions">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 95–139.</p>
+<!-- taught-source: paper-worlds/app.js:95-139 --><pre class="code" data-lang="js"><code>  $('mode').onclick = () =&gt; mode(!in3d);
   $('boards').onchange = () =&gt; {
     active = Number($('boards').value);
     flat.stopPlay();
@@ -1027,9 +956,9 @@ export async function mount(root) {
   };</code></pre>
 <p><strong>What and why:</strong> Board selection changes the getter target and redraws; Undo changes saved shapes/revision; Fit changes only the view. Ball/maze requests return to 2D; Stop removes temporary play state. Shake/ride await a 3D transition before using its world. Maze victory arrives as an event from flat rather than the host guessing coordinates again.</p>
 <p><strong>Try it / expected result:</strong> Undo once after drawing, then use Fit. Only Undo should change shape count.</p>
-<h4 id="4-7-save-revisions-and-export-simple-formats">4.7 — Save revisions and export simple formats<a class="anchor" href="#4-7-save-revisions-and-export-simple-formats">#</a></h4>
-<p><strong>Read:</strong> <code>app.js</code>, lines 215–233.</p>
-<!-- taught-source: paper-worlds/app.js:215-233 --><pre class="code" data-lang="js"><code>  function persist() {
+<h4 id="4-5-save-revisions-and-export-simple-formats">4.5 — Save revisions and export simple formats<a class="anchor" href="#4-5-save-revisions-and-export-simple-formats">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 140–158.</p>
+<!-- taught-source: paper-worlds/app.js:140-158 --><pre class="code" data-lang="js"><code>  function persist() {
     try {
       save.set('boards', boards);
       saved = revision;
@@ -1050,9 +979,9 @@ export async function mount(root) {
     download('paper-worlds.json', JSON.stringify(boards, null, 2));</code></pre>
 <p><strong>What and why:</strong> persist writes boards through Nord Save and acknowledges the exact revision only on success. The timer writes only changed documents. PNG reads the drawing canvas into a Blob, while JSON serializes editable records. Their outputs serve different purposes: an image is viewable, a JSON backup can be edited/imported. Storage failure explains the recovery path.</p>
 <p><strong>Try it / expected result:</strong> Draw, wait for autosave and reload. Then compare a downloaded PNG with a JSON backup: only the JSON contains shape kinds and coordinates.</p>
-<h4 id="4-8-validate-imported-files-and-export-a-portfolio-template">4.8 — Validate imported files and export a portfolio template<a class="anchor" href="#4-8-validate-imported-files-and-export-a-portfolio-template">#</a></h4>
-<p><strong>Read:</strong> <code>app.js</code>, lines 234–269.</p>
-<!-- taught-source: paper-worlds/app.js:234-269 --><pre class="code" data-lang="js"><code>  $('import').onchange = async () =&gt; {
+<h4 id="4-6-validate-imported-files-and-export-a-portfolio-template">4.6 — Validate imported files and export a portfolio template<a class="anchor" href="#4-6-validate-imported-files-and-export-a-portfolio-template">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 159–194.</p>
+<!-- taught-source: paper-worlds/app.js:159-194 --><pre class="code" data-lang="js"><code>  $('import').onchange = async () =&gt; {
     const file = $('import').files[0];
     if (!file) return;
     if (file.size &gt; 5000000) {
@@ -1090,9 +1019,9 @@ export async function mount(root) {
   };</code></pre>
 <p><strong>What and why:</strong> Import limits bytes, parses JSON, validates the full document, updates selection/revision, returns to 2D and persists. Export fetches the local template, calls the safe embedding helper and downloads a new HTML page. Missing template and storage errors are reported. The exported HTML still needs the accompanying local modules/vendor folder explained in the guide.</p>
 <p><strong>Try it / expected result:</strong> Import malformed JSON and confirm the old document remains. Export a valid desk and inspect that it contains all ten boards, not just the active PNG.</p>
-<h4 id="4-9-offer-touch-navigation-and-release-the-mounted-app">4.9 — Offer touch navigation and release the mounted app<a class="anchor" href="#4-9-offer-touch-navigation-and-release-the-mounted-app">#</a></h4>
-<p><strong>Read:</strong> <code>app.js</code>, lines 270–314.</p>
-<!-- taught-source: paper-worlds/app.js:270-314 --><pre class="code" data-lang="js"><code>  let pinch = 0;
+<h4 id="4-7-offer-touch-navigation-and-release-the-mounted-app">4.7 — Offer touch navigation and release the mounted app<a class="anchor" href="#4-7-offer-touch-navigation-and-release-the-mounted-app">#</a></h4>
+<p><strong>Read:</strong> <code>app.js</code>, lines 195–239.</p>
+<!-- taught-source: paper-worlds/app.js:195-239 --><pre class="code" data-lang="js"><code>  let pinch = 0;
   const pinchStart = (e) =&gt; {
       if (e.touches.length === 2)
         pinch = Math.hypot(
@@ -1134,14 +1063,109 @@ export async function mount(root) {
     if (revision !== saved) persist();
     world?.dispose();
     flat.dispose();
-    root.replaceChildren();
+    menu.destroy();
   };
 }</code></pre>
 <p><strong>What and why:</strong> The initial two-touch distance becomes a comparison baseline; a sufficiently smaller distance requests the same mode function as the button. Passive listeners do not claim to implement every browser gesture. Inspection getters expose current state, and teardown cancels autosave, writes pending edits, disposes both view owners and clears the root.</p>
 <p><strong>Try it / expected result:</strong> Use the button as the desktop fallback; on supported touch hardware, test the inward pinch. Close/reopen Play and ensure the previous autosave timer does not keep running.</p>
-<h3 id="walk-desk-js">5. desk.js<a class="anchor" href="#walk-desk-js">#</a></h3>
+<h3 id="walk-ui-desk-ui-json">5. ui/desk.ui.json<a class="anchor" href="#walk-ui-desk-ui-json">#</a></h3>
+<p>Describe the drawing studio as data: brand header with actions, tool sidebar, the two drawing surfaces with title bar, and the footer.</p>
+<h4 id="5-1-page-settings-brand-header-and-document-actions">5.1 — Page settings, brand header and document actions<a class="anchor" href="#5-1-page-settings-brand-header-and-document-actions">#</a></h4>
+<p><strong>Read:</strong> <code>ui/desk.ui.json</code>, lines 1–26.</p>
+<!-- taught-source: paper-worlds/ui/desk.ui.json:1-26 --><pre class="code" data-lang="json"><code>{
+  &quot;version&quot;: 1,
+  &quot;name&quot;: &quot;desk&quot;,
+  &quot;page&quot;: true,
+  &quot;styles&quot;: [
+    &quot;style.css&quot;
+  ],
+  &quot;body&quot;: {
+    &quot;margin&quot;: &quot;0&quot;,
+    &quot;background&quot;: &quot;#101b2b&quot;
+  },
+  &quot;root&quot;: { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;main&quot;, &quot;name&quot;: &quot;root&quot;, &quot;children&quot;: [
+    { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;header&quot;, &quot;children&quot;: [
+      { &quot;class&quot;: &quot;brand&quot;, &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
+        { &quot;class&quot;: &quot;mascot&quot;, &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot; },
+        { &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;h1&quot;, &quot;text&quot;: &quot;Paper Worlds&quot; },
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;p&quot;, &quot;text&quot;: &quot;A little room for big ideas.&quot; }
+        ] }
+      ] },
+      { &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
+        { &quot;name&quot;: &quot;mode&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Explore 3D desk&quot; },
+        { &quot;name&quot;: &quot;save&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Save&quot; },
+        { &quot;name&quot;: &quot;export&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Export desk&quot; }
+      ] }
+    ] },</code></pre>
+<p><strong>What and why:</strong> Page settings link style.css inside the shadow root and set the body colours. The header box holds the brand (mascot span, title, tagline) and three buttons named mode, save and export. The mascot is an empty box styled by CSS.</p>
+<p><strong>Try it / expected result:</strong> Change the tagline text in the Designer and reload Play. The studio updates without code.</p>
+<h4 id="5-2-sidebar-boards-tools-and-play-controls">5.2 — Sidebar: boards, tools and play controls<a class="anchor" href="#5-2-sidebar-boards-tools-and-play-controls">#</a></h4>
+<p><strong>Read:</strong> <code>ui/desk.ui.json</code>, lines 27–63.</p>
+<!-- taught-source: paper-worlds/ui/desk.ui.json:27-63 --><pre class="code" data-lang="json"><code>    { &quot;class&quot;: &quot;workbench&quot;, &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;section&quot;, &quot;children&quot;: [
+      { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;aside&quot;, &quot;children&quot;: [
+        { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;label&quot;, &quot;children&quot;: [
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;YOUR BOARDS&quot; },
+          { &quot;name&quot;: &quot;boards&quot;, &quot;type&quot;: &quot;select&quot;, &quot;options&quot;: [] }
+        ] },
+        { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;label&quot;, &quot;children&quot;: [
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;Tool&quot; },
+          { &quot;name&quot;: &quot;tool&quot;, &quot;type&quot;: &quot;select&quot;, &quot;options&quot;: [[&quot;pen&quot;, &quot;Pen&quot;], [&quot;hand&quot;, &quot;Pan workspace&quot;], [&quot;rect&quot;, &quot;Rectangle / door&quot;], [&quot;circle&quot;, &quot;Circle&quot;], [&quot;sticky&quot;, &quot;Sticky note&quot;], [&quot;text&quot;, &quot;Text&quot;]] }
+        ] },
+        { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;label&quot;, &quot;children&quot;: [
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;Ink&quot; },
+          { &quot;name&quot;: &quot;color&quot;, &quot;type&quot;: &quot;input&quot;, &quot;inputType&quot;: &quot;color&quot;, &quot;value&quot;: &quot;#32a7a0&quot; }
+        ] },
+        { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;label&quot;, &quot;children&quot;: [
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;Text / rectangle label&quot; },
+          { &quot;name&quot;: &quot;text&quot;, &quot;type&quot;: &quot;input&quot;, &quot;multiline&quot;: true, &quot;placeholder&quot;: &quot;Type door for a portal rectangle&quot; }
+        ] },
+        { &quot;name&quot;: &quot;undo&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Undo last shape&quot; },
+        { &quot;name&quot;: &quot;fit&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Fit page&quot; },
+        { &quot;class&quot;: &quot;rule&quot;, &quot;type&quot;: &quot;box&quot; },
+        { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;h3&quot;, &quot;text&quot;: &quot;Make it playful&quot; },
+        { &quot;name&quot;: &quot;balls&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Bounce circles&quot; },
+        { &quot;name&quot;: &quot;maze&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Play drawn maze&quot; },
+        { &quot;name&quot;: &quot;stop&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Stop minigame&quot; },
+        { &quot;name&quot;: &quot;shake&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Shake stickies&quot; },
+        { &quot;name&quot;: &quot;ride&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Ride pen graph&quot; },
+        { &quot;class&quot;: &quot;rule&quot;, &quot;type&quot;: &quot;box&quot; },
+        { &quot;name&quot;: &quot;png&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Download PNG&quot; },
+        { &quot;name&quot;: &quot;json&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Backup JSON&quot; },
+        { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;label&quot;, &quot;children&quot;: [
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;Import desk JSON&quot; },
+          { &quot;name&quot;: &quot;import&quot;, &quot;type&quot;: &quot;input&quot;, &quot;inputType&quot;: &quot;file&quot;, &quot;accept&quot;: &quot;.json&quot; }
+        ] },
+        { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;p&quot;, &quot;text&quot;: &quot;Wheel zooms. Pan tool moves the workspace. In 3D drag to orbit and wheel to zoom; click a paper to edit, a door to travel, a sticky to flick.&quot; }
+      ] },
+      { &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [</code></pre>
+<p><strong>What and why:</strong> The workbench section starts with an aside. Select nodes carry their options as data: the board selector is filled by code, while the tool select lists pen, hand, rectangle, circle, sticky and text. Color is an input of type color, the label box is a multi-line input, and the toy buttons each have a name used by app.js. Divider rules are boxes with the hr tag.</p>
+<p><strong>Try it / expected result:</strong> Add an option to the tool select in the JSON tab, for example [&quot;star&quot;, &quot;Star&quot;], and note it appears in the sidebar; nothing draws a star until flat.js supports it, so remove it again.</p>
+<h4 id="5-3-title-bar-and-the-two-drawing-surfaces">5.3 — Title bar and the two drawing surfaces<a class="anchor" href="#5-3-title-bar-and-the-two-drawing-surfaces">#</a></h4>
+<p><strong>Read:</strong> <code>ui/desk.ui.json</code>, lines 64–72.</p>
+<!-- taught-source: paper-worlds/ui/desk.ui.json:64-72 --><pre class="code" data-lang="json"><code>        { &quot;class&quot;: &quot;titlebar&quot;, &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
+          { &quot;name&quot;: &quot;title&quot;, &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;b&quot; },
+          { &quot;name&quot;: &quot;badge&quot;, &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;2D STUDIO&quot; }
+        ] },
+        { &quot;name&quot;: &quot;flat&quot;, &quot;type&quot;: &quot;box&quot; },
+        { &quot;name&quot;: &quot;world&quot;, &quot;type&quot;: &quot;canvas&quot;, &quot;visible&quot;: false },
+        { &quot;name&quot;: &quot;status&quot;, &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;p&quot;, &quot;text&quot;: &quot;Draw a rectangle labelled door to link the next board. Draw a graph with the pen for a camera ride.&quot; }
+      ] }
+    ] },</code></pre>
+<p><strong>What and why:</strong> The right column has a title bar with a bold label and a badge, then the flat div that Phaser fills and the 3D canvas that Babylon uses. They are nodes with names so app.js can show and hide them. The file input for importing a desk is an input of type file with an accept filter.</p>
+<p><strong>Try it / expected result:</strong> Make the badge text read 2D PAPER and reload Play; mode switches still replace it because the node name is the same.</p>
+<h4 id="5-4-footer">5.4 — Footer<a class="anchor" href="#5-4-footer">#</a></h4>
+<p><strong>Read:</strong> <code>ui/desk.ui.json</code>, lines 73–77.</p>
+<!-- taught-source: paper-worlds/ui/desk.ui.json:73-77 --><pre class="code" data-lang="json"><code>    { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;footer&quot;, &quot;children&quot;: [
+      { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;10 boards · local-first · Crowelian 2026 + Sonnet&quot; }
+    ] }
+  ] }
+}</code></pre>
+<p><strong>What and why:</strong> The footer is a label inside a box with the footer tag and carries the status line the app updates. Because the footer is data rather than code, a translator or designer can change its wording, style class or tag without reading the game logic, and the Designer preview shows the result instantly.</p>
+<p><strong>Try it / expected result:</strong> Edit the footer text and save to see how little of the app depends on wording.</p>
+<h3 id="walk-desk-js">6. desk.js<a class="anchor" href="#walk-desk-js">#</a></h3>
 <p>Build the complete reusable Babylon/Havok desk and browser-download helper.</p>
-<h4 id="5-1-share-pending-local-script-loads">5.1 — Share pending local script loads<a class="anchor" href="#5-1-share-pending-local-script-loads">#</a></h4>
+<h4 id="6-1-share-pending-local-script-loads">6.1 — Share pending local script loads<a class="anchor" href="#6-1-share-pending-local-script-loads">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 1–20.</p>
 <!-- taught-source: paper-worlds/desk.js:1-20 --><pre class="code" data-lang="js"><code>// Cache the pending promise too: rapid view changes must wait for the same script.
 const scriptLoads = new Map();
@@ -1165,7 +1189,7 @@ export function loadScript(src) {
 }</code></pre>
 <p><strong>What and why:</strong> The Map caches the promise, not just the presence of a script tag. Rapid callers must all wait until the library is actually ready. onerror removes the failed element/cache entry so a later attempt can retry. This is important because both mode buttons and filter changes can request 3D before the first load finishes.</p>
 <p><strong>Try it / expected result:</strong> Click the 3D mode button twice rapidly. There should be one ready view, not an undefined BABYLON error.</p>
-<h4 id="5-2-create-one-engine-scene-and-controllable-camera">5.2 — Create one engine, scene and controllable camera<a class="anchor" href="#5-2-create-one-engine-scene-and-controllable-camera">#</a></h4>
+<h4 id="6-2-create-one-engine-scene-and-controllable-camera">6.2 — Create one engine, scene and controllable camera<a class="anchor" href="#6-2-create-one-engine-scene-and-controllable-camera">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 21–42.</p>
 <!-- taught-source: paper-worlds/desk.js:21-42 --><pre class="code" data-lang="js"><code>export async function createDesk(canvas, { physics = true } = {}) {
   await loadScript('vendor/babylonjs/babylon.js');
@@ -1191,7 +1215,7 @@ export function loadScript(src) {
   camera.minZ = 0.1;</code></pre>
 <p><strong>What and why:</strong> createDesk loads the local Babylon file, owns an Engine for the supplied canvas and sets an opaque background. ArcRotateCamera uses alpha/beta/radius around a target; attachControl gives orbit/zoom input. Radius limits avoid entering the paper surface or losing the whole desk at extreme zoom. minZ controls near clipping.</p>
 <p><strong>Try it / expected result:</strong> Compare orbit dragging with moving a paper: the camera changes the view without altering saved document coordinates.</p>
-<h4 id="5-3-light-a-surface-and-prepare-shadow-ownership">5.3 — Light a surface and prepare shadow ownership<a class="anchor" href="#5-3-light-a-surface-and-prepare-shadow-ownership">#</a></h4>
+<h4 id="6-3-light-a-surface-and-prepare-shadow-ownership">6.3 — Light a surface and prepare shadow ownership<a class="anchor" href="#6-3-light-a-surface-and-prepare-shadow-ownership">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 43–62.</p>
 <!-- taught-source: paper-worlds/desk.js:43-62 --><pre class="code" data-lang="js"><code>  const fill = new B.HemisphericLight('Sky', new B.Vector3(0, 1, 0), scene);
   fill.intensity = 0.65;
@@ -1215,7 +1239,7 @@ export function loadScript(src) {
   const aggregates = [];</code></pre>
 <p><strong>What and why:</strong> The hemispheric light supplies broad fill; the directional light supplies a direction and shadow map. A restrained specular colour avoids a distracting glossy desk. A solid box, not a zero-thickness drawing, supplies the tabletop. Materials and meshes are scene-owned. The aggregates array will additionally own physics handles that need disposing.</p>
 <p><strong>Try it / expected result:</strong> Change the directional light direction temporarily and observe where shadows fall, while paper text remains readable.</p>
-<h4 id="5-4-load-the-packaged-physics-binary">5.4 — Load the packaged physics binary<a class="anchor" href="#5-4-load-the-packaged-physics-binary">#</a></h4>
+<h4 id="6-4-load-the-packaged-physics-binary">6.4 — Load the packaged physics binary<a class="anchor" href="#6-4-load-the-packaged-physics-binary">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 63–77.</p>
 <!-- taught-source: paper-worlds/desk.js:63-77 --><pre class="code" data-lang="js"><code>  if (physics) {
     await loadScript('vendor/havok/HavokPhysics_umd.js');
@@ -1234,7 +1258,7 @@ export function loadScript(src) {
   }</code></pre>
 <p><strong>What and why:</strong> The local Havok loader receives locateFile so its WASM resolves beside the supplied loader. enablePhysics connects it to this Babylon scene with a gravity vector in 3D units. The tabletop aggregate has mass zero, making it a fixed collider rather than another falling toy. Physics is an optional helper setting, not an editor tier switch.</p>
 <p><strong>Try it / expected result:</strong> Temporarily set physics false at the helper call. Static papers should still render, but there will be no physical sticky/flick response.</p>
-<h4 id="5-5-create-a-writable-texture-rather-than-a-screenshot-file">5.5 — Create a writable texture rather than a screenshot file<a class="anchor" href="#5-5-create-a-writable-texture-rather-than-a-screenshot-file">#</a></h4>
+<h4 id="6-5-create-a-writable-texture-rather-than-a-screenshot-file">6.5 — Create a writable texture rather than a screenshot file<a class="anchor" href="#6-5-create-a-writable-texture-rather-than-a-screenshot-file">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 78–104.</p>
 <!-- taught-source: paper-worlds/desk.js:78-104 --><pre class="code" data-lang="js"><code>  const paper = (name, width, height, paint) =&gt; {
     const mesh = B.MeshBuilder.CreatePlane(
@@ -1265,7 +1289,7 @@ export function loadScript(src) {
   };</code></pre>
 <p><strong>What and why:</strong> A double-sided plane is laid across the desk. DynamicTexture owns a canvas context that callers can paint, then upload with update. The emissive/unlit material preserves readable colour from either side; zero specular avoids highlights washing out text. The mesh still casts a shadow. The return object exposes mesh, texture and material for later drawing and picking.</p>
 <p><strong>Try it / expected result:</strong> Draw a bold line in 2D and switch views. It should appear as actual texture content on the corresponding paper.</p>
-<h4 id="5-6-create-a-visible-rigid-sticky-toy">5.6 — Create a visible rigid sticky toy<a class="anchor" href="#5-6-create-a-visible-rigid-sticky-toy">#</a></h4>
+<h4 id="6-6-create-a-visible-rigid-sticky-toy">6.6 — Create a visible rigid sticky toy<a class="anchor" href="#6-6-create-a-visible-rigid-sticky-toy">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 105–126.</p>
 <!-- taught-source: paper-worlds/desk.js:105-126 --><pre class="code" data-lang="js"><code>  const box = (name, pos, color = '#f6d675', mass = 0.2) =&gt; {
     const mesh = B.MeshBuilder.CreateBox(
@@ -1291,7 +1315,7 @@ export function loadScript(src) {
   };</code></pre>
 <p><strong>What and why:</strong> A small box has physical thickness, a colour material and a shadow caster. A dynamic aggregate supplies mass, restitution and friction. Registering that aggregate gives one disposal owner. The returned mesh supports picking and position inspection; the returned aggregate supports impulses. These are different handles for appearance and physics.</p>
 <p><strong>Try it / expected result:</strong> Increase restitution slightly and flick a sticky. It should bounce more without changing the original 2D note shape.</p>
-<h4 id="5-7-own-the-render-loop-and-resize-lifecycle">5.7 — Own the render loop and resize lifecycle<a class="anchor" href="#5-7-own-the-render-loop-and-resize-lifecycle">#</a></h4>
+<h4 id="6-7-own-the-render-loop-and-resize-lifecycle">6.7 — Own the render loop and resize lifecycle<a class="anchor" href="#6-7-own-the-render-loop-and-resize-lifecycle">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 127–156.</p>
 <!-- taught-source: paper-worlds/desk.js:127-156 --><pre class="code" data-lang="js"><code>  const update = new Set(),
     render = () =&gt; {
@@ -1325,7 +1349,7 @@ export function loadScript(src) {
 }</code></pre>
 <p><strong>What and why:</strong> The update Set lets app-specific animations run before scene.render. Delta is converted to seconds and capped for those callbacks. A single resize listener updates the engine. setActive can stop/restart the stored render callback, and dispose releases listeners, aggregates, scene and engine. Replacing a view must call this owner, not merely hide its canvas.</p>
 <p><strong>Try it / expected result:</strong> Switch back to 2D and observe that the old desk stops animating. Reopening 3D creates one fresh owner.</p>
-<h4 id="5-8-hand-a-browser-a-real-downloadable-object">5.8 — Hand a browser a real downloadable object<a class="anchor" href="#5-8-hand-a-browser-a-real-downloadable-object">#</a></h4>
+<h4 id="6-8-hand-a-browser-a-real-downloadable-object">6.8 — Hand a browser a real downloadable object<a class="anchor" href="#6-8-hand-a-browser-a-real-downloadable-object">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 157–165.</p>
 <!-- taught-source: paper-worlds/desk.js:157-165 --><pre class="code" data-lang="js"><code>export function download(name, content, type = 'application/json') {
   const blob = content instanceof Blob ? content : new Blob([content], { type }),
@@ -1338,9 +1362,9 @@ export function loadScript(src) {
 }</code></pre>
 <p><strong>What and why:</strong> download accepts a Blob or creates one, creates a temporary object URL and triggers a named anchor download. Revoking shortly afterward releases the temporary URL without invalidating the click immediately. The browser still controls the save destination; this is not an arbitrary filesystem write.</p>
 <p><strong>Try it / expected result:</strong> Download JSON and verify its suggested filename and contents. Cancel the save if you do not need another copy.</p>
-<h3 id="walk-save-js">6. save.js<a class="anchor" href="#walk-save-js">#</a></h3>
+<h3 id="walk-save-js">7. save.js<a class="anchor" href="#walk-save-js">#</a></h3>
 <p>Understand the complete existing Nord Save helper bundled with this app.</p>
-<h4 id="6-1-namespace-slots-and-read-versioned-data">6.1 — Namespace slots and read versioned data<a class="anchor" href="#6-1-namespace-slots-and-read-versioned-data">#</a></h4>
+<h4 id="7-1-namespace-slots-and-read-versioned-data">7.1 — Namespace slots and read versioned data<a class="anchor" href="#7-1-namespace-slots-and-read-versioned-data">#</a></h4>
 <p><strong>Read:</strong> <code>save.js</code>, lines 1–20.</p>
 <!-- taught-source: paper-worlds/save.js:1-20 --><pre class="code" data-lang="js"><code>// Versioned save slots on top of localStorage (or any Storage-like object).
 export class Save {
@@ -1364,7 +1388,7 @@ export class Save {
   }</code></pre>
 <p><strong>What and why:</strong> The prefix includes the app identity, and slotId chooses one save slot. A private key method keeps naming in one place. Reading returns an empty versioned envelope when missing or invalid, and an optional migration callback upgrades older data. This helper stores serializable values, not engine objects. MemoryStorage is available when no Storage implementation is supplied.</p>
 <p><strong>Try it / expected result:</strong> Compare the Paper Worlds and RSS River storage prefixes in browser tools. Their saves should not overwrite each other.</p>
-<h4 id="6-2-read-and-write-values-then-define-memory-storage">6.2 — Read and write values, then define memory storage<a class="anchor" href="#6-2-read-and-write-values-then-define-memory-storage">#</a></h4>
+<h4 id="7-2-read-and-write-values-then-define-memory-storage">7.2 — Read and write values, then define memory storage<a class="anchor" href="#7-2-read-and-write-values-then-define-memory-storage">#</a></h4>
 <p><strong>Read:</strong> <code>save.js</code>, lines 21–32.</p>
 <!-- taught-source: paper-worlds/save.js:21-32 --><pre class="code" data-lang="js"><code>  get(k, def) { const d = this.#read().data; return k in d ? d[k] : def; }
   set(k, v) { const o = this.#read(); o.data[k] = v; o.v = this.version; o.t = Date.now(); this.storage.setItem(this.#key(), JSON.stringify(o)); }
@@ -1380,9 +1404,9 @@ export class MemoryStorage {
 }</code></pre>
 <p><strong>What and why:</strong> get supplies a caller default when a value is absent. set reads the envelope, replaces one key, records version/time and serializes through the Storage interface. all/has/delete expose slot operations. MemoryStorage implements the same getItem/setItem/removeItem contract using a Map, which is useful in tests but does not survive page reload. App callers still need to catch storage quota/permission failures on writes.</p>
 <p><strong>Try it / expected result:</strong> Back up your document, reload the page and verify it returns. Then inspect how the app reports a failed write instead of assuming success.</p>
-<h3 id="walk-portfolio-html">7. portfolio.html<a class="anchor" href="#walk-portfolio-html">#</a></h3>
+<h3 id="walk-portfolio-html">8. portfolio.html<a class="anchor" href="#walk-portfolio-html">#</a></h3>
 <p>Read the entire exported desk template that embeds your documents and opens directly in 3D.</p>
-<h4 id="7-1-style-a-standalone-viewing-surface">7.1 — Style a standalone viewing surface<a class="anchor" href="#7-1-style-a-standalone-viewing-surface">#</a></h4>
+<h4 id="8-1-style-a-standalone-viewing-surface">8.1 — Style a standalone viewing surface<a class="anchor" href="#8-1-style-a-standalone-viewing-surface">#</a></h4>
 <p><strong>Read:</strong> <code>portfolio.html</code>, lines 1–34.</p>
 <!-- taught-source: paper-worlds/portfolio.html:1-34 --><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
@@ -1420,7 +1444,7 @@ export class MemoryStorage {
   &lt;canvas id=&quot;desk&quot;&gt;&lt;/canvas&gt;</code></pre>
 <p><strong>What and why:</strong> The page declares UTF-8, viewport and a full-window canvas. Its small header sits above the scene and contains an all-boards action. Styles belong to this standalone page rather than requiring the studio sidebar stylesheet. It is a viewer, so it does not create drawing tools or write the recipient’s saves.</p>
 <p><strong>Try it / expected result:</strong> Open an exported desk from the served project folder and resize it. The canvas should fill the window and the header should remain reachable.</p>
-<h4 id="7-2-read-embedded-data-and-handle-module-failures">7.2 — Read embedded data and handle module failures<a class="anchor" href="#7-2-read-embedded-data-and-handle-module-failures">#</a></h4>
+<h4 id="8-2-read-embedded-data-and-handle-module-failures">8.2 — Read embedded data and handle module failures<a class="anchor" href="#8-2-read-embedded-data-and-handle-module-failures">#</a></h4>
 <p><strong>Read:</strong> <code>portfolio.html</code>, lines 35–55.</p>
 <!-- taught-source: paper-worlds/portfolio.html:35-55 --><pre class="code" data-lang="html"><code>  &lt;script id=&quot;desk-data&quot; type=&quot;application/json&quot;&gt;
     /*BOARD_DATA*/
@@ -1445,9 +1469,9 @@ export class MemoryStorage {
 &lt;/html&gt;</code></pre>
 <p><strong>What and why:</strong> The application/json element is a data container; portfolioHTML replaces its marker safely before download. The module imports the same world code as the editor, parses the embedded boards and focuses a clicked paper. View all restores an overview target/radius. A catch changes hint text if local resources are missing, giving a useful failure rather than a blank unexplained page.</p>
 <p><strong>Try it / expected result:</strong> Move only the HTML away from its modules on a test copy. Observe the missing-resource failure, then restore the full exported folder.</p>
-<h3 id="walk-index-html">8. index.html<a class="anchor" href="#walk-index-html">#</a></h3>
+<h3 id="walk-index-html">9. index.html<a class="anchor" href="#walk-index-html">#</a></h3>
 <p>Read the complete Nord page entry point and its failure path.</p>
-<h4 id="8-1-load-the-local-runtime-and-start-the-app">8.1 — Load the local runtime and start the app<a class="anchor" href="#8-1-load-the-local-runtime-and-start-the-app">#</a></h4>
+<h4 id="9-1-load-the-local-runtime-and-start-the-app">9.1 — Load the local runtime and start the app<a class="anchor" href="#9-1-load-the-local-runtime-and-start-the-app">#</a></h4>
 <p><strong>Read:</strong> <code>index.html</code>, lines 1–8.</p>
 <!-- taught-source: paper-worlds/index.html:1-8 --><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.paperworlds&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Paper Worlds — a playful 2D/3D drawing desk&lt;/title&gt;
@@ -1459,9 +1483,9 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
 <p><strong>What and why:</strong> The document declares encoding and viewport, creates the mount container and loads local code. The module imports mount from app.js and awaits initialization for the HTML-tier root. The ready/error flags are inspection signals used by browser checks; they are not a second simulation. The catch logs and exposes initialization errors. The page is served over HTTP so local module and asset URLs resolve consistently.</p>
 <p><strong>Try it / expected result:</strong> Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name.</p>
-<h3 id="walk-nord-project-json">9. nord.project.json<a class="anchor" href="#walk-nord-project-json">#</a></h3>
+<h3 id="walk-nord-project-json">10. nord.project.json<a class="anchor" href="#walk-nord-project-json">#</a></h3>
 <p>Read every project field that tells Nord which host, display and services to use.</p>
-<h4 id="9-1-identify-the-project-and-choose-its-presentation">9.1 — Identify the project and choose its presentation<a class="anchor" href="#9-1-identify-the-project-and-choose-its-presentation">#</a></h4>
+<h4 id="10-1-identify-the-project-and-choose-its-presentation">10.1 — Identify the project and choose its presentation<a class="anchor" href="#10-1-identify-the-project-and-choose-its-presentation">#</a></h4>
 <p><strong>Read:</strong> <code>nord.project.json</code>, lines 1–22.</p>
 <!-- taught-source: paper-worlds/nord.project.json:1-22 --><pre class="code" data-lang="json"><code>{
   &quot;format&quot;: 1,
@@ -1487,7 +1511,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
   },</code></pre>
 <p><strong>What and why:</strong> format and engineVersion identify the serialized contract, while name/id give human and stable application identity. type chooses the host; startScene is used by a scene backend and is empty for these HTML apps. Display fields request dimensions, fit behaviour, pixel-art treatment and background. Physics selects a runtime engine; the rail shooter uses custom rules with none, while HTML-hosted libraries are initialized in their own modules.</p>
 <p><strong>Try it / expected result:</strong> Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.</p>
-<h4 id="9-2-distinguish-scene-actions-from-html-event-handling">9.2 — Distinguish scene actions from HTML event handling<a class="anchor" href="#9-2-distinguish-scene-actions-from-html-event-handling">#</a></h4>
+<h4 id="10-2-distinguish-scene-actions-from-html-event-handling">10.2 — Distinguish scene actions from HTML event handling<a class="anchor" href="#10-2-distinguish-scene-actions-from-html-event-handling">#</a></h4>
 <p><strong>Read:</strong> <code>nord.project.json</code>, lines 23–64.</p>
 <!-- taught-source: paper-worlds/nord.project.json:23-64 --><pre class="code" data-lang="json"><code>  &quot;input&quot;: {
     &quot;actions&quot;: {
@@ -1533,24 +1557,20 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 }</code></pre>
 <p><strong>What and why:</strong> The input object maps action names to keyboard codes for Nord scene scripts. Vector Patrol reads these through this.input. HTML-tier hosts in the other projects read their own DOM events, so editing this action table alone does not rewrite those handlers. plugins/ui declare ordinary scene services and skin/theme; any remaining desktop configuration is the native capability contract rather than a browser CORS override.</p>
 <p><strong>Try it / expected result:</strong> For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input.</p>
-<h3 id="walk-style-css">10. style.css<a class="anchor" href="#walk-style-css">#</a></h3>
+<h3 id="walk-style-css">11. style.css<a class="anchor" href="#walk-style-css">#</a></h3>
 <p>Read every stylesheet rule, grouped by the UI responsibility it controls.</p>
-<h4 id="10-1-set-the-app-foundation-and-reusable-visual-language">10.1 — Set the app foundation and reusable visual language<a class="anchor" href="#10-1-set-the-app-foundation-and-reusable-visual-language">#</a></h4>
-<p><strong>Read:</strong> <code>style.css</code>, lines 1–40.</p>
-<!-- taught-source: paper-worlds/style.css:1-40 --><pre class="code" data-lang="css"><code>html,
-body {
-  height: auto;
-  min-height: 100%;
-  background: #101b2b;
+<h4 id="11-1-set-the-app-foundation-and-reusable-visual-language">11.1 — Set the app foundation and reusable visual language<a class="anchor" href="#11-1-set-the-app-foundation-and-reusable-visual-language">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 1–36.</p>
+<!-- taught-source: paper-worlds/style.css:1-36 --><pre class="code" data-lang="css"><code>:host {
+  display: block;
+  min-height: 100vh;
+  color: #dbe9ee;
+  font: 14px system-ui;
 }
 * {
   box-sizing: border-box;
 }
-body {
-  margin: 0;
-  color: #dbe9ee;
-  font: 14px system-ui;
-}
+
 main {
   max-width: 1400px;
   margin: auto;
@@ -1577,11 +1597,11 @@ header p {
   margin: 5px 0;
   color: #8ba3af;
 }</code></pre>
-<p><strong>What and why:</strong> The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.</p>
+<p><strong>What and why:</strong> The opening rules give the host element (:host, the page root that holds the UI) its colour, font and minimum height; the document background and margin come from the body block of the UI file, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies. The sheet is linked from inside the UI file&#39;s shadow root, so selectors such as main, nav and #status match the nodes you named there.</p>
 <p><strong>Try it / expected result:</strong> Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change.</p>
-<h4 id="10-2-use-the-supplied-sheet-and-style-controls">10.2 — Use the supplied sheet and style controls<a class="anchor" href="#10-2-use-the-supplied-sheet-and-style-controls">#</a></h4>
-<p><strong>Read:</strong> <code>style.css</code>, lines 41–87.</p>
-<!-- taught-source: paper-worlds/style.css:41-87 --><pre class="code" data-lang="css"><code>.mascot {
+<h4 id="11-2-use-the-supplied-sheet-and-style-controls">11.2 — Use the supplied sheet and style controls<a class="anchor" href="#11-2-use-the-supplied-sheet-and-style-controls">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 37–83.</p>
+<!-- taught-source: paper-worlds/style.css:37-83 --><pre class="code" data-lang="css"><code>.mascot {
   width: 62px;
   height: 62px;
   display: inline-block;
@@ -1630,9 +1650,9 @@ aside button {
 }</code></pre>
 <p><strong>What and why:</strong> The mascot uses one region of the packaged four-by-two sheet through background size/position. Shared button/input/select/textarea rules keep the studio coherent; labels explain each input and textarea sizing gives notes usable space. Changing sprite position selects a different artwork cell without loading an external image.</p>
 <p><strong>Try it / expected result:</strong> Temporarily change the sprite background position to another cell, then restore the ghost.</p>
-<h4 id="10-3-create-a-studio-layout-without-changing-document-coordinates">10.3 — Create a studio layout without changing document coordinates<a class="anchor" href="#10-3-create-a-studio-layout-without-changing-document-coordinates">#</a></h4>
-<p><strong>Read:</strong> <code>style.css</code>, lines 88–124.</p>
-<!-- taught-source: paper-worlds/style.css:88-124 --><pre class="code" data-lang="css"><code>.workbench {
+<h4 id="11-3-create-a-studio-layout-without-changing-document-coordinates">11.3 — Create a studio layout without changing document coordinates<a class="anchor" href="#11-3-create-a-studio-layout-without-changing-document-coordinates">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 84–120.</p>
+<!-- taught-source: paper-worlds/style.css:84-120 --><pre class="code" data-lang="css"><code>.workbench {
   display: grid;
   grid-template-columns: 210px minmax(0, 1fr);
   gap: 20px;
@@ -1671,9 +1691,9 @@ h3 {
 }</code></pre>
 <p><strong>What and why:</strong> The grid assigns sidebar width and flexible workspace. Panels, rules, headings and titlebar communicate editing versus viewing roles. Styling never changes WIDTH/HEIGHT in model.js: browser layout and drawing coordinate systems remain separate.</p>
 <p><strong>Try it / expected result:</strong> Change sidebar width slightly and verify a saved stroke stays at its document position.</p>
-<h4 id="10-4-size-surfaces-honor-hidden-state-and-adapt">10.4 — Size surfaces, honor hidden state and adapt<a class="anchor" href="#10-4-size-surfaces-honor-hidden-state-and-adapt">#</a></h4>
-<p><strong>Read:</strong> <code>style.css</code>, lines 125–162.</p>
-<!-- taught-source: paper-worlds/style.css:125-162 --><pre class="code" data-lang="css"><code>#flat,
+<h4 id="11-4-size-surfaces-honor-hidden-state-and-adapt">11.4 — Size surfaces, honor hidden state and adapt<a class="anchor" href="#11-4-size-surfaces-honor-hidden-state-and-adapt">#</a></h4>
+<p><strong>Read:</strong> <code>style.css</code>, lines 121–158.</p>
+<!-- taught-source: paper-worlds/style.css:121-158 --><pre class="code" data-lang="css"><code>#flat,
 #world {
   width: 100%;
   height: 640px;
@@ -1721,87 +1741,12 @@ import { newBoards, validateBoards, portfolioHTML } from './model.js';
 import { createFlat } from './flat.js';
 import { createWorld } from './world.js';
 import { download } from './desk.js';
+import { createUI } from './lib/nord-ui.js';
 export async function mount(root) {
-  root.innerHTML = /* HTML */ `
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot; /&gt;
-    &lt;main&gt;
-      &lt;header&gt;
-        &lt;div class=&quot;brand&quot;&gt;
-          &lt;span class=&quot;mascot&quot;&gt;&lt;/span&gt;
-          &lt;div&gt;
-            &lt;h1&gt;Paper Worlds&lt;/h1&gt;
-            &lt;p&gt;A little room for big ideas.&lt;/p&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div&gt;
-          &lt;button id=&quot;mode&quot;&gt;Explore 3D desk&lt;/button&gt;
-          &lt;button id=&quot;save&quot;&gt;Save&lt;/button&gt;
-          &lt;button id=&quot;export&quot;&gt;Export desk&lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/header&gt;
-      &lt;section class=&quot;workbench&quot;&gt;
-        &lt;aside&gt;
-          &lt;label&gt;
-            YOUR BOARDS
-            &lt;select id=&quot;boards&quot;&gt;&lt;/select&gt;
-          &lt;/label&gt;
-          &lt;label&gt;
-            Tool
-            &lt;select id=&quot;tool&quot;&gt;
-              &lt;option value=&quot;pen&quot;&gt;Pen&lt;/option&gt;
-              &lt;option value=&quot;hand&quot;&gt;Pan workspace&lt;/option&gt;
-              &lt;option value=&quot;rect&quot;&gt;Rectangle / door&lt;/option&gt;
-              &lt;option value=&quot;circle&quot;&gt;Circle&lt;/option&gt;
-              &lt;option value=&quot;sticky&quot;&gt;Sticky note&lt;/option&gt;
-              &lt;option value=&quot;text&quot;&gt;Text&lt;/option&gt;
-            &lt;/select&gt;
-          &lt;/label&gt;
-          &lt;label&gt;
-            Ink
-            &lt;input id=&quot;color&quot; type=&quot;color&quot; value=&quot;#32a7a0&quot; /&gt;
-          &lt;/label&gt;
-          &lt;label&gt;
-            Text / rectangle label
-            &lt;textarea id=&quot;text&quot; placeholder=&quot;Type door for a portal rectangle&quot;&gt;&lt;/textarea&gt;
-          &lt;/label&gt;
-          &lt;button id=&quot;undo&quot;&gt;Undo last shape&lt;/button&gt;
-          &lt;button id=&quot;fit&quot;&gt;Fit page&lt;/button&gt;
-          &lt;div class=&quot;rule&quot;&gt;&lt;/div&gt;
-          &lt;h3&gt;Make it playful&lt;/h3&gt;
-          &lt;button id=&quot;balls&quot;&gt;Bounce circles&lt;/button&gt;
-          &lt;button id=&quot;maze&quot;&gt;Play drawn maze&lt;/button&gt;
-          &lt;button id=&quot;stop&quot;&gt;Stop minigame&lt;/button&gt;
-          &lt;button id=&quot;shake&quot;&gt;Shake stickies&lt;/button&gt;
-          &lt;button id=&quot;ride&quot;&gt;Ride pen graph&lt;/button&gt;
-          &lt;div class=&quot;rule&quot;&gt;&lt;/div&gt;
-          &lt;button id=&quot;png&quot;&gt;Download PNG&lt;/button&gt;
-          &lt;button id=&quot;json&quot;&gt;Backup JSON&lt;/button&gt;
-          &lt;label&gt;
-            Import desk JSON
-            &lt;input id=&quot;import&quot; type=&quot;file&quot; accept=&quot;.json&quot; /&gt;
-          &lt;/label&gt;
-          &lt;p&gt;
-            Wheel zooms. Pan tool moves the workspace. In 3D drag to orbit and wheel to
-            zoom; click a paper to edit, a door to travel, a sticky to flick.
-          &lt;/p&gt;
-        &lt;/aside&gt;
-        &lt;div&gt;
-          &lt;div class=&quot;titlebar&quot;&gt;
-            &lt;b id=&quot;title&quot;&gt;&lt;/b&gt;
-            &lt;span id=&quot;badge&quot;&gt;2D STUDIO&lt;/span&gt;
-          &lt;/div&gt;
-          &lt;div id=&quot;flat&quot;&gt;&lt;/div&gt;
-          &lt;canvas id=&quot;world&quot; hidden&gt;&lt;/canvas&gt;
-          &lt;p id=&quot;status&quot;&gt;
-            Draw a rectangle labelled door to link the next board. Draw a graph with the
-            pen for a camera ride.
-          &lt;/p&gt;
-        &lt;/div&gt;
-      &lt;/section&gt;
-      &lt;footer&gt;10 boards · local-first · Crowelian 2026 + Sonnet&lt;/footer&gt;
-    &lt;/main&gt;
-  `;
-  const $ = (id) =&gt; root.querySelector('#' + id);
+  // Layout, text and fields live in ui/desk.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/desk.ui.json');
+  // $('name') = the real DOM element of a node you named in the UI file
+  const $ = (id) =&gt; menu.$(id).el;
   const save = new Save('paper-worlds');
   let boards = save.get('boards', null),
     active = 0,
@@ -2027,7 +1972,7 @@ export async function mount(root) {
     if (revision !== saved) persist();
     world?.dispose();
     flat.dispose();
-    root.replaceChildren();
+    menu.destroy();
   };
 }</code></pre>
 </details><details>
@@ -2741,20 +2686,16 @@ export class MemoryStorage {
   removeItem(k) { this.#m.delete(k); }
 }</code></pre>
 </details><details>
-<summary>Complete style.css</summary><pre class="code" data-lang="css"><code>html,
-body {
-  height: auto;
-  min-height: 100%;
-  background: #101b2b;
+<summary>Complete style.css</summary><pre class="code" data-lang="css"><code>:host {
+  display: block;
+  min-height: 100vh;
+  color: #dbe9ee;
+  font: 14px system-ui;
 }
 * {
   box-sizing: border-box;
 }
-body {
-  margin: 0;
-  color: #dbe9ee;
-  font: 14px system-ui;
-}
+
 main {
   max-width: 1400px;
   margin: auto;
@@ -2902,6 +2843,84 @@ footer {
   header {
     flex-wrap: wrap;
   }
+}</code></pre>
+</details><details>
+<summary>Complete ui/desk.ui.json</summary><pre class="code" data-lang="json"><code>{
+  &quot;version&quot;: 1,
+  &quot;name&quot;: &quot;desk&quot;,
+  &quot;page&quot;: true,
+  &quot;styles&quot;: [
+    &quot;style.css&quot;
+  ],
+  &quot;body&quot;: {
+    &quot;margin&quot;: &quot;0&quot;,
+    &quot;background&quot;: &quot;#101b2b&quot;
+  },
+  &quot;root&quot;: { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;main&quot;, &quot;name&quot;: &quot;root&quot;, &quot;children&quot;: [
+    { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;header&quot;, &quot;children&quot;: [
+      { &quot;class&quot;: &quot;brand&quot;, &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
+        { &quot;class&quot;: &quot;mascot&quot;, &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot; },
+        { &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;h1&quot;, &quot;text&quot;: &quot;Paper Worlds&quot; },
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;p&quot;, &quot;text&quot;: &quot;A little room for big ideas.&quot; }
+        ] }
+      ] },
+      { &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
+        { &quot;name&quot;: &quot;mode&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Explore 3D desk&quot; },
+        { &quot;name&quot;: &quot;save&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Save&quot; },
+        { &quot;name&quot;: &quot;export&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Export desk&quot; }
+      ] }
+    ] },
+    { &quot;class&quot;: &quot;workbench&quot;, &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;section&quot;, &quot;children&quot;: [
+      { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;aside&quot;, &quot;children&quot;: [
+        { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;label&quot;, &quot;children&quot;: [
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;YOUR BOARDS&quot; },
+          { &quot;name&quot;: &quot;boards&quot;, &quot;type&quot;: &quot;select&quot;, &quot;options&quot;: [] }
+        ] },
+        { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;label&quot;, &quot;children&quot;: [
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;Tool&quot; },
+          { &quot;name&quot;: &quot;tool&quot;, &quot;type&quot;: &quot;select&quot;, &quot;options&quot;: [[&quot;pen&quot;, &quot;Pen&quot;], [&quot;hand&quot;, &quot;Pan workspace&quot;], [&quot;rect&quot;, &quot;Rectangle / door&quot;], [&quot;circle&quot;, &quot;Circle&quot;], [&quot;sticky&quot;, &quot;Sticky note&quot;], [&quot;text&quot;, &quot;Text&quot;]] }
+        ] },
+        { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;label&quot;, &quot;children&quot;: [
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;Ink&quot; },
+          { &quot;name&quot;: &quot;color&quot;, &quot;type&quot;: &quot;input&quot;, &quot;inputType&quot;: &quot;color&quot;, &quot;value&quot;: &quot;#32a7a0&quot; }
+        ] },
+        { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;label&quot;, &quot;children&quot;: [
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;Text / rectangle label&quot; },
+          { &quot;name&quot;: &quot;text&quot;, &quot;type&quot;: &quot;input&quot;, &quot;multiline&quot;: true, &quot;placeholder&quot;: &quot;Type door for a portal rectangle&quot; }
+        ] },
+        { &quot;name&quot;: &quot;undo&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Undo last shape&quot; },
+        { &quot;name&quot;: &quot;fit&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Fit page&quot; },
+        { &quot;class&quot;: &quot;rule&quot;, &quot;type&quot;: &quot;box&quot; },
+        { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;h3&quot;, &quot;text&quot;: &quot;Make it playful&quot; },
+        { &quot;name&quot;: &quot;balls&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Bounce circles&quot; },
+        { &quot;name&quot;: &quot;maze&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Play drawn maze&quot; },
+        { &quot;name&quot;: &quot;stop&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Stop minigame&quot; },
+        { &quot;name&quot;: &quot;shake&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Shake stickies&quot; },
+        { &quot;name&quot;: &quot;ride&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Ride pen graph&quot; },
+        { &quot;class&quot;: &quot;rule&quot;, &quot;type&quot;: &quot;box&quot; },
+        { &quot;name&quot;: &quot;png&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Download PNG&quot; },
+        { &quot;name&quot;: &quot;json&quot;, &quot;type&quot;: &quot;button&quot;, &quot;text&quot;: &quot;Backup JSON&quot; },
+        { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;label&quot;, &quot;children&quot;: [
+          { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;Import desk JSON&quot; },
+          { &quot;name&quot;: &quot;import&quot;, &quot;type&quot;: &quot;input&quot;, &quot;inputType&quot;: &quot;file&quot;, &quot;accept&quot;: &quot;.json&quot; }
+        ] },
+        { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;p&quot;, &quot;text&quot;: &quot;Wheel zooms. Pan tool moves the workspace. In 3D drag to orbit and wheel to zoom; click a paper to edit, a door to travel, a sticky to flick.&quot; }
+      ] },
+      { &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
+        { &quot;class&quot;: &quot;titlebar&quot;, &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
+          { &quot;name&quot;: &quot;title&quot;, &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;b&quot; },
+          { &quot;name&quot;: &quot;badge&quot;, &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;2D STUDIO&quot; }
+        ] },
+        { &quot;name&quot;: &quot;flat&quot;, &quot;type&quot;: &quot;box&quot; },
+        { &quot;name&quot;: &quot;world&quot;, &quot;type&quot;: &quot;canvas&quot;, &quot;visible&quot;: false },
+        { &quot;name&quot;: &quot;status&quot;, &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;p&quot;, &quot;text&quot;: &quot;Draw a rectangle labelled door to link the next board. Draw a graph with the pen for a camera ride.&quot; }
+      ] }
+    ] },
+    { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;footer&quot;, &quot;children&quot;: [
+      { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;10 boards · local-first · Crowelian 2026 + Sonnet&quot; }
+    ] }
+  ] }
 }</code></pre>
 </details><details>
 <summary>Complete world.js</summary><pre class="code" data-lang="js"><code>import { createDesk } from './desk.js';

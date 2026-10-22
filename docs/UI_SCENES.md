@@ -16,7 +16,7 @@ Menus, HUDs and dialogs are **data**: a `ui/<name>.ui.json` file edited in the *
 
 | Field | Meaning |
 |---|---|
-| `type` | `panel vbox hbox grid center scroll label button image bar slider input checkbox select spacer html instance` |
+| `type` | `box panel vbox hbox grid center scroll label button image canvas bar slider input checkbox select spacer html instance` |
 | `name` | handle name used by scripts (unique per file) |
 | `anchor` | `tl t tr l c r bl b br fill`; omit = in normal flow of the parent container |
 | `x y` | offset from the anchor (px) |
@@ -30,6 +30,8 @@ Menus, HUDs and dialogs are **data**: a `ui/<name>.ui.json` file edited in the *
 | `payload` | value passed with the action |
 | `bind` | `{ "value": "hp", "visible": "alive" }` property ← data variable |
 | `children` | child nodes (containers only) |
+
+**Page mode (HTML-style pages).** `"page": true` makes the screen flow in the document instead of overlaying a game; `"styles": ["style.css"]` links your own stylesheet inside the screen's shadow root; `"body": { "margin": "0", "background": "#0a1522" }` styles the real page body. Style the screen root in that CSS with `:host { … }`. Nodes get `id` = their `name`, so `#status` rules work. `box` is an unstyled element chosen with `tag` (`main nav section aside footer h1 p hr ol …`); a `label` also takes a `tag`; `attrs` sets attributes (`aria-label`, `data-*`); `canvas` nodes (`w`,`h`) hold game drawing; `input` takes `inputType` (`text number color file checkbox password`), `multiline`, `accept`, `maxlength`. The runtime's own look is applied with zero specificity, so a project stylesheet always wins. `screen.typing` is true while a text field has focus (use it to ignore game keys; `document.activeElement` only sees the shadow host).
 
 Type specifics: **label** `text size color bold italic wrap outline font rich` · **button** `text toggle size` · **image** `src fit opacity` · **bar** `value(0..1) color` · **slider** `min max step value` · **input** `placeholder value password` · **checkbox** `text checked` · **select** `options value` · **html** `html` · **instance** `ref` (another `.ui.json`, optional `name anchor x y w h grow margin visible style` overrides).
 

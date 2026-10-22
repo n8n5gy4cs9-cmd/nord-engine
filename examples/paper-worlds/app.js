@@ -3,87 +3,12 @@ import { newBoards, validateBoards, portfolioHTML } from './model.js';
 import { createFlat } from './flat.js';
 import { createWorld } from './world.js';
 import { download } from './desk.js';
+import { createUI } from './lib/nord-ui.js';
 export async function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <link rel="stylesheet" href="style.css" />
-    <main>
-      <header>
-        <div class="brand">
-          <span class="mascot"></span>
-          <div>
-            <h1>Paper Worlds</h1>
-            <p>A little room for big ideas.</p>
-          </div>
-        </div>
-        <div>
-          <button id="mode">Explore 3D desk</button>
-          <button id="save">Save</button>
-          <button id="export">Export desk</button>
-        </div>
-      </header>
-      <section class="workbench">
-        <aside>
-          <label>
-            YOUR BOARDS
-            <select id="boards"></select>
-          </label>
-          <label>
-            Tool
-            <select id="tool">
-              <option value="pen">Pen</option>
-              <option value="hand">Pan workspace</option>
-              <option value="rect">Rectangle / door</option>
-              <option value="circle">Circle</option>
-              <option value="sticky">Sticky note</option>
-              <option value="text">Text</option>
-            </select>
-          </label>
-          <label>
-            Ink
-            <input id="color" type="color" value="#32a7a0" />
-          </label>
-          <label>
-            Text / rectangle label
-            <textarea id="text" placeholder="Type door for a portal rectangle"></textarea>
-          </label>
-          <button id="undo">Undo last shape</button>
-          <button id="fit">Fit page</button>
-          <div class="rule"></div>
-          <h3>Make it playful</h3>
-          <button id="balls">Bounce circles</button>
-          <button id="maze">Play drawn maze</button>
-          <button id="stop">Stop minigame</button>
-          <button id="shake">Shake stickies</button>
-          <button id="ride">Ride pen graph</button>
-          <div class="rule"></div>
-          <button id="png">Download PNG</button>
-          <button id="json">Backup JSON</button>
-          <label>
-            Import desk JSON
-            <input id="import" type="file" accept=".json" />
-          </label>
-          <p>
-            Wheel zooms. Pan tool moves the workspace. In 3D drag to orbit and wheel to
-            zoom; click a paper to edit, a door to travel, a sticky to flick.
-          </p>
-        </aside>
-        <div>
-          <div class="titlebar">
-            <b id="title"></b>
-            <span id="badge">2D STUDIO</span>
-          </div>
-          <div id="flat"></div>
-          <canvas id="world" hidden></canvas>
-          <p id="status">
-            Draw a rectangle labelled door to link the next board. Draw a graph with the
-            pen for a camera ride.
-          </p>
-        </div>
-      </section>
-      <footer>10 boards · local-first · Crowelian 2026 + Sonnet</footer>
-    </main>
-  `;
-  const $ = (id) => root.querySelector('#' + id);
+  // Layout, text and fields live in ui/desk.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/desk.ui.json');
+  // $('name') = the real DOM element of a node you named in the UI file
+  const $ = (id) => menu.$(id).el;
   const save = new Save('paper-worlds');
   let boards = save.get('boards', null),
     active = 0,
@@ -309,6 +234,6 @@ export async function mount(root) {
     if (revision !== saved) persist();
     world?.dispose();
     flat.dispose();
-    root.replaceChildren();
+    menu.destroy();
   };
 }

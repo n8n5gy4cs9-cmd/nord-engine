@@ -1,4 +1,4 @@
-export function deskFiles(id, names, { phaser = false, desktop = false } = {}) {
+export function deskFiles(id, names, { phaser = false, desktop = false, ui = '' } = {}) {
   const files = names.map((name) => ({
     from: `tools/examples/${id}/src/${name}`,
     to: name,
@@ -17,6 +17,11 @@ export function deskFiles(id, names, { phaser = false, desktop = false } = {}) {
     { from: 'vendor/havok/LICENSE', to: 'vendor/havok/LICENSE' },
     { from: 'LICENSE', to: 'LICENSE' },
   );
+  if (ui)
+    files.push(
+      { from: `tools/examples/${id}/src/ui.json`, to: `ui/${ui}.ui.json` },
+      { from: 'runtime/core/uiscene.js', to: 'lib/nord-ui.js' },
+    );
   if (phaser)
     files.push(
       { from: 'vendor/phaser/phaser.min.js', to: 'vendor/phaser/phaser.min.js' },

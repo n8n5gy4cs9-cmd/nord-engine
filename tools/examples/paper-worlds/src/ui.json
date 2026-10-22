@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "name": "desk",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#101b2b"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "box", "tag": "header", "children": [
+      { "class": "brand", "type": "box", "children": [
+        { "class": "mascot", "type": "label", "tag": "span" },
+        { "type": "box", "children": [
+          { "type": "label", "tag": "h1", "text": "Paper Worlds" },
+          { "type": "label", "tag": "p", "text": "A little room for big ideas." }
+        ] }
+      ] },
+      { "type": "box", "children": [
+        { "name": "mode", "type": "button", "text": "Explore 3D desk" },
+        { "name": "save", "type": "button", "text": "Save" },
+        { "name": "export", "type": "button", "text": "Export desk" }
+      ] }
+    ] },
+    { "class": "workbench", "type": "box", "tag": "section", "children": [
+      { "type": "box", "tag": "aside", "children": [
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "YOUR BOARDS" },
+          { "name": "boards", "type": "select", "options": [] }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Tool" },
+          { "name": "tool", "type": "select", "options": [["pen", "Pen"], ["hand", "Pan workspace"], ["rect", "Rectangle / door"], ["circle", "Circle"], ["sticky", "Sticky note"], ["text", "Text"]] }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Ink" },
+          { "name": "color", "type": "input", "inputType": "color", "value": "#32a7a0" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Text / rectangle label" },
+          { "name": "text", "type": "input", "multiline": true, "placeholder": "Type door for a portal rectangle" }
+        ] },
+        { "name": "undo", "type": "button", "text": "Undo last shape" },
+        { "name": "fit", "type": "button", "text": "Fit page" },
+        { "class": "rule", "type": "box" },
+        { "type": "label", "tag": "h3", "text": "Make it playful" },
+        { "name": "balls", "type": "button", "text": "Bounce circles" },
+        { "name": "maze", "type": "button", "text": "Play drawn maze" },
+        { "name": "stop", "type": "button", "text": "Stop minigame" },
+        { "name": "shake", "type": "button", "text": "Shake stickies" },
+        { "name": "ride", "type": "button", "text": "Ride pen graph" },
+        { "class": "rule", "type": "box" },
+        { "name": "png", "type": "button", "text": "Download PNG" },
+        { "name": "json", "type": "button", "text": "Backup JSON" },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Import desk JSON" },
+          { "name": "import", "type": "input", "inputType": "file", "accept": ".json" }
+        ] },
+        { "type": "label", "tag": "p", "text": "Wheel zooms. Pan tool moves the workspace. In 3D drag to orbit and wheel to zoom; click a paper to edit, a door to travel, a sticky to flick." }
+      ] },
+      { "type": "box", "children": [
+        { "class": "titlebar", "type": "box", "children": [
+          { "name": "title", "type": "label", "tag": "b" },
+          { "name": "badge", "type": "label", "tag": "span", "text": "2D STUDIO" }
+        ] },
+        { "name": "flat", "type": "box" },
+        { "name": "world", "type": "canvas", "visible": false },
+        { "name": "status", "type": "label", "tag": "p", "text": "Draw a rectangle labelled door to link the next board. Draw a graph with the pen for a camera ride." }
+      ] }
+    ] },
+    { "type": "box", "tag": "footer", "children": [
+      { "type": "label", "tag": "span", "text": "10 boards · local-first · Crowelian 2026 + Sonnet" }
+    ] }
+  ] }
+}

@@ -5,6 +5,8 @@ const files = ['app.js', 'rules.js', 'server.mjs', 'style.css'].map((name) => ({
 }));
 files.push(
   { from: 'tools/examples/network-common/server-kit.mjs', to: 'server-kit.mjs' },
+  { from: 'tools/examples/nord-office/src/ui.json', to: 'ui/office.ui.json' },
+  { from: 'runtime/core/uiscene.js', to: 'lib/nord-ui.js' },
   { from: 'LICENSE', to: 'LICENSE' },
 );
 export default () => ({

@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "name": "office",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#0b1421"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "box", "tag": "header", "children": [
+      { "type": "label", "tag": "h1", "text": "NORD ENGINE OFFICE" },
+      { "type": "label", "tag": "p", "text": "Ship the engine. Fix the coffee. Survive your interns." }
+    ] },
+    { "type": "box", "tag": "nav", "children": [
+      { "name": "solo", "type": "button", "text": "Solo + AI practice" },
+      { "name": "start", "type": "button", "text": "Start / Restart shift" },
+      { "name": "bot", "type": "button", "text": "Toggle AI coworker" },
+      { "name": "pause", "type": "button", "text": "Pause solo" }
+    ] },
+    { "class": "layout", "type": "box", "tag": "section", "children": [
+      { "type": "box", "children": [
+        { "type": "canvas", "w": 768, "h": 512, "attrs": {"aria-label": "Office game map"}, "name": "map" },
+        { "name": "hud", "type": "label", "tag": "h2" },
+        { "type": "label", "tag": "p", "text": "WASD / arrows: walk · E: work nearby · X: introduce a bug · Esc: cancel task" },
+        { "name": "task", "type": "box" },
+        { "name": "result", "type": "label", "tag": "p" }
+      ] },
+      { "type": "box", "tag": "aside", "children": [
+        { "type": "label", "tag": "h2", "text": "Invite interns" },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Name" },
+          { "name": "name", "type": "input", "value": "Intern", "maxlength": "20" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Room" },
+          { "name": "room", "type": "input", "value": "NORD", "maxlength": "8" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Server" },
+          { "name": "server", "type": "input" }
+        ] },
+        { "name": "join", "type": "button", "text": "Join online office" },
+        { "name": "network", "type": "label", "tag": "p", "text": "Run node server.mjs to host friends. Solo works without a server." },
+        { "type": "label", "tag": "h2", "text": "Tickets" },
+        { "name": "tickets", "type": "box" },
+        { "type": "label", "tag": "h2", "text": "Office log" },
+        { "name": "log", "type": "box" },
+        { "type": "label", "tag": "p", "text": "Host starts the shift. Finish 12 tasks in 150 seconds. Too many open bugs drain morale. X pranks a fixed nearby station, with a 15-second cooldown." },
+        { "type": "label", "tag": "p", "text": "Ada is a local pathfinding AI coworker, no account or API key needed." }
+      ] }
+    ] },
+    { "type": "box", "tag": "footer", "children": [
+      { "type": "label", "tag": "span", "text": "Crowelian 2026 + Sonnet · Original code and canvas graphics" }
+    ] }
+  ] }
+}

@@ -13,6 +13,7 @@ const THEMES = {
   Retro: { bg: '#1b1020', panel: '#2d1b3a', border: '#7a4fa3', fg: '#ffe9a8', accent: '#ff6b9a' },
 };
 const DEFAULTS = {
+  box: { type: 'box', tag: 'section', children: [] }, canvas: { type: 'canvas', w: 320, h: 180 },
   panel: { type: 'panel', layout: 'vbox', gap: 8, children: [] }, vbox: { type: 'vbox', gap: 8, children: [] }, hbox: { type: 'hbox', gap: 8, children: [] },
   grid: { type: 'grid', cols: 3, gap: 8, children: [] }, center: { type: 'center', children: [] }, scroll: { type: 'scroll', h: 200, children: [] },
   label: { type: 'label', text: 'Label', size: 20 }, button: { type: 'button', text: 'Button', on: { pressed: 'action' } }, image: { type: 'image', src: 'assets/sprites/icon.png', w: 64, h: 64 },
@@ -22,16 +23,17 @@ const DEFAULTS = {
 };
 const common = [['name', 'Name', 'text'], ['anchor', 'Anchor', ANCHORS], ['x', 'X', 'num'], ['y', 'Y', 'num'], ['w', 'Width', 'num'], ['h', 'Height', 'num'], ['grow', 'Grow', 'num'], ['margin', 'Margin', 'text'], ['class', 'CSS class', 'text']];
 const FIELDS = {
+  box: [['tag', 'HTML tag', 'text'], ['padding', 'Padding', 'text'], ['gap', 'Gap', 'num']], canvas: [],
   panel: [['layout', 'Layout', ['vbox', 'hbox']], ['padding', 'Padding', 'text'], ['gap', 'Gap', 'num'], ['align', 'Align items', ALIGN], ['justify', 'Justify', JUSTIFY]],
   vbox: [['padding', 'Padding', 'text'], ['gap', 'Gap', 'num'], ['align', 'Align items', ALIGN], ['justify', 'Justify', JUSTIFY]],
   hbox: [['padding', 'Padding', 'text'], ['gap', 'Gap', 'num'], ['align', 'Align items', ALIGN], ['justify', 'Justify', JUSTIFY]],
   grid: [['cols', 'Columns', 'num'], ['gap', 'Gap', 'num'], ['padding', 'Padding', 'text']], center: [], scroll: [['gap', 'Gap', 'num']],
-  label: [['text', 'Text', 'area'], ['size', 'Size', 'num'], ['color', 'Color', 'text'], ['align', 'Text align', ['', 'left', 'center', 'right']], ['bold', 'Bold', 'bool'], ['italic', 'Italic', 'bool'], ['wrap', 'Wrap', 'bool'], ['outline', 'Outline', 'num']],
+  label: [['tag', 'HTML tag', 'text'], ['text', 'Text', 'area'], ['size', 'Size', 'num'], ['color', 'Color', 'text'], ['align', 'Text align', ['', 'left', 'center', 'right']], ['bold', 'Bold', 'bool'], ['italic', 'Italic', 'bool'], ['wrap', 'Wrap', 'bool'], ['outline', 'Outline', 'num']],
   button: [['text', 'Text', 'text'], ['on.pressed', 'Action', 'text'], ['payload', 'Payload', 'text'], ['toggle', 'Toggle', 'bool'], ['size', 'Font size', 'num']],
   image: [['src', 'Source', 'text'], ['fit', 'Fit', ['', 'contain', 'cover', 'fill']], ['opacity', 'Opacity', 'num']],
   bar: [['value', 'Value 0-1', 'num'], ['color', 'Color', 'text'], ['bind.value', 'Bind value', 'text']],
   slider: [['min', 'Min', 'num'], ['max', 'Max', 'num'], ['step', 'Step', 'num'], ['value', 'Value', 'num'], ['on.changed', 'Action', 'text']],
-  input: [['placeholder', 'Placeholder', 'text'], ['value', 'Value', 'text'], ['on.changed', 'Action', 'text']],
+  input: [['inputType', 'Input type', ['', 'text', 'number', 'color', 'file', 'checkbox', 'password']], ['multiline', 'Multi-line', 'bool'], ['placeholder', 'Placeholder', 'text'], ['value', 'Value', 'text'], ['on.changed', 'Action', 'text']],
   checkbox: [['text', 'Text', 'text'], ['checked', 'Checked', 'bool'], ['on.toggled', 'Action', 'text']],
   select: [['options', 'Options (a,b,c)', 'list'], ['value', 'Value', 'text'], ['on.changed', 'Action', 'text']],
   spacer: [], html: [['html', 'HTML', 'area']], instance: [['ref', 'File', 'text']],

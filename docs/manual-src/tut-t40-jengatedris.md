@@ -30,13 +30,15 @@ Select the project files in Nord's Assets panel and open them in the editor. Kee
 | --- | --- |
 | `rules.js` | Pure grid rules shared by browser and Node |
 | `app.js` | Input, canvas drawing, menus, best score and battle requests |
+| `ui/menu.ui.json` | All page layout, text and form fields, edited in the UI Designer |
+| `lib/nord-ui.js` | The Nord UI runtime that builds the UI file (a copy of `runtime/core/uiscene.js`) |
 | `chaos.js` | Actual Matter world, compound pieces, forces and drawing |
 | `server.mjs` | Two-player rooms, authoritative battle updates and garbage |
 | `server-kit.mjs` | Small Node HTTP/JSON transport and static file allowlist |
 | `style.css` | Responsive page, inputs and canvases |
 | `vendor/phaser/phaser.min.js` | Nord's pinned offline Phaser build, which includes Matter |
 
-Start by changing `JengaTedris` in `app.js` and the highlight colour in `style.css`, then run your copy. No bundler or npm install is needed. The download includes the physics bundle and its licence. Its minified library code is packaged rather than expanded in this guide; all game and server source is listed at the end.
+Start by changing `JengaTedris` in `ui/menu.ui.json` (or in the UI Designer) and the highlight colour in `style.css`, then run your copy. No bundler or npm install is needed. The download includes the physics bundle and its licence. Its minified library code is packaged rather than expanded in this guide; all game and server source is listed at the end.
 
 ## 3. Represent the board as data, not falling pixels
 
@@ -180,6 +182,7 @@ The walkthrough covers the app/game modules, shared helpers used by them, page, 
 | [rules.js](#walk-rules-js) | Build every grid rule, from literal shape cells through rotation, hold, gravity and garbage. |
 | [chaos.js](#walk-chaos-js) | Build every piece of the separate real-physics survival mode. |
 | [app.js](#walk-app-js) | Read the entire host page and client loop for all three modes. |
+| [ui/menu.ui.json](#walk-ui-menu-ui-json) | Describe the whole page as data: header, mode buttons, board canvas, side panel with the battle form and footer. Semantic tags keep the existing stylesheet working. |
 | [server.mjs](#walk-server-mjs) | Build the complete authoritative two-player room lifecycle. |
 | [server-kit.mjs](#walk-server-kit-mjs) | Read the entire package-free HTTP adapter shared by the game servers. |
 | [index.html](#walk-index-html) | Read the complete Nord page entry point and its failure path. |
@@ -643,87 +646,22 @@ export async function createChaos() {
 
 Read the entire host page and client loop for all three modes.
 
-#### 3.1 — Create the board and mode controls
+#### 3.1 — Imports, load the UI file and name the handles
 
-**Read:** `app.js`, lines 1–27.
+**Read:** `app.js`, lines 1–23.
 
-<!-- taught-source: jengatedris/app.js:1-27 -->
+<!-- taught-source: jengatedris/app.js:1-23 -->
 
 ```js
 import { newGrid, cells, ghost, COLORS, action, tickGrid, SHAPES } from './rules.js';
 import { createChaos } from './chaos.js';
-export function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <link rel="stylesheet" href="style.css" />
-    <main>
-      <h1>
-        JengaTedris
-        <small>GRID / TOPPLE / BATTLE</small>
-      </h1>
-      <nav>
-        <button id="grid">Grid run</button>
-        <button id="chaos">Physics tower</button>
-        <button id="pause">Pause / Resume</button>
-        <button id="restart">Restart</button>
-      </nav>
-      <section class="layout">
-        <canvas width="300" height="600" aria-label="Game board"></canvas>
-        <aside>
-          <h2 id="status"></h2>
-          <p id="stats"></p>
-          <canvas id="next" width="200" height="160"></canvas>
-          <p>Grid: arrows move/down, ↑ rotate, Space drop, C hold. Clear 20 rows!</p>
-          <p>
-            Physics: ← → push, Q / E rotate, ↓ slam. Survive 18 rigid pieces; no row
-            clears.
-          </p>
-```
-
-**What and why:** Imports select rules and optional physics. The mounted page declares mode/restart/pause buttons, a full-size game canvas, status fields, a next/hold preview and local control explanations. IDs are the link to the wiring below. The same canvas renders grid or physics, but each mode keeps its own rules.
-
-**Try it / expected result:** Find each button ID and its later onclick assignment; no button should rely on its visible text as a program identifier.
-
-#### 3.2 — Describe and collect battle connection details
-
-**Read:** `app.js`, lines 28–75.
-
-<!-- taught-source: jengatedris/app.js:28-75 -->
-
-```js
-          <h2>Battle a friend</h2>
-          <label>
-            Name
-            <input id="name" value="Builder" maxlength="20" />
-          </label>
-          <label>
-            Room
-            <input id="room" value="NORD" maxlength="8" />
-          </label>
-          <label>
-            Server
-            <input id="server" />
-          </label>
-          <button id="join">Join battle</button>
-          <button id="ready">Ready / Rematch</button>
-          <button id="leave">Leave battle</button>
-          <p id="network">
-            Start node server.mjs for multiplayer. Same room, two browsers, both Ready.
-          </p>
-          <canvas id="rival" width="150" height="300"></canvas>
-          <p>
-            Two or more cleared rows send garbage to your rival. The server owns both
-            boards.
-          </p>
-        </aside>
-      </section>
-      <footer>
-        Original game · Crowelian 2026 + Sonnet · Best grid score:
-        <b id="best"></b>
-      </footer>
-    </main>
-  `;
-  const $ = (id) => root.querySelector('#' + id),
-    canvas = root.querySelector('canvas'),
+import { createUI } from './lib/nord-ui.js';
+export async function mount(root) {
+  // Layout, text and fields live in ui/menu.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/menu.ui.json');
+  // $('name') = the real DOM element of a node you named in the UI file
+  const $ = (id) => menu.$(id).el,
+    canvas = $('board'),
     ctx = canvas.getContext('2d'),
     keys = new Set();
   $('server').value =
@@ -740,15 +678,15 @@ export function mount(root) {
     poll = 0;
 ```
 
-**What and why:** The remaining markup adds player name, room and API address, plus Join/Ready/Leave and an opponent canvas. Inputs are ordinary HTML so typing a room should not move a piece. Footer best-score text is a display target. The next code obtains canvas contexts and a Set for held physics controls, chooses a local default API address and initializes the local run.
+**What and why:** Imports give the host access to the rules, helpers and the Nord UI runtime. mount is async because createUI(root).load fetches the UI file, links the stylesheet inside an isolated shadow root and builds every node before the first line of game code runs. The $ helper returns the real DOM element of a node you named in the file, so existing logic can keep using .value, .textContent and .onclick without searching the page. The canvas and keys set follow.
 
-**Try it / expected result:** Click the room input and press A/D. The text should change without shifting the active piece.
+**Try it / expected result:** Open the UI file in the UI Designer, rename a node and reload Play. The Console should name the missing node on the first lookup instead of silently doing nothing; rename it back afterwards.
 
-#### 3.3 — Load the local best and reset owned modes
+#### 3.2 — Load the local best and reset owned modes
 
-**Read:** `app.js`, lines 76–100.
+**Read:** `app.js`, lines 24–48.
 
-<!-- taught-source: jengatedris/app.js:76-100 -->
+<!-- taught-source: jengatedris/app.js:24-48 -->
 
 ```js
   let best = 0;
@@ -782,11 +720,11 @@ export function mount(root) {
 
 **Try it / expected result:** Pause, restart, and verify fresh state moves again. Switch away from physics and confirm its bodies are gone.
 
-#### 3.4 — Implement a request and accept a snapshot
+#### 3.3 — Implement a request and accept a snapshot
 
-**Read:** `app.js`, lines 101–121.
+**Read:** `app.js`, lines 49–69.
 
-<!-- taught-source: jengatedris/app.js:101-121 -->
+<!-- taught-source: jengatedris/app.js:49-69 -->
 
 ```js
   const message = (t) => ($('network').textContent = t);
@@ -816,11 +754,11 @@ export function mount(root) {
 
 **Try it / expected result:** Stop the Node process mid-battle. The network area should report failure; the page should not silently pretend local changes are a server result.
 
-#### 3.5 — Preserve action order and wire local mode controls
+#### 3.4 — Preserve action order and wire local mode controls
 
-**Read:** `app.js`, lines 122–148.
+**Read:** `app.js`, lines 70–96.
 
-<!-- taught-source: jengatedris/app.js:122-148 -->
+<!-- taught-source: jengatedris/app.js:70-96 -->
 
 ```js
   function send(name) {
@@ -856,11 +794,11 @@ export function mount(root) {
 
 **Try it / expected result:** Press rotate then drop in battle. The queued requests should preserve that order in the Network panel.
 
-#### 3.6 — Join, ready and leave deliberately
+#### 3.5 — Join, ready and leave deliberately
 
-**Read:** `app.js`, lines 149–177.
+**Read:** `app.js`, lines 97–125.
 
-<!-- taught-source: jengatedris/app.js:149-177 -->
+<!-- taught-source: jengatedris/app.js:97-125 -->
 
 ```js
   $('join').onclick = async () => {
@@ -898,11 +836,11 @@ export function mount(root) {
 
 **Try it / expected result:** Join a full room and observe the error. Choose another room rather than overwriting the current two players.
 
-#### 3.7 — Convert keys into actions without hijacking text fields
+#### 3.6 — Convert keys into actions without hijacking text fields
 
-**Read:** `app.js`, lines 178–208.
+**Read:** `app.js`, lines 126–156.
 
-<!-- taught-source: jengatedris/app.js:178-208 -->
+<!-- taught-source: jengatedris/app.js:126-156 -->
 
 ```js
   const map = {
@@ -918,7 +856,7 @@ export function mount(root) {
     KeyC: 'hold',
   };
   const down = (e) => {
-    if (/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) return;
+    if (menu.typing) return;
     if (map[e.code] || e.code === 'KeyQ' || e.code === 'KeyE') e.preventDefault();
     keys.add(e.code);
     if (paused || mode === 'chaos') return;
@@ -942,11 +880,11 @@ export function mount(root) {
 
 **Try it / expected result:** Hold Space: it should not instantly hard-drop an unlimited stream of pieces through repeated keydown events.
 
-#### 3.8 — Paint locked cells, prediction and active cells in order
+#### 3.7 — Paint locked cells, prediction and active cells in order
 
-**Read:** `app.js`, lines 209–229.
+**Read:** `app.js`, lines 157–177.
 
-<!-- taught-source: jengatedris/app.js:209-229 -->
+<!-- taught-source: jengatedris/app.js:157-177 -->
 
 ```js
   function board(context, s, scale = 30) {
@@ -976,11 +914,11 @@ export function mount(root) {
 
 **Try it / expected result:** Look at the ghost through an active piece: the real piece should remain opaque. Removing the alpha reset would make later cells incorrectly translucent.
 
-#### 3.9 — Derive status and previews from existing state
+#### 3.8 — Derive status and previews from existing state
 
-**Read:** `app.js`, lines 230–273.
+**Read:** `app.js`, lines 178–221.
 
-<!-- taught-source: jengatedris/app.js:230-273 -->
+<!-- taught-source: jengatedris/app.js:178-221 -->
 
 ```js
   function draw() {
@@ -1033,11 +971,11 @@ export function mount(root) {
 
 **Try it / expected result:** Clear a row and inspect the preview and score together. They should reflect one state transition, not separate UI counters.
 
-#### 3.10 — Choose one clock owner and stop cleanly
+#### 3.9 — Choose one clock owner and stop cleanly
 
-**Read:** `app.js`, lines 274–327.
+**Read:** `app.js`, lines 222–275.
 
-<!-- taught-source: jengatedris/app.js:274-327 -->
+<!-- taught-source: jengatedris/app.js:222-275 -->
 
 ```js
   function frame(now) {
@@ -1091,7 +1029,7 @@ export function mount(root) {
     window.removeEventListener('keydown', down);
     window.removeEventListener('keyup', up);
     window.removeEventListener('blur', blur);
-    root.replaceChildren();
+    menu.destroy();
   };
 }
 ```
@@ -1101,11 +1039,112 @@ export function mount(root) {
 **Try it / expected result:** Compare a battle snapshot in two browsers: gravity should agree because Node owns it. Closing/reopening Play must not retain the old frame loop.
 
 
-### 4. server.mjs {#walk-server-mjs}
+### 4. ui/menu.ui.json {#walk-ui-menu-ui-json}
+
+Describe the whole page as data: header, mode buttons, board canvas, side panel with the battle form and footer. Semantic tags keep the existing stylesheet working.
+
+#### 4.1 — Page settings, header and mode buttons
+
+**Read:** `ui/menu.ui.json`, lines 1–22.
+
+<!-- taught-source: jengatedris/ui/menu.ui.json:1-22 -->
+
+```json
+{
+  "version": 1,
+  "name": "menu",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#0a1522"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "box", "tag": "h1", "children": [
+      { "type": "label", "tag": "span", "text": "JengaTedris" },
+      { "type": "label", "tag": "small", "text": "GRID / TOPPLE / BATTLE" }
+    ] },
+    { "type": "box", "tag": "nav", "children": [
+      { "name": "grid", "type": "button", "text": "Grid run" },
+      { "name": "chaos", "type": "button", "text": "Physics tower" },
+      { "name": "pause", "type": "button", "text": "Pause / Resume" },
+      { "name": "restart", "type": "button", "text": "Restart" }
+    ] },
+```
+
+**What and why:** The file declares version 1, marks the screen as a page so it flows in the document, links style.css inside its own shadow root and sets the body colours. The root is a box with tag main. Header text and the four mode buttons are nodes with names; box nodes can carry a semantic tag such as h1 or nav, so CSS rules written for those tags still apply.
+
+**Try it / expected result:** Add a fifth button inside the nav box in the Designer, name it help and save. Reload Play and look for it beside Restart; it does nothing until app.js listens for it. Delete it again.
+
+#### 4.2 — Board canvas and the side panel
+
+**Read:** `ui/menu.ui.json`, lines 23–51.
+
+<!-- taught-source: jengatedris/ui/menu.ui.json:23-51 -->
+
+```json
+    { "class": "layout", "type": "box", "tag": "section", "children": [
+      { "type": "canvas", "w": 300, "h": 600, "attrs": {"aria-label": "Game board"}, "name": "board" },
+      { "type": "box", "tag": "aside", "children": [
+        { "name": "status", "type": "label", "tag": "h2" },
+        { "name": "stats", "type": "label", "tag": "p" },
+        { "name": "next", "type": "canvas", "w": 200, "h": 160 },
+        { "type": "label", "tag": "p", "text": "Grid: arrows move/down, ↑ rotate, Space drop, C hold. Clear 20 rows!" },
+        { "type": "label", "tag": "p", "text": "Physics: ← → push, Q / E rotate, ↓ slam. Survive 18 rigid pieces; no row clears." },
+        { "type": "label", "tag": "h2", "text": "Battle a friend" },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Name" },
+          { "name": "name", "type": "input", "value": "Builder", "maxlength": "20" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Room" },
+          { "name": "room", "type": "input", "value": "NORD", "maxlength": "8" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Server" },
+          { "name": "server", "type": "input" }
+        ] },
+        { "name": "join", "type": "button", "text": "Join battle" },
+        { "name": "ready", "type": "button", "text": "Ready / Rematch" },
+        { "name": "leave", "type": "button", "text": "Leave battle" },
+        { "name": "network", "type": "label", "tag": "p", "text": "Start node server.mjs for multiplayer. Same room, two browsers, both Ready." },
+        { "name": "rival", "type": "canvas", "w": 150, "h": 300 },
+        { "type": "label", "tag": "p", "text": "Two or more cleared rows send garbage to your rival. The server owns both boards." }
+      ] }
+    ] },
+```
+
+**What and why:** A canvas node creates the 300 by 600 board with an aria-label and the name board, which app.js reads with $('board'). The aside box holds the status, stats, next-piece canvas, instructions, and the battle form: labelled inputs for name, room and server plus join, ready and leave buttons and the rival canvas. Every field the code reads has a name.
+
+**Try it / expected result:** Change the Room default from NORD to LAB and reload. The input starts with the new value without any change to app.js.
+
+#### 4.3 — Footer and the best-score label
+
+**Read:** `ui/menu.ui.json`, lines 52–57.
+
+<!-- taught-source: jengatedris/ui/menu.ui.json:52-57 -->
+
+```json
+    { "type": "box", "tag": "footer", "children": [
+      { "type": "label", "tag": "span", "text": "Original game · Crowelian 2026 + Sonnet · Best grid score:" },
+      { "name": "best", "type": "label", "tag": "b" }
+    ] }
+  ] }
+}
+```
+
+**What and why:** The footer is a box with the credit text and a label named best. The game writes the best grid score into it with textContent. Keeping dynamic values in named labels means the layout can change freely while the game keeps working.
+
+**Try it / expected result:** Rename the footer text in the Designer and reload Play. The best score still appears because the node name is unchanged.
+
+
+### 5. server.mjs {#walk-server-mjs}
 
 Build the complete authoritative two-player room lifecycle.
 
-#### 4.1 — Separate sessions, rooms and public snapshots
+#### 5.1 — Separate sessions, rooms and public snapshots
 
 **Read:** `server.mjs`, lines 1–46.
 
@@ -1164,7 +1203,7 @@ export function createBattleServer({
 
 **Try it / expected result:** Inspect a snapshot after a clear: both players should be present, but only server-applied rule changes should affect their boards.
 
-#### 4.2 — Create rooms without exceeding capacity
+#### 5.2 — Create rooms without exceeding capacity
 
 **Read:** `server.mjs`, lines 47–70.
 
@@ -1201,7 +1240,7 @@ export function createBattleServer({
 
 **Try it / expected result:** Open a third browser in the same room. It should receive Room has two players rather than becoming an invisible third competitor.
 
-#### 4.3 — Validate Ready and execute bounded intentions
+#### 5.3 — Validate Ready and execute bounded intentions
 
 **Read:** `server.mjs`, lines 71–100.
 
@@ -1244,7 +1283,7 @@ export function createBattleServer({
 
 **Try it / expected result:** Click Ready while playing and inspect the rejection. The existing round must not reset.
 
-#### 4.4 — Expire sessions and advance both boards on one server clock
+#### 5.4 — Expire sessions and advance both boards on one server clock
 
 **Read:** `server.mjs`, lines 101–142.
 
@@ -1300,11 +1339,11 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 **Try it / expected result:** Close one client and wait for expiry. The remaining client should return to waiting and a new player should be able to take the seat.
 
 
-### 5. server-kit.mjs {#walk-server-kit-mjs}
+### 6. server-kit.mjs {#walk-server-kit-mjs}
 
 Read the entire package-free HTTP adapter shared by the game servers.
 
-#### 5.1 — Create an HTTP response boundary
+#### 6.1 — Create an HTTP response boundary
 
 **Read:** `server-kit.mjs`, lines 1–39.
 
@@ -1356,7 +1395,7 @@ export function serve({
 
 **Try it / expected result:** Open the game through its Node server, then through Nord Play with the same Server address. Both supported origins should receive JSON.
 
-#### 5.2 — Parse a bounded API message
+#### 6.2 — Parse a bounded API message
 
 **Read:** `server-kit.mjs`, lines 40–68.
 
@@ -1398,7 +1437,7 @@ export function serve({
 
 **Try it / expected result:** Send an invalid action with the browser Network panel and inspect its HTTP status; distinguish transport validation from the game-specific unknown-action error.
 
-#### 5.3 — Serve only named public files and own the tick
+#### 6.3 — Serve only named public files and own the tick
 
 **Read:** `server-kit.mjs`, lines 69–103.
 
@@ -1447,11 +1486,11 @@ export const roomCode = (value) =>
 **Try it / expected result:** Request server.mjs in the browser URL. It should return Not found; the source is distributed through the archive rather than this static allowlist.
 
 
-### 6. index.html {#walk-index-html}
+### 7. index.html {#walk-index-html}
 
 Read the complete Nord page entry point and its failure path.
 
-#### 6.1 — Load the local runtime and start the app
+#### 7.1 — Load the local runtime and start the app
 
 **Read:** `index.html`, lines 1–8.
 
@@ -1473,11 +1512,11 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 **Try it / expected result:** Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name.
 
 
-### 7. nord.project.json {#walk-nord-project-json}
+### 8. nord.project.json {#walk-nord-project-json}
 
 Read every project field that tells Nord which host, display and services to use.
 
-#### 7.1 — Identify the project and choose its presentation
+#### 8.1 — Identify the project and choose its presentation
 
 **Read:** `nord.project.json`, lines 1–22.
 
@@ -1512,7 +1551,7 @@ Read every project field that tells Nord which host, display and services to use
 
 **Try it / expected result:** Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.
 
-#### 7.2 — Distinguish scene actions from HTML event handling
+#### 8.2 — Distinguish scene actions from HTML event handling
 
 **Read:** `nord.project.json`, lines 23–64.
 
@@ -1568,34 +1607,27 @@ Read every project field that tells Nord which host, display and services to use
 **Try it / expected result:** For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input.
 
 
-### 8. style.css {#walk-style-css}
+### 9. style.css {#walk-style-css}
 
 Read every stylesheet rule, grouped by the UI responsibility it controls.
 
-#### 8.1 — Set the app foundation and reusable visual language
+#### 9.1 — Set the app foundation and reusable visual language
 
-**Read:** `style.css`, lines 1–51.
+**Read:** `style.css`, lines 1–44.
 
-<!-- taught-source: jengatedris/style.css:1-51 -->
+<!-- taught-source: jengatedris/style.css:1-44 -->
 
 ```css
-html {
-  background: #0a1522;
-}
-html,
-body {
-  height: auto;
-  min-height: 100%;
+:host {
+  display: block;
+  min-height: 100vh;
+  color: #d8e8ef;
+  font: 16px system-ui;
 }
 * {
   box-sizing: border-box;
 }
-body {
-  background: #0a1522;
-  color: #d8e8ef;
-  font: 16px system-ui;
-  margin: 0;
-}
+
 main {
   max-width: 850px;
   margin: auto;
@@ -1632,15 +1664,15 @@ button:hover {
 }
 ```
 
-**What and why:** The opening rules give html/body a continuous background and minimum height, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies.
+**What and why:** The opening rules give the host element (:host, the page root that holds the UI) its colour, font and minimum height; the document background and margin come from the body block of the UI file, apply border-box sizing, reset margins and choose system typography. Header, heading and basic control rules establish the app’s hierarchy and affordances. Keeping this local avoids remote font or stylesheet dependencies. The sheet is linked from inside the UI file's shadow root, so selectors such as main, nav and #status match the nodes you named there.
 
 **Try it / expected result:** Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change.
 
-#### 8.2 — Lay out board and previews
+#### 9.2 — Lay out board and previews
 
-**Read:** `style.css`, lines 52–87.
+**Read:** `style.css`, lines 45–80.
 
-<!-- taught-source: jengatedris/style.css:52-87 -->
+<!-- taught-source: jengatedris/style.css:45-80 -->
 
 ```css
 .layout {
@@ -1685,11 +1717,11 @@ p {
 
 **Try it / expected result:** Resize slowly and compare CSS display size with the fixed canvas.width used by rendering.
 
-#### 8.3 — Clear auxiliary content and stack on narrow screens
+#### 9.3 — Clear auxiliary content and stack on narrow screens
 
-**Read:** `style.css`, lines 88–101.
+**Read:** `style.css`, lines 81–94.
 
-<!-- taught-source: jengatedris/style.css:88-101 -->
+<!-- taught-source: jengatedris/style.css:81-94 -->
 
 ```css
 footer {
@@ -1726,65 +1758,13 @@ The archive contains every file needed for the complete local game and Node batt
 ```js
 import { newGrid, cells, ghost, COLORS, action, tickGrid, SHAPES } from './rules.js';
 import { createChaos } from './chaos.js';
-export function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <link rel="stylesheet" href="style.css" />
-    <main>
-      <h1>
-        JengaTedris
-        <small>GRID / TOPPLE / BATTLE</small>
-      </h1>
-      <nav>
-        <button id="grid">Grid run</button>
-        <button id="chaos">Physics tower</button>
-        <button id="pause">Pause / Resume</button>
-        <button id="restart">Restart</button>
-      </nav>
-      <section class="layout">
-        <canvas width="300" height="600" aria-label="Game board"></canvas>
-        <aside>
-          <h2 id="status"></h2>
-          <p id="stats"></p>
-          <canvas id="next" width="200" height="160"></canvas>
-          <p>Grid: arrows move/down, ↑ rotate, Space drop, C hold. Clear 20 rows!</p>
-          <p>
-            Physics: ← → push, Q / E rotate, ↓ slam. Survive 18 rigid pieces; no row
-            clears.
-          </p>
-          <h2>Battle a friend</h2>
-          <label>
-            Name
-            <input id="name" value="Builder" maxlength="20" />
-          </label>
-          <label>
-            Room
-            <input id="room" value="NORD" maxlength="8" />
-          </label>
-          <label>
-            Server
-            <input id="server" />
-          </label>
-          <button id="join">Join battle</button>
-          <button id="ready">Ready / Rematch</button>
-          <button id="leave">Leave battle</button>
-          <p id="network">
-            Start node server.mjs for multiplayer. Same room, two browsers, both Ready.
-          </p>
-          <canvas id="rival" width="150" height="300"></canvas>
-          <p>
-            Two or more cleared rows send garbage to your rival. The server owns both
-            boards.
-          </p>
-        </aside>
-      </section>
-      <footer>
-        Original game · Crowelian 2026 + Sonnet · Best grid score:
-        <b id="best"></b>
-      </footer>
-    </main>
-  `;
-  const $ = (id) => root.querySelector('#' + id),
-    canvas = root.querySelector('canvas'),
+import { createUI } from './lib/nord-ui.js';
+export async function mount(root) {
+  // Layout, text and fields live in ui/menu.ui.json (edit it in the UI Designer); this file only wires them up.
+  const menu = await createUI(root).load('ui/menu.ui.json');
+  // $('name') = the real DOM element of a node you named in the UI file
+  const $ = (id) => menu.$(id).el,
+    canvas = $('board'),
     ctx = canvas.getContext('2d'),
     keys = new Set();
   $('server').value =
@@ -1914,7 +1894,7 @@ export function mount(root) {
     KeyC: 'hold',
   };
   const down = (e) => {
-    if (/INPUT|TEXTAREA/.test(document.activeElement?.tagName)) return;
+    if (menu.typing) return;
     if (map[e.code] || e.code === 'KeyQ' || e.code === 'KeyE') e.preventDefault();
     keys.add(e.code);
     if (paused || mode === 'chaos') return;
@@ -2048,7 +2028,7 @@ export function mount(root) {
     window.removeEventListener('keydown', down);
     window.removeEventListener('keyup', up);
     window.removeEventListener('blur', blur);
-    root.replaceChildren();
+    menu.destroy();
   };
 }
 ```
@@ -2724,23 +2704,16 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 <summary>Complete style.css</summary>
 
 ```css
-html {
-  background: #0a1522;
-}
-html,
-body {
-  height: auto;
-  min-height: 100%;
+:host {
+  display: block;
+  min-height: 100vh;
+  color: #d8e8ef;
+  font: 16px system-ui;
 }
 * {
   box-sizing: border-box;
 }
-body {
-  background: #0a1522;
-  color: #d8e8ef;
-  font: 16px system-ui;
-  margin: 0;
-}
+
 main {
   max-width: 850px;
   margin: auto;
@@ -2824,6 +2797,71 @@ footer {
   main {
     padding: 8px;
   }
+}
+```
+
+</details>
+
+<details>
+<summary>Complete ui/menu.ui.json</summary>
+
+```json
+{
+  "version": 1,
+  "name": "menu",
+  "page": true,
+  "styles": [
+    "style.css"
+  ],
+  "body": {
+    "margin": "0",
+    "background": "#0a1522"
+  },
+  "root": { "type": "box", "tag": "main", "name": "root", "children": [
+    { "type": "box", "tag": "h1", "children": [
+      { "type": "label", "tag": "span", "text": "JengaTedris" },
+      { "type": "label", "tag": "small", "text": "GRID / TOPPLE / BATTLE" }
+    ] },
+    { "type": "box", "tag": "nav", "children": [
+      { "name": "grid", "type": "button", "text": "Grid run" },
+      { "name": "chaos", "type": "button", "text": "Physics tower" },
+      { "name": "pause", "type": "button", "text": "Pause / Resume" },
+      { "name": "restart", "type": "button", "text": "Restart" }
+    ] },
+    { "class": "layout", "type": "box", "tag": "section", "children": [
+      { "type": "canvas", "w": 300, "h": 600, "attrs": {"aria-label": "Game board"}, "name": "board" },
+      { "type": "box", "tag": "aside", "children": [
+        { "name": "status", "type": "label", "tag": "h2" },
+        { "name": "stats", "type": "label", "tag": "p" },
+        { "name": "next", "type": "canvas", "w": 200, "h": 160 },
+        { "type": "label", "tag": "p", "text": "Grid: arrows move/down, ↑ rotate, Space drop, C hold. Clear 20 rows!" },
+        { "type": "label", "tag": "p", "text": "Physics: ← → push, Q / E rotate, ↓ slam. Survive 18 rigid pieces; no row clears." },
+        { "type": "label", "tag": "h2", "text": "Battle a friend" },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Name" },
+          { "name": "name", "type": "input", "value": "Builder", "maxlength": "20" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Room" },
+          { "name": "room", "type": "input", "value": "NORD", "maxlength": "8" }
+        ] },
+        { "type": "box", "tag": "label", "children": [
+          { "type": "label", "tag": "span", "text": "Server" },
+          { "name": "server", "type": "input" }
+        ] },
+        { "name": "join", "type": "button", "text": "Join battle" },
+        { "name": "ready", "type": "button", "text": "Ready / Rematch" },
+        { "name": "leave", "type": "button", "text": "Leave battle" },
+        { "name": "network", "type": "label", "tag": "p", "text": "Start node server.mjs for multiplayer. Same room, two browsers, both Ready." },
+        { "name": "rival", "type": "canvas", "w": 150, "h": 300 },
+        { "type": "label", "tag": "p", "text": "Two or more cleared rows send garbage to your rival. The server owns both boards." }
+      ] }
+    ] },
+    { "type": "box", "tag": "footer", "children": [
+      { "type": "label", "tag": "span", "text": "Original game · Crowelian 2026 + Sonnet · Best grid score:" },
+      { "name": "best", "type": "label", "tag": "b" }
+    ] }
+  ] }
 }
 ```
 

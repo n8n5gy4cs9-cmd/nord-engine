@@ -49,7 +49,7 @@ const paper = await withPage(
       p.setPosition(1155, 790);
     });
     await page.waitForFunction(() =>
-      document.querySelector('#status').textContent.includes('MAZE COMPLETE'),
+      document.querySelector('[data-nord-ui]').shadowRoot.querySelector('#status').textContent.includes('MAZE COMPLETE'),
     );
     await page.locator('#stop').click();
     await page.locator('#save').click();
@@ -58,8 +58,8 @@ const paper = await withPage(
       fullPage: true,
     });
     await page.evaluate(() => {
-      document.querySelector('#mode').click();
-      document.querySelector('#mode').click();
+      document.querySelector('[data-nord-ui]').shadowRoot.querySelector('#mode').click();
+      document.querySelector('[data-nord-ui]').shadowRoot.querySelector('#mode').click();
     });
     await page.waitForFunction(() => window.__paper.in3d, null, { timeout: 30000 });
     assert.equal(await page.evaluate(() => window.__paper.world.papers.length), 10);
@@ -119,8 +119,8 @@ const rss = await withPage(
       fullPage: true,
     });
     await page.evaluate(() => {
-      document.querySelector('#mode').click();
-      document.querySelector('#mode').click();
+      document.querySelector('[data-nord-ui]').shadowRoot.querySelector('#mode').click();
+      document.querySelector('[data-nord-ui]').shadowRoot.querySelector('#mode').click();
     });
     await page.waitForFunction(() => window.__rss.river?.papers.length > 0, null, {
       timeout: 30000,
