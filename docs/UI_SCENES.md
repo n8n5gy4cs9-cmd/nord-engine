@@ -54,6 +54,44 @@ menu.show(); menu.hide(); menu.toggle(); menu.destroy(); ui.only('pause');  // s
 ```
 UI → code: `on.pressed` names + `menu.on(action, fn)`; every action is also emitted on `game.events` as `ui:<action>`, so event sheets and scripts can react without wiring. Code → UI: handles and `set()` above; `ui.define(name, obj)` registers a screen without a file.
 
+## Styles (skins): one rule set for every node
+Do not copy styles node by node. A **skin** is a JSON file of shared rules, applied to every UI scene:
+```json
+{ "tokens": { "accent": "#7fb0e8", "fg": "#e8f0ff" },
+  "styles": {
+    "button":  { "bg": "$accent", "fg": "#10203a", "radius": 6, "pad": "8px 16px",
+                 "hover": { "filter": "brightness(1.15)" }, "pressed": { "transform": "translateY(1px)" }, "disabled": { "opacity": 0.5 } },
+    ".danger": { "extends": "button", "bg": "#bf616a" },
+    "panel label": { "color": "$fg" } } }
+```
+* **By type — automatic:** a rule named `button`, `panel`, `label`, `bar`… styles *every* node of that type. This is the answer to "same style on all buttons".
+* **By class — variants:** give a node `"class": "danger big"`; rules `.danger`, `button.danger`, `#play` (by name) and descendant rules (`panel label`) work like CSS. No numbered style-1/style-2: name styles by meaning.
+* **Inheritance:** `"extends": "button"` (or a list) copies another rule, then overrides it.
+* **States:** `hover`, `pressed`, `disabled`, `focus`, `on` (toggled) nested inside a rule; each can swap colours, transform or the whole **image**.
+* **Tokens:** `tokens` become `--nord-<name>` variables; use `$name` anywhere in values. Change one token to re-colour everything.
+* **Shorthands:** `bg fg radius pad size shadow`; any camelCase CSS property works; numbers mean px (except `opacity`, `fontWeight`, `lineHeight`…).
+* **Where it lives:** `ui/skin.json` (or any `.skin.json`). Apply once: `ui.useSkin('ui/skin.json')` (also `createUI(root, { skin: … })`), or per file with `"skin": "ui/skin.json"` at the top of a `.ui.json`. Calling `useSkin` again swaps the look live (dark/light, seasonal, per-level). A `.ui.json` may also carry its own rules as `"styles": { … }` (object) next to or instead of a skin; `"styles": [ "page.css" ]` (array) still links CSS files. Node `style` (inline) always wins over any rule; project CSS wins over the runtime defaults.
+* **Designer:** the **Skin** box in the toolbar picks the skin for the preview/file, the **Styles** tab edits and saves it.
+
+## Images and 9-slice (Unity "Sliced", Godot NinePatchRect)
+Any node can have an image, either as a plain picture or sliced so it scales without distorting its corners:
+```json
+{ "type": "panel", "image": { "src": "assets/ui/skin/panel.png", "slice": [8, 8, 8, 8], "scale": 2, "pixelated": true } }
+{ "type": "image", "src": "assets/sprites/logo.png", "mode": "fit", "w": 240, "h": 80 }
+{ "type": "image", "src": "assets/ui/skin/panel.png", "mode": "slice", "slice": [8, 8, 8, 8], "w": 300, "h": 120 }
+```
+| `mode` | Result |
+|---|---|
+| `slice` | **9-slice** (default when `slice` is set): the four corners keep their size, the edges stretch (or tile with `"repeat": "tile"`), the centre fills. `slice` = `[left, top, right, bottom]` in **source pixels**, or one number for all sides; `scale` enlarges the borders (2 = double-size pixel art). `"fill": false` leaves the centre empty (frames). |
+| `stretch` | image stretched over the whole node (non-uniform) |
+| `fit` / `cover` | keep aspect ratio inside / over the node |
+| `tile` | repeat (`scale` sets the tile size) |
+| `center` | natural size, centred |
+
+On `image` nodes use `src`/`mode`/`slice`/`scale`; on every other node (panel, button, box, bar, label…) use the `image` object, and put it inside a skin rule to give every button a sliced sprite, with a different image per state:
+`"button": { "image": { "src": "…/button.png", "slice": [5,5,5,5], "scale": 3 }, "hover": { "image": { "src": "…/button-hover.png", … } } }`.
+`pixelated` turns off smoothing for pixel art. Slicing uses the browser's native `border-image`, so it is GPU-composited and costs nothing per frame. In the Designer, selecting any node with an image shows the **9-slice editor**: drag the four pink guides over the picture. Sample skin and art: `assets/ui/skin/` (`pixel.skin.json`, regenerate with `python3 tools/gen_ui_skin.py`).
+
 ## Performance notes
 One shadow root per screen (style isolation, shared constructable stylesheet), one delegated listener per event type, one DocumentFragment per build, text/bar/visible updates are skipped when the value did not change. Use `style`/`class` sparingly; prefer anchors and containers.
 

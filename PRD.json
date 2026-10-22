@@ -1956,6 +1956,12 @@
       "status": "done"
     },
     {
+      "id": "M8-27",
+      "milestone": "M8",
+      "title": "UI skins (shared styles) + 9-slice images + Designer skin/slice editor",
+      "status": "done"
+    },
+    {
       "id": "M10-01",
       "milestone": "M10",
       "title": "Spec: docs/CONSTRUCT_PARITY.md — map each Construct 3 editor feature to Nord equivalent, scope + non-goals (no copying Construct code/assets; clean-room, original names where practical)",

@@ -60,3 +60,5 @@ M12-28: owner requested `00-Evan/shattered-pixel-dungeon`. Shallow sparse clone 
 ## Retro full-game tutorial source study
 
 Reference clones `outrun-reference`, `starfox-reference`, `kirpich-reference`, `tengen-reference` are pinned in UPSTREAM.lock.json and fetchable by tools/fetch-upstreams.sh. Read RESEARCH_GAME_TUTORIALS.md for concrete source paths, license boundaries and original-design conclusions. No code/assets from these four are harvested. In particular, cartridge data and disassembly output are not tutorial dependencies, and Kirpich's unfinished serial multiplayer declarations are not treated as working network code.
+
+- **Unity C# reference** (`unity-technologies/unitycsreference`): reference-only licence — read for ideas, **never copy code**. UI skins/9-slice (ADR-031) are original code using browser `border-image`; Unity UI Toolkit (USS) and Godot NinePatchRect (MIT) informed only the concepts.

@@ -80,7 +80,82 @@ export function validate(def) {
 /** An empty UI file. */
 export const blank = (name = 'screen') => ({ version: UI_VERSION, name, theme: {}, root: { type: 'panel', name: 'root', anchor: 'fill', style: { background: 'none', border: 'none', boxShadow: 'none', padding: 0 }, children: [] } });
 
+
+// ---- Styles: one named rule set for every node (CSS-like, but JSON, with tokens, inheritance, states and images) ----
+const UNITLESS = /^(opacity|zIndex|flex|flexGrow|flexShrink|order|fontWeight|lineHeight|scale)$/;
+const ALIAS = { bg: 'background', fg: 'color', radius: 'borderRadius', pad: 'padding', size: 'fontSize', shadow: 'boxShadow' };
+const STATES = { hover: ':hover', pressed: ':active', active: ':active', disabled: ':disabled', focus: ':focus-visible', on: '.on' };
+const kebab = (k) => k.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase());
+const px = (v) => (typeof v === 'number' ? v + 'px' : v);
+const tok = (v) => (typeof v === 'string' ? v.replace(/\$([a-zA-Z][\w-]*)/g, 'var(--nord-$1)') : v);
+
+/**
+ * Image → CSS declarations. `image` = a path, or { src, mode, slice:[left,top,right,bottom], scale, repeat, pixelated }.
+ * mode: slice (9-slice; default when slice is set) | stretch | tile | fit | cover | center.
+ * 9-slice uses the browser's native border-image: the four corners keep their size, edges stretch or tile, the middle fills.
+ */
+export function imageDecl(img, base = '') {
+  if (!img) return [];
+  if (typeof img === 'string') img = { src: img };
+  const { src, scale = 1 } = img;
+  const sl = Array.isArray(img.slice) ? img.slice : typeof img.slice === 'number' ? [img.slice, img.slice, img.slice, img.slice] : null;
+  const mode = img.mode ?? (sl ? 'slice' : 'stretch');
+  const u = `url("${(/^(\/|[a-z]+:)/i.test(src) ? '' : base) + String(src).replace(/"/g, '%22')}")`;
+  const out = [];
+  if (mode === 'slice' && sl) {
+    const [l, t, r, b] = sl;
+    out.push(['border-style', 'solid'], ['border-color', 'transparent'], ['background', 'none'],
+      ['border-width', `${t * scale}px ${r * scale}px ${b * scale}px ${l * scale}px`],
+      ['border-image-source', u], ['border-image-slice', `${t} ${r} ${b} ${l}${img.fill === false ? '' : ' fill'}`],
+      ['border-image-width', `${t * scale}px ${r * scale}px ${b * scale}px ${l * scale}px`],
+      ['border-image-repeat', img.repeat === 'tile' ? 'round' : img.repeat === 'repeat' ? 'repeat' : 'stretch']);
+  } else if (mode === 'tile') out.push(['background', `${u} 0 0 / ${scale === 1 ? 'auto' : `${scale * 100}%`} repeat`]);
+  else if (mode === 'fit') out.push(['background', `${u} center / contain no-repeat`]);
+  else if (mode === 'cover') out.push(['background', `${u} center / cover no-repeat`]);
+  else if (mode === 'center') out.push(['background', `${u} center / auto no-repeat`]);
+  else out.push(['background', `${u} 0 0 / 100% 100% no-repeat`]);
+  if (img.pixelated) out.push(['image-rendering', 'pixelated']);
+  return out;
+}
+/** Declaration object → [css-property, value] pairs (aliases, camelCase, tokens, images, px). */
+export function declPairs(decl, base = '') {
+  const out = [];
+  for (const [k0, v] of Object.entries(decl)) {
+    if (k0 === 'extends' || STATES[k0] || v && typeof v === 'object' && k0 !== 'image') continue;
+    if (k0 === 'image') { out.push(...imageDecl(v, base)); continue; }
+    const k = ALIAS[k0] ?? k0;
+    out.push([k.startsWith('--') ? k : kebab(k), UNITLESS.test(k) ? tok(String(v)) : tok(px(v))]);
+  }
+  return out;
+}
+const selector = (key) => key.split(/\s+/).map((part) => part.replace(/^([a-z]+)/, (w) => (NODE_TYPES.includes(w) ? '.' + w : w))).join(' ');
+/** Compile { tokens, styles } into CSS text. Rule keys: "button", ".primary", "button.primary", "#play", "panel label". */
+export function compileSkin(skin = {}, base = '') {
+  const rules = skin.styles ?? {};
+  const flat = (key, seen = []) => {
+    const r = rules[key]; if (!r) return {};
+    if (seen.includes(key)) throw new Error(`nord-ui: styles "${key}" extends itself`);
+    const base = {};
+    for (const e of [].concat(r.extends ?? [])) mergeDecl(base, flat(e, [...seen, key]));
+    return mergeDecl(base, r);
+  };
+  const mergeDecl = (a, b) => { for (const [k, v] of Object.entries(b)) if (k !== 'extends') a[k] = STATES[k] && typeof v === 'object' ? { ...(a[k] ?? {}), ...v } : v; return a; };
+  let css = '';
+  const tokens = Object.entries(skin.tokens ?? {}).map(([k, v]) => `--nord-${k}:${v}`).join(';');
+  if (tokens) css += `:host{${tokens}}\n`;
+  for (const key of Object.keys(rules)) {
+    const d = flat(key), sel = selector(key);
+    const own = declPairs(d, base).map(([k, v]) => `${k}:${v}`).join(';');
+    if (own) css += `${sel}{${own}}\n`;
+    for (const [state, suffix] of Object.entries(STATES)) {
+      if (d[state] && typeof d[state] === 'object') css += `${sel}${suffix}{${declPairs(d[state], base).map(([k, v]) => `${k}:${v}`).join(';')}}\n`;
+    }
+  }
+  return css;
+}
+
 let sharedSheet;
+const mgrCss = (m) => m.skinCss ?? '';
 function styleInto(doc, shadow) {
   try {
     if (!sharedSheet) { sharedSheet = new CSSStyleSheet(); sharedSheet.replaceSync(UI_CSS); }
@@ -139,8 +214,11 @@ class Screen {
     if (def.page) { this.host.classList.add('page'); this.rootEl.classList.add('page'); }
     if (def.body && this.doc.body) Object.assign(this.doc.body.style, def.body);
     // Project stylesheets (e.g. style.css) are linked inside the shadow root; `ready` resolves when they loaded.
-    const links = (def.styles ?? []).map((href) => new Promise((res) => { const l = this.doc.createElement('link'); l.rel = 'stylesheet'; l.href = href; l.onload = l.onerror = res; this.shadow.appendChild(l); }));
+    const links = (Array.isArray(def.styles) ? def.styles : []).map((href) => new Promise((res) => { const l = this.doc.createElement('link'); l.rel = 'stylesheet'; l.href = href; l.onload = l.onerror = res; this.shadow.appendChild(l); }));
     this.ready = Promise.all(links);
+    this.skinEl = this.doc.createElement('style'); this.skinEl.textContent = mgrCss(this.mgr);
+    this.shadow.insertBefore(this.skinEl, this.shadow.firstChild);
+    if (def.styles && !Array.isArray(def.styles)) { const own = this.doc.createElement('style'); own.textContent = compileSkin({ styles: def.styles }); this.shadow.appendChild(own); }
     this.shadow.appendChild(this.rootEl);
     if (def.theme) for (const [k, v] of Object.entries(def.theme)) this.host.style.setProperty(k.startsWith('--') ? k : `--nord-${k}`, v);
     const frag = this.doc.createDocumentFragment();
@@ -231,7 +309,10 @@ class Screen {
     let el;
     switch (t) {
       case 'button': el = d.createElement('button'); el.type = 'button'; break;
-      case 'image': el = d.createElement('img'); el.src = def.src ?? ''; el.alt = def.alt ?? ''; el.draggable = false; if (def.fit) el.style.objectFit = def.fit; break;
+      case 'image':
+        if (def.slice || ['tile', 'stretch', 'slice', 'center'].includes(def.mode)) el = d.createElement('div'); // sliced/tiled images are CSS backgrounds
+        else { el = d.createElement('img'); el.src = def.src ?? ''; el.alt = def.alt ?? ''; el.draggable = false; if (def.fit || def.mode) el.style.objectFit = def.fit ?? (def.mode === 'fit' ? 'contain' : def.mode); }
+        break;
       case 'bar': el = d.createElement('div'); el.appendChild(d.createElement('i')); break;
       case 'slider': el = d.createElement('input'); el.type = 'range'; el.min = def.min ?? 0; el.max = def.max ?? 1; el.step = def.step ?? 0.01; el.value = def.value ?? 0; break;
       case 'input':
@@ -256,6 +337,7 @@ class Screen {
     const n = new Node(this, def, el, parent);
     if (def.name) { if (!this.byName.has(def.name)) this.byName.set(def.name, n); }
     this._style(el, def, parent);
+    { const base = this.mgr.assetBase; const img = t === 'image' ? (def.slice || ['tile', 'stretch', 'slice', 'center'].includes(def.mode) ? def : null) : def.image; for (const [k, v] of imageDecl(img, base)) el.style.setProperty(k, v); }
     if (def.text !== undefined) { this._setText(n, def.text); this._watch(n, def); } else if (def.bind) this._watch(n, def);
     if (t === 'bar') n.value = def.value ?? 1;
     if (def.color) n.color = def.color;
@@ -303,15 +385,26 @@ const pick = (o, ks) => { const r = {}; for (const k of ks) if (o[k] !== undefin
 
 /** UI manager for one container (page root or the game overlay). */
 export class UIManager {
-  constructor(container, { doc = globalThis.document, t, events, onSound, fetch: f = globalThis.fetch?.bind(globalThis), base = '' } = {}) {
-    this.container = container; this.doc = doc; this.t = t; this.events = events; this.onSound = onSound; this._fetch = f; this.base = base;
+  constructor(container, { doc = globalThis.document, t, events, onSound, fetch: f = globalThis.fetch?.bind(globalThis), base = '', assetBase = '', skin } = {}) {
+    this.container = container; this.doc = doc; this.t = t; this.events = events; this.onSound = onSound; this._fetch = f; this.base = base; this.assetBase = assetBase;
     this.screens = new Map(); this._resolved = new Map(); this._defs = new Map();
+    if (skin && typeof skin === 'object') { this.skinCss = compileSkin(skin, assetBase); }
+    this._skinReady = typeof skin === 'string' ? this.useSkin(skin) : null;
+  }
+  /** Apply a skin ({ tokens, styles } object or .json url) to every screen, now and later. Switch skins at runtime by calling it again. */
+  async useSkin(src) {
+    const key = typeof src === 'string' ? src : null;
+    const skin = typeof src === 'string' ? await this._def(src, true) : src;
+    if (key && key === this.skinKey) return this;
+    this.skinKey = key; this.skinCss = compileSkin(skin, this.assetBase);
+    for (const sc of this.screens.values()) sc.skinEl.textContent = this.skinCss;
+    return this;
   }
   /** Register a UI definition under a name so `instance` nodes and `load('name')` can find it. */
   define(name, def) { this._defs.set(name, def); return this; }
-  async _def(src) {
+  async _def(src, fresh = false) {
     if (typeof src === 'object') return src;
-    if (this._defs.has(src)) return this._defs.get(src);
+    if (!fresh && this._defs.has(src)) return this._defs.get(src);
     if (!this._fetch) throw new Error('nord-ui: no fetch available');
     const r = await this._fetch(this.base + src);
     if (!r.ok) throw new Error(`nord-ui: cannot load ${src} (${r.status})`);
@@ -323,7 +416,9 @@ export class UIManager {
   /** Load a .ui.json (url, registered name or object) and show it. Resolves instance nodes first. */
   async load(src, opts = {}) {
     const def = await this._def(src);
+    await this._skinReady;
     await this._preload(def.root);
+    if (def.skin) await this.useSkin(def.skin);
     const s = this.build(def, { name: typeof src === 'string' && !opts.name ? def.name ?? src : undefined, ...opts });
     await s.ready;
     return s;

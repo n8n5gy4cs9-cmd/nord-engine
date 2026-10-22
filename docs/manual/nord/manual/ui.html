@@ -34,15 +34,26 @@ menu.$('score').text = 'Score 12';                    // any node, by the name y
 menu.set('hp', 0.5);                                  // fills {hp} placeholders and bound bars</code></pre>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>A UI file is a tree of boxes. A <strong>vbox</strong> stacks things top to bottom, an <strong>hbox</strong> left to right, and an <strong>anchor</strong> pins a box to a corner or the centre. Give a button an <em>Action</em> name; your code listens for that name. You never hunt for buttons in the page.</p>
 </aside><ul>
-<li><strong>Nodes:</strong> panel, vbox, hbox, grid, center, scroll, label, button, image, bar, slider, input, checkbox, select, spacer, html, instance (another UI file inside this one).</li>
-<li><strong>Text:</strong> labels support <code>{placeholders}</code>, <code>@translation.keys</code>, and safe rich text <code>[b] [i] [u] [color=#f7d89b] [size=28] [br]</code>.</li>
-<li><strong>Both directions:</strong> UI → code with action names (also emitted as <code>ui:&lt;action&gt;</code> on <code>game.events</code>, so event sheets can react); code → UI with node handles (<code>text value checked visible disabled color index set() on() add() clear()</code>).</li>
-<li><strong>Themes:</strong> a UI file can carry its own colours (<code>theme</code>), or inherit the project&#39;s skin and theme.</li>
-<li><strong>Fast:</strong> each screen is one isolated shadow root; text is only touched when it changes.</li>
-<li><strong>Fallback:</strong> the older <code>ui.label()/button()/menu()</code> calls and your own HTML keep working; use an <code>html</code> node for a custom corner.</li>
-<li><strong>3D world:</strong> <code>game.gui.scene(def, { entity })</code> builds the same file as Babylon GUI floating over an entity.</li>
+<li><p><strong>Nodes:</strong> panel, vbox, hbox, grid, center, scroll, label, button, image, bar, slider, input, checkbox, select, spacer, html, instance (another UI file inside this one).</p>
+</li>
+<li><p><strong>Text:</strong> labels support <code>{placeholders}</code>, <code>@translation.keys</code>, and safe rich text <code>[b] [i] [u] [color=#f7d89b] [size=28] [br]</code>.</p>
+</li>
+<li><p><strong>Both directions:</strong> UI → code with action names (also emitted as <code>ui:&lt;action&gt;</code> on <code>game.events</code>, so event sheets can react); code → UI with node handles (<code>text value checked visible disabled color index set() on() add() clear()</code>).</p>
+</li>
+<li><p><strong>Themes:</strong> a UI file can carry its own colours (<code>theme</code>), or inherit the project&#39;s skin and theme.</p>
+</li>
+<li><p><strong>Fast:</strong> each screen is one isolated shadow root; text is only touched when it changes.</p>
+</li>
+<li><p><strong>Fallback:</strong> the older <code>ui.label()/button()/menu()</code> calls and your own HTML keep working; use an <code>html</code> node for a custom corner.</p>
+</li>
+<li><p><strong>3D world:</strong> <code>game.gui.scene(def, { entity })</code> builds the same file as Babylon GUI floating over an entity.</p>
+</li>
+<li><p><strong>Skins (one style for every button):</strong> a skin file of rules named by type (<code>button</code>), class (<code>.danger</code>), id or descendants, with <code>extends</code>, <code>hover</code>/<code>pressed</code>/<code>disabled</code> states and <code>$tokens</code>. Apply it once with <code>ui.useSkin(&#39;ui/skin.json&#39;)</code>; swap it later to re-theme everything.</p>
+</li>
+<li><p><strong>Images and 9-slice:</strong> any node can take an <code>image</code> (<code>fit</code>, <code>cover</code>, <code>stretch</code>, <code>tile</code>, or <code>slice</code> with <code>[left, top, right, bottom]</code> borders in source pixels, like Unity&#39;s <em>Sliced</em> or Godot&#39;s NinePatchRect). The Designer has a drag-the-guides 9-slice editor and a Styles tab.</p>
+</li>
 </ul>
-<p>Full format and API: <code>docs/UI_SCENES.md</code>. Step by step: <a href="../tutorials/tut-t44-ui-designer.html">T44 UI Designer</a>; a finished game using it: <a href="../tutorials/tut-t38-coastline-sprint.html">T38 Coastline Sprint</a>.</p>
+<p>Full format and API: <code>docs/UI_SCENES.md</code>. Step by step: <a href="../tutorials/tut-t44-ui-designer.html">T44 UI Designer</a>; styles and 9-slice: <a href="../tutorials/tut-t45-ui-skins-9slice.html">T45</a>; a finished game using it: <a href="../tutorials/tut-t38-coastline-sprint.html">T38 Coastline Sprint</a>.</p>
 <h2 id="ui-as-components">UI as components<a class="anchor" href="#ui-as-components">#</a></h2>
 <p><code>uiPanel</code>, <code>uiLabel</code>, <code>uiImage</code>, <code>uiBar</code>, <code>uiButton</code> put the same widgets into the scene file so the <strong>editor can lay them out</strong>. A <code>uiButton</code> with <code>event: &quot;start-game&quot;</code> emits that name on <code>game.events</code> when clicked.</p>
 <h2 id="themes-and-skins">Themes and skins<a class="anchor" href="#themes-and-skins">#</a></h2>

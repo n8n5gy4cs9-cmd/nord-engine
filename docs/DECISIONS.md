@@ -179,3 +179,11 @@ Wry 0.50.5 omits WebKit's host pointer-lock callback, so native FPS games always
 
 **Consequences.** Menus become editable data and tutorials teach `createUI(...).load()`. The editor file API now allows writing `ui/`. Existing `game.ui` widgets are unchanged.
 
+## ADR-031 UI skins and 9-slice images (2026-10-22)
+
+**Context.** Owner wanted shared button styles ("style-1, style-2?") and Unity-style image/9-slice UI, cloning proven code where possible. Unity's C# reference repo (`unity-technologies/unitycsreference`) is published under a reference-only licence: it may be read but not copied, so nothing was taken from it (see `docs/UPSTREAM.md`).
+
+**Decision.** Styles are a CSS-like JSON skin (`tokens` + `styles`: type/class/id/descendant selectors, `extends`, nested states, `$token` values, `image`) compiled to one `<style>` per screen by `compileSkin`; applied with `ui.useSkin()` or `"skin"` in a `.ui.json`. Images use native CSS: `border-image` for 9-slice, `background` for stretch/tile/fit. Concepts mirror Unity (Sprite border, Image Type Sliced, USS selectors/pseudo-classes) and Godot (NinePatchRect margins), implemented from scratch on browser features. No dependency added.
+
+**Consequences.** One rule restyles every button; variants are named classes, not numbered slots. Slicing costs nothing per frame. Atlas sub-rects are not supported yet (use one PNG per slice image).
+

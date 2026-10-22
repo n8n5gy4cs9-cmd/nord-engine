@@ -17,6 +17,7 @@
   <span class="sep"></span>
   <label>Preview <select id="size"><option value="960x540">960×540</option><option value="1280x720">1280×720</option><option value="390x844">Phone 390×844</option><option value="1920x1080">1920×1080</option></select></label>
   <label>Theme <select id="theme"></select></label>
+  <label>Skin <select id="skin"><option value="">None</option><option value="assets/ui/skin/pixel.skin.json">Pixel (sample)</option><option value="ui/skin.json">Project ui/skin.json</option></select></label>
   <span id="status"></span>
 </header>
 <main>
@@ -26,8 +27,9 @@
   </aside>
   <section id="center"><div id="stageWrap"><div id="stage"></div></div></section>
   <aside id="right">
-    <div class="tabs"><button data-tab="props" class="on">Properties</button><button data-tab="json">JSON</button></div>
+    <div class="tabs"><button data-tab="props" class="on">Properties</button><button data-tab="json">JSON</button><button data-tab="styles">Styles</button></div>
     <div id="props"></div>
+    <div id="stylesBox" hidden><p>Shared rules for every node: type names (<code>button</code>), classes (<code>.danger</code>), states (<code>hover</code> <code>pressed</code> <code>disabled</code>), tokens (<code>$accent</code>), <code>extends</code> and <code>image</code> with 9-slice.</p><input id="skinFile" placeholder="ui/skin.json" spellcheck="false"><textarea id="skinJson" spellcheck="false"></textarea><div class="acts"><button id="skinLoad">Load</button><button id="skinApply">Apply</button><button id="skinSave" class="pri">Save skin</button></div></div>
     <div id="jsonBox" hidden><textarea id="json" spellcheck="false"></textarea><button id="applyJson">Apply JSON</button></div>
   </aside>
 </main>

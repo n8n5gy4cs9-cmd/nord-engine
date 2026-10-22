@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 282/295 tasks (96%)** · updated 2026-10-22
+**Overall: 283/296 tasks (96%)** · updated 2026-10-22
 
 | Milestone | Progress |
 |---|---|
@@ -15,7 +15,7 @@
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 51/51 (100%) |
 | M7 Docs | 31/31 (100%) |
-| M8 Polish & portability | 21/26 (81%) |
+| M8 Polish & portability | 22/27 (81%) |
 | M9 Desktop apps | 16/16 (100%) |
 | M10 Construct-style editor | 35/35 (100%) |
 | M11 Web editor | 14/16 (88%) |
@@ -260,6 +260,7 @@ _dmg, CI, Windows, Linux, perf_
 - [x] **M8-24** Allow audio-only asset generation without importing Linux-only Chromium documentation renderer
 - [x] **M8-25** Dependable scene restart resets paused/time/input and saved scene state with explicit Persist opt-in
 - [x] **M8-26** UI scenes: .ui.json runtime, UI Designer tab, Babylon GUI bridge, docs + tutorials
+- [x] **M8-27** UI skins (shared styles) + 9-slice images + Designer skin/slice editor
 
 ## M9 — Desktop apps
 _real native desktop apps (Rust backend): files, dialogs, notifications, tray, windows, storage, packaging_

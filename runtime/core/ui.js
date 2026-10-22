@@ -112,6 +112,8 @@ export class UI {
   get scenes() { return (this._mgr ??= new UIManager(this.root, { doc: this.doc, onSound: this.onSound, events: this.events, t: this.t })); }
   load(src, opts) { return this.scenes.load(src, opts); }
   build(def, opts) { return this.scenes.build(def, opts); }
+  /** Apply one UI style sheet ({ tokens, styles } or a .skin.json url) to every UI scene — see docs/UI_SCENES.md. */
+  useSkin(skin) { return this.scenes.useSkin(skin); }
   clear(screen) { const s = this.screens.get(screen); if (s) for (const c of [...s.children]) c.remove(); }
   destroy() { this.root.remove(); this.screens.clear(); }
 }
