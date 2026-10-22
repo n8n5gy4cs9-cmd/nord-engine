@@ -78,6 +78,8 @@ pub struct Settings {
     pub snap_rot: f64,
     pub snap_scale: f64,
     pub grid: bool,
+    /// Assets panel ★ favourites (project-relative paths)
+    pub asset_favorites: Vec<String>,
     pub window: Option<[f32; 4]>, // x, y, w, h
     /// Unity-style feedback: tint the whole editor while the game is playing / a Rust game is compiling
     pub tint: bool,
@@ -116,6 +118,7 @@ impl Default for Settings {
             snap_rot: 15.0,
             snap_scale: 0.1,
             grid: true,
+            asset_favorites: vec![],
             window: None,
             tint: true,
             play_tint: [34, 56, 96],

@@ -63,6 +63,7 @@ pub fn asset_matches(kind: &str, a: &Asset) -> bool {
         "audio" => a.kind == AssetType::Audio,
         "model" => a.kind == AssetType::Model,
         "prefab" => a.kind == AssetType::Prefab,
+        "material" => a.kind == AssetType::Material,
         "json" => matches!(
             a.kind,
             AssetType::Json | AssetType::Prefab | AssetType::Scene
@@ -352,7 +353,136 @@ fn fields_ui(
     ch
 }
 
+/// Inspector for a selected `*.mat.json` asset: the Material component's fields, saved straight back to the file.
+fn material_asset_ui(st: &mut EditorState, ui: &mut Ui, rel: &str) {
+    let Some(root) = st.root.clone() else { return };
+    let path = root.join(rel);
+    let mut data: Map<String, Value> = nord_core::vfs::read_to_string(&path)
+        .ok()
+        .and_then(|t| serde_json::from_str(&t).ok())
+        .unwrap_or_default();
+    ui.label(egui::RichText::new(format!("MATERIAL  {rel}")).strong());
+    ui.separator();
+    let fields: Vec<Field> = schema::component_fields("material")
+        .into_iter()
+        .filter(|f| f.name != "asset")
+        .collect();
+    let assets = st.assets.clone();
+    let cx = Ctx {
+        assets: &assets,
+        entities: vec![],
+    };
+    let mut ch = false;
+    egui::ScrollArea::vertical().show(ui, |ui| {
+        ch = fields_ui(ui, &cx, &fields, &mut data, "matasset", None);
+        ui.separator();
+        draw_material_preview(ui, &data);
+    });
+    if ch {
+        if let Ok(t) = serde_json::to_string_pretty(&data) {
+            let _ = nord_core::vfs::write(&path, t + "\n");
+            st.rev += 1; // games and viewports reload shared materials with the scene
+        }
+    }
+}
+
+/// Flat colour swatch + a shaded sphere approximation (no GPU needed): base colour, roughness as highlight size.
+fn draw_material_preview(ui: &mut Ui, data: &Map<String, Value>) {
+    let hex = data
+        .get("color")
+        .and_then(Value::as_str)
+        .unwrap_or("#cccccc");
+    let c = crate::theme::hex(hex);
+    let rough = data.get("roughness").and_then(Value::as_f64).unwrap_or(0.8) as f32;
+    let metal = data.get("metallic").and_then(Value::as_f64).unwrap_or(0.0) as f32;
+    let (rect, _) = ui.allocate_exact_size(egui::vec2(120.0, 120.0), egui::Sense::hover());
+    let p = ui.painter_at(rect);
+    let (ctr, r) = (rect.center(), 54.0);
+    let base = c.gamma_multiply(1.0 - 0.45 * metal);
+    p.circle_filled(ctr, r, base.gamma_multiply(0.55));
+    for k in 1..=10 {
+        let t = k as f32 / 10.0;
+        let off = egui::vec2(-0.28, -0.32) * r * t;
+        p.circle_filled(
+            ctr + off,
+            r * (1.0 - 0.8 * t),
+            base.gamma_multiply(0.55 + 0.45 * t),
+        );
+    }
+    let hl = (1.0 - rough).clamp(0.05, 1.0);
+    p.circle_filled(
+        ctr + egui::vec2(-0.32, -0.36) * r,
+        r * 0.22 * hl + 2.0,
+        egui::Color32::from_white_alpha((200.0 * hl) as u8 + 20),
+    );
+}
+
+/// Import settings for a selected image: `filter` and `wrap` in the sidecar `<file>.meta.json` (read by the Phaser and Babylon backends).
+fn texture_import_ui(st: &mut EditorState, ui: &mut Ui, rel: &str) {
+    let Some(root) = st.root.clone() else { return };
+    let path = root.join(format!("{rel}.meta.json"));
+    let mut meta: Map<String, Value> = nord_core::vfs::read_to_string(&path)
+        .ok()
+        .and_then(|t| serde_json::from_str(&t).ok())
+        .unwrap_or_default();
+    ui.label(egui::RichText::new(format!("TEXTURE IMPORT  {rel}")).strong());
+    ui.separator();
+    let mut ch = false;
+    egui::Grid::new("tex-import").num_columns(2).show(ui, |ui| {
+        for (key, label, opts, def) in [
+            ("filter", "Filter", ["linear", "nearest"], "linear"),
+            ("wrap", "Wrap", ["repeat", "clamp"], "repeat"),
+        ] {
+            ui.label(label);
+            let mut cur = meta
+                .get(key)
+                .and_then(Value::as_str)
+                .unwrap_or(def)
+                .to_string();
+            egui::ComboBox::from_id_salt(key)
+                .selected_text(cur.clone())
+                .show_ui(ui, |ui| {
+                    for o in opts {
+                        ch |= ui.selectable_value(&mut cur, o.to_string(), o).changed();
+                    }
+                });
+            if ch {
+                meta.insert(key.into(), json!(cur));
+            }
+            ui.end_row();
+        }
+    });
+    ui.weak("Filter nearest = crisp pixels. Pixels-per-unit, pivot and max size: planned (G4-4).");
+    if ch {
+        if let Ok(t) = serde_json::to_string_pretty(&meta) {
+            let _ = nord_core::vfs::write(&path, t + "\n");
+            st.refresh_assets();
+            st.toast("Import settings saved — reload the game to apply");
+        }
+    }
+}
+
 pub fn ui(st: &mut EditorState, ui: &mut Ui) {
+    if st.selection.is_empty() {
+        if let Some(rel) = st.assets_ui.selected.clone().filter(|r| {
+            matches!(
+                nord_core::assets::classify(r),
+                AssetType::Image | AssetType::Spritesheet
+            )
+        }) {
+            texture_import_ui(st, ui, &rel);
+            return;
+        }
+        if let Some(rel) = st
+            .assets_ui
+            .selected
+            .clone()
+            .filter(|r| r.ends_with(".mat.json"))
+        {
+            material_asset_ui(st, ui, &rel);
+            return;
+        }
+    }
     let Some(inst) = st.selected().cloned() else {
         ui.weak(if st.scene.is_some() {
             "Select an entity"

@@ -814,6 +814,7 @@ impl App {
             ui.menu_button("Assets", |ui| {
                 for (label, k) in [
                     ("Create ▸ Folder", "folder"),
+                    ("Create ▸ Material", "material"),
                     ("Create ▸ Script", "script"),
                     ("Create ▸ MonoBehaviour script", "mono"),
                     ("Create ▸ Singleton script", "singleton"),

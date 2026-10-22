@@ -88,7 +88,15 @@ export class Backend {
   /** Texture by project path (cached; honours inlined file:// bundles through the loader). */
   texture(path, { srgb = true } = {}) {
     const k = `${path}:${srgb}`;
-    if (!this.textures.has(k)) this.textures.set(k, new this.B.Texture(this.game.loader.url(path), this.scene, false, true, this.B.Texture.TRILINEAR_SAMPLINGMODE, null, null, null, false, null));
+    if (!this.textures.has(k)) {
+      const t = new this.B.Texture(this.game.loader.url(path), this.scene, false, true, this.B.Texture.TRILINEAR_SAMPLINGMODE, null, null, null, false, null);
+      this.textures.set(k, t);
+      // import settings from the sidecar <asset>.meta.json: filter 'nearest', wrap 'clamp'
+      this.game.loader.meta?.(path).then((m) => {
+        if (m?.filter === 'nearest') t.updateSamplingMode(this.B.Texture.NEAREST_SAMPLINGMODE);
+        if (m?.wrap === 'clamp') { t.wrapU = t.wrapV = this.B.Texture.CLAMP_ADDRESSMODE; }
+      }).catch(() => {});
+    }
     return this.textures.get(k);
   }
 

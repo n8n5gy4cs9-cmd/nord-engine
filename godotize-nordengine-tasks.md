@@ -32,10 +32,10 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "â€
 - [ ] G3-4 Nested prefabs + prefab variants
 - [ ] G3-5 Overrides for children and added/removed components (not only field values)
 ## G4 Project, materials, import
-- [ ] G4-1 Project browser: thumbnails size slider, type/label filters, favourites, Find references
-- [ ] G4-2 Material assets `*.mat.json` + Inspector (colour, texture slots, tiling/offset, normal, emissive, shader)
-- [ ] G4-3 Material preview sphere/quad in Inspector and Project
-- [ ] G4-4 Texture import settings (filter, PPU, pivot, wrap, max size) + sprite slicing hand-off to Sprite editor
+- [x] G4-1 Project browser: thumbnail size slider + type filter (existed), â˜… favourites filter, Find references (context menu)
+- [x] G4-2 Material assets `*.mat.json` + Inspector (colour, textures, tiling/offset, normal, emissive; no custom shader yet), Babylon runtime loads them
+- [~] G4-3 Material preview: flat-shaded sphere approximation in the Inspector; real lit preview and Project thumbnails todo
+- [~] G4-4 Texture import: filter + wrap (Inspector, sidecar meta, Phaser+Babylon); PPU, pivot, max size, Sprite-editor hand-off todo
 - [ ] G4-5 Change texture/material by dropping onto object or Inspector slot (Scene view and Hierarchy too)
 - [ ] G4-6 Model import settings (scale, materials remap)
 ## G5 Build and Game view
@@ -59,7 +59,7 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "â€
 - [ ] G7-6 In-editor "first 10 minutes" tutorial
 - [ ] G7-7 Signals: method picker from script source (finish M8-32)
 ## G8 Fix old things
-- [ ] G8-1 `nord-core schema::schemas_parse` (23 vs 22) fix
+- [x] G8-1 `nord-core schema::schemas_parse` (23 vs 22) fix
 - [ ] G8-2 Five strict-Clippy lints
 - [ ] G8-3 Playwright suites T36/T38/T40â€“T43 after UI conversion
 - [ ] G8-4 Walk KNOWN_ISSUES.md; close or document each; owner-only items listed

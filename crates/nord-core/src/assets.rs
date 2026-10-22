@@ -9,6 +9,8 @@ use std::path::{Path, PathBuf};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum AssetType {
+    /// `*.mat.json`: shared material (colour, textures, tiling…)
+    Material,
     Image,
     Spritesheet,
     Audio,
@@ -28,6 +30,9 @@ pub fn classify(path: &str) -> AssetType {
     }
     if l.ends_with(".scene.json") {
         return AssetType::Scene;
+    }
+    if l.ends_with(".mat.json") {
+        return AssetType::Material;
     }
     match l.rsplit('.').next().unwrap_or("") {
         "png" | "jpg" | "jpeg" | "gif" | "webp" | "svg" | "avif" => AssetType::Image,
@@ -129,6 +134,7 @@ mod tests {
     fn classify_and_scan() {
         assert_eq!(classify("a/b.PNG"), AssetType::Image);
         assert_eq!(classify("x.prefab.json"), AssetType::Prefab);
+        assert_eq!(classify("m/red.mat.json"), AssetType::Material);
         let d = std::env::temp_dir().join(format!("nord-assets-{}", std::process::id()));
         let _ = crate::vfs::remove_dir_all(&d);
         crate::vfs::create_dir_all(d.join("assets/s")).unwrap();

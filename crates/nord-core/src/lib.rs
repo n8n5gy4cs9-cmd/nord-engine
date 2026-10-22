@@ -59,7 +59,7 @@ pub mod schema {
                 .as_array()
                 .unwrap()
                 .len(),
-            22
+            23
         );
     }
 }

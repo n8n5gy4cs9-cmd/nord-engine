@@ -23,6 +23,8 @@ pub struct AssetsUi {
     /// list view (rows) instead of the thumbnail grid
     pub list: bool,
     pub kind_filter: Option<AssetType>,
+    /// show only ★ favourites
+    pub only_favorites: bool,
     pub rename: Option<(String, String)>,
     pub confirm_delete: Option<String>,
     /// last clicked entry (F2 rename, Delete, Ctrl/Cmd+D duplicate act on it)
@@ -64,6 +66,7 @@ impl Default for AssetsUi {
             size: 84.0,
             list: false,
             kind_filter: None,
+            only_favorites: false,
             rename: None,
             confirm_delete: None,
             selected: None,
@@ -156,6 +159,8 @@ pub fn import_files(st: &mut EditorState, files: &[PathBuf]) {
 
 const BLANK_UI: &str = "{\n  \"version\": 1,\n  \"name\": \"screen\",\n  \"theme\": {},\n  \"root\": { \"type\": \"panel\", \"name\": \"root\", \"anchor\": \"fill\", \"style\": { \"background\": \"none\", \"border\": \"none\", \"boxShadow\": \"none\", \"padding\": 0 }, \"children\": [] }\n}\n";
 const BLANK_GRAPH: &str = "{\n \"last_node_id\": 1,\n \"last_link_id\": 0,\n \"nodes\": [{ \"id\": 1, \"type\": \"event/start\", \"pos\": [60, 80], \"size\": [200, 60], \"flags\": {}, \"order\": 0, \"mode\": 0, \"inputs\": [], \"outputs\": [{ \"name\": \"then\", \"type\": \"exec\", \"links\": null, \"shape\": 5 }], \"properties\": {} }],\n \"links\": [],\n \"groups\": [],\n \"config\": {},\n \"extra\": {},\n \"version\": 0.4,\n \"nord\": { \"version\": 1, \"vars\": {} }\n}\n";
+pub const NEW_MATERIAL: &str =
+    "{\n  \"color\": \"#cccccc\",\n  \"metallic\": 0,\n  \"roughness\": 0.8,\n  \"alpha\": 1\n}\n";
 const MONO_SCRIPT: &str = "import { MonoBehaviour, SerializeField, Vector3, Time, UnityInput as Input } from 'nord';\n\n// Unity-style script: Awake/Start/Update/FixedUpdate/LateUpdate/OnEnable/OnDisable/OnDestroy, OnCollisionEnter, OnTriggerEnter.\nexport default class extends MonoBehaviour {\n  static attributes = SerializeField({ speed: 5 });\n\n  Awake() {}\n  Start() {}\n  Update() {\n    const h = Input.GetAxis('Horizontal');\n    this.Translate(h * this.speed * Time.deltaTime);\n  }\n}\n";
 const SINGLETON_SCRIPT: &str = "import { Singleton } from 'nord';\n\n// Use anywhere:  MyService.instance.doThing()   (add this script to ONE entity)\nexport default class MyService extends Singleton {\n  static persistent = false; // true = survives scene loads\n\n  Awake() {}\n  doThing() { this.log('hello'); }\n}\n";
 const MANAGER_SCRIPT: &str = "import { GameManager } from 'nord';\n\n// Score, lives, state, pause and scene loading, persistent across scenes.\n//   GameManager.instance.AddScore(10);  GameManager.instance.LoseLife();  GameManager.instance.LoadScene('scenes/menu.scene.json')\n// Events on game.events: score, lives, state, gameover.\nexport default class extends GameManager {}\n";
@@ -175,6 +180,9 @@ const OP_NEW_SCRIPT: u8 = 9;
 const OP_IMPORT: u8 = 10;
 const OP_REFRESH: u8 = 11;
 const OP_NEW_GRAPH: u8 = 12;
+const OP_NEW_MATERIAL: u8 = 16;
+const OP_FAVORITE: u8 = 17;
+const OP_FIND_REFS: u8 = 18;
 const OP_NEW_MONO: u8 = 13;
 const OP_NEW_SINGLETON: u8 = 14;
 const OP_NEW_MANAGER: u8 = 15;
@@ -206,6 +214,7 @@ fn entry_menu(ui: &mut Ui, e: &Entry, out: &mut Option<(Entry, u8)>) {
         item(ui, "New folder", OP_NEW_FOLDER);
         item(ui, "New UI scene (.ui.json)", OP_NEW_UI);
         item(ui, "New script (.js)", OP_NEW_SCRIPT);
+        item(ui, "New material (.mat.json)", OP_NEW_MATERIAL);
         item(ui, "New MonoBehaviour script (Unity-style)", OP_NEW_MONO);
         item(ui, "New Singleton script", OP_NEW_SINGLETON);
         item(ui, "New GameManager script", OP_NEW_MANAGER);
@@ -217,6 +226,10 @@ fn entry_menu(ui: &mut Ui, e: &Entry, out: &mut Option<(Entry, u8)>) {
         item(ui, "Duplicate   ⌘/Ctrl+D", OP_DUP);
         item(ui, "Delete   Del", OP_DELETE);
         ui.separator();
+    }
+    if !e.is_dir {
+        item(ui, "★ Favourite on/off", OP_FAVORITE);
+        item(ui, "Find references", OP_FIND_REFS);
     }
     item(ui, reveal_label(), OP_REVEAL);
     item(ui, "Copy path", OP_COPY_PATH);
@@ -315,6 +328,14 @@ pub fn create_asset(st: &mut EditorState, kind: &str) {
     match kind {
         "folder" => create_in(st, &root, &dir, "folder", "", None),
         "script" => create_in(st, &root, &dir, "new-script", "js", Some(NEW_SCRIPT)),
+        "material" => create_in(
+            st,
+            &root,
+            &dir,
+            "new-material",
+            "mat.json",
+            Some(NEW_MATERIAL),
+        ),
         "mono" => create_in(st, &root, &dir, "new-behaviour", "js", Some(MONO_SCRIPT)),
         "singleton" => create_in(
             st,
@@ -377,6 +398,27 @@ fn handle_op(st: &mut EditorState, ui: &Ui, root: &Path, e: Entry, op: u8) {
         OP_NEW_FOLDER => create_in(st, root, &e.rel, "folder", "", None),
         OP_NEW_UI => create_in(st, root, &e.rel, "new-screen", "ui.json", Some(BLANK_UI)),
         OP_NEW_SCRIPT => create_in(st, root, &e.rel, "new-script", "js", Some(NEW_SCRIPT)),
+        OP_FAVORITE => {
+            let f = &mut st.settings.asset_favorites;
+            if let Some(i) = f.iter().position(|p| *p == e.rel) {
+                f.remove(i);
+            } else {
+                f.push(e.rel.clone());
+            }
+            st.settings.save();
+        }
+        OP_FIND_REFS => {
+            st.project_ui.find = e.rel.clone();
+            st.push(Action::ShowTab(crate::app::Tab::Project));
+        }
+        OP_NEW_MATERIAL => create_in(
+            st,
+            root,
+            &e.rel,
+            "new-material",
+            "mat.json",
+            Some(NEW_MATERIAL),
+        ),
         OP_NEW_MONO => create_in(st, root, &e.rel, "new-behaviour", "js", Some(MONO_SCRIPT)),
         OP_NEW_SINGLETON => create_in(
             st,
@@ -555,6 +597,7 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
                     AssetType::Audio,
                     AssetType::Model,
                     AssetType::Prefab,
+                    AssetType::Material,
                     AssetType::Scene,
                     AssetType::Json,
                     AssetType::Font,
@@ -562,6 +605,14 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
                     ui.selectable_value(&mut st.assets_ui.kind_filter, Some(k), format!("{k:?}"));
                 }
             });
+        let fav = st.assets_ui.only_favorites;
+        if ui
+            .selectable_label(fav, "★")
+            .on_hover_text("Show only favourites (right-click an asset ▸ Favourite)")
+            .clicked()
+        {
+            st.assets_ui.only_favorites = !fav;
+        }
         let list = st.assets_ui.list;
         if icons::button(ui, "layout-grid", "Grid view", !list).clicked() {
             st.assets_ui.list = false;
@@ -617,9 +668,12 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
             })
             .collect();
     }
+    let only_fav = st.assets_ui.only_favorites;
+    let favs = st.settings.asset_favorites.clone();
     let entries: Vec<Entry> = entries
         .into_iter()
         .filter(|e| filter.is_none_or(|k| e.is_dir || e.kind == k))
+        .filter(|e| !only_fav || e.is_dir || favs.contains(&e.rel))
         .collect();
     let cell = st.assets_ui.size;
     let as_list = st.assets_ui.list;
@@ -737,6 +791,11 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
                     let resp = resp.on_hover_text(&e.rel);
                     if resp.clicked() || resp.secondary_clicked() {
                         st.assets_ui.selected = Some(e.rel.clone());
+                        if e.rel.ends_with(".mat.json")
+                            || matches!(e.kind, AssetType::Image | AssetType::Spritesheet)
+                        {
+                            st.selection.clear(); // the Inspector now shows the material asset
+                        }
                     }
                     if resp.double_clicked() {
                         open = Some(e.clone());
@@ -886,6 +945,7 @@ fn kind_icon(k: AssetType, dir: bool) -> &'static str {
         AssetType::Audio => "music",
         AssetType::Model => "box",
         AssetType::Scene => "map",
+        AssetType::Material => "circle",
         AssetType::Prefab => "package",
         AssetType::Video => "film",
         AssetType::Font => "type",

@@ -21,7 +21,11 @@ export function registerBabylonComponents(backend) {
       if (d.normalMap) m.bumpTexture = backend.texture(d.normalMap, { srgb: false });
       if (d.emissive) m.emissiveColor = rgb(B, d.emissive);
     }
-    for (const t of [m.albedoTexture, m.bumpTexture, m.emissiveTexture]) if (t && d.uvScale) { t.uScale = d.uvScale[0]; t.vScale = d.uvScale[1]; }
+    for (const t of [m.albedoTexture, m.bumpTexture, m.emissiveTexture]) {
+      if (!t) continue;
+      if (d.uvScale) { t.uScale = d.uvScale[0]; t.vScale = d.uvScale[1]; }
+      if (d.uvOffset) { t.uOffset = d.uvOffset[0]; t.vOffset = d.uvOffset[1]; }
+    }
     if ((d.alpha ?? 1) < 1) { m.alpha = d.alpha; m.transparencyMode = B.Material.MATERIAL_ALPHABLEND; }
     if (d.doubleSided) m.backFaceCulling = false;
     return m;
@@ -42,7 +46,16 @@ export function registerBabylonComponents(backend) {
   };
 
   registerComponent('material', {
-    create(e, d, comp) { comp.mat = buildMaterial(d, `${e.name}.mat`); applyMaterial(e); },
+    create(e, d, comp) {
+      comp.mat = buildMaterial(d, `${e.name}.mat`); applyMaterial(e);
+      // shared material asset (*.mat.json): its values replace the component's own once loaded
+      if (d.asset) {
+        backend.game.loadJSON(d.asset).then((m) => {
+          if (e.destroyed) return;
+          comp.data = { ...m, asset: d.asset }; comp.mat?.dispose(); comp.mat = buildMaterial(comp.data, `${e.name}.mat`); applyMaterial(e);
+        }).catch((err) => backend.game.warn(`[nord] material ${d.asset}: ${err?.message ?? err}`));
+      }
+    },
     set(comp, k, v) {
       comp.data[k] = v; const m = comp.mat;
       if (k === 'color') (m.albedoColor ?? m.emissiveColor).copyFrom(rgb(B, v));

@@ -112,6 +112,7 @@ pub fn kind_color(name: &str, fallback: Color32) -> Color32 {
         "lightbulb" => Color32::from_rgb(255, 214, 90),
         "type" => Color32::from_rgb(160, 180, 200),
         "component" => Color32::from_rgb(159, 179, 217),
+        "circle" => Color32::from_rgb(240, 120, 160),
         _ => fallback,
     }
 }

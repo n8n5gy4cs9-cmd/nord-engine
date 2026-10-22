@@ -10,6 +10,18 @@
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html" class="active" aria-current="page">Guides</a><a href="../api/api.html">API</a></nav></header>
 <div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Guides</div><details><summary>Guides</summary><a href="../guides/cookbook.html">Cookbook</a><a href="../guides/mobile-controls.html">Mobile and on-screen touch controls</a><a href="../guides/cheat-sheet-nordjs.html">Cheat sheet — nord.js</a><a href="../guides/cheat-sheet-export.html">Cheat sheet — export</a><a href="../guides/ui-scenes.html">UI scenes reference</a><a href="../guides/cheat-sheet-cli.html">Cheat sheet — command line</a><a href="../guides/glossary.html">Glossary</a><a href="../guides/graph-reference.html">Node graph reference</a><a href="../guides/shortcuts.html">Keyboard shortcuts</a><a href="../guides/cheat-sheet-fps-level.html">FPS Level — quick reference</a></details><details open><summary>Appendix</summary><a href="appendix.html">Appendix</a><a href="decisions.html">Design decisions</a><a href="known-issues.html">Known issues</a><a href="changelog.html" class="cur" aria-current="page">Changelog</a></details></nav><main id="content"><div class="crumb">Appendix / Nord Engine</div><h1>Changelog</h1>
 <ul>
+<li><p>2026-10-22 — Godotize G4 (part): material assets (<code>*.mat.json</code>, new asset type, Inspector editor + preview, <code>material.asset</code>, uvOffset), texture import filter/wrap (Inspector + Babylon), Assets ★ favourites + Find references; G8-1 schema test count fixed (23).</p>
+</li>
+<li><p>2026-10-22 — Godotize G3 (part): Create prefab (context menu or drag Hierarchy → Assets), Unpack / Unpack completely, Inspector <em>Apply all</em> writes overrides into the prefab file; unit + UI tests.</p>
+</li>
+<li><p>2026-10-22 — Godotize G9 finished: Scene view top bar with big Play button, orange collapse arrows, unit suffixes in the Inspector Transform, Library button in Assets. Not yet seen in the native window.</p>
+</li>
+<li><p>2026-10-22 — Godotize G9 (part): default &quot;PlayCanvas&quot; editor theme (blue-grey, orange accent, 2px corners; old Graphite default migrates), vertical tool rail, coloured type icons + filled amber folders, UPPERCASE panel/inspector headers, status bar with selection and entity count. Not yet seen in the native window.</p>
+</li>
+<li><p>2026-10-22 — Godotize G2 (part): Hierarchy Active checkbox + blue prefab names; Inspector component ⋮ menu (reset/copy/paste/move/remove/docs); searchable Add Component.</p>
+</li>
+<li><p>2026-10-22 — Godotize G10 Unity-style coding: <code>runtime/core/unity.js</code> (MonoBehaviour, Singleton, GameManager, AudioManager, Mathf, Vector2/3, Time, UnityInput, PlayerPrefs, SceneManager, coroutines, UnityEvent, EventBus, ScriptableObject, ObjectPool, SerializeField), script templates in Assets menus, manual section, 3 new core tests.</p>
+</li>
 <li><p>2026-10-22 — Godotize G1-1/3/4/5/6: Scene view navigation (Alt+LMB orbit/pan), Ctrl-snap, Local/Global + Pivot/Center toolbar toggles, multi-select with marquee + outlines, Frame all (Shift+F). Viewport JS not run in a browser yet (Playwright missing on this machine).</p>
 </li>
 <li><p>2026-10-22 — Godotize G0-2/G0-3 + G1-2: Unity menu bar (Assets, GameObject, Component, Window), Settings shortcut table, Q Hand / T Rect tools (keys, toolbar, 2D+3D viewport). New task group G10 (Unity-style coding helpers).</p>
