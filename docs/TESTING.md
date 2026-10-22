@@ -69,3 +69,5 @@ For T42/T43 run `node tools/desk-apps-test.mjs`: a focused smoke of drawing, Sav
 
 
 `node --test tools/tutorial-lessons.test.mjs` verifies complete T38–T43 teaching coverage: every main module/page/style/config, consecutive first-to-last source ranges, substantive explanations/exercises and published walkthrough consistency. The manual browser check also follows a file-navigation link and initializes its lesson CodeMirror before checking the original illustrations and full-source archive. This documentation-only teaching pass does not require rebuilding or rerunning the unchanged game engine.
+
+| Doc screenshots (editor panels) | `DUMP_SHOTS=$PWD/docs/screenshots cargo test -p nord-editor --test shots -- --ignored` (offscreen wgpu via egui_kittest; writes `ed-*.png`; webviews are not rendered) | G-docs |

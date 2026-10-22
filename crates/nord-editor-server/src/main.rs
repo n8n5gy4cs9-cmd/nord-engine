@@ -5,7 +5,11 @@ use nord_editor_server::{hash_password, parse_users, router, AuthMode, Config};
 use std::{net::SocketAddr, path::PathBuf, time::Duration};
 
 #[derive(Parser)]
-#[command(version, about = "Nord Engine editor in the browser: serves the web editor and a project API for several users", long_about = "Serves the wasm editor (build it with tools/build-web-editor.sh) and keeps projects in <workspace>/<user>/<project>.\nBinds 127.0.0.1 by default; put nginx/Caddy with TLS in front for remote use (see docs/WEB_EDITOR.md).\nBackups: the workspace folder is plain files — back it up with rsync/restic/ZFS snapshots.")]
+#[command(
+    version,
+    about = "Nord Engine editor in the browser: serves the web editor and a project API for several users",
+    long_about = "Serves the wasm editor (build it with tools/build-web-editor.sh) and keeps projects in <workspace>/<user>/<project>.\nBinds 127.0.0.1 by default; put nginx/Caddy with TLS in front for remote use (see docs/WEB_EDITOR.md).\nBackups: the workspace folder is plain files — back it up with rsync/restic/ZFS snapshots."
+)]
 struct Cli {
     #[command(subcommand)]
     cmd: Option<Cmd>,
@@ -77,7 +81,10 @@ async fn main() -> Result<()> {
     let a = cli.serve;
     let mut cfg = Config::new(a.workspace.clone());
     cfg.web = a.web.join("index.html").is_file().then(|| a.web.clone());
-    cfg.engine = a.engine.clone().or_else(|| std::env::var_os("NORD_ROOT").map(PathBuf::from));
+    cfg.engine = a
+        .engine
+        .clone()
+        .or_else(|| std::env::var_os("NORD_ROOT").map(PathBuf::from));
     cfg.nord_bin = a.nord.clone();
     cfg.quota_bytes = a.quota_mb << 20;
     cfg.max_upload = a.max_upload_mb << 20;
@@ -87,7 +94,8 @@ async fn main() -> Result<()> {
     cfg.secure_cookies = a.secure_cookies;
     let mut shown_token = None;
     cfg.auth = if let Some(f) = &a.users {
-        let users = parse_users(&std::fs::read_to_string(f).with_context(|| f.display().to_string())?);
+        let users =
+            parse_users(&std::fs::read_to_string(f).with_context(|| f.display().to_string())?);
         if users.is_empty() {
             bail!("{} has no valid `name:argon2-hash` lines", f.display());
         }
@@ -110,9 +118,14 @@ async fn main() -> Result<()> {
         AuthMode::Token(t)
     };
     if cfg.web.is_none() {
-        eprintln!("note: {} has no index.html — serving the API only (run tools/build-web-editor.sh)", a.web.display());
+        eprintln!(
+            "note: {} has no index.html — serving the API only (run tools/build-web-editor.sh)",
+            a.web.display()
+        );
     }
-    let listener = tokio::net::TcpListener::bind(a.listen).await.with_context(|| format!("cannot listen on {}", a.listen))?;
+    let listener = tokio::net::TcpListener::bind(a.listen)
+        .await
+        .with_context(|| format!("cannot listen on {}", a.listen))?;
     println!("Nord editor server on http://{}", listener.local_addr()?);
     println!("workspace: {}", a.workspace.display());
     if let Some(t) = shown_token {

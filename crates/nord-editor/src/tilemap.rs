@@ -294,7 +294,7 @@ mod tests {
         assert_eq!(
             terrains(&{
                 let mut x = json!({});
-                set_terrains(&mut x, &[t.clone()]);
+                set_terrains(&mut x, std::slice::from_ref(&t));
                 x
             }),
             vec![t]

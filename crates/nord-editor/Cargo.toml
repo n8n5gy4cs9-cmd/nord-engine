@@ -48,7 +48,7 @@ web-sys = { version = "0.3", features = ["Window", "Document", "Element", "HtmlE
 zip = { version = "2", default-features = false, features = ["deflate"] }
 
 [dev-dependencies]
-egui_kittest = { version = "0.31", default-features = false }
+egui_kittest = { version = "0.31", default-features = false, features = ["wgpu"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 objc2 = { version = "0.6", optional = true }

@@ -154,7 +154,7 @@ pub fn component_fields(kind: &str) -> Vec<Field> {
         "light" => "kind:enum(point|directional|spot|hemispheric)=\"point\" color:color intensity:number=1 radius:number=200 range:number=10 flicker:number castShadows:bool",
         "mesh" => "shape:enum(box|sphere|cylinder|plane|ground|capsule|torus)=\"box\" size:vec3 segments:int=24 castShadow:bool=true receiveShadow:bool=true",
         "model" => "path:asset(model) animation:string speed:number=1 shadow:bool unique:bool",
-        "material" => "asset:asset(material) color:color metallic:number roughness:number=0.8 texture:asset(image) normalMap:asset(image) emissive:color alpha:number=1 uvScale:vec2 uvOffset:vec2 doubleSided:bool unlit:bool",
+        "material" => "asset:asset(material) color:color metallic:number roughness:number=0.8 texture:asset(image) normalMap:asset(image) emissive:color alpha:number=1 uvScale:vec2=[1,1] uvOffset:vec2 doubleSided:bool unlit:bool",
         "rigidbody" => "mode:enum(dynamic|static|kinematic)=\"dynamic\" mass:number=1 drag:number=0.1 gravityScale:number=1 bounce:number",
         "collider" => "shape:enum(box|circle|sphere|capsule)=\"box\" size:vec3 radius:number offset:vec3 trigger:bool",
         "trigger" => "shape:enum(box|circle|sphere)=\"box\" size:vec3 radius:number offset:vec3",

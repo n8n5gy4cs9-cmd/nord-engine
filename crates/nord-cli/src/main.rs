@@ -316,10 +316,14 @@ fn main() -> anyhow::Result<()> {
         }
         Cmd::Fpsc { cmd } => match cmd {
             FpscCmd::Init { project, start } => {
-                let engine = nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
+                let engine =
+                    nord_serve::engine_root().context("engine root not found (set NORD_ROOT)")?;
                 let r = nord_core::fpsc::install(&engine, &project, start)?;
                 let list = |k: &str| r[k].as_array().cloned().unwrap_or_default();
-                println!("FPS Creator runtime: {} file(s) updated in scripts/fpsc", list("updated").len());
+                println!(
+                    "FPS Creator runtime: {} file(s) updated in scripts/fpsc",
+                    list("updated").len()
+                );
                 for c in list("created") {
                     println!("created {}", c.as_str().unwrap_or(""));
                 }
@@ -336,7 +340,10 @@ fn main() -> anyhow::Result<()> {
             }
             AddonCmd::Install { source, project } => {
                 let m = nord_export::addon::install(&source, &project)?;
-                println!("installed {} {} ({}) → addons/{}", m.name, m.version, m.kind, m.id);
+                println!(
+                    "installed {} {} ({}) → addons/{}",
+                    m.name, m.version, m.kind, m.id
+                );
             }
             AddonCmd::List { project } => {
                 let (ok, bad) = nord_export::addon::list(&project);

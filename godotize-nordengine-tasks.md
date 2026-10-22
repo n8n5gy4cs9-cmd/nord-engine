@@ -24,7 +24,7 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "�
 - [~] G2-4 Add Component popup is searchable; categories todo
 - [ ] G2-5 Multi-object edit (mixed values shown as —)
 - [ ] G2-6 Object/texture/material pickers with thumbnails and drag & drop
-- [ ] G2-7 Inspector lock + Debug mode
+- [~] G2-7 Inspector lock (padlock) done; Debug mode todo
 ## G3 Prefabs
 - [ ] G3-1 Prefab mode (open prefab in isolation, breadcrumb, Save/Auto save) — todo
 - [~] G3-2 Inspector Apply all / Revert all done (writes the prefab file); per-field Apply to prefab todo
@@ -51,18 +51,18 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "�
 - [ ] G6-5 Event sheets: Inspector-style param editors, search, debug highlight, F1 docs
 - [ ] G6-6 FPS Level + 2D Level editors: share Scene-view navigation/snapping/hotkeys
 ## G7 Fun features
-- [ ] G7-1 Scene templates and "New scene" dialog
-- [ ] G7-2 Find in scenes / project search; Find References
+- [x] G7-1 File ▸ New scene… dialog with templates (empty, 2D, 3D, UI host)
+- [x] G7-2 Find References / project search (Project tab, Assets right-click ▸ Find references; existed since M10)
 - [ ] G7-3 Play-mode "Apply to scene" for remote edits
-- [ ] G7-4 Profiler panel (fps, entities, draw calls, memory)
-- [ ] G7-5 Screenshot / GIF recorder from Game view
-- [ ] G7-6 In-editor "first 10 minutes" tutorial
-- [ ] G7-7 Signals: method picker from script source (finish M8-32)
+- [~] G7-4 Stats overlay in the Game view (fps, frame ms, objects, draws); dedicated Profiler panel todo
+- [x] G7-5 Game view 📷 screenshot → `screenshots/shot-N.png` (GIF recorder todo)
+- [x] G7-6 Help ▸ First 10 minutes checklist (ticks itself)
+- [x] G7-7 Signals: ▾ method picker from the target's script source
 ## G8 Fix old things
 - [x] G8-1 `nord-core schema::schemas_parse` (23 vs 22) fix
-- [ ] G8-2 Five strict-Clippy lints
+- [x] G8-2 Strict Clippy clean (`cargo clippy --workspace --all-targets -- -D warnings`)
 - [ ] G8-3 Playwright suites T36/T38/T40–T43 after UI conversion
-- [ ] G8-4 Walk KNOWN_ISSUES.md; close or document each; owner-only items listed
+- [~] G8-4 KNOWN_ISSUES.md updated for G0–G9; full walk todo
 - [ ] G8-5 Verify native egui parts on macOS (F5/F6, remote tree, F1) and record in KNOWN_ISSUES
 ## G9 Look: PlayCanvas-style UI aesthetics (owner reference screenshot: PlayCanvas editor)
 Target look (own theme + icons, no PlayCanvas assets/code copied; behaviour only): dark blue-grey panels (#20292b / #293538 range) with thin
@@ -89,3 +89,7 @@ Keep the current NordScript API; add helpers/libraries so scripts feel like Unit
 - [x] G10-6 Script templates ("New script" menu: MonoBehaviour-like, Singleton, GameManager) + manual chapter + examples
 
 G10 done 2026-10-22: `runtime/core/unity.js` (+ core.test.mjs tests), templates in Assets menu, manual chapter 4 section. Not run in a browser/editor yet.
+
+## Status 2026-10-22 (end of session)
+Done: G0-1..3, G1-1/2/4 (+partial 3/5/6), G2-1, G3-3, G4-1/2, G5-1/3/4, G7-1/2/5/6/7, G8-1/2, G9-1..6, G10 all. Partial: G0-4, G1-3/5/6, G2-2/3/4/7, G3-2, G4-3/4/5/6, G5-2, G6-1, G7-4, G8-4, G9-7. Not started: G1-7/8, G2-5/6, G3-1/4/5, G6-2..6, G7-3, G8-3/5.
+Screenshots for the docs are rendered offscreen: `DUMP_SHOTS=$PWD/docs/screenshots cargo test -p nord-editor --test shots -- --ignored` (webview panes are not part of the images).

@@ -49,6 +49,7 @@ pub fn line(img: &mut RgbaImage, x0: i32, y0: i32, x1: i32, y1: i32, size: i32, 
     }
 }
 
+#[allow(clippy::too_many_arguments)] // (image, two corners, brush, colour, fill) reads best flat
 pub fn rect(
     img: &mut RgbaImage,
     x0: i32,
@@ -75,6 +76,7 @@ pub fn rect(
 }
 
 /// Ellipse inscribed in the box (x0,y0)-(x1,y1).
+#[allow(clippy::too_many_arguments)]
 pub fn ellipse(
     img: &mut RgbaImage,
     x0: i32,

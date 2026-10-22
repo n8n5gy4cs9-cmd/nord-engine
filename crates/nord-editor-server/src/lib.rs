@@ -141,26 +141,46 @@ fn ct_eq(a: &str, b: &str) -> bool {
 }
 
 fn cookie(h: &HeaderMap, name: &str) -> Option<String> {
-    h.get(header::COOKIE)?.to_str().ok()?.split(';').find_map(|c| {
-        let (k, v) = c.trim().split_once('=')?;
-        (k == name).then(|| v.to_string())
-    })
+    h.get(header::COOKIE)?
+        .to_str()
+        .ok()?
+        .split(';')
+        .find_map(|c| {
+            let (k, v) = c.trim().split_once('=')?;
+            (k == name).then(|| v.to_string())
+        })
 }
 
 impl AppState {
     fn who(&self, h: &HeaderMap) -> Option<Who> {
         match &self.0.cfg.auth {
-            AuthMode::None => Some(Who { user: "local".into(), sid: "local".into() }),
+            AuthMode::None => Some(Who {
+                user: "local".into(),
+                sid: "local".into(),
+            }),
             AuthMode::Token(t) => {
-                if let Some(b) = h.get(header::AUTHORIZATION).and_then(|v| v.to_str().ok()).and_then(|v| v.strip_prefix("Bearer ")) {
-                    return ct_eq(b, t).then(|| Who { user: "admin".into(), sid: "token".into() });
+                if let Some(b) = h
+                    .get(header::AUTHORIZATION)
+                    .and_then(|v| v.to_str().ok())
+                    .and_then(|v| v.strip_prefix("Bearer "))
+                {
+                    return ct_eq(b, t).then(|| Who {
+                        user: "admin".into(),
+                        sid: "token".into(),
+                    });
                 }
                 let sid = cookie(h, "nord_session")?;
-                self.0.sessions.lock().ok()?.get(&sid).map(|s| Who { user: s.user.clone(), sid })
+                self.0.sessions.lock().ok()?.get(&sid).map(|s| Who {
+                    user: s.user.clone(),
+                    sid,
+                })
             }
             AuthMode::Users(_) => {
                 let sid = cookie(h, "nord_session")?;
-                self.0.sessions.lock().ok()?.get(&sid).map(|s| Who { user: s.user.clone(), sid })
+                self.0.sessions.lock().ok()?.get(&sid).map(|s| Who {
+                    user: s.user.clone(),
+                    sid,
+                })
             }
         }
     }
@@ -174,7 +194,11 @@ impl AppState {
     }
 
     fn emit(&self, user: &str, project: &str, body: Value) {
-        let _ = self.0.events.send(Ev { user: user.into(), project: project.into(), body });
+        let _ = self.0.events.send(Ev {
+            user: user.into(),
+            project: project.into(),
+            body,
+        });
     }
 }
 
@@ -195,9 +219,15 @@ pub fn router(cfg: Config) -> Router {
         .route("/projects", get(list_projects).post(create_project))
         .route("/p/:project", delete(delete_project))
         .route("/p/:project/tree", get(tree))
-        .route("/p/:project/file", get(get_file).put(put_file).delete(delete_file))
+        .route(
+            "/p/:project/file",
+            get(get_file).put(put_file).delete(delete_file),
+        )
         .route("/p/:project/rename", post(rename))
-        .route("/p/:project/lock", get(lock_status).post(lock_acquire).delete(lock_release))
+        .route(
+            "/p/:project/lock",
+            get(lock_status).post(lock_acquire).delete(lock_release),
+        )
         .route("/p/:project/events", get(events_sse))
         .route("/p/:project/download.zip", get(download_zip))
         .route("/p/:project/jobs/:job", post(jobs::start))
@@ -219,13 +249,20 @@ pub fn router(cfg: Config) -> Router {
 async fn security_headers(req: axum::extract::Request, next: Next) -> Response {
     let mut r = next.run(req).await;
     let h = r.headers_mut();
-    h.insert("x-content-type-options", HeaderValue::from_static("nosniff"));
+    h.insert(
+        "x-content-type-options",
+        HeaderValue::from_static("nosniff"),
+    );
     h.insert("referrer-policy", HeaderValue::from_static("same-origin"));
     r
 }
 
 /// Auth + CSRF for everything under `/api/` except ping/login.
-async fn guard(State(st): State<AppState>, mut req: axum::extract::Request, next: Next) -> Response {
+async fn guard(
+    State(st): State<AppState>,
+    mut req: axum::extract::Request,
+    next: Next,
+) -> Response {
     let Some(who) = st.who(req.headers()) else {
         return (StatusCode::UNAUTHORIZED, "login required").into_response();
     };
@@ -238,7 +275,10 @@ async fn guard(State(st): State<AppState>, mut req: axum::extract::Request, next
 }
 
 fn me(req: &axum::http::Extensions) -> Who {
-    req.get::<Who>().cloned().unwrap_or(Who { user: "nobody".into(), sid: String::new() })
+    req.get::<Who>().cloned().unwrap_or(Who {
+        user: "nobody".into(),
+        sid: String::new(),
+    })
 }
 
 async fn ping(State(st): State<AppState>, headers: HeaderMap) -> Json<Value> {
@@ -248,7 +288,9 @@ async fn ping(State(st): State<AppState>, headers: HeaderMap) -> Json<Value> {
         AuthMode::Token(_) => "token",
         AuthMode::Users(_) => "users",
     };
-    Json(json!({ "server": true, "auth": mode, "authed": who.is_some(), "user": who.map(|w| w.user) }))
+    Json(
+        json!({ "server": true, "auth": mode, "authed": who.is_some(), "user": who.map(|w| w.user) }),
+    )
 }
 
 #[derive(Deserialize)]
@@ -258,7 +300,11 @@ struct LoginBody {
     password: Option<String>,
 }
 
-async fn login(State(st): State<AppState>, headers: HeaderMap, Json(b): Json<LoginBody>) -> Response {
+async fn login(
+    State(st): State<AppState>,
+    headers: HeaderMap,
+    Json(b): Json<LoginBody>,
+) -> Response {
     if !headers.contains_key("x-nord") {
         return (StatusCode::FORBIDDEN, "missing x-nord header").into_response();
     }
@@ -275,9 +321,16 @@ async fn login(State(st): State<AppState>, headers: HeaderMap, Json(b): Json<Log
     }
     let user = match &st.0.cfg.auth {
         AuthMode::None => Some("local".to_string()),
-        AuthMode::Token(t) => b.token.as_deref().filter(|x| ct_eq(x, t)).map(|_| "admin".to_string()),
+        AuthMode::Token(t) => b
+            .token
+            .as_deref()
+            .filter(|x| ct_eq(x, t))
+            .map(|_| "admin".to_string()),
         AuthMode::Users(u) => match (b.user.as_deref(), b.password.as_deref()) {
-            (Some(name), Some(pw)) if valid_name(name) => u.get(name).filter(|h| verify_password(pw, h)).map(|_| name.to_string()),
+            (Some(name), Some(pw)) if valid_name(name) => u
+                .get(name)
+                .filter(|h| verify_password(pw, h))
+                .map(|_| name.to_string()),
             _ => None,
         },
     };
@@ -290,9 +343,16 @@ async fn login(State(st): State<AppState>, headers: HeaderMap, Json(b): Json<Log
     if let Ok(mut s) = st.0.sessions.lock() {
         s.insert(sid.clone(), Session { user: user.clone() });
     }
-    let secure = if st.0.cfg.secure_cookies { "; Secure" } else { "" };
+    let secure = if st.0.cfg.secure_cookies {
+        "; Secure"
+    } else {
+        ""
+    };
     (
-        [(header::SET_COOKIE, format!("nord_session={sid}; HttpOnly; SameSite=Strict; Path=/{secure}"))],
+        [(
+            header::SET_COOKIE,
+            format!("nord_session={sid}; HttpOnly; SameSite=Strict; Path=/{secure}"),
+        )],
         Json(json!({ "user": user })),
     )
         .into_response()
@@ -306,7 +366,10 @@ async fn logout(State(st): State<AppState>, headers: HeaderMap) -> Response {
         s.remove(&sid);
     }
     (
-        [(header::SET_COOKIE, "nord_session=; Max-Age=0; HttpOnly; SameSite=Strict; Path=/")],
+        [(
+            header::SET_COOKIE,
+            "nord_session=; Max-Age=0; HttpOnly; SameSite=Strict; Path=/",
+        )],
         StatusCode::NO_CONTENT,
     )
         .into_response()
@@ -315,7 +378,8 @@ async fn logout(State(st): State<AppState>, headers: HeaderMap) -> Response {
 /// `argon2` PHC string check (users file). Constant-time inside the crate.
 fn verify_password(pw: &str, phc: &str) -> bool {
     use argon2::{password_hash::PasswordHash, Argon2, PasswordVerifier};
-    PasswordHash::new(phc).is_ok_and(|h| Argon2::default().verify_password(pw.as_bytes(), &h).is_ok())
+    PasswordHash::new(phc)
+        .is_ok_and(|h| Argon2::default().verify_password(pw.as_bytes(), &h).is_ok())
 }
 
 /// Hash a password for the users file (`nord-editor-server hash-password`).
@@ -327,7 +391,10 @@ pub fn hash_password(pw: &str) -> anyhow::Result<String> {
     let mut salt = [0u8; 16];
     getrandom::getrandom(&mut salt).map_err(|e| anyhow::anyhow!("no OS randomness: {e}"))?;
     let salt = SaltString::encode_b64(&salt).map_err(|e| anyhow::anyhow!("{e}"))?;
-    Ok(Argon2::default().hash_password(pw.as_bytes(), &salt).map_err(|e| anyhow::anyhow!("{e}"))?.to_string())
+    Ok(Argon2::default()
+        .hash_password(pw.as_bytes(), &salt)
+        .map_err(|e| anyhow::anyhow!("{e}"))?
+        .to_string())
 }
 
 /// Parse a users file: one `name:argon2-hash` per line (`#` comments).
@@ -336,7 +403,8 @@ pub fn parse_users(text: &str) -> HashMap<String, String> {
         .filter_map(|l| {
             let l = l.trim();
             let (n, h) = l.split_once(':')?;
-            (!l.starts_with('#') && valid_name(n.trim())).then(|| (n.trim().to_string(), h.trim().to_string()))
+            (!l.starts_with('#') && valid_name(n.trim()))
+                .then(|| (n.trim().to_string(), h.trim().to_string()))
         })
         .collect()
 }
@@ -357,7 +425,9 @@ async fn list_projects(State(st): State<AppState>, req: axum::extract::Request) 
             if !valid_name(&name) || !e.path().join(nord_core::io::PROJECT_FILE).is_file() {
                 continue;
             }
-            let kind = nord_core::io::load_project(&e.path()).map(|p| p.kind.as_str().to_string()).unwrap_or_default();
+            let kind = nord_core::io::load_project(&e.path())
+                .map(|p| p.kind.as_str().to_string())
+                .unwrap_or_default();
             v.push(json!({ "name": name, "kind": kind }));
         }
     }
@@ -388,7 +458,10 @@ async fn create_project(State(st): State<AppState>, req: axum::extract::Request)
         return err(StatusCode::BAD_REQUEST, "invalid project name");
     };
     let Ok(kind) = serde_json::from_value(Value::String(b.kind.clone())) else {
-        return err(StatusCode::BAD_REQUEST, "kind: html | 2d | 3d (Rust projects are created in the desktop editor)");
+        return err(
+            StatusCode::BAD_REQUEST,
+            "kind: html | 2d | 3d (Rust projects are created in the desktop editor)",
+        );
     };
     if workspace_size(&st.user_dir(&who.user)) > st.0.cfg.quota_bytes {
         return err(StatusCode::INSUFFICIENT_STORAGE, "workspace quota used up");
@@ -399,14 +472,26 @@ async fn create_project(State(st): State<AppState>, req: axum::extract::Request)
     }
 }
 
-async fn delete_project(State(st): State<AppState>, UrlPath(project): UrlPath<String>, req: axum::extract::Request) -> Response {
+async fn delete_project(
+    State(st): State<AppState>,
+    UrlPath(project): UrlPath<String>,
+    req: axum::extract::Request,
+) -> Response {
     let who = me(req.extensions());
     let Some(dir) = st.project_dir(&who.user, &project) else {
         return err(StatusCode::BAD_REQUEST, "invalid project name");
     };
     // a second, deliberate header so a stray request cannot wipe a project
-    if req.headers().get("x-nord-confirm").and_then(|v| v.to_str().ok()) != Some(project.as_str()) {
-        return err(StatusCode::PRECONDITION_REQUIRED, "send x-nord-confirm: <project name>");
+    if req
+        .headers()
+        .get("x-nord-confirm")
+        .and_then(|v| v.to_str().ok())
+        != Some(project.as_str())
+    {
+        return err(
+            StatusCode::PRECONDITION_REQUIRED,
+            "send x-nord-confirm: <project name>",
+        );
     }
     match std::fs::remove_dir_all(&dir) {
         Ok(()) => StatusCode::NO_CONTENT.into_response(),
@@ -434,7 +519,9 @@ fn workspace_size(dir: &Path) -> u64 {
 /// Resolve `<user>/<project>` and require that it exists.
 #[allow(clippy::result_large_err)] // the Err is the ready-made HTTP response; this is a request-scoped helper
 fn existing_project(st: &AppState, who: &Who, project: &str) -> Result<PathBuf, Response> {
-    let dir = st.project_dir(&who.user, project).ok_or_else(|| err(StatusCode::BAD_REQUEST, "invalid project name"))?;
+    let dir = st
+        .project_dir(&who.user, project)
+        .ok_or_else(|| err(StatusCode::BAD_REQUEST, "invalid project name"))?;
     if dir.is_dir() {
         Ok(dir)
     } else {
@@ -442,7 +529,11 @@ fn existing_project(st: &AppState, who: &Who, project: &str) -> Result<PathBuf, 
     }
 }
 
-async fn tree(State(st): State<AppState>, UrlPath(project): UrlPath<String>, req: axum::extract::Request) -> Response {
+async fn tree(
+    State(st): State<AppState>,
+    UrlPath(project): UrlPath<String>,
+    req: axum::extract::Request,
+) -> Response {
     let who = me(req.extensions());
     let dir = match existing_project(&st, &who, &project) {
         Ok(d) => d,
@@ -456,7 +547,11 @@ async fn tree(State(st): State<AppState>, UrlPath(project): UrlPath<String>, req
             if t.is_symlink() || name == ".nord-cache" || name == ".git" {
                 continue;
             }
-            let rel = e.path().strip_prefix(base).map(|p| p.to_string_lossy().replace('\\', "/")).unwrap_or_default();
+            let rel = e
+                .path()
+                .strip_prefix(base)
+                .map(|p| p.to_string_lossy().replace('\\', "/"))
+                .unwrap_or_default();
             if t.is_dir() {
                 out.push(json!({ "path": rel, "dir": true }));
                 walk(base, &e.path(), out);
@@ -475,7 +570,12 @@ struct PathQ {
     path: String,
 }
 
-async fn get_file(State(st): State<AppState>, UrlPath(project): UrlPath<String>, Query(q): Query<PathQ>, req: axum::extract::Request) -> Response {
+async fn get_file(
+    State(st): State<AppState>,
+    UrlPath(project): UrlPath<String>,
+    Query(q): Query<PathQ>,
+    req: axum::extract::Request,
+) -> Response {
     let who = me(req.extensions());
     let dir = match existing_project(&st, &who, &project) {
         Ok(d) => d,
@@ -485,7 +585,14 @@ async fn get_file(State(st): State<AppState>, UrlPath(project): UrlPath<String>,
         return err(StatusCode::BAD_REQUEST, "bad path");
     };
     match tokio::fs::read(&p).await {
-        Ok(b) => ([(header::CONTENT_TYPE, "application/octet-stream"), (header::CACHE_CONTROL, "no-store")], b).into_response(),
+        Ok(b) => (
+            [
+                (header::CONTENT_TYPE, "application/octet-stream"),
+                (header::CACHE_CONTROL, "no-store"),
+            ],
+            b,
+        )
+            .into_response(),
         Err(_) => StatusCode::NOT_FOUND.into_response(),
     }
 }
@@ -499,14 +606,22 @@ fn writable(st: &AppState, who: &Who, project: &str) -> bool {
     }
 }
 
-async fn put_file(State(st): State<AppState>, UrlPath(project): UrlPath<String>, Query(q): Query<PathQ>, req: axum::extract::Request) -> Response {
+async fn put_file(
+    State(st): State<AppState>,
+    UrlPath(project): UrlPath<String>,
+    Query(q): Query<PathQ>,
+    req: axum::extract::Request,
+) -> Response {
     let who = me(req.extensions());
     let dir = match existing_project(&st, &who, &project) {
         Ok(d) => d,
         Err(r) => return r,
     };
     if !writable(&st, &who, &project) {
-        return err(StatusCode::LOCKED, "another session is editing this project");
+        return err(
+            StatusCode::LOCKED,
+            "another session is editing this project",
+        );
     }
     let Some(p) = safe_join(&dir, &q.path) else {
         return err(StatusCode::BAD_REQUEST, "bad path");
@@ -519,14 +634,22 @@ async fn put_file(State(st): State<AppState>, UrlPath(project): UrlPath<String>,
     let user = who.user.clone();
     let res = tokio::task::spawn_blocking(move || {
         if workspace_size(&st2.user_dir(&user)) + body.len() as u64 > st2.0.cfg.quota_bytes {
-            return Err((StatusCode::INSUFFICIENT_STORAGE, "workspace quota used up".to_string()));
+            return Err((
+                StatusCode::INSUFFICIENT_STORAGE,
+                "workspace quota used up".to_string(),
+            ));
         }
-        nord_core::io::write_atomic(&p, &body).map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))
+        nord_core::io::write_atomic(&p, &body)
+            .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))
     })
     .await;
     match res {
         Ok(Ok(())) => {
-            st.emit(&who.user, &project, json!({ "t": "file", "op": "put", "path": q.path, "by": who.sid }));
+            st.emit(
+                &who.user,
+                &project,
+                json!({ "t": "file", "op": "put", "path": q.path, "by": who.sid }),
+            );
             StatusCode::NO_CONTENT.into_response()
         }
         Ok(Err((c, m))) => err(c, m),
@@ -534,25 +657,44 @@ async fn put_file(State(st): State<AppState>, UrlPath(project): UrlPath<String>,
     }
 }
 
-async fn delete_file(State(st): State<AppState>, UrlPath(project): UrlPath<String>, Query(q): Query<PathQ>, req: axum::extract::Request) -> Response {
+async fn delete_file(
+    State(st): State<AppState>,
+    UrlPath(project): UrlPath<String>,
+    Query(q): Query<PathQ>,
+    req: axum::extract::Request,
+) -> Response {
     let who = me(req.extensions());
     let dir = match existing_project(&st, &who, &project) {
         Ok(d) => d,
         Err(r) => return r,
     };
     if !writable(&st, &who, &project) {
-        return err(StatusCode::LOCKED, "another session is editing this project");
+        return err(
+            StatusCode::LOCKED,
+            "another session is editing this project",
+        );
     }
     let Some(p) = safe_join(&dir, &q.path) else {
         return err(StatusCode::BAD_REQUEST, "bad path");
     };
-    if p.file_name().is_some_and(|n| n == nord_core::io::PROJECT_FILE) && q.path == nord_core::io::PROJECT_FILE {
+    if p.file_name()
+        .is_some_and(|n| n == nord_core::io::PROJECT_FILE)
+        && q.path == nord_core::io::PROJECT_FILE
+    {
         return err(StatusCode::BAD_REQUEST, "delete the project instead");
     }
-    let r = if p.is_dir() { std::fs::remove_dir_all(&p) } else { std::fs::remove_file(&p) };
+    let r = if p.is_dir() {
+        std::fs::remove_dir_all(&p)
+    } else {
+        std::fs::remove_file(&p)
+    };
     match r {
         Ok(()) => {
-            st.emit(&who.user, &project, json!({ "t": "file", "op": "delete", "path": q.path, "by": who.sid }));
+            st.emit(
+                &who.user,
+                &project,
+                json!({ "t": "file", "op": "delete", "path": q.path, "by": who.sid }),
+            );
             StatusCode::NO_CONTENT.into_response()
         }
         Err(_) => StatusCode::NOT_FOUND.into_response(),
@@ -565,14 +707,21 @@ struct Mv {
     to: String,
 }
 
-async fn rename(State(st): State<AppState>, UrlPath(project): UrlPath<String>, req: axum::extract::Request) -> Response {
+async fn rename(
+    State(st): State<AppState>,
+    UrlPath(project): UrlPath<String>,
+    req: axum::extract::Request,
+) -> Response {
     let who = me(req.extensions());
     let dir = match existing_project(&st, &who, &project) {
         Ok(d) => d,
         Err(r) => return r,
     };
     if !writable(&st, &who, &project) {
-        return err(StatusCode::LOCKED, "another session is editing this project");
+        return err(
+            StatusCode::LOCKED,
+            "another session is editing this project",
+        );
     }
     let Ok(body) = axum::body::to_bytes(req.into_body(), 64 << 10).await else {
         return err(StatusCode::BAD_REQUEST, "bad body");
@@ -591,7 +740,11 @@ async fn rename(State(st): State<AppState>, UrlPath(project): UrlPath<String>, r
     }
     match std::fs::rename(&a, &b) {
         Ok(()) => {
-            st.emit(&who.user, &project, json!({ "t": "file", "op": "rename", "from": m.from, "to": m.to, "by": who.sid }));
+            st.emit(
+                &who.user,
+                &project,
+                json!({ "t": "file", "op": "rename", "from": m.from, "to": m.to, "by": who.sid }),
+            );
             StatusCode::NO_CONTENT.into_response()
         }
         Err(_) => StatusCode::NOT_FOUND.into_response(),
@@ -600,29 +753,55 @@ async fn rename(State(st): State<AppState>, UrlPath(project): UrlPath<String>, r
 
 const LOCK_TTL: Duration = Duration::from_secs(45);
 
-async fn lock_status(State(st): State<AppState>, UrlPath(project): UrlPath<String>, req: axum::extract::Request) -> Response {
+async fn lock_status(
+    State(st): State<AppState>,
+    UrlPath(project): UrlPath<String>,
+    req: axum::extract::Request,
+) -> Response {
     let who = me(req.extensions());
     let l = st.0.locks.lock().unwrap_or_else(|e| e.into_inner());
-    let held = l.get(&(who.user.clone(), project)).filter(|k| k.until > Instant::now());
-    Json(json!({ "locked": held.is_some(), "mine": held.is_some_and(|k| k.sid == who.sid) })).into_response()
+    let held = l
+        .get(&(who.user.clone(), project))
+        .filter(|k| k.until > Instant::now());
+    Json(json!({ "locked": held.is_some(), "mine": held.is_some_and(|k| k.sid == who.sid) }))
+        .into_response()
 }
 
 /// Take (or refresh) the project's writer lock; clients call it again every ~15 s while editing.
-async fn lock_acquire(State(st): State<AppState>, UrlPath(project): UrlPath<String>, req: axum::extract::Request) -> Response {
+async fn lock_acquire(
+    State(st): State<AppState>,
+    UrlPath(project): UrlPath<String>,
+    req: axum::extract::Request,
+) -> Response {
     let who = me(req.extensions());
     if let Err(r) = existing_project(&st, &who, &project) {
         return r;
     }
     let mut l = st.0.locks.lock().unwrap_or_else(|e| e.into_inner());
     let key = (who.user.clone(), project);
-    if l.get(&key).is_some_and(|k| k.until > Instant::now() && k.sid != who.sid) {
-        return err(StatusCode::LOCKED, "another session is editing this project");
+    if l.get(&key)
+        .is_some_and(|k| k.until > Instant::now() && k.sid != who.sid)
+    {
+        return err(
+            StatusCode::LOCKED,
+            "another session is editing this project",
+        );
     }
-    l.insert(key, Lock { sid: who.sid, until: Instant::now() + LOCK_TTL });
+    l.insert(
+        key,
+        Lock {
+            sid: who.sid,
+            until: Instant::now() + LOCK_TTL,
+        },
+    );
     Json(json!({ "ttl": LOCK_TTL.as_secs() })).into_response()
 }
 
-async fn lock_release(State(st): State<AppState>, UrlPath(project): UrlPath<String>, req: axum::extract::Request) -> Response {
+async fn lock_release(
+    State(st): State<AppState>,
+    UrlPath(project): UrlPath<String>,
+    req: axum::extract::Request,
+) -> Response {
     let who = me(req.extensions());
     let mut l = st.0.locks.lock().unwrap_or_else(|e| e.into_inner());
     let key = (who.user.clone(), project);
@@ -632,27 +811,40 @@ async fn lock_release(State(st): State<AppState>, UrlPath(project): UrlPath<Stri
     StatusCode::NO_CONTENT.into_response()
 }
 
-async fn events_sse(State(st): State<AppState>, UrlPath(project): UrlPath<String>, req: axum::extract::Request) -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
+async fn events_sse(
+    State(st): State<AppState>,
+    UrlPath(project): UrlPath<String>,
+    req: axum::extract::Request,
+) -> Sse<impl Stream<Item = Result<Event, Infallible>>> {
     let who = me(req.extensions());
     let rx = st.0.events.subscribe();
     let s = BroadcastStream::new(rx).filter_map(move |e| {
         let (user, project) = (who.user.clone(), project.clone());
         async move {
             let e = e.ok()?;
-            (e.user == user && e.project == project).then(|| Ok(Event::default().data(serde_json::to_string(&e).unwrap_or_default())))
+            (e.user == user && e.project == project)
+                .then(|| Ok(Event::default().data(serde_json::to_string(&e).unwrap_or_default())))
         }
     });
     Sse::new(s).keep_alive(axum::response::sse::KeepAlive::default())
 }
 
-async fn download_zip(State(st): State<AppState>, UrlPath(project): UrlPath<String>, req: axum::extract::Request) -> Response {
+async fn download_zip(
+    State(st): State<AppState>,
+    UrlPath(project): UrlPath<String>,
+    req: axum::extract::Request,
+) -> Response {
     let who = me(req.extensions());
     let dir = match existing_project(&st, &who, &project) {
         Ok(d) => d,
         Err(r) => return r,
     };
     match tokio::task::spawn_blocking(move || zip_dir(&dir, &project)).await {
-        Ok(Ok(bytes)) => ([(header::CONTENT_TYPE, "application/zip".to_string())], bytes).into_response(),
+        Ok(Ok(bytes)) => (
+            [(header::CONTENT_TYPE, "application/zip".to_string())],
+            bytes,
+        )
+            .into_response(),
         _ => err(StatusCode::INTERNAL_SERVER_ERROR, "zip failed"),
     }
 }
@@ -664,7 +856,12 @@ pub(crate) fn zip_dir(dir: &Path, top: &str) -> anyhow::Result<Vec<u8>> {
         for e in rd.flatten() {
             let Ok(t) = e.file_type() else { continue };
             let name = e.file_name().to_string_lossy().into_owned();
-            if t.is_symlink() || name == ".nord-cache" || name == ".git" || name == "dist" || name == ".nord" {
+            if t.is_symlink()
+                || name == ".nord-cache"
+                || name == ".git"
+                || name == "dist"
+                || name == ".nord"
+            {
                 continue;
             }
             if t.is_dir() {
@@ -677,7 +874,8 @@ pub(crate) fn zip_dir(dir: &Path, top: &str) -> anyhow::Result<Vec<u8>> {
     let mut files = vec![];
     walk(dir, dir, &mut files);
     let mut z = zip::ZipWriter::new(std::io::Cursor::new(Vec::new()));
-    let opt = zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::Deflated);
+    let opt = zip::write::SimpleFileOptions::default()
+        .compression_method(zip::CompressionMethod::Deflated);
     for (p, r) in files {
         z.start_file(format!("{top}/{r}"), opt)?;
         z.write_all(&std::fs::read(p)?)?;
@@ -689,11 +887,17 @@ pub(crate) fn zip_dir(dir: &Path, top: &str) -> anyhow::Result<Vec<u8>> {
 
 async fn static_files(State(st): State<AppState>, uri: Uri) -> Response {
     let Some(web) = &st.0.cfg.web else {
-        return (StatusCode::NOT_FOUND, "this server has no web editor (start it with --web <dir>)").into_response();
+        return (
+            StatusCode::NOT_FOUND,
+            "this server has no web editor (start it with --web <dir>)",
+        )
+            .into_response();
     };
     let rel = uri.path().trim_start_matches('/');
     let rel = if rel.is_empty() { "index.html" } else { rel };
-    let ok = rel.split('/').all(|c| !c.is_empty() && c != ".." && c != "." && !c.contains(['\\', '\0']));
+    let ok = rel
+        .split('/')
+        .all(|c| !c.is_empty() && c != ".." && c != "." && !c.contains(['\\', '\0']));
     if !ok {
         return StatusCode::BAD_REQUEST.into_response();
     }
@@ -704,9 +908,11 @@ async fn static_files(State(st): State<AppState>, uri: Uri) -> Response {
     match tokio::fs::read(&p).await {
         Ok(b) => {
             let mime = mime_guess::from_path(&p).first_or_octet_stream();
-            let mut r = ([(header::CONTENT_TYPE, mime.to_string())], Bytes::from(b)).into_response();
+            let mut r =
+                ([(header::CONTENT_TYPE, mime.to_string())], Bytes::from(b)).into_response();
             // the service worker and the shell must always be revalidated; the big wasm is cached by the worker
-            r.headers_mut().insert(header::CACHE_CONTROL, HeaderValue::from_static("no-cache"));
+            r.headers_mut()
+                .insert(header::CACHE_CONTROL, HeaderValue::from_static("no-cache"));
             r
         }
         Err(_) => StatusCode::NOT_FOUND.into_response(),

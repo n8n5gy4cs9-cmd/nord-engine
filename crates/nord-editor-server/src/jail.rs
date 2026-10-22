@@ -6,7 +6,8 @@ pub fn valid_name(n: &str) -> bool {
     !n.is_empty()
         && n.len() <= 64
         && !n.starts_with('.')
-        && n.chars().all(|c| c.is_ascii_alphanumeric() || " ._-".contains(c))
+        && n.chars()
+            .all(|c| c.is_ascii_alphanumeric() || " ._-".contains(c))
 }
 
 /// Join a project-relative path (forward slashes) to `base`. Rejects absolute paths, `..`, backslashes, NUL, empty components and
@@ -17,10 +18,14 @@ pub fn safe_join(base: &Path, rel: &str) -> Option<PathBuf> {
     }
     let mut p = base.to_path_buf();
     for part in rel.split('/') {
-        if part.is_empty() || part == "." || part == ".." || part == ".nord-cache" || part == ".git" {
+        if part.is_empty() || part == "." || part == ".." || part == ".nord-cache" || part == ".git"
+        {
             return None;
         }
-        if !matches!(Path::new(part).components().next(), Some(Component::Normal(_))) {
+        if !matches!(
+            Path::new(part).components().next(),
+            Some(Component::Normal(_))
+        ) {
             return None;
         }
         p.push(part);
@@ -47,7 +52,19 @@ mod tests {
     fn traversal_is_refused() {
         let base = Path::new("/srv/ws/u/p");
         assert!(safe_join(base, "scenes/main.scene.json").is_some());
-        for bad in ["", "/etc/passwd", "../x", "a/../../x", "a//b", "a\\..\\b", "a/./b", ".git/config", ".nord-cache/lock", "a\0b", "C:/x"] {
+        for bad in [
+            "",
+            "/etc/passwd",
+            "../x",
+            "a/../../x",
+            "a//b",
+            "a\\..\\b",
+            "a/./b",
+            ".git/config",
+            ".nord-cache/lock",
+            "a\0b",
+            "C:/x",
+        ] {
             // "C:/x" is a normal relative name on unix and stays inside the base; everything else must be refused
             if bad == "C:/x" {
                 assert!(safe_join(base, bad).is_some_and(|p| p.starts_with(base)));

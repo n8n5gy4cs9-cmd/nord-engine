@@ -508,7 +508,35 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             return;
         }
     }
-    let Some(inst) = st.selected().cloned() else {
+    // Inspector lock (Unity's padlock): keep showing one entity while the selection changes elsewhere
+    let locked = st.inspector_lock.clone().and_then(|id| {
+        st.scene
+            .as_ref()
+            .and_then(|s| scene_ops::find(&s.entities, &id))
+            .cloned()
+    });
+    if st.inspector_lock.is_some() && locked.is_none() {
+        st.inspector_lock = None; // the locked entity is gone
+    }
+    if let Some(e) = st.selected().or(locked.as_ref()) {
+        let (id, name, is_locked) = (e.id.clone(), e.name.clone(), st.inspector_lock.is_some());
+        ui.horizontal(|ui| {
+            if icons::button(
+                ui,
+                if is_locked { "lock" } else { "unlock" },
+                "Lock the Inspector to this entity",
+                is_locked,
+            )
+            .clicked()
+            {
+                st.inspector_lock = if is_locked { None } else { Some(id) };
+            }
+            if is_locked {
+                ui.weak(format!("locked: {name}"));
+            }
+        });
+    }
+    let Some(inst) = locked.or_else(|| st.selected().cloned()) else {
         ui.weak(if st.scene.is_some() {
             "Select an entity"
         } else {
@@ -574,6 +602,19 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         entities,
     };
 
+    // Signals: method names found in the target entity's scripts (picker next to the method box)
+    let sig_methods: Vec<Vec<String>> = orig
+        .connections
+        .iter()
+        .map(|c| {
+            let id = if c.target.is_empty() {
+                orig.id.clone()
+            } else {
+                c.target.clone()
+            };
+            script_methods(st, &id)
+        })
+        .collect();
     let mut e: Entity = orig.clone();
     let mut docs: Option<String> = None;
     let mut prefab_op: Option<(String, u8)> = None;
@@ -835,6 +876,16 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                     .hint_text("method")
                                     .desired_width(80.0),
                             );
+                            if let Some(ms) = sig_methods.get(i).filter(|m| !m.is_empty()) {
+                                ui.menu_button("▾", |ui| {
+                                    for m in ms {
+                                        if ui.button(m).clicked() {
+                                            c.method = m.clone();
+                                            ui.close_menu();
+                                        }
+                                    }
+                                });
+                            }
                             if icons::button(ui, "x", "Remove connection", false).clicked() {
                                 del = Some(i);
                             }
@@ -917,6 +968,41 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             }
         });
     }
+}
+
+/// Method names declared in the scripts of entity `id` (regex over the source: `name(args) {` at the start of a line).
+fn script_methods(st: &EditorState, id: &str) -> Vec<String> {
+    let (Some(root), Some(scene)) = (st.root.as_ref(), st.scene.as_ref()) else {
+        return vec![];
+    };
+    let Some(ent) = scene_ops::find(&scene.entities, id) else {
+        return vec![];
+    };
+    let re =
+        regex::Regex::new(r"(?m)^\s*(?:async\s+|static\s+)?\*?([A-Za-z_$][\w$]*)\s*\([^)]*\)\s*\{")
+            .expect("static regex");
+    let mut out = vec![];
+    for s in &ent.scripts {
+        if let Ok(src) = nord_core::vfs::read_to_string(root.join(&s.path)) {
+            for c in re.captures_iter(&src) {
+                let n = c[1].to_string();
+                if !matches!(
+                    n.as_str(),
+                    "if" | "for"
+                        | "while"
+                        | "switch"
+                        | "catch"
+                        | "function"
+                        | "constructor"
+                        | "return"
+                ) && !out.contains(&n)
+                {
+                    out.push(n);
+                }
+            }
+        }
+    }
+    out
 }
 
 fn collect_scripts(root: &std::path::Path, dir: &std::path::Path, out: &mut Vec<String>) {

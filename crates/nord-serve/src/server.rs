@@ -633,7 +633,12 @@ pub fn router(project: PathBuf, engine: PathBuf) -> (Router, Arc<Hub>) {
         )
         .route("/api/fpsc/install", post(fpsc_install))
         .route("/api/log", get(log_get).post(log_post))
-        .route("/api/ipc", get(ipc_get).post(ipc_post))
+        .route(
+            "/api/ipc",
+            get(ipc_get)
+                .post(ipc_post)
+                .layer(axum::extract::DefaultBodyLimit::max(32 << 20)),
+        ) // screenshots arrive as data URLs
         .route("/__edit/events", get(edit_events))
         .route("/__edit/cmd", post(edit_cmd))
         .route("/__desktop/call", post(desktop_call))

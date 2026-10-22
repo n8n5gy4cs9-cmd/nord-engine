@@ -57,3 +57,7 @@ design and MIT code** as the structural reference and **Unity's workflow** as th
 Owner reference: the PlayCanvas editor (dark blue-grey, orange accent, vertical tool rail, UPPERCASE collapsible panel headers, floating viewport top bar with Play,
 folder-tile Assets panel). Re-create the *look* with our own theme/icons (no PlayCanvas code/assets). Tasks: G9-1…G9-7 in `godotize-nordengine-tasks.md`. Do it after G1–G2 so the structure exists first; theme work (G9-1/2) is cheap and can go early.
 
+
+
+## Progress 2026-10-22
+See `godotize-nordengine-tasks.md` (Status section) for what is done, partial and not started.

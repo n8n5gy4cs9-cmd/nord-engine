@@ -16,7 +16,7 @@ The editor runs as a desktop app. Its layout puts the scene in the middle, the e
 <figure class="shot"><img src="assets/editor-layout.svg" alt="Nord editor diagram: toolbar above Hierarchy, Scene/Game and Inspector; Assets and Console below"><figcaption>Panel map (diagram). Dock tabs can be moved, so your editor layout may differ. Start by choosing an entity on the left and changing its settings on the right.</figcaption></figure>
 
 ## Appearance and project hub
-The default **Graphite** theme uses neutral dark-grey panels, a darker canvas and a soft blue accent. Existing settings using the original Nord default migrate once; custom themes remain selected. All previous themes are available in Settings. The blue **Play-mode tint** and your chosen PLAYMODE-COLOR are preserved.
+The default **PlayCanvas** theme uses blue-grey panels, thin dividers, 2 px corners and an orange accent; panel titles are upper-case and asset types have coloured icons. Settings that still had the previous default (Graphite) migrate once; any theme you chose yourself stays. All other themes, including Graphite, are in Settings. See [Unity-style workflow](unity-workflow.html) for the layouts, menus and tools. The blue **Play-mode tint** and your chosen PLAYMODE-COLOR are preserved.
 
 The hub provides New project, Recent projects and searchable Examples/Tutorials in separately scrolling cards. Expand **Starter templates** for a ready-made project; the templates are included in the app bundle. Hover a recent-project row to see its full path. **Docs** opens the guides even before opening a project; **Back to projects** returns to the hub.
 

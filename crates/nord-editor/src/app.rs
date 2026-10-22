@@ -111,23 +111,23 @@ fn unity_dock(kind: &str) -> DockState<Tab> {
         Tab::Library,
         Tab::History,
     ];
+    // Inspector is split off the whole window first (so it gets a real column), then Scene | Game, Hierarchy on the left, tabs below.
+    let [main, _] = s.split_right(NodeIndex::root(), 0.8, vec![Tab::Inspector]);
     match kind {
         "wide" => {
-            let [scene, _] = s.split_below(NodeIndex::root(), 0.55, vec![Tab::Game]);
-            let [scene, _] = s.split_left(scene, 0.18, vec![Tab::Hierarchy]);
-            let [scene, _] = s.split_right(scene, 0.8, vec![Tab::Inspector]);
-            let _ = s.split_below(scene, 0.7, bottom);
+            let [center, _] = s.split_left(main, 0.2, vec![Tab::Hierarchy]);
+            let [scene, game] = s.split_below(center, 0.5, vec![Tab::Game]);
+            let _ = scene;
+            let _ = s.split_below(game, 0.62, bottom);
         }
         "tall" => {
-            let [scene, _] = s.split_right(NodeIndex::root(), 0.5, vec![Tab::Game]);
-            let [scene, _] = s.split_left(scene, 0.2, vec![Tab::Hierarchy, Tab::Assets]);
-            let [scene, _] = s.split_right(scene, 0.78, vec![Tab::Inspector]);
+            let [main, _] = s.split_left(main, 0.2, vec![Tab::Hierarchy, Tab::Assets]);
+            let [scene, _] = s.split_right(main, 0.5, vec![Tab::Game]);
             let _ = s.split_below(scene, 0.78, vec![Tab::Console, Tab::Project]);
         }
         _ => {
-            let [scene, _] = s.split_right(NodeIndex::root(), 0.5, vec![Tab::Game]);
-            let [scene, _] = s.split_left(scene, 0.17, vec![Tab::Hierarchy]);
-            let [scene, _] = s.split_right(scene, 0.8, vec![Tab::Inspector]);
+            let [scene, _] = s.split_right(main, 0.5, vec![Tab::Game]);
+            let [scene, _] = s.split_left(scene, 0.28, vec![Tab::Hierarchy]);
             let _ = s.split_below(scene, 0.68, bottom);
         }
     }
@@ -442,6 +442,7 @@ impl App {
             st.console.clear();
         }
         st.log(LogLevel::Build, "Play");
+        st.fun_ui.played = true;
         self.show_tab(Tab::Game);
         if self.st.maximize_on_play {
             self.st.game_full = true;
@@ -686,6 +687,12 @@ impl App {
             }
             Action::Export => st.export_ui.open = true,
             Action::BuildSettings => st.build_ui.open = true,
+            Action::NewScene => {
+                st.fun_ui.new_scene_open = true;
+                st.fun_ui.new_name.clear();
+            }
+            Action::Tutorial => st.fun_ui.tutorial_open = true,
+            Action::Screenshot => self.web.eval("game", panels::fun::SHOT_JS),
             Action::DesktopSettings => st.desktop_ui.open = true,
             Action::FpsInstall => {
                 #[cfg(not(target_arch = "wasm32"))]
@@ -796,6 +803,7 @@ impl App {
                 });
                 ui.separator();
                 act(ui, "Save all  (Cmd+S)", Action::SaveAll, st);
+                act(ui, "New scene…", Action::NewScene, st);
                 act(
                     ui,
                     "Build Settings…  (Shift+Cmd+B)",
@@ -931,6 +939,7 @@ impl App {
                     st,
                 );
                 act(ui, "Documentation", Action::ShowTab(Tab::Docs), st);
+                act(ui, "First 10 minutes (checklist)", Action::Tutorial, st);
                 act(ui, "Command palette  (Cmd+K)", Action::Palette, st);
                 act(ui, "About", Action::About, st);
             });
@@ -1314,6 +1323,14 @@ pub fn game_tab(
             .on_hover_text("Pause the game when an error is logged");
         if st.is_playing()
             && ui
+                .button("📷")
+                .on_hover_text("Save a screenshot to screenshots/")
+                .clicked()
+        {
+            st.push(Action::Screenshot);
+        }
+        if st.is_playing()
+            && ui
                 .button("Stats")
                 .on_hover_text("Toggle an fps / frame time overlay in the game")
                 .clicked()
@@ -1439,6 +1456,7 @@ impl App {
             || self.st.settings_open
             || self.st.export_ui.open
             || self.st.build_ui.open
+            || self.st.fun_ui.new_scene_open
             || self.st.about_open
             || self.st.desktop_ui.open
             || (self.st.recover.is_some() && self.st.project.is_some())
@@ -1597,6 +1615,7 @@ impl App {
         panels::preview::window(&mut self.st, ctx);
         panels::export::window(&mut self.st, ctx);
         panels::build::window(&mut self.st, ctx);
+        panels::fun::windows(&mut self.st, ctx);
         panels::desktop::window(&mut self.st, ctx);
         if self.st.recover.is_some() && self.st.project.is_some() {
             egui::Window::new("Recover unsaved work?").collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {

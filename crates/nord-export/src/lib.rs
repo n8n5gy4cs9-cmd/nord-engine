@@ -1250,7 +1250,7 @@ mod tests {
             ("assets/music/a.mp3".into(), 20 << 20),
             ("vendor/x.js".into(), 30 << 20),
         ]);
-        assert_eq!(n.len(), 1 + 0);
+        assert_eq!(n.len(), 1);
         assert!(n.iter().any(|s| s.contains("a.mp3")));
     }
 

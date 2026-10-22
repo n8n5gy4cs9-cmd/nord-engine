@@ -7,6 +7,7 @@ pub mod docs;
 pub mod events;
 pub mod export;
 pub mod fps;
+pub mod fun;
 pub mod graph;
 pub mod hierarchy;
 pub mod history;

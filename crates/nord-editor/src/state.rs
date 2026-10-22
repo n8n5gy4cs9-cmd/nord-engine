@@ -241,6 +241,9 @@ pub enum Action {
     ResetLayout,
     /// File ▸ Build Settings…
     BuildSettings,
+    NewScene,
+    Tutorial,
+    Screenshot,
     /// Window ▸ Layout presets ("default", "2d", "3d", "coding", "visual")
     Layout(String),
     /// Pause / resume the running game, or advance it one frame while paused
@@ -346,6 +349,9 @@ pub struct EditorState {
     pub history_ui: crate::panels::history::HistoryUi,
     pub project_ui: crate::panels::project::ProjectUi,
     pub build_ui: crate::panels::build::BuildUi,
+    pub fun_ui: crate::panels::fun::FunUi,
+    /// Inspector padlock: entity id the Inspector stays on
+    pub inspector_lock: Option<String>,
     pub layout_ui: crate::panels::layout::LayoutUi,
     pub sprite: crate::panels::sprite::SpriteUi,
     pub particles_ui: crate::panels::particles::ParticlesUi,
@@ -439,6 +445,8 @@ impl EditorState {
             history_ui: Default::default(),
             project_ui: Default::default(),
             build_ui: Default::default(),
+            fun_ui: Default::default(),
+            inspector_lock: None,
             layout_ui: Default::default(),
             sprite: Default::default(),
             particles_ui: Default::default(),
@@ -1190,6 +1198,11 @@ impl EditorState {
                         self.push(Action::ShowTab(crate::app::Tab::Graph));
                     }
                     _ => {}
+                }
+            }
+            Some("shot") => {
+                if let Some(d) = m["data"].as_str() {
+                    self.save_screenshot(d);
                 }
             }
             Some("select") => {

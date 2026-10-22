@@ -228,7 +228,7 @@ fn track_row(
     p.rect_filled(
         r,
         2.0,
-        Color32::from_gray(if ti % 2 == 0 { 30 } else { 34 }),
+        Color32::from_gray(if ti.is_multiple_of(2) { 30 } else { 34 }),
     );
     let strip = Rect::from_min_max(
         Pos2::new(r.left() + LEFT, r.top() + 2.0),

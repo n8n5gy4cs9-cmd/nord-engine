@@ -83,7 +83,7 @@ pub fn catalog() -> &'static [Group] {
         return c;
     }
     let mut w = CATALOG.write().unwrap();
-    *w.get_or_insert_with(|| Box::leak(parse_groups(&base_json()).into_boxed_slice()))
+    w.get_or_insert_with(|| Box::leak(parse_groups(&base_json()).into_boxed_slice()))
 }
 
 /// Merge addon groups (from `tools/export-aces.mjs --project`) into the catalog; `None` restores the engine catalog.
@@ -865,6 +865,7 @@ fn picker_window(st: &mut EditorState, ctx: &egui::Context, cx: &Ctx) {
     }
 }
 
+#[allow(clippy::needless_range_loop)] // `i` also builds the node path and indexes siblings
 fn nodes(ui: &mut Ui, list: &mut [Value], parent: &mut Path, cx: &Ctx, ops: &mut Vec<Op>) {
     for i in 0..list.len() {
         let mut path = parent.clone();
