@@ -2,6 +2,9 @@
 // Saves graphs/<name>.graph.json; the runtime (runtime/core/graph/runner.js) executes them. Spec: docs/GRAPH.md
 import { NODES, SLOT_COLORS, validate } from '/runtime/core/graph/nodes.js';
 
+// Chrome reports this harmless layout notification as an error; do not let it reach the editor console.
+addEventListener('error', (e) => { if (/ResizeObserver loop/.test(e.message)) e.stopImmediatePropagation(); });
+const ipc = (m) => fetch('/api/ipc', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(m) }).catch(() => {});
 const LG = window.LiteGraph;
 LG.low_quality_scale = 0.2; // keep titles and pin names visible when zoomed out (patched vendor/litegraph)
 const $ = (s) => document.querySelector(s);
@@ -55,10 +58,23 @@ canvas.background_image = null; canvas.render_shadows = false; canvas.render_can
 canvas.default_connection_color_byType = { ...SLOT_COLORS }; canvas.default_connection_color_byTypeOff = { ...SLOT_COLORS };
 LG.LGraphCanvas.link_type_colors = { ...SLOT_COLORS };
 graph.start?.();
-const resize = () => { const r = $('#stage').getBoundingClientRect(); const cv = $('#cv'); cv.width = r.width; cv.height = r.height; canvas.resize(r.width, r.height); canvas.setDirty(true, true); };
+// The canvas is absolutely positioned inside #stage, so resizing it can never change #stage's own size (no ResizeObserver loop).
+let resizeQueued = false;
+const resize = () => {
+  if (resizeQueued) return;
+  resizeQueued = true;
+  requestAnimationFrame(() => {
+    resizeQueued = false;
+    const r = $('#stage').getBoundingClientRect();
+    if (r.width < 10 || r.height < 10) return; // layout not ready: keep the last good size instead of blanking the canvas
+    canvas.resize(Math.floor(r.width), Math.floor(r.height));
+    canvas.setDirty(true, true);
+  });
+};
 new ResizeObserver(resize).observe($('#stage')); resize();
 
 const S = { vars: {}, dirty: false };
+window.__graph = { graph, canvas, state: S }; // for debugging in the browser console
 graph.onAfterChange = () => { S.dirty = true; };
 
 // ── palette ──
@@ -121,6 +137,19 @@ function check() {
   for (const p of probs) el('li', { textContent: p }, ul);
   if (!probs.length) el('li', { textContent: 'No problems found.' }, ul);
   status(probs.length ? `${probs.length} problem(s)` : 'Graph looks good', !!probs.length);
+  attachedCheck(ul);
+}
+/** A graph only runs when a scene (settings.graphs) or an entity (graph component) uses it. Say so, and offer a one-click fix. */
+async function attachedCheck(ul) {
+  const file = norm($('#file').value || 'main');
+  let hits = null;
+  try { const r = await fetch('/api/usages?q=' + encodeURIComponent(file)); if (r.ok) hits = (await r.json()).filter((h) => !/^graphs\//.test(h.file)); } catch { /* plain static server */ }
+  if (hits === null) return;
+  const li = el('li', {}, ul);
+  if (hits.length) { li.textContent = `✓ Used by ${hits.map((h) => h.file).filter((f, i, a) => a.indexOf(f) === i).join(', ')}`; return; }
+  li.className = 'bad'; li.textContent = '⚠ Nothing runs this graph yet. Add it to the current scene (or add a "graph" component to an entity), then Play. ';
+  const b = el('button', { textContent: 'Add to current scene' }, li);
+  b.onclick = () => { ipc({ t: 'attach-graph', file }); status(`Added ${file} to the scene settings. Save the scene and press Play; Log output appears in the editor Console.`); b.disabled = true; };
 }
 $('#check').onclick = check;
 
@@ -174,7 +203,7 @@ async function save() {
   const name = norm($('#file').value || 'main');
   const r = await fetch('/api/fpsc/save?path=' + encodeURIComponent(name), { method: 'POST', headers: { 'x-nord-fpsc': '1' }, body: JSON.stringify(serialize(), null, 1) + '\n' });
   if (!r.ok) return status('Save failed: ' + await r.text(), true);
-  $('#file').value = name; S.dirty = false; status(`Saved ${name} — attach it with the "graph" component (file: ${name}) or scene settings "graphs"`); list();
+  $('#file').value = name; S.dirty = false; status(`Saved ${name}`); list(); check();
 }
 $('#new').onclick = () => { if (S.dirty && !confirm('Discard unsaved changes?')) return; graph.clear(); S.vars = {}; put('event/start', 60, 80); drawVars(); S.dirty = false; fit(); };
 $('#open').onclick = () => { if (S.dirty && !confirm('Discard unsaved changes?')) return; openFile(norm($('#file').value || 'main')); };

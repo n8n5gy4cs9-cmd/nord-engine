@@ -1080,6 +1080,32 @@ impl EditorState {
                     }
                 }
             }
+            // Graph editor: "Add to current scene" puts the file into scene.settings.graphs so Play runs it
+            Some("attach-graph") => {
+                if let Some(file) = m["file"].as_str().map(String::from) {
+                    if file.starts_with("graphs/") && !file.contains("..") {
+                        let f = file.clone();
+                        let changed = self.edit_scene("Attach graph", None, |s| {
+                            let arr = s
+                                .settings
+                                .extra
+                                .entry("graphs")
+                                .or_insert_with(|| json!([]));
+                            if let Some(a) = arr.as_array_mut() {
+                                if !a.iter().any(|v| v.as_str() == Some(&f)) {
+                                    a.push(json!(f));
+                                }
+                            }
+                        });
+                        if changed {
+                            self.push(Action::SaveAll);
+                            self.toast(format!("{file} added to the scene — press Play"));
+                        } else {
+                            self.toast("Open a scene first, or the graph is already attached");
+                        }
+                    }
+                }
+            }
             Some("open-tab") => {
                 let file = m["file"].as_str().map(String::from);
                 match m["tab"].as_str() {

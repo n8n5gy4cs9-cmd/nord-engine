@@ -54,6 +54,9 @@ Try these, saving and playing after each:
 * **Spawn effects:** use **Spawn Prefab** at the coin's position (create a prefab first).
 * **A timer:** add **On Timer** (1 second) ▸ **Add To Variable** `time`, and show it with **Set UI Variable**.
 
+## Log what is happening
+Add a **Log** node (Game category) after **Add To Variable** and connect its *message* input to the variable's *value* output. Save, press **Play**, collect a coin: the number appears in the editor **Console** (use the *level* widget for warn or error). If it does not, the graph is not attached: the **Problems** list says so and offers **Add to current scene**. More in [Logging](performance.html#logging).
+
 ## 5. Connect a new button
 Open `ui/hud.ui.json` in the UI Designer, add a button, set its **Action** to `quit`. The **Actions** tab shows *⚠ nothing listens*. In the Graph tab add **On UI Action** (`quit`) ▸ **Load Scene** (`scenes/menu.scene.json`). Back in the Designer, Refresh the Actions tab: it now shows `graphs/…:NN` with an **Open** button.
 

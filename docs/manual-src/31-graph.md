@@ -88,3 +88,14 @@ Open **New project ▸ Node graph: coin collector** (or `examples/nodegraph-coin
 
 ## See also
 [Node graph reference](graph-reference.html) · [T46 Coin Collector](tut-t46-node-graph-coins.html) · [UI Designer](ui-designer.html) · [Event sheets](event-sheets.html) · [Scripting](scripting.html)
+
+## Troubleshooting: "my graph does nothing" {#troubleshooting}
+| Symptom | Fix |
+|---|---|
+| Nothing happens, no Console output | The graph is not attached. Validate shows **"Nothing runs this graph yet"**: press **Add to current scene**, **save the scene (Cmd/Ctrl+S)** and **Play**. Or add the **graph** component to an entity. |
+| Log node prints nothing | Make sure a flow wire (white arrow) reaches it from an event node, and that event can fire (see the table above). Output appears in the editor **Console** tab while playing; see [Logging](performance.html#logging). |
+| "*never runs*" in Problems | That node is not connected to any red event node. |
+| *On Input Action* never fires | The action name must exist in the project's input settings (`jump`, `fire`, …). |
+| An action from a UI button is ignored | Names must match exactly: the button's **Action** and the **On UI Action** node. |
+| Errors in red `graph graphs/x.graph.json` | The message names the node. Fix it; other chains keep running. |
+

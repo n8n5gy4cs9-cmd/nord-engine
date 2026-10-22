@@ -36,5 +36,55 @@
 <li>Blank canvas on export? Serve over http (not <code>file://</code>) unless you used <code>--single-file</code>.</li>
 <li>Audio silent? It needs a first click/key — queued sounds then play.</li>
 </ol>
-<div class="pager"><a href="export.html"><small>← Previous</small>Export &amp; hosting</a><a href="reference.html"><small>Next →</small>Reference overview</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#rules-of-thumb">Rules of thumb </a><a href="#measuring">Measuring </a><a href="#timing-facts">Timing facts </a><a href="#debugging-checklist">Debugging checklist </a></aside></div>
+<h2 id="logging">Logging: where does my console.log go?<a class="anchor" href="#logging">#</a></h2>
+<p>Print from anywhere; the line appears in the <strong>editor&#39;s Console tab</strong> while you play from the editor, and in the browser&#39;s developer console when you open the game in a browser.</p>
+<table>
+<thead>
+<tr>
+<th>You write</th>
+<th>Where</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>console.log(&#39;hp&#39;, hp)</code></td>
+<td>any script, module or HTML app</td>
+<td>Objects are shown as JSON. <code>console.warn</code> / <code>console.error</code> are coloured in the editor Console (tick <strong>Warn</strong> / <strong>Error</strong> filters).</td>
+</tr>
+<tr>
+<td><code>this.log(&#39;hit&#39;, other.name)</code></td>
+<td>inside a <code>NordScript</code></td>
+<td>Same, with the script&#39;s class name in front: <code>[Player] hit Coin 3</code>. Also <code>this.warn(...)</code>, <code>this.error(...)</code>.</td>
+</tr>
+<tr>
+<td><code>game.log(...)</code></td>
+<td>anywhere you have <code>game</code></td>
+<td>Plain alias for <code>console.log</code>.</td>
+</tr>
+<tr>
+<td><strong>Log</strong> node (set <em>level</em> to warn or error)</td>
+<td>node graphs</td>
+<td>Prints <code>[graph graphs/player.graph.json] …</code>.</td>
+</tr>
+<tr>
+<td>The debugger&#39;s expression console</td>
+<td>event sheets and any game</td>
+<td>Evaluate values live: see <a href="debugger.html">Debugger</a>.</td>
+</tr>
+<tr>
+<td>Uncaught errors</td>
+<td>everywhere</td>
+<td>Always shown in red with <code>file:line</code>; click the line to open it.</td>
+</tr>
+</tbody></table>
+<p><strong>It only prints if the code actually runs.</strong> The commonest reasons for an empty Console:</p>
+<ol>
+<li><strong>The script or graph is not attached.</strong> A script file does nothing until an entity lists it (Inspector ▸ Scripts). A graph does nothing until a scene lists it in <code>settings.graphs</code> or an entity has the <strong>graph</strong> component. The Graph editor tells you (<em>&quot;Nothing runs this graph yet&quot;</em>) and its <strong>Add to current scene</strong> button fixes it; then save the scene and press <strong>Play</strong>.</li>
+<li><strong>You are looking at the wrong place.</strong> Press <strong>Play</strong> in the editor (Game tab) and read the editor <strong>Console</strong>. A game opened in a separate browser tab prints to that tab&#39;s developer console instead.</li>
+<li><strong>A filter is hiding it.</strong> Check <strong>Info/Warn/Error/Build</strong> and the <strong>Filter…</strong> box.</li>
+<li><strong>The code path is never reached.</strong> <em>On Start</em> fires on the first frame; <em>On Input Action</em> needs a key actually bound to that action in the project&#39;s input settings; an <code>if</code> that is false prints nothing. Add a log line at the very top (<code>console.log(&#39;script started&#39;)</code>) and work forward.</li>
+<li><strong>An error stops it earlier.</strong> Look for a red line above: one failing node or script method stops that chain, not the whole game.</li>
+<li><strong>Old page.</strong> Saving a script hot-reloads it, but a changed graph/scene reloads the game; if you edited files outside the editor, press <strong>Reload</strong> in the toolbar.</li>
+</ol>
+<div class="pager"><a href="export.html"><small>← Previous</small>Export &amp; hosting</a><a href="reference.html"><small>Next →</small>Reference overview</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#rules-of-thumb">Rules of thumb </a><a href="#measuring">Measuring </a><a href="#timing-facts">Timing facts </a><a href="#debugging-checklist">Debugging checklist </a><a href="#logging">Logging: where does my console.log go? </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

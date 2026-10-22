@@ -14,6 +14,10 @@ export class NordScript {
   get physics() { return this.game.physics; }
   get save() { return this.game.save; }
   get rng() { return this.game.rng; }
+  /** Console output with the script name in front; shows in the browser console and in the editor's Console tab. */
+  log(...a) { console.log(`[${this.constructor.name}]`, ...a); }
+  warn(...a) { console.warn(`[${this.constructor.name}]`, ...a); }
+  error(...a) { console.error(`[${this.constructor.name}]`, ...a); }
   tween(target, to, opts) { return this.scene.scheduler.tween(target, to, opts); }
   after(sec, fn) { return this.scene.scheduler.after(sec, fn); }
   every(sec, fn) { return this.scene.scheduler.every(sec, fn); }

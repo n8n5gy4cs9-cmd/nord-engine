@@ -119,7 +119,7 @@ export class Graph {
       fire: (ordinal) => g.#follow(nd, ordinal, run),
       ent: (v) => (v == null || v === '' ? g.entity : typeof v === 'string' ? (g.scene ?? g.game.scene).find(v) ?? (g.scene ?? g.game.scene).findById(v) : v),
       wait: (sec) => new Promise((res) => { if (g.stopped) return res(); g.waiters.add({ left: sec, done: res }); }),
-      log: (v) => { console.log(`[graph ${g.name}]`, v); g.game.events.emit('graph:log', { graph: g.name, value: v }); },
+      log: (v, level = 'log') => { console[level === 'warn' || level === 'error' ? level : 'log'](`[graph ${g.name}]`, v); g.game.events.emit('graph:log', { graph: g.name, value: v, level }); },
       js: (code, scope, expr) => {
         const key = (expr ? 'e:' : 's:') + code;
         let f = g.jsCache.get(key);

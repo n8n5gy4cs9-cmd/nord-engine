@@ -11,7 +11,7 @@ aside{overflow:auto;padding:8px;background:var(--panel)}#left{border-right:1px s
 h3{margin:10px 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;opacity:.7}
 .cat{margin:6px 0 2px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;opacity:.65}
 .item{padding:3px 6px;border-radius:4px;cursor:grab;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.item:hover{background:#434c5e}
-#stage{position:relative;background:#262b35}#cv{display:block;width:100%;height:100%}
+#stage{position:relative;background:#262b35;overflow:hidden;min-width:0;min-height:0}#cv{position:absolute;inset:0;display:block;width:100%;height:100%}
 #hint{position:absolute;left:10px;bottom:8px;opacity:.55;font-size:12px;pointer-events:none}
 #vars .v{display:grid;grid-template-columns:1fr 1fr 22px;gap:4px;margin:3px 0}#vars input{width:100%}
 #sel{font-size:12px;line-height:1.5}#sel small{display:block;opacity:.7}

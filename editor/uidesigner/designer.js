@@ -1,6 +1,7 @@
 // Nord UI Designer — edits ui/*.ui.json (spec: docs/UI_SCENES.md). The preview is the real runtime (runtime/core/uiscene.js).
 import { UIManager, blank, validate, compileSkin, NODE_TYPES, CONTAINERS } from '/runtime/core/uiscene.js';
 
+addEventListener('error', (e) => { if (/ResizeObserver loop/.test(e.message)) e.stopImmediatePropagation(); });
 const $ = (s) => document.querySelector(s);
 const el = (tag, props = {}, parent) => { const e = Object.assign(document.createElement(tag), props); parent?.appendChild(e); return e; };
 const ANCHORS = ['', 'tl', 't', 'tr', 'l', 'c', 'r', 'bl', 'b', 'br', 'fill'];

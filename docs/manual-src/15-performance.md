@@ -33,3 +33,24 @@ The scene runs `fixedUpdate` at a fixed 60 Hz with at most 5 catch-up steps per 
 2. `nord check` — missing files, duplicate ids, bad scripts.
 3. Blank canvas on export? Serve over http (not `file://`) unless you used `--single-file`.
 4. Audio silent? It needs a first click/key — queued sounds then play.
+
+## Logging: where does my console.log go? {#logging}
+Print from anywhere; the line appears in the **editor's Console tab** while you play from the editor, and in the browser's developer console when you open the game in a browser.
+
+| You write | Where | Notes |
+|---|---|---|
+| `console.log('hp', hp)` | any script, module or HTML app | Objects are shown as JSON. `console.warn` / `console.error` are coloured in the editor Console (tick **Warn** / **Error** filters). |
+| `this.log('hit', other.name)` | inside a `NordScript` | Same, with the script's class name in front: `[Player] hit Coin 3`. Also `this.warn(...)`, `this.error(...)`. |
+| `game.log(...)` | anywhere you have `game` | Plain alias for `console.log`. |
+| **Log** node (set *level* to warn or error) | node graphs | Prints `[graph graphs/player.graph.json] …`. |
+| The debugger's expression console | event sheets and any game | Evaluate values live: see [Debugger](debugger.html). |
+| Uncaught errors | everywhere | Always shown in red with `file:line`; click the line to open it. |
+
+**It only prints if the code actually runs.** The commonest reasons for an empty Console:
+1. **The script or graph is not attached.** A script file does nothing until an entity lists it (Inspector ▸ Scripts). A graph does nothing until a scene lists it in `settings.graphs` or an entity has the **graph** component. The Graph editor tells you (*"Nothing runs this graph yet"*) and its **Add to current scene** button fixes it; then save the scene and press **Play**.
+2. **You are looking at the wrong place.** Press **Play** in the editor (Game tab) and read the editor **Console**. A game opened in a separate browser tab prints to that tab's developer console instead.
+3. **A filter is hiding it.** Check **Info/Warn/Error/Build** and the **Filter…** box.
+4. **The code path is never reached.** *On Start* fires on the first frame; *On Input Action* needs a key actually bound to that action in the project's input settings; an `if` that is false prints nothing. Add a log line at the very top (`console.log('script started')`) and work forward.
+5. **An error stops it earlier.** Look for a red line above: one failing node or script method stops that chain, not the whole game.
+6. **Old page.** Saving a script hot-reloads it, but a changed graph/scene reloads the game; if you edited files outside the editor, press **Reload** in the toolbar.
+

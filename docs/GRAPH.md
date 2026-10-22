@@ -228,7 +228,7 @@ An error in one node is reported to the Console and the editor overlay (as `grap
 | **Set Time Scale** *(flow → then)* | `game/timescale` | scale:number=1 | — | — |
 | **Emit Game Event** *(flow → then)* | `game/emit` | name:string="my-event", data:any | — | — |
 | **Emit Entity Event** *(flow → then)* | `game/emit-entity` | entity:entity, name:string="click", data:any | — | — |
-| **Log** *(flow → then)* | `game/log` | message:any | — | — |
+| **Log** *(flow → then)* | `game/log` | message:any | — | level (log|warn|error) |
 | **Open URL** *(flow → then)* | `game/quit-browser` | url:string="…://" | — | — |
 
 ### Advanced

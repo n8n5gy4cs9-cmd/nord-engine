@@ -42,6 +42,8 @@ export class Game {
     this._scenePath = null;
   }
   warn(m) { console.warn(m); }
+  /** `game.log('score', 5)` — console + editor Console tab (same as console.log). */
+  log(...a) { console.log(...a); }
   reportError(err, script, method) { this.errors.push({ err, script, method }); this.onError(err, script, method); this.events.emit('error', { err, script, method }); }
   loadJSON(path) { return this.fetchJSON(path); }
   async loadScript(path, { fresh = false } = {}) {

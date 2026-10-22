@@ -197,7 +197,7 @@ flow('game/pause', 'Pause / Resume', 'Game', [['paused', 'boolean', true]], [], 
 flow('game/timescale', 'Set Time Scale', 'Game', [['scale', 'number', 1]], [], (c) => { c.game.timeScale = n(c.in(0), 1); });
 flow('game/emit', 'Emit Game Event', 'Game', [['name', 'string', 'my-event'], ['data', 'any']], [], (c) => { c.game.events.emit(String(c.in(0)), c.in(1)); });
 flow('game/emit-entity', 'Emit Entity Event', 'Game', [['entity', 'entity'], ['name', 'string', 'click'], ['data', 'any']], [], (c) => { c.ent(c.in(0))?.emit(String(c.in(1)), c.in(2)); });
-flow('game/log', 'Log', 'Game', [['message', 'any']], [], (c) => { c.log(c.in(0)); });
+flow('game/log', 'Log', 'Game', [['message', 'any']], [], (c) => { c.log(c.in(0), c.prop('level')); }, { level: ['log', 'warn', 'error'] });
 flow('game/quit-browser', 'Open URL', 'Game', [['url', 'string', 'https://']], [], (c) => { const u = String(c.in(0)); if (/^https?:\/\//.test(u)) globalThis.open?.(u, '_blank', 'noopener'); });
 
 // ───────── Advanced (escape hatches: reach any property, method or JS) ─────────
