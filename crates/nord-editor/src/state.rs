@@ -70,6 +70,10 @@ pub struct Settings {
     /// Opt-in saved example copies and persistent embedded-browser storage for testing.
     pub use_cached_content: bool,
     pub snap: bool,
+    /// Gizmo space: false = Global, true = Local (Unity's Pivot/Global toggles)
+    pub space_local: bool,
+    /// Pivot handle position: false = Pivot, true = Center
+    pub pivot_center: bool,
     pub snap_move: f64,
     pub snap_rot: f64,
     pub snap_scale: f64,
@@ -106,6 +110,8 @@ impl Default for Settings {
             autosave_secs: 30,
             use_cached_content: false,
             snap: false,
+            space_local: false,
+            pivot_center: false,
             snap_move: 1.0,
             snap_rot: 15.0,
             snap_scale: 0.1,
@@ -208,6 +214,10 @@ pub enum Action {
     Delete,
     AddEntity(Option<String>),
     Focus,
+    /// Frame all (Shift+F): fit every entity in the Scene view
+    FocusAll,
+    ToggleSpace,
+    TogglePivot,
     SetTool(Tool),
     Play,
     /// Run only the scene open in the editor (F6)
@@ -1093,6 +1103,8 @@ impl EditorState {
             "snapRot": self.settings.snap_rot,
             "snapScale": self.settings.snap_scale,
             "grid": self.settings.grid,
+            "local": self.settings.space_local,
+            "center": self.settings.pivot_center,
         })
     }
 
@@ -1154,8 +1166,14 @@ impl EditorState {
                 }
             }
             Some("select") => {
-                let id = m["id"].as_str().map(String::from);
-                self.select(id);
+                if let Some(ids) = m["ids"].as_array() {
+                    self.selection = ids
+                        .iter()
+                        .filter_map(|v| v.as_str().map(String::from))
+                        .collect();
+                } else {
+                    self.select(m["id"].as_str().map(String::from));
+                }
             }
             Some("cam") => {
                 if let (Some(x), Some(y), Some(z)) =
@@ -1218,6 +1236,7 @@ impl EditorState {
                     ("e", false) => Some(Action::SetTool(Tool::Rotate)),
                     ("r", false) => Some(Action::SetTool(Tool::Scale)),
                     ("t", false) => Some(Action::SetTool(Tool::Rect)),
+                    ("f", false) if shift => Some(Action::FocusAll),
                     ("f", false) => Some(Action::Focus),
                     ("delete" | "backspace", false) => Some(Action::Delete),
                     ("z", true) if shift => Some(Action::Redo),

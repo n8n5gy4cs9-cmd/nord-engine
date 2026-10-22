@@ -28,8 +28,8 @@ export async function init() {
   addEventListener('pointerup', onUp);
   canvas.addEventListener('wheel', onWheel, { passive: false });
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
-  addEventListener('keydown', (e) => { if (e.code === 'Space') { space = true; e.preventDefault(); } });
-  addEventListener('keyup', (e) => { if (e.code === 'Space') space = false; });
+  addEventListener('keydown', (e) => { ctrlHeld = e.ctrlKey || e.metaKey; if (e.code === 'Space') { space = true; e.preventDefault(); } });
+  addEventListener('keyup', (e) => { ctrlHeld = e.ctrlKey || e.metaKey; if (e.code === 'Space') space = false; });
 }
 
 // ---------- transforms ----------
@@ -323,8 +323,20 @@ export function draw() {
   if (d) { const [x0, y0] = toScreen(0, 0); ctx.strokeStyle = 'rgba(79,163,255,.6)'; ctx.lineWidth = 1; ctx.strokeRect(x0 + .5, y0 + .5, d.width * cam.zoom, d.height * cam.zoom); }
   drawTilemaps();
   for (const it of items) drawEntity(it);
+  for (const id of state.selection.slice(1)) {
+    const o = items.find((i) => i.e.id === id);
+    if (!o) continue;
+    const [ox, oy] = toScreen(o.w.x, o.w.y), { w: ow, h: oh } = sizeOf(o.e);
+    ctx.save(); ctx.translate(ox, oy); ctx.rotate(o.w.rot * R); ctx.scale(cam.zoom * o.w.sx, cam.zoom * o.w.sy);
+    ctx.strokeStyle = '#7fc0ff'; ctx.setLineDash([4, 3]); ctx.lineWidth = 1.5 / (cam.zoom * Math.abs(o.w.sx || 1)); ctx.strokeRect(-ow / 2, -oh / 2, ow, oh);
+    ctx.restore();
+  }
   drawGuides();
   drawGizmo();
+  if (drag?.kind === 'marquee') {
+    ctx.fillStyle = 'rgba(79,163,255,.15)'; ctx.strokeStyle = '#4fa3ff'; ctx.lineWidth = 1;
+    ctx.fillRect(drag.sx, drag.sy, drag.x - drag.sx, drag.y - drag.sy); ctx.strokeRect(drag.sx + .5, drag.sy + .5, drag.x - drag.sx, drag.y - drag.sy);
+  }
   drawRulers();
   const hudEl = document.getElementById('hud');
   const [mx, my] = toWorld(mouse.x, mouse.y);
@@ -353,7 +365,8 @@ function handleAt(sx, sy) {
   return null;
 }
 
-const snapTo = (v, step) => (state.settings.snap && step > 0 ? Math.round(v / step) * step : v);
+let ctrlHeld = false; // Unity: hold Ctrl/Cmd to toggle snapping while dragging
+const snapTo = (v, step) => ((state.settings.snap !== ctrlHeld) && step > 0 ? Math.round(v / step) * step : v);
 
 function startDrag(kind, it, sx, sy) {
   const e = it.e;
@@ -367,7 +380,7 @@ function onDown(ev) {
   const r = canvas.getBoundingClientRect();
   const sx = ev.clientX - r.left, sy = ev.clientY - r.top;
   mouse = { x: sx, y: sy };
-  if (ev.button === 1 || ev.button === 2 || (ev.button === 0 && (space || state.settings.tool === 'hand'))) {
+  if (ev.button === 1 || ev.button === 2 || (ev.button === 0 && (space || ev.altKey || state.settings.tool === 'hand'))) {
     drag = { kind: 'pan', sx, sy, cx: cam.x, cy: cam.y };
     canvas.setPointerCapture?.(ev.pointerId);
     return;
@@ -384,14 +397,18 @@ function onDown(ev) {
   const it = selected();
   if (h && it) { startDrag(h, it, sx, sy); return; }
   const id = pickAt(sx, sy);
-  if (ev.shiftKey && id) {
+  const add = ev.shiftKey || ev.ctrlKey || ev.metaKey;
+  if (!id) { drag = { kind: 'marquee', sx, sy, x: sx, y: sy, add, base: add ? [...state.selection] : [] }; if (!add) { state.selection = []; send({ t: 'select', id: null, ids: [] }); } draw(); return; }
+  if (add) {
     const sel = new Set(state.selection);
     sel.has(id) ? sel.delete(id) : sel.add(id);
     state.selection = [...sel];
+  } else if (!state.selection.includes(id)) {
+    state.selection = [id];
   } else {
-    state.selection = id ? [id] : [];
+    state.selection = [id, ...state.selection.filter((s) => s !== id)]; // keep the group, make the clicked one primary
   }
-  send({ t: 'select', id: state.selection[0] ?? null });
+  send({ t: 'select', id: state.selection[0] ?? null, ids: state.selection });
   draw();
   const picked = selected();
   if (picked && state.settings.tool === 'move') startDrag('free', picked, sx, sy);
@@ -408,7 +425,9 @@ function onMove(ev) {
   const r = canvas.getBoundingClientRect();
   const sx = ev.clientX - r.left, sy = ev.clientY - r.top;
   mouse = { x: sx, y: sy };
+  ctrlHeld = ev.ctrlKey || ev.metaKey;
   if (!drag) { draw(); return; }
+  if (drag.kind === 'marquee') { drag.x = sx; drag.y = sy; draw(); return; }
   if (drag.kind === 'guide') { const [wx, wy] = toWorld(sx, sy); drag.value = Math.round(drag.axis === 'x' ? wx : wy); drag.overRuler = drag.axis === 'x' ? sx < RULER : sy < RULER; draw(); return; }
   if (drag.kind === 'pan') {
     cam.x = drag.cx - (sx - drag.sx) / cam.zoom; cam.y = drag.cy - (sy - drag.sy) / cam.zoom; draw(); reportCam(); return;
@@ -451,6 +470,16 @@ function onMove(ev) {
 }
 
 function onUp() {
+  if (drag?.kind === 'marquee') {
+    const m = drag; drag = null;
+    if (Math.hypot(m.x - m.sx, m.y - m.sy) > 3) {
+      const [ax, ay] = toWorld(Math.min(m.sx, m.x), Math.min(m.sy, m.y)), [bx, by] = toWorld(Math.max(m.sx, m.x), Math.max(m.sy, m.y));
+      const hit = items.filter((i) => i.w.x >= ax && i.w.x <= bx && i.w.y >= ay && i.w.y <= by).map((i) => i.e.id);
+      state.selection = [...new Set([...m.base, ...hit])];
+      send({ t: 'select', id: state.selection[0] ?? null, ids: state.selection });
+    }
+    draw(); return;
+  }
   if (drag?.kind === 'guide') {
     const g = drag; drag = null;
     if (g.value != null || g.from != null) send({ t: 'guide', axis: g.axis, from: g.from, to: g.overRuler || g.value == null ? null : g.value });
@@ -483,7 +512,15 @@ export function setScene() {
 }
 export function setSelection() { draw(); }
 export function setSettings() { draw(); }
-export function focus() {
+export function focus(all) {
+  if (all || !selected()) {
+    if (!items.length) return;
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const i of items) { const { w, h } = sizeOf(i.e); const rx = (w * i.w.sx) / 2, ry = (h * i.w.sy) / 2; x0 = Math.min(x0, i.w.x - rx); x1 = Math.max(x1, i.w.x + rx); y0 = Math.min(y0, i.w.y - ry); y1 = Math.max(y1, i.w.y + ry); }
+    cam.x = (x0 + x1) / 2; cam.y = (y0 + y1) / 2;
+    cam.zoom = Math.min(8, Math.max(0.05, Math.min(W / Math.max(x1 - x0, 16), H / Math.max(y1 - y0, 16)) * 0.85));
+    draw(); reportCam(); return;
+  }
   const it = selected();
   if (!it) return;
   cam.x = it.w.x; cam.y = it.w.y;

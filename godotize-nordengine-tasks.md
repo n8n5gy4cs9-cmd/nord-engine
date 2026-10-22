@@ -9,12 +9,12 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "â€
 - [x] G0-3 Menu bar: File / Edit / Assets / GameObject / Component / Window (was View) / Project / Help like Unity
 - [~] G0-4 Shortcut table in Settings matching Unity defaults (read-only list done; rebinding todo)
 ## G1 Scene view
-- [ ] G1-1 Navigation: Alt+LMB orbit, MMB/Alt+Cmd pan, wheel zoom, RMB fly + WASD (3D); pan/zoom (2D)
+- [x] G1-1 Navigation: Alt+LMB orbit, Alt+Cmd+LMB / MMB pan, wheel zoom, RMB orbit + WASDQE fly (3D); Alt+LMB / MMB pan, wheel zoom (2D) (JS unverified in a browser: no Playwright here)
 - [~] G1-2 Tools Q hand, W move, E rotate, R scale, T rect (keys, toolbar, 2D+3D viewport done; dedicated rect handles todo)
-- [ ] G1-3 Local/Global + Pivot/Center toggles
-- [ ] G1-4 Snapping (hold Ctrl, step settings) incl. vertex-ish snap to grid
-- [ ] G1-5 Multi-select, marquee select, Shift/Ctrl add/toggle, selection outline
-- [ ] G1-6 Frame selected (F), Frame all, 2D/3D mode switch, view cube/axis gizmo
+- [~] G1-3 Local/Global (3D move/rotate gizmos follow the object) + Pivot/Center toolbar toggles; Center is stored but has no effect until multi-object gizmos exist
+- [x] G1-4 Snapping: hold Ctrl/Cmd to toggle snap while dragging (2D + 3D); step values from settings (vertex snap not done)
+- [~] G1-5 Multi-select: Shift/Ctrl/Cmd toggle (2D+3D), 2D marquee, selection outlines (3D mesh outline, 2D dashed); gizmo/drag still moves only the primary object; 3D marquee todo
+- [~] G1-6 Frame selected (F) and Frame all (Shift+F, Edit menu, palette) done; 2D/3D mode switch follows the project type; view cube/axis gizmo todo
 - [ ] G1-7 Drag assets from Project into Scene view (sprite, model, prefab, audio) with ghost preview
 - [ ] G1-8 Draw modes / gizmo toggles (grid, icons, colliders, lights)
 ## G2 Hierarchy and Inspector

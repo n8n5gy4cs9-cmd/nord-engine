@@ -103,7 +103,30 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 }
             }
             ui.separator();
-            if icons::button(ui, "magnet", "Snap", st.settings.snap).clicked() {
+            let (sp, sp_tip) = if st.settings.space_local {
+                ("Local", "Gizmo space: Local (click for Global)")
+            } else {
+                ("Global", "Gizmo space: Global (click for Local)")
+            };
+            if ui.small_button(sp).on_hover_text(sp_tip).clicked() {
+                st.push(Action::ToggleSpace);
+            }
+            let (pv, pv_tip) = if st.settings.pivot_center {
+                ("Center", "Pivot: Center (click for Pivot)")
+            } else {
+                ("Pivot", "Pivot: Pivot (click for Center)")
+            };
+            if ui.small_button(pv).on_hover_text(pv_tip).clicked() {
+                st.push(Action::TogglePivot);
+            }
+            if icons::button(
+                ui,
+                "magnet",
+                "Snap (hold Ctrl for temporary snap)",
+                st.settings.snap,
+            )
+            .clicked()
+            {
                 st.push(Action::ToggleSnap);
             }
             if icons::button(ui, "grid-3x3", "Grid", st.settings.grid).clicked() {

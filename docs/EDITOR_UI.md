@@ -39,10 +39,10 @@ The editor's dev server always serves project files with `Cache-Control: no-stor
 - Project hub: New (template picker), Open, Recent, Examples, Tutorials.
 - Code tab: CodeMirror tabs per file, minimap-free, command palette (Cmd+K), quick-open (Cmd+P), Save (Cmd+S) → hot reload.
 - Asset thumbnails: images (real), spritesheets (first frame + badge), audio (waveform), models (rendered), scripts/scenes (icon).
-- Undo/redo (Cmd+Z / Shift+Cmd+Z) across hierarchy/inspector/viewport. Copy/paste/duplicate (Cmd+D). Delete. F = focus.
+- Undo/redo (Cmd+Z / Shift+Cmd+Z) across hierarchy/inspector/viewport. Copy/paste/duplicate (Cmd+D). Delete. F = frame selected, Shift+F = frame all. Scene view: Alt+LMB orbit (Alt+Cmd+LMB pan), MMB pan, wheel zoom; hold Ctrl/Cmd to toggle snapping; Shift/Ctrl+click toggles multi-select; drag on empty space = marquee (2D); toolbar Local/Global + Pivot/Center.
 - Console: log/warn/error from game iframe + build output, click error → open file:line.
 - Library tab: search → preview → "Insert" (adds script/prefab/component to selection or project).
-- Shortcuts (mac): Cmd+P quick open, Cmd+S save, Cmd+R play, Cmd+. stop, W/E/R gizmos, Cmd+1/2/3 panels.
+- Shortcuts (mac): Cmd+P quick open, Cmd+S save, Cmd+R play, Cmd+. stop, Q/W/E/R/T tools (hand/move/rotate/scale/rect), Cmd+1/2/3 panels.
 
 ## Code editor (native, in `crates/nord-editor/src/code/`)
 Built on `egui::TextEdit::multiline` + custom `layouter` using our own tokenizer (`code/highlight.rs`, colours from `themes.json`; ADR-016). Added on top: tabs + dirty markers, line-number gutter, current-line highlight,
@@ -112,7 +112,7 @@ Welcome starts with a curated Featured set. Starter templates and samples indepe
 
 Creator game templates **Two Floors — Dungeon Creator** and **Tiny Tank Patrol — NES-style Arena** appear under Featured/2D. Projects with any `levels/*.level2d.json` open directly on 2D Level. Level exposes the controller path and its attributes JSON; object Inspector exposes actor-specific scripts. Choose another bank sprite, reselect an object and use **Use bank sprite** to replace its art while keeping values/scripts. Full manual tutorials T28–T30 cover machine, dungeon and tank workflows.
 
-**Graph tab:** litegraph canvas + Nord nodes (`editor/graph/`), see `docs/GRAPH.md`. **Hierarchy:** Create menu (presets), F2 rename, Create empty parent. **View ▸ Layout:** presets. **Toolbar:** Pause / Step while playing.
+**Graph tab:** litegraph canvas + Nord nodes (`editor/graph/`), see `docs/GRAPH.md`. **Hierarchy:** Create menu (presets), F2 rename, Create empty parent. **Window ▸ Layout:** presets (Unity 2 by 3 / Wide / Tall too). Menu bar: File, Edit, Assets, GameObject, Component, Window, Project, Help. **Toolbar:** Pause / Step while playing.
 
 **UI Designer tab:** embedded page `editor/uidesigner/` (like FPS/2D Level): palette, tree with drag reorder, live preview using the real runtime, property inspector, JSON tab, undo/redo, saves `ui/*.ui.json`. See `docs/UI_SCENES.md`.
 

@@ -44,7 +44,7 @@ export function onMessage(m) {
       break;
     case 'select': state.selection = m.ids ?? (m.id ? [m.id] : []); backend?.setSelection?.(); break;
     case 'settings': Object.assign(state.settings, m); delete state.settings.t; backend?.setSettings?.(); break;
-    case 'focus': backend?.focus?.(); break;
+    case 'focus': backend?.focus?.(!!m.all); break;
     case 'view': backend?.setView?.(m); break;
     case 'thumbs': backend?.thumbs?.(m.items ?? []); break;
     default: break;

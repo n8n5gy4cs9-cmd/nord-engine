@@ -402,7 +402,9 @@ impl App {
                         st.push(Action::SetTool(t));
                     }
                 }
-                if i.consume_key(Modifiers::NONE, Key::F) {
+                if i.consume_key(Modifiers::SHIFT, Key::F) {
+                    st.push(Action::FocusAll);
+                } else if i.consume_key(Modifiers::NONE, Key::F) {
                     st.push(Action::Focus);
                 }
             }
@@ -600,6 +602,9 @@ impl App {
             Action::Delete => st.delete_selected(),
             Action::AddEntity(p) => st.add_entity(p.or_else(|| st.selection.first().cloned())),
             Action::Focus => st.send_viewport(serde_json::json!({"t":"focus"})),
+            Action::FocusAll => st.send_viewport(serde_json::json!({"t":"focus","all":true})),
+            Action::ToggleSpace => st.settings.space_local = !st.settings.space_local,
+            Action::TogglePivot => st.settings.pivot_center = !st.settings.pivot_center,
             Action::SetTool(t) => st.tool = t,
             Action::ToggleSnap => st.settings.snap = !st.settings.snap,
             Action::ToggleGrid => st.settings.grid = !st.settings.grid,
@@ -799,6 +804,8 @@ impl App {
                 act(ui, "Delete", Action::Delete, st);
                 ui.separator();
                 act(ui, "Add entity", Action::AddEntity(None), st);
+                act(ui, "Frame selected  (F)", Action::Focus, st);
+                act(ui, "Frame all  (Shift+F)", Action::FocusAll, st);
                 if st.recover.is_some() && ui.button("Recover autosave").clicked() {
                     st.recover_autosave();
                     ui.close_menu();

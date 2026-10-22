@@ -49,6 +49,7 @@ export async function init() {
   gizmoManager.positionGizmoEnabled = true; gizmoManager.rotationGizmoEnabled = true; gizmoManager.scaleGizmoEnabled = true;
   const g = gizmoManager.gizmos;
   g.positionGizmo.updateGizmoRotationToMatchAttachedMesh = false;
+  g.rotationGizmo.updateGizmoRotationToMatchAttachedMesh = false;
   for (const k of ['positionGizmo', 'rotationGizmo', 'scaleGizmo']) {
     g[k].onDragEndObservable.add(() => emitTransform(true));
     g[k].onDragObservable?.add(() => { const n = performance.now(); if (n - lastEmit > 60) { lastEmit = n; emitTransform(false); } });
@@ -58,14 +59,19 @@ export async function init() {
   scene.onPointerObservable.add((pi) => {
     if (pi.type !== B.PointerEventTypes.POINTERDOWN) return;
     if (pi.event.button === 2) rmb = true;
-    if (pi.event.button !== 0 || gizmoManager.isHovered) return;
+    if (pi.event.button !== 0 || gizmoManager.isHovered || pi.event.altKey || state.settings.tool === 'hand') return; // Alt+LMB = camera
     const pick = scene.pick(scene.pointerX, scene.pointerY, (m) => !!m.metadata?.entityId && m.isPickable);
     const id = pick?.hit ? pick.pickedMesh.metadata.entityId : null;
-    selectLocal(id);
+    const e = pi.event;
+    if (id && (e.shiftKey || e.ctrlKey || e.metaKey)) {
+      const sel = new Set(state.selection);
+      sel.has(id) ? sel.delete(id) : sel.add(id);
+      selectLocal([...sel]);
+    } else selectLocal(id ? [id] : []);
   });
   addEventListener('pointerup', (e) => { if (e.button === 2) rmb = false; });
-  addEventListener('keydown', (e) => keys.add(e.code));
-  addEventListener('keyup', (e) => keys.delete(e.code));
+  addEventListener('keydown', (e) => { keys.add(e.code); modKeys(e); });
+  addEventListener('keyup', (e) => { keys.delete(e.code); modKeys(e); });
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
   scene.onBeforeRenderObservable.add(() => {
@@ -88,13 +94,28 @@ export async function init() {
 
 function hudUpdate() {
   const el = document.getElementById('hud');
-  el.textContent = `3D · ${state.settings.tool}${state.settings.snap ? ' · snap' : ''} · RMB orbit (+WASDQE fly) · MMB pan · wheel zoom`;
+  el.textContent = `3D · ${state.settings.tool}${state.settings.snap ? ' · snap' : ''}${state.settings.local ? ' · local' : ' · global'}${state.selection.length > 1 ? ` · ${state.selection.length} selected` : ''} · RMB orbit (+WASDQE fly) · Alt+LMB orbit · MMB pan · wheel zoom`;
 }
 
-function selectLocal(id) {
-  state.selection = id ? [id] : [];
+function selectLocal(ids) {
+  state.selection = ids;
   setSelection();
-  send({ t: 'select', id });
+  send({ t: 'select', id: ids[0] ?? null, ids });
+}
+
+// Unity navigation: Alt+LMB orbit, Alt+Cmd+LMB pan (MMB pans, RMB orbits, wheel zooms); Ctrl/Cmd toggles snapping while held.
+let ctrlHeld = false;
+function modKeys(e) {
+  ctrlHeld = e.ctrlKey || e.metaKey;
+  navButtons(e.altKey, e.metaKey);
+  setSettings();
+}
+function navButtons(alt, meta) {
+  const ptr = camera?.inputs?.attached?.pointers;
+  if (!ptr) return;
+  const hand = state.settings.tool === 'hand';
+  ptr.buttons = hand || alt ? [0, 1, 2] : [1, 2];
+  ptr.panningMouseButton = hand || (alt && meta) ? 0 : 1;
 }
 
 function applyTransform(node, t) {
@@ -200,10 +221,22 @@ export function setScene() {
   setSelection();
 }
 
+let outlined = [];
 export function setSelection() {
   const id = state.selection[0];
   const n = nodes.get(id);
   applyGizmos(n?.node ?? null);
+  for (const m of outlined) { if (!m.isDisposed()) m.renderOutline = false; }
+  outlined = [];
+  for (const sid of state.selection) {
+    const sn = nodes.get(sid)?.node;
+    if (!sn) continue;
+    for (const m of sn.getChildMeshes(false)) {
+      if (!m.getTotalVertices?.() || m.material?.wireframe) continue;
+      m.renderOutline = true; m.outlineWidth = 0.04; m.outlineColor = sid === id ? B.Color3.FromHexString('#4fa3ff') : B.Color3.FromHexString('#9fd0ff');
+      outlined.push(m);
+    }
+  }
 }
 
 function applyGizmos(node) {
@@ -211,8 +244,7 @@ function applyGizmos(node) {
   g.positionGizmo.attachedNode = t === 'move' ? node : null;
   g.rotationGizmo.attachedNode = t === 'rotate' ? node : null;
   g.scaleGizmo.attachedNode = t === 'scale' || t === 'rect' ? node : null;
-  const ptr = camera?.inputs?.attached?.pointers;
-  if (ptr) { ptr.buttons = t === 'hand' ? [0, 1, 2] : [1, 2]; ptr.panningMouseButton = t === 'hand' ? 0 : 1; } // Q hand: LMB drag pans
+  navButtons(false, false); // Q hand: LMB drag pans
 }
 
 export function setSettings() {
@@ -220,16 +252,27 @@ export function setSettings() {
   gridMesh?.setEnabled(!!s.grid);
   const g = gizmoManager?.gizmos;
   if (g) {
-    g.positionGizmo.snapDistance = s.snap ? s.snapMove : 0;
-    g.rotationGizmo.snapDistance = s.snap ? s.snapRot * R : 0;
-    g.scaleGizmo.snapDistance = s.snap ? s.snapScale : 0;
+    const snap = !!s.snap !== ctrlHeld;
+    g.positionGizmo.snapDistance = snap ? s.snapMove : 0;
+    g.rotationGizmo.snapDistance = snap ? s.snapRot * R : 0;
+    g.scaleGizmo.snapDistance = snap ? s.snapScale : 0;
+    g.positionGizmo.updateGizmoRotationToMatchAttachedMesh = !!s.local; // Local / Global
+    g.rotationGizmo.updateGizmoRotationToMatchAttachedMesh = !!s.local;
   }
   setSelection();
 }
 
-export function focus() {
+export function focus(all) {
+  if (all || !nodes.get(state.selection[0])) {
+    const roots = [...nodes.values()].map((n) => n.node).filter((n) => n.getChildMeshes().length);
+    if (!roots.length) return;
+    let min = new B.Vector3(Infinity, Infinity, Infinity), max = new B.Vector3(-Infinity, -Infinity, -Infinity);
+    for (const r of roots) { const b = r.getHierarchyBoundingVectors(true); min = B.Vector3.Minimize(min, b.min); max = B.Vector3.Maximize(max, b.max); }
+    camera.setTarget(min.add(max).scale(0.5));
+    camera.radius = Math.max(2, max.subtract(min).length() * 1.2);
+    return;
+  }
   const n = nodes.get(state.selection[0]);
-  if (!n) return;
   const meshes = n.node.getChildMeshes();
   let radius = 4;
   if (meshes.length) {
