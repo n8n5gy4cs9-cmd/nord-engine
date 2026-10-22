@@ -35,7 +35,7 @@ You pick a tier per project (`type` in `nord.project.json`). All tiers share the
 2. A splash screen shows for at least two seconds, then the **project hub** opens: *New* (template picker), *Open*, *Recent*, *Examples*, *Tutorials*.
 3. Pick a template (for example **Platformer**) and press **▶ Play** (Cmd+R).
 
-Command line (any OS):
+Optional command line (the `nord` tool ships next to the editor and is not on your PATH by default; see [Getting started, Part 10](getting-started.html#part-10-the-optional-nord-command)):
 ```
 nord new my-game -t platformer
 nord serve my-game          # dev server with live reload on http://localhost:4173
