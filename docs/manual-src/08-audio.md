@@ -39,7 +39,7 @@ this.audio.mute('sfx', true);
 MP3 adds ~25 ms of encoder delay, so use **OGG or WAV** for gapless loops. The Rust tier supports WAV/OGG only.
 :::
 
-Audio is not spatialised yet (`audioListener` is a placeholder).
+3D positional audio is not available yet: a sound plays at the same loudness wherever the camera is.
 
 ## Touch-to-start gate (`touchToStart`) {#touch-to-start}
 Browsers refuse to play sound until the player has clicked, tapped or pressed a key. Nord queues early `audio.play`/`audio.music` calls and replays them after the first gesture, but a title screen with music still sits silent until then — and the player's very first click would also hit your menu by accident.

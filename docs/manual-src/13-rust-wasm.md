@@ -11,7 +11,7 @@ Choose a Rust tier when you want to write the game or app in Rust. Nord builds t
 JavaScript NordScript examples do not paste into a Rust project. Start from a Rust template and follow its Rust entry point. Compiling is the step that turns Rust source into a runnable program.
 :::
 
-Two Rust project types sit beside the JS tiers. Both run natively (`cargo run`) **and** in the browser as WebAssembly. Design record: ADR-019.
+Two Rust project types sit beside the JS tiers. Both run natively (`cargo run`) **and** in the browser as WebAssembly. The reasoning is recorded in [Design decisions](decisions.html).
 
 * **`wasm-game`** — macroquad + rapier2d; uses the *same scene JSON, prefabs and assets* as the JS 2D tier.
 * **`wasm-app`** — eframe/egui for tools and dashboards.

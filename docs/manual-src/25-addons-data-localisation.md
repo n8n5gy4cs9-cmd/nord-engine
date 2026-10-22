@@ -5,6 +5,12 @@ order: 25
 summary: Extend event sheets with your own plugins, keep data in Array/Dictionary/JSON objects, and translate your game.
 ---
 
+These tools extend what event sheets can do: keep data, add new kinds of actions, and translate your game.
+
+::: dummies
+**Data objects** are named containers for numbers and text (a list, a table). An **addon** is a plug-in you install. **Localisation** means showing the game in the player's language.
+:::
+
 ## Data objects
 Besides objects in the world, event sheets can hold **data**: an **Array** (1–3 dimensions), a **Dictionary**, a **JSON** object or **AJAX** (web requests). Add one with **+ Data object** in the Event sheets tab (give it a name and a type; *global* keeps it when the scene changes) and use it like any object: `Inventory → Push back`, `Inventory.At(2)`, `Config.Get("volume")`, `Net → Request`, trigger *On completed*. The full list of actions and expressions is in the generated *Event sheet reference*.
 

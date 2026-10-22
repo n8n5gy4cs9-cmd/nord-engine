@@ -59,11 +59,35 @@
 <h2 id="thumbnails">Thumbnails<a class="anchor" href="#thumbnails">#</a></h2>
 <p><code>nord thumbs</code> (and the editor, lazily) write previews to <code>.nord-cache/thumbs</code>: real images, first sprite frame with a badge, audio waveforms, models rendered in the 3D view.</p>
 <h2 id="built-in-placeholder-art">Built-in placeholder art<a class="anchor" href="#built-in-placeholder-art">#</a></h2>
-<p>The engine ships generated placeholder textures, sprites, UI, audio and skyboxes — see <code>ASSETS.md</code> in the repository for the inventory and how to replace each group.
+<p>The engine ships generated placeholder textures, sprites, UI, audio and skyboxes, so a new project is never empty. <code>ASSETS.md</code> in the repository lists each group and how to replace it.
 Replace a file at the <strong>same path and format</strong> and nothing else needs to change.</p>
 <h2 id="optional-packs">Optional packs<a class="anchor" href="#optional-packs">#</a></h2>
-<p>Real CC0 art lives in <code>assets/packs/</code>. Currently: <strong>Kenney 3D Platformer Kit</strong> (glTF character/coin/platform models, six OGG sound effects, sprites).
-Re-fetch with <code>tools/fetch-packs.sh</code>. Copy what you need into your project&#39;s <code>assets/</code>.</p>
+<p>Ready-to-use art lives in <code>assets/packs/</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Pack</th>
+<th>Contents</th>
+<th>Licence</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>kenney-platformer-3d</code></td>
+<td>Kenney 3D Platformer Kit: glTF character, coin and platform models, six OGG sound effects, sprites</td>
+<td>CC0</td>
+</tr>
+<tr>
+<td><code>level2d-kenney</code></td>
+<td>Kenney terrain, character, industrial, dungeon, sports and shooter sprites used by the <a href="level-creator-2d.html">2D Level Creator</a></td>
+<td>CC0</td>
+</tr>
+<tr>
+<td><code>nord-amiga</code></td>
+<td>The original Amiga-style sprite collection used by the 2D Level Creator</td>
+<td>Nord Engine (MIT)</td>
+</tr>
+</tbody></table>
+<p>Re-fetch the downloadable packs with <code>tools/fetch-packs.sh</code>. Copy what you need into your project&#39;s <code>assets/</code>; the 2D Level Creator copies only the sheets a level uses.</p>
 <h2 id="rules">Rules<a class="anchor" href="#rules">#</a></h2>
 <ul>
 <li>Only use assets you may redistribute. Record packs&#39; licences in <code>THIRD_PARTY.md</code>.</li>

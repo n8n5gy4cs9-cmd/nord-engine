@@ -8,11 +8,7 @@ summary: Profiling, pooling, texture and physics budgets.
 When a game is slow, first find what takes time. Look for expensive scripts, too many drawn objects or large assets, then change one thing and compare.
 
 ::: dummies
-A frame is one picture of the game. At 60 frames per second, each frame has about 16.7 milliseconds to finish. Do not optimize code just because it looks complicated; measure the slowdown first.
-:::
-
-::: dummies
-Games feel smooth when every frame finishes in ~16 ms (60 fps). Most slowness comes from doing too much *every frame* — too many objects, too big pictures, creating and throwing away things constantly.
+A frame is one picture of the game. At 60 frames per second, each frame has about 16.7 milliseconds to finish. Most slowness comes from doing too much *every frame*: too many objects, pictures that are too big, or creating and throwing things away constantly. Measure first; do not optimize code just because it looks complicated.
 :::
 
 ## Rules of thumb

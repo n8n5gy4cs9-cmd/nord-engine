@@ -34,12 +34,19 @@ Only when non-default: `assets/foo.png.meta.json`
 `nord thumbs` (and the editor, lazily) write previews to `.nord-cache/thumbs`: real images, first sprite frame with a badge, audio waveforms, models rendered in the 3D view.
 
 ## Built-in placeholder art
-The engine ships generated placeholder textures, sprites, UI, audio and skyboxes — see `ASSETS.md` in the repository for the inventory and how to replace each group.
+The engine ships generated placeholder textures, sprites, UI, audio and skyboxes, so a new project is never empty. `ASSETS.md` in the repository lists each group and how to replace it.
 Replace a file at the **same path and format** and nothing else needs to change.
 
 ## Optional packs {#optional-packs}
-Real CC0 art lives in `assets/packs/`. Currently: **Kenney 3D Platformer Kit** (glTF character/coin/platform models, six OGG sound effects, sprites).
-Re-fetch with `tools/fetch-packs.sh`. Copy what you need into your project's `assets/`.
+Ready-to-use art lives in `assets/packs/`:
+
+| Pack | Contents | Licence |
+|---|---|---|
+| `kenney-platformer-3d` | Kenney 3D Platformer Kit: glTF character, coin and platform models, six OGG sound effects, sprites | CC0 |
+| `level2d-kenney` | Kenney terrain, character, industrial, dungeon, sports and shooter sprites used by the [2D Level Creator](level-creator-2d.html) | CC0 |
+| `nord-amiga` | The original Amiga-style sprite collection used by the 2D Level Creator | Nord Engine (MIT) |
+
+Re-fetch the downloadable packs with `tools/fetch-packs.sh`. Copy what you need into your project's `assets/`; the 2D Level Creator copies only the sheets a level uses.
 
 ## Rules
 * Only use assets you may redistribute. Record packs' licences in `THIRD_PARTY.md`.

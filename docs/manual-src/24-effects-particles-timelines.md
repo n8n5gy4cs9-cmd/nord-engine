@@ -5,6 +5,12 @@ order: 24
 summary: Blur, glow, vignette and colour effects; a particle editor with live preview; keyframe timelines with easing.
 ---
 
+Effects change how things look, particles make many tiny moving pictures (fire, sparks, snow) and timelines animate properties over time.
+
+::: dummies
+An **effect** is a filter, like adding a blur or a retro screen. A **particle** is one tiny speck; hundreds together make smoke or fire. A **timeline** is a stopwatch with keyframes: "at 1 second, be here; at 2 seconds, be there".
+:::
+
 ## Effects
 Add an effect list to a **scene** (`"settings": { "effects": [ … ] }`) or to one **object** (`"effects": [ … ]`), or switch them from events (*Effects → Add effect / Set parameter*) and code (`game.effects.add(target, "blur", {x: 4})`). Built in: **blur, glow, pixelate, vignette, barrel, brightness, contrast, saturate, hue, grayscale, sepia, negative** and **crt** (scanlines). The Phaser renderer uses real GPU filters; blur, colour grading, vignette and crt also work on every other renderer through a CSS fallback. A scene's effects are cleared when the scene changes.
 

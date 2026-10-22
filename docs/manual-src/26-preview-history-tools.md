@@ -5,6 +5,12 @@ order: 26
 summary: Test on your phone, undo a bad afternoon with version history, rename safely, and export an installable web app.
 ---
 
+These are the helpers around your game: testing on a phone, undoing a bad afternoon, renaming safely and exporting an installable app.
+
+::: dummies
+Version history is a safety net. If an edit breaks the game, you can look at an earlier snapshot and bring it back.
+:::
+
 ## Phone preview
 Press **Phone** in the toolbar (or run `nord serve --lan`). A QR code appears; scan it with a phone on the same Wi-Fi and the game opens there. It reloads when you save — a changed event sheet is swapped in while the game keeps running and **keeps your variables** — and the phone's console shows up in the Console tab with a `[phone]` prefix. Only your game's files are shared (never the editor), every request needs the secret link, and it stops when you press *Stop*, close the project or quit.
 

@@ -30,7 +30,7 @@ this.audio.mute('sfx', true);</code></pre>
 <li>Library: <code>util-sfx.js</code> (event-name → sound map via <code>events.emit(&#39;sfx&#39;, &#39;hit&#39;)</code>), <code>ui-settings.js</code> (volume sliders).</li>
 </ul>
 <aside class="box tip"><div class="box-title">Tip</div><p>MP3 adds ~25 ms of encoder delay, so use <strong>OGG or WAV</strong> for gapless loops. The Rust tier supports WAV/OGG only.</p>
-</aside><p>Audio is not spatialised yet (<code>audioListener</code> is a placeholder).</p>
+</aside><p>3D positional audio is not available yet: a sound plays at the same loudness wherever the camera is.</p>
 <h2 id="touch-to-start">Touch-to-start gate (<code>touchToStart</code>)<a class="anchor" href="#touch-to-start">#</a></h2>
 <p>Browsers refuse to play sound until the player has clicked, tapped or pressed a key. Nord queues early <code>audio.play</code>/<code>audio.music</code> calls and replays them after the first gesture, but a title screen with music still sits silent until then — and the player&#39;s very first click would also hit your menu by accident.</p>
 <p><code>touchToStart</code> fixes both. It is a ready-made, <strong>opt-in</strong> helper exported from <code>nord</code> (<code>runtime/core/start-gate.js</code>): a full-screen &quot;TOUCH / CLICK TO ENABLE AUDIO&quot; overlay that waits for the first gesture, <strong>swallows that gesture and its release</strong> (so no menu button is pressed through it), unlocks audio so the queued title music starts, then removes itself. The next click or key is normal game input. Your current screen, camera and project settings are not touched. X-KOM 2026 and Vallout 2 both use it.</p>

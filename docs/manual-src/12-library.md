@@ -11,7 +11,7 @@ The Library contains ready-made scripts and pieces you can reuse. Search for a f
 Try a library controller in a small scene first. Read its description and required components. A movement script cannot show a character by itself; the entity also needs a visible component.
 :::
 
-The `library/` folder holds ~125 tested building blocks, indexed by `library/INDEX.json` and browsable in the editor's **Library** tab or the [catalog](library-catalog.html).
+The `library/` folder holds more than 130 tested building blocks, indexed by `library/INDEX.json` and browsable in the editor's **Library** tab or the [catalog](library-catalog.html).
 
 | Kind | Where | Example |
 |---|---|---|
@@ -20,7 +20,7 @@ The `library/` folder holds ~125 tested building blocks, indexed by `library/IND
 | Shaders | `library/shaders/*.glsl` | crt, dissolve, toon, water, hologram, outline… |
 | Snippets | `library/snippets/` | small code recipes (`tween-fade.js`) |
 | App kits | `library/apps/` | `_kit.js` + calculator, todo, kanban, notes, paint… |
-| Templates | `templates/` | 17 starter projects |
+| Templates | `templates/` | 36 starter projects |
 
 ::: dummies
 The library is a box of ready-made LEGO bricks. Instead of writing "how to make a character jump" you drop in `platformer2d.js`, then change its numbers in the Inspector.

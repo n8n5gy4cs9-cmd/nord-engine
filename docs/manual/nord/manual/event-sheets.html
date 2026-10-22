@@ -13,7 +13,7 @@
 <figure class="shot"><img src="../../assets/screenshots/es-4-turret.png" alt="A platformer: hero, slimes, coins, flag and a turret in the corner, all driven by an event sheet" loading="lazy"><figcaption>The bundled <code>event-sheets</code> example. Every rule in it — coins, hurt, turret bullets, winning — is an event. There is not one script.</figcaption></figure><aside class="box dummies"><div class="box-title">For dummy developers</div><p>Read an event like a sentence. <strong>Conditions</strong> are the <em>if</em> part (Hero is overlapping a Coin). <strong>Actions</strong> are the <em>then</em> part (add 1 to <code>coins</code>, destroy the Coin). The engine checks every event, top to bottom, many times per second.</p>
 </aside><h2 id="use-it">Use it<a class="anchor" href="#use-it">#</a></h2>
 <ol>
-<li>Write <code>events/main.events.json</code> (the editor panel for it is on the roadmap; the file is plain JSON).</li>
+<li>Open the <strong>Event sheets</strong> tab and build your events there. It saves <code>events/main.events.json</code>, a plain JSON file you can also edit by hand.</li>
 <li>Point the scene at it: <code>&quot;settings&quot;: { &quot;eventSheet&quot;: &quot;events/main.events.json&quot; }</code> in the <code>.scene.json</code>.</li>
 <li>Press play. Nothing else is needed — scenes without that setting are unchanged.</li>
 </ol>

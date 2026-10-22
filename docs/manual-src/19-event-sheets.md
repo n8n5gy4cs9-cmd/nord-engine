@@ -14,7 +14,7 @@ Read an event like a sentence. **Conditions** are the *if* part (Hero is overlap
 :::
 
 ## Use it
-1. Write `events/main.events.json` (the editor panel for it is on the roadmap; the file is plain JSON).
+1. Open the **Event sheets** tab and build your events there. It saves `events/main.events.json`, a plain JSON file you can also edit by hand.
 2. Point the scene at it: `"settings": { "eventSheet": "events/main.events.json" }` in the `.scene.json`.
 3. Press play. Nothing else is needed — scenes without that setting are unchanged.
 

@@ -90,5 +90,5 @@ Native builds call the same backend (same permission checks); web builds fall ba
 Code editor (CodeMirror: tabs, file tree, highlighting, find/replace, multi-cursor, quick open), local **web server** (live reload, SPA fallback, CORS, directory listing, request log), notes, file organiser, clipboard manager (tray + global shortcut), markdown editor (live preview).
 
 ::: tip
-Not verified on a real Mac/Windows yet: native menus/tray/global shortcuts, dock badge. The Linux build (webkit2gtk) runs the full IPC test in CI. See `docs/KNOWN_ISSUES.md`.
+Native menus, tray, global shortcuts and the dock badge have had less testing on real Mac and Windows machines than on Linux. The Linux build (webkit2gtk) runs the full IPC test in CI. See `docs/KNOWN_ISSUES.md`.
 :::

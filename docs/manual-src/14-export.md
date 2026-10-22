@@ -66,5 +66,5 @@ Wraps the web build in `NordPlayer` (a wry+tao window shell) and generates the i
 Every build is scanned for external `http(s)://` references and **fails** if your own files contain one (`nord check-offline <dir>`). Allow a host on purpose with a `.offline-allow` file.
 
 ::: warn
-Not done yet: texture-atlas packing and lossy PNG quantisation (task M4-11). The macOS shell and CI bundle step are verified on macOS CI only — see `docs/KNOWN_ISSUES.md`.
+**Limits today:** texture-atlas packing and lossy PNG quantisation are not implemented, so large textures stay large (see [Performance](performance.html)). The macOS app shell is built and tested on macOS CI; Windows and Linux bundles are produced by CI with less real-world testing. Details: [Known issues](known-issues.html).
 :::

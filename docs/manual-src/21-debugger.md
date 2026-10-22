@@ -5,6 +5,12 @@ order: 21
 summary: Pause, step, breakpoints on events, live instance editing, an expression console and a frame profiler — in any running game.
 ---
 
+The debugger lets you pause a running game, step one frame at a time, inspect every object and see which logic is slow.
+
+::: dummies
+It is the same idea as a car's dashboard and pit-stop tools: you watch the numbers while the game runs, stop it to look closer, and fix what you find.
+:::
+
 Add `?debug` to the game's address (or set `"debug": true` in `nord.project.json`) and press **F9**. It costs nothing when it is off.
 
 <figure class="shot"><img src="assets/screenshots/es-7-debug-events.png" alt="Debugger overlay listing events; the ones that ran this moment are green" loading="lazy"><figcaption>The <b>events</b> tab: green rows ran in the last few ticks. Click a row to put a 🔴 breakpoint on it.</figcaption></figure>

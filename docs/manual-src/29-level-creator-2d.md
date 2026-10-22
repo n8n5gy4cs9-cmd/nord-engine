@@ -77,4 +77,4 @@ Use **Use as game start** when this map should run from the main Play button or 
 The authoring JSON is the source of truth. If you edit its compiled scene in the ordinary Scene tab, a later 2D Level Save regenerates that scene. Machine Workshop keeps its setup controls through **Level → Level controller → scripts/machine.js**. Ordinary maps use `scripts/level2d/level-hud.js`; enter your own project script there to replace the HUD/controller.
 :::
 
-The editor currently supports finite orthogonal maps. It has no isometric/hex maps, automatic terrain rules, polygon/joint editor or Tiled/LDtk importer. Native webview interaction remains an owner check.
+The editor currently supports finite orthogonal maps. It has no isometric/hex maps, automatic terrain rules, polygon/joint editor or Tiled/LDtk importer. Drag-and-drop feel in the native editor window has had less testing than the browser version.
