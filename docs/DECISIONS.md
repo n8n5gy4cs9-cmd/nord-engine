@@ -195,3 +195,6 @@ Wry 0.50.5 omits WebKit's host pointer-lock callback, so native FPS games always
 
 **Consequences.** No code generation or build step; hot-editable. Errors are per chain, loops are capped. New nodes are one `def(...)` call and appear in editor, runner and the generated docs (`tools/make-graph-reference.mjs`).
 
+
+## ADR-028 — Godotize: evolve the egui editor to Unity's workflow, Godot as MIT reference
+**Context.** Owner knows Unity's workflow but wants Godot's lightness and easy export. **Decision.** Keep Nord's engine/editor/export; do not rewrite or clone Godot. Port Godot (MIT) editor designs and algorithms (`REFE/godot-master`, logged in `THIRD_PARTY.md`); copy Unity's *behaviour and shortcuts* only (reference licence: no code). Keep Event sheets, FPS Level, 2D Level, UI Designer, Graph and improve them. **Consequences.** Work is incremental (`docs/GODOTIZE_PLAN.md`, `godotize-nordengine-tasks.md`), each phase shippable.

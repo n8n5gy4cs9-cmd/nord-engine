@@ -39,6 +39,11 @@ python3 tools/gen_assets.py [step]      # regenerate placeholder assets + ASSETS
 cargo build --workspace && cargo test --workspace && cargo clippy --workspace -- -D warnings
 ```
 
+## NEXT SESSION — GODOTIZE (start here)
+**Prompt for the new session:** *"Read HANDOFF.md, docs/GODOTIZE_PLAN.md and godotize-nordengine-tasks.md, then start phase G0 and continue through G1 in order. Unity feel, Godot (MIT, REFE/godot-master) as the structural reference, Unity source is reference-only. Verify in the real editor, update docs/tasks, commit small to main."*
+Rules: tick tasks in `godotize-nordengine-tasks.md` (and mirror to PRD.json: `node tools/tasks.mjs add M13 "…"`), keep the five tools (Event sheets, FPS Level, 2D Level, UI Designer, Graph), no rewrite (ADR-028). Run `cargo test -p nord-editor`, `node runtime/core/core.test.mjs`, `node tools/build-manual.mjs` before each commit. `REFE/` is git-ignored (godot-master, UnityCsReference-master).
+Build on: `crates/nord-editor/src/{prefab.rs,panels/remote.rs,panels/inspector.rs,panels/hierarchy.rs}`, `editor/viewport/edit.js` (Scene view), `state.rs::handle_viewport`.
+
 ## NEXT SESSIONS — M8 (start here; M11 web editor is also done except owner checks)
 Prompt: *"Read HANDOFF.md and do M8"*. Branch rule: owner says `main`; if the harness forces a session branch, push that branch and tell the owner (or merge to main at the end).
 After each task: `node tools/tasks.mjs done ID`, CHANGELOG line, relevant docs; if you touched runtime JSDoc, `schema.rs`, CLI docs, library, templates or `docs/*.md`, run `node tools/build-manual.mjs` and commit `docs/manual/`.
