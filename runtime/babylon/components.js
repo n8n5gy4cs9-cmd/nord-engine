@@ -95,6 +95,8 @@ export function registerBabylonComponents(backend) {
       if (!container) { backend.game.warn(`[nord] model '${d.path}' not loaded`); return; }
       const inst = container.instantiateModelsToScene((n) => `${e.name}.${n}`, false, { doNotInstantiate: !!d.unique });
       comp.inst = inst;
+      // import settings from <model>.meta.json: uniform `scale`
+      backend.game.loader.meta?.(d.path).then((m) => { if (m?.scale && m.scale !== 1) for (const r of inst.rootNodes) r.scaling.scaleInPlace(m.scale); }).catch(() => {});
       for (const r of inst.rootNodes) { r.parent = e.native; for (const m of [r, ...r.getChildMeshes()]) if (m.getTotalVertices) { (e.__meshes ??= []).push(m); m.__ownMat = m.material; m.metadata = { entity: e }; if (backend.shadow) backend.shadow.addShadowCaster(m); m.receiveShadows = true; } }
       const groups = new Map(inst.animationGroups.map((g) => [g.name.startsWith(`${e.name}.`) ? g.name.slice(e.name.length + 1) : g.name, g]));
       comp.animations = groups;

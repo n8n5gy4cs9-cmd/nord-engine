@@ -425,34 +425,59 @@ fn texture_import_ui(st: &mut EditorState, ui: &mut Ui, rel: &str) {
         .ok()
         .and_then(|t| serde_json::from_str(&t).ok())
         .unwrap_or_default();
-    ui.label(egui::RichText::new(format!("TEXTURE IMPORT  {rel}")).strong());
+    let is_model = nord_core::assets::classify(rel) == AssetType::Model;
+    ui.label(
+        egui::RichText::new(format!(
+            "{} IMPORT  {rel}",
+            if is_model { "MODEL" } else { "TEXTURE" }
+        ))
+        .strong(),
+    );
     ui.separator();
     let mut ch = false;
-    egui::Grid::new("tex-import").num_columns(2).show(ui, |ui| {
-        for (key, label, opts, def) in [
-            ("filter", "Filter", ["linear", "nearest"], "linear"),
-            ("wrap", "Wrap", ["repeat", "clamp"], "repeat"),
-        ] {
-            ui.label(label);
-            let mut cur = meta
-                .get(key)
-                .and_then(Value::as_str)
-                .unwrap_or(def)
-                .to_string();
-            egui::ComboBox::from_id_salt(key)
-                .selected_text(cur.clone())
-                .show_ui(ui, |ui| {
-                    for o in opts {
-                        ch |= ui.selectable_value(&mut cur, o.to_string(), o).changed();
-                    }
-                });
-            if ch {
-                meta.insert(key.into(), json!(cur));
+    if !is_model {
+        egui::Grid::new("tex-import").num_columns(2).show(ui, |ui| {
+            for (key, label, opts, def) in [
+                ("filter", "Filter", ["linear", "nearest"], "linear"),
+                ("wrap", "Wrap", ["repeat", "clamp"], "repeat"),
+            ] {
+                ui.label(label);
+                let mut cur = meta
+                    .get(key)
+                    .and_then(Value::as_str)
+                    .unwrap_or(def)
+                    .to_string();
+                egui::ComboBox::from_id_salt(key)
+                    .selected_text(cur.clone())
+                    .show_ui(ui, |ui| {
+                        for o in opts {
+                            ch |= ui.selectable_value(&mut cur, o.to_string(), o).changed();
+                        }
+                    });
+                if ch {
+                    meta.insert(key.into(), json!(cur));
+                }
+                ui.end_row();
             }
-            ui.end_row();
-        }
-    });
-    ui.weak("Filter nearest = crisp pixels. Pixels-per-unit, pivot and max size: planned (G4-4).");
+        });
+    }
+    if is_model {
+        let mut s = meta.get("scale").and_then(Value::as_f64).unwrap_or(1.0);
+        ui.horizontal(|ui| {
+            ui.label("Scale");
+            if ui
+                .add(DragValue::new(&mut s).speed(0.01).range(0.001..=1000.0))
+                .changed()
+            {
+                meta.insert("scale".into(), json!(s));
+                ch = true;
+            }
+        });
+    } else {
+        ui.weak(
+            "Filter nearest = crisp pixels. Pixels-per-unit, pivot and max size: planned (G4-4).",
+        );
+    }
     if ch {
         if let Ok(t) = serde_json::to_string_pretty(&meta) {
             let _ = nord_core::vfs::write(&path, t + "\n");
@@ -467,7 +492,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         if let Some(rel) = st.assets_ui.selected.clone().filter(|r| {
             matches!(
                 nord_core::assets::classify(r),
-                AssetType::Image | AssetType::Spritesheet
+                AssetType::Image | AssetType::Spritesheet | AssetType::Model
             )
         }) {
             texture_import_ui(st, ui, &rel);

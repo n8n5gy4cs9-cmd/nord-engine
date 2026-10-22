@@ -565,9 +565,21 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
         .ok()
         .map(|p| p.to_string_lossy().replace('\\', "/"));
     let generated_index = target != Target::Html;
+    // Build Settings ▸ scenes not "in build": `export.excludeScenes` (project-relative paths). The start scene is never dropped.
+    let excluded: Vec<String> = proj
+        .export
+        .get("excludeScenes")
+        .and_then(|v| v.as_array())
+        .map(|a| {
+            a.iter()
+                .filter_map(|s| s.as_str().map(String::from))
+                .collect()
+        })
+        .unwrap_or_default();
     copy_tree(&project, &out, &|r| {
         let name = r.rsplit('/').next().unwrap_or(r);
         skip_name(name)
+            || (r != proj.start_scene && excluded.iter().any(|x| x == r))
             || (generated_index && r == "index.html")
             || out_in_project.as_deref().is_some_and(|d| r == d)
     })?;

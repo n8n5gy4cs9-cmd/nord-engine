@@ -1,5 +1,6 @@
 # Changelog
 
+- 2026-10-22 — Godotize G4/G5/G6 (part): model import scale; Build Settings window (scenes in build, start scene, platforms, Build And Run) + exporter `export.excludeScenes`; Game view resolution drop-down, scale slider, Maximize on Play, Error Pause, Stats overlay; UI Designer anchor preset grid + more preview sizes.
 - 2026-10-22 — Godotize G4 (part): material assets (`*.mat.json`, new asset type, Inspector editor + preview, `material.asset`, uvOffset), texture import filter/wrap (Inspector + Babylon), Assets ★ favourites + Find references; G8-1 schema test count fixed (23).
 - 2026-10-22 — Godotize G3 (part): Create prefab (context menu or drag Hierarchy → Assets), Unpack / Unpack completely, Inspector *Apply all* writes overrides into the prefab file; unit + UI tests.
 - 2026-10-22 — Godotize G9 finished: Scene view top bar with big Play button, orange collapse arrows, unit suffixes in the Inspector Transform, Library button in Assets. Not yet seen in the native window.

@@ -125,6 +125,13 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
                     if let Err(e) = crate::web::download_file(&out.with_extension("zip")) {
                         st.log(LogLevel::Error, format!("Download failed: {e}"));
                     }
+                    if std::mem::take(&mut st.build_ui.run_after) {
+                        let page = out.join("index.html");
+                        crate::viewport::webview::open_in_browser(&format!(
+                            "file://{}",
+                            page.display()
+                        ));
+                    }
                     st.export_ui.last_out = Some(out);
                 }
                 Err(e) => {

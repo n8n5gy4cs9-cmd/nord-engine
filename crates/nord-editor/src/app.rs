@@ -358,6 +358,9 @@ impl App {
             } else if i.consume_key(Modifiers::NONE, Key::F6) {
                 st.push(Action::PlayScene);
             }
+            if i.consume_key(cmd | Modifiers::SHIFT, Key::B) {
+                st.push(Action::BuildSettings);
+            }
             if i.consume_key(cmd, Key::Comma) {
                 st.push(Action::Settings);
             }
@@ -440,6 +443,9 @@ impl App {
         }
         st.log(LogLevel::Build, "Play");
         self.show_tab(Tab::Game);
+        if self.st.maximize_on_play {
+            self.st.game_full = true;
+        }
     }
 
     /// Unity-style play-mode colour: while compiling (amber) or playing (blue) the whole editor chrome is tinted, so it is obvious the
@@ -679,6 +685,7 @@ impl App {
                 st.toast("Settings and layout reset to defaults");
             }
             Action::Export => st.export_ui.open = true,
+            Action::BuildSettings => st.build_ui.open = true,
             Action::DesktopSettings => st.desktop_ui.open = true,
             Action::FpsInstall => {
                 #[cfg(not(target_arch = "wasm32"))]
@@ -789,6 +796,12 @@ impl App {
                 });
                 ui.separator();
                 act(ui, "Save all  (Cmd+S)", Action::SaveAll, st);
+                act(
+                    ui,
+                    "Build Settings…  (Shift+Cmd+B)",
+                    Action::BuildSettings,
+                    st,
+                );
                 if cfg!(target_arch = "wasm32") {
                     act(ui, "Download project (.zip)", Action::DownloadZip, st);
                 }
@@ -1142,6 +1155,8 @@ impl TabViewer for Viewer<'_> {
     }
 }
 
+const STATS_JS: &str = "(()=>{const g=window.__nord;if(!g)return;let el=document.getElementById('nord-stats');if(el){el.remove();clearInterval(window.__nordStatsT);return;}const d=g.debug??g.enableDebug();el=document.createElement('div');el.id='nord-stats';el.style.cssText='position:fixed;left:6px;top:6px;z-index:9999;background:#000a;color:#9f9;font:11px monospace;padding:4px 6px;border-radius:3px;pointer-events:none';document.body.appendChild(el);window.__nordStatsT=setInterval(()=>{const s=d.stats();el.textContent=s.fps.toFixed(0)+' fps · '+s.frameMs.toFixed(1)+' ms · '+s.objects+' obj'+(s.drawCalls!=null?' · '+s.drawCalls+' draws':'');},250);})()";
+
 /// PlayCanvas-style bar on top of the Scene view: scene name, projection, gizmo toggles and a big Play button.
 /// (Laid out above the native webview rather than floating over it, which the webview would cover.)
 fn viewport_bar(st: &mut crate::state::EditorState, ui: &mut egui::Ui) {
@@ -1255,7 +1270,30 @@ pub fn game_tab(
             st.settings.game_anchor = [0.5, 0.0];
             st.settings.game_offset = [0.0, 0.0];
         }
+        ui.weak("Resolution");
+        let cur = st
+            .game_res
+            .map_or("Project".to_string(), |r| format!("{}×{}", r[0], r[1]));
+        egui::ComboBox::from_id_salt("game-res")
+            .selected_text(cur)
+            .show_ui(ui, |ui| {
+                ui.selectable_value(&mut st.game_res, None, "Project size");
+                for (label, r) in [
+                    ("16:9  1280×720", [1280.0, 720.0]),
+                    ("16:9  1920×1080", [1920.0, 1080.0]),
+                    ("4:3  800×600", [800.0, 600.0]),
+                    ("21:9  2560×1080", [2560.0, 1080.0]),
+                    ("9:16 portrait  720×1280", [720.0, 1280.0]),
+                    ("Square  720×720", [720.0, 720.0]),
+                ] {
+                    ui.selectable_value(&mut st.game_res, Some(r), label);
+                }
+            });
         ui.weak("Size");
+        if st.game_scale > 0.0 {
+            ui.add(egui::Slider::new(&mut st.game_scale, 0.25..=3.0).show_value(false))
+                .on_hover_text("Scale");
+        }
         for (label, v) in [
             ("Fit", 0.0_f32),
             ("50%", 0.5),
@@ -1271,6 +1309,17 @@ pub fn game_tab(
             }
         }
         ui.separator();
+        ui.checkbox(&mut st.maximize_on_play, "Maximize on Play");
+        ui.checkbox(&mut st.error_pause, "Error Pause")
+            .on_hover_text("Pause the game when an error is logged");
+        if st.is_playing()
+            && ui
+                .button("Stats")
+                .on_hover_text("Toggle an fps / frame time overlay in the game")
+                .clicked()
+        {
+            web.eval("game", STATS_JS);
+        }
         if ui
             .button(if st.game_full {
                 "Exit fullscreen (Esc)"
@@ -1319,6 +1368,7 @@ pub fn game_tab(
                     .as_ref()
                     .map(|p| (p.display.width as f32, p.display.height as f32))
                     .unwrap_or((1280.0, 720.0));
+                let d = st.game_res.map_or(d, |r| (r[0], r[1]));
                 crate::viewport::webview::Fixed {
                     size: egui::vec2(d.0, d.1)
                         * if st.game_scale > 0.0 {
@@ -1388,6 +1438,7 @@ impl App {
             || self.st.palette.mode != PMode::Closed
             || self.st.settings_open
             || self.st.export_ui.open
+            || self.st.build_ui.open
             || self.st.about_open
             || self.st.desktop_ui.open
             || (self.st.recover.is_some() && self.st.project.is_some())
@@ -1545,6 +1596,7 @@ impl App {
         panels::settings::window(&mut self.st, ctx);
         panels::preview::window(&mut self.st, ctx);
         panels::export::window(&mut self.st, ctx);
+        panels::build::window(&mut self.st, ctx);
         panels::desktop::window(&mut self.st, ctx);
         if self.st.recover.is_some() && self.st.project.is_some() {
             egui::Window::new("Recover unsaved work?").collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {

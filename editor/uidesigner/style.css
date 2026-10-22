@@ -18,6 +18,7 @@ h3{margin:8px 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06em
 #stage{position:relative;overflow:hidden;background:#1d2733;outline:1px solid var(--border);transform-origin:top left}
 #stageWrap{transform-origin:top left}
 .f{display:grid;grid-template-columns:90px 1fr;gap:4px 8px;align-items:center;margin:3px 0}
+.anchors{display:grid;grid-template-columns:repeat(3,28px);gap:3px;margin-top:6px}.anchors button{padding:2px 0;text-align:center}.anchors .wide{grid-column:span 3}.anchors .on{background:var(--accent,#88c0d0);color:#111}
 .f label{opacity:.8}.f input,.f select,.f textarea{width:100%}.f textarea{min-height:60px}
 .tabs{display:flex;gap:4px;margin-bottom:6px}.tabs .on{background:var(--accent);color:var(--bg)}
 #json{width:100%;height:60vh;font:12px ui-monospace,monospace}

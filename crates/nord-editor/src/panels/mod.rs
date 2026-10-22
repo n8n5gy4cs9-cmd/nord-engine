@@ -1,5 +1,6 @@
 pub mod animation;
 pub mod assets;
+pub mod build;
 pub mod console;
 pub mod desktop;
 pub mod docs;

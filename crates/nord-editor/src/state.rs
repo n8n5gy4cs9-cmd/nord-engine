@@ -239,6 +239,8 @@ pub enum Action {
     Palette,
     Settings,
     ResetLayout,
+    /// File ▸ Build Settings…
+    BuildSettings,
     /// Window ▸ Layout presets ("default", "2d", "3d", "coding", "visual")
     Layout(String),
     /// Pause / resume the running game, or advance it one frame while paused
@@ -307,6 +309,12 @@ pub struct EditorState {
     pub game_console_h: f32,
     /// Game view size: 0.0 = fit the tab, otherwise a fixed scale of the project's display size (centered)
     pub game_scale: f32,
+    /// Game view resolution override (aspect/resolution drop-down); None = the project's display size
+    pub game_res: Option<[f32; 2]>,
+    /// Pause the game when an error is logged (Unity's Error Pause)
+    pub error_pause: bool,
+    /// Fullscreen the Game view on Play (Unity's Maximize On Play)
+    pub maximize_on_play: bool,
     /// Game view maximised over the whole window (menu/toolbar/panels hidden, OS fullscreen); Esc leaves
     pub game_full: bool,
     pub lock: Option<nord_core::io::ProjectLock>,
@@ -337,6 +345,7 @@ pub struct EditorState {
     pub events: crate::panels::events::EventsUi,
     pub history_ui: crate::panels::history::HistoryUi,
     pub project_ui: crate::panels::project::ProjectUi,
+    pub build_ui: crate::panels::build::BuildUi,
     pub layout_ui: crate::panels::layout::LayoutUi,
     pub sprite: crate::panels::sprite::SpriteUi,
     pub particles_ui: crate::panels::particles::ParticlesUi,
@@ -401,6 +410,9 @@ impl EditorState {
             game_console: false,
             game_console_h: 160.0,
             game_scale: 0.0,
+            game_res: None,
+            error_pause: false,
+            maximize_on_play: false,
             game_full: false,
             lock: None,
             last_autosave: Instant::now(),
@@ -426,6 +438,7 @@ impl EditorState {
             events: Default::default(),
             history_ui: Default::default(),
             project_ui: Default::default(),
+            build_ui: Default::default(),
             layout_ui: Default::default(),
             sprite: Default::default(),
             particles_ui: Default::default(),
@@ -1081,7 +1094,12 @@ impl EditorState {
                 "error" => LogLevel::Error,
                 _ => LogLevel::Info,
             };
+            let is_err = level == LogLevel::Error;
             self.log(level, e.text);
+            if is_err && self.error_pause && !self.game_paused && self.is_playing() {
+                self.push(Action::PauseGame);
+                self.toast("Error Pause: game paused");
+            }
         }
         msgs
     }

@@ -137,6 +137,18 @@ function moveNode(n, target) {
   refresh();
 }
 
+// Anchor preset grid (3×3 + fill), like the rect-transform anchor picker: click a cell to anchor the node there.
+function anchorGrid(f, select, n) {
+  const g = el('div', { className: 'anchors' }, f);
+  const cells = [['tl', '↖'], ['t', '↑'], ['tr', '↗'], ['l', '←'], ['c', '●'], ['r', '→'], ['bl', '↙'], ['b', '↓'], ['br', '↘']];
+  for (const [a, glyph] of cells) {
+    const b = el('button', { textContent: glyph, title: a, className: n.anchor === a ? 'on' : '' }, g);
+    b.onclick = () => { checkpoint(); put(n, 'anchor', a); select.value = a; refresh(); };
+  }
+  const fill = el('button', { textContent: 'fill', title: 'Fill the parent', className: n.anchor === 'fill' ? 'on wide' : 'wide' }, g);
+  fill.onclick = () => { checkpoint(); put(n, 'anchor', 'fill'); select.value = 'fill'; refresh(); };
+}
+
 function renderProps() {
   const p = $('#props'); p.textContent = '';
   const n = S.sel; if (!n) { p.textContent = 'Select a node.'; return; }
@@ -167,6 +179,7 @@ function renderProps() {
       return v;
     };
     if (kind === 'img') imageExtras(p, f, inp, key, n);
+    if (key === 'anchor') anchorGrid(f, inp, n);
     if (key.startsWith('on.') && cur) actionUsage(p, String(cur), n);
     inp.onfocus = () => { inp._cp = true; };
     inp.oninput = () => { if (inp.type === 'checkbox' || inp.tagName === 'SELECT') return; if (inp._cp) { checkpoint(); inp._cp = false; } put(n, key, read()); renderStage(); renderTree(); };

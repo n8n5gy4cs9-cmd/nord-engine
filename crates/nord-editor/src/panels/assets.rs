@@ -792,7 +792,10 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
                     if resp.clicked() || resp.secondary_clicked() {
                         st.assets_ui.selected = Some(e.rel.clone());
                         if e.rel.ends_with(".mat.json")
-                            || matches!(e.kind, AssetType::Image | AssetType::Spritesheet)
+                            || matches!(
+                                e.kind,
+                                AssetType::Image | AssetType::Spritesheet | AssetType::Model
+                            )
                         {
                             st.selection.clear(); // the Inspector now shows the material asset
                         }

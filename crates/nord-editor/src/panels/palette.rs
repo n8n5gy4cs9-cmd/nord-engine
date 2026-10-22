@@ -79,6 +79,7 @@ pub const COMMANDS: &[(&str, CmdFn)] = &[
     ("Edit: Duplicate", || Action::Duplicate),
     ("Edit: Delete", || Action::Delete),
     ("Entity: Add empty entity", || Action::AddEntity(None)),
+    ("File: Build Settings…", || Action::BuildSettings),
     ("View: Frame all", || Action::FocusAll),
     ("View: Toggle Local/Global", || Action::ToggleSpace),
     ("View: Toggle Pivot/Center", || Action::TogglePivot),

@@ -36,15 +36,15 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "â€
 - [x] G4-2 Material assets `*.mat.json` + Inspector (colour, textures, tiling/offset, normal, emissive; no custom shader yet), Babylon runtime loads them
 - [~] G4-3 Material preview: flat-shaded sphere approximation in the Inspector; real lit preview and Project thumbnails todo
 - [~] G4-4 Texture import: filter + wrap (Inspector, sidecar meta, Phaser+Babylon); PPU, pivot, max size, Sprite-editor hand-off todo
-- [ ] G4-5 Change texture/material by dropping onto object or Inspector slot (Scene view and Hierarchy too)
-- [ ] G4-6 Model import settings (scale, materials remap)
+- [~] G4-5 Dropping an asset on an Inspector slot works (existed); dropping onto a Hierarchy row / Scene object todo
+- [~] G4-6 Model import: uniform scale (Inspector on a selected model, sidecar meta, Babylon); materials remap todo
 ## G5 Build and Game view
-- [ ] G5-1 Build Settings window (scenes in build, platform list, Build / Build And Run)
-- [ ] G5-2 Platforms: Web, macOS, Windows (cross), Linux; plan Android/iOS
-- [ ] G5-3 Game view: aspect/resolution drop-down, scale slider, Maximize on Play, Stats overlay
-- [ ] G5-4 Error Pause, Clear on Play (done), Play focused
+- [x] G5-1 Build Settings window (File menu / Shift+Cmd+B): scenes in build (`export.excludeScenes`, exporter drops them), start scene, platform list, Build / Build And Run (single-file page opened in the browser)
+- [~] G5-2 Platforms listed (Web builds; desktop via the existing Desktop app dialog; Android/iOS shown as planned)
+- [x] G5-3 Game view: resolution drop-down, scale slider, Maximize on Play, Stats overlay
+- [x] G5-4 Error Pause, Clear on Play, Play focused (Maximize on Play)
 ## G6 Improve existing tools
-- [ ] G6-1 UI Designer: Canvas scaler + resolution preview, anchor preset grid, on-canvas rect handles
+- [~] G6-1 UI Designer: anchor preset grid + more preview resolutions done; canvas scaler and on-canvas rect handles todo
 - [ ] G6-2 UI Designer: Layout groups, sprite-state buttons, tint in skins, copy/paste/undo polish, UI prefabs
 - [ ] G6-3 Graph: comments/groups, reroute, categorised search-to-add, subgraphs, minimap, auto-layout
 - [ ] G6-4 Graph: variables panel, live flow highlight while playing, F1 node docs
