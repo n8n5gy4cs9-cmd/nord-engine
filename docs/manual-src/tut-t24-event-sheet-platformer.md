@@ -13,6 +13,8 @@ summary: Make a small platformer with an event sheet and behaviors — coins, en
 You will write almost no code. The pieces are **behaviors** (ready movement) and **events** (rules). Think "what should happen when…?" for each rule.
 :::
 
+**Tip:** once the sheet grows, type in the **Find in sheet** box above it to show only the events and groups that mention a word (an object, a variable or an action).
+
 ## 1. A hero that moves
 Give the Hero entity a collider and the **Platform** behavior. Give the ground and ledges **Solid**, the cloud platform **Jumpthru**. Add input actions `left`, `right`, `jump` to `nord.project.json`. Run it: the hero runs, jumps (twice with `doubleJump`) and lands.
 

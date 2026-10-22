@@ -20,7 +20,7 @@ Equivalent workflows: New/Open/Save/Save as, Test/Stop, Build/Items/Scripts/Leve
 
 ## Using the editor
 
-Open **2D Level** from View or the command palette, or create **2D Platform Workshop**, **2D Top-down Workshop**, or **Machine Workshop** from the welcome screen. The page is `/editor/level2d/index.html` on `nord serve`. A 2D project is required for Save. The editor opens `levels/workshop.level2d.json` when present, otherwise the first saved 2D level, otherwise a fresh platform workshop.
+Open **2D Level** from the Window menu or the command palette, or create **2D Platform Workshop**, **2D Top-down Workshop**, or **Machine Workshop** from the welcome screen. The page is `/editor/level2d/index.html` on `nord serve`. A 2D project is required for Save. The editor opens `levels/workshop.level2d.json` when present, otherwise the first saved 2D level, otherwise a fresh platform workshop.
 
 - **Build:** choose pack/category or search the 1,514-entry bank. B paints, R draws rectangles, F fills a connected region, X erases tiles, I picks a tile/object sprite. Solid tiles create collision; decoration can be painted on a separate layer. Each bank page has 60 animated preview cards.
 - **Items:** choose a placement role (decoration, player, solid prop, pickup, hazard, exit, switch, door, physics prop or patrolling enemy). E places that role using the selected sprite. Player controls depend on Level → Mode. Keep the player named **Player** for camera follow; its `player` tag drives interactions.

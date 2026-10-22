@@ -14,7 +14,7 @@ bundled via `include_bytes!`. Icons: Lucide SVGs (`assets/icons/lucide`) via `eg
 │ folders | thumbnail grid (size slider) | search/filter | Library tab | Console tab | Docs tab                        │
 └──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
-Panels are dockable (M8-05, `egui_dock`): drag a tab to another panel, to an edge (split) or out of the window (floating); tabs have a close button, closed panels come back via **View ▸ <panel>**, **View ▸ Reset layout** restores the default. The layout is saved to `<config>/layout.json` (next to `editor.json`) and survives restarts and project switches.
+Panels are dockable (M8-05, `egui_dock`): drag a tab to another panel, to an edge (split) or out of the window (floating); tabs have a close button, closed panels come back via **Window ▸ <panel>**, **Window ▸ Reset layout** restores the default. The layout is saved to `<config>/layout.json` (next to `editor.json`) and survives restarts and project switches.
 Game view: the Game tab header sets size (Fit/50–200 %) and position (Top/Middle/Bottom + x/y offset, kept in settings); the view keeps the game's aspect ratio and stays inside the panel.
 Run/stop: **Cmd+R** runs and, while running, stops; **Cmd+.** stops only. Both keys are rebindable in Settings ▸ Run / stop keys (key names like `R`, `F5`, `Enter`). The Game tab header has ■ Stop and Fullscreen/Exit (Esc) — the reliable exit when the embedded game has keyboard focus.
 Themes: editor-only Graphite plus 10 dark + 3 light (Nord Light, GitHub Light, Solarized Light) in `assets/themes/themes.json`; pick in Settings. Light themes use `egui::Visuals::light()` as the base.
@@ -96,7 +96,7 @@ The Code toolbar has persisted **Word wrap** on/off; wrapping changes display on
 - **Hot reload keeps state**: saving a script swaps its code in the running game (existing); saving an event sheet now swaps the sheet while keeping global variables, group on/off and the sheet clock (`Game.hotReloadSheet`). Scene JSON changes still reload the page.
 
 ## FPS Level tab (M12)
-`Tab::Fps` (`panels/fps.rs`) embeds the FPS Creator level editor (`editor/fpsc/index.html`, served by the project's dev server) like the Scene tab embeds the edit viewport. Projects without the runtime see a call-to-action (*Add FPS Creator to this project* → `Action::FpsInstall` → `nord_core::fpsc::install`); projects with `scripts/fpsc/level-script.js` open on this tab. Toolbar: *Open in browser*, *Upgrade runtime*. Menu: View ▸ FPS Level, Project ▸ Add / upgrade FPS Creator…, palette entries. Spec: `docs/FPS_CREATOR.md`.
+`Tab::Fps` (`panels/fps.rs`) embeds the FPS Creator level editor (`editor/fpsc/index.html`, served by the project's dev server) like the Scene tab embeds the edit viewport. Projects without the runtime see a call-to-action (*Add FPS Creator to this project* → `Action::FpsInstall` → `nord_core::fpsc::install`); projects with `scripts/fpsc/level-script.js` open on this tab. Toolbar: *Open in browser*, *Upgrade runtime*. Menu: Window ▸ FPS Level, Project ▸ Add / upgrade FPS Creator…, palette entries. Spec: `docs/FPS_CREATOR.md`.
 
 FPS Level addon: Objects tab searches placed entities across storeys and focuses selection; placement grid offers 0.25–4 m spacing (default 0.5 m); patrol inspector edits coordinates/waits and inserts, removes, reorders or reverses waypoints. Existing tools remain available. See `FPS_CREATOR.md`.
 

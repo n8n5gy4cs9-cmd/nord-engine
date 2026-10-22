@@ -39,7 +39,7 @@ No `eval`; expressions are parsed + cached.
 The interpreter is the reference implementation; `nord build` additionally compiles sheets ahead of time (see *Compiler*). Editor: the **Event sheets** tab (see below). *Is overlapping* uses the `collider` boxes (`behaviors/util.js bbox`). Behaviors: `docs/BEHAVIORS.md`. Families/containers: `scene.settings.families` / `containers`. Manual: Event sheets chapter + generated reference.
 
 ## Editor panel (M10-04/05) — `crates/nord-editor/src/panels/events.rs`
-Tab **Event sheets** (View menu). Pick/create a `events/*.events.json`, edit, **Save**; **Attach to scene** sets `settings.eventSheet` (then save the scene).
+Tab **Event sheets** (Window menu). Pick/create a `events/*.events.json`, edit, **Save**; **Attach to scene** sets `settings.eventSheet` (then save the scene).
 - Events, groups, variables, comments, includes, function blocks; each event shows conditions (left) and actions (right). Sub-events, Or-block, disabled, invert (`!`), duplicate, delete, ▲▼ reorder, **drag handle ⠿** (drop on a row = move before it; groups and nesting work, no dropping a node into itself).
 - **＋ Add condition / action** opens a searchable picker (`system compare`, `platform jump`). The list comes from `crates/nord-editor/assets/aces.json`, exported from the live runtime registries: run `node tools/export-aces.mjs` after changing/adding ACEs (`--check` verifies it is current).
 - Parameters are expression boxes with **autocomplete** (sheet variables, scene entity names/tags/families, builtin functions, plugin expressions like `Mouse.X`, `Hero.X`); raw params (names, comparisons, keys) are plain text. The object of a non-System ACE is a button with a menu of scene objects (or type any tag/family).

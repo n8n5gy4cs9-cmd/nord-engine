@@ -1,5 +1,6 @@
 # Changelog
 
+- 2026-10-22 — Tutorials updated for the Unity-style editor: View ▸ → Window ▸ in guides, notes in T01 (New scene, checklist), T03 (MonoBehaviour template), T10 (tools, navigation, Gizmos), T14 (Build Settings), T24 (Find in sheet), T44 (anchor grid, copy/paste), T46 (Group, minimap, F1); new **T47 The Unity-style workflow**.
 - 2026-10-22 — Godotize G1-7/8: drag assets from Assets into the Scene view (ghost + drop placement), Gizmos menu (grid, icons, colliders; 3D collider wireframes).
 - 2026-10-22 — Godotize G6 (part): event-sheet *Find in sheet*, graph Group / minimap / Docs (F1), UI Designer Copy/Paste.
 - 2026-10-22 — Godotize G2-5/6, G7-3/4: multi-object Inspector, image thumbnails in pickers, play-mode *Apply to scene*, Window ▸ Profiler.

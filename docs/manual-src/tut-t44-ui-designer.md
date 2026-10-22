@@ -14,7 +14,7 @@ A UI file describes boxes. Boxes can hold other boxes. You draw them in the Desi
 <figure class="shot"><img src="assets/screenshots/ui-designer-overview.png" alt="The UI Designer with a HUD file open" loading="lazy"><figcaption>The UI Designer: tree, preview and properties. Full reference: <a href="ui-designer.html">UI Designer</a>.</figcaption></figure>
 
 ## 1. Open the Designer and make a menu
-Open **View ▸ UI Designer**. Type `ui/menu.ui.json` in the file box and press **New**. The Designer starts you with a title, two buttons and a score label. The big preview is the real game UI; click any element to select it, drag anchored elements to move them. The **Tree** on the left shows the structure, **Properties** on the right shows the selected node.
+Open **Window ▸ UI Designer**. Type `ui/menu.ui.json` in the file box and press **New**. The Designer starts you with a title, two buttons and a score label. The big preview is the real game UI; click any element to select it, drag anchored elements to move them. Select a node and use the **3×3 anchor grid** under *Anchor* to pin it to a corner, edge or the centre (or *fill*); **Copy / Paste** (or Ctrl/Cmd+C / V) duplicates a node into another container; the **Preview** list now has tablet, phone-landscape and small-phone sizes. The **Tree** on the left shows the structure, **Properties** on the right shows the selected node.
 
 **Checkpoint:** click *Play* in the preview. The Properties panel shows `button · play` with **Action** `play`.
 

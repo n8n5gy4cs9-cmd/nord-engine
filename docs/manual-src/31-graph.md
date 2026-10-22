@@ -14,9 +14,9 @@ Think of a recipe. **Events** are the "when": *when the game starts, when a butt
 :::
 
 ## Open the Graph editor
-* **View ▸ Graph**, command palette ▸ *Graph editor*, or double-click any `*.graph.json` in **Assets**.
+* **Window ▸ Graph**, command palette ▸ *Graph editor*, or double-click any `*.graph.json` in **Assets**.
 * **Assets ▸ right-click ▸ New graph** creates a blank one; **Hierarchy ▸ Create ▸ Graph (visual script)** creates an entity that already runs a graph file.
-* Layout preset: **View ▸ Layout ▸ Visual scripting + UI**.
+* Layout preset: **Window ▸ Layout ▸ Visual scripting + UI**.
 
 ## Your first graph in two minutes
 1. In the Graph tab press **Templates… ▸ Hello (On Start → Log)**. Two nodes appear, connected: *On Start* → *Log*.

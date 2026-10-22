@@ -20,7 +20,7 @@ The default **PlayCanvas** theme uses blue-grey panels, thin dividers, 2 px corn
 
 The hub provides New project, Recent projects and searchable Examples/Tutorials in separately scrolling cards. Expand **Starter templates** for a ready-made project; the templates are included in the app bundle. Hover a recent-project row to see its full path. **Docs** opens the guides even before opening a project; **Back to projects** returns to the hub.
 
-Toolbar **Play** toggles Stop, **Export…** opens the export dialog, and the search icon opens the command palette. Settings scrolls in smaller windows. Drag dock tabs to rearrange panels; closed tabs reopen from View.
+Toolbar **Play** toggles Stop, **Export…** opens the export dialog, and the search icon opens the command palette. Settings scrolls in smaller windows. Drag dock tabs to rearrange panels; closed tabs reopen from Window.
 
 ## Panels
 * **Hierarchy** — the entity tree (**Add entity** button; right-click: Add child, Duplicate, Delete, Copy, Paste). Drag a row onto another to reparent (top 30 % of a row inserts *before*), drop on empty space to move to the root. Dropping an asset on empty space creates an entity from it.
@@ -105,9 +105,9 @@ The welcome screen filters both starter templates and samples with **Featured**,
 ## Everyday shortcuts (new)
 * **Hierarchy ▸ ＋ Create** adds ready-made entities (Empty, Camera, Light, Text, UI Label/Button/Panel, Audio source, Spawner, Trigger zone, Graph, and in 3D Cube, Sphere, Ground, Directional light). **Right-click ▸ Create child**, **Create empty parent** (also *Group selected*), **Rename (F2)**, Duplicate (Cmd/Ctrl+D), Delete (Del).
 * **Assets**: right-click folders, files and the empty area for Open, Open with default app, Rename (F2), Duplicate, Delete, Reveal in Finder, Copy path and **New folder / UI scene / script / graph**.
-* **View ▸ Layout** switches between ready-made panel arrangements: Default, 2D game, 3D game, Coding, Visual scripting + UI.
+* **Window ▸ Layout** switches between ready-made panel arrangements: Default, 2D game, 3D game, Coding, Visual scripting + UI.
 * While the game runs the toolbar shows **Pause** and **Step** (advance one frame), next to Stop and Reload.
-* **Unity layouts:** View ▸ Layout ▸ *Unity 2 by 3 / Wide / Tall* put Scene and Game side by side with Hierarchy, Inspector and Project/Console around them.
+* **Unity layouts:** Window ▸ Layout ▸ *Unity 2 by 3 / Wide / Tall* put Scene and Game side by side with Hierarchy, Inspector and Project/Console around them.
 * **Run like Unity:** **F5** = Play / Stop the whole project, **F6** = **Run this scene** (the scene open in the editor, ignoring the project's start scene; also the **Scene** toolbar button, Project menu and Cmd+K palette). Cmd+R still works. Needs *Upgrade runtime* in projects copied before this feature (the game page reads `?scene=`).
 * **Console ▸ Collapse** (on by default) shows identical lines once with a count, `(12) coin collected`, like Unity. Switch it off to see every line in order. **Clear on Play** (on by default) empties the console at every Play.
 * **Cmd+Shift+P** pauses/resumes the running game, **Cmd+Alt+P** steps one frame (as in Unity).

@@ -14,9 +14,9 @@ A UI file is a family tree of boxes. A **vbox** stacks its children top to botto
 :::
 
 ## Open the Designer
-* **View ▸ UI Designer**, or the command palette (**Cmd/Ctrl+K**, type "UI Designer").
+* **Window ▸ UI Designer**, or the command palette (**Cmd/Ctrl+K**, type "UI Designer").
 * In the **Assets** panel, double-click any `*.ui.json` file. Right-click a folder ▸ **New UI scene** creates a blank one.
-* Layout presets: **View ▸ Layout ▸ Visual scripting + UI** gives the Designer, Graph and Scene tabs room to breathe.
+* Layout presets: **Window ▸ Layout ▸ Visual scripting + UI** gives the Designer, Graph and Scene tabs room to breathe.
 
 ## The window
 | Area | What it does |

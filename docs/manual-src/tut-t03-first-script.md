@@ -26,4 +26,6 @@ export default class Pulse extends NordScript {
 3. Add a message: in `start()` write `this.events.emit('hello', this.entity.name)` and listen in another script with `this.events.on('hello', (n) => console.log('hi', n))`. Look at the Console tab.
 4. Break it on purpose (remove a bracket): the game keeps its last good code and the error shows with `file:line`.
 
+**Prefer Unity's names?** **Assets ▸ Create ▸ MonoBehaviour script** gives a template with `Awake / Start / Update`, `this.Translate(...)`, `Time.deltaTime` and `Input.GetAxis`; see *Unity-style scripting* in [Scripting](scripting.html). The two styles can live in the same project.
+
 Concepts: [Scripting](scripting.html). **Next:** [T04 Platformer from template](tut-t04-platformer.html).

@@ -13,6 +13,8 @@ summary: Move a player, collect coins and show a win screen using only graphs an
 You will not type code. You connect boxes. The game has two graphs: **player** (what the blue circle does) and **game** (loads the score screen and handles *Play again*).
 :::
 
+The editor has a few helpers worth knowing: **Group** draws a titled box around the selected nodes, the **minimap** (bottom right) jumps around a big graph, and **F1** / **Docs** opens the node reference.
+
 ## 1. Look at what is in the project
 | File | What it is |
 |---|---|
