@@ -25,6 +25,8 @@ pub struct AssetsUi {
     pub kind_filter: Option<AssetType>,
     pub rename: Option<(String, String)>,
     pub confirm_delete: Option<String>,
+    /// last clicked entry (F2 rename, Delete, Ctrl/Cmd+D duplicate act on it)
+    pub selected: Option<String>,
     listing: Vec<Entry>,
     listed_at: Option<Instant>,
     listed_dir: String,
@@ -64,6 +66,7 @@ impl Default for AssetsUi {
             kind_filter: None,
             rename: None,
             confirm_delete: None,
+            selected: None,
             listing: vec![],
             listed_at: None,
             listed_dir: String::new(),
@@ -151,7 +154,199 @@ pub fn import_files(st: &mut EditorState, files: &[PathBuf]) {
     st.assets_ui.listed_at = None;
 }
 
-fn tree(st: &mut EditorState, ui: &mut Ui, rel: &str, depth: usize) {
+const BLANK_UI: &str = "{\n  \"version\": 1,\n  \"name\": \"screen\",\n  \"theme\": {},\n  \"root\": { \"type\": \"panel\", \"name\": \"root\", \"anchor\": \"fill\", \"style\": { \"background\": \"none\", \"border\": \"none\", \"boxShadow\": \"none\", \"padding\": 0 }, \"children\": [] }\n}\n";
+const NEW_SCRIPT: &str = "import { NordScript } from 'nord';\n\nexport default class extends NordScript {\n  start() {}\n  update(dt) {}\n}\n";
+
+/// Context-menu operations shared by the folder tree, the grid/list and the empty background.
+const OP_OPEN: u8 = 0;
+const OP_DEFAULT: u8 = 1;
+const OP_RENAME: u8 = 2;
+const OP_DUP: u8 = 3;
+const OP_DELETE: u8 = 4;
+const OP_REVEAL: u8 = 5;
+const OP_COPY_PATH: u8 = 6;
+const OP_NEW_FOLDER: u8 = 7;
+const OP_NEW_UI: u8 = 8;
+const OP_NEW_SCRIPT: u8 = 9;
+const OP_IMPORT: u8 = 10;
+const OP_REFRESH: u8 = 11;
+
+fn reveal_label() -> &'static str {
+    if cfg!(target_os = "macos") {
+        "Reveal in Finder"
+    } else if cfg!(target_os = "windows") {
+        "Show in Explorer"
+    } else {
+        "Show in file manager"
+    }
+}
+
+/// Right-click menu for one file or folder (Unity/Godot style).
+fn entry_menu(ui: &mut Ui, e: &Entry, out: &mut Option<(Entry, u8)>) {
+    let mut item = |ui: &mut Ui, label: &str, op: u8| {
+        if ui.button(label).clicked() {
+            *out = Some((e.clone(), op));
+            ui.close_menu();
+        }
+    };
+    item(ui, if e.is_dir { "Open folder" } else { "Open" }, OP_OPEN);
+    if !e.is_dir {
+        item(ui, "Open with default app", OP_DEFAULT);
+    }
+    ui.separator();
+    if e.is_dir {
+        item(ui, "New folder", OP_NEW_FOLDER);
+        item(ui, "New UI scene (.ui.json)", OP_NEW_UI);
+        item(ui, "New script (.js)", OP_NEW_SCRIPT);
+        ui.separator();
+    }
+    if !e.rel.is_empty() {
+        item(ui, "Rename   F2", OP_RENAME);
+        item(ui, "Duplicate   ⌘/Ctrl+D", OP_DUP);
+        item(ui, "Delete   Del", OP_DELETE);
+        ui.separator();
+    }
+    item(ui, reveal_label(), OP_REVEAL);
+    item(ui, "Copy path", OP_COPY_PATH);
+}
+
+/// Right-click menu on the empty area of the current folder ("Create" menu).
+fn background_menu(ui: &mut Ui, dir: &str, out: &mut Option<(Entry, u8)>) {
+    let here = Entry {
+        rel: dir.to_string(),
+        name: dir.rsplit('/').next().unwrap_or("").to_string(),
+        is_dir: true,
+        kind: AssetType::Other,
+    };
+    let mut item = |ui: &mut Ui, label: &str, op: u8| {
+        if ui.button(label).clicked() {
+            *out = Some((here.clone(), op));
+            ui.close_menu();
+        }
+    };
+    item(ui, "New folder", OP_NEW_FOLDER);
+    item(ui, "New UI scene (.ui.json)", OP_NEW_UI);
+    item(ui, "New script (.js)", OP_NEW_SCRIPT);
+    ui.separator();
+    item(ui, "Import files…", OP_IMPORT);
+    item(ui, "Refresh", OP_REFRESH);
+    ui.separator();
+    item(ui, reveal_label(), OP_REVEAL);
+    item(ui, "Copy path", OP_COPY_PATH);
+}
+
+/// First free `base`, `base 2`, … (with extension) in `dir`.
+fn unique_name(root: &Path, dir: &str, base: &str, ext: &str) -> String {
+    let mut n = 1;
+    loop {
+        let name = match (n, ext.is_empty()) {
+            (1, true) => base.to_string(),
+            (1, false) => format!("{base}.{ext}"),
+            (_, true) => format!("{base} {n}"),
+            (_, false) => format!("{base} {n}.{ext}"),
+        };
+        let rel = if dir.is_empty() {
+            name.clone()
+        } else {
+            format!("{dir}/{name}")
+        };
+        if !root.join(rel).v_exists() {
+            return name;
+        }
+        n += 1;
+    }
+}
+
+fn copy_tree(from: &Path, to: &Path) -> std::io::Result<()> {
+    if from.v_is_dir() {
+        nord_core::vfs::create_dir_all(to)?;
+        for e in nord_core::vfs::read_dir(from)?.flatten() {
+            copy_tree(&e.path(), &to.join(e.file_name()))?;
+        }
+        Ok(())
+    } else {
+        nord_core::vfs::copy(from, to).map(|_| ())
+    }
+}
+
+fn duplicate(st: &mut EditorState, root: &Path, e: &Entry) {
+    let dir = e.rel.rsplit_once('/').map_or("", |x| x.0).to_string();
+    let (stem, ext) = match e.name.split_once('.') {
+        Some((s, x)) if !e.is_dir => (s.to_string(), x.to_string()),
+        _ => (e.name.clone(), String::new()),
+    };
+    let name = unique_name(root, &dir, &format!("{stem} copy"), &ext);
+    let to = if dir.is_empty() {
+        name.clone()
+    } else {
+        format!("{dir}/{name}")
+    };
+    if copy_tree(&root.join(&e.rel), &root.join(&to)).is_ok() {
+        let meta = root.join(format!("{}.meta.json", e.rel));
+        if meta.v_exists() {
+            let _ = nord_core::vfs::copy(meta, root.join(format!("{to}.meta.json")));
+        }
+        st.assets_ui.selected = Some(to);
+        st.refresh_assets();
+        st.assets_ui.listed_at = None;
+    }
+}
+
+/// Create a file/folder inside `dir` and start renaming it.
+fn create_in(
+    st: &mut EditorState,
+    root: &Path,
+    dir: &str,
+    base: &str,
+    ext: &str,
+    body: Option<&str>,
+) {
+    let name = unique_name(root, dir, base, ext);
+    let rel = if dir.is_empty() {
+        name.clone()
+    } else {
+        format!("{dir}/{name}")
+    };
+    let ok = match body {
+        Some(b) => nord_core::vfs::write(root.join(&rel), b).is_ok(),
+        None => nord_core::vfs::create_dir_all(root.join(&rel)).is_ok(),
+    };
+    if ok {
+        st.assets_ui.dir = dir.to_string();
+        st.assets_ui.selected = Some(rel.clone());
+        st.assets_ui.rename = Some((rel, name));
+        st.refresh_assets();
+        st.assets_ui.listed_at = None;
+    }
+}
+
+fn handle_op(st: &mut EditorState, ui: &Ui, root: &Path, e: Entry, op: u8) {
+    match op {
+        OP_OPEN => open_entry(st, &e),
+        OP_DEFAULT => open_default(&root.join(&e.rel)),
+        OP_RENAME => st.assets_ui.rename = Some((e.rel.clone(), e.name.clone())),
+        OP_DUP => duplicate(st, root, &e),
+        OP_DELETE => st.assets_ui.confirm_delete = Some(e.rel.clone()),
+        OP_REVEAL => reveal(&root.join(&e.rel)),
+        OP_COPY_PATH => ui.ctx().copy_text(e.rel.clone()),
+        OP_NEW_FOLDER => create_in(st, root, &e.rel, "folder", "", None),
+        OP_NEW_UI => create_in(st, root, &e.rel, "new-screen", "ui.json", Some(BLANK_UI)),
+        OP_NEW_SCRIPT => create_in(st, root, &e.rel, "new-script", "js", Some(NEW_SCRIPT)),
+        OP_IMPORT => {
+            if let Some(files) = crate::platform::pick_files() {
+                import_files(st, &files);
+            }
+        }
+        OP_REFRESH => {
+            st.refresh_assets();
+            st.assets_ui.listed_at = None;
+            st.assets_ui.thumbs.clear();
+        }
+        _ => {}
+    }
+}
+
+fn tree(st: &mut EditorState, ui: &mut Ui, rel: &str, depth: usize, ctx: &mut Option<(Entry, u8)>) {
     let Some(root) = st.root.clone() else { return };
     let dirs: Vec<Entry> = list_dir(&root, rel)
         .into_iter()
@@ -172,14 +367,16 @@ fn tree(st: &mut EditorState, ui: &mut Ui, rel: &str, depth: usize) {
             let r = ui.selectable_label(sel, &d.name);
             if r.clicked() {
                 st.assets_ui.dir = d.rel.clone();
+                st.assets_ui.selected = Some(d.rel.clone());
             }
+            r.context_menu(|ui| entry_menu(ui, &d, ctx));
             // drop an asset on a folder = move
             if let Some(p) = r.dnd_release_payload::<AssetDrag>() {
                 move_asset(st, &p.0, &d.rel);
             }
         });
         if has_sub && open {
-            tree(st, ui, &d.rel, depth + 1);
+            tree(st, ui, &d.rel, depth + 1, ctx);
         }
     }
 }
@@ -250,16 +447,8 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             st.assets_ui.thumbs.clear();
         }
         if icons::button(ui, "plus", "New folder", false).clicked() {
-            let mut n = 1;
-            loop {
-                let p = root.join(&st.assets_ui.dir).join(format!("folder{n}"));
-                if !p.v_exists() {
-                    let _ = nord_core::vfs::create_dir_all(p);
-                    break;
-                }
-                n += 1;
-            }
-            st.assets_ui.listed_at = None;
+            let dir = st.assets_ui.dir.clone();
+            create_in(st, &root, &dir, "folder", "", None);
         }
         ui.add(
             egui::TextEdit::singleline(&mut st.assets_ui.search)
@@ -300,6 +489,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     });
     ui.separator();
 
+    let mut ctx_op: Option<(Entry, u8)> = None;
     egui::SidePanel::left("asset-tree")
         .resizable(true)
         .default_width(140.0)
@@ -308,10 +498,18 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 .auto_shrink([false; 2])
                 .show(ui, |ui| {
                     let sel = st.assets_ui.dir.is_empty();
-                    if ui.selectable_label(sel, "📁 (project)").clicked() {
+                    let proj = Entry {
+                        rel: String::new(),
+                        name: "(project)".into(),
+                        is_dir: true,
+                        kind: AssetType::Other,
+                    };
+                    let r = ui.selectable_label(sel, "📁 (project)");
+                    if r.clicked() {
                         st.assets_ui.dir.clear();
                     }
-                    tree(st, ui, "", 0);
+                    r.context_menu(|ui| entry_menu(ui, &proj, &mut ctx_op));
+                    tree(st, ui, "", 0, &mut ctx_op);
                 });
         });
 
@@ -339,7 +537,11 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     let cell = st.assets_ui.size;
     let as_list = st.assets_ui.list;
     let mut open: Option<Entry> = None;
-    let mut ctx_op: Option<(Entry, u8)> = None;
+    // empty-area right-click = Create menu; registered before the cells so cells stay on top
+    let area = ui.available_rect_before_wrap();
+    let bg = ui.interact(area, ui.id().with("asset-bg"), Sense::click());
+    let cur = st.assets_ui.dir.clone();
+    bg.context_menu(|ui| background_menu(ui, &cur, &mut ctx_op));
     egui::ScrollArea::vertical()
         .auto_shrink([false; 2])
         .show(ui, |ui| {
@@ -398,7 +600,9 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                         continue; // lazy: no thumbnail work for off-screen cells
                     }
                     let p = ui.painter_at(rect);
-                    if resp.hovered() {
+                    if st.assets_ui.selected.as_deref() == Some(e.rel.as_str()) {
+                        p.rect_filled(rect, 4.0, ui.visuals().selection.bg_fill);
+                    } else if resp.hovered() {
                         p.rect_filled(rect, 4.0, ui.visuals().widgets.hovered.bg_fill);
                     }
                     if as_list {
@@ -444,6 +648,9 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                         );
                     }
                     let resp = resp.on_hover_text(&e.rel);
+                    if resp.clicked() || resp.secondary_clicked() {
+                        st.assets_ui.selected = Some(e.rel.clone());
+                    }
                     if resp.double_clicked() {
                         open = Some(e.clone());
                     } else if resp.clicked() && e.is_dir {
@@ -452,31 +659,35 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     if !e.is_dir {
                         resp.dnd_set_drag_payload(AssetDrag(e.rel.clone()));
                     }
-                    resp.context_menu(|ui| {
-                        for (i, t) in ["Open", "Rename", "Delete", "Reveal in Finder", "Copy path"]
-                            .iter()
-                            .enumerate()
-                        {
-                            if ui.button(*t).clicked() {
-                                ctx_op = Some((e.clone(), i as u8));
-                                ui.close_menu();
-                            }
-                        }
-                    });
+                    resp.context_menu(|ui| entry_menu(ui, e, &mut ctx_op));
                 }
             });
         });
     if let Some(e) = open {
         open_entry(st, &e);
     }
-    if let Some((e, op)) = ctx_op {
-        match op {
-            0 => open_entry(st, &e),
-            1 => st.assets_ui.rename = Some((e.rel.clone(), e.name.clone())),
-            2 => st.assets_ui.confirm_delete = Some(e.rel.clone()),
-            3 => reveal(&root.join(&e.rel)),
-            _ => ui.ctx().copy_text(e.rel.clone()),
+    // keyboard shortcuts on the selected entry (only when no text field has focus)
+    if !ui.ctx().wants_keyboard_input() && ui.rect_contains_pointer(ui.max_rect()) {
+        let sel = st.assets_ui.selected.clone();
+        if let Some(e) = sel.and_then(|r| entries.iter().find(|e| e.rel == r).cloned()) {
+            let (f2, del, dup) = ui.input(|i| {
+                (
+                    i.key_pressed(egui::Key::F2),
+                    i.key_pressed(egui::Key::Delete) || i.key_pressed(egui::Key::Backspace),
+                    i.modifiers.command && i.key_pressed(egui::Key::D),
+                )
+            });
+            if f2 {
+                ctx_op = Some((e.clone(), OP_RENAME));
+            } else if del {
+                ctx_op = Some((e.clone(), OP_DELETE));
+            } else if dup {
+                ctx_op = Some((e, OP_DUP));
+            }
         }
+    }
+    if let Some((e, op)) = ctx_op {
+        handle_op(st, ui, &root, e, op);
     }
     if let Some(p) = st.assets_ui.confirm_delete.clone() {
         egui::Window::new("Delete asset?")
@@ -519,10 +730,30 @@ fn truncate(s: &str, n: usize) -> String {
 fn reveal(p: &Path) {
     #[cfg(target_os = "macos")]
     let _ = std::process::Command::new("open").arg("-R").arg(p).spawn();
-    #[cfg(not(target_os = "macos"))]
-    let _ = std::process::Command::new("xdg-open")
-        .arg(p.parent().unwrap_or(p))
+    #[cfg(target_os = "windows")]
+    let _ = std::process::Command::new("explorer")
+        .arg(format!("/select,{}", p.display()))
         .spawn();
+    #[cfg(all(not(target_os = "macos"), not(target_os = "windows")))]
+    let _ = std::process::Command::new("xdg-open")
+        .arg(if p.is_dir() {
+            p
+        } else {
+            p.parent().unwrap_or(p)
+        })
+        .spawn();
+}
+
+fn open_default(p: &Path) {
+    #[cfg(target_os = "macos")]
+    let _ = std::process::Command::new("open").arg(p).spawn();
+    #[cfg(target_os = "windows")]
+    let _ = std::process::Command::new("cmd")
+        .args(["/C", "start", ""])
+        .arg(p)
+        .spawn();
+    #[cfg(all(not(target_os = "macos"), not(target_os = "windows")))]
+    let _ = std::process::Command::new("xdg-open").arg(p).spawn();
 }
 
 fn open_entry(st: &mut EditorState, e: &Entry) {

@@ -52,3 +52,12 @@ Re-fetch the downloadable packs with `tools/fetch-packs.sh`. Copy what you need 
 * Only use assets you may redistribute. Record packs' licences in `THIRD_PARTY.md`.
 * Never reference remote URLs — builds fail the offline check (`nord check-offline`).
 * Keep texture sizes sensible (see [Performance](performance.html)).
+
+## Right-click and shortcuts in the Assets panel
+Works on the folder tree (left), on files and folders (right) and on the empty background:
+
+* **Files and folders:** Open, Open with default app, Rename (**F2**), Duplicate (**⌘/Ctrl+D**), Delete (**Del**), Reveal in Finder / Show in Explorer, Copy path.
+* **Folders (and empty background):** New folder, New UI scene (`.ui.json`), New script (`.js`); the new item starts in rename mode.
+* **Background:** also Import files…, Refresh.
+* Click selects (highlighted); drag a file onto a folder in the tree to move it; drop files from Finder to import.
+

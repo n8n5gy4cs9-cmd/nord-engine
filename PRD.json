@@ -1962,6 +1962,12 @@
       "status": "done"
     },
     {
+      "id": "M8-28",
+      "milestone": "M8",
+      "title": "Assets panel: right-click menus (tree, items, background), F2/Del/Cmd+D, duplicate, create UI scene/script, reveal/open default",
+      "status": "done"
+    },
+    {
       "id": "M10-01",
       "milestone": "M10",
       "title": "Spec: docs/CONSTRUCT_PARITY.md — map each Construct 3 editor feature to Nord equivalent, scope + non-goals (no copying Construct code/assets; clean-room, original names where practical)",
