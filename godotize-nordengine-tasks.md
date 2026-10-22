@@ -9,7 +9,7 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "â€
 - [x] G0-3 Menu bar: File / Edit / Assets / GameObject / Component / Window (was View) / Project / Help like Unity
 - [~] G0-4 Shortcut table in Settings matching Unity defaults (read-only list done; rebinding todo)
 ## G1 Scene view
-- [x] G1-1 Navigation: Alt+LMB orbit, Alt+Cmd+LMB / MMB pan, wheel zoom, RMB orbit + WASDQE fly (3D); Alt+LMB / MMB pan, wheel zoom (2D) (JS unverified in a browser: no Playwright here)
+- [x] G1-1 Navigation: Alt+LMB orbit, Alt+Cmd+LMB / MMB pan, wheel zoom, hold RMB = mouse look + WASD fly (Q/E down/up, Shift x3, speed 9 u/s accelerating, wheel = fly speed), Alt+RMB zoom (3D, as Unity's SceneViewMotion.cs); Alt+LMB / MMB / RMB pan, wheel zoom (2D). Headless test: tools/viewport-fly-test.mjs
 - [~] G1-2 Tools Q hand, W move, E rotate, R scale, T rect (keys, toolbar, 2D+3D viewport done; dedicated rect handles todo)
 - [~] G1-3 Local/Global (3D move/rotate gizmos follow the object) + Pivot/Center toolbar toggles; Center is stored but has no effect until multi-object gizmos exist
 - [x] G1-4 Snapping: hold Ctrl/Cmd to toggle snap while dragging (2D + 3D); step values from settings (vertex snap not done)

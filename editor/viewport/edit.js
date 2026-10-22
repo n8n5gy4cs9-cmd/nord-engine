@@ -71,6 +71,7 @@ function connect() {
 // Forward editor shortcuts: the page owns keyboard focus when it is a native webview child.
 addEventListener('keydown', (e) => {
   if (e.target && /input|textarea/i.test(e.target.tagName)) return;
+  if (state.flying) return; // RMB fly mode: WASDQE move the camera, they are not tool shortcuts
   const k = e.key.toLowerCase();
   const cmd = e.metaKey || e.ctrlKey;
   const wanted = ['q', 'w', 'e', 'r', 't', 'f', 'delete', 'backspace'].includes(k) && !cmd && !e.altKey || (cmd && ['z', 'd', 's', 'c', 'v', 'p', 'k'].includes(k));

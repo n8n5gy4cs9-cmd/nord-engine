@@ -39,7 +39,7 @@ The editor's dev server always serves project files with `Cache-Control: no-stor
 - Project hub: New (template picker), Open, Recent, Examples, Tutorials.
 - Code tab: CodeMirror tabs per file, minimap-free, command palette (Cmd+K), quick-open (Cmd+P), Save (Cmd+S) → hot reload.
 - Asset thumbnails: images (real), spritesheets (first frame + badge), audio (waveform), models (rendered), scripts/scenes (icon).
-- Undo/redo (Cmd+Z / Shift+Cmd+Z) across hierarchy/inspector/viewport. Copy/paste/duplicate (Cmd+D). Delete. F = frame selected, Shift+F = frame all. Scene view: Alt+LMB orbit (Alt+Cmd+LMB pan), MMB pan, wheel zoom; hold Ctrl/Cmd to toggle snapping; Shift/Ctrl+click toggles multi-select; drag on empty space = marquee (2D); toolbar Local/Global + Pivot/Center.
+- Undo/redo (Cmd+Z / Shift+Cmd+Z) across hierarchy/inspector/viewport. Copy/paste/duplicate (Cmd+D). Delete. F = frame selected, Shift+F = frame all. Scene view (3D, same as Unity): hold RMB = mouse look + WASD fly (Q/E down/up, Shift faster, wheel = fly speed), Alt+LMB orbit (Alt+Cmd+LMB pan), Alt+RMB zoom, MMB pan, wheel zoom; hold Ctrl/Cmd to toggle snapping; Shift/Ctrl+click toggles multi-select; drag on empty space = marquee (2D); toolbar Local/Global + Pivot/Center.
 - Console: log/warn/error from game iframe + build output, click error → open file:line.
 - Library tab: search → preview → "Insert" (adds script/prefab/component to selection or project).
 - Shortcuts (mac): Cmd+P quick open, Cmd+S save, Cmd+R play, Cmd+. stop, Q/W/E/R/T tools (hand/move/rotate/scale/rect), Cmd+1/2/3 panels.

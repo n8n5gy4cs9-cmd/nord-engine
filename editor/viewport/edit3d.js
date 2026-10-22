@@ -27,10 +27,11 @@ export async function init() {
   scene = new B.Scene(engine);
   scene.clearColor = new B.Color4(0.105, 0.12, 0.15, 1);
   camera = new B.ArcRotateCamera('editcam', -Math.PI / 2.4, Math.PI / 3, 14, new B.Vector3(0, 1, 0), scene);
-  camera.minZ = 0.05; camera.maxZ = 5000; camera.wheelPrecision = 20; camera.lowerRadiusLimit = 0.2;
+  camera.minZ = 0.05; camera.maxZ = 5000; camera.lowerRadiusLimit = 0.05;
   camera.attachControl(canvas, true);
   const p = camera.inputs.attached.pointers;
-  p.buttons = [1, 2]; p.panningMouseButton = 1; // RMB orbit, MMB pan, wheel zoom
+  p.buttons = [1]; p.panningMouseButton = 1; // MMB pan; Alt+LMB orbit (navButtons); RMB = fly look + zoom, handled below like Unity
+  camera.inputs.attached.mousewheel.wheelDeltaPercentage = 0.0005; // Unity: zoom is relative to the distance
   camera.panningSensibility = 400;
   const hemi = new B.HemisphericLight('h', new B.Vector3(0.2, 1, 0.1), scene); hemi.intensity = 0.9;
   const sun = new B.DirectionalLight('d', new B.Vector3(-0.4, -1, -0.3), scene); sun.intensity = 0.6;
@@ -58,7 +59,6 @@ export async function init() {
 
   scene.onPointerObservable.add((pi) => {
     if (pi.type !== B.PointerEventTypes.POINTERDOWN) return;
-    if (pi.event.button === 2) rmb = true;
     if (pi.event.button !== 0 || gizmoManager.isHovered || pi.event.altKey || state.settings.tool === 'hand') return; // Alt+LMB = camera
     const pick = scene.pick(scene.pointerX, scene.pointerY, (m) => !!m.metadata?.entityId && m.isPickable);
     const id = pick?.hit ? pick.pickedMesh.metadata.entityId : null;
@@ -69,14 +69,49 @@ export async function init() {
       selectLocal([...sel]);
     } else selectLocal(id ? [id] : []);
   });
-  addEventListener('pointerup', (e) => { if (e.button === 2) rmb = false; });
+  flyNavigation();
   addEventListener('keydown', (e) => { keys.add(e.code); modKeys(e); });
   addEventListener('keyup', (e) => { keys.delete(e.code); modKeys(e); });
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
+  new ResizeObserver(() => engine.resize()).observe(canvas);
+  engine.runRenderLoop(() => { scene.render(); hudUpdate(); });
+  setSettings();
+}
+
+// Unity Scene view navigation (SceneViewMotion.cs): hold RMB = look around + WASD fly (Q down, E up), speed 9 u/s that accelerates
+// while keys are held, Shift = x3, wheel while flying changes the speed; Alt+RMB drag = zoom.
+const FLY_SPEED = 9, FLY_ACCEL = 2.8, FLY_SHIFT = 3;
+let flyMul = 1, flyRamp = 1, zoomDrag = false;
+function flyNavigation() {
+  const look = (dx, dy) => { // rotate about the camera's own position
+    const p = camera.position.clone();
+    camera.alpha -= dx * 0.0035;
+    camera.beta = Math.min(Math.max(camera.beta - dy * 0.0035, 0.02), Math.PI - 0.02);
+    camera.target.copyFrom(p.subtract(new B.Vector3(Math.cos(camera.alpha) * Math.sin(camera.beta), Math.cos(camera.beta), Math.sin(camera.alpha) * Math.sin(camera.beta)).scale(camera.radius)), false, false, true);
+  };
+  canvas.addEventListener('pointerdown', (e) => {
+    if (e.button !== 2) return;
+    rmb = state.flying = true; zoomDrag = e.altKey; flyRamp = 1;
+    canvas.setPointerCapture?.(e.pointerId);
+    canvas.style.cursor = zoomDrag ? 'ns-resize' : 'none';
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!rmb) return;
+    if (zoomDrag) camera.radius = Math.max(0.05, camera.radius * Math.exp((e.movementX - e.movementY) * 0.01)); // Alt+RMB = zoom
+    else look(e.movementX, e.movementY);
+  });
+  const end = (e) => { if (e.button === 2 && rmb) { rmb = state.flying = false; canvas.style.cursor = ''; canvas.releasePointerCapture?.(e.pointerId); } };
+  canvas.addEventListener('pointerup', end);
+  canvas.addEventListener('pointercancel', end);
+  canvas.addEventListener('wheel', (e) => { // while flying the wheel changes the fly speed instead of zooming
+    if (!rmb) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    flyMul = Math.min(Math.max(flyMul * Math.exp(-e.deltaY * 0.002), 0.05), 50);
+  }, { capture: true, passive: false });
   scene.onBeforeRenderObservable.add(() => {
-    if (!rmb || !keys.size) return;
-    const dt = engine.getDeltaTime() / 1000, sp = Math.max(2, camera.radius) * 0.9 * dt;
+    if (!rmb || zoomDrag) return;
+    const dt = engine.getDeltaTime() / 1000;
     const fwd = camera.getTarget().subtract(camera.position).normalize(), right = B.Vector3.Cross(B.Vector3.Up(), fwd).normalize().scale(-1);
     const mv = B.Vector3.Zero();
     if (keys.has('KeyW')) mv.addInPlace(fwd);
@@ -85,16 +120,16 @@ export async function init() {
     if (keys.has('KeyA')) mv.subtractInPlace(right);
     if (keys.has('KeyE')) mv.y += 1;
     if (keys.has('KeyQ')) mv.y -= 1;
-    camera.target.addInPlace(mv.scale(sp));
+    if (mv.lengthSquared() === 0) { flyRamp = 1; return; }
+    flyRamp *= Math.pow(FLY_ACCEL, dt);
+    const shift = keys.has('ShiftLeft') || keys.has('ShiftRight');
+    camera.target.addInPlace(mv.normalize().scale(FLY_SPEED * flyMul * flyRamp * (shift ? FLY_SHIFT : 1) * dt));
   });
-  new ResizeObserver(() => engine.resize()).observe(canvas);
-  engine.runRenderLoop(() => { scene.render(); hudUpdate(); });
-  setSettings();
 }
 
 function hudUpdate() {
   const el = document.getElementById('hud');
-  el.textContent = `3D · ${state.settings.tool}${state.settings.snap ? ' · snap' : ''}${state.settings.local ? ' · local' : ' · global'}${state.selection.length > 1 ? ` · ${state.selection.length} selected` : ''} · RMB orbit (+WASDQE fly) · Alt+LMB orbit · MMB pan · wheel zoom`;
+  el.textContent = `3D · ${state.settings.tool}${state.settings.snap ? ' · snap' : ''}${state.settings.local ? ' · local' : ' · global'}${state.selection.length > 1 ? ` · ${state.selection.length} selected` : ''} · hold RMB: look + WASD fly (Q/E down/up, Shift faster, wheel = speed) · Alt+LMB orbit · Alt+RMB zoom · MMB pan · wheel zoom`;
 }
 
 function selectLocal(ids) {
@@ -103,7 +138,7 @@ function selectLocal(ids) {
   send({ t: 'select', id: ids[0] ?? null, ids });
 }
 
-// Unity navigation: Alt+LMB orbit, Alt+Cmd+LMB pan (MMB pans, RMB orbits, wheel zooms); Ctrl/Cmd toggles snapping while held.
+// Unity navigation: Alt+LMB orbit, Alt+Cmd+LMB pan (MMB pans, RMB = fly look, wheel zooms); Ctrl/Cmd toggles snapping while held.
 let ctrlHeld = false;
 function modKeys(e) {
   ctrlHeld = e.ctrlKey || e.metaKey;
@@ -114,7 +149,7 @@ function navButtons(alt, meta) {
   const ptr = camera?.inputs?.attached?.pointers;
   if (!ptr) return;
   const hand = state.settings.tool === 'hand';
-  ptr.buttons = hand || alt ? [0, 1, 2] : [1, 2];
+  ptr.buttons = hand || alt ? [0, 1] : [1]; // RMB is Unity-style fly look / zoom (flyNavigation), never the camera's own orbit
   ptr.panningMouseButton = hand || (alt && meta) ? 0 : 1;
 }
 
