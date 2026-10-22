@@ -9327,6 +9327,7 @@
   "nord/tutorials/tut-t41-nord-office.html",
   "nord/tutorials/tut-t42-paper-worlds.html",
   "nord/tutorials/tut-t43-rss-river.html",
+  "nord/tutorials/tut-t44-ui-designer.html",
   "nord/tutorials/tutorials.html",
   "robots.txt",
   "runtime/core/addons.js",
@@ -9360,5 +9361,6 @@
   "runtime/core/themes.js",
   "runtime/core/timeline.js",
   "runtime/core/ui.js",
+  "runtime/core/uiscene.js",
   "runtime/core/util.js"
 ]

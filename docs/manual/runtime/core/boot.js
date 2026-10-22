@@ -20,6 +20,7 @@ export function createGame(project, opts = {}) {
   game.audio = new Audio(loader, { saveKey: `nord:${project.id}:audio`, storage: opts.storage ?? globalThis.localStorage });
   if (opts.container) {
     game.ui = new UI(opts.container, { skin: project.ui?.skin, theme: project.ui?.theme, fontBase: `${opts.libBase ?? '/vendor'}/fonts`, onSound: (n) => game.audio.play(`assets/audio/sfx/${n}.wav`, { bus: 'ui' }) });
+    game.ui.events = game.events; game.ui.t = (k) => game.i18n?.t?.(k);
     game.audio.attach(globalThis.window);
   }
   if (opts.canvas) game._detachInput = attachDom(game.input, opts.canvas, globalThis.window, (x, y) => game.backend?.toWorld?.(x, y) ?? [x, y]);

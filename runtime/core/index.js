@@ -17,6 +17,7 @@ export { Loader, safePath } from './loader.js';
 export { Audio, BUSES } from './audio.js';
 export { touchToStart } from './start-gate.js';
 export { UI, THEME_CSS } from './ui.js';
+export { UIManager, createUI, validate as validateUI, blank as blankUI, richText, NODE_TYPES } from './uiscene.js';
 export { createGame, makeStage, errorOverlay } from './boot.js';
 export { registerCoreComponents } from './components.js';
 export { SKINS, THEMES, FONTS, skin, theme, fontFaceCSS, themeVars, applyTheme, CODE_CSS } from './themes.js';

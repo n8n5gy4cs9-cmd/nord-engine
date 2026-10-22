@@ -14,6 +14,113 @@ Build an original one-level rail shooter with low-poly ships, moving ground dots
 
 **Full-code learning route:** After the orientation below, continue to [the complete file-by-file walkthrough](#file-walkthrough). It teaches every main project file in consecutive sections, with the actual code, an explanation of what and why, and a change to try. The expandable complete files at the end are a reference, not the lesson.
 
+## Start here: build it yourself, from an empty project {#build-from-scratch}
+
+The sections after this one explain the finished game. **This section is the route from nothing to a running game.** The download is only for comparing when something breaks.
+
+<p><span class="f">orange</span> = a file name · <span class="v">green</span> = a variable or function · <span class="k">purple</span> = a setting or key word · <span class="ui">blue</span> = a button or menu in Nord.</p>
+
+### Step 1 — Create the project (which template?)
+
+Welcome screen → <span class="ui">New project</span>:
+
+```text
+Project name : my-vector-patrol
+Project type : 3D game          <-- pick this one
+```
+
+Choose <span class="ui">3D game</span> ("Babylon.js 3D + Havok physics"). Not HTML-lite: this game uses a 3D scene with real model entities and a script attached to one of them. Press <span class="ui">Create project</span>. You get <span class="f">nord.project.json</span>, <span class="f">index.html</span> and <span class="f">scenes/main.scene.json</span> (an empty scene), plus empty <span class="f">scripts/</span> and <span class="f">assets/</span>.
+
+### Step 2 — Project settings (nord.project.json)
+
+Open <span class="f">nord.project.json</span> and make these fields match (leave the others):
+
+```json
+"display": { "width": 960, "height": 540, "scale": "fit", "pixelArt": true, "background": "#163d57" },
+"physics": { "engine": "none", "gravity": [0, 0, 0] },
+"input": { "actions": {
+  "left":  ["KeyA", "ArrowLeft"],
+  "right": ["KeyD", "ArrowRight"],
+  "up":    ["KeyW", "ArrowUp"],
+  "down":  ["KeyS", "ArrowDown"],
+  "fire":  ["Space", "KeyJ"],
+  "roll":  ["ShiftLeft", "ShiftRight"],
+  "retro": ["KeyC"]
+} }
+```
+
+<span class="k">physics: none</span> because the game does its own collisions in <span class="f">sim.js</span>. <span class="k">input.actions</span> are the names the code asks for with <span class="v">this.input.down('fire')</span>.
+
+### Step 3 — Copy the art and sound
+
+Unzip the [download](assets/downloads/vector-patrol-source.zip) elsewhere. Copy into your project:
+
+| From the zip | Into your project |
+|---|---|
+| <span class="f">assets/models/*.glb</span> (fighter, drone, carrier, gate) | <span class="f">assets/models/</span> |
+| <span class="f">assets/audio/*.mp3</span> (8 files) | <span class="f">assets/audio/</span> |
+| <span class="f">scripts/retro-audio.js</span> | <span class="f">scripts/retro-audio.js</span> |
+
+(The <span class="f">.blocksmith.json</span> and previews are optional; they are only needed if you want to edit the ships.)
+
+### Step 4 — Build the scene by hand
+
+You do not need to write scene JSON. In the <span class="ui">Hierarchy</span> panel use <span class="ui">Add entity</span> and the Inspector:
+
+| Entity name (exact!) | Position x, y, z | Scale | Inspector → + Add component |
+|---|---|---|---|
+| <span class="f">Camera</span> | 0, 2, -18 | 1 | <span class="ui">Camera</span>, fov <span class="k">65</span>, near <span class="k">0.1</span>, far <span class="k">450</span> |
+| <span class="f">Fighter</span> | 0, 0, 0 | 0.75 | <span class="ui">Model</span> → <span class="k">assets/models/fighter.glb</span> |
+| <span class="f">Drone0</span> | 0, 0, 140 | 1 | <span class="ui">Model</span> → <span class="k">assets/models/drone.glb</span> |
+| <span class="f">Carrier</span> | 0, 0, 130 | 3.5 | <span class="ui">Model</span> → <span class="k">assets/models/carrier.glb</span> |
+| <span class="f">Gate0</span> | 0, 0, 150 | 1 | <span class="ui">Model</span> → <span class="k">assets/models/gate.glb</span> |
+| <span class="f">FlightGame</span> | 0, 0, 0 | 1 | nothing yet (Step 6 adds the script) |
+
+Then select <span class="f">Drone0</span> and press **Cmd+D** (Duplicate) 13 times; rename the copies <span class="f">Drone1</span> … <span class="f">Drone13</span>. Select <span class="f">Gate0</span> and duplicate twice → <span class="f">Gate1</span>, <span class="f">Gate2</span>. The names matter: <span class="f">view.js</span> finds them with <span class="v">scene.find('Drone' + i)</span>. Save the scene (Cmd+S).
+
+### Step 5 — Write the scripts, in this order
+
+Create the files in <span class="f">scripts/</span> (Finder, or `touch scripts/sim.js scripts/view.js scripts/flight.js scripts/retro-shader.js scripts/audio-config.js`), refresh <span class="ui">Assets</span>, and open each in the code editor.
+
+| # | File | What it is | Where the code is |
+|---|---|---|---|
+| 1 | <span class="f">sim.js</span> | all rules: movement, enemies, boss, score. No graphics. | paste parts [1.1 → 1.8](#walk-scripts-sim-js) in order |
+| 2 | <span class="f">audio-config.js</span> | sound names → files | paste whole (below) |
+| 3 | <span class="f">retro-shader.js</span> | the 320-pixel retro look | [4.1 → 4.2](#walk-scripts-retro-shader-js) |
+| 4 | <span class="f">view.js</span> | moves models, ground dots, bullets | [3.1 → 3.9](#walk-scripts-view-js) |
+| 5 | <span class="f">flight.js</span> | the controller: input, UI, pause, restart | [2.1 → 2.6](#walk-scripts-flight-js) |
+
+<span class="f">audio-config.js</span>, paste whole:
+
+```js
+export const AUDIO = {
+  music: ['assets/audio/vector-flight.mp3', 'assets/audio/vector-boss.mp3'],
+  sfx: {
+    laser: 'assets/audio/laser.mp3',
+    explosion: 'assets/audio/explosion.mp3',
+    crash: 'assets/audio/crash.mp3',
+    shield: 'assets/audio/shield.mp3',
+    checkpoint: 'assets/audio/checkpoint.mp3',
+    win: 'assets/audio/win.mp3',
+  },
+};
+```
+
+Build <span class="f">sim.js</span> first: it is plain JavaScript you understand without the engine.
+
+### Step 6 — Attach the controller
+
+Select <span class="f">FlightGame</span> in Hierarchy → Inspector → <span class="ui">+ Add script</span> → <span class="f">scripts/flight.js</span>. Save the scene. This is what makes <span class="v">start()</span> and <span class="v">update(dt)</span> in <span class="f">flight.js</span> run.
+
+### Step 7 — Play
+
+Press <span class="ui">Play</span>, click <span class="ui">Launch patrol</span>. Nothing moves? Open <span class="ui">Console</span>: the first red message names the file/line. Common causes: an entity name misspelled (<span class="f">Drone3</span> vs <span class="f">drone3</span>), a model path typo, or the script not attached to <span class="f">FlightGame</span>.
+
+<figure class="shot"><img src="assets/screenshots/ed-retro-vector-flight.png" alt="Vector Patrol in flight" loading="lazy"><figcaption>Expected result of Step 7.</figcaption></figure>
+
+<figure class="shot"><img src="assets/screenshots/ed-retro-vector-boss.png" alt="Vector Patrol carrier boss" loading="lazy"><figcaption>After about 65 seconds the carrier boss appears.</figcaption></figure>
+
+
 ## 1. Play the finished level and find its code
 
 Click **Launch patrol** to unlock browser audio. WASD or arrows steer; Space/J fires; Shift activates a short roll shield with a three-second cooldown. C switches retro/clean rendering. P or **Pause / Resume** pauses; the Restart button reloads the scene. Reach the carrier at 65 seconds and destroy it before 110 seconds. A collision costs hull, gold pickups restore hull, and passing a gate rewards accurate flying. A successful run saves the best score in browser storage.

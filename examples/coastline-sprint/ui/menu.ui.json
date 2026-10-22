@@ -1,0 +1,128 @@
+{
+  "version": 1,
+  "name": "menu",
+  "theme": {
+    "bg": "#101b2b",
+    "panel": "#0d172ae8",
+    "border": "#7a9caa",
+    "fg": "#e3edf0",
+    "accent": "#304a61"
+  },
+  "root": {
+    "type": "panel",
+    "name": "root",
+    "anchor": "fill",
+    "style": {
+      "background": "none",
+      "border": "none",
+      "boxShadow": "none",
+      "padding": 0,
+      "font": "15px monospace"
+    },
+    "children": [
+      {
+        "type": "hbox",
+        "name": "bar",
+        "anchor": "t",
+        "w": "100%",
+        "padding": 10,
+        "gap": 8,
+        "children": [
+          {
+            "type": "button",
+            "name": "one",
+            "text": "1 player",
+            "on": {
+              "pressed": "one"
+            }
+          },
+          {
+            "type": "button",
+            "name": "two",
+            "text": "2 player split",
+            "on": {
+              "pressed": "two"
+            }
+          },
+          {
+            "type": "button",
+            "name": "pause",
+            "text": "Pause / Resume",
+            "on": {
+              "pressed": "pause"
+            }
+          },
+          {
+            "type": "button",
+            "name": "restart",
+            "text": "Restart",
+            "on": {
+              "pressed": "restart"
+            }
+          },
+          {
+            "type": "button",
+            "name": "mute",
+            "text": "Mute",
+            "on": {
+              "pressed": "mute"
+            }
+          },
+          {
+            "type": "select",
+            "name": "track",
+            "options": [
+              "Coast Drive",
+              "Coast Night"
+            ],
+            "on": {
+              "changed": "track"
+            }
+          }
+        ]
+      },
+      {
+        "type": "label",
+        "name": "notice",
+        "anchor": "b",
+        "w": "100%",
+        "padding": 8,
+        "text": "{notice}",
+        "rich": false,
+        "wrap": false,
+        "size": 15
+      },
+      {
+        "type": "vbox",
+        "name": "overlay",
+        "anchor": "c",
+        "y": 10,
+        "w": "70%",
+        "class": "card",
+        "align": "center",
+        "gap": 10,
+        "style": {
+          "background": "#0d172ae8",
+          "padding": 18
+        },
+        "children": [
+          {
+            "type": "label",
+            "name": "ovTitle",
+            "text": "COASTLINE SPRINT",
+            "size": 26,
+            "bold": true,
+            "color": "#f7d89b",
+            "align": "center"
+          },
+          {
+            "type": "label",
+            "name": "ovBody",
+            "text": "One coast. Two checkpoints. Beat the clock![br][br]P1: WASD/arrows · Shift nitro[br]P2: gamepad left stick · RT/A throttle · LT/B brake · X nitro[br][br]Choose 1 player or connect a gamepad and choose 2 player split.",
+            "align": "center"
+          }
+        ]
+      }
+    ]
+  }
+}

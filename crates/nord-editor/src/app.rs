@@ -33,6 +33,7 @@ pub enum Tab {
     Docs,
     Fps,
     Level2d,
+    UiDesigner,
 }
 
 impl Tab {
@@ -57,6 +58,7 @@ impl Tab {
             Tab::Docs => "Docs",
             Tab::Fps => "FPS Level",
             Tab::Level2d => "2D Level",
+            Tab::UiDesigner => "UI Designer",
         }
     }
 }
@@ -70,6 +72,7 @@ pub fn default_dock() -> DockState<Tab> {
         Tab::Layout,
         Tab::Fps,
         Tab::Level2d,
+        Tab::UiDesigner,
         Tab::Animation,
         Tab::Sprite,
         Tab::Particles,
@@ -660,6 +663,7 @@ impl App {
                     Tab::Layout,
                     Tab::Fps,
                     Tab::Level2d,
+                    Tab::UiDesigner,
                     Tab::History,
                     Tab::Project,
                     Tab::Hierarchy,
@@ -880,6 +884,7 @@ impl TabViewer for Viewer<'_> {
             Tab::Events => panels::events::ui(st, ui),
             Tab::Layout => panels::layout::ui(st, ui),
             Tab::Level2d => panels::level2d::ui(st, ui, self.web, self.frame, self.overlay),
+            Tab::UiDesigner => panels::uidesigner::ui(st, ui, self.web, self.frame, self.overlay),
             Tab::Fps => panels::fps::ui(st, ui, self.web, self.frame, self.overlay),
             Tab::History => panels::history::ui(st, ui),
             Tab::Project => panels::project::ui(st, ui),

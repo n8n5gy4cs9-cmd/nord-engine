@@ -1,4 +1,5 @@
 import { applyTheme } from './themes.js';
+import { UIManager } from './uiscene.js';
 // DOM UI layer: an overlay div over the canvas with small HUD/menu primitives. Themed via CSS variables (Nord palette).
 // Every create function returns a handle { el, remove(), ...setters }. Works without a DOM only for tests that inject `doc`.
 export const THEME_CSS = `
@@ -107,6 +108,10 @@ export class UI {
     }
     return h;
   }
+  /** Declarative UI scenes (.ui.json): `const menu = await ui.load('ui/menu.ui.json')` — see docs/UI_SCENES.md. */
+  get scenes() { return (this._mgr ??= new UIManager(this.root, { doc: this.doc, onSound: this.onSound, events: this.events, t: this.t })); }
+  load(src, opts) { return this.scenes.load(src, opts); }
+  build(def, opts) { return this.scenes.build(def, opts); }
   clear(screen) { const s = this.screens.get(screen); if (s) for (const c of [...s.children]) c.remove(); }
   destroy() { this.root.remove(); this.screens.clear(); }
 }

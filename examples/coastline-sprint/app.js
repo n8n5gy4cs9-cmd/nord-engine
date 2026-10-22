@@ -2,88 +2,26 @@ import { COURSE, driver, traffic, updateDriver, padInput } from './track.js';
 import { drawView } from './render.js';
 import { RetroAudio } from './audio.js';
 import { AUDIO } from './audio-config.js';
+import { createUI } from './lib/nord-ui.js';
 export async function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <style>
-      body {
-        margin: 0;
-        background: #101b2b;
-        color: #e3edf0;
-        font: 15px monospace;
-      }
-      #shell {
-        position: relative;
-        max-width: 1100px;
-        margin: auto;
-      }
-      canvas {
-        display: block;
-        width: 100%;
-        image-rendering: pixelated;
-      }
-      #bar {
-        padding: 10px;
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      button,
-      select {
-        font: inherit;
-        padding: 8px;
-        background: #304a61;
-        color: white;
-        border: 1px solid #7a9caa;
-        border-radius: 5px;
-      }
-      #notice {
-        padding: 8px;
-        min-height: 18px;
-      }
-      #overlay {
-        position: absolute;
-        top: 35%;
-        left: 15%;
-        width: 70%;
-        padding: 18px;
-        box-sizing: border-box;
-        background: #0d172ae8;
-        text-align: center;
-      }
-      h1 {
-        color: #f7d89b;
-        font-size: 26px;
-      }
-    </style>
-    <div id="shell">
-      <div id="bar">
-        <button id="one">1 player</button>
-        <button id="two">2 player split</button>
-        <button id="pause">Pause / Resume</button>
-        <button id="restart">Restart</button>
-        <button id="mute">Mute</button>
-        <select id="track">
-          <option>Coast Drive</option>
-          <option>Coast Night</option>
-        </select>
-      </div>
-      <canvas width="960" height="540" tabindex="0"></canvas>
-      <div id="notice"></div>
-      <div id="overlay">
-        <h1>COASTLINE SPRINT</h1>
-        <p>One coast. Two checkpoints. Beat the clock!</p>
-        <p>
-          P1: WASD/arrows · Shift nitro
-          <br />
-          P2: gamepad left stick · RT/A throttle · LT/B brake · X nitro
-        </p>
-        <p>Choose 1 player or connect a gamepad and choose 2 player split.</p>
-      </div>
-    </div>
-  `;
-  const $ = (s) => root.querySelector(s),
-    canvas = $('canvas'),
-    g = canvas.getContext('2d'),
+  // Page frame: a 16:9 canvas with room above/below for the UI bar and notice line.
+  Object.assign(document.body.style, { margin: 0, background: '#101b2b' });
+  const shell = Object.assign(document.createElement('div'), {
+    style: 'position:relative;max-width:1100px;margin:auto;padding:56px 0 36px',
+  });
+  const canvas = Object.assign(document.createElement('canvas'), {
+    width: 960,
+    height: 540,
+    tabIndex: 0,
+    style: 'display:block;width:100%;image-rendering:pixelated',
+  });
+  shell.append(canvas);
+  root.append(shell);
+  // All menus and text live in ui/menu.ui.json (edit it in the UI Designer). The code only reacts to it.
+  const menu = await createUI(shell).load('ui/menu.ui.json');
+  const overlay = menu.$('overlay'),
+    track = menu.$('track');
+  const g = canvas.getContext('2d'),
     sound = new RetroAudio(AUDIO),
     keys = new Set();
   const load = (src) =>
@@ -117,8 +55,10 @@ export async function mount(root) {
   async function start(count) {
     if (starting) return;
     if (count === 2 && !pad()) {
-      $('#notice').textContent =
-        'Connect a gamepad and press one of its buttons, then choose 2 player split.';
+      menu.set(
+        'notice',
+        'Connect a gamepad and press one of its buttons, then choose 2 player split.',
+      );
       return;
     }
     starting = true;
@@ -128,11 +68,11 @@ export async function mount(root) {
     paused = false;
     state = 'playing';
     keys.clear();
-    $('#overlay').hidden = true;
+    overlay.visible = false;
     canvas.focus();
     try {
       await sound.unlock();
-      await sound.music($('#track').selectedIndex);
+      await sound.music(track.index);
       if (engine) engine.source.stop();
       engine = await sound.play('engine', { loop: true, volume: 0.07 });
     } catch (error) {
@@ -145,22 +85,22 @@ export async function mount(root) {
     if (state !== 'playing') return;
     if (paused && mode === 2 && !pad()) return;
     paused = !paused;
-    $('#overlay').hidden = !paused;
-    $('#overlay').innerHTML =
-      '<h1>PAUSED</h1><p>Pause / Resume continues. Connect P2 gamepad if disconnected.</p>';
+    overlay.visible = paused;
+    menu.$('ovTitle').text = 'PAUSED';
+    menu.$('ovBody').text = 'Pause / Resume continues. Connect P2 gamepad if disconnected.';
     paused ? sound.suspend() : sound.resume();
     keys.clear();
   }
-  $('#one').onclick = () => start(1);
-  $('#two').onclick = () => start(2);
-  $('#restart').onclick = () => start(mode);
-  $('#pause').onclick = togglePause;
-  $('#mute').onclick = () => {
-    $('#mute').textContent = sound.mute() ? 'Unmute' : 'Mute';
-  };
-  $('#track').onchange = () => {
-    if (sound.ctx) sound.music($('#track').selectedIndex);
-  };
+  menu.on('one', () => start(1));
+  menu.on('two', () => start(2));
+  menu.on('restart', () => start(mode));
+  menu.on('pause', togglePause);
+  menu.on('mute', () => {
+    menu.$('mute').text = sound.mute() ? 'Unmute' : 'Mute';
+  });
+  menu.on('track', () => {
+    if (sound.ctx) sound.music(track.index);
+  });
   window.addEventListener('keydown', (e) => {
     if (
       ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space'].includes(e.code) &&
@@ -217,11 +157,14 @@ export async function mount(root) {
       g.fillStyle = '#0b1424';
       g.fillRect(0, h - 2, canvas.width, 4);
     }
-    $('#notice').textContent = sound.problem
-      ? `Audio: ${sound.problem}`
-      : mode === 2
-        ? `P2 ${pad()?.id ?? 'GAMEPAD DISCONNECTED'} · ${state === 'result' ? 'Restart for a new race.' : 'P pauses both views.'}`
-        : 'W/Up accelerates · S/Down brakes · A/D steer · Shift nitro · P pause';
+    menu.set(
+      'notice',
+      sound.problem
+        ? `Audio: ${sound.problem}`
+        : mode === 2
+          ? `P2 ${pad()?.id ?? 'GAMEPAD DISCONNECTED'} · ${state === 'result' ? 'Restart for a new race.' : 'P pauses both views.'}`
+          : 'W/Up accelerates · S/Down brakes · A/D steer · Shift nitro · P pause',
+    );
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);

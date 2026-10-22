@@ -13,6 +13,79 @@ Build **RSS River**, an original local-first news reader for developers. Its ord
 
 **Full-code learning route:** After the orientation below, continue to [the complete file-by-file walkthrough](#file-walkthrough). It teaches every main project file in consecutive sections, with the actual code, an explanation of what and why, and a change to try. The expandable complete files at the end are a reference, not the lesson.
 
+## Start here: build it yourself, from an empty project {#build-from-scratch}
+
+The sections after this one explain the finished reader. **This section is the route from nothing to a running app.** The download is only for comparing when something breaks.
+
+<p><span class="f">orange</span> = a file name · <span class="v">green</span> = a variable or function · <span class="k">purple</span> = a setting or key word · <span class="ui">blue</span> = a button or menu in Nord.</p>
+
+### Step 1 — Create the project (which template?)
+
+Welcome screen → <span class="ui">New project</span>:
+
+```text
+Project name : my-rss-river
+Project type : HTML-lite        <-- pick this one
+```
+
+Choose <span class="ui">HTML-lite</span>. The reader is a normal web page; the 3D "river" is drawn by the Babylon and Havok libraries that sit inside your own folder. So you do **not** need the 3D game type, which would make an engine scene. Press <span class="ui">Create project</span>.
+
+### Step 2 — Copy the "infrastructure" files
+
+Unzip the [download](assets/downloads/rss-river-source.zip) elsewhere. Some files are libraries or helpers, not lessons. Copy these into the **root of your project**:
+
+| Copy from the zip | What it is |
+|---|---|
+| <span class="f">vendor/</span> (whole folder) | Babylon.js + Havok physics, so nothing loads from the internet |
+| <span class="f">assets/dev-desk-sprites.png</span> | the desk art |
+| <span class="f">save.js</span> | tiny storage helper (the <span class="v">Save</span> class) |
+| <span class="f">nord-desktop.js</span> | lets Nord's app fetch feeds |
+| <span class="f">desk.js</span> | creates the 3D desk (walkthrough part 4 explains it) |
+| <span class="f">.offline-allow</span> | the three feed hosts the app may contact |
+| <span class="f">demo.xml</span>, <span class="f">style.css</span> | sample articles, page styling |
+
+Then create three **empty** files for the code you write: `touch feeds.js river.js app.js` (in the project folder), refresh the <span class="ui">Assets</span> panel.
+
+### Step 3 — index.html and project settings
+
+Replace everything in <span class="f">index.html</span> with:
+
+```html
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RSS River</title>
+<style>html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}</style></head>
+<body><div id="app"></div>
+<script type="module">
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+</script></body></html>
+```
+
+Open <span class="f">nord.project.json</span> and add this block next to the other top-level fields (it allows the three feed hosts):
+
+```json
+"desktop": { "permissions": { "net": { "hosts": ["hnrss.org", "simonwillison.net", "github.blog"] } } }
+```
+
+### Step 4 — Write the three code files in this order
+
+| # | File | Job | Where the code is |
+|---|---|---|---|
+| 1 | <span class="f">feeds.js</span> | list of feeds, RSS/Atom → one article shape, merge rules. No page, no 3D. | paste parts [1.1 → 1.5](#walk-feeds-js) |
+| 2 | <span class="f">river.js</span> | turns articles into floating 3D papers | paste parts [3.1 → 3.4](#walk-river-js) |
+| 3 | <span class="f">app.js</span> | the reader screen: list, filters, refresh, save | paste parts [2.1 → 2.10](#walk-app-js) |
+
+Why this order: <span class="f">app.js</span> imports from the other two (<span class="k">import</span> { <span class="v">parseFeed</span>, <span class="v">mergeArticles</span> } from './feeds.js'). Write what gets imported first. <span class="f">feeds.js</span> is plain functions: after pasting it you can test it in the Console without any page.
+
+### Step 5 — Play
+
+Press <span class="ui">Play</span>. Click <span class="ui">Load local demo</span> to fill the list with the 8 fictional articles from <span class="f">demo.xml</span>. Star one, then switch to the 3D river view and click or flick a paper. Blank screen? Open <span class="ui">Console</span>: the first red line names the file. Most often a wrong file name in an <span class="k">import</span>, or <span class="f">vendor/</span> not copied.
+
+<figure class="shot"><img src="assets/screenshots/ed-rss-list.png" alt="RSS River list view" loading="lazy"><figcaption>After Step 5: sources on the left, article list, reading pane.</figcaption></figure>
+
+<figure class="shot"><img src="assets/screenshots/ed-rss-river.png" alt="RSS River 3D paper view" loading="lazy"><figcaption>The 3D river: starred papers are bigger and float higher.</figcaption></figure>
+
+
 ## 1. Learn the finished reader
 
 Click a story to read its summary and mark it read. Star it to keep it important. Search matches titles and summaries; Unread only and Starred only combine with the source selector. Mark visible read affects only your current filtered list. Backup library downloads your subscriptions, cached entries and reading flags as JSON; the Import control accepts that backup as well as RSS/Atom XML.

@@ -15,6 +15,145 @@ The reference request was ZgzInfinity/OutRun. This tutorial uses the same broad 
 
 **Full-code learning route:** After the orientation below, continue to [the complete file-by-file walkthrough](#file-walkthrough). It teaches every main project file in consecutive sections, with the actual code, an explanation of what and why, and a change to try. The expandable complete files at the end are a reference, not the lesson.
 
+## Start here: build it yourself, from an empty project {#build-from-scratch}
+
+The sections after this one explain the finished game. **This section is the route from nothing to a running game.** Follow it first, top to bottom. The download is only for comparing when something breaks.
+
+<p><span class="f">orange</span> = a file name · <span class="v">green</span> = a variable or function · <span class="k">purple</span> = a setting or key word · <span class="ui">blue</span> = a button or menu in Nord.</p>
+
+### Step 1 — Create the project (which template?)
+
+On the Welcome screen choose <span class="ui">New project</span>. Fill in:
+
+```text
+Project name : my-coastline-sprint
+Location     : (any writable folder, e.g. your Documents)
+Project type : HTML-lite        <-- pick this one
+```
+
+Pick <span class="ui">HTML-lite</span> ("Plain HTML/JS page with the tiny nord-lite runtime"). **Do not** pick 2D game, 3D game or the Rust/WASM types, and do not use anything from <span class="ui">Starter templates</span>. Coastline Sprint draws the road itself on a canvas with plain JavaScript, so it needs no scene, no Phaser and no Babylon. Press <span class="ui">Create project</span>.
+
+Nord makes this folder:
+
+```text
+my-coastline-sprint/
+  nord.project.json   <- project settings, leave it alone
+  index.html          <- placeholder page, you replace it in Step 3
+  scenes/ scripts/    <- empty, this game does not use them
+  assets/
+```
+
+### Step 2 — Add the folders and empty files
+
+All code files live **directly in the project folder**, next to <span class="f">index.html</span>, not in scripts/. Open Terminal, go into your project folder and run:
+
+```sh
+cd path/to/my-coastline-sprint
+mkdir -p assets/sprites assets/audio ui lib
+touch track.js render.js app.js audio-config.js audio.js
+```
+
+(Or make the same files in Finder.) In Nord open the <span class="ui">Assets</span> panel and refresh it. Double-click a file to open it in the code editor. Save with Cmd+S.
+
+Now unzip the [download](assets/downloads/coastline-sprint-source.zip) somewhere else and **copy these things** into your project (art and sound are not code you type):
+
+| Copy this from the zip | Into your project |
+|---|---|
+| <span class="f">assets/sprites/</span> (4 files: the car and roadside PNGs + meta) | <span class="f">assets/sprites/</span> |
+| <span class="f">assets/audio/</span> (7 MP3 files) | <span class="f">assets/audio/</span> |
+| <span class="f">audio.js</span> (92-line sound helper) | replace your empty <span class="f">audio.js</span> |
+| <span class="f">lib/nord-ui.js</span> (the Nord UI runtime, a copy of <span class="f">runtime/core/uiscene.js</span>) | <span class="f">lib/nord-ui.js</span> |
+
+You will read <span class="f">audio.js</span> later in the walkthrough, but you do not need to type it to get a working game.
+
+### Step 3 — Replace index.html
+
+Open <span class="f">index.html</span>, delete everything, and paste this whole file. It loads <span class="f">app.js</span> and calls its <span class="v">mount()</span> function:
+
+```html
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coastline Sprint</title>
+<style>html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}</style></head>
+<body><div id="app"></div>
+<script type="module">
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+</script></body></html>
+```
+
+### Step 4 — track.js: the rules (the code you asked about)
+
+Open <span class="f">track.js</span>. **The very first lines of this file** are the <span class="v">COURSE</span> block:
+
+```js
+export const COURSE = {
+  length: 180000,
+  limit: 65,
+  checkpoints: [60000, 120000],
+  bonus: 18,
+  maxSpeed: 4800,
+};
+```
+
+| Word | Meaning |
+|---|---|
+| <span class="k">length</span> | course length in road units (the finish line) |
+| <span class="k">limit</span> | starting time in seconds |
+| <span class="k">checkpoints</span> | the two distances where you get time back |
+| <span class="k">bonus</span> | seconds added at each checkpoint |
+| <span class="k">maxSpeed</span> | top speed without nitro |
+
+<span class="k">export</span> makes <span class="v">COURSE</span> usable from the other files with <span class="k">import</span>. Save. Then keep typing the rest of the file **in the order below**. Each part opens in the walkthrough with the exact code to paste *below the previous part*:
+
+| Part | Adds | Walkthrough |
+|---|---|---|
+| 1.1 | <span class="v">clamp</span>, <span class="v">curve</span>, <span class="v">hill</span> (the road shape) | [1.1](#walk-track-js) |
+| 1.2 | <span class="v">driver()</span> — one car's state | 1.2 |
+| 1.3 | <span class="v">traffic()</span> — the other cars | 1.3 |
+| 1.4 | <span class="v">updateDriver()</span> — speed and steering | 1.4 |
+| 1.5–1.6 | sounds, collisions, checkpoints, finish | 1.5, 1.6 |
+| 1.7 | <span class="v">padInput()</span> — gamepad to intent | 1.7 |
+
+Note: part 1.1 repeats the <span class="v">COURSE</span> block above. Paste 1.1 *instead of* typing COURSE twice. Stop when <span class="f">track.js</span> ends with <span class="v">padInput</span>.
+
+### Step 5 — render.js: the picture
+
+Same method: open <span class="f">render.js</span> and paste parts [2.1 to 2.6](#walk-render-js) one after another. Order: background → road samples → road strips → sprite crop → depth sorting → car + HUD. It exports <span class="v">drawView</span>, which <span class="f">app.js</span> imports.
+
+### Step 6 — audio-config.js: paste whole
+
+This tiny file only lists sound file names. Paste it all:
+
+```js
+export const AUDIO = {
+  music: ['assets/audio/coast-drive.mp3', 'assets/audio/coast-night.mp3'],
+  sfx: {
+    engine: 'assets/audio/engine.mp3',
+    crash: 'assets/audio/crash.mp3',
+    skid: 'assets/audio/skid.mp3',
+    checkpoint: 'assets/audio/checkpoint.mp3',
+    win: 'assets/audio/win.mp3',
+  },
+};
+```
+
+### Step 7 — Design the menu, then connect everything
+
+**The menu is not code.** Open the <span class="ui">UI Designer</span> tab (View menu), type <span class="f">ui/menu.ui.json</span> in the file box and press <span class="ui">New</span>. Build the screen visually: add an <span class="k">hbox</span> anchored to the top with five <span class="k">button</span> nodes and a <span class="k">select</span> (give each button an *Action* name: <span class="v">one</span>, <span class="v">two</span>, <span class="v">pause</span>, <span class="v">restart</span>, <span class="v">mute</span>), a <span class="k">label</span> named <span class="v">notice</span> anchored to the bottom with the text <span class="v">{notice}</span>, and a centred <span class="k">vbox</span> named <span class="v">overlay</span> holding two labels named <span class="v">ovTitle</span> and <span class="v">ovBody</span>. Save. Or copy the finished <span class="f">ui/menu.ui.json</span> from the zip and open it in the Designer to see how it is built; the file is explained in [part 4](#walk-ui-menu-ui-json).
+
+Now <span class="f">app.js</span>, the largest code file. Paste parts [3.1 to 3.9](#walk-app-js) in order. It builds a tiny page frame, loads the UI file, loads the images, runs the game loop and draws one or two views. It first imports the other files, so make sure they exist and are saved.
+
+### Step 8 — Play
+
+Press <span class="ui">Play</span> in Nord's toolbar. Click <span class="ui">1 player</span>. If the screen is blank, open the <span class="ui">Console</span> panel: the first red line names the file and line to fix. The usual causes are a mistyped file name in an <span class="k">import</span>, a missing <span class="f">ui/menu.ui.json</span> or <span class="f">lib/nord-ui.js</span>, or an asset in the wrong folder.
+
+<figure class="shot"><img src="assets/screenshots/ed-retro-coast-solo.png" alt="Coastline Sprint solo race, the result of this build" loading="lazy"><figcaption>What you should see after Step 8: sky, curving coast road, traffic, your car and the HUD.</figcaption></figure>
+
+<figure class="shot"><img src="assets/screenshots/ed-retro-coast-split.png" alt="Two-player split screen" loading="lazy"><figcaption>Choose <b>2 player split</b> with a gamepad connected for this view.</figcaption></figure>
+
+**If you are stuck:** compare your file with the same-named file in the download or the *Complete game source* at the end of this page.
+
+
 ## 1. Open and run the finished project
 
 Extract the zip into a writable folder and open its nord.project.json in Nord. Press Play, then choose **1 player**. W/Up accelerates, S/Down brakes, A/D or Left/Right steer and Shift uses nitro. P or the Pause/Resume button pauses; Restart starts a fresh race. Choose either music track from the dropdown. Mute affects both music and SFX.
@@ -35,7 +174,9 @@ For split-screen, connect a gamepad, press one of its buttons so the browser exp
 
 | File | Responsibility |
 |---|---|
-| app.js | Nord HTML entry point, controls, loop, mode, pause, audio and split layout |
+| app.js | Nord HTML entry point, reactions to UI actions, loop, mode, pause, audio and split layout |
+| ui/menu.ui.json | All menus and text, edited in the UI Designer |
+| lib/nord-ui.js | The Nord UI runtime that builds menu.ui.json (library, not taught line by line) |
 | track.js | Course data, driver state, input mapping and pure game rules |
 | render.js | Road projection, scenery, traffic, car sprite frames and per-view HUD |
 | audio.js | WebAudio unlock, decode/cache, voices, crossfade, mute and pause |
@@ -234,7 +375,8 @@ The walkthrough covers the app/game modules, shared helpers used by them, page, 
 | --- | --- |
 | [track.js](#walk-track-js) | Build every rule before connecting it to graphics: course, fresh drivers, traffic, movement, results and pad mapping. |
 | [render.js](#walk-render-js) | Turn the simulation into a pseudo-3D picture, including every projection, sprite and HUD step. |
-| [app.js](#walk-app-js) | Wire the whole racer together: page, resources, intent, state changes, simulation loop and independent viewports. |
+| [app.js](#walk-app-js) | Wire the whole racer together: a tiny page frame, the UI file, resources, intent, state changes, simulation loop and independent viewports. |
+| [ui/menu.ui.json](#walk-ui-menu-ui-json) | Describe the whole menu as data: layout containers, buttons, a select, text with placeholders and the intro card. The UI Designer edits this file. |
 | [audio.js](#walk-audio-js) | Build the complete local-audio helper: activation, cached decoding, voices, crossfade and cleanup. |
 | [audio-config.js](#walk-audio-config-js) | Choose recordings through data rather than hardcoded paths in gameplay. |
 | [index.html](#walk-index-html) | Read the complete Nord page entry point and its failure path. |
@@ -652,140 +794,65 @@ export function drawView(g, p, cars, others, images, w, h) {
 
 ### 3. app.js {#walk-app-js}
 
-Wire the whole racer together: page, resources, intent, state changes, simulation loop and independent viewports.
+Wire the whole racer together: a tiny page frame, the UI file, resources, intent, state changes, simulation loop and independent viewports.
 
-#### 3.1 — Import modules and define the page theme
+#### 3.1 — Imports and a minimal page frame
 
-**Read:** `app.js`, lines 1–42.
+**Read:** `app.js`, lines 1–19.
 
-<!-- taught-source: coastline-sprint/app.js:1-42 -->
+<!-- taught-source: coastline-sprint/app.js:1-19 -->
 
 ```js
 import { COURSE, driver, traffic, updateDriver, padInput } from './track.js';
 import { drawView } from './render.js';
 import { RetroAudio } from './audio.js';
 import { AUDIO } from './audio-config.js';
+import { createUI } from './lib/nord-ui.js';
 export async function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <style>
-      body {
-        margin: 0;
-        background: #101b2b;
-        color: #e3edf0;
-        font: 15px monospace;
-      }
-      #shell {
-        position: relative;
-        max-width: 1100px;
-        margin: auto;
-      }
-      canvas {
-        display: block;
-        width: 100%;
-        image-rendering: pixelated;
-      }
-      #bar {
-        padding: 10px;
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      button,
-      select {
-        font: inherit;
-        padding: 8px;
-        background: #304a61;
-        color: white;
-        border: 1px solid #7a9caa;
-        border-radius: 5px;
-      }
-      #notice {
-        padding: 8px;
-        min-height: 18px;
-      }
+  // Page frame: a 16:9 canvas with room above/below for the UI bar and notice line.
+  Object.assign(document.body.style, { margin: 0, background: '#101b2b' });
+  const shell = Object.assign(document.createElement('div'), {
+    style: 'position:relative;max-width:1100px;margin:auto;padding:56px 0 36px',
+  });
+  const canvas = Object.assign(document.createElement('canvas'), {
+    width: 960,
+    height: 540,
+    tabIndex: 0,
+    style: 'display:block;width:100%;image-rendering:pixelated',
+  });
+  shell.append(canvas);
+  root.append(shell);
 ```
 
-**What and why:** Imports give the host access to rules, renderer, audio and file paths without sharing module-level run state. mount receives the HTML-tier root. The embedded stylesheet establishes a centred shell, pixelated canvas and consistent controls; it is presentation only. Keeping these styles inside the mounted page makes the example self-contained.
+**What and why:** Imports give the host access to rules, renderer, audio, the UI runtime and file paths. mount receives the HTML-tier root. The only markup built in code is a shell and a 16:9 canvas, made with createElement and a few style properties; every menu, button and line of text now lives in ui/menu.ui.json instead of a giant HTML string. Padding above and below the canvas leaves room for the UI bar and notice line.
 
-**Try it / expected result:** Find the canvas image-rendering rule and switch it to auto temporarily. Observe the art becoming softer at non-native sizes.
+**Try it / expected result:** Change the shell padding top from 56px to 100px and reload. The canvas moves down, the UI bar stays anchored to the top of the shell; restore the value afterwards.
 
-#### 3.2 — Separate menu presentation from state
+#### 3.2 — Load the UI file and keep handles
 
-**Read:** `app.js`, lines 43–57.
+**Read:** `app.js`, lines 20–23.
 
-<!-- taught-source: coastline-sprint/app.js:43-57 -->
+<!-- taught-source: coastline-sprint/app.js:20-23 -->
 
 ```js
-      #overlay {
-        position: absolute;
-        top: 35%;
-        left: 15%;
-        width: 70%;
-        padding: 18px;
-        box-sizing: border-box;
-        background: #0d172ae8;
-        text-align: center;
-      }
-      h1 {
-        color: #f7d89b;
-        font-size: 26px;
-      }
-    </style>
+  // All menus and text live in ui/menu.ui.json (edit it in the UI Designer). The code only reacts to it.
+  const menu = await createUI(shell).load('ui/menu.ui.json');
+  const overlay = menu.$('overlay'),
+    track = menu.$('track');
 ```
 
-**What and why:** The overlay is positioned above the canvas and uses a readable translucent background. Its heading/padding do not pause simulation: that will be controlled by paused/state. This separation prevents hiding a menu from accidentally being treated as the game-start condition.
+**What and why:** createUI(shell).load fetches ui/menu.ui.json, builds it into an isolated shadow root over the shell and returns a screen. menu.$('name') returns a node handle by the name you gave it in the Designer and throws a clear error if the name is missing. Handles are kept in constants so the game loop never searches the DOM; setting text or visible later touches only that node.
 
-**Try it / expected result:** Change the overlay opacity and reopen Play. The title should remain readable over the attract view.
+**Try it / expected result:** Open ui/menu.ui.json in the UI Designer, rename the node 'overlay' to 'intro', save, reload Play and read the Console: menu.$('overlay') should now throw a message naming the missing node. Rename it back.
 
-#### 3.3 — Give each control a stable DOM identity
+#### 3.3 — Canvas context, images and shared state
 
-**Read:** `app.js`, lines 58–83.
+**Read:** `app.js`, lines 24–54.
 
-<!-- taught-source: coastline-sprint/app.js:58-83 -->
-
-```js
-    <div id="shell">
-      <div id="bar">
-        <button id="one">1 player</button>
-        <button id="two">2 player split</button>
-        <button id="pause">Pause / Resume</button>
-        <button id="restart">Restart</button>
-        <button id="mute">Mute</button>
-        <select id="track">
-          <option>Coast Drive</option>
-          <option>Coast Night</option>
-        </select>
-      </div>
-      <canvas width="960" height="540" tabindex="0"></canvas>
-      <div id="notice"></div>
-      <div id="overlay">
-        <h1>COASTLINE SPRINT</h1>
-        <p>One coast. Two checkpoints. Beat the clock!</p>
-        <p>
-          P1: WASD/arrows · Shift nitro
-          <br />
-          P2: gamepad left stick · RT/A throttle · LT/B brake · X nitro
-        </p>
-        <p>Choose 1 player or connect a gamepad and choose 2 player split.</p>
-      </div>
-    </div>
-  `;
-```
-
-**What and why:** Button IDs become the event-wiring contract later in mount. The canvas has fixed internal dimensions and responsive CSS size; scaling it does not change simulation units. tabIndex makes canvas focus possible after Start. The notice is text output, while the overlay holds startup instructions. These are actual controls, not mock UI.
-
-**Try it / expected result:** Locate Restart in markup and later its onclick assignment. Renaming only one ID will break that control; undo any experiment before proceeding.
-
-#### 3.4 — Load required images before starting the loop
-
-**Read:** `app.js`, lines 84–116.
-
-<!-- taught-source: coastline-sprint/app.js:84-116 -->
+<!-- taught-source: coastline-sprint/app.js:24-54 -->
 
 ```js
-  const $ = (s) => root.querySelector(s),
-    canvas = $('canvas'),
-    g = canvas.getContext('2d'),
+  const g = canvas.getContext('2d'),
     sound = new RetroAudio(AUDIO),
     keys = new Set();
   const load = (src) =>
@@ -818,22 +885,24 @@ export async function mount(root) {
   });
 ```
 
-**What and why:** The root-scoped query helper avoids accidentally selecting another app. The image loader resolves only on load and rejects with the missing path on error. await ensures both sheets exist before drawView receives them. Run variables then hold players, shared traffic, mode, menu/result state and the previous frame timestamp; pad/keyboard translate browser state into rule inputs.
+**What and why:** The 2D context, audio object and key set are created once. The image loader resolves only on load and rejects with the missing path on error, and await ensures both sheets exist before drawView receives them. Run variables then hold players, shared traffic, mode, menu/result state and the previous frame timestamp; pad and keyboard translate browser state into rule inputs.
 
 **Try it / expected result:** Temporarily misspell a sprite filename, reopen Play and inspect the Console. Restore it; a missing resource should fail clearly instead of producing a silent empty car.
 
-#### 3.5 — Reset one complete race from a button
+#### 3.4 — Reset one complete race from a button
 
-**Read:** `app.js`, lines 117–143.
+**Read:** `app.js`, lines 55–83.
 
-<!-- taught-source: coastline-sprint/app.js:117-143 -->
+<!-- taught-source: coastline-sprint/app.js:55-83 -->
 
 ```js
   async function start(count) {
     if (starting) return;
     if (count === 2 && !pad()) {
-      $('#notice').textContent =
-        'Connect a gamepad and press one of its buttons, then choose 2 player split.';
+      menu.set(
+        'notice',
+        'Connect a gamepad and press one of its buttons, then choose 2 player split.',
+      );
       return;
     }
     starting = true;
@@ -843,11 +912,11 @@ export async function mount(root) {
     paused = false;
     state = 'playing';
     keys.clear();
-    $('#overlay').hidden = true;
+    overlay.visible = false;
     canvas.focus();
     try {
       await sound.unlock();
-      await sound.music($('#track').selectedIndex);
+      await sound.music(track.index);
       if (engine) engine.source.stop();
       engine = await sound.play('engine', { loop: true, volume: 0.07 });
     } catch (error) {
@@ -862,44 +931,57 @@ export async function mount(root) {
 
 **Try it / expected result:** Restart while holding a key, then release it. Fresh state and key clearing should prevent the old run from continuing invisibly.
 
-#### 3.6 — Pause logic and wire controls
+#### 3.5 — Pause logic and wire controls
 
-**Read:** `app.js`, lines 144–163.
+**Read:** `app.js`, lines 84–93.
 
-<!-- taught-source: coastline-sprint/app.js:144-163 -->
+<!-- taught-source: coastline-sprint/app.js:84-93 -->
 
 ```js
   function togglePause() {
     if (state !== 'playing') return;
     if (paused && mode === 2 && !pad()) return;
     paused = !paused;
-    $('#overlay').hidden = !paused;
-    $('#overlay').innerHTML =
-      '<h1>PAUSED</h1><p>Pause / Resume continues. Connect P2 gamepad if disconnected.</p>';
+    overlay.visible = paused;
+    menu.$('ovTitle').text = 'PAUSED';
+    menu.$('ovBody').text = 'Pause / Resume continues. Connect P2 gamepad if disconnected.';
     paused ? sound.suspend() : sound.resume();
     keys.clear();
   }
-  $('#one').onclick = () => start(1);
-  $('#two').onclick = () => start(2);
-  $('#restart').onclick = () => start(mode);
-  $('#pause').onclick = togglePause;
-  $('#mute').onclick = () => {
-    $('#mute').textContent = sound.mute() ? 'Unmute' : 'Mute';
-  };
-  $('#track').onchange = () => {
-    if (sound.ctx) sound.music($('#track').selectedIndex);
-  };
 ```
 
 **What and why:** The guard excludes menu/results. A disconnected P2 pad prevents unsafe resume. Pause updates state, overlay, sound context and keys together. The following button assignments connect page intent to these functions; mute changes the label from the helper result, and track change requests music only after a context exists.
 
 **Try it / expected result:** Pause during a race and switch tracks. Resume and confirm the timer did not advance while paused.
 
+#### 3.6 — React to named UI actions
+
+**Read:** `app.js`, lines 94–103.
+
+<!-- taught-source: coastline-sprint/app.js:94-103 -->
+
+```js
+  menu.on('one', () => start(1));
+  menu.on('two', () => start(2));
+  menu.on('restart', () => start(mode));
+  menu.on('pause', togglePause);
+  menu.on('mute', () => {
+    menu.$('mute').text = sound.mute() ? 'Unmute' : 'Mute';
+  });
+  menu.on('track', () => {
+    if (sound.ctx) sound.music(track.index);
+  });
+```
+
+**What and why:** Each button in the UI file has an action name such as one, two, pause or restart. menu.on(action, fn) subscribes to that name, so the code never needs element IDs or querySelector. The select emits track when its choice changes, and the mute handler writes the new label back through the node's text property. Moving a button or restyling it in the Designer cannot break any of this.
+
+**Try it / expected result:** In the Designer change the Restart button's action from restart to again and save without touching app.js. Pressing the button now does nothing until you also change menu.on('restart') to menu.on('again'); then undo both.
+
 #### 3.7 — Maintain held keys instead of moving in key events
 
-**Read:** `app.js`, lines 164–177.
+**Read:** `app.js`, lines 104–117.
 
-<!-- taught-source: coastline-sprint/app.js:164-177 -->
+<!-- taught-source: coastline-sprint/app.js:104-117 -->
 
 ```js
   window.addEventListener('keydown', (e) => {
@@ -924,9 +1006,9 @@ export async function mount(root) {
 
 #### 3.8 — Advance the world once, then report results
 
-**Read:** `app.js`, lines 178–193.
+**Read:** `app.js`, lines 118–133.
 
-<!-- taught-source: coastline-sprint/app.js:178-193 -->
+<!-- taught-source: coastline-sprint/app.js:118-133 -->
 
 ```js
   function frame(now) {
@@ -953,9 +1035,9 @@ export async function mount(root) {
 
 #### 3.9 — Render two cameras without duplicating simulation
 
-**Read:** `app.js`, lines 194–243.
+**Read:** `app.js`, lines 134–186.
 
-<!-- taught-source: coastline-sprint/app.js:194-243 -->
+<!-- taught-source: coastline-sprint/app.js:134-186 -->
 
 ```js
         if (engine) {
@@ -984,11 +1066,14 @@ export async function mount(root) {
       g.fillStyle = '#0b1424';
       g.fillRect(0, h - 2, canvas.width, 4);
     }
-    $('#notice').textContent = sound.problem
-      ? `Audio: ${sound.problem}`
-      : mode === 2
-        ? `P2 ${pad()?.id ?? 'GAMEPAD DISCONNECTED'} · ${state === 'result' ? 'Restart for a new race.' : 'P pauses both views.'}`
-        : 'W/Up accelerates · S/Down brakes · A/D steer · Shift nitro · P pause';
+    menu.set(
+      'notice',
+      sound.problem
+        ? `Audio: ${sound.problem}`
+        : mode === 2
+          ? `P2 ${pad()?.id ?? 'GAMEPAD DISCONNECTED'} · ${state === 'result' ? 'Restart for a new race.' : 'P pauses both views.'}`
+          : 'W/Up accelerates · S/Down brakes · A/D steer · Shift nitro · P pause',
+    );
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
@@ -1015,11 +1100,183 @@ export async function mount(root) {
 **Try it / expected result:** Remove restore only on a temporary copy and observe the broken second view; put it back. The getter object at the end is for inspection/tests, not another game loop.
 
 
-### 4. audio.js {#walk-audio-js}
+### 4. ui/menu.ui.json {#walk-ui-menu-ui-json}
+
+Describe the whole menu as data: layout containers, buttons, a select, text with placeholders and the intro card. The UI Designer edits this file.
+
+#### 4.1 — Theme variables and the transparent root
+
+**Read:** `ui/menu.ui.json`, lines 1–23.
+
+<!-- taught-source: coastline-sprint/ui/menu.ui.json:1-23 -->
+
+```json
+{
+  "version": 1,
+  "name": "menu",
+  "theme": {
+    "bg": "#101b2b",
+    "panel": "#0d172ae8",
+    "border": "#7a9caa",
+    "fg": "#e3edf0",
+    "accent": "#304a61"
+  },
+  "root": {
+    "type": "panel",
+    "name": "root",
+    "anchor": "fill",
+    "style": {
+      "background": "none",
+      "border": "none",
+      "boxShadow": "none",
+      "padding": 0,
+      "font": "15px monospace"
+    },
+    "children": [
+      {
+```
+
+**What and why:** The file starts with a version and a name, then theme variables: bg, panel, border, fg and accent override the engine defaults for this screen only. The root is a full-size panel whose style removes the default background, border and padding, so it acts as an invisible layer above the canvas while its children are positioned by anchors.
+
+**Try it / expected result:** Change the accent colour from #304a61 to #aa3355 and reload. All buttons change colour at once because they share the variable; restore the old value.
+
+#### 4.2 — A row of buttons with action names
+
+**Read:** `ui/menu.ui.json`, lines 24–84.
+
+<!-- taught-source: coastline-sprint/ui/menu.ui.json:24-84 -->
+
+```json
+        "type": "hbox",
+        "name": "bar",
+        "anchor": "t",
+        "w": "100%",
+        "padding": 10,
+        "gap": 8,
+        "children": [
+          {
+            "type": "button",
+            "name": "one",
+            "text": "1 player",
+            "on": {
+              "pressed": "one"
+            }
+          },
+          {
+            "type": "button",
+            "name": "two",
+            "text": "2 player split",
+            "on": {
+              "pressed": "two"
+            }
+          },
+          {
+            "type": "button",
+            "name": "pause",
+            "text": "Pause / Resume",
+            "on": {
+              "pressed": "pause"
+            }
+          },
+          {
+            "type": "button",
+            "name": "restart",
+            "text": "Restart",
+            "on": {
+              "pressed": "restart"
+            }
+          },
+          {
+            "type": "button",
+            "name": "mute",
+            "text": "Mute",
+            "on": {
+              "pressed": "mute"
+            }
+          },
+          {
+            "type": "select",
+            "name": "track",
+            "options": [
+              "Coast Drive",
+              "Coast Night"
+            ],
+            "on": {
+              "changed": "track"
+            }
+          }
+        ]
+      },
+      {
+```
+
+**What and why:** An hbox lays its children out in a row with a gap and padding, anchored to the top edge at full width. Each button names an action under on.pressed; the game subscribes to those names with menu.on. The select lists its options and reports changes as the track action. Layout and wording are therefore editable without touching code.
+
+**Try it / expected result:** Drag the Restart row above Pause in the Designer's tree and save. The order on screen changes, while the game still responds to every button.
+
+#### 4.3 — Notice line and the intro card
+
+**Read:** `ui/menu.ui.json`, lines 85–128.
+
+<!-- taught-source: coastline-sprint/ui/menu.ui.json:85-128 -->
+
+```json
+        "type": "label",
+        "name": "notice",
+        "anchor": "b",
+        "w": "100%",
+        "padding": 8,
+        "text": "{notice}",
+        "rich": false,
+        "wrap": false,
+        "size": 15
+      },
+      {
+        "type": "vbox",
+        "name": "overlay",
+        "anchor": "c",
+        "y": 10,
+        "w": "70%",
+        "class": "card",
+        "align": "center",
+        "gap": 10,
+        "style": {
+          "background": "#0d172ae8",
+          "padding": 18
+        },
+        "children": [
+          {
+            "type": "label",
+            "name": "ovTitle",
+            "text": "COASTLINE SPRINT",
+            "size": 26,
+            "bold": true,
+            "color": "#f7d89b",
+            "align": "center"
+          },
+          {
+            "type": "label",
+            "name": "ovBody",
+            "text": "One coast. Two checkpoints. Beat the clock![br][br]P1: WASD/arrows · Shift nitro[br]P2: gamepad left stick · RT/A throttle · LT/B brake · X nitro[br][br]Choose 1 player or connect a gamepad and choose 2 player split.",
+            "align": "center"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**What and why:** The notice label shows the template text {notice}; the game fills it with menu.set('notice', ...) and only changed values touch the page. The overlay is a centred vertical box with a translucent card style. Its title and body labels use rich text: [b] for bold and [br] for line breaks, parsed safely into spans rather than injected as HTML.
+
+**Try it / expected result:** Change the title text to [color=#ff8866]COASTLINE[/color] SPRINT, save and reload to see rich text colour part of the heading.
+
+
+### 5. audio.js {#walk-audio-js}
 
 Build the complete local-audio helper: activation, cached decoding, voices, crossfade and cleanup.
 
-#### 4.1 — Own resources for one run
+#### 5.1 — Own resources for one run
 
 **Read:** `audio.js`, lines 1–18.
 
@@ -1050,7 +1307,7 @@ export class RetroAudio {
 
 **Try it / expected result:** Start a fresh page and inspect the helper before clicking Start: it has configuration but no running AudioContext.
 
-#### 4.2 — Decode each path once
+#### 5.2 — Decode each path once
 
 **Read:** `audio.js`, lines 19–30.
 
@@ -1075,7 +1332,7 @@ export class RetroAudio {
 
 **Try it / expected result:** Temporarily mistype one SFX path. Trigger it and observe the visible audio problem; restore the path and reopen Play to clear the rejected cached request.
 
-#### 4.3 — Turn a buffer into a voice
+#### 5.3 — Turn a buffer into a voice
 
 **Read:** `audio.js`, lines 31–58.
 
@@ -1116,7 +1373,7 @@ export class RetroAudio {
 
 **Try it / expected result:** Lower the voice volume for one event. Its loudness should change without affecting music or changing the file itself.
 
-#### 4.4 — Keep game events independent of file paths
+#### 5.4 — Keep game events independent of file paths
 
 **Read:** `audio.js`, lines 59–76.
 
@@ -1147,7 +1404,7 @@ export class RetroAudio {
 
 **Try it / expected result:** Switch between the two supplied music tracks while playing. Listen for the overlap; do not put music() inside the animation loop.
 
-#### 4.5 — Pause and dispose the right owner
+#### 5.5 — Pause and dispose the right owner
 
 **Read:** `audio.js`, lines 77–92.
 
@@ -1177,11 +1434,11 @@ export class RetroAudio {
 **Try it / expected result:** Mute, unmute, pause and resume. Then restart the scene/app and verify there is one soundtrack rather than another copy layered over the old one.
 
 
-### 5. audio-config.js {#walk-audio-config-js}
+### 6. audio-config.js {#walk-audio-config-js}
 
 Choose recordings through data rather than hardcoded paths in gameplay.
 
-#### 5.1 — Keep symbolic sound names stable
+#### 6.1 — Keep symbolic sound names stable
 
 **Read:** `audio-config.js`, lines 1–11.
 
@@ -1206,11 +1463,11 @@ export const AUDIO = {
 **Try it / expected result:** Replace only crash with your own short recording, keeping the key crash. Reopen Play and collide with traffic to hear the replacement.
 
 
-### 6. index.html {#walk-index-html}
+### 7. index.html {#walk-index-html}
 
 Read the complete Nord page entry point and its failure path.
 
-#### 6.1 — Load the local runtime and start the app
+#### 7.1 — Load the local runtime and start the app
 
 **Read:** `index.html`, lines 1–8.
 
@@ -1232,11 +1489,11 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 **Try it / expected result:** Temporarily rename the imported main module on a copy and reopen Play. Inspect the Console/error path, then restore the correct name.
 
 
-### 7. nord.project.json {#walk-nord-project-json}
+### 8. nord.project.json {#walk-nord-project-json}
 
 Read every project field that tells Nord which host, display and services to use.
 
-#### 7.1 — Identify the project and choose its presentation
+#### 8.1 — Identify the project and choose its presentation
 
 **Read:** `nord.project.json`, lines 1–22.
 
@@ -1271,7 +1528,7 @@ Read every project field that tells Nord which host, display and services to use
 
 **Try it / expected result:** Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.
 
-#### 7.2 — Distinguish scene actions from HTML event handling
+#### 8.2 — Distinguish scene actions from HTML event handling
 
 **Read:** `nord.project.json`, lines 23–64.
 
@@ -1327,11 +1584,11 @@ Read every project field that tells Nord which host, display and services to use
 **Try it / expected result:** For Vector Patrol, add a second fire key and test it. For an HTML app, locate its key handler instead of expecting this table to change DOM input.
 
 
-### 8. assets/sprites/racing-cars.png.meta.json {#walk-assets-sprites-racing-cars-png-meta-json}
+### 9. assets/sprites/racing-cars.png.meta.json {#walk-assets-sprites-racing-cars-png-meta-json}
 
 Read the supplied sprite sidecar used by Nord’s asset tools.
 
-#### 8.1 — Describe cell geometry and asset identity
+#### 9.1 — Describe cell geometry and asset identity
 
 **Read:** `assets/sprites/racing-cars.png.meta.json`, lines 1–12.
 
@@ -1357,11 +1614,11 @@ Read the supplied sprite sidecar used by Nord’s asset tools.
 **Try it / expected result:** Compare frame sizes with sprite() calls in render.js. Replace a sheet only after preserving that cell contract or updating both sides.
 
 
-### 9. assets/sprites/roadside.png.meta.json {#walk-assets-sprites-roadside-png-meta-json}
+### 10. assets/sprites/roadside.png.meta.json {#walk-assets-sprites-roadside-png-meta-json}
 
 Read the supplied sprite sidecar used by Nord’s asset tools.
 
-#### 9.1 — Describe cell geometry and asset identity
+#### 10.1 — Describe cell geometry and asset identity
 
 **Read:** `assets/sprites/roadside.png.meta.json`, lines 1–12.
 
@@ -1402,88 +1659,26 @@ import { COURSE, driver, traffic, updateDriver, padInput } from './track.js';
 import { drawView } from './render.js';
 import { RetroAudio } from './audio.js';
 import { AUDIO } from './audio-config.js';
+import { createUI } from './lib/nord-ui.js';
 export async function mount(root) {
-  root.innerHTML = /* HTML */ `
-    <style>
-      body {
-        margin: 0;
-        background: #101b2b;
-        color: #e3edf0;
-        font: 15px monospace;
-      }
-      #shell {
-        position: relative;
-        max-width: 1100px;
-        margin: auto;
-      }
-      canvas {
-        display: block;
-        width: 100%;
-        image-rendering: pixelated;
-      }
-      #bar {
-        padding: 10px;
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      button,
-      select {
-        font: inherit;
-        padding: 8px;
-        background: #304a61;
-        color: white;
-        border: 1px solid #7a9caa;
-        border-radius: 5px;
-      }
-      #notice {
-        padding: 8px;
-        min-height: 18px;
-      }
-      #overlay {
-        position: absolute;
-        top: 35%;
-        left: 15%;
-        width: 70%;
-        padding: 18px;
-        box-sizing: border-box;
-        background: #0d172ae8;
-        text-align: center;
-      }
-      h1 {
-        color: #f7d89b;
-        font-size: 26px;
-      }
-    </style>
-    <div id="shell">
-      <div id="bar">
-        <button id="one">1 player</button>
-        <button id="two">2 player split</button>
-        <button id="pause">Pause / Resume</button>
-        <button id="restart">Restart</button>
-        <button id="mute">Mute</button>
-        <select id="track">
-          <option>Coast Drive</option>
-          <option>Coast Night</option>
-        </select>
-      </div>
-      <canvas width="960" height="540" tabindex="0"></canvas>
-      <div id="notice"></div>
-      <div id="overlay">
-        <h1>COASTLINE SPRINT</h1>
-        <p>One coast. Two checkpoints. Beat the clock!</p>
-        <p>
-          P1: WASD/arrows · Shift nitro
-          <br />
-          P2: gamepad left stick · RT/A throttle · LT/B brake · X nitro
-        </p>
-        <p>Choose 1 player or connect a gamepad and choose 2 player split.</p>
-      </div>
-    </div>
-  `;
-  const $ = (s) => root.querySelector(s),
-    canvas = $('canvas'),
-    g = canvas.getContext('2d'),
+  // Page frame: a 16:9 canvas with room above/below for the UI bar and notice line.
+  Object.assign(document.body.style, { margin: 0, background: '#101b2b' });
+  const shell = Object.assign(document.createElement('div'), {
+    style: 'position:relative;max-width:1100px;margin:auto;padding:56px 0 36px',
+  });
+  const canvas = Object.assign(document.createElement('canvas'), {
+    width: 960,
+    height: 540,
+    tabIndex: 0,
+    style: 'display:block;width:100%;image-rendering:pixelated',
+  });
+  shell.append(canvas);
+  root.append(shell);
+  // All menus and text live in ui/menu.ui.json (edit it in the UI Designer). The code only reacts to it.
+  const menu = await createUI(shell).load('ui/menu.ui.json');
+  const overlay = menu.$('overlay'),
+    track = menu.$('track');
+  const g = canvas.getContext('2d'),
     sound = new RetroAudio(AUDIO),
     keys = new Set();
   const load = (src) =>
@@ -1517,8 +1712,10 @@ export async function mount(root) {
   async function start(count) {
     if (starting) return;
     if (count === 2 && !pad()) {
-      $('#notice').textContent =
-        'Connect a gamepad and press one of its buttons, then choose 2 player split.';
+      menu.set(
+        'notice',
+        'Connect a gamepad and press one of its buttons, then choose 2 player split.',
+      );
       return;
     }
     starting = true;
@@ -1528,11 +1725,11 @@ export async function mount(root) {
     paused = false;
     state = 'playing';
     keys.clear();
-    $('#overlay').hidden = true;
+    overlay.visible = false;
     canvas.focus();
     try {
       await sound.unlock();
-      await sound.music($('#track').selectedIndex);
+      await sound.music(track.index);
       if (engine) engine.source.stop();
       engine = await sound.play('engine', { loop: true, volume: 0.07 });
     } catch (error) {
@@ -1545,22 +1742,22 @@ export async function mount(root) {
     if (state !== 'playing') return;
     if (paused && mode === 2 && !pad()) return;
     paused = !paused;
-    $('#overlay').hidden = !paused;
-    $('#overlay').innerHTML =
-      '<h1>PAUSED</h1><p>Pause / Resume continues. Connect P2 gamepad if disconnected.</p>';
+    overlay.visible = paused;
+    menu.$('ovTitle').text = 'PAUSED';
+    menu.$('ovBody').text = 'Pause / Resume continues. Connect P2 gamepad if disconnected.';
     paused ? sound.suspend() : sound.resume();
     keys.clear();
   }
-  $('#one').onclick = () => start(1);
-  $('#two').onclick = () => start(2);
-  $('#restart').onclick = () => start(mode);
-  $('#pause').onclick = togglePause;
-  $('#mute').onclick = () => {
-    $('#mute').textContent = sound.mute() ? 'Unmute' : 'Mute';
-  };
-  $('#track').onchange = () => {
-    if (sound.ctx) sound.music($('#track').selectedIndex);
-  };
+  menu.on('one', () => start(1));
+  menu.on('two', () => start(2));
+  menu.on('restart', () => start(mode));
+  menu.on('pause', togglePause);
+  menu.on('mute', () => {
+    menu.$('mute').text = sound.mute() ? 'Unmute' : 'Mute';
+  });
+  menu.on('track', () => {
+    if (sound.ctx) sound.music(track.index);
+  });
   window.addEventListener('keydown', (e) => {
     if (
       ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space'].includes(e.code) &&
@@ -1617,11 +1814,14 @@ export async function mount(root) {
       g.fillStyle = '#0b1424';
       g.fillRect(0, h - 2, canvas.width, 4);
     }
-    $('#notice').textContent = sound.problem
-      ? `Audio: ${sound.problem}`
-      : mode === 2
-        ? `P2 ${pad()?.id ?? 'GAMEPAD DISCONNECTED'} · ${state === 'result' ? 'Restart for a new race.' : 'P pauses both views.'}`
-        : 'W/Up accelerates · S/Down brakes · A/D steer · Shift nitro · P pause';
+    menu.set(
+      'notice',
+      sound.problem
+        ? `Audio: ${sound.problem}`
+        : mode === 2
+          ? `P2 ${pad()?.id ?? 'GAMEPAD DISCONNECTED'} · ${state === 'result' ? 'Restart for a new race.' : 'P pauses both views.'}`
+          : 'W/Up accelerates · S/Down brakes · A/D steer · Shift nitro · P pause',
+    );
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
@@ -2132,6 +2332,142 @@ export function padInput(pad) {
     brake: Math.max(button(6), button(1)),
     boost: button(2) > 0.5,
   };
+}
+```
+
+</details>
+
+<details>
+<summary>Complete ui/menu.ui.json</summary>
+
+```json
+{
+  "version": 1,
+  "name": "menu",
+  "theme": {
+    "bg": "#101b2b",
+    "panel": "#0d172ae8",
+    "border": "#7a9caa",
+    "fg": "#e3edf0",
+    "accent": "#304a61"
+  },
+  "root": {
+    "type": "panel",
+    "name": "root",
+    "anchor": "fill",
+    "style": {
+      "background": "none",
+      "border": "none",
+      "boxShadow": "none",
+      "padding": 0,
+      "font": "15px monospace"
+    },
+    "children": [
+      {
+        "type": "hbox",
+        "name": "bar",
+        "anchor": "t",
+        "w": "100%",
+        "padding": 10,
+        "gap": 8,
+        "children": [
+          {
+            "type": "button",
+            "name": "one",
+            "text": "1 player",
+            "on": {
+              "pressed": "one"
+            }
+          },
+          {
+            "type": "button",
+            "name": "two",
+            "text": "2 player split",
+            "on": {
+              "pressed": "two"
+            }
+          },
+          {
+            "type": "button",
+            "name": "pause",
+            "text": "Pause / Resume",
+            "on": {
+              "pressed": "pause"
+            }
+          },
+          {
+            "type": "button",
+            "name": "restart",
+            "text": "Restart",
+            "on": {
+              "pressed": "restart"
+            }
+          },
+          {
+            "type": "button",
+            "name": "mute",
+            "text": "Mute",
+            "on": {
+              "pressed": "mute"
+            }
+          },
+          {
+            "type": "select",
+            "name": "track",
+            "options": [
+              "Coast Drive",
+              "Coast Night"
+            ],
+            "on": {
+              "changed": "track"
+            }
+          }
+        ]
+      },
+      {
+        "type": "label",
+        "name": "notice",
+        "anchor": "b",
+        "w": "100%",
+        "padding": 8,
+        "text": "{notice}",
+        "rich": false,
+        "wrap": false,
+        "size": 15
+      },
+      {
+        "type": "vbox",
+        "name": "overlay",
+        "anchor": "c",
+        "y": 10,
+        "w": "70%",
+        "class": "card",
+        "align": "center",
+        "gap": 10,
+        "style": {
+          "background": "#0d172ae8",
+          "padding": 18
+        },
+        "children": [
+          {
+            "type": "label",
+            "name": "ovTitle",
+            "text": "COASTLINE SPRINT",
+            "size": 26,
+            "bold": true,
+            "color": "#f7d89b",
+            "align": "center"
+          },
+          {
+            "type": "label",
+            "name": "ovBody",
+            "text": "One coast. Two checkpoints. Beat the clock![br][br]P1: WASD/arrows · Shift nitro[br]P2: gamepad left stick · RT/A throttle · LT/B brake · X nitro[br][br]Choose 1 player or connect a gamepad and choose 2 player split.",
+            "align": "center"
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 

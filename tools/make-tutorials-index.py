@@ -20,7 +20,7 @@ META = {
  31: (B, ["2d", "fullgame"]), 32: (I, ["3d", "fullgame"]), 33: (I, ["2d", "code", "fullgame"]), 34: (I, ["3d", "code", "fullgame"]),
  35: (A, ["3d", "code"]), 36: (A, ["code", "fullgame"]), 37: (A, ["rust", "fullgame"]), 38: (A, ["code", "fullgame"]),
  39: (A, ["3d", "code", "fullgame"]), 40: (A, ["code", "fullgame"]), 41: (A, ["code", "fullgame"]), 42: (A, ["app", "3d", "fullgame"]),
- 43: (A, ["app", "3d", "fullgame"]),
+ 43: (A, ["app", "3d", "fullgame"]), 44: (I, ["code", "nocode"]),
 }
 TAGNAMES = {"2d": "2D", "3d": "3D", "rust": "Rust", "nocode": "No code", "code": "Coding", "creator": "Level creator",
             "app": "App", "export": "Export", "fullgame": "Complete project"}

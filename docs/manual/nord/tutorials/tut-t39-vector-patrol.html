@@ -8,12 +8,164 @@
 <div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
-<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a><a href="tut-t38-coastline-sprint.html">T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t39-vector-patrol.html" class="cur" aria-current="page">T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t40-jengatedris.html">T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t41-nord-office.html">T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t42-paper-worlds.html">T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><a href="tut-t43-rss-river.html">T43 RSS River — build a calm reader with a physical paper view</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T39 Vector Patrol — code a retro 3D rail shooter</h1>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a><a href="tut-t38-coastline-sprint.html">T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t39-vector-patrol.html" class="cur" aria-current="page">T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t40-jengatedris.html">T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t41-nord-office.html">T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t42-paper-worlds.html">T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><a href="tut-t43-rss-river.html">T43 RSS River — build a calm reader with a physical paper view</a><a href="tut-t44-ui-designer.html">T44 Menus and HUDs with the UI Designer</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T39 Vector Patrol — code a retro 3D rail shooter</h1>
 <p>Build an original one-level rail shooter with low-poly ships, moving ground dots, enemy waves, lasers, gates, health pickups, a roll shield, a carrier boss, two music tracks and saved scores. Then switch between a clean renderer and a 320-pixel retro shader. This is a playable Nord project with complete JavaScript, models, sound and music, not a cartridge emulator.</p>
 <p><strong>Download:</strong> <a href="../../assets/downloads/vector-patrol-source.zip">Complete Vector Patrol project and source</a>. Unzip it into a writable folder. In Nord choose <strong>Open Project</strong>, select its <code>nord.project.json</code>, and press <strong>Play</strong>. Work on a copy so you can compare your edits with the supplied solution. The project uses Nord&#39;s <strong>3D</strong> tier. All four GLBs and their editable Blocksmith source projects are included; creating models is optional.</p>
 <p><img src="../../assets/screenshots/ed-retro-vector-flight.png" alt="Vector Patrol in flight"></p>
 <p><strong>Full-code learning route:</strong> After the orientation below, continue to <a href="#file-walkthrough">the complete file-by-file walkthrough</a>. It teaches every main project file in consecutive sections, with the actual code, an explanation of what and why, and a change to try. The expandable complete files at the end are a reference, not the lesson.</p>
-<h2 id="1-play-the-finished-level-and-find-its-code">1. Play the finished level and find its code<a class="anchor" href="#1-play-the-finished-level-and-find-its-code">#</a></h2>
+<h2 id="build-from-scratch">Start here: build it yourself, from an empty project<a class="anchor" href="#build-from-scratch">#</a></h2>
+<p>The sections after this one explain the finished game. <strong>This section is the route from nothing to a running game.</strong> The download is only for comparing when something breaks.</p>
+<p><span class="f">orange</span> = a file name · <span class="v">green</span> = a variable or function · <span class="k">purple</span> = a setting or key word · <span class="ui">blue</span> = a button or menu in Nord.</p><h3 id="step-1-create-the-project-which-template">Step 1 — Create the project (which template?)<a class="anchor" href="#step-1-create-the-project-which-template">#</a></h3>
+<p>Welcome screen → <span class="ui">New project</span>:</p>
+<pre class="code" data-lang="text"><code>Project name : my-vector-patrol
+Project type : 3D game          &lt;-- pick this one</code></pre>
+<p>Choose <span class="ui">3D game</span> (&quot;Babylon.js 3D + Havok physics&quot;). Not HTML-lite: this game uses a 3D scene with real model entities and a script attached to one of them. Press <span class="ui">Create project</span>. You get <span class="f">nord.project.json</span>, <span class="f">index.html</span> and <span class="f">scenes/main.scene.json</span> (an empty scene), plus empty <span class="f">scripts/</span> and <span class="f">assets/</span>.</p>
+<h3 id="step-2-project-settings-nord-project-json">Step 2 — Project settings (nord.project.json)<a class="anchor" href="#step-2-project-settings-nord-project-json">#</a></h3>
+<p>Open <span class="f">nord.project.json</span> and make these fields match (leave the others):</p>
+<pre class="code" data-lang="json"><code>&quot;display&quot;: { &quot;width&quot;: 960, &quot;height&quot;: 540, &quot;scale&quot;: &quot;fit&quot;, &quot;pixelArt&quot;: true, &quot;background&quot;: &quot;#163d57&quot; },
+&quot;physics&quot;: { &quot;engine&quot;: &quot;none&quot;, &quot;gravity&quot;: [0, 0, 0] },
+&quot;input&quot;: { &quot;actions&quot;: {
+  &quot;left&quot;:  [&quot;KeyA&quot;, &quot;ArrowLeft&quot;],
+  &quot;right&quot;: [&quot;KeyD&quot;, &quot;ArrowRight&quot;],
+  &quot;up&quot;:    [&quot;KeyW&quot;, &quot;ArrowUp&quot;],
+  &quot;down&quot;:  [&quot;KeyS&quot;, &quot;ArrowDown&quot;],
+  &quot;fire&quot;:  [&quot;Space&quot;, &quot;KeyJ&quot;],
+  &quot;roll&quot;:  [&quot;ShiftLeft&quot;, &quot;ShiftRight&quot;],
+  &quot;retro&quot;: [&quot;KeyC&quot;]
+} }</code></pre>
+<p><span class="k">physics: none</span> because the game does its own collisions in <span class="f">sim.js</span>. <span class="k">input.actions</span> are the names the code asks for with <span class="v">this.input.down(&#39;fire&#39;)</span>.</p>
+<h3 id="step-3-copy-the-art-and-sound">Step 3 — Copy the art and sound<a class="anchor" href="#step-3-copy-the-art-and-sound">#</a></h3>
+<p>Unzip the <a href="../../assets/downloads/vector-patrol-source.zip">download</a> elsewhere. Copy into your project:</p>
+<table>
+<thead>
+<tr>
+<th>From the zip</th>
+<th>Into your project</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span class="f">assets/models/*.glb</span> (fighter, drone, carrier, gate)</td>
+<td><span class="f">assets/models/</span></td>
+</tr>
+<tr>
+<td><span class="f">assets/audio/*.mp3</span> (8 files)</td>
+<td><span class="f">assets/audio/</span></td>
+</tr>
+<tr>
+<td><span class="f">scripts/retro-audio.js</span></td>
+<td><span class="f">scripts/retro-audio.js</span></td>
+</tr>
+</tbody></table>
+<p>(The <span class="f">.blocksmith.json</span> and previews are optional; they are only needed if you want to edit the ships.)</p>
+<h3 id="step-4-build-the-scene-by-hand">Step 4 — Build the scene by hand<a class="anchor" href="#step-4-build-the-scene-by-hand">#</a></h3>
+<p>You do not need to write scene JSON. In the <span class="ui">Hierarchy</span> panel use <span class="ui">Add entity</span> and the Inspector:</p>
+<table>
+<thead>
+<tr>
+<th>Entity name (exact!)</th>
+<th>Position x, y, z</th>
+<th>Scale</th>
+<th>Inspector → + Add component</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span class="f">Camera</span></td>
+<td>0, 2, -18</td>
+<td>1</td>
+<td><span class="ui">Camera</span>, fov <span class="k">65</span>, near <span class="k">0.1</span>, far <span class="k">450</span></td>
+</tr>
+<tr>
+<td><span class="f">Fighter</span></td>
+<td>0, 0, 0</td>
+<td>0.75</td>
+<td><span class="ui">Model</span> → <span class="k">assets/models/fighter.glb</span></td>
+</tr>
+<tr>
+<td><span class="f">Drone0</span></td>
+<td>0, 0, 140</td>
+<td>1</td>
+<td><span class="ui">Model</span> → <span class="k">assets/models/drone.glb</span></td>
+</tr>
+<tr>
+<td><span class="f">Carrier</span></td>
+<td>0, 0, 130</td>
+<td>3.5</td>
+<td><span class="ui">Model</span> → <span class="k">assets/models/carrier.glb</span></td>
+</tr>
+<tr>
+<td><span class="f">Gate0</span></td>
+<td>0, 0, 150</td>
+<td>1</td>
+<td><span class="ui">Model</span> → <span class="k">assets/models/gate.glb</span></td>
+</tr>
+<tr>
+<td><span class="f">FlightGame</span></td>
+<td>0, 0, 0</td>
+<td>1</td>
+<td>nothing yet (Step 6 adds the script)</td>
+</tr>
+</tbody></table>
+<p>Then select <span class="f">Drone0</span> and press <strong>Cmd+D</strong> (Duplicate) 13 times; rename the copies <span class="f">Drone1</span> … <span class="f">Drone13</span>. Select <span class="f">Gate0</span> and duplicate twice → <span class="f">Gate1</span>, <span class="f">Gate2</span>. The names matter: <span class="f">view.js</span> finds them with <span class="v">scene.find(&#39;Drone&#39; + i)</span>. Save the scene (Cmd+S).</p>
+<h3 id="step-5-write-the-scripts-in-this-order">Step 5 — Write the scripts, in this order<a class="anchor" href="#step-5-write-the-scripts-in-this-order">#</a></h3>
+<p>Create the files in <span class="f">scripts/</span> (Finder, or <code>touch scripts/sim.js scripts/view.js scripts/flight.js scripts/retro-shader.js scripts/audio-config.js</code>), refresh <span class="ui">Assets</span>, and open each in the code editor.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>File</th>
+<th>What it is</th>
+<th>Where the code is</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><span class="f">sim.js</span></td>
+<td>all rules: movement, enemies, boss, score. No graphics.</td>
+<td>paste parts <a href="#walk-scripts-sim-js">1.1 → 1.8</a> in order</td>
+</tr>
+<tr>
+<td>2</td>
+<td><span class="f">audio-config.js</span></td>
+<td>sound names → files</td>
+<td>paste whole (below)</td>
+</tr>
+<tr>
+<td>3</td>
+<td><span class="f">retro-shader.js</span></td>
+<td>the 320-pixel retro look</td>
+<td><a href="#walk-scripts-retro-shader-js">4.1 → 4.2</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td><span class="f">view.js</span></td>
+<td>moves models, ground dots, bullets</td>
+<td><a href="#walk-scripts-view-js">3.1 → 3.9</a></td>
+</tr>
+<tr>
+<td>5</td>
+<td><span class="f">flight.js</span></td>
+<td>the controller: input, UI, pause, restart</td>
+<td><a href="#walk-scripts-flight-js">2.1 → 2.6</a></td>
+</tr>
+</tbody></table>
+<p><span class="f">audio-config.js</span>, paste whole:</p>
+<pre class="code" data-lang="js"><code>export const AUDIO = {
+  music: ['assets/audio/vector-flight.mp3', 'assets/audio/vector-boss.mp3'],
+  sfx: {
+    laser: 'assets/audio/laser.mp3',
+    explosion: 'assets/audio/explosion.mp3',
+    crash: 'assets/audio/crash.mp3',
+    shield: 'assets/audio/shield.mp3',
+    checkpoint: 'assets/audio/checkpoint.mp3',
+    win: 'assets/audio/win.mp3',
+  },
+};</code></pre>
+<p>Build <span class="f">sim.js</span> first: it is plain JavaScript you understand without the engine.</p>
+<h3 id="step-6-attach-the-controller">Step 6 — Attach the controller<a class="anchor" href="#step-6-attach-the-controller">#</a></h3>
+<p>Select <span class="f">FlightGame</span> in Hierarchy → Inspector → <span class="ui">+ Add script</span> → <span class="f">scripts/flight.js</span>. Save the scene. This is what makes <span class="v">start()</span> and <span class="v">update(dt)</span> in <span class="f">flight.js</span> run.</p>
+<h3 id="step-7-play">Step 7 — Play<a class="anchor" href="#step-7-play">#</a></h3>
+<p>Press <span class="ui">Play</span>, click <span class="ui">Launch patrol</span>. Nothing moves? Open <span class="ui">Console</span>: the first red message names the file/line. Common causes: an entity name misspelled (<span class="f">Drone3</span> vs <span class="f">drone3</span>), a model path typo, or the script not attached to <span class="f">FlightGame</span>.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-retro-vector-flight.png" alt="Vector Patrol in flight" loading="lazy"><figcaption>Expected result of Step 7.</figcaption></figure><figure class="shot"><img src="../../assets/screenshots/ed-retro-vector-boss.png" alt="Vector Patrol carrier boss" loading="lazy"><figcaption>After about 65 seconds the carrier boss appears.</figcaption></figure><h2 id="1-play-the-finished-level-and-find-its-code">1. Play the finished level and find its code<a class="anchor" href="#1-play-the-finished-level-and-find-its-code">#</a></h2>
 <p>Click <strong>Launch patrol</strong> to unlock browser audio. WASD or arrows steer; Space/J fires; Shift activates a short roll shield with a three-second cooldown. C switches retro/clean rendering. P or <strong>Pause / Resume</strong> pauses; the Restart button reloads the scene. Reach the carrier at 65 seconds and destroy it before 110 seconds. A collision costs hull, gold pickups restore hull, and passing a gate rewards accurate flying. A successful run saves the best score in browser storage.</p>
 <p>In Hierarchy select <strong>FlightGame</strong>. Its Script component attaches <code>scripts/flight.js</code>. Open that file in Nord&#39;s code editor; use the Console to investigate script errors. The Camera looks along positive Z. Fighter, Drone0…Drone13, Carrier and Gate0…Gate2 are ordinary model entities. Select one to inspect its GLB path, transform and imported colours. The gameplay controller moves these reusable entities rather than loading a new model per shot.</p>
 <p>The main files divide concrete responsibilities:</p>
@@ -4049,5 +4201,5 @@ export class FlightView {
   }
 }</code></pre>
 </details>
-<div class="pager"><a href="tut-t38-coastline-sprint.html"><small>← Previous</small>T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t40-jengatedris.html"><small>Next →</small>T40 JengaTedris — grid, physics and Node battle</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-play-the-finished-level-and-find-its-code">1. Play the finished level and find its code </a><a href="#2-start-with-a-simulation-you-can-reason-about">2. Start with a simulation you can reason about </a><a href="#3-build-enemy-waves-gates-and-the-carrier">3. Build enemy waves, gates and the carrier </a><a href="#4-connect-the-simulation-to-nord">4. Connect the simulation to Nord </a><a href="#5-use-the-supplied-blocksmith-models-or-edit-your-own">5. Use the supplied Blocksmith models, or edit your own </a><a href="#6-understand-the-retro-shader">6. Understand the retro shader </a><a href="#7-add-your-own-mp3-music-and-sound-effects">7. Add your own MP3 music and sound effects </a><a href="#8-make-restart-a-real-scene-reset">8. Make Restart a real scene reset </a><a href="#9-export-and-verify-the-whole-game">9. Export and verify the whole game </a><a href="#file-walkthrough">Walk through every project file </a><a href="#complete-project-source">Complete project source </a></aside></div>
+<div class="pager"><a href="tut-t38-coastline-sprint.html"><small>← Previous</small>T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t40-jengatedris.html"><small>Next →</small>T40 JengaTedris — grid, physics and Node battle</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#build-from-scratch">Start here: build it yourself, from an empty project </a><a href="#1-play-the-finished-level-and-find-its-code">1. Play the finished level and find its code </a><a href="#2-start-with-a-simulation-you-can-reason-about">2. Start with a simulation you can reason about </a><a href="#3-build-enemy-waves-gates-and-the-carrier">3. Build enemy waves, gates and the carrier </a><a href="#4-connect-the-simulation-to-nord">4. Connect the simulation to Nord </a><a href="#5-use-the-supplied-blocksmith-models-or-edit-your-own">5. Use the supplied Blocksmith models, or edit your own </a><a href="#6-understand-the-retro-shader">6. Understand the retro shader </a><a href="#7-add-your-own-mp3-music-and-sound-effects">7. Add your own MP3 music and sound effects </a><a href="#8-make-restart-a-real-scene-reset">8. Make Restart a real scene reset </a><a href="#9-export-and-verify-the-whole-game">9. Export and verify the whole game </a><a href="#file-walkthrough">Walk through every project file </a><a href="#complete-project-source">Complete project source </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

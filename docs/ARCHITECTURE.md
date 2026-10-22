@@ -111,3 +111,6 @@ hot-swap: `NordRuntime.hotReloadScript(path)` keeps scene state).
 
 ## Web editor (M11)
 `nord_core::vfs` (Vfs: NativeFs / MemFs) and `nord-editor::platform` (dialogs, Host, dev server) separate the editor from the OS so the same egui code also builds for wasm32; `nord-editor-web` is the browser entry, `nord-editor-server` the self-hosted server. Desktop code paths are unchanged. See `WEB_EDITOR.md`, ADR-021.
+
+### UI scenes
+`runtime/core/uiscene.js` renders `ui/*.ui.json` as scoped DOM (shadow root); `game.ui.load()` or standalone `createUI(el)`. `editor/uidesigner/` is the visual editor (embedded tab, writes the JSON). Babylon GUI is used only for in-world UI (`game.gui.scene`). Spec: `docs/UI_SCENES.md`, ADR-030.

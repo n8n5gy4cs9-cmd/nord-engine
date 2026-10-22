@@ -170,3 +170,12 @@ Wry 0.50.5 omits WebKit's host pointer-lock callback, so native FPS games always
 **Decision.** Add `editor/level2d/` and the native 2D Level tab using the FPS page-in-webview pattern. Author finite tile/object maps in `nord-level2d/1` JSON, compile to existing scene components and copy referenced catalogue assets into the project. Reuse existing library scripts, Arcade/Matter, metadata and export. A same-origin, symlink-rejecting publisher writes only a named level/scene and approved bank assets; explicitly choosing Use as game start applies project-wide settings. Retain project-owned script edits. Adapt only LDtk's small MIT flood-fill routine with its notice, not its Haxe/Electron application.
 
 **Consequences.** Exports use one runtime and work without the editor bank. The editable level is the source of truth; compiled scenes regenerate on Save. Physics/input/display settings remain project-wide. Hidden layers are excluded, and collision layers require parallax 1. Variants are level-local snapshots. Full external-editor format compatibility, autotiling, arbitrary polygons and joint authoring are outside this change.
+
+## ADR-030 Declarative UI scenes + UI Designer (2026-10-22)
+
+**Context.** Tutorials built whole screens as `innerHTML` template strings in app.js: no editor support, leaked CSS, hand-wired IDs. Owner asked for a Godot/Unity-style UI with a designer panel and an easy code⇄UI bridge.
+
+**Decision.** UI is a project asset `ui/*.ui.json` (Godot-like node tree: containers, anchors, themes, signals-as-action-names), rendered by `runtime/core/uiscene.js` as scoped DOM (shadow root, flex/grid) and edited in `editor/uidesigner/` (embedded tab, writes JSON only). Scripts use `menu.on(action)`, `menu.$(name)`, `menu.set(var)`; actions are also emitted as `ui:<action>` on `game.events`. DOM overlay for menus/HUD; Babylon GUI only for in-world UI (`game.gui.scene`). Raw HTML/`game.ui.panel()` stay as the fallback. Idea sources: Godot Control/Theme (MIT, concepts only, no code), Babylon GUI JSON, Unity UXML/USS split. No dependency added.
+
+**Consequences.** Menus become editable data and tutorials teach `createUI(...).load()`. The editor file API now allows writing `ui/`. Existing `game.ui` widgets are unchanged.
+

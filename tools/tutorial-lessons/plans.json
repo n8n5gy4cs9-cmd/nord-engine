@@ -92,30 +92,24 @@
     },
     {
       "file": "app.js",
-      "intro": "Wire the whole racer together: page, resources, intent, state changes, simulation loop and independent viewports.",
+      "intro": "Wire the whole racer together: a tiny page frame, the UI file, resources, intent, state changes, simulation loop and independent viewports.",
       "parts": [
         {
           "at": null,
-          "title": "Import modules and define the page theme",
-          "why": "Imports give the host access to rules, renderer, audio and file paths without sharing module-level run state. mount receives the HTML-tier root. The embedded stylesheet establishes a centred shell, pixelated canvas and consistent controls; it is presentation only. Keeping these styles inside the mounted page makes the example self-contained.",
-          "try": "Find the canvas image-rendering rule and switch it to auto temporarily. Observe the art becoming softer at non-native sizes."
+          "title": "Imports and a minimal page frame",
+          "why": "Imports give the host access to rules, renderer, audio, the UI runtime and file paths. mount receives the HTML-tier root. The only markup built in code is a shell and a 16:9 canvas, made with createElement and a few style properties; every menu, button and line of text now lives in ui/menu.ui.json instead of a giant HTML string. Padding above and below the canvas leaves room for the UI bar and notice line.",
+          "try": "Change the shell padding top from 56px to 100px and reload. The canvas moves down, the UI bar stays anchored to the top of the shell; restore the value afterwards."
         },
         {
-          "at": "      #overlay {",
-          "title": "Separate menu presentation from state",
-          "why": "The overlay is positioned above the canvas and uses a readable translucent background. Its heading/padding do not pause simulation: that will be controlled by paused/state. This separation prevents hiding a menu from accidentally being treated as the game-start condition.",
-          "try": "Change the overlay opacity and reopen Play. The title should remain readable over the attract view."
+          "at": "  // All menus and text live",
+          "title": "Load the UI file and keep handles",
+          "why": "createUI(shell).load fetches ui/menu.ui.json, builds it into an isolated shadow root over the shell and returns a screen. menu.$('name') returns a node handle by the name you gave it in the Designer and throws a clear error if the name is missing. Handles are kept in constants so the game loop never searches the DOM; setting text or visible later touches only that node.",
+          "try": "Open ui/menu.ui.json in the UI Designer, rename the node 'overlay' to 'intro', save, reload Play and read the Console: menu.$('overlay') should now throw a message naming the missing node. Rename it back."
         },
         {
-          "at": "    <div id=\"shell\">",
-          "title": "Give each control a stable DOM identity",
-          "why": "Button IDs become the event-wiring contract later in mount. The canvas has fixed internal dimensions and responsive CSS size; scaling it does not change simulation units. tabIndex makes canvas focus possible after Start. The notice is text output, while the overlay holds startup instructions. These are actual controls, not mock UI.",
-          "try": "Locate Restart in markup and later its onclick assignment. Renaming only one ID will break that control; undo any experiment before proceeding."
-        },
-        {
-          "at": "  const $ =",
-          "title": "Load required images before starting the loop",
-          "why": "The root-scoped query helper avoids accidentally selecting another app. The image loader resolves only on load and rejects with the missing path on error. await ensures both sheets exist before drawView receives them. Run variables then hold players, shared traffic, mode, menu/result state and the previous frame timestamp; pad/keyboard translate browser state into rule inputs.",
+          "at": "  const g = canvas.getContext",
+          "title": "Canvas context, images and shared state",
+          "why": "The 2D context, audio object and key set are created once. The image loader resolves only on load and rejects with the missing path on error, and await ensures both sheets exist before drawView receives them. Run variables then hold players, shared traffic, mode, menu/result state and the previous frame timestamp; pad and keyboard translate browser state into rule inputs.",
           "try": "Temporarily misspell a sprite filename, reopen Play and inspect the Console. Restore it; a missing resource should fail clearly instead of producing a silent empty car."
         },
         {
@@ -129,6 +123,12 @@
           "title": "Pause logic and wire controls",
           "why": "The guard excludes menu/results. A disconnected P2 pad prevents unsafe resume. Pause updates state, overlay, sound context and keys together. The following button assignments connect page intent to these functions; mute changes the label from the helper result, and track change requests music only after a context exists.",
           "try": "Pause during a race and switch tracks. Resume and confirm the timer did not advance while paused."
+        },
+        {
+          "at": "  menu.on('one'",
+          "title": "React to named UI actions",
+          "why": "Each button in the UI file has an action name such as one, two, pause or restart. menu.on(action, fn) subscribes to that name, so the code never needs element IDs or querySelector. The select emits track when its choice changes, and the mute handler writes the new label back through the node's text property. Moving a button or restyling it in the Designer cannot break any of this.",
+          "try": "In the Designer change the Restart button's action from restart to again and save without touching app.js. Pressing the button now does nothing until you also change menu.on('restart') to menu.on('again'); then undo both."
         },
         {
           "at": "  window.addEventListener('keydown'",
@@ -147,6 +147,30 @@
           "title": "Render two cameras without duplicating simulation",
           "why": "Engine rate/gain follows P1 speed. Each viewport saves canvas state, clips its own rectangle and translates the origin before calling drawView. restore prevents the second view inheriting the first view’s clip/translation. The separator is drawn once, notices reflect current pad/audio state, and scheduling the next frame keeps the loop alive even while paused so UI can still respond.",
           "try": "Remove restore only on a temporary copy and observe the broken second view; put it back. The getter object at the end is for inspection/tests, not another game loop."
+        }
+      ]
+    },
+    {
+      "file": "ui/menu.ui.json",
+      "intro": "Describe the whole menu as data: layout containers, buttons, a select, text with placeholders and the intro card. The UI Designer edits this file.",
+      "parts": [
+        {
+          "at": null,
+          "title": "Theme variables and the transparent root",
+          "why": "The file starts with a version and a name, then theme variables: bg, panel, border, fg and accent override the engine defaults for this screen only. The root is a full-size panel whose style removes the default background, border and padding, so it acts as an invisible layer above the canvas while its children are positioned by anchors.",
+          "try": "Change the accent colour from #304a61 to #aa3355 and reload. All buttons change colour at once because they share the variable; restore the old value."
+        },
+        {
+          "at": "        \"type\": \"hbox\",",
+          "title": "A row of buttons with action names",
+          "why": "An hbox lays its children out in a row with a gap and padding, anchored to the top edge at full width. Each button names an action under on.pressed; the game subscribes to those names with menu.on. The select lists its options and reports changes as the track action. Layout and wording are therefore editable without touching code.",
+          "try": "Drag the Restart row above Pause in the Designer's tree and save. The order on screen changes, while the game still responds to every button."
+        },
+        {
+          "at": "        \"type\": \"label\",",
+          "title": "Notice line and the intro card",
+          "why": "The notice label shows the template text {notice}; the game fills it with menu.set('notice', ...) and only changed values touch the page. The overlay is a centred vertical box with a translucent card style. Its title and body labels use rich text: [b] for bold and [br] for line breaks, parsed safely into spans rather than injected as HTML.",
+          "try": "Change the title text to [color=#ff8866]COASTLINE[/color] SPRINT, save and reload to see rich text colour part of the heading."
         }
       ]
     },

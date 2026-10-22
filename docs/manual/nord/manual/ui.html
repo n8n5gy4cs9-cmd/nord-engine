@@ -26,6 +26,23 @@ Widgets live on named <strong>screens</strong> (layers). <code>hud</code> always
 update() { this.scoreLabel.set(`Score: ${this.score}`); this.hp.set(this.health / 100); }</code></pre>
 <p>Positioning options for every widget: <code>x, y, anchor (&#39;tl&#39;|&#39;tr&#39;|&#39;bl&#39;|&#39;br&#39;), w, h, screen, style</code>.
 Widgets: <code>panel</code>, <code>label</code>, <code>button</code>, <code>image</code>, <code>bar</code>, <code>menu</code>. Handles have <code>el</code> (the DOM node) and <code>remove()</code>; labels and bars add <code>set()</code>.</p>
+<h2 id="ui-scenes-and-the-ui-designer-recommended">UI scenes and the UI Designer (recommended)<a class="anchor" href="#ui-scenes-and-the-ui-designer-recommended">#</a></h2>
+<p>Menus, HUDs and dialogs are best built as <strong>data</strong>, not code. Open the <strong>UI Designer</strong> tab, build the screen visually and save it as <code>ui/menu.ui.json</code>. Then load it:</p>
+<pre class="code" data-lang="js"><code>const menu = await this.ui.load('ui/menu.ui.json');   // plain HTML projects: createUI(root).load(...)
+menu.on('play', () =&gt; this.game.restart());           // the button's Action name
+menu.$('score').text = 'Score 12';                    // any node, by the name you gave it
+menu.set('hp', 0.5);                                  // fills {hp} placeholders and bound bars</code></pre>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A UI file is a tree of boxes. A <strong>vbox</strong> stacks things top to bottom, an <strong>hbox</strong> left to right, and an <strong>anchor</strong> pins a box to a corner or the centre. Give a button an <em>Action</em> name; your code listens for that name. You never hunt for buttons in the page.</p>
+</aside><ul>
+<li><strong>Nodes:</strong> panel, vbox, hbox, grid, center, scroll, label, button, image, bar, slider, input, checkbox, select, spacer, html, instance (another UI file inside this one).</li>
+<li><strong>Text:</strong> labels support <code>{placeholders}</code>, <code>@translation.keys</code>, and safe rich text <code>[b] [i] [u] [color=#f7d89b] [size=28] [br]</code>.</li>
+<li><strong>Both directions:</strong> UI → code with action names (also emitted as <code>ui:&lt;action&gt;</code> on <code>game.events</code>, so event sheets can react); code → UI with node handles (<code>text value checked visible disabled color index set() on() add() clear()</code>).</li>
+<li><strong>Themes:</strong> a UI file can carry its own colours (<code>theme</code>), or inherit the project&#39;s skin and theme.</li>
+<li><strong>Fast:</strong> each screen is one isolated shadow root; text is only touched when it changes.</li>
+<li><strong>Fallback:</strong> the older <code>ui.label()/button()/menu()</code> calls and your own HTML keep working; use an <code>html</code> node for a custom corner.</li>
+<li><strong>3D world:</strong> <code>game.gui.scene(def, { entity })</code> builds the same file as Babylon GUI floating over an entity.</li>
+</ul>
+<p>Full format and API: <code>docs/UI_SCENES.md</code>. Step by step: <a href="../tutorials/tut-t44-ui-designer.html">T44 UI Designer</a>; a finished game using it: <a href="../tutorials/tut-t38-coastline-sprint.html">T38 Coastline Sprint</a>.</p>
 <h2 id="ui-as-components">UI as components<a class="anchor" href="#ui-as-components">#</a></h2>
 <p><code>uiPanel</code>, <code>uiLabel</code>, <code>uiImage</code>, <code>uiBar</code>, <code>uiButton</code> put the same widgets into the scene file so the <strong>editor can lay them out</strong>. A <code>uiButton</code> with <code>event: &quot;start-game&quot;</code> emits that name on <code>game.events</code> when clicked.</p>
 <h2 id="themes-and-skins">Themes and skins<a class="anchor" href="#themes-and-skins">#</a></h2>
@@ -43,5 +60,5 @@ The catalogue is in <code>assets/themes/themes.json</code> (editor and game shar
 </ul>
 <h2 id="apps">Apps<a class="anchor" href="#apps">#</a></h2>
 <p>For tool/app projects the library has an <strong>app kit</strong> (<code>library/apps/_kit.js</code>: layout, forms, lists, router, state) and a set of sample apps (calculator, to-do, kanban, notes, paint and more) — see <a href="../reference/templates-examples.html">Templates &amp; examples</a>.</p>
-<div class="pager"><a href="audio.html"><small>← Previous</small>Audio</a><a href="input.html"><small>Next →</small>Input</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#ui-as-components">UI as components </a><a href="#themes-and-skins">Themes and skins </a><a href="#ready-made-screens-library">Ready-made screens (library) </a><a href="#touch-controls">Touch controls </a><a href="#in-world-ui">In-world UI </a><a href="#apps">Apps </a></aside></div>
+<div class="pager"><a href="audio.html"><small>← Previous</small>Audio</a><a href="input.html"><small>Next →</small>Input</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#ui-scenes-and-the-ui-designer-recommended">UI scenes and the UI Designer (recommended) </a><a href="#ui-as-components">UI as components </a><a href="#themes-and-skins">Themes and skins </a><a href="#ready-made-screens-library">Ready-made screens (library) </a><a href="#touch-controls">Touch controls </a><a href="#in-world-ui">In-world UI </a><a href="#apps">Apps </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -3,7 +3,7 @@
   "tagline": "Rust-based game/app engine + editor that exports static HTML web games and a native Mac app",
   "author": "Crowelian 2026 + Sonnet",
   "version": "0.0.1",
-  "updated": "2026-10-21",
+  "updated": "2026-10-22",
   "branch": "main",
   "statusValues": [
     "todo",
@@ -1947,6 +1947,12 @@
       "id": "M8-25",
       "milestone": "M8",
       "title": "Dependable scene restart resets paused/time/input and saved scene state with explicit Persist opt-in",
+      "status": "done"
+    },
+    {
+      "id": "M8-26",
+      "milestone": "M8",
+      "title": "UI scenes: .ui.json runtime, UI Designer tab, Babylon GUI bridge, docs + tutorials",
       "status": "done"
     },
     {

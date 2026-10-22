@@ -59,3 +59,4 @@ ul.cards{list-style:none;padding:0;display:grid;grid-template-columns:repeat(2,m
 .tmeta{display:flex;flex-wrap:wrap;gap:.3rem}.tmeta em{font-style:normal;font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;padding:.1rem .45rem;border-radius:5px;border:1px solid var(--border);color:var(--muted)}
 .tmeta .lv-b{color:var(--good);border-color:var(--good)}.tmeta .lv-i{color:var(--warn);border-color:var(--warn)}.tmeta .lv-a{color:var(--purple);border-color:var(--purple)}
 .tempty{color:var(--muted);text-align:center;padding:2rem 0}
+.f{color:#ebcb8b;font-weight:700}.v{color:#a3be8c;font-weight:700}.k{color:#b48ead;font-weight:700}.ui{color:#88c0d0;font-weight:700}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nord UI Designer</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="top">
+  <strong>UI Designer</strong>
+  <input id="file" list="files" placeholder="ui/menu.ui.json" spellcheck="false">
+  <datalist id="files"></datalist>
+  <button id="new">New</button><button id="open">Open</button><button id="save" class="pri">Save</button>
+  <span class="sep"></span>
+  <button id="undo" title="Ctrl+Z">Undo</button><button id="redo" title="Ctrl+Shift+Z">Redo</button>
+  <span class="sep"></span>
+  <label>Preview <select id="size"><option value="960x540">960×540</option><option value="1280x720">1280×720</option><option value="390x844">Phone 390×844</option><option value="1920x1080">1920×1080</option></select></label>
+  <label>Theme <select id="theme"></select></label>
+  <span id="status"></span>
+</header>
+<main>
+  <aside id="left">
+    <h3>Add node</h3><div id="palette"></div>
+    <h3>Tree</h3><div id="tree"></div>
+  </aside>
+  <section id="center"><div id="stageWrap"><div id="stage"></div></div></section>
+  <aside id="right">
+    <div class="tabs"><button data-tab="props" class="on">Properties</button><button data-tab="json">JSON</button></div>
+    <div id="props"></div>
+    <div id="jsonBox" hidden><textarea id="json" spellcheck="false"></textarea><button id="applyJson">Apply JSON</button></div>
+  </aside>
+</main>
+<script type="module" src="designer.js"></script>
+</body>
+</html>

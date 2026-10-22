@@ -21,3 +21,4 @@ pub mod settings;
 pub mod sprite;
 pub mod timeline;
 pub mod toolbar;
+pub mod uidesigner;

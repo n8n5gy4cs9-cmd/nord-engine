@@ -8,12 +8,102 @@
 <div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
-<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a><a href="tut-t38-coastline-sprint.html">T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t39-vector-patrol.html">T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t40-jengatedris.html">T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t41-nord-office.html">T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t42-paper-worlds.html">T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><a href="tut-t43-rss-river.html" class="cur" aria-current="page">T43 RSS River — build a calm reader with a physical paper view</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T43 RSS River — build a calm reader with a physical paper view</h1>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a><a href="tut-t38-coastline-sprint.html">T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t39-vector-patrol.html">T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t40-jengatedris.html">T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t41-nord-office.html">T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t42-paper-worlds.html">T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><a href="tut-t43-rss-river.html" class="cur" aria-current="page">T43 RSS River — build a calm reader with a physical paper view</a><a href="tut-t44-ui-designer.html">T44 Menus and HUDs with the UI Designer</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T43 RSS River — build a calm reader with a physical paper view</h1>
 <p>Build <strong>RSS River</strong>, an original local-first news reader for developers. Its ordinary reading view gives you a source list, search, unread/star filters and readable article summaries. Its optional 3D view turns those stories into slowly flowing papers over a desk. Starred stories become larger and float higher. Click a paper to read it, then flick it onto the desk with real Havok physics.</p>
 <p><strong>Download:</strong> <a href="../../assets/downloads/rss-river-source.zip">Complete RSS River app, source and sprites</a>. Extract, open <code>nord.project.json</code> in Nord and press <strong>Play</strong>. This is a complete <strong>HTML-tier</strong> project with local Babylon/Havok files and no npm step. An original local demo makes every feature usable before you fetch external news. Demo stories are explicitly labelled and are not presented as current reporting.</p>
 <p><img src="../../assets/screenshots/ed-rss-list.png" alt="RSS River list, filters and reading pane"></p>
 <p><strong>Full-code learning route:</strong> After the orientation below, continue to <a href="#file-walkthrough">the complete file-by-file walkthrough</a>. It teaches every main project file in consecutive sections, with the actual code, an explanation of what and why, and a change to try. The expandable complete files at the end are a reference, not the lesson.</p>
-<h2 id="1-learn-the-finished-reader">1. Learn the finished reader<a class="anchor" href="#1-learn-the-finished-reader">#</a></h2>
+<h2 id="build-from-scratch">Start here: build it yourself, from an empty project<a class="anchor" href="#build-from-scratch">#</a></h2>
+<p>The sections after this one explain the finished reader. <strong>This section is the route from nothing to a running app.</strong> The download is only for comparing when something breaks.</p>
+<p><span class="f">orange</span> = a file name · <span class="v">green</span> = a variable or function · <span class="k">purple</span> = a setting or key word · <span class="ui">blue</span> = a button or menu in Nord.</p><h3 id="step-1-create-the-project-which-template">Step 1 — Create the project (which template?)<a class="anchor" href="#step-1-create-the-project-which-template">#</a></h3>
+<p>Welcome screen → <span class="ui">New project</span>:</p>
+<pre class="code" data-lang="text"><code>Project name : my-rss-river
+Project type : HTML-lite        &lt;-- pick this one</code></pre>
+<p>Choose <span class="ui">HTML-lite</span>. The reader is a normal web page; the 3D &quot;river&quot; is drawn by the Babylon and Havok libraries that sit inside your own folder. So you do <strong>not</strong> need the 3D game type, which would make an engine scene. Press <span class="ui">Create project</span>.</p>
+<h3 id="step-2-copy-the-quot-infrastructure-quot-files">Step 2 — Copy the &quot;infrastructure&quot; files<a class="anchor" href="#step-2-copy-the-quot-infrastructure-quot-files">#</a></h3>
+<p>Unzip the <a href="../../assets/downloads/rss-river-source.zip">download</a> elsewhere. Some files are libraries or helpers, not lessons. Copy these into the <strong>root of your project</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Copy from the zip</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span class="f">vendor/</span> (whole folder)</td>
+<td>Babylon.js + Havok physics, so nothing loads from the internet</td>
+</tr>
+<tr>
+<td><span class="f">assets/dev-desk-sprites.png</span></td>
+<td>the desk art</td>
+</tr>
+<tr>
+<td><span class="f">save.js</span></td>
+<td>tiny storage helper (the <span class="v">Save</span> class)</td>
+</tr>
+<tr>
+<td><span class="f">nord-desktop.js</span></td>
+<td>lets Nord&#39;s app fetch feeds</td>
+</tr>
+<tr>
+<td><span class="f">desk.js</span></td>
+<td>creates the 3D desk (walkthrough part 4 explains it)</td>
+</tr>
+<tr>
+<td><span class="f">.offline-allow</span></td>
+<td>the three feed hosts the app may contact</td>
+</tr>
+<tr>
+<td><span class="f">demo.xml</span>, <span class="f">style.css</span></td>
+<td>sample articles, page styling</td>
+</tr>
+</tbody></table>
+<p>Then create three <strong>empty</strong> files for the code you write: <code>touch feeds.js river.js app.js</code> (in the project folder), refresh the <span class="ui">Assets</span> panel.</p>
+<h3 id="step-3-index-html-and-project-settings">Step 3 — index.html and project settings<a class="anchor" href="#step-3-index-html-and-project-settings">#</a></h3>
+<p>Replace everything in <span class="f">index.html</span> with:</p>
+<pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;RSS River&lt;/title&gt;
+&lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
+&lt;script type=&quot;module&quot;&gt;
+import { mount } from './app.js';
+try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+<p>Open <span class="f">nord.project.json</span> and add this block next to the other top-level fields (it allows the three feed hosts):</p>
+<pre class="code" data-lang="json"><code>&quot;desktop&quot;: { &quot;permissions&quot;: { &quot;net&quot;: { &quot;hosts&quot;: [&quot;hnrss.org&quot;, &quot;simonwillison.net&quot;, &quot;github.blog&quot;] } } }</code></pre>
+<h3 id="step-4-write-the-three-code-files-in-this-order">Step 4 — Write the three code files in this order<a class="anchor" href="#step-4-write-the-three-code-files-in-this-order">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>File</th>
+<th>Job</th>
+<th>Where the code is</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><span class="f">feeds.js</span></td>
+<td>list of feeds, RSS/Atom → one article shape, merge rules. No page, no 3D.</td>
+<td>paste parts <a href="#walk-feeds-js">1.1 → 1.5</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td><span class="f">river.js</span></td>
+<td>turns articles into floating 3D papers</td>
+<td>paste parts <a href="#walk-river-js">3.1 → 3.4</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td><span class="f">app.js</span></td>
+<td>the reader screen: list, filters, refresh, save</td>
+<td>paste parts <a href="#walk-app-js">2.1 → 2.10</a></td>
+</tr>
+</tbody></table>
+<p>Why this order: <span class="f">app.js</span> imports from the other two (<span class="k">import</span> { <span class="v">parseFeed</span>, <span class="v">mergeArticles</span> } from &#39;./feeds.js&#39;). Write what gets imported first. <span class="f">feeds.js</span> is plain functions: after pasting it you can test it in the Console without any page.</p>
+<h3 id="step-5-play">Step 5 — Play<a class="anchor" href="#step-5-play">#</a></h3>
+<p>Press <span class="ui">Play</span>. Click <span class="ui">Load local demo</span> to fill the list with the 8 fictional articles from <span class="f">demo.xml</span>. Star one, then switch to the 3D river view and click or flick a paper. Blank screen? Open <span class="ui">Console</span>: the first red line names the file. Most often a wrong file name in an <span class="k">import</span>, or <span class="f">vendor/</span> not copied.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-rss-list.png" alt="RSS River list view" loading="lazy"><figcaption>After Step 5: sources on the left, article list, reading pane.</figcaption></figure><figure class="shot"><img src="../../assets/screenshots/ed-rss-river.png" alt="RSS River 3D paper view" loading="lazy"><figcaption>The 3D river: starred papers are bigger and float higher.</figcaption></figure><h2 id="1-learn-the-finished-reader">1. Learn the finished reader<a class="anchor" href="#1-learn-the-finished-reader">#</a></h2>
 <p>Click a story to read its summary and mark it read. Star it to keep it important. Search matches titles and summaries; Unread only and Starred only combine with the source selector. Mark visible read affects only your current filtered list. Backup library downloads your subscriptions, cached entries and reading flags as JSON; the Import control accepts that backup as well as RSS/Atom XML.</p>
 <p>Click <strong>3D paper river</strong> to explore the same filtered stories spatially. Drag to orbit and use the wheel to zoom. Click a paper to open its reading pane, then <strong>Flick this paper</strong> to drop that paper with an impulse. The ordinary list remains available at any time. Flicking is a temporary visual action: it does not delete an article from your library.</p>
 <p>The initial subscriptions are:</p>
@@ -2859,5 +2949,5 @@ footer {
   }
 }</code></pre>
 </details>
-<div class="pager"><a href="tut-t42-paper-worlds.html"><small>← Previous</small>T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-learn-the-finished-reader">1. Learn the finished reader </a><a href="#2-open-and-edit-the-real-project">2. Open and edit the real project </a><a href="#3-parse-rss-and-atom-into-one-article-model">3. Parse RSS and Atom into one article model </a><a href="#4-merge-updates-without-losing-reading-state">4. Merge updates without losing reading state </a><a href="#5-handle-browser-cors-honestly">5. Handle browser CORS honestly </a><a href="#6-build-a-readable-html-list-first">6. Build a readable HTML list first </a><a href="#7-paint-articles-onto-babylon-papers">7. Paint articles onto Babylon papers </a><a href="#8-flick-a-floating-paper-into-real-physics">8. Flick a floating paper into real physics </a><a href="#9-save-and-back-up-the-useful-parts">9. Save and back up the useful parts </a><a href="#10-export-and-understand-the-boundaries">10. Export and understand the boundaries </a><a href="#11-finish-with-a-short-useful-check">11. Finish with a short useful check </a><a href="#file-walkthrough">Walk through every project file </a><a href="#complete-project-source">Complete project source </a></aside></div>
+<div class="pager"><a href="tut-t42-paper-worlds.html"><small>← Previous</small>T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><a href="tut-t44-ui-designer.html"><small>Next →</small>T44 Menus and HUDs with the UI Designer</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#build-from-scratch">Start here: build it yourself, from an empty project </a><a href="#1-learn-the-finished-reader">1. Learn the finished reader </a><a href="#2-open-and-edit-the-real-project">2. Open and edit the real project </a><a href="#3-parse-rss-and-atom-into-one-article-model">3. Parse RSS and Atom into one article model </a><a href="#4-merge-updates-without-losing-reading-state">4. Merge updates without losing reading state </a><a href="#5-handle-browser-cors-honestly">5. Handle browser CORS honestly </a><a href="#6-build-a-readable-html-list-first">6. Build a readable HTML list first </a><a href="#7-paint-articles-onto-babylon-papers">7. Paint articles onto Babylon papers </a><a href="#8-flick-a-floating-paper-into-real-physics">8. Flick a floating paper into real physics </a><a href="#9-save-and-back-up-the-useful-parts">9. Save and back up the useful parts </a><a href="#10-export-and-understand-the-boundaries">10. Export and understand the boundaries </a><a href="#11-finish-with-a-short-useful-check">11. Finish with a short useful check </a><a href="#file-walkthrough">Walk through every project file </a><a href="#complete-project-source">Complete project source </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -5,6 +5,8 @@ const files = ['app.js', 'track.js', 'render.js', 'audio-config.js'].map((name) 
 }));
 files.push(
   { from: 'tools/examples/retro-common/audio.js', to: 'audio.js' },
+  { from: 'tools/examples/coastline-sprint/ui/menu.ui.json', to: 'ui/menu.ui.json' },
+  { from: 'runtime/core/uiscene.js', to: 'lib/nord-ui.js' },
   { from: 'LICENSE', to: 'LICENSE' },
 );
 for (const name of ['racing-cars', 'roadside'])
