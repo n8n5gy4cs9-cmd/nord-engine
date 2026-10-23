@@ -3,7 +3,7 @@
   "tagline": "Rust-based game/app engine + editor that exports static HTML web games and a native Mac app",
   "author": "Crowelian 2026 + Sonnet",
   "version": "0.0.1",
-  "updated": "2026-10-22",
+  "updated": "2026-10-23",
   "branch": "main",
   "statusValues": [
     "todo",
@@ -94,6 +94,11 @@
       "id": "M12",
       "name": "FPS Creator addon",
       "goal": "a full first-person level editor + runtime modelled on the classic FPS Creator workflow (grid walls/doors/windows, ready-made enemies/lights/pickups, attachable scripts, no-code rules, assets rules); additive, spec docs/FPS_CREATOR.md"
+    },
+    {
+      "id": "M13",
+      "name": "Unity-style editor (Godotize)",
+      "goal": "Unity-like editor workflow on the existing tools: Scene/Game/Hierarchy/Inspector/Assets, prefabs, materials, import settings, UI Designer/Graph/Event-sheet upgrades; plan docs/GODOTIZE_PLAN.md, checklist godotize-nordengine-tasks.md"
     }
   ],
   "features": [
@@ -2301,6 +2306,84 @@
       "id": "M11-16",
       "milestone": "M11",
       "title": "OWNER: verify web editor on macOS Safari/Chrome, Windows Edge, Firefox; decide auth model and Rust-tier-on-server policy (docs/WEB_EDITOR_PLAN.md §7)",
+      "status": "todo"
+    },
+    {
+      "id": "M13-01",
+      "milestone": "M13",
+      "title": "Rebindable shortcuts (G0-4)",
+      "status": "done"
+    },
+    {
+      "id": "M13-02",
+      "milestone": "M13",
+      "title": "Multi-object gizmos, Pivot/Center, 3D marquee, axis gizmo (G1-3/5/6)",
+      "status": "done"
+    },
+    {
+      "id": "M13-03",
+      "milestone": "M13",
+      "title": "Asset drops on objects and Hierarchy rows (G1-7, G4-5)",
+      "status": "done"
+    },
+    {
+      "id": "M13-04",
+      "milestone": "M13",
+      "title": "Hierarchy lock/hide, component Enabled, grouped Add Component, Debug mode (G2)",
+      "status": "done"
+    },
+    {
+      "id": "M13-05",
+      "milestone": "M13",
+      "title": "Prefab per-field apply and children overrides (G3-2/5)",
+      "status": "done"
+    },
+    {
+      "id": "M13-06",
+      "milestone": "M13",
+      "title": "Lit material preview, texture/model import, thumbnails (G4)",
+      "status": "done"
+    },
+    {
+      "id": "M13-07",
+      "milestone": "M13",
+      "title": "Android/iOS Capacitor export (G5-2)",
+      "status": "done"
+    },
+    {
+      "id": "M13-08",
+      "milestone": "M13",
+      "title": "UI Designer scaler, handles, sprite states, tint, prefabs (G6-1/2)",
+      "status": "done"
+    },
+    {
+      "id": "M13-09",
+      "milestone": "M13",
+      "title": "Graph subgraphs + live flow, event-sheet Parameters form + highlight (G6-3/4/5)",
+      "status": "done"
+    },
+    {
+      "id": "M13-10",
+      "milestone": "M13",
+      "title": "Level editors share Scene-view navigation (G6-6)",
+      "status": "done"
+    },
+    {
+      "id": "M13-11",
+      "milestone": "M13",
+      "title": "Icon pass (G9-7)",
+      "status": "done"
+    },
+    {
+      "id": "M13-12",
+      "milestone": "M13",
+      "title": "T48 Neon Harbor showcase tutorial + project",
+      "status": "done"
+    },
+    {
+      "id": "M13-13",
+      "milestone": "M13",
+      "title": "Checking: Playwright suites T36/T38/T40-T43, KNOWN_ISSUES walk, native macOS verification (G8-3/4/5)",
       "status": "todo"
     }
   ]

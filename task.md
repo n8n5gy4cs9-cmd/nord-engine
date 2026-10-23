@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 289/302 tasks (96%)** · updated 2026-10-22
+**Overall: 301/315 tasks (96%)** · updated 2026-10-23
 
 | Milestone | Progress |
 |---|---|
@@ -20,6 +20,7 @@
 | M10 Construct-style editor | 36/36 (100%) |
 | M11 Web editor | 14/16 (88%) |
 | M12 FPS Creator addon | 30/31 (97%) |
+| M13 Unity-style editor (Godotize) | 12/13 (92%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -381,6 +382,23 @@ _a full first-person level editor + runtime modelled on the classic FPS Creator 
 - [x] **M12-29** Add editable NES-style top-down tank game and starter
 - [x] **M12-30** Add full illustrated HTML tutorials for Machine Workshop, dungeon and tank games
 - [x] **M12-31** Fix demo item palettes, Brush placement and drag-and-drop in 2D Level Creator
+
+## M13 — Unity-style editor (Godotize)
+_Unity-like editor workflow on the existing tools: Scene/Game/Hierarchy/Inspector/Assets, prefabs, materials, import settings, UI Designer/Graph/Event-sheet upgrades; plan docs/GODOTIZE_PLAN.md, checklist godotize-nordengine-tasks.md_
+
+- [x] **M13-01** Rebindable shortcuts (G0-4)
+- [x] **M13-02** Multi-object gizmos, Pivot/Center, 3D marquee, axis gizmo (G1-3/5/6)
+- [x] **M13-03** Asset drops on objects and Hierarchy rows (G1-7, G4-5)
+- [x] **M13-04** Hierarchy lock/hide, component Enabled, grouped Add Component, Debug mode (G2)
+- [x] **M13-05** Prefab per-field apply and children overrides (G3-2/5)
+- [x] **M13-06** Lit material preview, texture/model import, thumbnails (G4)
+- [x] **M13-07** Android/iOS Capacitor export (G5-2)
+- [x] **M13-08** UI Designer scaler, handles, sprite states, tint, prefabs (G6-1/2)
+- [x] **M13-09** Graph subgraphs + live flow, event-sheet Parameters form + highlight (G6-3/4/5)
+- [x] **M13-10** Level editors share Scene-view navigation (G6-6)
+- [x] **M13-11** Icon pass (G9-7)
+- [x] **M13-12** T48 Neon Harbor showcase tutorial + project
+- [ ] **M13-13** Checking: Playwright suites T36/T38/T40-T43, KNOWN_ISSUES walk, native macOS verification (G8-3/4/5)
 
 ## Features (PRD)
 
