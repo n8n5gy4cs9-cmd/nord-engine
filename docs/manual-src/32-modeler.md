@@ -18,7 +18,7 @@ The **3D Modeler** tab (Window ▸ Editors ▸ 3D Modeler) is for *small changes
 
 ## 3D view
 
-Left panel: create primitives (cube, plane, cylinder, sphere) or draw a polygon on the grid; select faces, edges or vertices (click, Shift-click to extend); move/rotate/scale with the gizmo or by numbers; extrude, inset, loop cut, split edge, bevel, merge, weld, delete, flip, triangulate. **Undo/Redo** (Ctrl/Cmd+Z, Shift+Ctrl/Cmd+Z), **Delete** removes the selection, **Ctrl/Cmd+S** saves. Orbit with the left mouse button, pan with the right, zoom with the wheel.
+Left panel: create primitives (cube, plane, cylinder, sphere) or draw a polygon on the grid; select faces, edges or vertices (click, Shift-click to extend); move/rotate/scale with the gizmo or by numbers; extrude, inset, loop cut, split edge, bevel, merge, weld, delete, flip, triangulate. **Undo/Redo** (Ctrl/Cmd+Z, Shift+Ctrl/Cmd+Z), **Delete** removes the selection, **Ctrl/Cmd+S** saves. **Subdivide all** splits every face into quads, **Mirror X/Y/Z** duplicates the mesh across the origin plane and welds the seam (move the half away from the plane first, otherwise the copy lies exactly on top of it), **Center on ground** puts the mesh at the origin with its bottom on y=0, and **Import OBJ…** loads a Wavefront file (faces keep their UVs, or are auto-unwrapped; textures are not imported). Orbit with the left mouse button, pan with the right, zoom with the wheel.
 
 ## Texture tab
 
