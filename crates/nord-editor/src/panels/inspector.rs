@@ -996,6 +996,19 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             script_methods(st, &id)
         })
         .collect();
+    let all_tags: Vec<String> = st
+        .scene
+        .as_ref()
+        .map(|sc| {
+            let mut v: Vec<String> = scene_ops::flatten(&sc.entities)
+                .into_iter()
+                .flat_map(|(_, e)| e.tags.clone())
+                .collect();
+            v.sort();
+            v.dedup();
+            v
+        })
+        .unwrap_or_default();
     let mut e: Entity = orig.clone();
     let mut docs: Option<String> = None;
     let mut prefab_op: Option<(String, u8)> = None;
@@ -1005,32 +1018,98 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             ui.horizontal(|ui| {
                 ui.checkbox(&mut e.enabled, "")
                     .on_hover_text("Active: off = the entity (and its children) is not in the game and is hidden in the Scene view");
-                ui.add(egui::TextEdit::singleline(&mut e.name).desired_width(f32::INFINITY));
+                ui.add(egui::TextEdit::singleline(&mut e.name).desired_width(ui.available_width() - 70.0));
+                ui.add_enabled_ui(child_ctx.is_none(), |ui| {
+                    ui.checkbox(&mut e.is_static, "Static")
+                        .on_hover_text("Static: the entity does not move at runtime (scripts can read entity.isStatic)");
+                });
             });
             ui.horizontal(|ui| {
                 ui.weak(format!("id {}", e.id));
-                ui.weak("layer");
+            });
+            ui.horizontal(|ui| {
+                ui.label("Tag");
+                let shown = if e.tags.is_empty() { "Untagged".to_string() } else { e.tags.join(", ") };
+                egui::ComboBox::from_id_salt("tag_picker").selected_text(shown).width(150.0).show_ui(ui, |ui| {
+                    // every tag used in this scene is a checkbox (an entity can carry several); the box at the bottom adds a new one
+                    let mut all: Vec<String> = all_tags.clone();
+                    for t in &e.tags {
+                        if !all.contains(t) {
+                            all.push(t.clone());
+                        }
+                    }
+                    all.sort();
+                    for t in all {
+                        let mut on = e.tags.contains(&t);
+                        if ui.checkbox(&mut on, &t).changed() {
+                            if on {
+                                e.tags.push(t.clone());
+                            } else {
+                                e.tags.retain(|x| *x != t);
+                            }
+                        }
+                    }
+                    ui.separator();
+                    let nid = egui::Id::new("new_tag");
+                    let mut nt: String = ui.ctx().data(|d| d.get_temp(nid)).unwrap_or_default();
+                    let r = ui.add(egui::TextEdit::singleline(&mut nt).hint_text("New tag + Enter").desired_width(130.0));
+                    if r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
+                        let t = nt.trim().to_string();
+                        if !t.is_empty() && !e.tags.contains(&t) {
+                            e.tags.push(t);
+                        }
+                        nt.clear();
+                    }
+                    ui.ctx().data_mut(|d| d.insert_temp(nid, nt));
+                });
+                ui.label("Layer");
                 ui.add(DragValue::new(&mut e.layer));
             });
-            let mut tags = e.tags.join(", ");
-            ui.horizontal(|ui| {
-                ui.label("Tags");
-                if ui
-                    .add(egui::TextEdit::singleline(&mut tags).desired_width(f32::INFINITY))
-                    .changed()
-                {
-                    e.tags = tags
-                        .split(',')
-                        .map(|t| t.trim().to_string())
-                        .filter(|t| !t.is_empty())
-                        .collect();
-                }
-            });
             ui.separator();
-            egui::CollapsingHeader::new("TRANSFORM")
-                .icon(crate::icons::accent_arrow)
-                .default_open(true)
-                .show(ui, |ui| {
+            let xf_state = egui::collapsing_header::CollapsingState::load_with_default_open(
+                ui.ctx(),
+                ui.make_persistent_id("xf_hdr"),
+                true,
+            );
+            let xf_clip = egui::Id::new("transform_clipboard");
+            let xf_header = xf_state.show_header(ui, |ui| {
+                ui.label(egui::RichText::new("TRANSFORM").strong());
+                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                    ui.menu_button("⋮", |ui| {
+                        if ui.button("Reset").clicked() {
+                            e.transform = nord_core::scene::Transform::default();
+                            ui.close_menu();
+                        }
+                        if ui.button("Reset Position").clicked() {
+                            e.transform.pos = [0.0; 3];
+                            ui.close_menu();
+                        }
+                        if ui.button("Reset Rotation").clicked() {
+                            e.transform.rot = [0.0; 3];
+                            ui.close_menu();
+                        }
+                        if ui.button("Reset Scale").clicked() {
+                            e.transform.scale = [1.0; 3];
+                            ui.close_menu();
+                        }
+                        ui.separator();
+                        if ui.button("Copy values").clicked() {
+                            let t = e.transform.clone();
+                            ui.ctx().data_mut(|d| d.insert_temp(xf_clip, t));
+                            ui.close_menu();
+                        }
+                        let clip: Option<nord_core::scene::Transform> =
+                            ui.ctx().data(|d| d.get_temp(xf_clip));
+                        if ui.add_enabled(clip.is_some(), egui::Button::new("Paste values")).clicked() {
+                            if let Some(t) = clip {
+                                e.transform = t;
+                            }
+                            ui.close_menu();
+                        }
+                    });
+                });
+            });
+            xf_header.body(|ui| {
                     egui::Grid::new("xf").num_columns(2).show(ui, |ui| {
                         for (label, arr, n3) in [
                             ("Position", &mut e.transform.pos, true),
@@ -1425,6 +1504,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     Some(ov) => {
                         slot.name = e.name;
                         slot.enabled = e.enabled;
+                        slot.is_static = e.is_static;
                         slot.tags = e.tags;
                         slot.transform = e.transform;
                         slot.connections = e.connections;

@@ -67,6 +67,9 @@ pub struct Entity {
     /// Editor only: not drawn in the Scene view (Unity's eye icon); the game still shows it.
     #[serde(default, skip_serializing_if = "is_false")]
     pub hidden: bool,
+    /// Unity's Static flag: the entity never moves at runtime (`entity.isStatic`; backends may use it to freeze/batch).
+    #[serde(default, rename = "static", skip_serializing_if = "is_false")]
+    pub is_static: bool,
     #[serde(default)]
     pub tags: Vec<String>,
     #[serde(default)]
@@ -104,6 +107,7 @@ impl Entity {
             enabled: true,
             locked: false,
             hidden: false,
+            is_static: false,
             tags: vec![],
             layer: 0,
             transform: Transform::default(),
