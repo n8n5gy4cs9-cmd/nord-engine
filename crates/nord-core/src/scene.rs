@@ -61,6 +61,12 @@ pub struct Entity {
     pub name: String,
     #[serde(default = "yes")]
     pub enabled: bool,
+    /// Editor only: not selectable in the Scene view (Unity's lock icon).
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub locked: bool,
+    /// Editor only: not drawn in the Scene view (Unity's eye icon); the game still shows it.
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub hidden: bool,
     #[serde(default)]
     pub tags: Vec<String>,
     #[serde(default)]
@@ -86,12 +92,18 @@ pub struct Entity {
     pub prefab: Option<PrefabRef>,
 }
 
+fn is_false(b: &bool) -> bool {
+    !*b
+}
+
 impl Entity {
     pub fn new(name: &str) -> Self {
         Self {
             id: new_id(),
             name: name.into(),
             enabled: true,
+            locked: false,
+            hidden: false,
             tags: vec![],
             layer: 0,
             transform: Transform::default(),

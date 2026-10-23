@@ -319,7 +319,7 @@ pub fn inspector_ui(st: &mut EditorState, ui: &mut Ui) {
             }
             for (si, s) in d["scripts"].as_array().into_iter().flatten().enumerate() {
                 egui::CollapsingHeader::new(format!(
-                    "📜 {}",
+                    "{} (script)",
                     s["name"].as_str().unwrap_or("script")
                 ))
                 .id_salt(format!("rs{si}"))

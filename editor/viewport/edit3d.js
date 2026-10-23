@@ -54,11 +54,14 @@ export async function init() {
   g.positionGizmo.updateGizmoRotationToMatchAttachedMesh = false;
   g.rotationGizmo.updateGizmoRotationToMatchAttachedMesh = false;
   for (const k of ['positionGizmo', 'rotationGizmo', 'scaleGizmo']) {
-    g[k].onDragEndObservable.add(() => emitTransform(true));
+    g[k].onDragStartObservable?.add(() => startGroup());
+    g[k].onDragEndObservable.add(() => { emitTransform(true); if (grp) { grp = null; applyGizmos(attachNodeFor()); } });
     g[k].onDragObservable?.add(() => { const n = performance.now(); if (n - lastEmit > 60) { lastEmit = n; emitTransform(false); } });
     g[k].attachedNode = null;
   }
 
+  initMarquee();
+  initAxisGizmo();
   scene.onPointerObservable.add((pi) => {
     if (pi.type !== B.PointerEventTypes.POINTERDOWN) return;
     if (pi.event.button !== 0 || gizmoManager.isHovered || pi.event.altKey || state.settings.tool === 'hand') return; // Alt+LMB = camera
@@ -70,6 +73,7 @@ export async function init() {
       sel.has(id) ? sel.delete(id) : sel.add(id);
       selectLocal([...sel]);
     } else selectLocal(id ? [id] : []);
+    if (!id) marquee = { x0: scene.pointerX, y0: scene.pointerY, x: scene.pointerX, y: scene.pointerY, add: e.shiftKey || e.ctrlKey || e.metaKey, base: [...state.selection] };
   });
   flyNavigation();
   addEventListener('keydown', (e) => { keys.add(e.code); modKeys(e); });
@@ -129,7 +133,83 @@ function flyNavigation() {
   });
 }
 
+// ---- marquee (LMB drag on empty space) selects every object whose centre falls inside the rectangle ----
+let marquee = null, marqueeEl = null;
+function initMarquee() {
+  marqueeEl = document.createElement('div');
+  marqueeEl.style.cssText = 'position:fixed;display:none;border:1px solid #4fa3ff;background:rgba(79,163,255,.15);pointer-events:none;z-index:5';
+  document.body.appendChild(marqueeEl);
+  canvas.addEventListener('pointermove', (e) => {
+    if (!marquee) return;
+    const r = canvas.getBoundingClientRect();
+    marquee.x = e.clientX - r.left; marquee.y = e.clientY - r.top;
+    if (Math.hypot(marquee.x - marquee.x0, marquee.y - marquee.y0) < 4) { marqueeEl.style.display = 'none'; return; }
+    Object.assign(marqueeEl.style, { display: 'block', left: r.left + Math.min(marquee.x0, marquee.x) + 'px', top: r.top + Math.min(marquee.y0, marquee.y) + 'px', width: Math.abs(marquee.x - marquee.x0) + 'px', height: Math.abs(marquee.y - marquee.y0) + 'px' });
+  });
+  const up = () => {
+    if (!marquee) return;
+    const m = marquee; marquee = null; marqueeEl.style.display = 'none';
+    if (Math.hypot(m.x - m.x0, m.y - m.y0) < 4) return;
+    selectLocal([...new Set([...m.base, ...entitiesInRect(m)])]);
+  };
+  canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', () => { marquee = null; marqueeEl.style.display = 'none'; });
+}
+/** Entity ids whose world position projects inside the dragged rectangle (canvas CSS pixels). */
+function entitiesInRect(m) {
+  const kx = engine.getRenderWidth() / canvas.clientWidth, ky = engine.getRenderHeight() / canvas.clientHeight;
+  const vp = camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight()), tm = scene.getTransformMatrix();
+  const [x0, x1] = [Math.min(m.x0, m.x) * kx, Math.max(m.x0, m.x) * kx], [y0, y1] = [Math.min(m.y0, m.y) * ky, Math.max(m.y0, m.y) * ky];
+  const out = [];
+  for (const [id, n] of nodes) {
+    if (lockedIds.has(id) || !n.node.isEnabled()) continue;
+    const p = B.Vector3.Project(n.node.getAbsolutePosition(), B.Matrix.Identity(), tm, vp);
+    if (p.z < 0 || p.z > 1) continue;
+    if (p.x >= x0 && p.x <= x1 && p.y >= y0 && p.y <= y1) out.push(id);
+  }
+  return out;
+}
+
+// ---- axis gizmo (top right): shows the view orientation; click an axis cone to look along it (Unity's Scene gizmo) ----
+let axisCv = null;
+const AXES = [['X', [1, 0, 0], '#ff5f5f'], ['Y', [0, 1, 0], '#5fff7f'], ['Z', [0, 0, 1], '#5f8fff']];
+let axisHits = [];
+function initAxisGizmo() {
+  axisCv = document.createElement('canvas');
+  axisCv.width = axisCv.height = 180;
+  axisCv.style.cssText = 'position:fixed;top:8px;right:8px;width:90px;height:90px;z-index:6;cursor:pointer';
+  document.body.appendChild(axisCv);
+  axisCv.addEventListener('pointerdown', (e) => {
+    e.stopPropagation();
+    const r = axisCv.getBoundingClientRect(), x = (e.clientX - r.left) * 2, y = (e.clientY - r.top) * 2;
+    const hit = axisHits.filter((h) => Math.hypot(h.x - x, h.y - y) < 18).sort((a, b) => b.z - a.z)[0];
+    if (!hit) return;
+    const [dx, dy, dz] = hit.dir; // camera goes to this side of the target and looks at it
+    if (Math.abs(dy) < 0.5) camera.alpha = Math.atan2(dz, dx);
+    camera.beta = dy > 0.5 ? 0.02 : dy < -0.5 ? Math.PI - 0.02 : Math.PI / 2;
+  });
+}
+function drawAxisGizmo() {
+  if (!axisCv) return;
+  const c = axisCv.getContext('2d'), v = scene.getViewMatrix(), cx = 90, cy = 90, L = 56;
+  c.clearRect(0, 0, 180, 180);
+  c.fillStyle = 'rgba(20,24,30,.55)'; c.beginPath(); c.arc(cx, cy, 84, 0, 7); c.fill();
+  const items = [];
+  for (const [name, d, col] of AXES) for (const sign of [1, -1]) {
+    const w = new B.Vector3(d[0] * sign, d[1] * sign, d[2] * sign), t = B.Vector3.TransformNormal(w, v);
+    items.push({ name, sign, col, dir: [w.x, w.y, w.z], x: cx + t.x * L, y: cy - t.y * L, z: -t.z });
+  }
+  items.sort((a, b) => a.z - b.z); // far first
+  axisHits = items;
+  for (const it of items) {
+    if (it.sign > 0) { c.strokeStyle = it.col; c.lineWidth = 3; c.beginPath(); c.moveTo(cx, cy); c.lineTo(it.x, it.y); c.stroke(); }
+    c.fillStyle = it.sign > 0 ? it.col : 'rgba(150,160,175,.55)';
+    c.beginPath(); c.arc(it.x, it.y, it.sign > 0 ? 14 : 10, 0, 7); c.fill();
+    if (it.sign > 0) { c.fillStyle = '#10151c'; c.font = 'bold 16px sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(it.name, it.x, it.y + 1); }
+  }
+}
+
 function hudUpdate() {
+  drawAxisGizmo();
   const el = document.getElementById('hud');
   el.textContent = `3D · ${state.settings.tool}${state.settings.snap ? ' · snap' : ''}${state.settings.local ? ' · local' : ' · global'}${state.selection.length > 1 ? ` · ${state.selection.length} selected` : ''} · hold RMB: look + WASD fly (Q/E down/up, Shift faster, wheel = speed) · Alt+LMB orbit · Alt+RMB zoom · MMB pan · wheel zoom`;
 }
@@ -161,7 +241,56 @@ function applyTransform(node, t) {
   node.scaling.set(t.scale[0], t.scale[1], t.scale[2]);
 }
 
+// ---- multi-select: one proxy "pivot" node carries the gizmo; its world-matrix change is applied to every selected object ----
+let pivotNode = null, grp = null;
+const members = () => state.selection.map((id) => nodes.get(id)).filter(Boolean);
+/** Node the gizmos attach to: the primary object, or for several objects a pivot at the primary (Pivot) / the bounds centre (Center). */
+function attachNodeFor() {
+  const ms = members();
+  if (ms.length < 2) return ms[0]?.node ?? null;
+  pivotNode ??= new B.TransformNode('pivot', scene);
+  let pos = ms[0].node.getAbsolutePosition().clone();
+  if (state.settings.center) {
+    const lo = new B.Vector3(Infinity, Infinity, Infinity), hi = new B.Vector3(-Infinity, -Infinity, -Infinity);
+    for (const m of ms) { const p = m.node.getAbsolutePosition(); lo.minimizeInPlace(p); hi.maximizeInPlace(p); }
+    pos = lo.add(hi).scale(0.5);
+  }
+  pivotNode.position.copyFrom(pos);
+  pivotNode.rotationQuaternion = state.settings.local ? ms[0].node.absoluteRotationQuaternion.clone() : B.Quaternion.Identity();
+  pivotNode.scaling.setAll(1);
+  pivotNode.computeWorldMatrix(true);
+  return pivotNode;
+}
+function startGroup() {
+  if (gizmoManager.gizmos.positionGizmo.attachedNode !== pivotNode && gizmoManager.gizmos.rotationGizmo.attachedNode !== pivotNode && gizmoManager.gizmos.scaleGizmo.attachedNode !== pivotNode) return;
+  if (!pivotNode) return;
+  const inv = new B.Matrix(); pivotNode.computeWorldMatrix(true).invertToRef(inv);
+  grp = { p0inv: inv, items: members().map((m) => ({ id: m.entity.id, m, w0: m.node.computeWorldMatrix(true).clone() })) };
+}
+function applyGroup() {
+  const d = grp.p0inv.multiply(pivotNode.computeWorldMatrix(true));
+  const scl = new B.Vector3(), q = new B.Quaternion(), pos = new B.Vector3(), pinv = new B.Matrix();
+  for (const it of grp.items) {
+    const par = it.m.node.parent;
+    const w1 = it.w0.multiply(d);
+    const local = par ? w1.multiply((par.computeWorldMatrix(true).invertToRef(pinv), pinv)) : w1;
+    local.decompose(scl, q, pos);
+    it.m.node.position.copyFrom(pos); it.m.node.rotationQuaternion = q.clone(); it.m.node.scaling.copyFrom(scl);
+  }
+}
+const r4 = (v) => Math.round(v * 1e4) / 1e4;
+function transformOf(node) {
+  const e = (node.rotationQuaternion ?? B.Quaternion.FromEulerVector(node.rotation)).toEulerAngles();
+  return { pos: [r4(node.position.x), r4(node.position.y), r4(node.position.z)], rot: [r4(e.x / R), r4(e.y / R), r4(e.z / R)], scale: [r4(node.scaling.x), r4(node.scaling.y), r4(node.scaling.z)] };
+}
+
 function emitTransform(final) {
+  if (grp) {
+    applyGroup();
+    const list = grp.items.map((it) => { const t = transformOf(it.m.node); it.m.entity.transform = t; return { id: it.id, ...t }; });
+    send({ t: 'transforms', items: list, final });
+    return;
+  }
   const id = state.selection[0];
   const n = nodes.get(id);
   if (!n) return;
@@ -178,7 +307,8 @@ function emitTransform(final) {
 
 const comp = (e, t) => e.components?.find((c) => c.type === t);
 
-function tag(mesh, id) { mesh.metadata = { entityId: id }; mesh.isPickable = true; }
+const lockedIds = new Set();
+function tag(mesh, id) { mesh.metadata = { entityId: id }; mesh.isPickable = !lockedIds.has(id); }
 
 function marker(name, id, parent, color = '#9fb3d9', size = 0.4) {
   const m = B.MeshBuilder.CreateBox(name, { size }, scene);
@@ -265,7 +395,9 @@ function buildEntity(e, parentNode, token) {
   const node = new B.TransformNode(e.name || e.id, scene);
   node.parent = parentNode;
   applyTransform(node, e.transform);
-  node.setEnabled(e.enabled !== false);
+  node.setEnabled(e.enabled !== false && !e.hidden);
+  if (e.locked || lockedIds.has(parentNode?.metadata?.nordId)) lockedIds.add(e.id);
+  node.metadata = { nordId: e.id };
   nodes.set(e.id, { node, entity: e });
   let visual = false;
   const mesh = comp(e, 'mesh');
@@ -334,7 +466,7 @@ export function setScene() {
   iconMeshes = []; colliderMeshes = [];
   for (const { node } of nodes.values()) { node.getChildMeshes(false).forEach((m) => m.dispose()); }
   for (const { node } of [...nodes.values()].reverse()) node.dispose();
-  nodes.clear();
+  nodes.clear(); lockedIds.clear();
   for (const e of state.scene?.entities ?? []) buildEntity(e, null, buildToken);
   setSelection();
   setSettings();
@@ -344,8 +476,7 @@ let outlined = [];
 let iconMeshes = [], colliderMeshes = [], ghostMesh = null;
 export function setSelection() {
   const id = state.selection[0];
-  const n = nodes.get(id);
-  applyGizmos(n?.node ?? null);
+  applyGizmos(attachNodeFor());
   for (const m of outlined) { if (!m.isDisposed()) m.renderOutline = false; }
   outlined = [];
   for (const sid of state.selection) {
@@ -404,6 +535,8 @@ export function dropPreview(m) {
 }
 export function dropAsset(m) {
   ghostMesh?.setEnabled(false);
+  const hit = scene.pick(m.x, m.y, (mm) => !!mm.metadata?.entityId && mm.isPickable);
+  if (hit?.hit && !/\.(prefab|scene)\.json$/i.test(m.path)) { send({ t: 'addAsset', path: m.path, onto: hit.pickedMesh.metadata.entityId }); return; }
   const p = groundPoint(m.x, m.y);
   send({ t: 'addAsset', path: m.path, pos: [snap3(p.x), 0, snap3(p.z)] });
 }
@@ -465,9 +598,12 @@ export async function thumbs(items) {
 // ---------- test hooks ----------
 export const api = {
   get B() { return B; }, get scene() { return scene; }, get camera() { return camera; }, nodes, gizmos: () => gizmoManager.gizmos,
+  pivot: () => pivotNode, axisHits: () => axisHits, entitiesInRect,
+  drag: (fn) => { startGroup(); fn(pivotNode); emitTransform(true); grp = null; },
   screenOf(id) {
     const n = nodes.get(id)?.node; if (!n) return null;
     const v = B.Vector3.Project(n.getAbsolutePosition(), B.Matrix.Identity(), scene.getTransformMatrix(), camera.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight()));
     return [v.x / (devicePixelRatio || 1), v.y / (devicePixelRatio || 1)];
   },
 };
+

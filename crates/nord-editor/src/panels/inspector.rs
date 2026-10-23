@@ -187,8 +187,39 @@ pub fn field_ui(ui: &mut Ui, cx: &Ctx, ty: &FieldType, v: &mut Value, id: &str) 
                         *v = json!("");
                         ch = true;
                     }
+                    let root: Option<String> =
+                        ui.ctx().data(|d| d.get_temp(egui::Id::new("project_root")));
                     for a in cx.assets.iter().filter(|a| asset_matches(kind, a)) {
-                        if ui.selectable_label(cur == a.path, &a.path).clicked() {
+                        let clicked = ui
+                            .horizontal(|ui| {
+                                // images show themselves; materials and models show their cached thumbnail when it exists
+                                if let Some(root) = &root {
+                                    let uri = match a.kind {
+                                        AssetType::Image if !a.path.ends_with(".svg") => {
+                                            Some(format!("file://{root}/{}", a.path))
+                                        }
+                                        AssetType::Material | AssetType::Model => {
+                                            let p = format!(
+                                                "{root}/.nord-cache/thumbs/{}.png",
+                                                a.sha256
+                                            );
+                                            std::path::Path::new(&p)
+                                                .exists()
+                                                .then(|| format!("file://{p}"))
+                                        }
+                                        _ => None,
+                                    };
+                                    if let Some(u) = uri {
+                                        ui.add(
+                                            egui::Image::new(u)
+                                                .fit_to_exact_size(egui::vec2(18.0, 18.0)),
+                                        );
+                                    }
+                                }
+                                ui.selectable_label(cur == a.path, &a.path).clicked()
+                            })
+                            .inner;
+                        if clicked {
                             *v = json!(a.path);
                             ch = true;
                         }
@@ -333,10 +364,18 @@ fn fields_ui(
                         data.insert(f.name.clone(), cur.clone());
                         ch = true;
                     }
-                    if overridden.is_some()
-                        && icons::button(ui, "x", "Revert to prefab value", false).clicked()
-                    {
-                        revert = true;
+                    if overridden.is_some() {
+                        if icons::button(ui, "x", "Revert to prefab value", false).clicked() {
+                            revert = true;
+                        }
+                        if icons::mini(ui, "upload", "Apply this value to the prefab").clicked() {
+                            ui.ctx().data_mut(|d| {
+                                d.insert_temp(
+                                    egui::Id::new("apply_field"),
+                                    (id.to_string(), f.name.clone()),
+                                )
+                            });
+                        }
                     }
                 });
                 if let (true, Some(b)) = (revert, base) {
@@ -351,7 +390,7 @@ fn fields_ui(
             // fields present in the file but not in the schema: still editable (guessed type)
             let extra: Vec<String> = data
                 .keys()
-                .filter(|k| !fields.iter().any(|f| &f.name == *k))
+                .filter(|k| *k != "componentEnabled" && !fields.iter().any(|f| &f.name == *k))
                 .cloned()
                 .collect();
             for k in extra {
@@ -398,35 +437,54 @@ fn material_asset_ui(st: &mut EditorState, ui: &mut Ui, rel: &str) {
     }
 }
 
-/// Flat colour swatch + a shaded sphere approximation (no GPU needed): base colour, roughness as highlight size.
+/// Lit sphere of the material (CPU shading in `nord_core::thumbs::render_material`), cached per material JSON.
 fn draw_material_preview(ui: &mut Ui, data: &Map<String, Value>) {
-    let hex = data
-        .get("color")
-        .and_then(Value::as_str)
-        .unwrap_or("#cccccc");
-    let c = crate::theme::hex(hex);
-    let rough = data.get("roughness").and_then(Value::as_f64).unwrap_or(0.8) as f32;
-    let metal = data.get("metallic").and_then(Value::as_f64).unwrap_or(0.0) as f32;
-    let (rect, _) = ui.allocate_exact_size(egui::vec2(120.0, 120.0), egui::Sense::hover());
-    let p = ui.painter_at(rect);
-    let (ctr, r) = (rect.center(), 54.0);
-    let base = c.gamma_multiply(1.0 - 0.45 * metal);
-    p.circle_filled(ctr, r, base.gamma_multiply(0.55));
-    for k in 1..=10 {
-        let t = k as f32 / 10.0;
-        let off = egui::vec2(-0.28, -0.32) * r * t;
-        p.circle_filled(
-            ctr + off,
-            r * (1.0 - 0.8 * t),
-            base.gamma_multiply(0.55 + 0.45 * t),
+    use std::hash::{Hash, Hasher};
+    let root: Option<String> = ui.ctx().data(|d| d.get_temp(egui::Id::new("project_root")));
+    let key = serde_json::to_string(data).unwrap_or_default();
+    let mut h = std::collections::hash_map::DefaultHasher::new();
+    key.hash(&mut h);
+    let tid = egui::Id::new(("mat-preview", h.finish()));
+    let tex: Option<egui::TextureHandle> = ui.ctx().data(|d| d.get_temp(tid));
+    let tex = tex.unwrap_or_else(|| {
+        let img = nord_core::thumbs::render_material(
+            std::path::Path::new(root.as_deref().unwrap_or(".")),
+            data,
+            128,
         );
-    }
-    let hl = (1.0 - rough).clamp(0.05, 1.0);
-    p.circle_filled(
-        ctr + egui::vec2(-0.32, -0.36) * r,
-        r * 0.22 * hl + 2.0,
-        egui::Color32::from_white_alpha((200.0 * hl) as u8 + 20),
-    );
+        let ci = egui::ColorImage::from_rgba_unmultiplied([128, 128], img.as_raw());
+        let t = ui
+            .ctx()
+            .load_texture("mat-preview", ci, egui::TextureOptions::LINEAR);
+        ui.ctx().data_mut(|d| d.insert_temp(tid, t.clone()));
+        t
+    });
+    ui.add(egui::Image::new(&tex).fit_to_exact_size(egui::vec2(120.0, 120.0)));
+}
+
+/// Material names declared in a .gltf / .glb (the JSON chunk), for the Model import material remap.
+fn model_material_names(root: Option<&std::path::Path>, rel: &str) -> Vec<String> {
+    let Some(root) = root else { return vec![] };
+    let Ok(bytes) = nord_core::vfs::read(root.join(rel)) else {
+        return vec![];
+    };
+    let json: Option<Value> = if rel.to_ascii_lowercase().ends_with(".glb") {
+        // header 12 bytes, then chunk length (4) + type 'JSON' (4) + data
+        (bytes.len() > 20 && &bytes[16..20] == b"JSON")
+            .then(|| u32::from_le_bytes([bytes[12], bytes[13], bytes[14], bytes[15]]) as usize)
+            .and_then(|n| bytes.get(20..20 + n))
+            .and_then(|j| serde_json::from_slice(j).ok())
+    } else {
+        serde_json::from_slice(&bytes).ok()
+    };
+    json.and_then(|j| {
+        j["materials"].as_array().map(|a| {
+            a.iter()
+                .filter_map(|m| m["name"].as_str().map(String::from))
+                .collect()
+        })
+    })
+    .unwrap_or_default()
 }
 
 /// Import settings for a selected image: `filter` and `wrap` in the sidecar `<file>.meta.json` (read by the Phaser and Babylon backends).
@@ -485,10 +543,154 @@ fn texture_import_ui(st: &mut EditorState, ui: &mut Ui, rel: &str) {
                 ch = true;
             }
         });
+        // Material remap: replace the materials stored inside the model with project material assets (*.mat.json)
+        let names = model_material_names(st.root.as_deref(), rel);
+        if !names.is_empty() {
+            ui.separator();
+            ui.label(egui::RichText::new("MATERIALS").strong());
+            let mats: Vec<String> = st
+                .assets
+                .iter()
+                .filter(|a| a.kind == AssetType::Material)
+                .map(|a| a.path.clone())
+                .collect();
+            let mut map: Map<String, Value> = meta
+                .get("materials")
+                .and_then(Value::as_object)
+                .cloned()
+                .unwrap_or_default();
+            let before = map.clone();
+            egui::Grid::new("model-mats").num_columns(2).show(ui, |ui| {
+                for n in &names {
+                    ui.label(n);
+                    let cur = map.get(n).and_then(Value::as_str).unwrap_or("").to_string();
+                    egui::ComboBox::from_id_salt(("modmat", n))
+                        .selected_text(if cur.is_empty() {
+                            "(from model)"
+                        } else {
+                            cur.rsplit('/').next().unwrap_or(&cur)
+                        })
+                        .show_ui(ui, |ui| {
+                            if ui
+                                .selectable_label(cur.is_empty(), "(from model)")
+                                .clicked()
+                            {
+                                map.remove(n);
+                            }
+                            for m in &mats {
+                                if ui.selectable_label(&cur == m, m).clicked() {
+                                    map.insert(n.clone(), json!(m));
+                                }
+                            }
+                        });
+                    ui.end_row();
+                }
+            });
+            if map != before {
+                if map.is_empty() {
+                    meta.remove("materials");
+                } else {
+                    meta.insert("materials".into(), Value::Object(map));
+                }
+                ch = true;
+            }
+        }
     } else {
-        ui.weak(
-            "Filter nearest = crisp pixels. Pixels-per-unit, pivot and max size: planned (G4-4).",
-        );
+        egui::Grid::new("tex-import2")
+            .num_columns(2)
+            .show(ui, |ui| {
+                ui.label("Pixels per unit").on_hover_text(
+                    "Sprites using this image are drawn at size ÷ this value (1 = native pixels)",
+                );
+                let mut ppu = meta.get("ppu").and_then(Value::as_f64).unwrap_or(1.0);
+                if ui
+                    .add(DragValue::new(&mut ppu).speed(0.1).range(0.01..=10000.0))
+                    .changed()
+                {
+                    meta.insert("ppu".into(), json!(ppu));
+                    ch = true;
+                }
+                ui.end_row();
+                ui.label("Pivot");
+                const PIVOTS: [(&str, &str, [f64; 2]); 9] = [
+                    ("center", "Center", [0.5, 0.5]),
+                    ("topLeft", "Top left", [0.0, 0.0]),
+                    ("top", "Top", [0.5, 0.0]),
+                    ("topRight", "Top right", [1.0, 0.0]),
+                    ("left", "Left", [0.0, 0.5]),
+                    ("right", "Right", [1.0, 0.5]),
+                    ("bottomLeft", "Bottom left", [0.0, 1.0]),
+                    ("bottom", "Bottom", [0.5, 1.0]),
+                    ("bottomRight", "Bottom right", [1.0, 1.0]),
+                ];
+                let custom = meta.contains_key("origin") && !meta.contains_key("pivot");
+                let cur = meta
+                    .get("pivot")
+                    .and_then(Value::as_str)
+                    .unwrap_or("center")
+                    .to_string();
+                let shown = if custom {
+                    "Custom (Sprite editor)"
+                } else {
+                    PIVOTS
+                        .iter()
+                        .find(|p| p.0 == cur.as_str())
+                        .map_or("Center", |p| p.1)
+                };
+                egui::ComboBox::from_id_salt("pivot")
+                    .selected_text(shown)
+                    .show_ui(ui, |ui| {
+                        for (k, label, _) in PIVOTS {
+                            if ui.selectable_label(!custom && cur == k, label).clicked() {
+                                meta.insert("pivot".into(), json!(k));
+                                meta.remove("origin"); // a preset replaces the sprite editor's pixel pivot
+                                ch = true;
+                            }
+                        }
+                    });
+                ui.end_row();
+                ui.label("Max size").on_hover_text(
+                    "Larger images are scaled down at load; sprites keep their world size",
+                );
+                let ms = meta.get("maxSize").and_then(Value::as_u64).unwrap_or(0);
+                egui::ComboBox::from_id_salt("maxsize")
+                    .selected_text(if ms == 0 {
+                        "None".to_string()
+                    } else {
+                        ms.to_string()
+                    })
+                    .show_ui(ui, |ui| {
+                        for v in [0u64, 32, 64, 128, 256, 512, 1024, 2048, 4096] {
+                            let label = if v == 0 {
+                                "None".to_string()
+                            } else {
+                                v.to_string()
+                            };
+                            if ui.selectable_label(ms == v, label).clicked() {
+                                if v == 0 {
+                                    meta.remove("maxSize");
+                                } else {
+                                    meta.insert("maxSize".into(), json!(v));
+                                }
+                                ch = true;
+                            }
+                        }
+                    });
+                ui.end_row();
+            });
+        if ui.button("Open in Sprite editor").clicked() {
+            if let Some(root) = st.root.clone() {
+                match image::open(root.join(rel)) {
+                    Ok(i) => {
+                        let m = nord_core::io::load_json(&root.join(format!("{rel}.meta.json")))
+                            .unwrap_or(Value::Null);
+                        st.sprite.load_image(rel, i.to_rgba8(), m);
+                        st.push(crate::state::Action::ShowTab(crate::app::Tab::Sprite));
+                    }
+                    Err(e) => st.toast(format!("{rel}: {e}")),
+                }
+            }
+        }
     }
     if ch {
         if let Ok(t) = serde_json::to_string_pretty(&meta) {
@@ -652,7 +854,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     if let Some(id) = st
         .selection
         .first()
-        .filter(|id| crate::virt::is_virtual(id))
+        .filter(|id| crate::virt::is_virtual(id) && !id.starts_with("v:pfc:"))
         .cloned()
     {
         if let (Some(p), Some(sc)) = (&st.project, &st.scene) {
@@ -668,7 +870,39 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             }
         }
     }
-    let Some(inst) = locked.or_else(|| st.selected().cloned()) else {
+    // an entity inside a prefab instance: edited as "child of the prefab" with its overrides stored on the instance
+    let mut child_ctx: Option<(String, Vec<usize>)> = None;
+    let mut child_base: Option<Entity> = None;
+    let mut child_inst: Option<Entity> = None;
+    if let Some((iid, path)) = st
+        .selection
+        .first()
+        .and_then(|id| crate::prefab::parse_child_id(id))
+    {
+        let root_inst = st
+            .scene
+            .as_ref()
+            .and_then(|s| scene_ops::find(&s.entities, &iid))
+            .cloned();
+        if let Some(root_inst) = root_inst {
+            if let Some(pr) = root_inst.prefab.clone() {
+                if let Some(base) = st
+                    .read_prefab_cached(&pr.path)
+                    .and_then(|r| crate::prefab::base_child(&r, &path).cloned())
+                {
+                    let mut ci = base.clone();
+                    ci.prefab = Some(nord_core::scene::PrefabRef {
+                        path: pr.path.clone(),
+                        overrides: crate::prefab::child_overrides(&pr.overrides, &path),
+                    });
+                    child_inst = Some(ci);
+                    child_base = Some(base);
+                    child_ctx = Some((iid, path));
+                }
+            }
+        }
+    }
+    let Some(inst) = child_inst.or(locked).or_else(|| st.selected().cloned()) else {
         ui.weak(if st.scene.is_some() {
             "Select an entity"
         } else {
@@ -677,11 +911,13 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         return;
     };
     // prefab instance: edit the prefab merged with its overrides, store the difference (docs: Prefab overrides)
-    let base_ent: Option<Entity> = inst.prefab.as_ref().and_then(|p| {
-        let txt = nord_core::vfs::read_to_string(st.root.as_ref()?.join(&p.path)).ok()?;
-        serde_json::from_str::<nord_core::scene::Prefab>(&txt)
-            .ok()
-            .map(|pf| pf.root)
+    let base_ent: Option<Entity> = child_base.or_else(|| {
+        inst.prefab.as_ref().and_then(|p| {
+            let txt = nord_core::vfs::read_to_string(st.root.as_ref()?.join(&p.path)).ok()?;
+            serde_json::from_str::<nord_core::scene::Prefab>(&txt)
+                .ok()
+                .map(|pf| pf.root)
+        })
     });
     let orig = match &base_ent {
         Some(b) => crate::prefab::effective(&inst, b),
@@ -825,6 +1061,14 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     .icon(crate::icons::accent_arrow)
                     .default_open(true)
                     .show(ui, |ui| {
+                        let mut on = c.fields.get("componentEnabled") != Some(&Value::Bool(false));
+                        if ui.checkbox(&mut on, "Enabled").on_hover_text("Off = the component is not created in the game").changed() {
+                            if on {
+                                c.fields.remove("componentEnabled");
+                            } else {
+                                c.fields.insert("componentEnabled".into(), Value::Bool(false));
+                            }
+                        }
                         fields_ui(ui, &cx, &fields, &mut c.fields, &id, base_comp(i, &c.kind));
                         ui.horizontal(|ui| {
                             ui.menu_button("⋮", |ui| {
@@ -897,21 +1141,31 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 egui::ScrollArea::vertical()
                     .max_height(300.0)
                     .show(ui, |ui| {
-                        for k in schema::COMPONENT_TYPES {
-                            if !ql.is_empty()
-                                && !schema::label_of(k).to_lowercase().contains(&ql)
-                                && !k.to_lowercase().contains(&ql)
-                            {
+                        for cat in schema::COMPONENT_CATEGORIES {
+                            let kinds: Vec<&str> = schema::COMPONENT_TYPES
+                                .iter()
+                                .copied()
+                                .filter(|k| schema::category_of(k) == *cat)
+                                .filter(|k| {
+                                    ql.is_empty()
+                                        || schema::label_of(k).to_lowercase().contains(&ql)
+                                        || k.to_lowercase().contains(&ql)
+                                })
+                                .collect();
+                            if kinds.is_empty() {
                                 continue;
                             }
-                            if ui.button(schema::label_of(k)).clicked() {
-                                let mut fields = Map::new();
-                                schema::merge_defaults(&schema::component_fields(k), &mut fields);
-                                e.components.push(Component {
-                                    kind: k.to_string(),
-                                    fields,
-                                });
-                                ui.close_menu();
+                            ui.weak(cat.to_uppercase());
+                            for k in kinds {
+                                if ui.button(schema::label_of(k)).clicked() {
+                                    let mut fields = Map::new();
+                                    schema::merge_defaults(&schema::component_fields(k), &mut fields);
+                                    e.components.push(Component {
+                                        kind: k.to_string(),
+                                        fields,
+                                    });
+                                    ui.close_menu();
+                                }
                             }
                         }
                     });
@@ -922,7 +1176,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             for (i, s) in e.scripts.iter_mut().enumerate() {
                 let id = format!("s{i}");
                 let name = s.path.rsplit('/').next().unwrap_or(&s.path).to_string();
-                let r = egui::CollapsingHeader::new(format!("📜 {name}"))
+                let r = egui::CollapsingHeader::new(format!("{name}  (script)"))
                     .id_salt(&id)
                     .icon(crate::icons::accent_arrow)
                     .default_open(true)
@@ -1034,7 +1288,21 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                         });
                     }
                 });
-            if let Some(p) = &e.prefab {
+            let dbg_id = egui::Id::new("inspector_debug");
+            let mut dbg: bool = ui.ctx().data(|d| d.get_temp(dbg_id)).unwrap_or(false);
+            ui.separator();
+            if ui.checkbox(&mut dbg, "Debug mode").on_hover_text("Show the raw entity JSON").changed() {
+                ui.ctx().data_mut(|d| d.insert_temp(dbg_id, dbg));
+            }
+            if dbg {
+                let mut txt = serde_json::to_string_pretty(&e).unwrap_or_default();
+                ui.add(egui::TextEdit::multiline(&mut txt).code_editor().desired_rows(8).desired_width(f32::INFINITY).interactive(true));
+            }
+            if child_ctx.is_some() {
+                ui.separator();
+                ui.weak("Inside a prefab: components, scripts and effects are stored as overrides on the instance.");
+            }
+            if let Some(p) = e.prefab.as_ref().filter(|_| child_ctx.is_none()) {
                 ui.separator();
                 ui.label(format!("Prefab instance: {}", p.path));
                 ui.weak(format!("{} override(s)", p.overrides.len()));
@@ -1070,6 +1338,15 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             }
         });
 
+    let pending: Option<(String, String)> = ui
+        .ctx()
+        .data_mut(|d| d.remove_temp(egui::Id::new("apply_field")));
+    if let Some((cid, field)) = pending.filter(|_| child_ctx.is_none()) {
+        if let Some(ci) = cid.strip_prefix('c').and_then(|n| n.parse::<usize>().ok()) {
+            st.apply_prefab_part(&inst.id, Some((ci, field)));
+            return;
+        }
+    }
     if let Some(page) = docs {
         st.push(crate::state::Action::OpenDocs(page));
     }
@@ -1088,6 +1365,24 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         return;
     }
     if e != orig {
+        if let (Some((iid, path)), Some(b)) = (&child_ctx, &base_ent) {
+            let patch = crate::prefab::overrides_for(&inst, b, &e);
+            let (iid, path) = (iid.clone(), path.clone());
+            st.edit("Edit prefab child", Some(&format!("insp:{iid}")), |l| {
+                if let Some(slot) = scene_ops::find_mut(l, &iid) {
+                    if let Some(p) = slot.prefab.as_mut() {
+                        let mut mine = Map::new();
+                        for k in crate::prefab::KEYS {
+                            if let Some(v) = patch.get(k) {
+                                mine.insert(k.into(), v.clone());
+                            }
+                        }
+                        crate::prefab::set_child_overrides(&mut p.overrides, &path, mine);
+                    }
+                }
+            });
+            return;
+        }
         let id = orig.id.clone();
         let ov = base_ent
             .as_ref()

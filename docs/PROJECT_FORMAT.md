@@ -44,6 +44,8 @@ my-game/
       "enabled": true,
       "tags": ["player"],
       "layer": 0,
+      "locked": false,                  // editor only (omitted when false): not pickable in the Scene view
+      "hidden": false,                  // editor only (omitted when false): not drawn in the Scene view
       "transform": { "pos": [100, 300, 0], "rot": [0, 0, 0], "scale": [1, 1, 1] },
       "components": [
         { "type": "sprite", "texture": "assets/sprites/player.png", "frame": 0, "tint": "#ffffff", "flipX": false },
@@ -61,6 +63,11 @@ my-game/
   ]
 }
 ```
+A component with `"componentEnabled": false` is skipped by the runtime (Inspector checkbox). Prefab `overrides` may patch the root's
+`components / scripts / behaviors / effects / layer` and, for entities inside the prefab, `{"children": {"<index>": {…same keys…, "children": {…}}}}`
+(numeric keys patch arrays by index, as everywhere in overrides).
+Image import settings live in `<image>.meta.json`: `filter`, `wrap`, `ppu` (sprites are drawn at size ÷ ppu), `pivot` (`center|topLeft|top|…`, or the sprite editor's pixel `origin`),
+`maxSize` (px, downscaled at load). Model `.meta.json`: `scale`, `materials: { "<material name in the file>": "<mat.json>" }`.
 Units: 2D = pixels, y down; 3D = metres, y up, left-handed (Babylon default). Rotation = degrees (Euler XYZ).
 
 ## Built-in components (v1)

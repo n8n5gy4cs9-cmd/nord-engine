@@ -1,5 +1,5 @@
 // Nord UI Designer — edits ui/*.ui.json (spec: docs/UI_SCENES.md). The preview is the real runtime (runtime/core/uiscene.js).
-import { UIManager, blank, validate, compileSkin, NODE_TYPES, CONTAINERS } from '/runtime/core/uiscene.js';
+import { UIManager, blank, validate, compileSkin, tintSkin, scalerFactor, NODE_TYPES, CONTAINERS } from '/runtime/core/uiscene.js';
 
 addEventListener('error', (e) => { if (/ResizeObserver loop/.test(e.message)) e.stopImmediatePropagation(); });
 const $ = (s) => document.querySelector(s);
@@ -41,6 +41,8 @@ const FIELDS = {
 };
 const IMG = [['image.src', 'Image', 'img'], ['image.mode', 'Image mode', ['', 'slice', 'stretch', 'tile', 'fit', 'cover', 'center']], ['image.slice', '9-slice L T R B', 'nums'], ['image.scale', 'Slice scale', 'num'], ['image.tint', 'Tint (multiplies sprite)', 'tint'], ['image.pixelated', 'Pixelated', 'bool']];
 const IMGNODE = [['src', 'Image', 'img'], ['mode', 'Mode', ['', 'slice', 'stretch', 'tile', 'fit', 'cover', 'center']], ['slice', '9-slice L T R B', 'nums'], ['scale', 'Slice scale', 'num'], ['tint', 'Tint (multiplies sprite)', 'tint']];
+// Sprite swap (Unity Button): one picture per state; slice / scale / tint are shared by the states
+const SPRITES = [['sprites.normal', 'Sprite: normal', 'img'], ['sprites.hover', 'Sprite: hover', 'img'], ['sprites.pressed', 'Sprite: pressed', 'img'], ['sprites.disabled', 'Sprite: disabled', 'img'], ['sprites.slice', 'Sprites 9-slice', 'nums'], ['sprites.scale', 'Sprites slice scale', 'num'], ['sprites.tint', 'Sprites tint', 'tint'], ['sprites.pixelated', 'Sprites pixelated', 'bool']];
 const tail = [['visible', 'Visible', 'bool', true], ['disabled', 'Disabled', 'bool'], ['bind.text', 'Bind text var', 'text'], ['tooltip', 'Tooltip', 'text']];
 
 const SKINS = { '': null };
@@ -90,6 +92,7 @@ async function loadSkin(path) {
   try {
     const r = await fetch('/' + path); if (!r.ok) throw Error(r.status);
     S.skin = await r.json(); S.skinPath = path; mgr.skinCss = compileSkin(S.skin, '/');
+    tintSkin(S.skin, '/').then((t) => { if (t !== S.skin && S.skinPath === path) { mgr.skinCss = compileSkin(t, '/'); refresh(); } }); // sprites with image.tint
     $('#skinFile').value = path; $('#skinJson').value = JSON.stringify(S.skin, null, 2);
   } catch (e) { S.skin = null; mgr.skinCss = ''; if (path !== 'ui/skin.json') status(`Skin ${path}: ${e.message}`, true); }
 }
@@ -100,7 +103,7 @@ function checkpoint() { S.undo.push(JSON.stringify(S.def)); if (S.undo.length > 
 function restore(from, to) { if (!from.length) return; to.push(JSON.stringify(S.def)); S.def = JSON.parse(from.pop()); S.sel = S.def.root; refresh(); }
 function refresh() { if (rafPending) return; rafPending = true; requestAnimationFrame(() => { rafPending = false; renderAll(); }); }
 
-function renderAll() { renderStage(); renderTree(); renderProps(); $('#json').value = JSON.stringify(S.def, null, 2); const bad = validate(S.def); if (bad.length) status(bad[0], true); }
+function renderAll() { preloadInstances(); renderStage(); renderTree(); renderProps(); $('#json').value = JSON.stringify(S.def, null, 2); const bad = validate(S.def); if (bad.length) status(bad[0], true); }
 
 function renderStage() {
   const [w, h] = $('#size').value.split('x').map(Number);
@@ -112,6 +115,40 @@ function renderStage() {
   // nodes that start hidden in the game stay visible here (ghosted) so they can be edited
   for (const e of screen.rootEl.querySelectorAll('.n')) if (e.__nord?.def.visible === false) { e.hidden = false; e.style.opacity = '.55'; e.style.outline = '1px dashed #ebcb8b'; }
   if (S.sel) { const n = [...screen.byName.values()].find((x) => x.def === S.sel) ?? findEl(screen.rootEl, S.sel); if (n) (n.el ?? n).style.outline = '2px dashed #88c0d0'; }
+  drawHandles(screen);
+}
+// On-canvas rect handles (Unity Rect tool): drag the eight handles of the selected node to set w/h, keeping the opposite edge still.
+const ANCH = { tl: [0, 0], t: [0.5, 0], tr: [1, 0], l: [0, 0.5], c: [0.5, 0.5], r: [1, 0.5], bl: [0, 1], b: [0.5, 1], br: [1, 1] };
+const HANDLES = [[-1, -1], [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0]];
+function drawHandles(screen) {
+  $('#stage').querySelector('.rects')?.remove();
+  const n = S.sel; if (!n || n === S.def.root || n.anchor === 'fill') return;
+  const e = findEl(screen.rootEl, n); if (!e) return;
+  const sr = $('#stage').getBoundingClientRect(), r = e.getBoundingClientRect(), k = S.scale || 1;
+  const layer = el('div', { className: 'rects' }, $('#stage'));
+  const box = { x: (r.left - sr.left) / k, y: (r.top - sr.top) / k, w: r.width / k, h: r.height / k };
+  Object.assign(layer.style, { position: 'absolute', left: box.x + 'px', top: box.y + 'px', width: box.w + 'px', height: box.h + 'px', pointerEvents: 'none', zIndex: 9 });
+  const [w0, h0] = $('#size').value.split('x').map(Number), scl = scalerFactor(S.def.scaler, w0, h0) * k; // screen px per logical px
+  for (const [hx, hy] of HANDLES) {
+    const h = el('div', { className: 'rh' }, layer);
+    Object.assign(h.style, { position: 'absolute', width: '9px', height: '9px', background: '#fff', border: '1px solid #4fa3ff', left: `calc(${(hx + 1) * 50}% - 5px)`, top: `calc(${(hy + 1) * 50}% - 5px)`, pointerEvents: 'auto', cursor: `${hx && hy ? (hx * hy > 0 ? 'nwse' : 'nesw') : hx ? 'ew' : 'ns'}-resize`, transform: `scale(${1 / k})` });
+    h.onpointerdown = (ev) => {
+      ev.preventDefault(); ev.stopPropagation();
+      const w = e.offsetWidth, hh = e.offsetHeight, x0 = n.x ?? 0, y0 = n.y ?? 0, sx = ev.clientX, sy = ev.clientY, [fx, fy] = ANCH[n.anchor] ?? [0, 0];
+      let moved = false;
+      const mv = (m) => {
+        const dx = (m.clientX - sx) / scl, dy = (m.clientY - sy) / scl;
+        if (!moved && Math.hypot(dx, dy) < 2) return; if (!moved) { checkpoint(); moved = true; }
+        const snap = (v) => (m.ctrlKey || m.metaKey ? v : Math.round(v));
+        if (hx) { const nw = Math.max(4, snap(w + hx * dx)); n.w = nw; if (n.anchor) n.x = Math.round(x0 + (hx > 0 ? fx : -(1 - fx)) * (nw - w)); }
+        if (hy) { const nh = Math.max(4, snap(hh + hy * dy)); n.h = nh; if (n.anchor) n.y = Math.round(y0 + (hy > 0 ? fy : -(1 - fy)) * (nh - hh)); }
+        renderStage(); renderProps();
+      };
+      // window listeners: the handles are rebuilt on every redraw, so the pressed element does not survive the drag
+      const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); if (moved) refresh(); };
+      addEventListener('pointermove', mv); addEventListener('pointerup', up);
+    };
+  }
 }
 function findEl(root, def) { for (const e of root.querySelectorAll('.n')) if (e.__nord?.def === def) return e; return null; }
 
@@ -135,6 +172,23 @@ function moveNode(n, target) {
   if (CONTAINERS.has(target.type)) (target.children ??= []).push(n);
   else { const to = find(S.def.root, target); to.parent.children.splice(to.parent.children.indexOf(target) + 1, 0, n); }
   refresh();
+}
+
+// Canvas scaler (Unity CanvasScaler): the file's `scaler` makes anchors/sizes work in a reference resolution and scales to the screen.
+function scalerPanel(p) {
+  const box = el('div', { className: 'slicebox' }, p); el('label', { textContent: 'Canvas scaler' }, box);
+  const sc = S.def.scaler ?? {};
+  const row = (label, child) => { const f = el('div', { className: 'f' }, box); el('label', { textContent: label }, f); return child(f); };
+  const set = (patch) => { checkpoint(); const next = { ...(S.def.scaler ?? {}), ...patch }; if (!next.mode || next.mode === 'none') delete S.def.scaler; else S.def.scaler = next; refresh(); };
+  row('Mode', (f) => { const sel = el('select', {}, f); for (const [v, t] of [['none', 'Off (pixels)'], ['constant', 'Constant factor'], ['scale', 'Scale with screen'], ['fit', 'Fit (letterbox)']]) el('option', { value: v, textContent: t }, sel); sel.value = sc.mode ?? 'none'; sel.onchange = () => set({ mode: sel.value, ref: sc.ref ?? [1280, 720] }); });
+  if (!sc.mode) return;
+  if (sc.mode === 'constant') row('Factor', (f) => { const i = el('input', { type: 'number', step: 'any', value: sc.factor ?? 1 }, f); i.onchange = () => set({ factor: Number(i.value) || 1 }); });
+  else {
+    row('Reference W×H', (f) => { const [w, h] = sc.ref ?? [1280, 720]; const a = el('input', { type: 'number', value: w }, f), b = el('input', { type: 'number', value: h }, f); a.style.width = b.style.width = '70px'; const go = () => set({ ref: [Number(a.value) || 1280, Number(b.value) || 720] }); a.onchange = go; b.onchange = go; });
+    if (sc.mode === 'scale') row('Match W ↔ H', (f) => { const i = el('input', { type: 'range', min: 0, max: 1, step: 0.05, value: sc.match ?? 0.5 }, f); i.onchange = () => set({ match: Number(i.value) }); });
+  }
+  const [w, h] = $('#size').value.split('x').map(Number);
+  el('small', { textContent: `Preview ${w}×${h} → scale ${scalerFactor(sc, w, h).toFixed(2)}×` }, box);
 }
 
 // Anchor preset grid (3×3 + fill), like the rect-transform anchor picker: click a cell to anchor the node there.
@@ -168,7 +222,8 @@ function renderProps() {
   const p = $('#props'); p.textContent = '';
   const n = S.sel; if (!n) { p.textContent = 'Select a node.'; return; }
   el('h3', { textContent: `${n.type}${n.name ? ' · ' + n.name : ''}` }, p);
-  const rows = [...common, ...(n.type === 'image' ? IMGNODE : []), ...(FIELDS[n.type] ?? []), ...(['image', 'canvas', 'html', 'spacer', 'instance'].includes(n.type) ? [] : IMG), ...tail];
+  if (n === S.def.root) scalerPanel(p);
+  const rows = [...common, ...(n.type === 'image' ? IMGNODE : []), ...(FIELDS[n.type] ?? []), ...(n.type === 'button' ? SPRITES : []), ...(['image', 'canvas', 'html', 'spacer', 'instance'].includes(n.type) ? [] : IMG), ...tail];
   for (const [key, label, kind, dflt] of rows) {
     if (n === S.def.root && ['x', 'y', 'grow', 'visible'].includes(key)) continue;
     const f = el('div', { className: 'f' }, p); el('label', { textContent: label }, f);
@@ -206,6 +261,8 @@ function renderProps() {
   const btn = (t, f) => { el('button', { textContent: t, onclick: f }, acts); };
   btn('Duplicate', () => { const r = find(S.def.root, n); if (!r.parent) return; checkpoint(); const c = clone(n); if (c.name) c.name += '2'; r.parent.children.splice(r.parent.children.indexOf(n) + 1, 0, c); S.sel = c; refresh(); });
   btn('Copy', () => copyNode(n)); btn('Paste', () => pasteNode(n));
+  if (n !== S.def.root && n.type !== 'instance') btn('Make UI prefab…', () => makePrefab(n));
+  if (n.type === 'instance') { btn('Open prefab', () => { $('#file').value = n.ref; open(); }); btn('Unpack', () => unpackInstance(n)); }
   btn('Up', () => shift(n, -1)); btn('Down', () => shift(n, 1));
   btn('Delete', () => { const r = find(S.def.root, n); if (!r.parent) return; checkpoint(); r.parent.children.splice(r.parent.children.indexOf(n), 1); S.sel = r.parent; refresh(); });
 }
@@ -321,6 +378,41 @@ function pickImage(onPick) {
     const draw = () => { grid.textContent = ''; const f = q.value.toLowerCase(); const list = all.filter((a) => a.path.toLowerCase().includes(f)).slice(0, 300); if (!list.length) grid.textContent = 'No images yet — use "Add from computer…".'; for (const a of list) { const c = el('button', { className: 'pimg', title: a.path }, grid); el('img', { src: '/' + a.path, loading: 'lazy' }, c); el('small', { textContent: a.path.split('/').pop() }, c); c.onclick = () => { onPick(a.path); done(); }; } };
     q.oninput = draw; draw();
   });
+}
+
+// ── UI prefabs: a node saved as its own ui/<name>.ui.json and used through `instance` nodes (edit once, changes everywhere) ──
+const SLOT = ['name', 'anchor', 'x', 'y', 'w', 'h', 'grow', 'margin', 'visible'];
+async function makePrefab(n) {
+  const base = (n.name || n.type).replace(/[^a-zA-Z0-9_-]/g, '-');
+  const raw = prompt('Prefab file name', 'ui/' + base + '.ui.json'); if (!raw) return;
+  const path = normName(raw);
+  const r = find(S.def.root, n); if (!r?.parent) return;
+  const root = clone(n); for (const k of ['anchor', 'x', 'y', 'name']) delete root[k]; root.name = 'root';
+  const def = { version: S.def.version ?? 1, name: path.replace(/^ui\//, '').replace('.ui.json', ''), theme: {}, root };
+  const resp = await fetch('/api/fpsc/save?path=' + encodeURIComponent(path), { method: 'POST', headers: { 'x-nord-fpsc': '1' }, body: JSON.stringify(def, null, 2) + '\n' });
+  if (!resp.ok) return status('Save failed: ' + await resp.text(), true);
+  checkpoint();
+  const inst = { type: 'instance', ref: path };
+  for (const k of SLOT) if (n[k] !== undefined) inst[k] = n[k];
+  r.parent.children[r.parent.children.indexOf(n)] = inst;
+  mgr.define(path, def); mgr._resolved.set(path, def);
+  S.sel = inst; list(); refresh(); status(`Saved ${path}; the node is now an instance of it`);
+}
+async function unpackInstance(n) {
+  const r = find(S.def.root, n); if (!r?.parent) return;
+  try { await mgr._preload({ children: [n] }); } catch (e) { return status(e.message, true); }
+  const def = mgr._resolved.get(n.ref); if (!def) return status('Prefab file not found', true);
+  checkpoint();
+  const c = clone(def.root); for (const k of SLOT) if (n[k] !== undefined) c[k] = n[k]; if (!c.name || c.name === 'root') delete c.name;
+  r.parent.children[r.parent.children.indexOf(n)] = c; S.sel = c; refresh();
+}
+/** Instances whose prefab file is not loaded yet are fetched once, then the preview redraws. */
+const failedRefs = new Set();
+async function preloadInstances() {
+  let need = false; walk(S.def.root, (x) => { if (x.type === 'instance' && x.ref && !mgr._resolved.has(x.ref) && !failedRefs.has(x.ref)) need = true; });
+  if (!need) return;
+  try { await mgr._preload(S.def.root); } catch (e) { walk(S.def.root, (x) => { if (x.type === 'instance') failedRefs.add(x.ref); }); status(e.message, true); }
+  refresh();
 }
 
 function shift(n, d) { const r = find(S.def.root, n); if (!r.parent) return; const a = r.parent.children, i = a.indexOf(n), j = i + d; if (j < 0 || j >= a.length) return; checkpoint(); [a[i], a[j]] = [a[j], a[i]]; refresh(); }

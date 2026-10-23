@@ -62,6 +62,19 @@ export function richText(doc, el, src) {
   put(src.slice(last));
 }
 
+/**
+ * Canvas scaler (Unity's CanvasScaler): the factor a UI file's `scaler` gives on a w×h host.
+ *   constant → `factor` (default 1); scale → log-blend between width and height ratios of `ref` by `match` (0 = width, 1 = height,
+ *   default .5); fit → the largest uniform scale that shows all of `ref` (letterboxed).
+ */
+export function scalerFactor(sc, w, h) {
+  if (!sc || !(w > 0) || !(h > 0)) return 1;
+  const [rw, rh] = Array.isArray(sc.ref) && sc.ref[0] > 0 && sc.ref[1] > 0 ? sc.ref : [1280, 720];
+  if (sc.mode === 'fit') return Math.min(w / rw, h / rh);
+  if (sc.mode === 'scale') { const m = Math.min(1, Math.max(0, sc.match ?? 0.5)); return Math.exp((1 - m) * Math.log(w / rw) + m * Math.log(h / rh)); }
+  return sc.factor > 0 ? sc.factor : 1;
+}
+
 /** Validate a UI file; returns a list of problems (empty = fine). Used by the designer and `nord check`. */
 export function validate(def) {
   const out = [], names = new Set();
@@ -180,6 +193,25 @@ export function compileSkin(skin = {}, base = '') {
   return css;
 }
 
+/**
+ * Skin tint: a skin rule (or one of its states) may carry `image.tint`; this returns a copy of the skin whose sprites are
+ * pre-multiplied by their tint (data URLs), ready for [[compileSkin]]. Without a canvas the skin comes back unchanged.
+ */
+export async function tintSkin(skin, base = '') {
+  if (!skin?.styles || !globalThis.document) return skin;
+  const out = structuredClone(skin), jobs = [];
+  const full = (p) => (/^(\/|[a-z]+:|data:)/i.test(p) ? '' : base) + p;
+  const visit = (decl) => {
+    if (!decl || typeof decl !== 'object') return;
+    const img = decl.image;
+    if (img && typeof img === 'object' && img.tint && img.src) jobs.push(tintImage(full(img.src), img.tint).then((u) => { img.src = u; delete img.tint; }));
+    for (const st of Object.keys(STATES)) visit(decl[st]);
+  };
+  for (const r of Object.values(out.styles)) visit(r);
+  await Promise.all(jobs);
+  return out;
+}
+
 let sharedSheet;
 const mgrCss = (m) => m.skinCss ?? '';
 function styleInto(doc, shadow) {
@@ -246,13 +278,47 @@ class Screen {
     this.shadow.insertBefore(this.skinEl, this.shadow.firstChild);
     if (def.styles && !Array.isArray(def.styles)) { const own = this.doc.createElement('style'); own.textContent = compileSkin({ styles: def.styles }); this.shadow.appendChild(own); }
     this.shadow.appendChild(this.rootEl);
+    this.spriteEl = this.doc.createElement('style'); this.shadow.appendChild(this.spriteEl); this._sprites = { styles: {} };
     if (def.theme) for (const [k, v] of Object.entries(def.theme)) this.host.style.setProperty(k.startsWith('--') ? k : `--nord-${k}`, v);
     const frag = this.doc.createDocumentFragment();
     this.root = this._make(def.root, null, frag);
     this.rootEl.appendChild(frag);
+    this._flushSprites();
     for (const k of ['click', 'input', 'change']) this.rootEl.addEventListener(k, (e) => this._dom(k, e));
     this.visible = def.visible !== false;
     this.host.style.display = this.visible ? '' : 'none';
+    if (def.scaler && !def.page && typeof ResizeObserver !== 'undefined') { this._ro = new ResizeObserver(() => this._applyScaler()); this._ro.observe(this.host); }
+    this._applyScaler();
+  }
+  /**
+   * `sprites: { normal, hover, pressed, disabled, on, focus, slice, scale, pixelated, mode, tint }` on any node (usually a button):
+   * one picture per state, sharing the slice/scale/tint settings (Unity's Button "Sprite Swap").
+   */
+  _spriteStates(el, sp) {
+    const id = `sp${(this._spN = (this._spN ?? 0) + 1)}`;
+    el.classList.add(id);
+    const shared = {};
+    for (const k of ['slice', 'scale', 'pixelated', 'mode', 'repeat', 'fill', 'tint']) if (sp[k] !== undefined) shared[k] = sp[k];
+    const img = (src) => ({ src, ...shared });
+    const rule = {};
+    if (sp.normal) rule.image = img(sp.normal);
+    for (const st of ['hover', 'pressed', 'disabled', 'on', 'focus']) if (sp[st]) rule[st] = { image: img(sp[st]) };
+    this._sprites.styles[`.${id}`] = rule;
+  }
+  /** Sprite-state nodes (`sprites`) were collected while building: compile them (and their tints) into one stylesheet. */
+  _flushSprites() {
+    if (!Object.keys(this._sprites.styles).length) return;
+    const skin = this._sprites, base = this.mgr.assetBase;
+    this.spriteEl.textContent = compileSkin(skin, base);
+    tintSkin(skin, base).then((t) => { if (t !== skin && this.spriteEl.isConnected) this.spriteEl.textContent = compileSkin(t, base); });
+  }
+  /** Size the root to the scaler's logical resolution and scale it to the host (anchors then work in logical pixels). */
+  _applyScaler() {
+    const sc = this.def.scaler, h = this.host;
+    if (!sc || this.def.page || !h.offsetWidth) return;
+    const k = scalerFactor(sc, h.offsetWidth, h.offsetHeight), st = this.rootEl.style;
+    const fit = sc.mode === 'fit', [rw, rh] = fit ? (sc.ref ?? [1280, 720]) : [h.offsetWidth / k, h.offsetHeight / k];
+    Object.assign(st, { inset: 'auto', left: fit ? `${(h.offsetWidth - rw * k) / 2}px` : '0', top: fit ? `${(h.offsetHeight - rh * k) / 2}px` : '0', width: `${rw}px`, height: `${rh}px`, transformOrigin: '0 0', transform: `scale(${k})` });
   }
   /** True while a text field inside this screen has focus (use it to ignore game keys). */
   get typing() { return /^(INPUT|TEXTAREA|SELECT)$/.test(this.shadow.activeElement?.tagName ?? ''); }
@@ -284,7 +350,7 @@ class Screen {
   toggle() { return this.visible ? this.hide() : this.show(); }
   /** Re-run translations (@keys) after a language change. */
   retranslate() { for (const n of this.byName.values()) if (n.el.dataset.raw !== undefined) this._renderTpl(n); return this; }
-  destroy() { this.host.remove(); this.mgr.screens.delete(this.name); this.byName.clear(); this.actions.clear(); }
+  destroy() { this._ro?.disconnect(); this.host.remove(); this.mgr.screens.delete(this.name); this.byName.clear(); this.actions.clear(); }
 
   _dom(kind, e) {
     let el = e.target;
@@ -363,6 +429,7 @@ class Screen {
     const n = new Node(this, def, el, parent);
     if (def.name) { if (!this.byName.has(def.name)) this.byName.set(def.name, n); }
     this._style(el, def, parent);
+    if (def.sprites && typeof def.sprites === 'object') this._spriteStates(el, def.sprites);
     { const base = this.mgr.assetBase; const img = t === 'image' ? (def.slice || ['tile', 'stretch', 'slice', 'center'].includes(def.mode) ? def : null) : def.image; for (const [k, v] of imageDecl(img, base)) el.style.setProperty(k, v); }
     { // tint (Unity Image.color): re-skin the sprite once the multiplied copy is ready
       const imgDef = t === 'image' ? def : typeof def.image === 'string' ? { src: def.image } : def.image;
@@ -424,7 +491,10 @@ export class UIManager {
   constructor(container, { doc = globalThis.document, t, events, onSound, fetch: f = globalThis.fetch?.bind(globalThis), base = '', assetBase = '', skin } = {}) {
     this.container = container; this.doc = doc; this.t = t; this.events = events; this.onSound = onSound; this._fetch = f; this.base = base; this.assetBase = assetBase;
     this.screens = new Map(); this._resolved = new Map(); this._defs = new Map();
-    if (skin && typeof skin === 'object') { this.skinCss = compileSkin(skin, assetBase); }
+    if (skin && typeof skin === 'object') {
+      this.skinCss = compileSkin(skin, assetBase);
+      tintSkin(skin, assetBase).then((t) => { if (t !== skin) { this.skinCss = compileSkin(t, assetBase); for (const sc of this.screens.values()) sc.skinEl.textContent = this.skinCss; } });
+    }
     this._skinReady = typeof skin === 'string' ? this.useSkin(skin) : null;
   }
   /** Apply a skin ({ tokens, styles } object or .json url) to every screen, now and later. Switch skins at runtime by calling it again. */
@@ -434,6 +504,8 @@ export class UIManager {
     if (key && key === this.skinKey) return this;
     this.skinKey = key; this.skinCss = compileSkin(skin, this.assetBase);
     for (const sc of this.screens.values()) sc.skinEl.textContent = this.skinCss;
+    const tinted = await tintSkin(skin, this.assetBase); // sprites with `image.tint` appear once multiplied
+    if (tinted !== skin && this.skinKey === key) { this.skinCss = compileSkin(tinted, this.assetBase); for (const sc of this.screens.values()) sc.skinEl.textContent = this.skinCss; }
     return this;
   }
   /** Project-relative asset path → URL (applies `assetBase` unless the path is absolute). */

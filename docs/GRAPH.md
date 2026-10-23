@@ -63,7 +63,8 @@ An error in one node is reported to the Console and the editor overlay (as `grap
 | **Flip Flop** *(flow → A / B)* | `flow/flipflop` | — | isA:boolean | — |
 | **Switch** *(flow → case 1 / case 2 / case 3 / default)* | `flow/switch` | value:any | — | case0="a", case1="b", case2="c" |
 | **Call Custom Event** *(flow → then)* | `flow/call-event` | name:string="my-custom", a:any, b:any | — | — |
-| **Run Graph File** *(flow → then)* | `flow/call-graph` | file:string="graphs/other.graph.json", a:any, b:any | — | — |
+| **Run Graph File (Subgraph)** *(flow → then)* | `flow/call-graph` | file:string="graphs/other.graph.json", a:any, b:any | a:any, b:any | — |
+| **Return** *(flow)* | `flow/return` | a:any, b:any | — | — |
 | **Stop Graph** *(flow → then)* | `flow/stop` | — | — | — |
 
 ### Variables
@@ -250,3 +251,7 @@ An error in one node is reported to the Console and the editor overlay (as `grap
 
 ## Credits
 Canvas: litegraph.js © Javi Agenjo, MIT (`vendor/litegraph/LICENSE`). Graph model inspired by Unity Visual Scripting / GraphView and Unreal Blueprints (concepts only; no code copied — Unity's C# reference repository is reference-only).
+
+## Subgraphs and the live flow highlight
+* **Run Graph File** (`flow/call-graph`) runs another graph file as a subgraph: the values on its `a` and `b` pins become the variables `a` and `b` inside; a **Return** node (`flow/return`) hands two values back through the call node's `a` / `b` outputs. The editor's **Make subgraph** button builds such a file from the selected nodes (exactly one flow link in, at most one out, at most two values each way) and replaces them with the call node.
+* **Live flow highlight:** while a Graph editor page is open it sends a heartbeat to `/api/graph-trace`. The running game (served by `nord serve` / the editor, `window.__nordServed`) polls that endpoint once a second; only when someone is watching does it batch the ids of executed nodes and post them to `/__edit/cmd` (`{t:"graph-trace", nodes:{ "<graph file>": [ids] }}`), and the editor flashes those nodes green. Shipped games never poll.

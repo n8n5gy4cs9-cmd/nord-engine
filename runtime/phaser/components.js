@@ -4,6 +4,7 @@ import { registerComponent } from '../core/index.js';
 import { registerExtraComponents } from './components-extra.js';
 
 const hex = (c, d = 0xffffff) => (typeof c === 'string' && /^#[0-9a-f]{6}/i.test(c) ? parseInt(c.slice(1, 7), 16) : d);
+const PIVOTS = { center: [0.5, 0.5], topLeft: [0, 0], top: [0.5, 0], topRight: [1, 0], left: [0, 0.5], right: [1, 0.5], bottomLeft: [0, 1], bottom: [0.5, 1], bottomRight: [1, 1] };
 const BLEND = { normal: 0, add: 1, multiply: 2, screen: 3 };
 
 /** Resolve an entity reference by name or id. */
@@ -16,16 +17,21 @@ export function registerPhaserComponents(backend) {
   /** Pivot: the component's own `origin` (0..1), else the sprite editor's `origin` pixel point from <image>.meta.json, else the centre. */
   const originOf = (d) => {
     if (d.origin) return d.origin;
-    const o = backend.metaOf(d.texture)?.origin;
-    if (!o) return [0.5, 0.5];
+    const m = backend.metaOf(d.texture);
+    const o = m?.origin;
+    if (!o) return PIVOTS[m?.pivot] ?? [0.5, 0.5]; // Inspector import setting (preset)
     const [fw, fh] = backend.frameSize(d.texture);
-    return [o[0] / fw, o[1] / fh];
+    const r = backend.texRatio.get(d.texture) ?? 1; // pixel pivot is in original-image pixels
+    return [o[0] / (fw * r), o[1] / (fh * r)];
   };
+  /** Import settings `ppu` + `maxSize`: draw scale that keeps the world size of the original image. */
+  const importScale = (path) => (1 / (backend.metaOf(path)?.ppu || 1)) * (backend.texRatio.get(path) ?? 1);
 
   registerComponent('sprite', {
     create(e, d, comp) {
       const s = ps.add.image(0, 0, backend.texKey(d.texture), d.frame ?? undefined);
       s.setOrigin(...originOf(d)).setTint(hex(d.tint)).setFlip(!!d.flipX, !!d.flipY).setAlpha(d.alpha ?? 1);
+      { const k = importScale(d.texture); if (k !== 1) s.setScale(k); }
       if (d.blend) s.setBlendMode(BLEND[d.blend] ?? 0);
       if (d.size) s.setDisplaySize(d.size[0], d.size[1]);
       e.native.add(s); comp.obj = track(comp, s);

@@ -96,7 +96,19 @@ export function registerBabylonComponents(backend) {
       const inst = container.instantiateModelsToScene((n) => `${e.name}.${n}`, false, { doNotInstantiate: !!d.unique });
       comp.inst = inst;
       // import settings from <model>.meta.json: uniform `scale`
-      backend.game.loader.meta?.(d.path).then((m) => { if (m?.scale && m.scale !== 1) for (const r of inst.rootNodes) r.scaling.scaleInPlace(m.scale); }).catch(() => {});
+      backend.game.loader.meta?.(d.path).then((m) => {
+        if (m?.scale && m.scale !== 1) for (const r of inst.rootNodes) r.scaling.scaleInPlace(m.scale);
+        // `materials`: { <material name inside the model>: <*.mat.json> } — remap imported materials to project material assets
+        for (const [slot, asset] of Object.entries(m?.materials ?? {})) {
+          const meshes = (e.__meshes ?? []).filter((x) => x.__ownMat?.name === slot);
+          if (!meshes.length || !asset) continue;
+          backend.game.loadJSON(asset).then((mj) => {
+            if (e.destroyed) return;
+            const mat = buildMaterial({ ...mj, asset }, `${e.name}.${slot}`);
+            for (const x of meshes) { x.__ownMat = mat; if (!e.getComponent('material')) x.material = mat; }
+          }).catch((err) => backend.game.warn(`[nord] model material ${asset}: ${err?.message ?? err}`));
+        }
+      }).catch(() => {});
       for (const r of inst.rootNodes) { r.parent = e.native; for (const m of [r, ...r.getChildMeshes()]) if (m.getTotalVertices) { (e.__meshes ??= []).push(m); m.__ownMat = m.material; m.metadata = { entity: e }; if (backend.shadow) backend.shadow.addShadowCaster(m); m.receiveShadows = true; } }
       const groups = new Map(inst.animationGroups.map((g) => [g.name.startsWith(`${e.name}.`) ? g.name.slice(e.name.length + 1) : g.name, g]));
       comp.animations = groups;

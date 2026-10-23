@@ -614,10 +614,13 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
                 }
             });
         let fav = st.assets_ui.only_favorites;
-        if ui
-            .selectable_label(fav, "★")
-            .on_hover_text("Show only favourites (right-click an asset ▸ Favourite)")
-            .clicked()
+        if icons::mini_toggle(
+            ui,
+            "star",
+            "Show only favourites (right-click an asset ▸ Favourite)",
+            fav,
+        )
+        .clicked()
         {
             st.assets_ui.only_favorites = !fav;
         }
@@ -968,7 +971,11 @@ fn kind_icon(k: AssetType, dir: bool) -> &'static str {
 fn draw_thumb(st: &mut EditorState, ui: &mut Ui, root: &Path, e: &Entry, rect: egui::Rect) {
     let wants_thumb = matches!(
         e.kind,
-        AssetType::Image | AssetType::Spritesheet | AssetType::Audio | AssetType::Model
+        AssetType::Image
+            | AssetType::Spritesheet
+            | AssetType::Audio
+            | AssetType::Model
+            | AssetType::Material
     ) && !e.is_dir;
     if wants_thumb {
         match st.assets_ui.thumbs.get(&e.rel) {

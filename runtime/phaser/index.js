@@ -78,7 +78,7 @@ export async function boot(project, opts = {}) {
 }
 
 class Backend {
-  constructor(game, project) { this.game = game; this.project = project; this.lightsOn = false; this.visuals = new Set(); this.maps = new Map(); this.physics = null; this.cameraComp = null; this._q = Promise.resolve(); this.metaCache = new Map(); }
+  constructor(game, project) { this.game = game; this.project = project; this.lightsOn = false; this.visuals = new Set(); this.maps = new Map(); this.physics = null; this.cameraComp = null; this._q = Promise.resolve(); this.metaCache = new Map(); this.texRatio = new Map(); }
   /** Sidecar metadata of a loaded texture (origin, image points, animations…) or null. */
   metaOf(path) { return this.metaCache.get(path) ?? null; }
   /** Size of one frame (spritesheets) or of the whole image, in pixels. */
@@ -128,7 +128,20 @@ class Backend {
   }
   #postTexture(path, m) {
     const ps = this.scene;
-    const tex = ps.textures.get(path);
+    let tex = ps.textures.get(path);
+    // import setting maxSize: scale big images down once; sprites compensate via texRatio so the world size stays
+    if (m?.maxSize > 0 && m.type !== 'spritesheet') {
+      const src = tex.getSourceImage();
+      const big = Math.max(src.width, src.height);
+      if (big > m.maxSize) {
+        const r = m.maxSize / big, cv = document.createElement('canvas');
+        cv.width = Math.max(1, Math.round(src.width * r)); cv.height = Math.max(1, Math.round(src.height * r));
+        const c = cv.getContext('2d'); c.imageSmoothingEnabled = m.filter !== 'nearest'; c.drawImage(src, 0, 0, cv.width, cv.height);
+        ps.textures.remove(path);
+        tex = ps.textures.addCanvas(path, cv);
+        this.texRatio.set(path, src.width / cv.width);
+      }
+    }
     if (m?.filter === 'nearest' || this.project.display?.pixelArt) tex.setFilter(globalThis.Phaser.Textures.FilterMode.NEAREST);
     // Animations (sidecar `anims`): { frames, fps, loop, speed, pingPong, repeat, repeatTo, frameDurations, tags }.
     // Per-frame duration multipliers come from `frameDurations[i]` or the sprite editor's `frameProps[<frame>].duration`.

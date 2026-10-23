@@ -45,6 +45,8 @@
       &quot;enabled&quot;: true,
       &quot;tags&quot;: [&quot;player&quot;],
       &quot;layer&quot;: 0,
+      &quot;locked&quot;: false,                  // editor only (omitted when false): not pickable in the Scene view
+      &quot;hidden&quot;: false,                  // editor only (omitted when false): not drawn in the Scene view
       &quot;transform&quot;: { &quot;pos&quot;: [100, 300, 0], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [1, 1, 1] },
       &quot;components&quot;: [
         { &quot;type&quot;: &quot;sprite&quot;, &quot;texture&quot;: &quot;assets/sprites/player.png&quot;, &quot;frame&quot;: 0, &quot;tint&quot;: &quot;#ffffff&quot;, &quot;flipX&quot;: false },
@@ -61,7 +63,12 @@
     }
   ]
 }</code></pre>
-<p>Units: 2D = pixels, y down; 3D = metres, y up, left-handed (Babylon default). Rotation = degrees (Euler XYZ).</p>
+<p>A component with <code>&quot;componentEnabled&quot;: false</code> is skipped by the runtime (Inspector checkbox). Prefab <code>overrides</code> may patch the root&#39;s
+<code>components / scripts / behaviors / effects / layer</code> and, for entities inside the prefab, <code>{&quot;children&quot;: {&quot;&lt;index&gt;&quot;: {…same keys…, &quot;children&quot;: {…}}}}</code>
+(numeric keys patch arrays by index, as everywhere in overrides).
+Image import settings live in <code>&lt;image&gt;.meta.json</code>: <code>filter</code>, <code>wrap</code>, <code>ppu</code> (sprites are drawn at size ÷ ppu), <code>pivot</code> (<code>center|topLeft|top|…</code>, or the sprite editor&#39;s pixel <code>origin</code>),
+<code>maxSize</code> (px, downscaled at load). Model <code>.meta.json</code>: <code>scale</code>, <code>materials: { &quot;&lt;material name in the file&gt;&quot;: &quot;&lt;mat.json&gt;&quot; }</code>.
+Units: 2D = pixels, y down; 3D = metres, y up, left-handed (Babylon default). Rotation = degrees (Euler XYZ).</p>
 <h2 id="built-in-components-v1">Built-in components (v1)<a class="anchor" href="#built-in-components-v1">#</a></h2>
 <p><code>sprite, animatedSprite, text, tilemap, particles, camera, light, mesh (primitive), model (glTF), material, rigidbody, collider, audioSource, audioListener, uiPanel/uiButton/uiLabel/uiImage/uiBar, trigger, path, spawner</code>.
 Each component has a JSON schema <code>{ type, fields:[{name,type,default,min,max,enum,label}] }</code> in

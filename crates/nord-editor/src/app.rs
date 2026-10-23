@@ -1,7 +1,7 @@
 //! eframe App: splash → hub/dock layout, global shortcuts, action dispatch, viewport sync.
 use crate::{
     panels::{self, palette::Mode as PMode},
-    state::{Action, EditorState, LogLevel, Tint, Tool},
+    state::{Action, EditorState, LogLevel, Tint},
     viewport::webview::{open_in_browser, WebPanes},
 };
 use egui::{Context, Key, Modifiers};
@@ -38,6 +38,33 @@ pub enum Tab {
 }
 
 impl Tab {
+    /// Lucide icon for menus and tab strips.
+    pub fn icon(self) -> &'static str {
+        match self {
+            Tab::Scene => "box",
+            Tab::Game => "play",
+            Tab::Code => "file-code",
+            Tab::Animation | Tab::Timeline => "film",
+            Tab::Sprite => "image",
+            Tab::Particles => "sparkles",
+            Tab::Events => "workflow",
+            Tab::Layout | Tab::UiDesigner => "layout-grid",
+            Tab::Fps => "crosshair",
+            Tab::Level2d => "map",
+            Tab::Graph => "git-branch",
+            Tab::History => "undo-2",
+            Tab::Project => "settings",
+            Tab::Hierarchy => "list",
+            Tab::Inspector => "pencil",
+            Tab::Assets => "folder",
+            Tab::Console => "terminal",
+            Tab::Library => "library",
+            Tab::Docs => "book-open",
+            #[allow(unreachable_patterns)]
+            _ => "file",
+        }
+    }
+
     pub fn title(self) -> &'static str {
         match self {
             Tab::Hierarchy => "Hierarchy",
@@ -321,11 +348,12 @@ impl App {
     fn shortcuts(&mut self, ctx: &Context) {
         let typing = ctx.wants_keyboard_input();
         let st = &mut self.st;
+        // Settings ▸ Shortcuts is capturing a new chord: nothing else may fire
+        if st.rebinding.is_some() {
+            return;
+        }
         ctx.input_mut(|i| {
             let cmd = Modifiers::COMMAND;
-            if i.consume_key(cmd, Key::S) {
-                st.push(Action::SaveAll);
-            }
             // browsers keep Cmd/Ctrl+P (print), +K (search) and +1..4 (tabs): the web build uses Alt for those (M11-04)
             let nav = crate::platform::nav_modifiers();
             // Unity: Cmd+Shift+P pause, Cmd+Alt+P step (checked before Cmd+P quick open)
@@ -335,12 +363,6 @@ impl App {
                 } else if i.consume_key(cmd | Modifiers::ALT, Key::P) {
                     st.push(Action::StepGame);
                 }
-            }
-            if i.consume_key(nav, Key::P) {
-                st.push(Action::QuickOpen);
-            }
-            if i.consume_key(nav, Key::K) {
-                st.push(Action::Palette);
             }
             let (run, stop) = (st.settings.key(true), st.settings.key(false));
             if i.consume_key(nav, run) {
@@ -352,66 +374,29 @@ impl App {
             } else if i.consume_key(nav, stop) {
                 st.push(Action::Stop);
             }
-            if i.consume_key(Modifiers::NONE, Key::F5) {
-                st.push(if st.is_playing() {
-                    Action::Stop
-                } else {
-                    Action::Play
-                });
-            } else if i.consume_key(Modifiers::NONE, Key::F6) {
-                st.push(Action::PlayScene);
-            }
-            if i.consume_key(cmd | Modifiers::SHIFT, Key::B) {
-                st.push(Action::BuildSettings);
-            }
-            if i.consume_key(cmd, Key::Comma) {
-                st.push(Action::Settings);
-            }
-            for (k, t) in [
-                (Key::Num1, Tab::Scene),
-                (Key::Num2, Tab::Game),
-                (Key::Num3, Tab::Code),
-                (Key::Num4, Tab::Assets),
-            ] {
-                if i.consume_key(nav, k) {
-                    st.push(Action::ShowTab(t));
+            // everything else comes from the (rebindable) keymap, most modifiers first
+            let map = st.settings.keymap.clone();
+            for def in crate::keymap::ordered(&map) {
+                if typing && !def.while_typing {
+                    continue;
                 }
-            }
-            if !typing {
-                if i.consume_key(cmd | Modifiers::SHIFT, Key::Z) {
-                    st.push(Action::Redo);
-                } else if i.consume_key(cmd, Key::Z) {
-                    st.push(Action::Undo);
+                let Some((m, k)) = crate::keymap::resolve(&map, def) else {
+                    continue;
+                };
+                if !i.consume_key(m, k) {
+                    continue;
                 }
-                if i.consume_key(cmd, Key::D) {
-                    st.push(Action::Duplicate);
-                }
-                if i.consume_key(cmd, Key::C) {
-                    st.push(Action::Copy);
-                }
-                if i.consume_key(cmd, Key::V) {
-                    st.push(Action::Paste);
-                }
-                if i.consume_key(Modifiers::NONE, Key::Delete)
-                    || i.consume_key(Modifiers::NONE, Key::Backspace)
-                {
-                    st.push(Action::Delete);
-                }
-                for (k, t) in [
-                    (Key::Q, Tool::Hand),
-                    (Key::W, Tool::Move),
-                    (Key::E, Tool::Rotate),
-                    (Key::R, Tool::Scale),
-                    (Key::T, Tool::Rect),
-                ] {
-                    if i.consume_key(Modifiers::NONE, k) {
-                        st.push(Action::SetTool(t));
+                match def.id {
+                    "play" => st.push(if st.is_playing() {
+                        Action::Stop
+                    } else {
+                        Action::Play
+                    }),
+                    id => {
+                        if let Some(a) = crate::keymap::action(id) {
+                            st.push(a);
+                        }
                     }
-                }
-                if i.consume_key(Modifiers::SHIFT, Key::F) {
-                    st.push(Action::FocusAll);
-                } else if i.consume_key(Modifiers::NONE, Key::F) {
-                    st.push(Action::Focus);
                 }
             }
         });
@@ -794,7 +779,11 @@ impl App {
         let st = &mut self.st;
         egui::menu::bar(ui, |ui| {
             let act = |ui: &mut egui::Ui, label: &str, a: Action, st: &mut EditorState| {
-                if ui.button(label).clicked() {
+                let clicked = match action_icon(&a) {
+                    Some(i) => crate::icons::label_icon(ui, i, label).clicked(),
+                    None => ui.button(label).clicked(),
+                };
+                if clicked {
                     st.push(a);
                     ui.close_menu();
                 }
@@ -852,7 +841,14 @@ impl App {
                     ("Create ▸ UI screen", "ui"),
                     ("Create ▸ Graph", "graph"),
                 ] {
-                    if ui.button(label).clicked() {
+                    let icon = match k {
+                        "folder" => "folder",
+                        "material" => "circle",
+                        "ui" => "layout-grid",
+                        "graph" => "git-branch",
+                        _ => "file-code",
+                    };
+                    if crate::icons::label_icon(ui, icon, label).clicked() {
                         panels::assets::create_asset(st, k);
                         st.push(Action::ShowTab(Tab::Assets));
                         ui.close_menu();
@@ -871,7 +867,17 @@ impl App {
                     .max_height(400.0)
                     .show(ui, |ui| {
                         for k in crate::schema::COMPONENT_TYPES {
-                            if ui.button(crate::schema::label_of(k)).clicked() {
+                            let icon = match crate::schema::category_of(k) {
+                                "Rendering" => "image",
+                                "Physics" => "boxes",
+                                "Audio" => "music",
+                                "UI" => "layout-grid",
+                                "Effects" => "sparkles",
+                                _ => "component",
+                            };
+                            if crate::icons::label_icon(ui, icon, &crate::schema::label_of(k))
+                                .clicked()
+                            {
                                 st.add_component_to_selection(k);
                                 ui.close_menu();
                             }
@@ -955,6 +961,40 @@ impl App {
             });
         });
     }
+}
+
+/// Lucide icon shown next to a menu command.
+fn action_icon(a: &Action) -> Option<&'static str> {
+    Some(match a {
+        Action::NewProject | Action::NewScene => "file",
+        Action::OpenProject => "folder-open",
+        Action::SaveAll | Action::Save => "save",
+        Action::BuildSettings => "package",
+        Action::CloseProject => "x",
+        Action::DownloadZip => "download",
+        Action::Undo => "undo-2",
+        Action::Redo => "redo-2",
+        Action::Copy | Action::Duplicate => "copy",
+        Action::Paste => "clipboard-paste",
+        Action::Delete => "trash-2",
+        Action::AddEntity(_) => "plus",
+        Action::Focus => "focus",
+        Action::FocusAll => "maximize",
+        Action::Play | Action::PlayScene => "play",
+        Action::Stop => "square",
+        Action::Settings | Action::DesktopSettings => "settings",
+        Action::Profiler => "zap",
+        Action::Export => "upload",
+        Action::Build(_) => "terminal",
+        Action::Layout(_) | Action::ResetLayout => "layout-grid",
+        Action::OpenDocs(_) => "book-open",
+        Action::About => "info",
+        Action::Palette => "search",
+        Action::Tutorial => "list",
+        Action::FpsInstall => "crosshair",
+        Action::ShowTab(t) => t.icon(),
+        _ => return None,
+    })
 }
 
 fn is_rust(st: &EditorState) -> bool {
@@ -1306,11 +1346,7 @@ pub fn game_tab(
                 .prefix("y "),
         )
         .on_hover_text("Vertical offset in pixels from the anchor");
-        if ui
-            .small_button("↺")
-            .on_hover_text("Reset position")
-            .clicked()
-        {
+        if crate::icons::mini(ui, "rotate-ccw", "Reset position").clicked() {
             st.settings.game_anchor = [0.5, 0.0];
             st.settings.game_offset = [0.0, 0.0];
         }
@@ -1357,9 +1393,7 @@ pub fn game_tab(
         ui.checkbox(&mut st.error_pause, "Error Pause")
             .on_hover_text("Pause the game when an error is logged");
         if st.is_playing()
-            && ui
-                .button("📷")
-                .on_hover_text("Save a screenshot to screenshots/")
+            && crate::icons::button(ui, "camera", "Save a screenshot to screenshots/", false)
                 .clicked()
         {
             st.push(Action::Screenshot);
@@ -1578,6 +1612,9 @@ impl App {
         }
         let playing = self.st.is_playing();
         if let Some(js) = self.st.fun_ui.profiler.poll(playing) {
+            self.web.eval("game", js);
+        }
+        if let Some(js) = self.st.events.poll(playing) {
             self.web.eval("game", js);
         }
         for js in self.st.remote.take_js(playing) {

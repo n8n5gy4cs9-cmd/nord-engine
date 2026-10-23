@@ -68,14 +68,17 @@ function connect() {
   es.onopen = () => send({ t: 'ready', mode });
 }
 
-// Forward editor shortcuts: the page owns keyboard focus when it is a native webview child.
+// Forward editor shortcuts: the page owns keyboard focus when it is a native webview child. Every key is sent; the editor's
+// (rebindable) keymap decides what it means. Defaults and Cmd/Ctrl combos also stop the browser's own handling.
+const SWALLOW = ['q', 'w', 'e', 'r', 't', 'f', 'delete', 'backspace', 'f5', 'f6'];
 addEventListener('keydown', (e) => {
   if (e.target && /input|textarea/i.test(e.target.tagName)) return;
   if (state.flying) return; // RMB fly mode: WASDQE move the camera, they are not tool shortcuts
+  if (['Shift', 'Control', 'Alt', 'Meta'].includes(e.key) || e.repeat) return;
   const k = e.key.toLowerCase();
   const cmd = e.metaKey || e.ctrlKey;
-  const wanted = ['q', 'w', 'e', 'r', 't', 'f', 'delete', 'backspace'].includes(k) && !cmd && !e.altKey || (cmd && ['z', 'd', 's', 'c', 'v', 'p', 'k'].includes(k));
-  if (wanted) { e.preventDefault(); send({ t: 'key', key: k, cmd, shift: e.shiftKey }); }
+  if (cmd || SWALLOW.includes(k)) e.preventDefault();
+  send({ t: 'key', key: k, cmd, shift: e.shiftKey, alt: e.altKey });
 });
 
 (async () => {

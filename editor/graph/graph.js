@@ -170,6 +170,91 @@ function arrange() {
 }
 $('#fit').onclick = fit; $('#arrange').onclick = arrange;
 
+// ── subgraphs: selected nodes -> their own graph file + one "Run Graph File" node ──
+// The new file starts at On Start, reads the values flowing in as variables a / b, and hands back a / b with a Return node.
+// Rules: exactly one flow link enters the selection, at most one leaves it, at most two data values go in and two come out.
+async function makeSubgraph() {
+  const sel = Object.values(canvas.selected_nodes ?? {});
+  if (sel.length < 1) return status('Select the nodes to move into a subgraph', true);
+  const ids = new Set(sel.map((n) => n.id)), nodeOf = (id) => graph.getNodeById(id);
+  const links = Object.values(graph.links ?? {}).filter(Boolean);
+  const inn = links.filter((l) => !ids.has(l.origin_id) && ids.has(l.target_id)), out = links.filter((l) => ids.has(l.origin_id) && !ids.has(l.target_id));
+  const execIn = inn.filter((l) => l.type === 'exec'), execOut = out.filter((l) => l.type === 'exec');
+  const dataIn = inn.filter((l) => l.type !== 'exec'), dataOut = out.filter((l) => l.type !== 'exec');
+  const distinct = (ls, key) => [...new Map(ls.map((l) => [key(l), l])).values()];
+  const entries = distinct(execIn, (l) => `${l.target_id}:${l.target_slot}`), exits = distinct(execOut, (l) => `${l.target_id}:${l.target_slot}`);
+  const srcIn = distinct(dataIn, (l) => `${l.origin_id}:${l.origin_slot}`), srcOut = distinct(dataOut, (l) => `${l.origin_id}:${l.origin_slot}`);
+  if (entries.length !== 1) return status(`Exactly one flow link must enter the selection (found ${entries.length})`, true);
+  if (exits.length > 1) return status('At most one flow link may leave the selection', true);
+  if (srcIn.length > 2) return status(`Too many values flow in (${srcIn.length}); a subgraph takes at most two (a, b)`, true);
+  if (srcOut.length > 2) return status(`Too many values flow out (${srcOut.length}); a subgraph returns at most two (a, b)`, true);
+  if (srcOut.length && !exits.length) return status('To return values the selection must continue with a flow link', true);
+  const name = norm(prompt('Subgraph file name', 'graphs/sub1.graph.json') ?? '');
+  if (!name || name === 'graphs/.graph.json') return;
+  // 1. build the new graph in a scratch LGraph
+  const g2 = new LG.LGraph(), copy = new Map();
+  g2.last_node_id = Math.max(0, ...sel.map((n) => n.id));
+  for (const n of sel) {
+    const c = LG.createNode(n.type); c.id = n.id; c.pos = [...n.pos]; c.properties = { ...n.properties }; c.title = n.title;
+    c.widgets?.forEach((w, i) => { w.value = n.widgets?.[i]?.value ?? w.value; });
+    g2.add(c); copy.set(n.id, c);
+  }
+  for (const l of links) if (ids.has(l.origin_id) && ids.has(l.target_id)) copy.get(l.origin_id).connect(l.origin_slot, copy.get(l.target_id), l.target_slot);
+  const minX = Math.min(...sel.map((n) => n.pos[0])), minY = Math.min(...sel.map((n) => n.pos[1]));
+  const start = LG.createNode('event/start'); start.pos = [minX - 260, minY]; g2.add(start);
+  start.connect(0, copy.get(entries[0].target_id), entries[0].target_slot);
+  srcIn.forEach((l, k) => { const v = LG.createNode('var/get'); v.properties.name = 'ab'[k]; v.widgets?.forEach((w) => { if (w.name === 'name') w.value = 'ab'[k]; }); v.pos = [minX - 260, minY + 120 + k * 70]; g2.add(v);
+    for (const t of dataIn.filter((x) => x.origin_id === l.origin_id && x.origin_slot === l.origin_slot)) v.connect(0, copy.get(t.target_id), t.target_slot); });
+  if (exits.length) {
+    const ret = LG.createNode('flow/return'); ret.pos = [Math.max(...sel.map((n) => n.pos[0] + n.size[0])) + 60, minY]; g2.add(ret);
+    copy.get(execOut[0].origin_id).connect(execOut[0].origin_slot, ret, 0);
+    srcOut.forEach((l, k) => copy.get(l.origin_id).connect(l.origin_slot, ret, 1 + k));
+  }
+  const body = { ...g2.serialize(), nord: { version: 1, vars: {} } };
+  const bad = validate(body).filter((m) => !m.startsWith('no event'));
+  if (bad.length) return status('Subgraph would be invalid: ' + bad[0], true);
+  const resp = await fetch('/api/fpsc/save?path=' + encodeURIComponent(name), { method: 'POST', headers: { 'x-nord-fpsc': '1' }, body: JSON.stringify(body, null, 1) + '\n' });
+  if (!resp.ok) return status('Save failed: ' + await resp.text(), true);
+  // 2. replace the selection by a call node wired to the same neighbours
+  const call = LG.createNode('flow/call-graph'); call.properties.file = name; call.widgets?.forEach((w) => { if (w.name === 'file') w.value = name; });
+  call.pos = [minX, minY]; graph.add(call);
+  const entryOrigin = nodeOf(entries[0].origin_id), ext = (l) => ({ from: nodeOf(l.origin_id), fs: l.origin_slot, to: nodeOf(l.target_id), ts: l.target_slot });
+  const e0 = ext(execIn[0]), x0 = exits[0] && ext(execOut[0]), inputs = srcIn.map((l) => ext(l)), outTargets = srcOut.map((l) => dataOut.filter((x) => x.origin_id === l.origin_id && x.origin_slot === l.origin_slot).map(ext));
+  const aSlot = call.inputs.findIndex((i) => i.name === 'a');
+  for (const n of sel) graph.remove(n);
+  e0.from.connect(e0.fs, call, 0);
+  inputs.forEach((c, k) => c.from.connect(c.fs, call, aSlot + k));
+  if (x0) call.connect(0, x0.to, x0.ts);
+  outTargets.forEach((ts, k) => { for (const t of ts) call.connect(1 + k, t.to, t.ts); });
+  void entryOrigin;
+  canvas.setDirty(true, true); S.dirty = true; list(); check();
+  status(`Moved ${sel.length} node(s) into ${name}; open it from the file box to edit them`);
+}
+$('#subgraph').onclick = () => makeSubgraph().catch((e) => status('Subgraph failed: ' + e.message, true));
+window.__graph.makeSubgraph = makeSubgraph;
+
+// ── live flow highlight: while the game runs, nodes that execute flash green (the game only sends traces while this page is open) ──
+const flashing = new Map();
+function flash(node) {
+  if (!flashing.has(node.id)) flashing.set(node.id, { c: node.color, b: node.bgcolor, bc: node.boxcolor });
+  node.color = '#39d98a'; node.bgcolor = '#1f5c40'; node.boxcolor = '#7dffb8'; canvas.setDirty(true, true);
+  clearTimeout(node.__flash);
+  node.__flash = setTimeout(() => { const o = flashing.get(node.id); if (o) { node.color = o.c; node.bgcolor = o.b; node.boxcolor = o.bc; flashing.delete(node.id); canvas.setDirty(true, true); } }, 450);
+}
+function onTrace(nodes) {
+  const file = norm($('#file').value || 'main');
+  const ids = nodes[file] ?? nodes[Object.keys(nodes).find((k) => k.endsWith(file)) ?? ''];
+  if (!ids) return;
+  S.traced = Date.now();
+  for (const id of ids) { const n = graph.getNodeById(id); if (n) flash(n); }
+}
+if (typeof EventSource !== 'undefined') {
+  try { const es = new EventSource('/__edit/events'); es.onmessage = (ev) => { let m; try { m = JSON.parse(ev.data); } catch { return; } if (m.t === 'graph-trace') onTrace(m.nodes ?? {}); }; } catch { /* plain static server */ }
+  const beat = () => fetch('/api/graph-trace', { method: 'POST', headers: { 'x-nord': '1' } }).catch(() => {});
+  beat(); setInterval(beat, 2000);
+}
+window.__graph.onTrace = onTrace;
+
 // ── groups, docs (F1), minimap ──
 $('#group').onclick = () => {
   const sel = Object.values(canvas.selected_nodes ?? {});

@@ -107,3 +107,9 @@ Add nodes from the palette into the selected container; drag rows in the **Tree*
 
 ## 3D world UI
 `game.gui.scene(def, { entity, offsetY })` builds the same tree (label, button, bar, image, vbox, hbox, panel, spacer; anchors, size, colours, `on.pressed → ui:<action>`) as Babylon GUI controls, floating over `entity` when given. Rich text is stripped and layout is simpler than DOM; use DOM screens for menus and HUDs.
+
+## Canvas scaler, sprite states and prefabs
+* **`scaler`** (top level of the file): `{ "mode": "constant"|"scale"|"fit", "ref": [1280, 720], "match": 0.5, "factor": 1 }`. `scale` works like Unity's *Scale With Screen Size* (log blend between width and height ratio, `match` 0 = width, 1 = height); `fit` shows the whole `ref` area letterboxed; `constant` multiplies by `factor`. Anchors, sizes and fonts then work in the reference resolution. `scalerFactor(scaler, w, h)` is exported for tests.
+* **`sprites`** on any node (usually a button): `{ "normal", "hover", "pressed", "disabled", "on", "focus": "<image>", "slice", "scale", "pixelated", "mode", "tint" }`: one picture per state, sharing the slice/scale/tint settings.
+* **Skin tint:** a skin rule (or one of its states) may carry `image.tint: "#rrggbb"`; the sprite is multiplied by it when the skin loads (`tintSkin()`).
+* **UI prefabs:** a node can be saved as its own file (Designer ▸ *Make UI prefab…*) and used through an `instance` node; *Unpack* inlines it again, *Open prefab* edits it.

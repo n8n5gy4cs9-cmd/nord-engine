@@ -1,4 +1,5 @@
 import { clone, flood } from './model.js';
+import { isPanGesture, snapActive, zoomAbout } from '../common/sceneview.js';
 export class MapView {
   constructor(app){
     this.app=app;this.canvas=document.querySelector('#map');this.ctx=this.canvas.getContext('2d');this.x=30;this.y=30;this.zoom=1;this.images=new Map();this.cursor=[0,0];
@@ -7,11 +8,13 @@ export class MapView {
     this.canvas.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='copy';this.cursor=this.point(e);});
     this.canvas.addEventListener('drop',e=>this.drop(e));
     this.canvas.addEventListener('contextmenu',e=>e.preventDefault());
-    this.canvas.addEventListener('wheel',e=>{e.preventDefault();const r=this.canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top,z=Math.max(.1,Math.min(6,this.zoom*Math.exp(-e.deltaY*.001)));this.x=x-(x-this.x)*z/this.zoom;this.y=y-(y-this.y)*z/this.zoom;this.zoom=z;},{passive:false});
+    this.canvas.addEventListener('wheel',e=>{e.preventDefault();const r=this.canvas.getBoundingClientRect();zoomAbout(this,e.clientX-r.left,e.clientY-r.top,Math.exp(-e.deltaY*.001));},{passive:false});
     this.canvas.addEventListener('pointerdown',e=>this.down(e));this.canvas.addEventListener('pointermove',e=>this.move(e));this.canvas.addEventListener('pointerup',e=>this.up(e));this.canvas.addEventListener('pointercancel',e=>this.up(e));
     const tick=t=>{this.draw(t);requestAnimationFrame(tick);};requestAnimationFrame(tick);
   }
   resize(){const r=this.canvas.getBoundingClientRect(),d=devicePixelRatio||1;this.canvas.width=r.width*d;this.canvas.height=r.height*d;this.w=r.width;this.h=r.height;if(this.fitPending){this.fitPending=false;this.fit();}}
+  /** Shift+F: centre the view on the selected objects (all objects when nothing is selected). */
+  frameSelection(){const a=this.app,ents=a.level.entities.filter(e=>a.selected.has(e.id));if(!ents.length)return this.fit();const r=this.canvas.getBoundingClientRect();let x0=1/0,y0=1/0,x1=-1/0,y1=-1/0;for(const e of ents){x0=Math.min(x0,e.x-e.w/2);x1=Math.max(x1,e.x+e.w/2);y0=Math.min(y0,e.y-e.h/2);y1=Math.max(y1,e.y+e.h/2);}this.zoom=Math.max(.1,Math.min(6,Math.min(r.width/Math.max(x1-x0,16),r.height/Math.max(y1-y0,16))*.5));this.x=r.width/2-(x0+x1)/2*this.zoom;this.y=r.height/2-(y0+y1)/2*this.zoom;}
   fit(){const r=this.canvas.getBoundingClientRect();if(r.width<=0||r.height<=0){this.fitPending=true;return;}this.fitPending=false;this.w=r.width;this.h=r.height;const l=this.app.level;this.zoom=Math.max(.1,Math.min(2,Math.min((this.w-48)/(l.width*l.tileSize),(this.h-48)/(l.height*l.tileSize))));this.x=(this.w-l.width*l.tileSize*this.zoom)/2;this.y=(this.h-l.height*l.tileSize*this.zoom)/2;}
   image(a){let im=this.images.get(a.source);if(!im){im=new Image();im.src=a.custom?'/'+a.source:'/__spritebank/'+a.source;this.images.set(a.source,im);}return im;}
   sprite(ctx,a,x,y,w,h,t,frame=a.frame??0,anim='',rot=0,flip=false){
@@ -42,7 +45,7 @@ export class MapView {
   stampItem(cell,point){const d=this.drag;if(!this.inside(cell)||d.seen.has(cell.join(',')))return;d.seen.add(cell.join(','));this.app.addEntity(...point);}
   down(e){
     this.canvas.focus();this.canvas.setPointerCapture(e.pointerId);const a=this.app,p=this.point(e),cell=this.cell(p);this.cursor=p;
-    if(e.button!==0||a.space){this.drag={kind:'pan',client:[e.clientX,e.clientY],offset:[this.x,this.y]};return;}
+    if(isPanGesture(e,{space:a.space,hand:a.tool==='hand'})){this.drag={kind:'pan',client:[e.clientX,e.clientY],offset:[this.x,this.y]};return;}
     if(a.tool==='pick'){const obj=this.hit(p),tile=a.layer().tiles[cell.join(',')];const id=obj?.asset??tile?.asset;if(id)a.choose(a.byId.get(id));return;}
     if(a.tool==='select'){
       const hit=this.hit(p);if(!hit){a.selected.clear();a.refreshInspector();return;}
@@ -58,7 +61,7 @@ export class MapView {
   move(e){const a=this.app,p=this.point(e),cell=this.cell(p);this.cursor=p;a.status(`${Math.round(p[0])}, ${Math.round(p[1])} px · ${a.tool} · ${a.selected.size} selected`);
     const d=this.drag;if(!d)return;
     if(d.kind==='pan'){this.x=d.offset[0]+e.clientX-d.client[0];this.y=d.offset[1]+e.clientY-d.client[1];}
-    if(d.kind==='move'){const step=document.querySelector('#snap').checked?a.level.tileSize/2:1;for(const[id,x,y]of d.orig){const ent=a.level.entities.find(v=>v.id===id);ent.x=Math.round((x+p[0]-d.start[0])/step)*step;ent.y=Math.round((y+p[1]-d.start[1])/step)*step;}}
+    if(d.kind==='move'){const step=snapActive(document.querySelector('#snap').checked,e)?a.level.tileSize/2:1;for(const[id,x,y]of d.orig){const ent=a.level.entities.find(v=>v.id===id);ent.x=Math.round((x+p[0]-d.start[0])/step)*step;ent.y=Math.round((y+p[1]-d.start[1])/step)*step;}}
     if(d.kind==='items'){const dx=cell[0]-d.last[0],dy=cell[1]-d.last[1],n=Math.max(Math.abs(dx),Math.abs(dy));for(let i=0;i<=n;i++){const c=[Math.round(d.last[0]+dx*i/(n||1)),Math.round(d.last[1]+dy*i/(n||1))];this.stampItem(c,[(c[0]+.5)*a.level.tileSize,(c[1]+.5)*a.level.tileSize]);}d.last=cell;}
     if(d.kind==='paint'){const dx=cell[0]-d.last[0],dy=cell[1]-d.last[1],n=Math.max(Math.abs(dx),Math.abs(dy));for(let i=0;i<=n;i++)this.tile([Math.round(d.last[0]+dx*i/(n||1)),Math.round(d.last[1]+dy*i/(n||1))]);d.last=cell;}
   }

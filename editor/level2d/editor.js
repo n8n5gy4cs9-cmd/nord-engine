@@ -1,11 +1,12 @@
 import { clone, uid, newLevel, place, History, compile, projectSettings, SCRIPTS, validate } from './model.js';
 import { starter as makeStarter } from './starter.js';
+import { viewHotkey } from '../common/sceneview.js';
 const starter=mode=>makeStarter(mode,app.bank);
 import { itemBank, instantiateItem } from './items.js';
 import { MapView } from './view.js';
 import { Panels, node, button, field } from './ui.js';
 const $=s=>document.querySelector(s);
-const tools={select:'V Select',brush:'B Brush',rect:'R Rectangle',fill:'F Fill',erase:'X Erase',entity:'E Object',pick:'I Pick'};
+const tools={hand:'Q Hand',select:'V Select',brush:'B Brush',rect:'R Rectangle',fill:'F Fill',erase:'X Erase',entity:'E Object',pick:'I Pick'};
 const app={level:newLevel(),bank:[],byId:new Map(),selected:new Set(),history:new History(),activeLayer:'',tool:'brush',role:'decoration',asset:null,frame:0,anim:'',space:false,showCollision:true,dirty:false,name:'level1',variant:null,placementMode:'tiles',projectItems:[]};
 window.editor2d=app;
 app.status=text=>{$('#status').textContent=text;};
@@ -68,6 +69,7 @@ window.addEventListener('keydown',e=>{
   if(e.code==='Space'){app.space=true;e.preventDefault();}const cmd=e.ctrlKey||e.metaKey;
   let action;if(cmd&&e.key.toLowerCase()==='s')action=actions.save;if(cmd&&e.key.toLowerCase()==='z')action=e.shiftKey?actions.redo:actions.undo;if(cmd&&e.key.toLowerCase()==='y')action=actions.redo;if(cmd&&e.key.toLowerCase()==='d')action=app.duplicate;if(e.key==='Delete'||e.key==='Backspace')action=app.remove;if(e.key==='F5')action=app.test;if(e.key==='Home')action=actions.fit;
   if(action){e.preventDefault();Promise.resolve().then(action).catch(err=>app.message('Action failed',err.message));return;}
+  const vk=viewHotkey(e);if(vk==='hand'){app.setTool('hand');return;}if(vk==='frame'){e.preventDefault();app.view.frameSelection();return;}
   const t={v:'select',b:'brush',r:'rect',f:'fill',x:'erase',e:'entity',i:'pick'}[e.key.toLowerCase()];if(t&&!cmd)app.setTool(t);
 });window.addEventListener('keyup',e=>{if(e.code==='Space')app.space=false;});window.addEventListener('blur',()=>app.space=false);window.addEventListener('beforeunload',e=>{if(app.dirty){e.preventDefault();e.returnValue='';}});
 async function init(){const res=await fetch('/editor/level2d/bank.json');if(!res.ok)throw Error('Sprite bank not found');app.bank=(await res.json()).entries;app.builtins=app.bank;app.byId=new Map(app.bank.map(b=>[b.id,b]));app.view=new MapView(app);app.panels=new Panels(app);for(const[t,title]of Object.entries(tools)){const b=button($('#tools'),title,()=>app.setTool(t));b.dataset.tool=t;}app.load(starter('platform'));app.choose(app.byId.get('amiga-platform-tiles-16-1')??app.bank[0]);app.setTool('brush');requestAnimationFrame(()=>app.view.fit());const saved=await fetch('/api/fpsc/ls?dir=levels').then(r=>r.ok?r.json():[]).catch(()=>[]);const initial=saved.find(f=>f.name==='workshop.level2d.json')??saved.find(f=>f.name.endsWith('.level2d.json'));if(initial){const r=await fetch('/levels/'+encodeURIComponent(initial.name));if(r.ok)app.load(await r.json(),initial.name.replace('.level2d.json',''));}app.status(`Ready · ${app.bank.length} sprite entries · choose Build or Items to begin`);}

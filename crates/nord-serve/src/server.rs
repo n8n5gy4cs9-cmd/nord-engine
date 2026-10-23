@@ -24,7 +24,7 @@ use tokio_stream::wrappers::BroadcastStream;
 
 /// Injected into served HTML. The event carries the changed paths as JSON; a running Nord game may hot-swap scripts
 /// (`window.__nord.hotReload(paths)` returns true when it handled the change), anything else reloads the page.
-const RELOAD_JS: &str = "<script>(()=>{const s=(l,a)=>{try{fetch('/api/log',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({level:l,text:a.map(x=>x instanceof Error?x.stack||x.message:typeof x==='object'?JSON.stringify(x):String(x)).join(' ')})})}catch{}};for(const l of ['log','info','warn','error']){const o=console[l].bind(console);console[l]=(...a)=>{o(...a);s(l,a)}}addEventListener('error',e=>s('error',[e.message+(e.filename?' ('+e.filename+':'+e.lineno+')':'')]));addEventListener('unhandledrejection',e=>s('error',[e.reason||'unhandled rejection']))})();new EventSource('/__reload').onmessage=e=>{let p=[];try{p=JSON.parse(e.data)}catch{}if(!(window.__nord&&window.__nord.hotReload&&window.__nord.hotReload(p)))location.reload()}</script>";
+const RELOAD_JS: &str = "<script>window.__nordServed=true;(()=>{const s=(l,a)=>{try{fetch('/api/log',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({level:l,text:a.map(x=>x instanceof Error?x.stack||x.message:typeof x==='object'?JSON.stringify(x):String(x)).join(' ')})})}catch{}};for(const l of ['log','info','warn','error']){const o=console[l].bind(console);console[l]=(...a)=>{o(...a);s(l,a)}}addEventListener('error',e=>s('error',[e.message+(e.filename?' ('+e.filename+':'+e.lineno+')':'')]));addEventListener('unhandledrejection',e=>s('error',[e.reason||'unhandled rejection']))})();new EventSource('/__reload').onmessage=e=>{let p=[];try{p=JSON.parse(e.data)}catch{}if(!(window.__nord&&window.__nord.hotReload&&window.__nord.hotReload(p)))location.reload()}</script>";
 
 pub use crate::hub::{Hub, LogEntry};
 
@@ -260,6 +260,29 @@ async fn ipc_get(State(a): State<App>, Query(q): Query<Since>) -> Json<Vec<serde
 /// Non-JSON POSTs must carry a custom header: a cross-site page cannot set it without a CORS preflight (which we never answer).
 fn has_nord_header(h: &axum::http::HeaderMap) -> bool {
     h.contains_key("x-nord")
+}
+
+/// Last heartbeat (ms since the epoch) of an open Graph editor: the running game only sends node-flow traces while one is watching.
+static GRAPH_HEARTBEAT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+
+fn now_ms() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_or(0, |d| d.as_millis() as u64)
+}
+
+async fn graph_trace_hb(headers: axum::http::HeaderMap) -> StatusCode {
+    if !has_nord_header(&headers) {
+        return StatusCode::FORBIDDEN;
+    }
+    GRAPH_HEARTBEAT.store(now_ms(), std::sync::atomic::Ordering::Relaxed);
+    StatusCode::NO_CONTENT
+}
+
+/// `{"wanted": true}` while a Graph editor sent a heartbeat in the last 5 s (polled by the game's graph runner).
+async fn graph_trace_wanted() -> Json<serde_json::Value> {
+    let last = GRAPH_HEARTBEAT.load(std::sync::atomic::Ordering::Relaxed);
+    Json(serde_json::json!({ "wanted": last > 0 && now_ms().saturating_sub(last) < 5000 }))
 }
 
 /// Send a command to connected viewports (used by tests and the separate-window fallback).
@@ -639,6 +662,10 @@ pub fn router(project: PathBuf, engine: PathBuf) -> (Router, Arc<Hub>) {
                 .post(ipc_post)
                 .layer(axum::extract::DefaultBodyLimit::max(32 << 20)),
         ) // screenshots arrive as data URLs
+        .route(
+            "/api/graph-trace",
+            get(graph_trace_wanted).post(graph_trace_hb),
+        )
         .route("/__edit/events", get(edit_events))
         .route("/__edit/cmd", post(edit_cmd))
         .route("/__desktop/call", post(desktop_call))

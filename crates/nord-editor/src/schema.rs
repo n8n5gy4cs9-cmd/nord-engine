@@ -141,6 +141,23 @@ pub const COMPONENT_TYPES: [&str; 26] = [
     "postProcess",
 ];
 
+/// Add Component popup groups, in display order.
+pub const COMPONENT_CATEGORIES: &[&str] =
+    &["Rendering", "Physics", "Audio", "UI", "Gameplay", "Effects"];
+
+/// Which Add Component group a component type belongs to.
+pub fn category_of(kind: &str) -> &'static str {
+    match kind {
+        "sprite" | "animatedSprite" | "text" | "tilemap" | "camera" | "light" | "mesh"
+        | "model" | "material" | "skybox" | "parallax" => "Rendering",
+        "rigidbody" | "collider" | "trigger" => "Physics",
+        "audioSource" | "audioListener" => "Audio",
+        k if k.starts_with("ui") => "UI",
+        "particles" | "postProcess" => "Effects",
+        _ => "Gameplay",
+    }
+}
+
 const UI_POS: &str = "x:number y:number anchor:enum(tl|t|tr|l|c|r|bl|b|br)=\"tl\" w:number h:number screen:string=\"hud\"";
 
 pub fn component_fields(kind: &str) -> Vec<Field> {

@@ -130,7 +130,21 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
 pub(crate) fn create_menu(st: &mut EditorState, ui: &mut Ui, three: bool, parent: Option<String>) {
     let mut pick = None;
     let mut item = |ui: &mut Ui, label: &str, kind: &'static str| {
-        if ui.button(label).clicked() {
+        let icon = match kind {
+            "empty" => "component",
+            "cube" | "ground" => "box",
+            "sphere" => "circle",
+            "sun" | "light" => "lightbulb",
+            "camera" => "video",
+            "text" | "ui-label" => "type",
+            "ui-button" | "ui-panel" => "layout-grid",
+            "audio" => "music",
+            "spawner" => "sparkles",
+            "trigger" => "crosshair",
+            "graph" => "git-branch",
+            _ => "plus",
+        };
+        if icons::label_icon(ui, icon, label).clicked() {
             pick = Some(kind);
             ui.close_menu();
         }
@@ -243,7 +257,15 @@ fn node(
         }
         _ => Default::default(),
     };
-    if e.children.is_empty() && host.is_empty() {
+    // children of a prefab instance live in the prefab file: show them (selectable, overridable in the Inspector)
+    let pf_kids: Vec<Entity> = match (&e.prefab, e.children.is_empty()) {
+        (Some(p), true) => st
+            .read_prefab_cached(&p.path)
+            .map(|r| r.children)
+            .unwrap_or_default(),
+        _ => vec![],
+    };
+    if e.children.is_empty() && host.is_empty() && pf_kids.is_empty() {
         row(st, ui, e, pending, clicked, ctx_action);
     } else {
         let open = !st.collapsed.contains(&e.id);
@@ -273,8 +295,63 @@ fn node(
                 for v in host.iter() {
                     vnode(st, ui, v, clicked);
                 }
+                pf_rows(st, ui, &e.id, &pf_kids, &mut vec![], clicked);
             });
         }
+    }
+}
+
+/// Rows for the entities inside a prefab instance (`path` = child indices from the prefab root).
+fn pf_rows(
+    st: &mut EditorState,
+    ui: &mut Ui,
+    inst: &str,
+    kids: &[Entity],
+    path: &mut Vec<usize>,
+    clicked: &mut Option<(String, bool)>,
+) {
+    for (i, k) in kids.iter().enumerate() {
+        path.push(i);
+        let id = crate::prefab::child_id(inst, path);
+        let open = k.children.is_empty() || !st.collapsed.contains(&id);
+        ui.horizontal(|ui| {
+            if !k.children.is_empty() {
+                let chev = if open {
+                    "chevron-down"
+                } else {
+                    "chevron-right"
+                };
+                if ui
+                    .add(icons::icon(chev, 12.0, ui.visuals().text_color()).sense(Sense::click()))
+                    .clicked()
+                {
+                    if open {
+                        st.collapsed.insert(id.clone());
+                    } else {
+                        st.collapsed.remove(&id);
+                    }
+                }
+            }
+            ui.add(icons::icon(
+                "component",
+                14.0,
+                egui::Color32::from_rgb(110, 170, 255),
+            ));
+            let text = egui::RichText::new(&k.name).color(egui::Color32::from_rgb(110, 170, 255));
+            if ui
+                .selectable_label(st.selection.contains(&id), text)
+                .on_hover_text("Inside the prefab: edits are stored as overrides on the instance")
+                .clicked()
+            {
+                *clicked = Some((id.clone(), false));
+            }
+        });
+        if open && !k.children.is_empty() {
+            ui.indent(("pfh", &id), |ui| {
+                pf_rows(st, ui, inst, &k.children, path, clicked)
+            });
+        }
+        path.pop();
     }
 }
 
@@ -379,8 +456,34 @@ fn row(
             } else {
                 egui::RichText::new(label)
             };
-            ui.selectable_label(selected, text)
-                .interact(Sense::click_and_drag())
+            let r = ui
+                .selectable_label(selected, text)
+                .interact(Sense::click_and_drag());
+            // Scene-view visibility (eye) and picking lock (padlock), like Unity; only the toggled state is always shown
+            let (mut hid, mut lock) = (e.hidden, e.locked);
+            ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                if (lock || r.hovered())
+                    && icons::mini_toggle(ui, "lock", "Lock: not pickable in the Scene view", lock)
+                        .clicked()
+                {
+                    lock = !lock;
+                }
+                if (hid || r.hovered())
+                    && icons::mini_toggle(ui, "eye-off", "Hide in the Scene view", hid).clicked()
+                {
+                    hid = !hid;
+                }
+            });
+            if hid != e.hidden || lock != e.locked {
+                let id = e.id.clone();
+                st.edit("Lock/hide", None, |l| {
+                    if let Some(x) = scene_ops::find_mut(l, &id) {
+                        x.hidden = hid;
+                        x.locked = lock;
+                    }
+                });
+            }
+            r
         })
         .inner;
     if resp.clicked() {
@@ -390,6 +493,12 @@ fn row(
         ));
     }
     resp.dnd_set_drag_payload(e.id.clone());
+    // an asset dropped on a row sets that entity's sprite / model / audio / material or attaches the script
+    if let Some(a) = resp.dnd_release_payload::<crate::panels::inspector::AssetDrag>() {
+        if !st.drop_asset_on_entity(&e.id, &a.0) {
+            st.add_asset_entity(&a.0);
+        }
+    }
     if let Some(p) = resp.dnd_hover_payload::<String>() {
         let r = resp.rect;
         let y = ui

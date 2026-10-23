@@ -3,6 +3,7 @@ pub mod app;
 pub mod code;
 pub mod gif_import;
 pub mod icons;
+pub mod keymap;
 pub mod layout;
 pub mod panels;
 pub mod particles;

@@ -63,13 +63,21 @@ export class Graph {
     for (const nd of this.eventsOf('dispatch')) if (this.prop(nd, 'method') === method) this.trigger(nd, [args[0] ?? null, args[1] ?? null]);
   }
   async callCustom(name, a, b) { for (const nd of this.eventsOf('custom')) if (String(this.prop(nd, 'name')) === name) await this.trigger(nd, [a, b]); }
-  async runFile(path, args) { const g = new Graph(await this.game.loadJSON(path), { game: this.game, entity: this.entity, scene: this.scene, name: path, args }); g.start(); g.started = true; for (const nd of g.eventsOf('start')) await g.trigger(nd, []); g.stop(); }
+  /** Run another graph file to completion (a subgraph). Resolves to what its Return node returned: `{ a, b }` or undefined. */
+  async runFile(path, args) {
+    const g = new Graph(await this.game.loadJSON(path), { game: this.game, entity: this.entity, scene: this.scene, name: path, args });
+    g.start(); g.started = true;
+    for (const nd of g.eventsOf('start')) await g.trigger(nd, []);
+    g.stop();
+    return g.returned;
+  }
   stop() { if (this.stopped) return; this.stopped = true; for (const o of this.offs) o(); this.offs = []; for (const w of this.waiters) w.done(); this.waiters.clear(); }
   /** Run On Destroy nodes, then stop. */
   async destroy() { if (this.stopped) return; for (const nd of this.eventsOf('destroy')) { try { await this.trigger(nd, []); } catch { /* ignore */ } } this.stop(); }
 
   async trigger(nd, values) {
     nd.out = [undefined, ...values];
+    graphTrace.hit(this.name, nd.id);
     try { await this.#follow(nd, 0, { steps: 0 }); } catch (err) { this.game.reportError(err, { constructor: { name: `graph ${this.name}` } }, nd.spec?.title ?? nd.type); }
   }
   /** Run the n-th exec output chain of `nd`. */
@@ -80,6 +88,7 @@ export class Graph {
   }
   async #exec(nd, run) {
     if (!nd?.spec || this.stopped) return;
+    graphTrace.hit(this.name, nd.id);
     if (++run.steps > MAX_STEPS) throw new Error('graph stopped: more than 200000 steps in one flow (infinite loop?)');
     const c = this.#ctx(nd, run);
     const r = await nd.spec.run?.(c);
@@ -129,6 +138,33 @@ export class Graph {
     };
   }
 }
+
+/**
+ * Live flow highlight for the Graph editor. Under `nord serve` / the editor (page has `window.__nordServed`) the game asks
+ * `/api/graph-trace` once a second whether a Graph editor is open; only then are executed node ids batched per frame and sent to
+ * `/__edit/cmd`, where the editor page receives them over SSE. Shipped games never poll (no `__nordServed`) and pay one Set lookup.
+ */
+export const graphTrace = {
+  on: false, pending: new Map(), timer: null, poll: null,
+  hit(graph, id) {
+    if (!this.on) { if (this.poll === null && globalThis.__nordServed && globalThis.fetch) this._watch(); return; }
+    (this.pending.get(graph) ?? this.pending.set(graph, new Set()).get(graph)).add(id);
+    this.timer ??= setTimeout(() => this.flush(), 60);
+  },
+  _watch() {
+    const ask = async () => {
+      try { this.on = !!(await (await fetch('/api/graph-trace')).json()).wanted; } catch { this.on = false; }
+      this.poll = setTimeout(ask, this.on ? 2500 : 1500);
+    };
+    this.poll = 0; ask();
+  },
+  flush() {
+    this.timer = null;
+    const nodes = {}; for (const [g, ids] of this.pending) nodes[g] = [...ids];
+    this.pending.clear();
+    try { fetch('/__edit/cmd', { method: 'POST', headers: { 'x-nord': '1' }, body: JSON.stringify({ t: 'graph-trace', nodes }), keepalive: true }); } catch { /* editor gone */ }
+  },
+};
 
 /** Scene system that drives every live Graph (created on demand; components + scene.settings.graphs register here). */
 export function graphSystem(scene) {

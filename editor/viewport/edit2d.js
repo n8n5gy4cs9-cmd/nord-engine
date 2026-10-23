@@ -43,11 +43,12 @@ function localToWorld(parentW, t) {
 
 function rebuild() {
   items = [];
-  const walk = (list, parentW) => {
+  const walk = (list, parentW, lockedAbove = false) => {
     for (const e of list ?? []) {
+      if (e.hidden) continue; // Hierarchy eye toggle: hidden here and below
       const w = localToWorld(parentW, e.transform);
-      items.push({ e, w, parentW });
-      walk(e.children, w);
+      items.push({ e, w, parentW, locked: lockedAbove || !!e.locked });
+      walk(e.children, w, lockedAbove || !!e.locked);
     }
   };
   walk(state.scene?.entities, null);
@@ -112,6 +113,7 @@ export function pickAt(sx, sy) {
   for (let i = items.length - 1; i >= 0; i--) {
     const L = layerOf(items[i].e);
     if (L && (L.locked || L.visible === false)) continue; // locked / hidden layers cannot be picked
+    if (items[i].locked) continue; // Hierarchy padlock
     if (items[i].e.enabled !== false && hitTest(items[i], wx, wy)) return items[i].e.id;
   }
   return null;
@@ -296,14 +298,33 @@ function drawTilemaps() {
 }
 
 function selected() { return items.find((i) => i.e.id === state.selection[0]); }
+const selItems = () => state.selection.map((id) => items.find((i) => i.e.id === id)).filter(Boolean);
+/** Gizmo position: the primary object (Pivot) or the centre of the selection's bounds (Center), like Unity's Pivot/Center toggle. */
+function pivotWorld() {
+  const it = selected();
+  if (!it) return null;
+  const g = selItems();
+  if (state.settings.center && g.length > 1) {
+    const xs = g.map((i) => i.w.x), ys = g.map((i) => i.w.y);
+    return [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2];
+  }
+  return [it.w.x, it.w.y];
+}
+/** Parent-local position of a world point. */
+function toLocalPos(p, wx, wy) {
+  if (!p) return [wx, wy];
+  const a = -p.rot * R, c = Math.cos(a), s = Math.sin(a), dx = wx - p.x, dy = wy - p.y;
+  return [(dx * c - dy * s) / (p.sx || 1), (dx * s + dy * c) / (p.sy || 1)];
+}
 
 function drawGizmo() {
   const it = selected();
   if (!it) return;
-  const [sx, sy] = toScreen(it.w.x, it.w.y);
+  const [bx, by] = toScreen(it.w.x, it.w.y);
+  const [sx, sy] = toScreen(...pivotWorld());
   const { w, h } = sizeOf(it.e);
   ctx.save();
-  ctx.translate(sx, sy); ctx.rotate(it.w.rot * R); ctx.scale(cam.zoom * it.w.sx, cam.zoom * it.w.sy);
+  ctx.translate(bx, by); ctx.rotate(it.w.rot * R); ctx.scale(cam.zoom * it.w.sx, cam.zoom * it.w.sy);
   ctx.strokeStyle = '#4fa3ff'; ctx.lineWidth = 1.5 / (cam.zoom * Math.abs(it.w.sx || 1)); ctx.strokeRect(-w / 2, -h / 2, w, h);
   ctx.restore();
   const tool = state.settings.tool;
@@ -384,7 +405,7 @@ function rectHandles(it) {
 function handleAt(sx, sy) {
   const it = selected();
   if (!it) return null;
-  const [ox, oy] = toScreen(it.w.x, it.w.y);
+  const [ox, oy] = toScreen(...pivotWorld());
   const tool = state.settings.tool;
   const d = Math.hypot(sx - ox, sy - oy);
   if (tool === 'hand') return null;
@@ -413,7 +434,13 @@ function startDrag(kind, it, sx, sy) {
   const e = it.e;
   drag = { kind, id: e.id, sx, sy, t0: JSON.parse(JSON.stringify(e.transform)), w0: { ...it.w }, parentW: it.parentW, moved: false, last: 0 };
   const [wx, wy] = toWorld(sx, sy);
-  drag.a0 = Math.atan2(wy - it.w.y, wx - it.w.x);
+  drag.pivot = pivotWorld();
+  drag.a0 = Math.atan2(wy - drag.pivot[1], wx - drag.pivot[0]);
+  // every selected object moves/rotates/scales together (the Rect tool resizes only the primary)
+  const many = selItems();
+  if (many.length > 1 && !(kind[0] === 'r' && kind.includes(','))) {
+    drag.group = many.map((i) => ({ id: i.e.id, t0: JSON.parse(JSON.stringify(i.e.transform)), w0: { ...i.w }, parentW: i.parentW }));
+  }
   if (kind[0] === 'r' && kind.includes(',')) { [drag.hx, drag.hy] = kind.slice(1).split(',').map(Number); drag.size = sizeOf(e); drag.kind = 'rect'; }
 }
 
@@ -457,6 +484,11 @@ function onDown(ev) {
 }
 
 function emit(final) {
+  if (drag.group) {
+    const list = drag.group.map((g) => items.find((i) => i.e.id === g.id)).filter(Boolean).map((i) => ({ id: i.e.id, pos: i.e.transform.pos, rot: i.e.transform.rot, scale: i.e.transform.scale }));
+    send({ t: 'transforms', items: list, final });
+    return;
+  }
   const it = items.find((i) => i.e.id === drag.id);
   if (!it) return;
   const t = it.e.transform;
@@ -474,6 +506,7 @@ function onMove(ev) {
   if (drag.kind === 'pan') {
     cam.x = drag.cx - (sx - drag.sx) / cam.zoom; cam.y = drag.cy - (sy - drag.sy) / cam.zoom; draw(); reportCam(); return;
   }
+  if (drag.group && drag.kind !== 'rect') { moveGroup(sx, sy); return; }
   const it = items.find((i) => i.e.id === drag.id);
   if (!it) return;
   const e = it.e;
@@ -523,6 +556,53 @@ function onMove(ev) {
   }
   rebuild();
   draw();
+  const now = performance.now();
+  if (now - drag.last > 50) { drag.last = now; emit(false); }
+}
+
+/** Move / rotate / scale every selected object about the gizmo pivot (multi-select drag). */
+function moveGroup(sx, sy) {
+  const [wx, wy] = toWorld(sx, sy), [wx0, wy0] = toWorld(drag.sx, drag.sy);
+  const [px, py] = drag.pivot;
+  if (drag.kind === 'free' || drag.kind === 'x' || drag.kind === 'y') {
+    if (!drag.moved && Math.hypot(sx - drag.sx, sy - drag.sy) < 3) return;
+    drag.moved = true;
+    let dx = wx - wx0, dy = wy - wy0;
+    if (drag.kind === 'x') dy = 0;
+    if (drag.kind === 'y') dx = 0;
+    dx = snapTo(dx, state.settings.snapMove); dy = snapTo(dy, state.settings.snapMove);
+    for (const g of drag.group) {
+      const it = items.find((i) => i.e.id === g.id);
+      if (!it) continue;
+      const [lx, ly] = toLocalPos(g.parentW, g.w0.x + dx, g.w0.y + dy);
+      it.e.transform.pos = [lx, ly, g.t0.pos[2]];
+    }
+  } else if (drag.kind === 'rot') {
+    drag.moved = true;
+    const a = Math.atan2(wy - py, wx - px);
+    const da = snapTo((a - drag.a0) / R, state.settings.snapRot), c = Math.cos(da * R), s = Math.sin(da * R);
+    for (const g of drag.group) {
+      const it = items.find((i) => i.e.id === g.id);
+      if (!it) continue;
+      const vx = g.w0.x - px, vy = g.w0.y - py;
+      const [lx, ly] = toLocalPos(g.parentW, px + vx * c - vy * s, py + vx * s + vy * c);
+      it.e.transform.pos = [lx, ly, g.t0.pos[2]];
+      it.e.transform.rot = [g.t0.rot[0], g.t0.rot[1], g.t0.rot[2] + da];
+    }
+  } else {
+    drag.moved = true;
+    const k = Math.max(0.01, 1 + ((drag.kind === 'sy' ? sy - drag.sy : sx - drag.sx) / GIZMO));
+    const kx = drag.kind === 'sy' ? 1 : k, ky = drag.kind === 'sx' ? 1 : k;
+    for (const g of drag.group) {
+      const it = items.find((i) => i.e.id === g.id);
+      if (!it) continue;
+      const [lx, ly] = toLocalPos(g.parentW, px + (g.w0.x - px) * kx, py + (g.w0.y - py) * ky);
+      it.e.transform.pos = [lx, ly, g.t0.pos[2]];
+      const s0 = g.t0.scale;
+      it.e.transform.scale = [snapTo(s0[0] * kx, state.settings.snapScale), snapTo(s0[1] * ky, state.settings.snapScale), s0[2]];
+    }
+  }
+  rebuild(); draw();
   const now = performance.now();
   if (now - drag.last > 50) { drag.last = now; emit(false); }
 }
@@ -580,6 +660,8 @@ export function dropPreview(m) {
 export function dropAsset(m) {
   ghost = null;
   const [wx, wy] = toWorld(m.x, m.y);
+  const onto = pickAt(m.x, m.y); // dropped on an object: set its sprite/model/audio/script instead of spawning a new one
+  if (onto && !/\.(prefab|scene)\.json$/i.test(m.path)) { send({ t: 'addAsset', path: m.path, onto }); draw(); return; }
   send({ t: 'addAsset', path: m.path, pos: [snapTo(wx, state.settings.snapMove), snapTo(wy, state.settings.snapMove), 0] });
   draw();
 }

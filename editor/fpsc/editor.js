@@ -5,6 +5,7 @@ import { SOUND_NAMES } from '/runtime/fpsc/audio.js';
 import { el, modal, toast, debounce } from './forms.js';
 import { Map2D, classify } from './map2d.js';
 import { View3D } from './view3d.js';
+import { viewHotkey } from '../common/sceneview.js';
 import { buildPanel, itemsPanel, scriptsPanel, levelPanel, assetsPanel, objectsPanel, inspector } from './panels.js';
 import { normalizeShortcuts, matchesShortcut, shortcutLabel } from './shortcuts.js';
 import { hiddenCornerEdge } from '/runtime/fpsc/corners.js';
@@ -484,6 +485,7 @@ function keydown(e, acts) {
   if (e.code === 'PageUp') return ed.setLayer(ed.layer + 1); if (e.code === 'PageDown') return ed.setLayer(ed.layer - 1);
   if (e.code === 'Delete' || e.code === 'Backspace') { e.preventDefault(); return ed.deleteSelection(); }
   if (e.code === 'Home') { ed.map.fit(ed.level); ed.map.draw(); return; }
+  if (viewHotkey(e) === 'frame') { e.preventDefault(); const p = ed.selectedPos(); if (!p) { ed.map.fit(ed.level); ed.map.draw(); return; } ed.map.cx = p[0]; ed.map.cz = p[1]; ed.map.draw(); ed.v3?.focus?.(p[0], p[1], p[2]); return; } // Shift+F frame selection (same key as the Scene view)
   if (e.code === 'KeyQ' || e.code === 'KeyE') { const d = e.code === 'KeyE' ? 45 : -45; if (ed.tool === 'select' && ed.sel.ents.size) return ed.rotateSel(d); ed.entRot = (ed.entRot + d + 360) % 360; toast(`Placement rotation ${ed.entRot}°`); return; }
   if (e.code.startsWith('Arrow') && ed.sel.ents.size) { e.preventDefault(); const s = e.shiftKey ? CELL : 0.5, dx = e.code === 'ArrowRight' ? s : e.code === 'ArrowLeft' ? -s : 0, dz = e.code === 'ArrowUp' ? s : e.code === 'ArrowDown' ? -s : 0; for (const en of ed.selEntities()) { en.x += dx; en.z += dz; } return ed.commit('nudged'); }
   const map = { KeyV: 'select', KeyW: 'wall', KeyR: 'room', KeyF: 'floor', KeyC: 'ceiling', KeyG: 'fill', KeyS: 'cell', KeyA: 'entity', KeyP: 'path', KeyX: 'erase', KeyI: 'eyedrop' };

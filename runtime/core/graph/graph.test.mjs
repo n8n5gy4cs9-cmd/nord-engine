@@ -67,3 +67,33 @@ test('validate reports unknown nodes and missing events', () => {
   assert.ok(validate({ nodes: [{ id: 1, type: 'nope/x' }], links: [] }).length >= 1);
   assert.deepEqual(validate(build([[1, 'event/start']], [])), []);
 });
+
+test('Run Graph File is a subgraph: variables a/b in, Return values out', async () => {
+  const sub = build([[1, 'event/start'], [2, 'math/add'], [3, 'var/get', { name: 'a' }], [4, 'var/get', { name: 'b' }], [5, 'flow/return']], [[1, 0, 5, 0], [3, 0, 2, 0], [4, 0, 2, 1], [2, 0, 5, 1]]);
+  const main = build([[1, 'event/start'], [2, 'flow/call-graph', { file: 'graphs/sum.graph.json', a: 2, b: 5 }], [3, 'var/set', { name: 'out' }]], [[1, 0, 2, 0], [2, 0, 3, 0], [2, 1, 3, 1]]);
+  const game = fakeGame();
+  game.loadJSON = async (p) => { assert.equal(p, 'graphs/sum.graph.json'); return sub; };
+  const { g } = await run(main, 3, game);
+  assert.equal(g.vars.out, 7, `sub returned a+b: ${JSON.stringify(g.vars)}`);
+  assert.equal(game.errors.length, 0);
+});
+
+test('graph trace stays silent unless a Graph editor asked for it', async () => {
+  const { graphTrace } = await import('./runner.js');
+  const sent = [];
+  const realFetch = globalThis.fetch;
+  globalThis.__nordServed = true;
+  let wanted = false;
+  globalThis.fetch = async (url, o) => { sent.push([url, o?.body]); return { json: async () => ({ wanted }) }; };
+  const def = build([[1, 'event/start']], []);
+  await run(def, 2);
+  await new Promise((r) => setTimeout(r, 20));
+  assert.ok(sent.every(([u]) => u === '/api/graph-trace'), 'only the poll, no trace posts while nobody watches');
+  wanted = true; graphTrace.on = true; // a Graph editor is open now
+  await run(def, 2);
+  await new Promise((r) => setTimeout(r, 120));
+  const post = sent.find(([u]) => u === '/__edit/cmd');
+  assert.ok(post, 'trace posted once watched');
+  assert.deepEqual(JSON.parse(post[1]).nodes.graph, [1]);
+  clearTimeout(graphTrace.poll); graphTrace.on = false; delete globalThis.__nordServed; globalThis.fetch = realFetch;
+});

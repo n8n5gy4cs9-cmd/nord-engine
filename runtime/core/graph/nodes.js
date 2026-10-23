@@ -74,7 +74,12 @@ flow('flow/switch', 'Switch', 'Flow', [['value', 'any']], [['case 2', 'exec'], [
 }, { case0: 'a', case1: 'b', case2: 'c' });
 NODES['flow/switch'].out = [['case 1', 'exec'], ['case 2', 'exec'], ['case 3', 'exec'], ['default', 'exec']];
 flow('flow/call-event', 'Call Custom Event', 'Flow', [['name', 'string', 'my-custom'], ['a', 'any'], ['b', 'any']], [], async (c) => { await c.g.callCustom(String(c.in(0)), c.in(1), c.in(2)); });
-flow('flow/call-graph', 'Run Graph File', 'Flow', [['file', 'string', 'graphs/other.graph.json'], ['a', 'any'], ['b', 'any']], [], async (c) => { await c.g.runFile(String(c.in(0)), { a: c.in(1), b: c.in(2) }); });
+flow('flow/call-graph', 'Run Graph File (Subgraph)', 'Flow', [['file', 'string', 'graphs/other.graph.json'], ['a', 'any'], ['b', 'any']], [['a', 'any'], ['b', 'any']], async (c) => {
+  // the file runs with `a` and `b` as variables; its Return node hands two values back
+  const r = await c.g.runFile(String(c.in(0)), { a: c.in(1), b: c.in(2) });
+  c.set(1, r?.a); c.set(2, r?.b);
+});
+def('flow/return', { title: 'Return', cat: 'Flow', in: [EX, ['a', 'any'], ['b', 'any']], out: [], run: (c) => { c.g.returned = { a: c.in(0), b: c.in(1) }; return STOP; } });
 flow('flow/stop', 'Stop Graph', 'Flow', [], [], (c) => { c.g.stop(); return STOP; });
 
 // ───────── Variables ─────────

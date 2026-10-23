@@ -17,6 +17,8 @@ pub struct ExportUi {
     pub compile_events: bool,
     /// empty = `<project>/dist`
     pub out: String,
+    /// next `start` builds the Android/iOS (Capacitor) project instead of the web folder
+    pub mobile: bool,
     running: Option<Receiver<Result<(String, PathBuf), String>>>,
     last_out: Option<PathBuf>,
     status: String,
@@ -34,6 +36,7 @@ impl Default for ExportUi {
             pwa: false,
             compile_events: true,
             out: String::new(),
+            mobile: false,
             running: None,
             last_out: None,
             status: String::new(),
@@ -86,7 +89,7 @@ pub fn start(st: &mut EditorState) {
     let web = cfg!(target_arch = "wasm32");
     let opts = Opts {
         target: e.target,
-        out: (!e.out.trim().is_empty()).then(|| PathBuf::from(e.out.trim())),
+        out: (!e.out.trim().is_empty() && !e.mobile).then(|| PathBuf::from(e.out.trim())),
         minify: e.minify && !web,
         single_file: e.single_file && !web,
         optimize: e.optimize && !web,
@@ -95,8 +98,14 @@ pub fn start(st: &mut EditorState) {
         compile_events: e.compile_events && !web,
     };
     let (tx, rx) = channel();
+    let mobile = std::mem::take(&mut st.export_ui.mobile);
     crate::platform::run_export(move || {
-        let r = nord_export::build(&root, &engine, &opts)
+        let built = if mobile {
+            nord_export::build_mobile(&root, &engine, &opts)
+        } else {
+            nord_export::build(&root, &engine, &opts)
+        };
+        let r = built
             .map(|r| (r.summary(), r.out))
             .map_err(|e| format!("{e:#}"));
         let _ = tx.send(r);

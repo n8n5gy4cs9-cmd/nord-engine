@@ -14,6 +14,93 @@ pub struct PrefabMode {
 /// Entity keys the Inspector can override (name/transform/enabled/tags stay on the instance itself).
 pub const KEYS: [&str; 5] = ["components", "scripts", "behaviors", "effects", "layer"];
 
+/// Id of the read-only Hierarchy row for the prefab child at `path` (child indices from the prefab root) of instance `inst`.
+pub fn child_id(inst: &str, path: &[usize]) -> String {
+    let p: Vec<String> = path.iter().map(usize::to_string).collect();
+    format!("v:pfc:{inst}:{}", p.join("."))
+}
+
+/// Inverse of [`child_id`].
+pub fn parse_child_id(id: &str) -> Option<(String, Vec<usize>)> {
+    let rest = id.strip_prefix("v:pfc:")?;
+    let (inst, p) = rest.rsplit_once(':')?;
+    let path: Option<Vec<usize>> = p.split('.').map(|n| n.parse().ok()).collect();
+    Some((inst.to_string(), path?))
+}
+
+/// The prefab-root descendant at `path`.
+pub fn base_child<'a>(root: &'a Entity, path: &[usize]) -> Option<&'a Entity> {
+    path.iter().try_fold(root, |e, &i| e.children.get(i))
+}
+
+fn child_slot<'a>(ov: &'a Map<String, Value>, path: &[usize]) -> Option<&'a Map<String, Value>> {
+    path.iter().try_fold(ov, |m, i| {
+        m.get("children")?
+            .as_object()?
+            .get(&i.to_string())?
+            .as_object()
+    })
+}
+
+/// Overrides stored on the instance for the child at `path` (only the Inspector-editable keys).
+pub fn child_overrides(ov: &Map<String, Value>, path: &[usize]) -> Map<String, Value> {
+    let mut out = Map::new();
+    if let Some(m) = child_slot(ov, path) {
+        for k in KEYS {
+            if let Some(v) = m.get(k) {
+                out.insert(k.into(), v.clone());
+            }
+        }
+    }
+    out
+}
+
+fn prune(m: &mut Map<String, Value>) {
+    if let Some(Value::Object(ch)) = m.get_mut("children") {
+        for v in ch.values_mut() {
+            if let Value::Object(o) = v {
+                prune(o);
+            }
+        }
+        ch.retain(|_, v| v.as_object().is_none_or(|o| !o.is_empty()));
+        if ch.is_empty() {
+            m.remove("children");
+        }
+    }
+}
+
+/// Replace the editable overrides of the child at `path` inside the instance's `ov` (empty patches disappear again).
+/// Children use the same `{"children": {"<index>": {...}}}` shape the runtime's `applyOverrides` already merges.
+pub fn set_child_overrides(ov: &mut Map<String, Value>, path: &[usize], patch: Map<String, Value>) {
+    let mut cur = &mut *ov;
+    for i in path {
+        let ch = cur
+            .entry("children")
+            .or_insert_with(|| Value::Object(Map::new()));
+        if !ch.is_object() {
+            *ch = Value::Object(Map::new());
+        }
+        let Some(Value::Object(chm)) = Some(ch) else {
+            return;
+        };
+        let slot = chm
+            .entry(i.to_string())
+            .or_insert_with(|| Value::Object(Map::new()));
+        if !slot.is_object() {
+            *slot = Value::Object(Map::new());
+        }
+        let Value::Object(m) = slot else {
+            return;
+        };
+        cur = m;
+    }
+    for k in KEYS {
+        cur.remove(k);
+    }
+    cur.extend(patch);
+    prune(ov);
+}
+
 /// Deep-merge `ov` onto `target`: objects merge, numeric-key objects patch arrays by index, anything else replaces.
 pub fn apply(target: &mut Value, ov: &Value) {
     match (target, ov) {
@@ -156,6 +243,21 @@ pub fn file_for(e: &Entity) -> Option<String> {
 }
 
 impl EditorState {
+    /// `read_prefab` for per-frame callers (Hierarchy): re-read only when the file's mtime changes.
+    pub fn read_prefab_cached(&mut self, path: &str) -> Option<Entity> {
+        let mt = nord_core::vfs::metadata(self.root.as_ref()?.join(path))
+            .and_then(|m| m.modified())
+            .ok()?;
+        if let Some((t, e)) = self.prefab_cache.get(path) {
+            if *t == mt {
+                return e.clone();
+            }
+        }
+        let e = self.read_prefab(path);
+        self.prefab_cache.insert(path.to_string(), (mt, e.clone()));
+        e
+    }
+
     /// The prefab file as stored (variants unresolved).
     pub fn read_prefab_file(&self, path: &str) -> Option<nord_core::scene::Prefab> {
         let txt = nord_core::vfs::read_to_string(self.root.as_ref()?.join(path)).ok()?;
@@ -385,6 +487,11 @@ impl EditorState {
 
     /// Overrides ▸ Apply all: write the instance (with its overrides) back into the prefab file and clear the overrides.
     pub fn apply_prefab(&mut self, id: &str) {
+        self.apply_prefab_part(id, None);
+    }
+
+    /// Overrides ▸ Apply one field (`only` = component index + field name); `None` applies everything.
+    pub fn apply_prefab_part(&mut self, id: &str, only: Option<(usize, String)>) {
         let Some(inst) = self
             .scene
             .as_ref()
@@ -401,6 +508,15 @@ impl EditorState {
             return;
         };
         let mut merged = effective(&inst, &base);
+        if let Some((ci, field)) = &only {
+            // keep the prefab as it is and take just this one value from the instance
+            let mut one = base.clone();
+            let val = merged.components.get(*ci).and_then(|c| c.fields.get(field));
+            if let (Some(v), Some(dst)) = (val, one.components.get_mut(*ci)) {
+                dst.fields.insert(field.clone(), v.clone());
+            }
+            merged = one;
+        }
         merged.id = base.id.clone();
         merged.name = base.name.clone();
         merged.transform = base.transform.clone();
@@ -439,10 +555,14 @@ impl EditorState {
             return;
         }
         let id = id.to_string();
+        let part = only.is_some();
         self.edit("Apply prefab overrides", None, |l| {
             if let Some(slot) = scene_ops::find_mut(l, &id) {
                 if let Some(pr) = slot.prefab.as_mut() {
-                    pr.overrides.clear();
+                    // a single field stays in the patch (now equal to the prefab, so harmless)
+                    if !part {
+                        pr.overrides.clear();
+                    }
                 }
             }
         });
@@ -453,6 +573,23 @@ impl EditorState {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn child_override_paths() {
+        assert_eq!(
+            parse_child_id(&child_id("abc", &[1, 0])),
+            Some(("abc".into(), vec![1, 0]))
+        );
+        let mut ov = Map::new();
+        let mut patch = Map::new();
+        patch.insert("layer".into(), Value::from(3));
+        set_child_overrides(&mut ov, &[1, 0], patch);
+        assert_eq!(ov["children"]["1"]["children"]["0"]["layer"], 3);
+        assert_eq!(child_overrides(&ov, &[1, 0])["layer"], 3);
+        set_child_overrides(&mut ov, &[1, 0], Map::new());
+        assert!(ov.is_empty(), "empty patches are pruned: {ov:?}");
+    }
+
     use nord_core::scene::{Component, PrefabRef, ScriptRef};
     use serde_json::json;
 

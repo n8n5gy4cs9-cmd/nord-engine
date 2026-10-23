@@ -62,3 +62,6 @@ The browser editor exports the web targets as a zip in the page (no minify / sin
 ### Full-source HTML app tutorials
 
 Paper Worlds and RSS River demonstrate local Phaser/Babylon modules inside a normal HTML-tier project. Their downloaded source archives include their pinned vendor files. Paper Worlds exports an additional `my-paper-desk.html` with embedded board data; place it beside the project's exported modules/vendor folders and serve/share the whole folder. PNG/JSON are normal browser downloads, not silent writes into dist. RSS River's static export keeps cached/imported news and its original demo; live feed refresh needs source CORS or a Nord host with declared net permissions. These JavaScript apps already load Havok WASM for physics; they are not Rust/WASM target projects. Optional Node hosting is described only, with no server implementation for these two apps.
+
+## Android / iOS (Capacitor project)
+Build Settings ▸ *Android / iOS ▸ Mobile project* (API: `nord_export::build_mobile`) exports the web build into `dist/mobile/www` and writes `capacitor.config.json` (`appId` from `export.mobile.appId` or `com.nord.<name>`, `webDir: "www"`), `package.json` and `README-MOBILE.md`. `npx cap add android|ios` then creates the native projects. The engine does not bundle Android Studio / Xcode, so APK / IPA builds happen on the owner's machine.

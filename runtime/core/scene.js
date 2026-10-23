@@ -71,6 +71,7 @@ export class Scene {
     this.backend?.createNative?.(e);
     for (const c of e._compData) {
       const { type, ...rest } = c;
+      if (rest.componentEnabled === false) continue; // Inspector checkbox off
       e.addComponent(type, rest);
     }
     for (const sd of e._scriptData) {

@@ -67,6 +67,7 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
     }
     let mut open = true;
     let mut build: Option<bool> = None;
+    let mut mobile_build = false;
     egui::Window::new("Build Settings")
         .open(&mut open)
         .default_width(520.0)
@@ -156,8 +157,15 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
                     }
                     ui.end_row();
                     ui.label("Android / iOS");
-                    ui.weak("planned");
-                    ui.add_enabled(false, egui::Button::new("—"));
+                    ui.weak("Capacitor project (dist/mobile)");
+                    if ui
+                        .button("Mobile project")
+                        .on_hover_text("Builds the game into dist/mobile/www and writes a Capacitor wrapper; README-MOBILE.md lists `npx cap add android|ios`")
+                        .clicked()
+                    {
+                        st.export_ui.mobile = true;
+                        mobile_build = true;
+                    }
                     ui.end_row();
                 });
             ui.separator();
@@ -165,6 +173,9 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
                 st.export_ui.open = true;
             }
         });
+    if mobile_build {
+        crate::panels::export::start(st);
+    }
     if let Some(run) = build {
         st.build_ui.run_after = run;
         if run {

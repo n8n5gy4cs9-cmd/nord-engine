@@ -384,16 +384,71 @@ pub struct EventsUi {
     pub find: String,
     /// set by load/undo/redo so the diff at the end of the frame is not recorded as a user edit
     skip_record: bool,
+    /// condition / action shown in the Parameters form
+    sel: Option<(Path, String, usize)>,
+    /// debug highlight: event path ("2.0.1") -> game frame it last ran, from the running game
+    pub ran: std::collections::HashMap<String, u64>,
+    pub frame: u64,
+    last_poll: Option<Instant>,
+    /// last frame the Events panel was drawn (the game is only polled while it is visible)
+    shown: Option<Instant>,
+}
+
+/// JS evaluated in the running game: posts which event-sheet events ran recently (`game.debug.ran`).
+pub const EVENTS_JS: &str = "(()=>{const g=window.__nord;if(!g)return;const d=g.debug??g.enableDebug();fetch('/api/ipc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({t:'event-ran',frame:(d.sheet?.tickCount??d.frameNo),ran:[...d.ran.entries()]})}).catch(()=>{});})()";
+
+impl EventsUi {
+    /// JS to run now (every 0.3 s while the Events tab is shown and the game runs).
+    pub fn poll(&mut self, playing: bool) -> Option<&'static str> {
+        let visible = self.shown.is_some_and(|t| t.elapsed().as_millis() < 800);
+        if !playing || !visible {
+            if !self.ran.is_empty() && !playing {
+                self.ran.clear();
+            }
+            return None;
+        }
+        if self
+            .last_poll
+            .is_some_and(|t| t.elapsed().as_secs_f32() < 0.3)
+        {
+            return None;
+        }
+        self.last_poll = Some(Instant::now());
+        Some(EVENTS_JS)
+    }
+
+    /// `{t:"event-ran", frame, ran:[[path, frame], …]}` from [`EVENTS_JS`].
+    pub fn handle(&mut self, m: &Value) {
+        self.frame = m["frame"].as_u64().unwrap_or(0);
+        self.ran = m["ran"]
+            .as_array()
+            .map(|a| {
+                a.iter()
+                    .filter_map(|p| Some((p[0].as_str()?.to_string(), p[1].as_u64()?)))
+                    .collect()
+            })
+            .unwrap_or_default();
+    }
 }
 
 enum Op {
     Delete(Path),
     Move(Path, i32),
-    DropOn { from: Path, onto: Path },
+    DropOn {
+        from: Path,
+        onto: Path,
+    },
     AddSub(Path),
     AddBelow(Path),
     Duplicate(Path),
-    Pick { target: Path, cond: bool },
+    Pick {
+        target: Path,
+        cond: bool,
+    },
+    /// select a condition / action for the Parameters form (path, "conditions"|"actions", index)
+    Select(Path, String, usize),
+    /// F1 over a condition / action: open its manual page
+    Docs(String),
 }
 
 struct Ctx {
@@ -403,6 +458,9 @@ struct Ctx {
     data: Vec<(String, String)>,
     /// lower-case "Find in sheet" text (empty = show everything)
     find: String,
+    /// event paths that ran in the last ~30 game frames (debug highlight)
+    recent: std::collections::HashSet<String>,
+    sel: Option<(Path, String, usize)>,
 }
 
 /// `{type:"object", name, plugin}` declarations anywhere in the sheet.
@@ -527,6 +585,7 @@ impl EventsUi {
                     }
                 }
             }
+            Op::Select(..) | Op::Docs(_) => {}
             Op::Pick { target, cond } => {
                 self.picker = Some(Picker {
                     target,
@@ -563,6 +622,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         ui.weak("No project open");
         return;
     };
+    st.events.shown = Some(Instant::now());
     let sheets: Vec<String> = st.project_files(".events.json");
     let before = st.events.doc.clone();
     let mut load: Option<String> = None;
@@ -711,6 +771,21 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         vars,
         data,
         find: st.events.find.to_lowercase(),
+        // runtime paths count events after `include`s are flattened, so the highlight is only exact for sheets without includes
+        recent: if st.events.doc["events"]
+            .as_array()
+            .is_some_and(|a| a.iter().any(|e| e["type"] == "include"))
+        {
+            Default::default()
+        } else {
+            st.events
+                .ran
+                .iter()
+                .filter(|(_, f)| st.events.frame.saturating_sub(**f) <= 30)
+                .map(|(p, _)| p.clone())
+                .collect()
+        },
+        sel: st.events.sel.clone(),
     };
     ui.add(
         egui::TextEdit::singleline(&mut st.events.find)
@@ -718,6 +793,29 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             .desired_width(f32::INFINITY),
     );
     let mut ops: Vec<Op> = vec![];
+    // Parameters of the selected condition / action (Inspector style), docked below the sheet
+    if let Some(sel) = st.events.sel.clone() {
+        let mut keep = true;
+        egui::TopBottomPanel::bottom("ev-params")
+            .resizable(true)
+            .default_height(110.0)
+            .show_inside(ui, |ui| {
+                ui.horizontal(|ui| {
+                    ui.label(RichText::new("PARAMETERS").strong());
+                    if crate::icons::mini(ui, "x", "Close").clicked() {
+                        keep = false;
+                    }
+                });
+                egui::ScrollArea::vertical().show(ui, |ui| {
+                    if !params_form(ui, &mut st.events.doc, &sel, &cx) {
+                        keep = false; // the condition / action is gone
+                    }
+                });
+            });
+        if !keep {
+            st.events.sel = None;
+        }
+    }
     egui::ScrollArea::vertical()
         .auto_shrink([false, false])
         .show(ui, |ui| {
@@ -728,7 +826,11 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             nodes(ui, ev, &mut vec![], &cx, &mut ops);
         });
     for op in ops {
-        st.events.apply(op);
+        match op {
+            Op::Select(p, k, i) => st.events.sel = Some((p, k, i)),
+            Op::Docs(page) => st.push(crate::state::Action::OpenDocs(page)),
+            op => st.events.apply(op),
+        }
     }
     picker_window(st, ui.ctx(), &cx);
     if std::mem::take(&mut st.events.skip_record) {
@@ -1125,11 +1227,30 @@ fn group(ui: &mut Ui, g: &mut Value, path: &Path, cx: &Ctx, ops: &mut Vec<Op>) {
 
 fn event(ui: &mut Ui, ev: &mut Value, path: &Path, cx: &Ctx, ops: &mut Vec<Op>, function: bool) {
     let disabled = ev["disabled"].as_bool().unwrap_or(false);
-    let frame = egui::Frame::group(ui.style()).fill(if disabled {
-        Color32::from_black_alpha(40)
-    } else {
-        ui.visuals().faint_bg_color
-    });
+    let hot = cx.recent.contains(
+        &path
+            .iter()
+            .map(usize::to_string)
+            .collect::<Vec<_>>()
+            .join("."),
+    );
+    let frame = egui::Frame::group(ui.style())
+        .fill(if disabled {
+            Color32::from_black_alpha(40)
+        } else if hot {
+            Color32::from_rgb(28, 64, 44)
+        } else {
+            ui.visuals().faint_bg_color
+        })
+        .stroke(if hot {
+            egui::Stroke::new(1.5, Color32::from_rgb(90, 220, 140))
+        } else {
+            ui.visuals().widgets.noninteractive.bg_stroke
+        });
+    if hot {
+        ui.ctx()
+            .request_repaint_after(std::time::Duration::from_millis(300)); // fade out when it stops running
+    }
     let r = frame.show(ui, |ui| {
         ui.horizontal(|ui| {
             handle(ui, path, ops);
@@ -1244,7 +1365,29 @@ fn ace_list(ui: &mut Ui, ev: &mut Value, key: &str, path: &Path, cx: &Ctx, ops: 
                     .as_str()
                     .map(|b| format!("{b}: "))
                     .unwrap_or_default();
-                ui.label(RichText::new(format!("{bh}{label}")).color(color));
+                let selected = cx
+                    .sel
+                    .as_ref()
+                    .is_some_and(|(p, k, j)| p == path && k == key && *j == i);
+                let lr = ui
+                    .selectable_label(selected, RichText::new(format!("{bh}{label}")).color(color))
+                    .on_hover_text("Click: edit parameters below · F1: manual");
+                if lr.clicked() {
+                    ops.push(Op::Select(path.clone(), key.to_string(), i));
+                }
+                if lr.hovered() && ui.input(|i| i.key_pressed(egui::Key::F1)) {
+                    let plugin = if node.get("behavior").is_some() {
+                        "behaviors".to_string()
+                    } else {
+                        format!(
+                            "plugin-{}",
+                            node["object"].as_str().unwrap_or("system").to_lowercase()
+                        )
+                    };
+                    ops.push(Op::Docs(format!(
+                        "nord/reference/event-reference.html#{plugin}"
+                    )));
+                }
                 let names: Vec<String> = match def {
                     Some(d) => d.params.clone(),
                     None => node["params"]
@@ -1308,8 +1451,21 @@ fn param_edit(
     raw: bool,
     cx: &Ctx,
 ) -> Option<String> {
+    param_edit_w(ui, salt, name, cur, raw, cx, None)
+}
+
+/// `width`: fixed width (the Parameters form uses the full row); `None` sizes the box to its text.
+fn param_edit_w(
+    ui: &mut Ui,
+    salt: (&Path, &str, usize, &str),
+    name: &str,
+    cur: &str,
+    raw: bool,
+    cx: &Ctx,
+    width: Option<f32>,
+) -> Option<String> {
     let mut s = cur.to_string();
-    let w = (s.chars().count() as f32 * 7.5 + 24.0).clamp(46.0, 240.0);
+    let w = width.unwrap_or_else(|| (s.chars().count() as f32 * 7.5 + 24.0).clamp(46.0, 240.0));
     let r = ui.add(
         egui::TextEdit::singleline(&mut s)
             .id(egui::Id::new(("ev-param", salt)))
@@ -1351,9 +1507,172 @@ fn param_edit(
     out
 }
 
+/// `#rrggbb` inside optional quotes -> (rgb, was_quoted)
+fn hex_param(cur: &str) -> Option<([u8; 3], bool)> {
+    let t = cur.trim();
+    let (inner, quoted) = match t.strip_prefix('"').and_then(|x| x.strip_suffix('"')) {
+        Some(i) => (i, true),
+        None => (t, false),
+    };
+    let h = inner.strip_prefix('#')?;
+    (h.len() == 6 && h.chars().all(|c| c.is_ascii_hexdigit())).then(|| {
+        let b = |i: usize| u8::from_str_radix(&h[i..i + 2], 16).unwrap_or(0);
+        ([b(0), b(2), b(4)], quoted)
+    })
+}
+
+/// One row of the Parameters form: a widget that fits the value (colour picker, checkbox, number drag, or text with autocomplete).
+fn form_row(
+    ui: &mut Ui,
+    salt: (&Path, &str, usize, &str),
+    name: &str,
+    cur: &str,
+    raw: bool,
+    cx: &Ctx,
+) -> Option<String> {
+    let lname = name.to_lowercase();
+    let t = cur.trim();
+    if let Some((mut rgb, quoted)) = hex_param(t).or_else(|| {
+        (lname.contains("colour") || lname.contains("color"))
+            .then_some(([255, 255, 255], true))
+            .filter(|_| t.is_empty() || t == "\"\"")
+    }) {
+        let mut out = None;
+        ui.horizontal(|ui| {
+            if ui.color_edit_button_srgb(&mut rgb).changed() {
+                let h = format!("#{:02x}{:02x}{:02x}", rgb[0], rgb[1], rgb[2]);
+                out = Some(if quoted { format!("\"{h}\"") } else { h });
+            }
+            if let Some(v) = param_edit_w(ui, salt, name, cur, raw, cx, Some(ui.available_width()))
+            {
+                out = Some(v);
+            }
+        });
+        return out;
+    }
+    if t == "true" || t == "false" {
+        let mut b = t == "true";
+        let label = if b { "true" } else { "false" };
+        return ui.checkbox(&mut b, label).changed().then(|| b.to_string());
+    }
+    if let Ok(mut n) = t.parse::<f64>() {
+        let mut out = None;
+        ui.horizontal(|ui| {
+            let speed = if n.fract() == 0.0 && n.abs() >= 10.0 {
+                1.0
+            } else {
+                0.05
+            };
+            if ui.add(egui::DragValue::new(&mut n).speed(speed)).changed() {
+                out = Some(if n.fract() == 0.0 && n.abs() < 1e15 {
+                    format!("{}", n as i64)
+                } else {
+                    format!("{n}")
+                });
+            }
+            if let Some(v) = param_edit_w(ui, salt, name, cur, raw, cx, Some(ui.available_width()))
+            {
+                out = Some(v);
+            }
+        });
+        return out;
+    }
+    param_edit_w(ui, salt, name, cur, raw, cx, Some(ui.available_width()))
+}
+
+/// Inspector-style form for the selected condition / action: label on the left, a fitting widget on the right.
+fn params_form(ui: &mut Ui, doc: &mut Value, sel: &(Path, String, usize), cx: &Ctx) -> bool {
+    let cat = catalog();
+    let cond = sel.1 == "conditions";
+    let Some(root) = doc.get_mut("events").and_then(Value::as_array_mut) else {
+        return false;
+    };
+    let Some(node) = node_mut(root, &sel.0)
+        .and_then(|e| e.get_mut(sel.1.as_str()))
+        .and_then(|l| l.get_mut(sel.2))
+    else {
+        return false;
+    };
+    let def = find_ace(cat, node, cond, &cx.data);
+    let names: Vec<String> = match def {
+        Some(d) => d.params.clone(),
+        None => node["params"]
+            .as_object()
+            .map(|o| o.keys().cloned().collect())
+            .unwrap_or_default(),
+    };
+    let title = node["id"].as_str().map(pretty).unwrap_or_default();
+    ui.horizontal(|ui| {
+        ui.label(
+            RichText::new(format!(
+                "{} · {}",
+                node["object"].as_str().unwrap_or(""),
+                title
+            ))
+            .strong(),
+        );
+        ui.weak(if cond { "condition" } else { "action" });
+    });
+    if names.is_empty() {
+        ui.weak("No parameters.");
+    }
+    egui::Grid::new("ev-params-grid")
+        .num_columns(2)
+        .spacing([8.0, 4.0])
+        .show(ui, |ui| {
+            for name in names {
+                let raw = def.is_some_and(|d| d.raw.contains(&name));
+                let cur = match &node["params"][&name] {
+                    Value::String(s) => s.clone(),
+                    Value::Null => String::new(),
+                    v => v.to_string(),
+                };
+                ui.label(pretty(&name));
+                if let Some(new) = form_row(
+                    ui,
+                    (&sel.0, &sel.1, sel.2, &format!("form-{name}")),
+                    &name,
+                    &cur,
+                    raw,
+                    cx,
+                ) {
+                    if !node["params"].is_object() {
+                        node["params"] = json!({});
+                    }
+                    node["params"][&name] = json!(new);
+                }
+                ui.end_row();
+            }
+        });
+    true
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn form_helpers() {
+        assert_eq!(hex_param("\"#ff8000\""), Some(([255, 128, 0], true)));
+        assert_eq!(hex_param("#0a0b0c"), Some(([10, 11, 12], false)));
+        assert_eq!(hex_param("\"red\""), None);
+        assert_eq!(hex_param("#12345"), None);
+    }
+
+    #[test]
+    fn debug_poll_and_parse() {
+        let mut e = EventsUi::default();
+        assert!(e.poll(false).is_none());
+        assert!(e.poll(true).is_none(), "panel not visible");
+        e.shown = Some(Instant::now());
+        assert!(e.poll(true).is_some());
+        assert!(e.poll(true).is_none(), "throttled");
+        e.handle(&json!({"frame": 120, "ran": [["0", 119], ["1.0", 40]]}));
+        assert_eq!(e.frame, 120);
+        assert_eq!(e.ran["0"], 119);
+        let _ = e.poll(false);
+        assert!(e.ran.is_empty(), "highlight clears when the game stops");
+    }
 
     fn tree() -> Vec<Value> {
         vec![

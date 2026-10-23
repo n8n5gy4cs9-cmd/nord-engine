@@ -98,6 +98,8 @@ pub struct Settings {
     /// Cmd/Ctrl + key: stop only
     pub stop_key: String,
     pub fps_shortcuts: FpsShortcuts,
+    /// Rebound editor shortcuts (`keymap::DEFS` id -> chord); only changed ones are stored
+    pub keymap: std::collections::BTreeMap<String, String>,
 }
 
 impl Default for Settings {
@@ -133,6 +135,7 @@ impl Default for Settings {
             run_key: "R".into(),
             stop_key: ".".into(),
             fps_shortcuts: FpsShortcuts::default(),
+            keymap: Default::default(),
         }
     }
 }
@@ -143,6 +146,7 @@ impl Settings {
         self.run_key = "R".into();
         self.stop_key = ".".into();
         self.fps_shortcuts = FpsShortcuts::default();
+        self.keymap.clear();
     }
 
     /// Key bound to run/stop-toggle (`run`) or stop-only; falls back to the default when the saved name is not a key.
@@ -337,6 +341,10 @@ pub struct EditorState {
     pub script_cache: HashMap<String, (web_time::SystemTime, Vec<crate::schema::Field>)>,
     /// read-only Hierarchy rows parsed from FPS level files (virt.rs)
     pub virt_cache: crate::virt::Cache,
+    /// Settings ▸ Shortcuts: the keymap id currently waiting for a key press
+    pub rebinding: Option<String>,
+    /// Prefab roots by path, keyed on file mtime (see `read_prefab_cached`).
+    pub prefab_cache: std::collections::HashMap<String, (web_time::SystemTime, Option<Entity>)>,
     /// viewport asked us not to echo the scene back after its own edit
     pub skip_viewport_sync: bool,
     pub hierarchy_filter: String,
@@ -440,6 +448,8 @@ impl EditorState {
             recover: None,
             script_cache: HashMap::new(),
             virt_cache: Default::default(),
+            rebinding: None,
+            prefab_cache: Default::default(),
             skip_viewport_sync: false,
             hierarchy_filter: String::new(),
             collapsed: Default::default(),
@@ -807,6 +817,40 @@ impl EditorState {
             scene_ops::insert(l, None, usize::MAX, e);
         });
         self.select(Some(id));
+    }
+
+    /// Drop an asset onto an existing entity (Hierarchy row or Scene object): set/add the matching component or script.
+    /// Returns false when the asset kind has no such meaning (prefabs, scenes…), so the caller can create an entity instead.
+    pub fn drop_asset_on_entity(&mut self, id: &str, path: &str) -> bool {
+        use nord_core::assets::{classify, AssetType};
+        let (kind, key): (&str, &str) = match classify(path) {
+            AssetType::Image | AssetType::Spritesheet => ("sprite", "texture"),
+            AssetType::Model => ("model", "path"),
+            AssetType::Audio => ("audioSource", "clip"),
+            AssetType::Material => ("material", "asset"),
+            _ if path.ends_with(".js") || path.ends_with(".ts") => ("", ""),
+            _ => return false,
+        };
+        let (id, path) = (id.to_string(), path.to_string());
+        self.edit("Drop asset on entity", None, |l| {
+            let Some(e) = scene_ops::find_mut(l, &id) else {
+                return;
+            };
+            if kind.is_empty() {
+                e.scripts.push(nord_core::scene::ScriptRef {
+                    path,
+                    attributes: Default::default(),
+                });
+                return;
+            }
+            if let Some(c) = e.components.iter_mut().find(|c| c.kind == kind) {
+                c.fields.insert(key.into(), json!(path));
+            } else if let Ok(c) = serde_json::from_value(json!({"type": kind, key: path})) {
+                e.components.push(c);
+            }
+        });
+        self.select(Some(id));
+        true
     }
 
     pub fn delete_selected(&mut self) {
@@ -1226,6 +1270,11 @@ impl EditorState {
             }
             Some("addAsset") => {
                 // Assets → Scene view drop: new entity from the asset, placed where it was dropped
+                if let (Some(path), Some(onto)) = (m["path"].as_str(), m["onto"].as_str()) {
+                    if self.drop_asset_on_entity(onto, path) {
+                        return;
+                    }
+                }
                 if let (Some(path), Some(p)) = (m["path"].as_str(), m["pos"].as_array()) {
                     let pos: Vec<f64> = p.iter().filter_map(Value::as_f64).collect();
                     let before = self.selection.clone();
@@ -1242,6 +1291,7 @@ impl EditorState {
                 }
             }
             Some("profiler") => self.fun_ui.profiler.data = Some(m.clone()),
+            Some("event-ran") => self.events.handle(m),
             Some("shot") => {
                 if let Some(d) = m["data"].as_str() {
                     self.save_screenshot(d);
@@ -1307,32 +1357,85 @@ impl EditorState {
                     }
                 });
             }
-            Some("key") => {
-                let (cmd, shift) = (
-                    m["cmd"].as_bool().unwrap_or(false),
-                    m["shift"].as_bool().unwrap_or(false),
-                );
-                let a = match (m["key"].as_str().unwrap_or(""), cmd) {
-                    ("q", false) => Some(Action::SetTool(Tool::Hand)),
-                    ("w", false) => Some(Action::SetTool(Tool::Move)),
-                    ("e", false) => Some(Action::SetTool(Tool::Rotate)),
-                    ("r", false) => Some(Action::SetTool(Tool::Scale)),
-                    ("t", false) => Some(Action::SetTool(Tool::Rect)),
-                    ("f", false) if shift => Some(Action::FocusAll),
-                    ("f", false) => Some(Action::Focus),
-                    ("delete" | "backspace", false) => Some(Action::Delete),
-                    ("z", true) if shift => Some(Action::Redo),
-                    ("z", true) => Some(Action::Undo),
-                    ("d", true) => Some(Action::Duplicate),
-                    ("s", true) => Some(Action::SaveAll),
-                    ("c", true) => Some(Action::Copy),
-                    ("v", true) => Some(Action::Paste),
-                    ("p", true) => Some(Action::QuickOpen),
-                    ("k", true) => Some(Action::Palette),
-                    _ => None,
+            Some("transforms") => {
+                // several objects dragged together (multi-select gizmo): one undo step for the group
+                let v3 = |a: &Value| -> Option<[f64; 3]> {
+                    let a = a.as_array()?;
+                    Some([
+                        a.first()?.as_f64()?,
+                        a.get(1)?.as_f64()?,
+                        a.get(2)?.as_f64()?,
+                    ])
                 };
-                if let Some(a) = a {
-                    self.push(a);
+                type Xf = (String, Option<[f64; 3]>, Option<[f64; 3]>, Option<[f64; 3]>);
+                let items: Vec<Xf> = m["items"]
+                    .as_array()
+                    .map(|a| {
+                        a.iter()
+                            .filter_map(|i| {
+                                Some((
+                                    i["id"].as_str()?.to_string(),
+                                    v3(&i["pos"]),
+                                    v3(&i["rot"]),
+                                    v3(&i["scale"]),
+                                ))
+                            })
+                            .collect()
+                    })
+                    .unwrap_or_default();
+                if items.is_empty() {
+                    return;
+                }
+                let key = format!(
+                    "xfm:{}",
+                    items
+                        .iter()
+                        .map(|i| i.0.as_str())
+                        .collect::<Vec<_>>()
+                        .join(",")
+                );
+                self.skip_viewport_sync = true;
+                self.edit("Transform", Some(&key), |l| {
+                    for (id, pos, rot, scale) in &items {
+                        if let Some(e) = scene_ops::find_mut(l, id) {
+                            if let Some(p) = pos {
+                                e.transform.pos = *p;
+                            }
+                            if let Some(r) = rot {
+                                e.transform.rot = *r;
+                            }
+                            if let Some(s) = scale {
+                                e.transform.scale = *s;
+                            }
+                        }
+                    }
+                });
+            }
+            Some("key") => {
+                // the Scene view page forwards every key; the (rebindable) keymap decides what it means
+                let flag = |k: &str| m[k].as_bool().unwrap_or(false);
+                let id = crate::keymap::from_page_key(
+                    &self.settings.keymap,
+                    m["key"].as_str().unwrap_or(""),
+                    flag("cmd"),
+                    flag("shift"),
+                    flag("alt"),
+                );
+                match id {
+                    Some("play") => {
+                        let a = if self.is_playing() {
+                            Action::Stop
+                        } else {
+                            Action::Play
+                        };
+                        self.push(a);
+                    }
+                    Some(id) => {
+                        if let Some(a) = crate::keymap::action(id) {
+                            self.push(a);
+                        }
+                    }
+                    None => {}
                 }
             }
             Some("thumb") => {

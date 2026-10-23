@@ -29,25 +29,50 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
         egui::Window::new("Settings").open(&mut open).default_width(560.0).default_height(560.0).vscroll(true).show(ctx, |ui| {
             let s = &mut st.settings;
             egui::CollapsingHeader::new("Shortcuts (Unity defaults)").show(ui, |ui| {
-                egui::Grid::new("shortcuts").num_columns(2).show(ui, |ui| {
-                    for (k, what) in [
-                        ("Q / W / E / R / T", "Hand / Move / Rotate / Scale / Rect tool"),
-                        ("F", "Frame selected"),
-                        ("Cmd+D / Cmd+C / Cmd+V", "Duplicate / Copy / Paste"),
-                        ("Cmd+Z / Shift+Cmd+Z", "Undo / Redo"),
-                        ("Delete", "Delete selected"),
-                        ("F5 / F6", "Play / Run this scene"),
-                        ("Cmd+S", "Save all"),
-                        ("Cmd+P / Cmd+K", "Quick open / Command palette"),
-                        ("Cmd+1..4", "Scene / Game / Code / Assets"),
-                        ("Cmd+,", "Settings"),
-                    ] {
-                        ui.monospace(k);
-                        ui.label(what);
+                // capture: the next key press (with its modifiers) becomes the new chord; Esc cancels
+                if st.rebinding.is_some() {
+                    let ev = ui.ctx().input(|i| {
+                        i.events.iter().find_map(|e| match e {
+                            egui::Event::Key { key, pressed: true, modifiers, repeat: false, .. } => Some((*key, *modifiers)),
+                            _ => None,
+                        })
+                    });
+                    if let Some((key, mods)) = ev {
+                        if let Some(id) = st.rebinding.take() {
+                            if key != egui::Key::Escape {
+                                s.keymap.insert(id, crate::keymap::format_chord(mods, key));
+                                s.save();
+                            }
+                        }
+                    }
+                }
+                egui::Grid::new("shortcuts").num_columns(3).spacing([10.0, 4.0]).show(ui, |ui| {
+                    for def in crate::keymap::DEFS {
+                        ui.label(def.label);
+                        let waiting = st.rebinding.as_deref() == Some(def.id);
+                        let text = if waiting { "press keys…".to_string() } else { crate::keymap::chord_text(&s.keymap, def).to_string() };
+                        let clash = crate::keymap::conflicts(&s.keymap, def.id);
+                        let mut b = egui::RichText::new(text).monospace();
+                        if !clash.is_empty() {
+                            b = b.color(egui::Color32::from_rgb(240, 140, 90));
+                        }
+                        let r = ui.add_sized([150.0, 20.0], egui::Button::new(b).selected(waiting));
+                        if r.clicked() {
+                            st.rebinding = if waiting { None } else { Some(def.id.to_string()) };
+                        }
+                        if !clash.is_empty() {
+                            r.on_hover_text(format!("Same keys as: {}", clash.join(", ")));
+                        }
+                        if s.keymap.contains_key(def.id) && crate::icons::mini(ui, "rotate-ccw", &format!("Back to {}", def.default)).clicked() {
+                            s.keymap.remove(def.id);
+                            s.save();
+                        } else {
+                            ui.label("");
+                        }
                         ui.end_row();
                     }
                 });
-                ui.weak("Rebinding: todo (G0-4).");
+                ui.weak("Click a key box, then press the new keys (Esc cancels). Orange = two actions share the keys. Run/stop keys are below.");
             });
             egui::Grid::new("settings").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
                 ui.label("Skin (fonts)");
@@ -174,6 +199,7 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
         }
         if !open {
             st.settings_open = false;
+            st.rebinding = None;
             st.settings.save();
         }
     }

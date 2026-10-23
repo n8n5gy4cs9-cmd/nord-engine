@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="/vendor/litegraph/litegraph.css">
 <link rel="stylesheet" href="style.css">
+<script>window.__nord = { hotReload: () => true }; // saving a file here must not reload (and wipe) the page</script>
 </head>
 <body>
 <header id="top">
@@ -17,6 +18,7 @@
   <span class="sep"></span>
   <button id="fit" title="Zoom to fit (F)">Fit</button>
   <button id="group" title="Draw a titled group around the selected nodes">Group</button>
+  <button id="subgraph" title="Move the selected nodes into their own graph file and replace them with a Run Graph File node">Make subgraph</button>
   <button id="docs" title="Open the manual page for the selected node (F1)">Docs</button>
   <button id="arrange" title="Tidy the selected nodes into a column">Arrange</button>
   <button id="check">Validate</button>
