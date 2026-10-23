@@ -392,6 +392,28 @@ function buildPath(e, node, p) {
   l.color = B.Color3.FromHexString('#ffd166'); l.parent = node; l.isPickable = false; iconMeshes.push(l);
 }
 
+// Material component / `.mat.json` asset -> Standard material (colour, texture, emissive map, normal map, UV scale, alpha), like the game.
+const matCache = new Map();
+function matAsset(path) {
+  if (!matCache.has(path)) matCache.set(path, fetch('/' + path).then((r) => (r.ok ? r.json() : null)).catch(() => null));
+  return matCache.get(path);
+}
+function fillMaterial(sm, d) {
+  sm.diffuseColor = hex(d?.color); sm.specularColor = new B.Color3(0.1, 0.1, 0.1);
+  sm.backFaceCulling = !d?.doubleSided;
+  const tex = (p, bump) => {
+    const t = new B.Texture('/' + p, scene);
+    if (d.uvScale) { t.uScale = d.uvScale[0]; t.vScale = d.uvScale[1]; }
+    if (d.uvOffset) { t.uOffset = d.uvOffset[0]; t.vOffset = d.uvOffset[1]; }
+    return t;
+  };
+  if (d?.texture) { sm.diffuseTexture = tex(d.texture); sm.diffuseColor = B.Color3.White(); }
+  if (d?.normalMap) sm.bumpTexture = tex(d.normalMap);
+  if (d?.emissiveMap) { sm.emissiveTexture = tex(d.emissiveMap); sm.emissiveColor = d.emissive ? hex(d.emissive) : B.Color3.White(); }
+  else if (d?.emissive) sm.emissiveColor = hex(d.emissive);
+  if ((d?.alpha ?? 1) < 1) sm.alpha = d.alpha;
+}
+
 function buildEntity(e, parentNode, token) {
   const node = new B.TransformNode(e.name || e.id, scene);
   node.parent = parentNode;
@@ -416,8 +438,9 @@ function buildEntity(e, parentNode, token) {
     if (make) {
       const m = make(); m.parent = node; tag(m, e.id);
       const mat = comp(e, 'material');
-      const sm = new B.StandardMaterial(n + 'm', scene); sm.diffuseColor = hex(mat?.color); sm.specularColor = new B.Color3(0.1, 0.1, 0.1);
-      sm.backFaceCulling = !mat?.doubleSided; m.material = sm;
+      const sm = new B.StandardMaterial(n + 'm', scene); m.material = sm;
+      fillMaterial(sm, mat);
+      if (mat?.asset) matAsset(mat.asset).then((a) => { if (a && !m.isDisposed()) fillMaterial(sm, { ...mat, ...a }); });
       visual = true;
     }
   }
@@ -467,7 +490,7 @@ export function setScene() {
   iconMeshes = []; colliderMeshes = [];
   for (const { node } of nodes.values()) { node.getChildMeshes(false).forEach((m) => m.dispose()); }
   for (const { node } of [...nodes.values()].reverse()) node.dispose();
-  nodes.clear(); lockedIds.clear();
+  nodes.clear(); lockedIds.clear(); matCache.clear();
   for (const e of state.scene?.entities ?? []) buildEntity(e, null, buildToken);
   setSelection();
   setSettings();

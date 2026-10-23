@@ -1602,6 +1602,15 @@ impl App {
     pub fn frame_ui(&mut self, ctx: &Context, frame: Option<&eframe::Frame>) {
         egui_extras::install_image_loaders(ctx);
         self.web_events(ctx);
+        if let Some(rel) = ctx.data_mut(|d| d.remove_temp::<String>(egui::Id::new("ping_asset"))) {
+            let a = &mut self.st.assets_ui;
+            a.dir = rel
+                .rsplit_once('/')
+                .map_or(String::new(), |(d, _)| d.to_string());
+            (a.search, a.kind_filter, a.only_favorites) = (String::new(), None, false);
+            (a.selected, a.scroll_to_selected) = (Some(rel), true);
+            self.show_tab(Tab::Assets);
+        }
         if self.splash(ctx) {
             return;
         }

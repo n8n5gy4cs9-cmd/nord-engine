@@ -29,6 +29,8 @@ pub struct AssetsUi {
     pub confirm_delete: Option<String>,
     /// last clicked entry (F2 rename, Delete, Ctrl/Cmd+D duplicate act on it)
     pub selected: Option<String>,
+    /// scroll the selected entry into view once (set by the Inspector's *Show in Assets* ping)
+    pub scroll_to_selected: bool,
     listing: Vec<Entry>,
     listed_at: Option<Instant>,
     listed_dir: String,
@@ -70,6 +72,7 @@ impl Default for AssetsUi {
             rename: None,
             confirm_delete: None,
             selected: None,
+            scroll_to_selected: false,
             listing: vec![],
             listed_at: None,
             listed_dir: String::new(),
@@ -748,6 +751,11 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
                         Vec2::new(cell, cell + 18.0)
                     };
                     let (rect, resp) = ui.allocate_exact_size(size, Sense::click_and_drag());
+                    if st.assets_ui.selected.as_deref() == Some(e.rel.as_str())
+                        && std::mem::take(&mut st.assets_ui.scroll_to_selected)
+                    {
+                        ui.scroll_to_rect(rect, Some(egui::Align::Center));
+                    }
                     if !ui.is_rect_visible(rect) {
                         continue; // lazy: no thumbnail work for off-screen cells
                     }

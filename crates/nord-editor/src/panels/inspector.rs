@@ -175,8 +175,10 @@ pub fn field_ui(ui: &mut Ui, cx: &Ctx, ty: &FieldType, v: &mut Value, id: &str) 
                     );
                 }
             }
+            // Unity: click the field's locate button to ping (select + scroll to) the file in the Assets browser
+            let ping_w = if cur.is_empty() { 0.0 } else { 30.0 };
             let resp = egui::ComboBox::from_id_salt(id)
-                .width(ui.available_width())
+                .width((ui.available_width() - ping_w).max(60.0))
                 .selected_text(if cur.is_empty() {
                     "(none)"
                 } else {
@@ -226,6 +228,12 @@ pub fn field_ui(ui: &mut Ui, cx: &Ctx, ty: &FieldType, v: &mut Value, id: &str) 
             if let Some(p) = resp.response.dnd_release_payload::<AssetDrag>() {
                 *v = json!(p.0);
                 ch = true;
+            }
+            if !cur.is_empty()
+                && icons::button(ui, "crosshair", "Show in Assets (ping the file)", false).clicked()
+            {
+                ui.ctx()
+                    .data_mut(|d| d.insert_temp(egui::Id::new("ping_asset"), cur.clone()));
             }
             resp.response.on_hover_text(&cur);
         }
