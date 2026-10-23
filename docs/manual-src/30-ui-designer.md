@@ -163,5 +163,13 @@ Other ways to get data in and out:
 | Style from my skin does not apply | The node's own **style** wins over skin rules; remove it, or check the rule name (`button`, `.danger`). |
 | Hidden panel invisible in the Designer | Not any more: hidden nodes are shown ghosted. They are hidden only in the running game. |
 
+## Scaler, handles, sprite states, tint and prefabs
+* **Canvas scaler:** select the root node and pick a mode under *Canvas scaler*: *Constant factor*, *Scale with screen* (reference resolution plus a width/height balance, like Unity's Canvas Scaler) or *Fit (letterbox)*. Positions, sizes and fonts then work in the reference resolution on every screen size.
+* **Resize handles:** the selected node shows eight handles in the preview; drag one to change **Width** / **Height**. The opposite edge stays where it is, whatever the anchor. Hold Ctrl/Cmd to resize without rounding.
+* **Sprite states:** buttons have *Sprite: normal / hover / pressed / disabled* fields (plus a shared 9-slice, scale and tint): one picture per state.
+* **Skin tint:** a skin rule can carry `image.tint`; the picture is multiplied by that colour when the skin loads.
+* **UI prefabs:** *Make UI prefab* saves the selected node as its own `ui/<name>.ui.json` and replaces it with an `instance` node. Edit the prefab once and every screen using it changes. *Open prefab* edits it, *Unpack* puts the nodes back inline.
+Details are in the [UI scenes reference](ui-scenes.html).
+
 ## See also
 [UI scenes reference](ui-scenes.html) · [T44 Menus and HUDs](tut-t44-ui-designer.html) · [T45 Skins and 9-slice](tut-t45-ui-skins-9slice.html) · [Node graphs](graph.html) · [UI & HUD basics](ui.html)

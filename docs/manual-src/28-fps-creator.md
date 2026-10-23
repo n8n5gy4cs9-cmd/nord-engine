@@ -89,6 +89,8 @@ Walls live **on edges**, so a door in a wall is one click. A piece (shape) and a
 
 <figure class="shot"><img src="assets/screenshots/ed-fpsc-build.png" alt="Build palette with materials, textures and wall pieces such as walls, windows and doors" loading="lazy"><figcaption>Build tab: pick a material slot, a texture and a wall piece — every piece works with every texture.</figcaption></figure>
 
+Navigation matches the Scene view: middle/right-drag or Space pans the 2D map, the wheel zooms about the cursor, **Home** fits the level, **Shift+F** frames the selected object (the 3D preview flies with the right mouse button and WASD, **F** focuses).
+
 ## Ready-made things
 * **Enemies**: Soldier, Guard, Heavy gunner, Sniper (laser warning), Zombie, Runner, Robot trooper, flying Drone, Auto turret, Mech (rockets), **Boss** (3 phases, summons minions, health bar). They see, hear gunshots, open doors, find paths around walls and patrol routes you draw.
 * **Pickups**: medkits, armor, four ammo types, five weapons, four key colours, coins and gems.

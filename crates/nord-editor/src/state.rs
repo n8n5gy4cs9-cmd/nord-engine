@@ -50,6 +50,9 @@ impl Default for FpsShortcuts {
     }
 }
 
+/// A cached prefab root plus the files it was built from (the prefab and every `variantOf` base) with their mtimes.
+pub type PrefabCacheEntry = (Vec<(String, web_time::SystemTime)>, Option<Entity>);
+
 #[derive(Serialize, Deserialize, Clone)]
 #[serde(default)]
 pub struct Settings {
@@ -344,7 +347,7 @@ pub struct EditorState {
     /// Settings ▸ Shortcuts: the keymap id currently waiting for a key press
     pub rebinding: Option<String>,
     /// Prefab roots by path, keyed on file mtime (see `read_prefab_cached`).
-    pub prefab_cache: std::collections::HashMap<String, (web_time::SystemTime, Option<Entity>)>,
+    pub prefab_cache: std::collections::HashMap<String, PrefabCacheEntry>,
     /// viewport asked us not to echo the scene back after its own edit
     pub skip_viewport_sync: bool,
     pub hierarchy_filter: String,

@@ -1,0 +1,1831 @@
+{
+  "format": 1,
+  "name": "harbor",
+  "settings": {
+    "eventSheet": "events/rules.events.json",
+    "graphs": [
+      "graphs/toasts.graph.json"
+    ]
+  },
+  "entities": [
+    {
+      "id": "nh000039",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          7,
+          -14
+        ],
+        "rot": [
+          22,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "fov": 62
+        },
+        {
+          "type": "postProcess",
+          "fxaa": true,
+          "bloom": true,
+          "bloomThreshold": 0.55,
+          "bloomWeight": 0.55,
+          "vignette": 0.35,
+          "tonemap": true,
+          "exposure": 1.1
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/chase-cam.js",
+          "attributes": {
+            "target": "Skiff",
+            "offset": [
+              0,
+              7,
+              -13
+            ],
+            "smoothing": 4
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "nh00003e",
+      "name": "Environment",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [
+        {
+          "id": "nh00003a",
+          "name": "Moon",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0,
+              30,
+              0
+            ],
+            "rot": [
+              48,
+              -35,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "light",
+              "kind": "directional",
+              "color": "#7f98ff",
+              "intensity": 0.4
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        },
+        {
+          "id": "nh00003b",
+          "name": "Ambient",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "light",
+              "kind": "hemispheric",
+              "color": "#3a4688",
+              "intensity": 0.3
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        },
+        {
+          "id": "nh00003c",
+          "name": "Sky",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "skybox",
+              "path": "assets/skybox/night"
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        },
+        {
+          "id": "nh00003d",
+          "name": "Water",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "mesh",
+              "shape": "ground",
+              "size": [
+                260,
+                0.2,
+                260
+              ]
+            },
+            {
+              "type": "material",
+              "asset": "assets/materials/water.mat.json"
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null,
+          "locked": true
+        }
+      ],
+      "prefab": null
+    },
+    {
+      "id": "nh000034",
+      "name": "Skiff",
+      "enabled": true,
+      "tags": [
+        "player"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0.35,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/skiff.js",
+          "attributes": {
+            "maxSpeed": 14,
+            "boostSpeed": 26,
+            "accel": 16,
+            "turnRate": 92,
+            "bounds": 70
+          }
+        }
+      ],
+      "children": [
+        {
+          "id": "nh000030",
+          "name": "Hull",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "mesh",
+              "shape": "box",
+              "size": [
+                1.5,
+                0.5,
+                3.2
+              ]
+            },
+            {
+              "type": "material",
+              "asset": "assets/materials/hull.mat.json"
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        },
+        {
+          "id": "nh000031",
+          "name": "Bow",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0,
+              0.05,
+              1.8
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "mesh",
+              "shape": "box",
+              "size": [
+                0.9,
+                0.35,
+                0.9
+              ]
+            },
+            {
+              "type": "material",
+              "asset": "assets/materials/neon-cyan.mat.json"
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        },
+        {
+          "id": "nh000032",
+          "name": "Cabin",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0,
+              0.5,
+              -0.3
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "mesh",
+              "shape": "box",
+              "size": [
+                1.0,
+                0.5,
+                1.2
+              ]
+            },
+            {
+              "type": "material",
+              "asset": "assets/materials/glass.mat.json"
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        },
+        {
+          "id": "nh000033",
+          "name": "Glow",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0,
+              1.4,
+              0
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "light",
+              "kind": "point",
+              "color": "#25e8ff",
+              "intensity": 1.2,
+              "range": 11
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        }
+      ],
+      "prefab": null
+    },
+    {
+      "id": "nh00003f",
+      "name": "Districts",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [
+        {
+          "id": "nh00000e",
+          "name": "Block 1",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -34,
+              0,
+              -30
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/block.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh00000f",
+          "name": "Block 2",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              34,
+              0,
+              -32
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/block.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000010",
+          "name": "Block 3",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -40,
+              0,
+              22
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/block.prefab.json",
+            "overrides": {
+              "children": {
+                "2": {
+                  "components": {
+                    "1": {
+                      "asset": "assets/materials/neon-cyan.mat.json"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "nh000011",
+          "name": "Block 4",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              42,
+              0,
+              26
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/block.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000012",
+          "name": "Tower 1",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0,
+              9,
+              52
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/tower.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000013",
+          "name": "Tower 2",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -16,
+              9,
+              48
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/tower.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000014",
+          "name": "Tower 3",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              22,
+              9,
+              46
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/tower.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000015",
+          "name": "Tall tower 1",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -52,
+              14,
+              -4
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/tower-tall.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000016",
+          "name": "Tall tower 2",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              54,
+              14,
+              -4
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/tower-tall.prefab.json",
+            "overrides": {}
+          }
+        }
+      ],
+      "prefab": null
+    },
+    {
+      "id": "nh000040",
+      "name": "Lamps",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [
+        {
+          "id": "nh000017",
+          "name": "Lamp 1",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -28,
+              0,
+              -58
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/lamp.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000018",
+          "name": "Lamp 2",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -20,
+              0,
+              -58
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/lamp.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000019",
+          "name": "Lamp 3",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -12,
+              0,
+              -58
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/lamp.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh00001a",
+          "name": "Lamp 4",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -4,
+              0,
+              -58
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/lamp.prefab.json",
+            "overrides": {
+              "components": {
+                "0": {
+                  "type": "light",
+                  "kind": "spot",
+                  "color": "#ffffff",
+                  "intensity": 0.8,
+                  "range": 18,
+                  "componentEnabled": false
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "nh00001b",
+          "name": "Lamp 5",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              4,
+              0,
+              -58
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/lamp.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh00001c",
+          "name": "Lamp 6",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              12,
+              0,
+              -58
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/lamp.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh00001d",
+          "name": "Lamp 7",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              20,
+              0,
+              -58
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/lamp.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh00001e",
+          "name": "Lamp 8",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              28,
+              0,
+              -58
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/lamp.prefab.json",
+            "overrides": {}
+          }
+        }
+      ],
+      "prefab": null
+    },
+    {
+      "id": "nh000041",
+      "name": "Data cores",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [
+        {
+          "id": "nh00001f",
+          "name": "Orb 1",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -0.3,
+              1.1,
+              40.4
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000020",
+          "name": "Orb 2",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              14.0,
+              1.1,
+              -4.5
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000021",
+          "name": "Orb 3",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -35.0,
+              1.1,
+              -6.1
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000022",
+          "name": "Orb 4",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              15.0,
+              1.1,
+              21.1
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000023",
+          "name": "Orb 5",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              15.8,
+              1.1,
+              7.1
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000024",
+          "name": "Orb 6",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              34.2,
+              1.1,
+              3.6
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000025",
+          "name": "Orb 7",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -1.7,
+              1.1,
+              -34.2
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000026",
+          "name": "Orb 8",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              25.5,
+              1.1,
+              13.2
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000027",
+          "name": "Orb 9",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -12.3,
+              1.1,
+              -17.6
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000028",
+          "name": "Orb 10",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -40.8,
+              1.1,
+              3.1
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh000029",
+          "name": "Orb 11",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              5.2,
+              1.1,
+              -20.3
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh00002a",
+          "name": "Orb 12",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -24.1,
+              1.1,
+              9.9
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh00002b",
+          "name": "Orb 13",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -8.7,
+              1.1,
+              -8.1
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh00002c",
+          "name": "Orb 14",
+          "enabled": true,
+          "tags": [
+            "orb"
+          ],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -11.2,
+              1.1,
+              0.9
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/orb.prefab.json",
+            "overrides": {}
+          }
+        }
+      ],
+      "prefab": null
+    },
+    {
+      "id": "nh000042",
+      "name": "Workers",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [
+        {
+          "id": "nh00002d",
+          "name": "Dockworker 1",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -12,
+              1,
+              -55
+            ],
+            "rot": [
+              0,
+              160,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "model",
+              "path": "assets/models/character.glb",
+              "animation": "idle"
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        },
+        {
+          "id": "nh00002e",
+          "name": "Dockworker 2",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -4,
+              1,
+              -55
+            ],
+            "rot": [
+              0,
+              185,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "model",
+              "path": "assets/models/character.glb",
+              "animation": "idle"
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        },
+        {
+          "id": "nh00002f",
+          "name": "Dockworker 3",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              6,
+              1,
+              -55
+            ],
+            "rot": [
+              0,
+              210,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "model",
+              "path": "assets/models/character.glb",
+              "animation": "idle"
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        }
+      ],
+      "prefab": null
+    },
+    {
+      "id": "nh000037",
+      "name": "Debug markers",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [
+        {
+          "id": "nh000035",
+          "name": "Start marker",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0,
+              3,
+              0
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "mesh",
+              "shape": "sphere",
+              "size": [
+                0.6,
+                0.6,
+                0.6
+              ]
+            },
+            {
+              "type": "material",
+              "asset": "assets/materials/neon-pink.mat.json"
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        },
+        {
+          "id": "nh000036",
+          "name": "Bounds marker",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              70,
+              3,
+              70
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "mesh",
+              "shape": "sphere",
+              "size": [
+                0.6,
+                0.6,
+                0.6
+              ]
+            },
+            {
+              "type": "material",
+              "asset": "assets/materials/neon-pink.mat.json"
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        }
+      ],
+      "prefab": null,
+      "hidden": true
+    },
+    {
+      "id": "nh000038",
+      "name": "Director",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/game-manager.js",
+          "attributes": {
+            "startLives": 1
+          }
+        },
+        {
+          "path": "scripts/harbor.js",
+          "attributes": {
+            "timeLimit": 100,
+            "orbsToWin": 14
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

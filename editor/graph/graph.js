@@ -1,6 +1,7 @@
 // Nord Graph Editor — litegraph.js canvas (MIT, vendor/litegraph) + Nord's node library (runtime/core/graph/nodes.js).
 // Saves graphs/<name>.graph.json; the runtime (runtime/core/graph/runner.js) executes them. Spec: docs/GRAPH.md
 import { NODES, SLOT_COLORS, validate } from '/runtime/core/graph/nodes.js';
+import { askText, askYes } from '/editor/common/dialog.js';
 
 // Chrome reports this harmless layout notification as an error; do not let it reach the editor console.
 addEventListener('error', (e) => { if (/ResizeObserver loop/.test(e.message)) e.stopImmediatePropagation(); });
@@ -259,11 +260,11 @@ if (typeof EventSource !== 'undefined') {
 window.__graph.onTrace = onTrace;
 
 // ── groups, docs (F1), minimap ──
-$('#group').onclick = () => {
+$('#group').onclick = async () => {
   const sel = Object.values(canvas.selected_nodes ?? {});
   if (!sel.length) return status('Select some nodes first', true);
   const x0 = Math.min(...sel.map((n) => n.pos[0])), y0 = Math.min(...sel.map((n) => n.pos[1])), x1 = Math.max(...sel.map((n) => n.pos[0] + n.size[0])), y1 = Math.max(...sel.map((n) => n.pos[1] + n.size[1]));
-  const g = new LiteGraph.LGraphGroup(prompt('Group title', 'Group') ?? 'Group');
+  const g = new LiteGraph.LGraphGroup((await askText('Group title', 'Group')) ?? 'Group');
   g.pos = [x0 - 20, y0 - 50]; g.size = [x1 - x0 + 40, y1 - y0 + 70];
   graph.add(g); canvas.setDirty(true, true); S.dirty = true;
 };
@@ -311,7 +312,7 @@ const TEMPLATES = {
   'Spawner (timer → spawn prefab)': () => { const a = put('event/timer', 40, 60, { seconds: 2 }), b = put('entity/spawn', 330, 60, { prefab: 'prefabs/enemy.prefab.json' }); link(a, 'then', b, 'exec'); },
 };
 for (const k of Object.keys(TEMPLATES)) el('option', { value: k, textContent: k }, $('#tpl'));
-$('#tpl').onchange = () => { const k = $('#tpl').value; if (!k) return; if (S.dirty && !confirm('Replace the current graph?')) { $('#tpl').value = ''; return; } graph.clear(); S.vars = {}; TEMPLATES[k](); drawVars(); S.dirty = true; fit(); check(); $('#tpl').value = ''; };
+$('#tpl').onchange = async () => { const k = $('#tpl').value; if (!k) return; if (S.dirty && !(await askYes('Replace the current graph?', 'Replace'))) { $('#tpl').value = ''; return; } graph.clear(); S.vars = {}; TEMPLATES[k](); drawVars(); S.dirty = true; fit(); check(); $('#tpl').value = ''; };
 
 // ── files ──
 const norm = (v) => { let n = v.trim().replace(/^\/+/, ''); if (!n.startsWith('graphs/')) n = 'graphs/' + n; if (!n.endsWith('.graph.json')) n = n.replace(/(\.json)?$/, '.graph.json'); return n; };
@@ -328,8 +329,8 @@ async function save() {
   if (!r.ok) return status('Save failed: ' + await r.text(), true);
   $('#file').value = name; S.dirty = false; status(`Saved ${name}`); list(); check();
 }
-$('#new').onclick = () => { if (S.dirty && !confirm('Discard unsaved changes?')) return; graph.clear(); S.vars = {}; put('event/start', 60, 80); drawVars(); S.dirty = false; fit(); };
-$('#open').onclick = () => { if (S.dirty && !confirm('Discard unsaved changes?')) return; openFile(norm($('#file').value || 'main')); };
+$('#new').onclick = async () => { if (S.dirty && !(await askYes('Discard unsaved changes?', 'Discard'))) return; graph.clear(); S.vars = {}; put('event/start', 60, 80); drawVars(); S.dirty = false; fit(); };
+$('#open').onclick = async () => { if (S.dirty && !(await askYes('Discard unsaved changes?', 'Discard'))) return; openFile(norm($('#file').value || 'main')); };
 $('#save').onclick = save;
 addEventListener('keydown', (e) => { const mod = e.metaKey || e.ctrlKey; if (mod && e.key === 's') { e.preventDefault(); save(); } else if (e.key === 'f' && !/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) fit(); });
 addEventListener('beforeunload', (e) => { if (S.dirty) e.preventDefault(); });

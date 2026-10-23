@@ -184,11 +184,39 @@ pub fn render_material(
     img
 }
 
+/// Cache file of an asset's thumbnail. Materials also depend on the pictures they reference, so their key mixes in those files:
+/// replacing the texture a material points at gives a fresh thumbnail even though the `.mat.json` itself did not change.
+pub fn thumb_path(root: &Path, a: &Asset) -> PathBuf {
+    let mut key = a.sha256.clone();
+    if a.kind == AssetType::Material {
+        if let Some(m) = crate::vfs::read_to_string(root.join(&a.path))
+            .ok()
+            .and_then(|t| serde_json::from_str::<serde_json::Value>(&t).ok())
+        {
+            for k in ["texture", "normalMap", "emissiveMap"] {
+                if let Some(p) = m[k].as_str().filter(|p| !p.is_empty() && !p.contains("..")) {
+                    // size + mtime is enough to notice a replaced picture without hashing it every frame
+                    if let Ok(md) = crate::vfs::metadata(root.join(p)) {
+                        let t = md
+                            .modified()
+                            .ok()
+                            .and_then(|t| t.duration_since(web_time::SystemTime::UNIX_EPOCH).ok())
+                            .map_or(0, |d| d.as_millis());
+                        key.push_str(&format!("|{p}|{}|{t}", md.len()));
+                    }
+                }
+            }
+        }
+        if key != a.sha256 {
+            key = crate::assets::sha256_bytes(key.as_bytes());
+        }
+    }
+    root.join(".nord-cache/thumbs").join(format!("{key}.png"))
+}
+
 /// Returns the cached thumbnail path for an asset (generating it if needed), or `None` if the type has no thumbnail.
 pub fn thumb_for(root: &Path, a: &Asset) -> Result<Option<PathBuf>> {
-    let out = root
-        .join(".nord-cache/thumbs")
-        .join(format!("{}.png", a.sha256));
+    let out = thumb_path(root, a);
     if out.v_exists() {
         return Ok(Some(out));
     }
@@ -278,6 +306,26 @@ mod tests {
 #[cfg(test)]
 mod material_tests {
     use super::*;
+
+    #[test]
+    fn material_thumbnail_key_follows_its_texture() {
+        let d = std::env::temp_dir().join(format!("nord-thumb-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&d);
+        std::fs::create_dir_all(&d).unwrap();
+        std::fs::write(d.join("a.mat.json"), r##"{"texture":"t.png"}"##).unwrap();
+        std::fs::write(d.join("t.png"), b"one").unwrap();
+        let a = Asset {
+            path: "a.mat.json".into(),
+            kind: AssetType::Material,
+            size: 0,
+            sha256: "same".into(),
+            meta: None,
+        };
+        let k1 = thumb_path(&d, &a);
+        std::fs::write(d.join("t.png"), b"another picture").unwrap();
+        assert_ne!(k1, thumb_path(&d, &a), "new texture bytes, new thumbnail");
+        let _ = std::fs::remove_dir_all(&d);
+    }
 
     #[test]
     fn lit_sphere_is_shaded_and_round() {

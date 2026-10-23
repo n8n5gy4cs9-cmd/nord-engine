@@ -126,3 +126,10 @@ Creator game templates **Two Floors — Dungeon Creator** and **Tiny Tank Patrol
 - **F1** over a component/script header → `Action::OpenDocs("nord/components/component-<type>.html")` in the browser (scripts → `nord/manual/scripting.html`).
 
 - **Build Settings** (File ▸ Build Settings…, Shift+Cmd+B): scenes in build (unchecked scenes are written to `export.excludeScenes` and left out of web exports; the start scene always ships), start scene, platform list, *Build* / *Build And Run*. **Game view toolbar:** resolution drop-down, scale slider, *Maximize on Play*, *Error Pause*, *Stats* overlay.
+
+## Godotize backlog (2026-10-23)
+- **Keymap** (`keymap.rs`): `Settings::keymap` stores only changed chords (`"tool.move": "Y"`); `DEFS` holds ids, labels, Unity defaults. `App::shortcuts` and the Scene view `key` message (now sent for every key with `cmd/shift/alt`) both resolve through it. Settings ▸ Shortcuts captures the next key press.
+- **Scene view:** multi-selection drags use one `transforms` message (one undo step); 3D attaches the gizmos to a pivot node (primary or bounds centre) and applies its world-matrix delta to every member; 3D marquee, axis gizmo, `locked`/`hidden` entity fields, drops on objects (`addAsset` with `onto`).
+- **Hierarchy / Inspector:** lock + eye toggles, prefab children rows (`v:pfc:<instance>:<path>`; edits go to `overrides.children`), component *Enabled* (`componentEnabled`), grouped Add Component (`schema::category_of`), Debug mode, per-field Apply (`apply_prefab_part`), lit material preview (`nord_core::thumbs::render_material`).
+- **Native web views hide while any menu/popup is open** (`App::overlays_open`: popups, top-bar menus and every egui `Foreground` layer). In-page `prompt()` / `confirm()` do not exist in the native web view; editor pages use `editor/common/dialog.js`.
+- **Event sheets:** Parameters form (`params_form`), debug highlight from `game.debug.ran` (polled with `EVENTS_JS`), F1 per condition/action. **Window menu:** Panels / Editors submenus.

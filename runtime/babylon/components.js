@@ -20,6 +20,8 @@ export function registerBabylonComponents(backend) {
       if (d.texture) m.albedoTexture = backend.texture(d.texture);
       if (d.normalMap) m.bumpTexture = backend.texture(d.normalMap, { srgb: false });
       if (d.emissive) m.emissiveColor = rgb(B, d.emissive);
+      // `emissiveMap`: a picture that glows (lit windows, neon signs); the emissive colour tints it (white when not set)
+      if (d.emissiveMap) { m.emissiveTexture = backend.texture(d.emissiveMap); m.emissiveColor = d.emissive ? rgb(B, d.emissive) : B.Color3.White(); }
     }
     for (const t of [m.albedoTexture, m.bumpTexture, m.emissiveTexture]) {
       if (!t) continue;
@@ -35,7 +37,7 @@ export function registerBabylonComponents(backend) {
   const applyMaterial = (e) => {
     const c = e.getComponent('material');
     if (c && !c.mat) c.mat = buildMaterial(c.data, `${e.name}.mat`);
-    for (const mesh of e.__meshes ?? []) mesh.material = c?.mat ?? mesh.__ownMat ?? defaultMat();
+    for (const mesh of e.__meshes ?? []) { if (mesh.isAnInstance) continue; /* instances share their source mesh's material (use the model's `unique` flag for a per-entity one) */ mesh.material = c?.mat ?? mesh.__ownMat ?? defaultMat(); }
   };
   const addMesh = (e, mesh, ownMat = null) => {
     (e.__meshes ??= []).push(mesh);
@@ -105,11 +107,11 @@ export function registerBabylonComponents(backend) {
           backend.game.loadJSON(asset).then((mj) => {
             if (e.destroyed) return;
             const mat = buildMaterial({ ...mj, asset }, `${e.name}.${slot}`);
-            for (const x of meshes) { x.__ownMat = mat; if (!e.getComponent('material')) x.material = mat; }
+            for (const x of meshes) { x.__ownMat = mat; if (!e.getComponent('material')) (x.isAnInstance ? x.sourceMesh : x).material = mat; }
           }).catch((err) => backend.game.warn(`[nord] model material ${asset}: ${err?.message ?? err}`));
         }
       }).catch(() => {});
-      for (const r of inst.rootNodes) { r.parent = e.native; for (const m of [r, ...r.getChildMeshes()]) if (m.getTotalVertices) { (e.__meshes ??= []).push(m); m.__ownMat = m.material; m.metadata = { entity: e }; if (backend.shadow) backend.shadow.addShadowCaster(m); m.receiveShadows = true; } }
+      for (const r of inst.rootNodes) { r.parent = e.native; for (const m of [r, ...r.getChildMeshes()]) if (m.getTotalVertices) { (e.__meshes ??= []).push(m); m.__ownMat = m.material; m.metadata = { entity: e }; if (backend.shadow) backend.shadow.addShadowCaster(m); if (!m.isAnInstance) m.receiveShadows = true; /* Babylon warns when this is set on instances */ } }
       const groups = new Map(inst.animationGroups.map((g) => [g.name.startsWith(`${e.name}.`) ? g.name.slice(e.name.length + 1) : g.name, g]));
       comp.animations = groups;
       for (const g of groups.values()) g.stop();

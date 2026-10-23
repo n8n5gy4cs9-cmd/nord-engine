@@ -1,4 +1,5 @@
 // Nord UI Designer — edits ui/*.ui.json (spec: docs/UI_SCENES.md). The preview is the real runtime (runtime/core/uiscene.js).
+import { askYes } from '/editor/common/dialog.js';
 import { UIManager, blank, validate, compileSkin, tintSkin, scalerFactor, NODE_TYPES, CONTAINERS } from '/runtime/core/uiscene.js';
 
 addEventListener('error', (e) => { if (/ResizeObserver loop/.test(e.message)) e.stopImmediatePropagation(); });
@@ -455,8 +456,8 @@ async function save() {
   if (!r.ok) return status('Save failed: ' + await r.text(), true);
   $('#file').value = name; S.dirty = false; status(`Saved ${name} — load it with game.ui.load('${name}')`); list();
 }
-function newFile() {
-  if (S.dirty && !confirm('Discard unsaved changes?')) return;
+async function newFile() {
+  if (S.dirty && !(await askYes('Discard unsaved changes?', 'Discard'))) return;
   S.def = blank('menu');
   S.def.root.children = [
     { type: 'label', name: 'title', text: '[b]MY GAME[/b]', size: 44, anchor: 't', y: 60, align: 'center' },

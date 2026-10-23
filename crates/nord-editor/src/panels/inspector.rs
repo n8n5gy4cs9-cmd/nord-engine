@@ -199,13 +199,11 @@ pub fn field_ui(ui: &mut Ui, cx: &Ctx, ty: &FieldType, v: &mut Value, id: &str) 
                                             Some(format!("file://{root}/{}", a.path))
                                         }
                                         AssetType::Material | AssetType::Model => {
-                                            let p = format!(
-                                                "{root}/.nord-cache/thumbs/{}.png",
-                                                a.sha256
+                                            let p = nord_core::thumbs::thumb_path(
+                                                std::path::Path::new(root),
+                                                a,
                                             );
-                                            std::path::Path::new(&p)
-                                                .exists()
-                                                .then(|| format!("file://{p}"))
+                                            p.exists().then(|| format!("file://{}", p.display()))
                                         }
                                         _ => None,
                                     };
@@ -447,19 +445,22 @@ fn draw_material_preview(ui: &mut Ui, data: &Map<String, Value>) {
     let (hash, tid) = (h.finish(), egui::Id::new("mat-preview-last"));
     // only the latest preview is kept (dragging a colour would otherwise leave hundreds of textures behind)
     let last: Option<(u64, egui::TextureHandle)> = ui.ctx().data(|d| d.get_temp(tid));
-    let tex = last.filter(|(k, _)| *k == hash).map(|(_, t)| t).unwrap_or_else(|| {
-        let img = nord_core::thumbs::render_material(
-            std::path::Path::new(root.as_deref().unwrap_or(".")),
-            data,
-            128,
-        );
-        let ci = egui::ColorImage::from_rgba_unmultiplied([128, 128], img.as_raw());
-        let t = ui
-            .ctx()
-            .load_texture("mat-preview", ci, egui::TextureOptions::LINEAR);
-        ui.ctx().data_mut(|d| d.insert_temp(tid, (hash, t.clone())));
-        t
-    });
+    let tex = last
+        .filter(|(k, _)| *k == hash)
+        .map(|(_, t)| t)
+        .unwrap_or_else(|| {
+            let img = nord_core::thumbs::render_material(
+                std::path::Path::new(root.as_deref().unwrap_or(".")),
+                data,
+                128,
+            );
+            let ci = egui::ColorImage::from_rgba_unmultiplied([128, 128], img.as_raw());
+            let t = ui
+                .ctx()
+                .load_texture("mat-preview", ci, egui::TextureOptions::LINEAR);
+            ui.ctx().data_mut(|d| d.insert_temp(tid, (hash, t.clone())));
+            t
+        });
     ui.add(egui::Image::new(&tex).fit_to_exact_size(egui::vec2(120.0, 120.0)));
 }
 

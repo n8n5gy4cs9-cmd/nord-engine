@@ -81,6 +81,9 @@ If there is no ready-made node, reach the engine directly:
 * **Log** nodes print to the Console. Runtime errors are shown there as `graph <file>`; the rest of the game keeps running.
 * An infinite loop is stopped after 200 000 steps with a clear error instead of freezing the game.
 
+## Subgraphs and the live flow
+Select some nodes and press **Make subgraph**: they move into their own graph file (`<graph>-sub1.graph.json`) and one **Run Graph File** node takes their place. One flow link must enter the selection and at most one may leave it; up to two values can go in (they appear inside as variables `a` and `b`) and up to two can come out (through a **Return** node, as the call node's `a` / `b` outputs). While the game plays and the Graph tab is open, nodes that run flash green, so you can watch the flow.
+
 ## Example: Coin Collector
 Open **New project ▸ Node graph: coin collector** (or `examples/nodegraph-coins`). No scripts: the player graph moves the player, finds coins, picks them up and updates the HUD; the scene graph loads the HUD made in the UI Designer. Follow [T46](tut-t46-node-graph-coins.html).
 

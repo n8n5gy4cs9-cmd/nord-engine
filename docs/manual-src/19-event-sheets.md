@@ -29,6 +29,9 @@ Read an event like a sentence. **Conditions** are the *if* part (Hero is overlap
 ] }
 ```
 
+## Parameters, highlight and help
+Click a condition or action to edit its parameters in the **PARAMETERS** panel under the sheet: each row has a widget that fits the value (a colour picker for `#rrggbb`, a checkbox for true/false, a number drag for numbers, a text box with autocomplete otherwise). While the game plays, events that ran in the last moments get a green frame (exact for sheets without `include` blocks). Hover a condition or action and press **F1** to open its section of the [event reference](event-reference.html).
+
 ## Objects and picking
 An **object type** is an entity's **name** (`Coin`) or **tag** (`enemy`) — or a *family* listed in `scene.settings.families`. Event conditions *pick* instances:
 

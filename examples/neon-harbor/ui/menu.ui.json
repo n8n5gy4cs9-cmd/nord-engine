@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "name": "menu",
+  "skin": "ui/neon.skin.json",
+  "theme": {},
+  "scaler": {
+    "mode": "scale",
+    "ref": [
+      1280,
+      720
+    ],
+    "match": 0.5
+  },
+  "root": {
+    "type": "panel",
+    "name": "root",
+    "anchor": "fill",
+    "style": {
+      "background": "#02060f70",
+      "border": "none",
+      "boxShadow": "none",
+      "padding": 0
+    },
+    "children": [
+      {
+        "type": "vbox",
+        "name": "box",
+        "anchor": "c",
+        "gap": 14,
+        "style": {
+          "alignItems": "center"
+        },
+        "children": [
+          {
+            "type": "label",
+            "name": "title",
+            "text": "NEON HARBOR",
+            "size": 84,
+            "bold": true,
+            "class": "title"
+          },
+          {
+            "type": "label",
+            "name": "sub",
+            "text": "Collect all 14 data cores before the night ends.",
+            "size": 20
+          },
+          {
+            "type": "spacer",
+            "h": 18
+          },
+          {
+            "type": "button",
+            "name": "play",
+            "text": "Start the run",
+            "size": 22,
+            "on": {
+              "pressed": "play"
+            },
+            "sprites": {
+              "normal": "assets/ui/button.png",
+              "hover": "assets/ui/button-hover.png",
+              "pressed": "assets/ui/button-pressed.png",
+              "disabled": "assets/ui/button-disabled.png",
+              "slice": [
+                14,
+                14,
+                14,
+                14
+              ],
+              "scale": 1
+            },
+            "style": {
+              "minWidth": 220,
+              "minHeight": 54,
+              "color": "#e6f6ff"
+            }
+          },
+          {
+            "type": "label",
+            "name": "best",
+            "text": "Best score {best}",
+            "size": 18,
+            "class": "hot"
+          }
+        ]
+      },
+      {
+        "type": "label",
+        "name": "credit",
+        "text": "A Nord Engine showcase · models CC0 by Kenney",
+        "anchor": "br",
+        "x": -16,
+        "y": -12,
+        "size": 13,
+        "wrap": false
+      }
+    ]
+  }
+}

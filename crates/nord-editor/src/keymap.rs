@@ -85,7 +85,9 @@ fn key_from(name: &str) -> Option<Key> {
     } else {
         // the page sends DOM names lower-cased ("f5", "escape", "arrowup")
         let mut cs = n.chars();
-        cs.next().map_or(String::new(), |f| f.to_ascii_uppercase().to_string() + cs.as_str())
+        cs.next().map_or(String::new(), |f| {
+            f.to_ascii_uppercase().to_string() + cs.as_str()
+        })
     };
     Key::from_name(&norm)
 }

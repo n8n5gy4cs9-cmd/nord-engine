@@ -68,7 +68,8 @@ An error in one node is reported to the Console and the editor overlay (as `grap
 | **Flip Flop** *(flow → A / B)* | `flow/flipflop` | — | isA:boolean | — |
 | **Switch** *(flow → case 1 / case 2 / case 3 / default)* | `flow/switch` | value:any | — | case0="a", case1="b", case2="c" |
 | **Call Custom Event** *(flow → then)* | `flow/call-event` | name:string="my-custom", a:any, b:any | — | — |
-| **Run Graph File** *(flow → then)* | `flow/call-graph` | file:string="graphs/other.graph.json", a:any, b:any | — | — |
+| **Run Graph File (Subgraph)** *(flow → then)* | `flow/call-graph` | file:string="graphs/other.graph.json", a:any, b:any | a:any, b:any | — |
+| **Return** *(flow)* | `flow/return` | a:any, b:any | — | — |
 | **Stop Graph** *(flow → then)* | `flow/stop` | — | — | — |
 
 ### Variables

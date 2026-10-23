@@ -67,8 +67,10 @@ The editor (egui) owns all state (project, selection, undo). The viewport page (
 by `nord-serve`) is a renderer + input surface. Transport is HTTP/SSE via the server's `Hub`, **independent of the webview**:
 - editor → page (SSE `/__edit/events`; tests may `POST /__edit/cmd`): `scene {project,scene,selection,rev}`, `select {ids}`,
   `settings {tool,snap,snapMove,snapRot,snapScale,grid}`, `focus`, `thumbs {items:[{path,sha}]}` (offscreen model thumbnails).
-- page → editor (`POST /api/ipc`, polled in-process): `ready`, `select {id}`, `transform {id,pos,rot,scale,final}`, `key {key,cmd,shift}`
+- page → editor (`POST /api/ipc`, polled in-process): `ready`, `select {id}`, `transform {id,pos,rot,scale,final}`, `transforms {items,final}` (group drags), `addAsset {path,pos|onto}`, `key {key,cmd,shift,alt}`
   (shortcuts forwarded because a native webview owns keyboard focus), `thumb {path}`, `log {text}`.
+- Live graph flow: an open Graph editor heartbeats `POST /api/graph-trace` (`x-nord`); the game polls `GET /api/graph-trace` and, only while someone watches, posts `{t:'graph-trace',nodes}` to `/__edit/cmd`, which reaches the Graph page over `/__edit/events`.
+- Shared 2D navigation for the Level editors lives in `editor/common/sceneview.js`.
 - Game/Play console: served HTML gets an injected hook posting `console.*` + errors to `/api/log`; the Console panel drains it.
 - Security: server binds 127.0.0.1 only, rejects non-loopback `Host` (DNS rebinding), JSON endpoints need `application/json` and the raw-body ones (`/__edit/cmd`, `/api/thumb-upload`) need an `x-nord` header, so other web pages cannot drive the editor (no CORS preflight is ever answered).
 - Webview (`--features webview`): `wry` child view placed over the egui panel rect (macOS WKWebView); hidden while an egui popup/modal is open.

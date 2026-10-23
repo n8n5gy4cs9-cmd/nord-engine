@@ -243,18 +243,39 @@ pub fn file_for(e: &Entity) -> Option<String> {
 }
 
 impl EditorState {
-    /// `read_prefab` for per-frame callers (Hierarchy): re-read only when the file's mtime changes.
+    /// `read_prefab` for per-frame callers (Hierarchy): re-read only when the prefab file or any of its `variantOf` bases changed.
     pub fn read_prefab_cached(&mut self, path: &str) -> Option<Entity> {
-        let mt = nord_core::vfs::metadata(self.root.as_ref()?.join(path))
-            .and_then(|m| m.modified())
-            .ok()?;
-        if let Some((t, e)) = self.prefab_cache.get(path) {
-            if *t == mt {
+        let root = self.root.clone()?;
+        let mtime = |p: &str| {
+            nord_core::vfs::metadata(root.join(p))
+                .and_then(|m| m.modified())
+                .ok()
+        };
+        if let Some((deps, e)) = self.prefab_cache.get(path) {
+            if deps.iter().all(|(p, t)| mtime(p) == Some(*t)) {
                 return e.clone();
             }
         }
+        // rebuild: remember the whole variant chain (cycle/depth guarded like resolve_prefab)
+        let mut deps = vec![];
+        let mut cur = Some(path.to_string());
+        while let Some(p) = cur.take() {
+            if deps.len() >= 9
+                || deps
+                    .iter()
+                    .any(|(d, _): &(String, web_time::SystemTime)| *d == p)
+            {
+                break;
+            }
+            let Some(t) = mtime(&p) else { break };
+            cur = self.read_prefab_file(&p).and_then(|f| f.variant_of);
+            deps.push((p, t));
+        }
         let e = self.read_prefab(path);
-        self.prefab_cache.insert(path.to_string(), (mt, e.clone()));
+        if !deps.is_empty() {
+            self.prefab_cache
+                .insert(path.to_string(), (deps, e.clone()));
+        }
         e
     }
 

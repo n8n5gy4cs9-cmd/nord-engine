@@ -1,0 +1,13 @@
+{
+  "color": "#06122c",
+  "metallic": 0.5,
+  "roughness": 0.2,
+  "texture": "assets/textures/grid.png",
+  "uvScale": [
+    40,
+    40
+  ],
+  "emissiveMap": "assets/textures/grid.png",
+  "emissive": "#2a6a9a",
+  "alpha": 1
+}

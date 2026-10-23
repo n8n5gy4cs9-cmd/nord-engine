@@ -45,7 +45,7 @@ Don't be afraid to click around: almost everything has undo. The two places you 
 :::
 
 ## Shortcuts
-See the [shortcut table](shortcuts.html) (also in Settings, Cmd+,). Highlights: Cmd+P quick open, Cmd+K command palette, W/E/R gizmos, F focus, Cmd+D duplicate.
+See the [shortcut table](shortcuts.html) (also in Settings, Cmd+,). Highlights: Cmd+P quick open, Cmd+K command palette, Q/W/E/R/T tools, F focus, Cmd+D duplicate. **Every editor shortcut can be changed** in Settings ▸ Shortcuts: click the key box, press the new keys (Esc cancels, the ↺ button restores the default). The 3D Scene view also has an axis gizmo in its top-right corner (click an axis to look along it), and a marquee selects several objects. See [Unity-style workflow](unity-workflow.html) for the full list.
 
 ## Themes and skins
 Settings → *Skin* (fonts) and *Theme* (colours). The same skins/themes exist for in-game UI (`project.ui.skin`/`ui.theme`, see [UI](ui.html)).

@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "name": "gameover",
+  "skin": "ui/neon.skin.json",
+  "theme": {},
+  "visible": false,
+  "scaler": {
+    "mode": "scale",
+    "ref": [
+      1280,
+      720
+    ],
+    "match": 0.5
+  },
+  "root": {
+    "type": "panel",
+    "name": "root",
+    "anchor": "fill",
+    "style": {
+      "background": "#02060fc0",
+      "border": "none",
+      "boxShadow": "none",
+      "padding": 0
+    },
+    "children": [
+      {
+        "type": "vbox",
+        "name": "card",
+        "anchor": "c",
+        "class": "card",
+        "gap": 12,
+        "style": {
+          "alignItems": "center",
+          "minWidth": 380
+        },
+        "children": [
+          {
+            "type": "label",
+            "name": "result",
+            "text": "{result}",
+            "size": 46,
+            "class": "title"
+          },
+          {
+            "type": "label",
+            "name": "final",
+            "text": "Score {score} · Best {best}",
+            "size": 24
+          },
+          {
+            "type": "label",
+            "name": "detail",
+            "text": "{detail}",
+            "size": 16
+          },
+          {
+            "type": "button",
+            "name": "retry",
+            "text": "Fly again",
+            "size": 22,
+            "on": {
+              "pressed": "retry"
+            },
+            "sprites": {
+              "normal": "assets/ui/button.png",
+              "hover": "assets/ui/button-hover.png",
+              "pressed": "assets/ui/button-pressed.png",
+              "disabled": "assets/ui/button-disabled.png",
+              "slice": [
+                14,
+                14,
+                14,
+                14
+              ],
+              "scale": 1
+            },
+            "style": {
+              "minWidth": 220,
+              "minHeight": 54,
+              "color": "#e6f6ff"
+            }
+          },
+          {
+            "type": "button",
+            "name": "menu",
+            "text": "Main menu",
+            "size": 22,
+            "on": {
+              "pressed": "menu"
+            },
+            "sprites": {
+              "normal": "assets/ui/button.png",
+              "hover": "assets/ui/button-hover.png",
+              "pressed": "assets/ui/button-pressed.png",
+              "disabled": "assets/ui/button-disabled.png",
+              "slice": [
+                14,
+                14,
+                14,
+                14
+              ],
+              "scale": 1
+            },
+            "style": {
+              "minWidth": 220,
+              "minHeight": 54,
+              "color": "#e6f6ff"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

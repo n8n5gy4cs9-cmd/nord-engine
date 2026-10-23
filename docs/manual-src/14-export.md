@@ -55,6 +55,9 @@ dist/  index.html  nord.json  scenes/ prefabs/ scripts/ assets/  runtime/  vendo
 | Netlify / Cloudflare Pages / S3 | upload the folder |
 Full notes: `docs/HOSTING.md`.
 
+## Android and iOS {#mobile}
+**File ▸ Build Settings… ▸ Android / iOS ▸ Mobile project** exports the game as a Capacitor project in `dist/mobile`: the web build in `www/`, `capacitor.config.json` (app id `com.nord.<name>`, or `export.mobile.appId` in `nord.project.json`), `package.json` and a `README-MOBILE.md`. In that folder run `npm install`, then `npx cap add android` or `npx cap add ios`, then `npm run android` / `npm run ios`. Android Studio (and Xcode for iOS) are not part of Nord Engine, so the app itself is built on your machine.
+
 ## Mac app
 ```
 nord bundle-mac my-game --name "My Game" --icon icon.png --dmg

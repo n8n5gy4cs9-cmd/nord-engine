@@ -30,8 +30,11 @@ Only when non-default: `assets/foo.png.meta.json`
   "filter": "nearest", "tags": ["character"] }
 ```
 
+### Import settings in the Inspector
+Select an image in Assets to edit `<image>.meta.json`: **Filter**, **Wrap**, **Pixels per unit** (sprites are drawn at size ÷ value), **Pivot** (nine presets, or the custom point set in the Sprite editor, which you open with the button below) and **Max size** (larger images are scaled down when the game loads; sprites keep their size in the world). Select a model to set **Scale** and, under **Materials**, replace each material stored in the model with one of your `*.mat.json` assets (`"materials": { "<name in the file>": "assets/materials/x.mat.json" }`). Pivot presets and max size are applied by the 2D (Phaser) backend; the 3D backend applies filter, wrap, scale and the material remap.
+
 ## Thumbnails
-`nord thumbs` (and the editor, lazily) write previews to `.nord-cache/thumbs`: real images, first sprite frame with a badge, audio waveforms, models rendered in the 3D view.
+`nord thumbs` (and the editor, lazily) write previews to `.nord-cache/thumbs`: real images, first sprite frame with a badge, audio waveforms, models rendered in the 3D view and materials as lit spheres (the thumbnail follows the texture a material uses).
 
 ## Built-in placeholder art
 The engine ships generated placeholder textures, sprites, UI, audio and skyboxes, so a new project is never empty. `ASSETS.md` in the repository lists each group and how to replace it.

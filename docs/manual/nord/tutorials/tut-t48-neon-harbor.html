@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T48 Neon Harbor, the full Unity-style showcase — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a><a href="tut-t38-coastline-sprint.html">T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t39-vector-patrol.html">T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t40-jengatedris.html">T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t41-nord-office.html">T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t42-paper-worlds.html">T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><a href="tut-t43-rss-river.html">T43 RSS River — build a calm reader with a physical paper view</a><a href="tut-t44-ui-designer.html">T44 Menus and HUDs with the UI Designer</a><a href="tut-t45-ui-skins-9slice.html">T45 One style for every button, and 9-slice images</a><a href="tut-t46-node-graph-coins.html">T46 Node graph — build a coin collector with no code</a><a href="tut-t47-unity-workflow.html">T47 The Unity-style workflow</a><a href="tut-t48-neon-harbor.html" class="cur" aria-current="page">T48 Neon Harbor, the full Unity-style showcase</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T48 Neon Harbor, the full Unity-style showcase</h1>
+<p><strong>Result:</strong> you fly a neon skiff through a 3D city at night, collect 14 data cores, and read everything on a 2D layer (HUD, minimap, menus). Then you take the project apart with every editor feature added in the Unity-style workflow, change something with each one, and export it. Allow 60 to 90 minutes. <strong>Start from:</strong> the finished project below, no empty project needed.</p>
+<p><strong>Download:</strong> <a href="../../assets/downloads/neon-harbor-source.zip">Complete Neon Harbor project, source, art and sounds</a>. Extract it into a writable folder, open <code>nord.project.json</code> in Nord and press <strong>Play (F5)</strong>. No npm, account or external download is needed. The same project lives in the engine repository as <code>examples/neon-harbor</code> and is regenerated by <code>tools/make-neon-harbor.py</code>.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-nh-run.png" alt="Neon Harbor: a glowing skiff on a neon grid sea, towers with lit windows, score chips, a minimap and a boost bar" loading="lazy"><figcaption>The finished game: a 3D world with a 2D HUD, a live minimap and a boost bar.</figcaption></figure><aside class="box dummies"><div class="box-title">For dummy developers</div><p><strong>3D</strong> is the world you move through (water, towers, the skiff, lights). <strong>2D</strong> is the flat layer on top (numbers, bars, buttons, the minimap). Nord draws both in one window: Babylon renders the 3D world, and the UI scenes (<code>*.ui.json</code>) float above it. This tutorial is a guided tour of a finished game: you open each part, see how it is made, change one thing, and watch the result.</p>
+</aside><h2 id="0-play-it-first">0. Play it first<a class="anchor" href="#0-play-it-first">#</a></h2>
+<ol>
+<li>Extract the zip, open the project in Nord (File ▸ Open project…), choose <strong>Window ▸ Layout ▸ Unity 2 by 3</strong>.</li>
+<li>Press <strong>Play (F5)</strong>. The title screen flies over the harbour. Press <em>Start the run</em>.</li>
+<li><strong>W/S</strong> throttle, <strong>A/D</strong> steer, <strong>Shift</strong> boost (it drains the energy bar), <strong>P</strong> or <strong>Esc</strong> pause. Collect three cores quickly: the <strong>OVERDRIVE</strong> banner adds five seconds. Collect all 14 before the clock runs out.</li>
+</ol>
+<figure class="shot"><img src="../../assets/screenshots/ed-nh-menu.png" alt="The title screen: NEON HARBOR over a flying camera view of the towers" loading="lazy"><figcaption>The title screen. The 3D scene behind it is a real scene with a slow orbit camera.</figcaption></figure><h2 id="1-what-is-in-the-project">1. What is in the project<a class="anchor" href="#1-what-is-in-the-project">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Folder</th>
+<th>What it holds</th>
+<th>Feature you meet</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>scenes/</code></td>
+<td><code>menu.scene.json</code>, <code>harbor.scene.json</code></td>
+<td>Scenes, Hierarchy groups, lock and hide</td>
+</tr>
+<tr>
+<td><code>prefabs/</code></td>
+<td><code>tower</code>, <code>tower-tall</code> (variant), <code>block</code> (nested), <code>lamp</code>, <code>orb</code></td>
+<td>Prefabs, variants, child overrides</td>
+</tr>
+<tr>
+<td><code>assets/materials/</code></td>
+<td>9 <code>*.mat.json</code></td>
+<td>Material assets, lit preview</td>
+</tr>
+<tr>
+<td><code>assets/textures/</code>, <code>assets/ui/</code></td>
+<td>generated pictures + <code>.meta.json</code> import settings</td>
+<td>Texture import</td>
+</tr>
+<tr>
+<td><code>assets/models/</code></td>
+<td><code>character.glb</code> + <code>.meta.json</code></td>
+<td>Model import, material remap</td>
+</tr>
+<tr>
+<td><code>scripts/</code></td>
+<td><code>skiff.js</code>, <code>orb.js</code>, <code>harbor.js</code>, <code>menu.js</code>, cameras, helpers</td>
+<td>Unity-style scripting</td>
+</tr>
+<tr>
+<td><code>ui/</code></td>
+<td><code>hud</code>, <code>menu</code>, <code>pause</code>, <code>gameover</code>, <code>banner</code> (prefab), <code>neon.skin.json</code></td>
+<td>UI Designer</td>
+</tr>
+<tr>
+<td><code>events/rules.events.json</code></td>
+<td>the combo rules</td>
+<td>Event sheet</td>
+</tr>
+<tr>
+<td><code>graphs/</code></td>
+<td><code>toasts</code> + <code>toast</code> (subgraph)</td>
+<td>Node graph</td>
+</tr>
+</tbody></table>
+<h2 id="2-the-scene-view">2. The Scene view<a class="anchor" href="#2-the-scene-view">#</a></h2>
+<ol>
+<li>Open the <strong>Scene</strong> tab. <strong>Alt + left-drag</strong> orbits, <strong>middle-drag</strong> pans, the wheel zooms. Hold the <strong>right mouse button</strong> and use <strong>WASD</strong> (Q down, E up, <strong>Shift</strong> faster) to fly like in Unity. <strong>Alt + right-drag</strong> zooms.</li>
+<li>Click an axis cone of the <strong>axis gizmo</strong> in the top-right corner of the view: the camera looks along that axis. Click it again on the opposite side.</li>
+<li>Press <strong>Q W E R T</strong> for Hand, Move, Rotate, Scale, Rect. Select <strong>Skiff</strong> in the Hierarchy and press <strong>F</strong> to frame it, <strong>Shift+F</strong> to frame everything.</li>
+<li><strong>Rebind a shortcut:</strong> <em>Settings ▸ Shortcuts</em>, click the key box of <em>Move tool</em>, press <strong>Y</strong>. Now <strong>Y</strong> moves and <strong>W</strong> does nothing. Click <strong>↺</strong> to restore it. Orange boxes mean two actions share the same keys.</li>
+</ol>
+<h2 id="3-the-hierarchy">3. The Hierarchy<a class="anchor" href="#3-the-hierarchy">#</a></h2>
+<p>The harbour is organised in groups: <strong>Environment</strong>, <strong>Skiff</strong>, <strong>Districts</strong>, <strong>Lamps</strong>, <strong>Data cores</strong>, <strong>Workers</strong>, <strong>Debug markers</strong>, <strong>Director</strong>.</p>
+<ol>
+<li><strong>Lock:</strong> hover <strong>Water</strong> and look at its padlock: it is on. Click in the Scene view where the water is: you select nothing, so you cannot drag the sea by accident. Unlock it, click it, lock it again. (The game never sees this flag.)</li>
+<li><strong>Hide:</strong> <strong>Debug markers</strong> has the eye-off icon on. Toggle it: two pink balls appear in the Scene view and nowhere in the game.</li>
+<li><strong>Focus:</strong> double-click <strong>Skiff</strong> in the Hierarchy: the Scene tab comes forward and frames it.</li>
+<li><strong>Create:</strong> <em>GameObject</em> menu: presets with icons. Add a <em>Cube</em> under <strong>Workers</strong>, then <strong>Cmd+Z</strong> it away.</li>
+</ol>
+<h2 id="4-several-objects-at-once">4. Several objects at once<a class="anchor" href="#4-several-objects-at-once">#</a></h2>
+<ol>
+<li>Open the <strong>Data cores</strong> group. Click <strong>Orb 1</strong>, <strong>Shift-click</strong> <strong>Orb 4</strong> and <strong>Orb 7</strong>. The Inspector says <em>3 ENTITIES SELECTED</em>.</li>
+<li>Choose <strong>W</strong>. Toolbar <strong>Pivot</strong>: the gizmo sits on the first orb. Switch to <strong>Center</strong>: it moves to the middle of the three. Drag the arrows: all three orbs move together. <strong>R</strong>/<strong>E</strong> rotate and scale them about that centre. One <strong>Cmd+Z</strong> undoes the whole drag.</li>
+<li><strong>Marquee:</strong> drag a rectangle on empty space in the Scene view; every unlocked object whose centre is inside gets selected (locked ones are skipped).</li>
+<li>Type <code>1.4</code> into the <strong>Position y</strong> of the Inspector with all three selected: they all get it.</li>
+</ol>
+<h2 id="5-materials">5. Materials<a class="anchor" href="#5-materials">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/ed-nh-material.png" alt="The tower material in the Inspector with colour, texture, emissive map and a lit preview sphere" loading="lazy"><figcaption>`tower.mat.json`: base colour, a window picture, and the same picture as an emissive map so the lit windows glow.</figcaption></figure>
+1. In Assets open `materials/` and select **tower.mat.json**. The preview is a **lit sphere** with the picture on it. The same sphere is the thumbnail in the Assets grid.
+2. Change **Color** to `#7a5cff`: all 14 towers change at once, because every tower uses this file.
+3. Clear **Emissive Map** and the windows stop glowing; put `assets/textures/windows.png` back. (`emissiveMap` makes only the bright pixels of a picture glow, which is how neon signs and windows are made.)
+4. **Drop a material:** drag **neon-pink.mat.json** from Assets onto the **Cabin** row in the Hierarchy. The skiff's cabin takes the material. **Cmd+Z**.
+5. Open the **asset** drop-down of any `material` component: every row has a little thumbnail.<h2 id="6-texture-import">6. Texture import<a class="anchor" href="#6-texture-import">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/ed-nh-texture.png" alt="The grid texture selected in Assets, with Filter, Wrap, Pixels per unit, Pivot and Max size in the Inspector" loading="lazy"><figcaption>Import settings of an image: filter, wrap, pixels per unit, pivot, max size.</figcaption></figure>
+1. Select `textures/grid.png`: **Wrap** `repeat` (the sea tiles it 40 times), **Max size** `512`. Set Max size to `32` and Play: the sea becomes blurry blocks. Put it back to `512`.
+2. Select `ui/marker.png`: **Filter** `nearest`, **Pivot** `center`, **Pixels per unit** `1`. Change the pivot to *Top left*: a 2D sprite using it would now hang from its corner.
+3. Press **Open in Sprite editor**: the Sprite tab opens with the picture, where you can draw and set a custom pivot point.<h2 id="7-model-import-and-material-remap">7. Model import and material remap<a class="anchor" href="#7-model-import-and-material-remap">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/ed-nh-model.png" alt="character.glb selected: Scale 1.4 and a Materials section mapping colormap to worker.mat.json" loading="lazy"><figcaption>The Dockworkers use `character.glb`, scaled 1.4× and painted with `worker.mat.json` instead of the picture stored in the file.</figcaption></figure>
+1. Select `models/character.glb`. **Scale** `1.4` is applied to every use of the model.
+2. Under **Materials** the file's own material `colormap` is replaced by **worker.mat.json** (a warm yellow). Choose *(from model)* and Play: the workers show their original look. Choose the material again.
+3. Fly to the pier at the back of the harbour (z ≈ -58): three workers stand by the lamps.<h2 id="8-prefabs-instances-variants-nested-prefabs-and-child-overrides">8. Prefabs: instances, variants, nested prefabs and child overrides<a class="anchor" href="#8-prefabs-instances-variants-nested-prefabs-and-child-overrides">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/ed-nh-prefab-child.png" alt="Hierarchy listing the entities inside Block 1, 2 and 3; Inspector editing Tower B of Block 3 with a changed material" loading="lazy"><figcaption>The entities inside a prefab instance are listed under it. Tower B of Block 3 carries an override: its material is `neon-cyan`.</figcaption></figure>
+1. **Instances:** every blue row is a prefab instance. Select **Tower 1**: the Inspector shows *Prefab instance: prefabs/tower.prefab.json*. Change **Size y** to 26 and watch it get a blue ● marker and a ✕ revert button.
+2. Press the **⬆** button next to the changed value: **Apply to prefab** writes just that value into `tower.prefab.json`; all three plain towers grow. (*Apply all* applies every override, *Revert all overrides* goes back.) **Cmd+Z** to restore.
+3. **Variant:** select **Tall tower 1**. Its prefab `tower-tall` has `variantOf: prefabs/tower.prefab.json`: it stores only the difference (taller, cyan roof light). Open `tower.prefab.json` with *Open prefab* and change the tower's **material asset** to `concrete`: the tall variant follows, because it only overrides the size and its own roof-light colour.
+4. **Nested prefab:** `block.prefab.json` contains a Pier, two towers and a **Lamp** that is itself a prefab instance. Select **Block 2**, press *Unpack*: the lamp stays a prefab. *Undo*, then try *Unpack completely*: it is plain entities now. Undo again.
+5. **Children of an instance:** expand **Block 3**. Its **Tower B** is listed in blue. Click it: the Inspector edits it as a part of the prefab. Its **material asset** is `neon-cyan` here, `tower` in the other blocks. That is an **override on a prefab child**, stored on the instance as `overrides.children["2"]`. Change it to `neon-pink` and back.
+6. **Prefab mode:** select a Block and press **Open prefab**. The bar above the Scene shows **◀ Scene › Prefab: Block**. Move a tower, press **◀ Scene**: all four blocks change.<h2 id="9-the-inspector">9. The Inspector<a class="anchor" href="#9-the-inspector">#</a></h2>
+<ol>
+<li><strong>Enabled per component:</strong> select <strong>Lamp 4</strong> and look at its components: a <code>light</code> (spot) with <strong>Enabled</strong> unticked. The spare light is kept but not created in the game. Tick it, press Play, untick it.</li>
+<li><strong>⋮ menu</strong> of a component: Reset, Copy / Paste values, Move up / down, Docs (F1), Remove.</li>
+<li><strong>+ Add component</strong> is searchable and grouped: Rendering, Physics, Audio, UI, Gameplay, Effects. Type <code>part</code> to find <em>Particles</em>.</li>
+<li><strong>Lock</strong> the Inspector with the padlock, click around, unlock it. <strong>Debug mode</strong> (bottom) shows the entity as raw JSON.</li>
+<li><strong>Component help:</strong> hover a component header and press <strong>F1</strong>: the manual page of that component opens.</li>
+</ol>
+<h2 id="10-the-scripts-unity-style">10. The scripts (Unity style)<a class="anchor" href="#10-the-scripts-unity-style">#</a></h2>
+<p>All gameplay scripts extend <code>MonoBehaviour</code> and use <code>Awake / Start / Update / LateUpdate</code>, <code>FindWithTag</code>, <code>Destroy</code>, <code>GameManager.instance</code> exactly like the C# you may know. Attributes show up in the Inspector (try changing <strong>maxSpeed</strong> of the Skiff&#39;s <code>skiff.js</code>).</p>
+<p><strong><code>orb.js</code></strong>, the data core:</p>
+<pre class="code" data-lang="js"><code>// A data core: collected when the skiff gets close. Tells the game ('orb' event); the event sheet and the graph react.
+import { MonoBehaviour, GameManager } from 'nord';
+
+export default class Orb extends MonoBehaviour {
+  static attributes = { value: { type: 'number', default: 10 }, radius: { type: 'number', default: 1.8 } };
+
+  Start() { this.skiff = this.FindWithTag('player'); }
+
+  Update() {
+    if (!this.skiff || this.skiff.destroyed || this.collected) return;
+    const a = this.entity.worldPos, b = this.skiff.worldPos;
+    if (Math.hypot(a[0] - b[0], a[2] - b[2]) &gt; this.radius + 0.8) return;
+    this.collected = true;
+    GameManager.instance?.AddScore(this.value);
+    this.game.audio?.play('assets/audio/sfx/coin.wav', { bus: 'sfx', volume: 0.8 });
+    this.game.events.emit('orb', { value: this.value, at: a });
+    this.Destroy();
+  }
+}</code></pre>
+<p>It tells the game with a normal event (<code>orb</code>); it does not know the HUD, the event sheet or the graph. They listen.</p>
+<p><strong><code>skiff.js</code></strong>, the player:</p>
+<pre class="code" data-lang="js"><code>// The player's skiff: throttle/steer/boost, a little banking, obstacle push-out and the world bounds.
+import { MonoBehaviour, SerializeField, Mathf } from 'nord';
+
+export default class Skiff extends MonoBehaviour {
+  static attributes = SerializeField({ maxSpeed: 14, boostSpeed: 26, accel: 16, turnRate: 92, bounds: 70 });
+
+  Awake() {
+    this.speed = 0;
+    this.heading = 0; // degrees, 0 = +Z
+    this.energy = 100;
+    this.boosting = false;
+    this.frozen = false;
+    this.solids = [];
+  }
+
+  Start() {
+    // everything tagged &quot;solid&quot; (towers, piers) becomes a rectangle the skiff cannot enter
+    for (const e of this.FindGameObjectsWithTag('solid')) {
+      const m = e.getComponent('mesh')?.data?.size;
+      if (!m) continue;
+      const p = e.worldPos, s = e.scale;
+      this.solids.push({ x: p[0], z: p[2], hx: (m[0] * s[0]) / 2, hz: (m[2] * s[2]) / 2 });
+    }
+  }
+
+  Update(dt) {
+    if (this.frozen) return;
+    const input = this.game.input;
+    const throttle = input.axis('down', 'up');
+    const steer = input.axis('left', 'right');
+    this.boosting = input.down('boost') &amp;&amp; throttle &gt; 0 &amp;&amp; this.energy &gt; 0;
+    const top = this.boosting ? this.boostSpeed : this.maxSpeed;
+    const target = throttle * top * (throttle &lt; 0 ? 0.4 : 1);
+    this.speed = Mathf.MoveTowards(this.speed, target, this.accel * dt);
+    this.heading += steer * this.turnRate * dt * Math.min(1, Math.abs(this.speed) / 4 + 0.25);
+    this.energy = Math.min(100, Math.max(0, this.energy + (this.boosting ? -28 : 7) * dt));
+
+    const r = (this.heading * Math.PI) / 180;
+    let x = this.entity.pos[0] + Math.sin(r) * this.speed * dt;
+    let z = this.entity.pos[2] + Math.cos(r) * this.speed * dt;
+    for (const s of this.solids) { // push the skiff out of boxes (radius 1.3)
+      const dx = x - s.x, dz = z - s.z, ox = s.hx + 1.3 - Math.abs(dx), oz = s.hz + 1.3 - Math.abs(dz);
+      if (ox &gt; 0 &amp;&amp; oz &gt; 0) { if (ox &lt; oz) x += Math.sign(dx || 1) * ox; else z += Math.sign(dz || 1) * oz; this.speed *= 0.6; }
+    }
+    x = Math.max(-this.bounds, Math.min(this.bounds, x));
+    z = Math.max(-this.bounds, Math.min(this.bounds, z));
+    const bob = Math.sin(this.game.time.elapsed * 3) * 0.06;
+    this.entity.pos = [x, 0.35 + bob, z];
+    this.entity.rot = [Math.sin(this.game.time.elapsed * 2) * 1.5, this.heading, -steer * Math.min(1, Math.abs(this.speed) / 10) * 9];
+  }
+}</code></pre>
+<p><strong><code>harbor.js</code></strong>, the director (timer, HUD, minimap, pause, win/lose):</p>
+<pre class="code" data-lang="js"><code>// The director of a run: HUD, timer, minimap, pause, win/lose. Scripts, an event sheet and a graph all take part.
+import { MonoBehaviour, GameManager } from 'nord';
+
+export default class Harbor extends MonoBehaviour {
+  static attributes = { timeLimit: { type: 'number', default: 100 }, orbsToWin: { type: 'number', default: 14 } };
+
+  async Start() {
+    this.left = this.timeLimit;
+    this.collected = 0;
+    this.over = false;
+    this.skiff = this.Find('Skiff');
+    this.skiffScript = this.skiff?.scripts.find((s) =&gt; s.constructor.name === 'Skiff');
+    this.hud = await this.game.ui.load('ui/hud.ui.json');
+    this.pause = await this.game.ui.load('ui/pause.ui.json');
+    this.end = await this.game.ui.load('ui/gameover.ui.json');
+    this.pause.on('resume', () =&gt; this.SetPaused(false));
+    this.pause.on('menu', () =&gt; this.game.loadScene('scenes/menu.scene.json'));
+    this.end.on('retry', () =&gt; this.game.restart());
+    this.end.on('menu', () =&gt; this.game.loadScene('scenes/menu.scene.json'));
+    this.offs = [
+      this.game.events.on('orb', () =&gt; this.OnOrb()),
+      this.game.events.on('overdrive', () =&gt; { this.left += 5; if (this.skiffScript) this.skiffScript.energy = 100; this.game.audio?.play('assets/audio/sfx/heal.wav', { bus: 'sfx' }); }),
+    ];
+    this.game.audio?.play('assets/audio/music/music_action.mp3', { bus: 'music', loop: true, volume: 0.35 });
+    // the game loop stops while paused, so P / Esc is a plain DOM key listener (the loop cannot poll it)
+    this.onKey = (e) =&gt; { if (!e.repeat &amp;&amp; (e.code === 'KeyP' || e.code === 'Escape')) this.SetPaused(!this.paused); };
+    addEventListener('keydown', this.onKey);
+    this.Refresh();
+    this.lowWarned = false;
+  }
+
+  OnDestroy() { removeEventListener('keydown', this.onKey); for (const o of this.offs ?? []) o(); for (const s of [this.hud, this.pause, this.end]) s?.destroy(); this.game.audio?.stopMusic?.(); }
+
+  OnOrb() {
+    this.collected++;
+    if (this.collected &gt;= this.orbsToWin) this.Finish(true);
+    this.Refresh();
+  }
+
+  SetPaused(on) {
+    if (this.over) return;
+    this.paused = on;
+    on ? this.pause.show() : this.pause.hide();
+    on ? this.game.pause() : this.game.resume();
+  }
+
+  Finish(won) {
+    if (this.over) return;
+    this.over = true;
+    const gm = GameManager.instance;
+    const best = gm?.SaveHighScore('neon-harbor-best') ?? 0;
+    const bonus = won ? Math.round(this.left * 5) : 0;
+    gm?.AddScore(bonus);
+    this.end.set({ result: won ? 'ALL CORES SECURED' : 'NIGHT FALLS', score: gm?.score ?? 0, best: Math.max(best, gm?.score ?? 0), detail: won ? `Time bonus ${bonus}` : `${this.collected} of ${this.orbsToWin} cores` });
+    gm?.SaveHighScore('neon-harbor-best');
+    if (this.skiffScript) this.skiffScript.frozen = true;
+    this.game.audio?.play(won ? 'assets/audio/music/jingle_victory.mp3' : 'assets/audio/music/jingle_game_over.mp3', { bus: 'music' });
+    this.end.show();
+  }
+
+  Refresh() {
+    if (!this.hud) return;
+    const gm = GameManager.instance;
+    this.hud.set({ score: gm?.score ?? 0, orbs: `${this.collected}/${this.orbsToWin}`, time: Math.ceil(this.left), energy: (this.skiffScript?.energy ?? 100) / 100 });
+  }
+
+  Update(dt) {
+    if (this.over || !this.hud) return; // Start() is async: the screens may not be loaded yet
+    this.left -= dt;
+    if (this.left &lt;= 10 &amp;&amp; !this.lowWarned) { this.lowWarned = true; this.game.events.emit('low-time'); }
+    if (this.left &lt;= 0) { this.left = 0; this.Finish(false); }
+    this.tick = (this.tick ?? 0) + dt;
+    if (this.tick &gt; 0.08) { this.tick = 0; this.Refresh(); this.DrawMinimap(); }
+  }
+
+  DrawMinimap() {
+    const cv = this.hud.get('minimap')?.el; const g = cv?.getContext?.('2d'); if (!g) return;
+    const S = cv.width, k = S / 150; // 150 world units across (bounds are +-70)
+    const px = (x) =&gt; S / 2 + x * k, pz = (z) =&gt; S / 2 - z * k;
+    g.clearRect(0, 0, S, S);
+    g.fillStyle = '#04122a'; g.fillRect(0, 0, S, S);
+    g.strokeStyle = '#0b3a5a'; g.lineWidth = 1;
+    for (let i = 1; i &lt; 6; i++) { g.beginPath(); g.moveTo((S * i) / 6, 0); g.lineTo((S * i) / 6, S); g.moveTo(0, (S * i) / 6); g.lineTo(S, (S * i) / 6); g.stroke(); }
+    g.fillStyle = '#ff3fb8';
+    for (const e of this.FindGameObjectsWithTag('solid')) { const p = e.worldPos; g.fillRect(px(p[0]) - 3, pz(p[2]) - 3, 6, 6); }
+    g.fillStyle = '#25e8ff';
+    for (const e of this.FindGameObjectsWithTag('orb')) { const p = e.worldPos; g.beginPath(); g.arc(px(p[0]), pz(p[2]), 3, 0, 7); g.fill(); }
+    if (this.skiff) {
+      const p = this.skiff.worldPos, h = (this.skiff.rot[1] * Math.PI) / 180;
+      g.save(); g.translate(px(p[0]), pz(p[2])); g.rotate(h);
+      g.fillStyle = '#ffffff'; g.beginPath(); g.moveTo(0, -7); g.lineTo(5, 6); g.lineTo(0, 3); g.lineTo(-5, 6); g.closePath(); g.fill(); g.restore();
+    }
+  }
+}</code></pre>
+<p>A few details to notice. <code>Start()</code> is <code>async</code> because it loads three UI screens, so <code>Update</code> guards with <code>!this.hud</code>. The pause key is a DOM listener, because the game loop stops while paused. <code>GameManager</code> is the engine&#39;s ready-made score store; <code>scripts/game-manager.js</code> just makes it non-persistent so every run starts at zero.</p>
+<h2 id="11-the-ui-designer-the-2d-layer">11. The UI Designer (the 2D layer)<a class="anchor" href="#11-the-ui-designer-the-2d-layer">#</a></h2>
+<p>Open the <strong>UI Designer</strong> tab (or <strong>Window ▸ Editors ▸ UI Designer</strong>), type <code>ui/hud.ui.json</code> and press Open.</p>
+<ol>
+<li><strong>Canvas scaler:</strong> select the root node. <em>Canvas scaler</em> is <em>Scale with screen</em>, reference 1280×720, match 0.5. Change the preview size to <code>390x844 Phone</code>: the HUD scales instead of overflowing. Set the mode to <em>Off</em> to see the difference. Put it back.</li>
+<li><strong>Resize handles:</strong> select <strong>mapFrame</strong> (the minimap frame, anchored top-right). Eight handles appear on the preview: drag the left-middle one. The right edge stays where it is, whatever the anchor. Hold Ctrl/Cmd to resize without rounding.</li>
+<li><strong>UI prefab:</strong> <strong>banner</strong> is an <code>instance</code> of <code>ui/banner.ui.json</code>. <em>Open prefab</em> edits that file, <em>Unpack</em> puts its nodes inline, <em>Make UI prefab…</em> (on any other node) saves the selection as a new file and replaces it with an instance. <code>hud</code> and the end screen both use the same banner.</li>
+<li><strong>Sprite states:</strong> open <code>ui/pause.ui.json</code>, select <strong>resume</strong>. The <em>Sprite: normal / hover / pressed / disabled</em> fields are four pictures from <code>assets/ui/</code> plus one 9-slice. In the game the button changes picture on hover and press.</li>
+<li><strong>Skin tint:</strong> open <code>ui/neon.skin.json</code> (Styles tab): the <code>.chip</code> rule uses <code>assets/ui/chip.png</code>, a <em>white</em> picture, with <code>&quot;tint&quot;: &quot;#25e8ff&quot;</code>. Change the tint to <code>#ff3fb8</code>: all score chips turn pink with no new art.</li>
+<li><strong>Copy and paste:</strong> select a chip, <strong>Cmd+C</strong>, <strong>Cmd+V</strong>. <strong>Anchor grid:</strong> the 3×3 buttons under <em>Anchor</em> pin a node to a corner.</li>
+<li>The <strong>minimap</strong> is a <code>canvas</code> node (<code>minimap</code>). <code>harbor.js</code> draws on it with the normal canvas API: that is the 2D drawing inside the 3D game.</li>
+</ol>
+<h2 id="12-the-event-sheet-no-code">12. The event sheet (no code)<a class="anchor" href="#12-the-event-sheet-no-code">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/ed-nh-events.png" alt="The event sheet tab with the Combo group and the Parameters form" loading="lazy"><figcaption>`rules.events.json`: three cores in a row trigger OVERDRIVE; the combo fades after 6 seconds.</figcaption></figure>
+1. Open the **Events** tab and load `events/rules.events.json`. The *Combo* group has three events: *on event orb → combo + 1*, *combo ≥ 3 → emit overdrive, reset*, *every 6 s and combo > 0 → combo − 1*.
+2. Click the condition `combo >= 3`: the **PARAMETERS** panel under the sheet shows the variable, the comparison and the value as label-and-widget rows. Change the value to `2`.
+3. Press **Play** with the Events tab visible and collect cores: the event that just ran gets a **green frame**.
+4. Hover a condition or action and press **F1**: the event reference opens at that plugin.<h2 id="13-the-node-graph-and-a-subgraph">13. The node graph and a subgraph<a class="anchor" href="#13-the-node-graph-and-a-subgraph">#</a></h2>
+<ol>
+<li>Open the <strong>Graph</strong> tab and <code>graphs/toasts.graph.json</code>. Three red event nodes react to game events (<code>orb</code>, <code>overdrive</code>, <code>low-time</code>): they play a sound and call <strong>Run Graph File</strong> on <code>graphs/toast.graph.json</code>.</li>
+<li>Open <code>graphs/toast.graph.json</code>: <strong>On Start → Set UI Text (toast = variable a) → Delay 1.4 s → Set UI Text (toast = empty)</strong>. That is the <strong>subgraph</strong>: the call node passes its <code>a</code> input in as the variable <code>a</code>.</li>
+<li><strong>Make your own subgraph:</strong> in <code>toasts.graph.json</code> select the <em>Audio Play</em> and <em>Run Graph File</em> nodes of the <code>overdrive</code> chain (two nodes) and press <strong>Make subgraph</strong>. They move into <code>toasts-sub1.graph.json</code> and one Run Graph File node takes their place. (One flow link must enter the selection, at most one leave it.) <strong>Cmd+Z</strong> is not available for this; delete the new file if you do not want it.</li>
+<li><strong>Live flow:</strong> keep the Graph tab open and press Play. Each time a core is collected the connected nodes <strong>flash green</strong>.</li>
+<li>Add a <strong>Group</strong> with a title, use the minimap, <strong>Arrange</strong>, <strong>F1</strong> for the node reference.</li>
+</ol>
+<h2 id="14-the-game-view-and-tools">14. The Game view and tools<a class="anchor" href="#14-the-game-view-and-tools">#</a></h2>
+<p>Resolution drop-down, <strong>Maximize on Play</strong>, <strong>Error Pause</strong> (pauses on the first error), the camera button saves <code>screenshots/shot-1.png</code>, <strong>Stats</strong> shows fps. <strong>Window ▸ Profiler</strong> lists the slowest event-sheet events. The <strong>Window</strong> menu lists every panel in the <em>Panels</em> and <em>Editors</em> submenus, so a closed panel always comes back; <em>Reset layout</em> restores everything.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-nh-pause.png" alt="The pause screen over the dimmed game: a framed card with Resume and Main menu buttons" loading="lazy"><figcaption>The pause screen is `ui/pause.ui.json`, with sprite-state buttons.</figcaption></figure><h2 id="15-build-it">15. Build it<a class="anchor" href="#15-build-it">#</a></h2>
+<ol>
+<li><strong>File ▸ Build Settings…</strong> (Shift+Cmd+B). Both scenes are in the build; <code>menu</code> is the start scene. Press <strong>Build And Run</strong>: a single-file page opens in your browser.</li>
+<li><strong>Android / iOS ▸ Mobile project</strong> writes <code>dist/mobile/</code> with the game in <code>www/</code> plus a Capacitor wrapper. In that folder: <code>npm install</code>, <code>npx cap add android</code> (or <code>ios</code>), then <code>npm run android</code>. You need Android Studio or Xcode on your machine; the engine does not bundle them.</li>
+<li><strong>Desktop app…</strong> makes a Mac/Windows/Linux app with the same build. The export scans for external web addresses and fails if it finds one: Neon Harbor is fully offline.</li>
+</ol>
+<figure class="shot"><img src="../../assets/screenshots/ed-nh-win.png" alt="The end screen: ALL CORES SECURED, score, time bonus, Fly again and Main menu" loading="lazy"><figcaption>All 14 cores secured.</figcaption></figure><p><strong>Check yourself:</strong></p>
+<ul>
+<li>Editing <code>tower.mat.json</code> or the <code>tower</code> prefab changed every tower; the tall variant followed the roof-light change.</li>
+<li>Block 3&#39;s Tower B is cyan through an override stored on the instance.</li>
+<li>The HUD still fits on the phone preview thanks to the canvas scaler.</li>
+<li>Collecting three cores in a row showed OVERDRIVE (event sheet → event → graph → subgraph → HUD).</li>
+<li><code>Build And Run</code> opened a working page.</li>
+</ul>
+<h2 id="make-it-yours">Make it yours<a class="anchor" href="#make-it-yours">#</a></h2>
+<ul>
+<li>Add a fourth district: duplicate <strong>Block 4</strong>, move it with the gizmo, add three more orbs (duplicate an orb under <em>Data cores</em>, <strong>Cmd+D</strong>).</li>
+<li>Make a <em>rush</em> variant: a second prefab variant of <code>orb</code> with <code>value: 25</code>; place a few; give them the <code>neon-pink</code> material.</li>
+<li>Add a second chip to the HUD with <em>Make UI prefab</em> and a new variable set from <code>harbor.js</code>.</li>
+<li>Add a sound to the OVERDRIVE chain in the graph, or a new rule to the event sheet (for example <em>every 20 s emit low-time</em>).</li>
+<li>Replace <code>character.glb</code> with your own model (drop a <code>.glb</code> into <code>assets/models/</code>), then set its scale and material remap.</li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>The game starts but the HUD is missing</td>
+<td>Look at the Console. <code>harbor.js</code> loads <code>ui/hud.ui.json</code>; a typo in a UI file shows up there.</td>
+</tr>
+<tr>
+<td>The skiff cannot move</td>
+<td>The actions <code>up down left right boost pause</code> are listed under <code>input.actions</code> in <code>nord.project.json</code>.</td>
+</tr>
+<tr>
+<td>Towers look flat grey</td>
+<td>The <code>emissiveMap</code> needs <code>assets/textures/windows.png</code>; check the material&#39;s Emissive Map field.</td>
+</tr>
+<tr>
+<td>A button has no picture</td>
+<td>Check the paths of the four sprite fields and the 9-slice numbers (<code>14 14 14 14</code>).</td>
+</tr>
+<tr>
+<td>Nothing flashes in the Graph tab</td>
+<td>The Graph tab must stay open while the game runs, and the game must be served by Nord (Play), not opened from disk.</td>
+</tr>
+<tr>
+<td>Event sheet highlight missing</td>
+<td>It works for sheets without <code>include</code> blocks and only while the Events tab is visible.</td>
+</tr>
+</tbody></table>
+<p>Reference: <a href="../manual/unity-workflow.html">Unity-style workflow</a>, <a href="../manual/ui-designer.html">UI Designer</a>, <a href="../guides/ui-scenes.html">UI scenes reference</a>, <a href="../manual/graph.html">Node graphs</a>, <a href="../manual/event-sheets.html">Event sheets</a>, <a href="../manual/3d.html">3D guide</a>, <a href="../manual/export.html">Export</a>. <strong>Previous:</strong> <a href="tut-t47-unity-workflow.html">T47 The Unity-style workflow</a>.</p>
+<div class="pager"><a href="tut-t47-unity-workflow.html"><small>← Previous</small>T47 The Unity-style workflow</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#0-play-it-first">0. Play it first </a><a href="#1-what-is-in-the-project">1. What is in the project </a><a href="#2-the-scene-view">2. The Scene view </a><a href="#3-the-hierarchy">3. The Hierarchy </a><a href="#4-several-objects-at-once">4. Several objects at once </a><a href="#5-materials">5. Materials </a><a href="#6-texture-import">6. Texture import </a><a href="#7-model-import-and-material-remap">7. Model import and material remap </a><a href="#8-prefabs-instances-variants-nested-prefabs-and-child-overrides">8. Prefabs: instances, variants, nested prefabs and child overrides </a><a href="#9-the-inspector">9. The Inspector </a><a href="#10-the-scripts-unity-style">10. The scripts (Unity style) </a><a href="#11-the-ui-designer-the-2d-layer">11. The UI Designer (the 2D layer) </a><a href="#12-the-event-sheet-no-code">12. The event sheet (no code) </a><a href="#13-the-node-graph-and-a-subgraph">13. The node graph and a subgraph </a><a href="#14-the-game-view-and-tools">14. The Game view and tools </a><a href="#15-build-it">15. Build it </a><a href="#make-it-yours">Make it yours </a><a href="#troubleshooting">Troubleshooting </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

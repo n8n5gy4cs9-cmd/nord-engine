@@ -22,6 +22,9 @@ Status: **M0–M2 done, M3 (editor) implemented** — see task.md. Next: M4 expo
 
 Windows portable release: run `./build-win.sh` (cross-build from Mac/Linux or native MSVC on Windows). Includes examples and the offline guide as a ZIP. See [Windows build guide](docs/BUILD_WINDOWS.md).
 
+## Unity-style editor
+Scene / Game / Hierarchy / Inspector / Assets with Unity shortcuts (all rebindable), multi-object gizmos with Pivot/Center, prefabs with variants and per-field overrides, material assets with lit previews, import settings, a UI Designer with a canvas scaler and prefabs, node graphs with subgraphs, and event sheets with a live highlight. Tutorial **T48 Neon Harbor** builds a combined 2D + 3D showcase using all of it. See manual chapter *Unity-style workflow*.
+
 ## FPS Creator (level editor addon)
 Build first-person levels on a grid — walls, doors, windows, stairs, lights, ready-made enemies, pickups, scripts and no-code rules — in the **FPS Level** tab, press **F5** to play. Start from the *FPS Creator* template or add it to any 3D project (`nord fpsc init`). See [docs/FPS_CREATOR.md](docs/FPS_CREATOR.md).
 

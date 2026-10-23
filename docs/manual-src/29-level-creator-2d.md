@@ -28,6 +28,9 @@ The welcome screen has **Featured / All / 2D / 3D / FPS / Physics / Apps / Rust*
 
 Middle/right drag or Space-drag pans, wheel zooms and Home fits the map. Ctrl/Cmd+Z undoes, Ctrl/Cmd+Shift+Z redoes, Ctrl/Cmd+D duplicates, Delete removes selected objects.
 
+## Moving around
+The view works like the Scene view: middle- or right-drag, Alt+drag, Space+drag or the **Q** Hand tool pans, the wheel zooms about the cursor, **Ctrl/Cmd** flips snapping while you drag, **Home** fits the level and **Shift+F** frames the selection.
+
 ## Layers and reusable items
 
 **Level** manages layers from back to front. Select a layer to paint on it; hide, lock, reorder or rename it. Opacity and parallax control scenery. Parallax 1 is the normal world; 0 is fixed to the screen. Solid tile layers require 1. Hidden layers do not appear in gameplay. Brush clicks and palette drops both reject locked or hidden active layers; unlock and show the layer before placing content.
