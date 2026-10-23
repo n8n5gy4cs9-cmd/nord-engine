@@ -529,6 +529,10 @@ fn row(
         }
     }
     if resp.double_clicked() {
+        // select first and tell the Scene view, so it frames this object even if the click handler has not run yet
+        st.select(Some(e.id.clone()));
+        st.send_viewport(serde_json::json!({"t":"select","ids":st.selection}));
+        st.push(crate::state::Action::ShowTab(crate::app::Tab::Scene));
         st.push(crate::state::Action::Focus);
     }
     // F2 renames the selected entity (Unity/Godot); handled on the row that is selected and hovered panel
