@@ -698,6 +698,21 @@ impl App {
             Action::Profiler => st.fun_ui.profiler.open = !st.fun_ui.profiler.open,
             Action::Tutorial => st.fun_ui.tutorial_open = true,
             Action::Screenshot => self.web.eval("game", panels::fun::SHOT_JS),
+            Action::ProfilerRecord => self.web.eval("game", panels::fun::PROFILER_RECORD_JS),
+            Action::ProfilerSave => self.web.eval("game", panels::fun::PROFILER_SAVE_JS),
+            Action::PlayPlayers(n, lag) => {
+                if let Some(base) = st.ensure_server() {
+                    let room = format!("play{}", std::process::id());
+                    let sim = if lag { "&netsim=100,20,0.02" } else { "" };
+                    open_in_browser(&format!("{base}/?net=host:{room}{sim}"));
+                    for _ in 1..n {
+                        open_in_browser(&format!("{base}/?net=join:{room}{sim}"));
+                    }
+                    st.toast(format!(
+                        "{n} players: first window hosts, the others join (room {room})"
+                    ));
+                }
+            }
             Action::DesktopSettings => st.desktop_ui.open = true,
             Action::FpsInstall => {
                 #[cfg(not(target_arch = "wasm32"))]
@@ -970,6 +985,16 @@ impl App {
                 act(ui, &format!("Play / stop  (F5, {rk})"), play_action, st);
                 act(ui, "Run this scene  (F6)", Action::PlayScene, st);
                 act(ui, &format!("Stop  ({sk})"), Action::Stop, st);
+                ui.menu_button("Play multiplayer (browser windows)", |ui| {
+                    act(ui, "2 players", Action::PlayPlayers(2, false), st);
+                    act(ui, "3 players", Action::PlayPlayers(3, false), st);
+                    act(
+                        ui,
+                        "2 players, 100 ms lag + 2% loss",
+                        Action::PlayPlayers(2, true),
+                        st,
+                    );
+                });
                 act(ui, "Validate", Action::Build("validate".into()), st);
                 if is_rust(st) {
                     act(ui, "Build Rust", Action::Build("rust build".into()), st);
@@ -1017,6 +1042,7 @@ fn action_icon(a: &Action) -> Option<&'static str> {
         Action::Stop => "square",
         Action::Settings | Action::DesktopSettings => "settings",
         Action::Profiler => "zap",
+        Action::PlayPlayers(..) => "users",
         Action::Export => "upload",
         Action::Build(_) => "terminal",
         Action::Layout(_) | Action::ResetLayout => "layout-grid",

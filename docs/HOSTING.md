@@ -18,6 +18,7 @@ nord build my-game --single-file         # one index.html (+ vendor/fonts) that 
 | **GitHub Pages** | commit `dist/` to a `gh-pages` branch (or `/docs`) and enable Pages. Paths are relative, so project sub-paths (`user.github.io/repo/`) work | relative paths verified; Pages itself untested |
 | **nginx** | `root /srv/game;` — make sure `.wasm` is served as `application/wasm` (default `mime.types` has it) and `.js` as `text/javascript` | mime requirements covered by the python test |
 | **Netlify / Cloudflare Pages / S3** | upload the folder; no server config needed | untested |
+| **Presets** | `--host itch|github-pages|netlify|vercel|docker` writes the matching deploy files (see EXPORT_TARGETS.md) | file writing unit-tested; the hosts themselves not exercised |
 
 ## Notes
 - Every output is checked for external `http(s)://` references (the **offline guarantee**); the build fails if your own files contain one. Allow a host on purpose with a `.offline-allow` file in the project.

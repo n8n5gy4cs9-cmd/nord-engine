@@ -22,6 +22,7 @@ META = {
  39: (A, ["3d", "code", "fullgame"]), 40: (A, ["code", "fullgame"]), 41: (A, ["code", "fullgame"]), 42: (A, ["app", "3d", "fullgame"]),
  43: (A, ["app", "3d", "fullgame"]), 44: (I, ["code", "nocode"]), 45: (I, ["code", "nocode", "2d"]), 46: (I, ["nocode", "2d", "fullgame"]),
  47: (B, ["3d", "code"]), 48: (A, ["3d", "2d", "code", "nocode", "fullgame"]),
+ 49: (B, ["3d", "creator"]), 50: (I, ["2d", "3d", "nocode"]), 51: (B, ["export"]), 52: (I, ["code"]), 53: (A, ["code", "2d"]),
 }
 TAGNAMES = {"2d": "2D", "3d": "3D", "rust": "Rust", "nocode": "No code", "code": "Coding", "creator": "Level creator",
             "app": "App", "export": "Export", "fullgame": "Complete project"}
@@ -36,6 +37,7 @@ PATHS = [
  ("06", "Advanced projects", "Shaders, servers, Rust and complete apps, with every file explained.", [35, 36, 37, 38, 39, 40, 41, 42, 43]),
  ("07", "Ship it", "Put your game on a website or in a Mac app.", [14, 15]),
  ("08", "The Unity-style editor", "Layouts, prefabs, materials, UI scaler, graphs and event sheets, then a finished showcase to take apart.", [47, 48]),
+ ("09", "New tools: model, animate, ship, profile, play together", "The 3D Modeler, the Animator, hosting presets, the deep profiler and multiplayer tools, one short lesson each.", [49, 50, 51, 52, 53]),
 ]
 
 

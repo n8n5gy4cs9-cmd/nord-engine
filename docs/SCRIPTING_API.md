@@ -91,3 +91,8 @@ Register with `registry.register("player", || Box::new(Player::default()))`; sce
 
 ## Inspector extras (M8-32)
 Attributes may add `description` (tooltip); ranged numbers get a slider. Entities can carry `connections` (Inspector ▸ Signals): `{event, target, method}` calls `method(data)` on the target entity's scripts when the entity emits `event`.
+
+## Animator, network and profiler APIs (2026-10-23)
+* `entity.getComponent('animator')`: `setBool/setInt/setFloat(name, v)`, `setTrigger(name)`, `resetTrigger(name)`, `get(name)`, `play(state)`, `state` (docs/ANIMATOR.md). Core: `AnimatorController`, `validateAnimator`.
+* `game.net`: `host/join/leave`, `send(name, data, {to})`, `on(...)`, `rpc/call/callHost`, `spawn/despawn`, `isAuthority(entity)`, `hostId`, `simulate({latency,jitter,loss})`, `stats()`, `Multiplayer.link(a, b)` (docs/MULTIPLAYER.md). Component `netSync`.
+* `game.enableDebug()`: `record(on)`, `exportProfile()`, `stats()` now include `phases`, `scripts`, `components`, `spikes`, `net` (docs/PROFILER.md).

@@ -24,7 +24,7 @@ pub struct Profiler {
     pub data: Option<serde_json::Value>,
 }
 
-pub const PROFILER_JS: &str = "(()=>{const g=window.__nord;if(!g)return;const d=g.debug??g.enableDebug();const s=d.stats();fetch('/api/ipc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({t:'profiler',fps:s.fps,ms:s.frameMs,worst:s.worstMs,objects:s.objects,draws:s.drawCalls??null,heap:s.heapMB??null,slow:s.slowFrames,frames:d.frames.slice(-120),costs:s.costs.slice(0,8).map(c=>({l:c.label,ms:c.ms,n:c.calls}))})}).catch(()=>{});})()";
+pub const PROFILER_JS: &str = "(()=>{const g=window.__nord;if(!g)return;const d=g.debug??g.enableDebug();const s=d.stats();fetch('/api/ipc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({t:'profiler',fps:s.fps,ms:s.frameMs,worst:s.worstMs,objects:s.objects,draws:s.drawCalls??null,heap:s.heapMB??null,slow:s.slowFrames,frames:d.frames.slice(-120),costs:s.costs.slice(0,8).map(c=>({l:c.label,ms:c.ms,n:c.calls})),phases:s.phases,scripts:s.scripts.slice(0,8),components:s.components.slice(0,6),spikes:s.spikes.slice(-5),net:s.net,rec:s.recording,recorded:s.recorded})}).catch(()=>{});})()";
 
 impl Profiler {
     /// JS to run now (every 0.5 s while open and the game runs).
@@ -177,6 +177,23 @@ pub fn base64_decode(s: &str) -> Vec<u8> {
 }
 
 impl EditorState {
+    /// Game message `{t:"profile", json:"…"}` → `<project>/profiles/profile-N.json` (see docs/PROFILER.md).
+    pub fn save_profile(&mut self, json: &str) {
+        let Some(root) = self.root.clone() else {
+            return;
+        };
+        let dir = root.join("profiles");
+        let _ = nord_core::vfs::create_dir_all(&dir);
+        let mut n = 1;
+        while dir.join(format!("profile-{n}.json")).exists() {
+            n += 1;
+        }
+        match nord_core::vfs::write(dir.join(format!("profile-{n}.json")), json.as_bytes()) {
+            Ok(()) => self.toast(format!("Saved profiles/profile-{n}.json")),
+            Err(e) => self.toast(format!("Could not save the profile: {e}")),
+        }
+    }
+
     /// Game view message `{t:"shot", data:"data:image/png;base64,…"}` → `<project>/screenshots/shot-N.png`.
     pub fn save_screenshot(&mut self, data_url: &str) {
         let Some(root) = self.root.clone() else {
@@ -204,6 +221,11 @@ impl EditorState {
 }
 
 /// JS run inside the game page: posts the canvas as a PNG data URL to the editor.
+/// JS for the Profiler window buttons (run in the game page).
+pub const PROFILER_RECORD_JS: &str =
+    "(()=>{const d=window.__nord?.debug??window.__nord?.enableDebug();d?.record(!d.recording);})()";
+pub const PROFILER_SAVE_JS: &str = "(()=>{const d=window.__nord?.debug;if(!d)return;fetch('/api/ipc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({t:'profile',json:JSON.stringify(d.exportProfile())})}).catch(()=>{});})()";
+
 pub const SHOT_JS: &str = "(()=>{const c=document.querySelector('canvas');if(!c)return;requestAnimationFrame(()=>{try{fetch('/api/ipc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({t:'shot',data:c.toDataURL('image/png')})});}catch(e){}});})()";
 
 fn profiler_window(st: &mut EditorState, ctx: &egui::Context) {
@@ -270,6 +292,85 @@ fn profiler_window(st: &mut EditorState, ctx: &egui::Context) {
                 frames.len(),
                 max
             ));
+            ui.horizontal(|ui| {
+                let rec = d["rec"].as_bool().unwrap_or(false);
+                if ui
+                    .button(if rec {
+                        format!("■ Stop recording ({} frames)", n("recorded") as u64)
+                    } else {
+                        "● Record".into()
+                    })
+                    .clicked()
+                {
+                    st.push(crate::state::Action::ProfilerRecord);
+                }
+                if ui.button("Save profile").on_hover_text("Writes profiles/profile-N.json (frames, phases, scripts, components, spikes, network)").clicked() {
+                    st.push(crate::state::Action::ProfilerSave);
+                }
+            });
+            let list = |ui: &mut egui::Ui, title: &str, rows: Vec<(String, f64, u64)>| {
+                if rows.is_empty() {
+                    return;
+                }
+                egui::CollapsingHeader::new(title)
+                    .default_open(true)
+                    .show(ui, |ui| {
+                        for (name, ms, calls) in rows {
+                            if calls > 0 {
+                                ui.label(format!("{ms:.2} ms ×{calls} · {name}"));
+                            } else {
+                                ui.label(format!("{ms:.2} ms · {name}"));
+                            }
+                        }
+                    });
+            };
+            let mut ph: Vec<(String, f64, u64)> = d["phases"]
+                .as_object()
+                .map(|o| o.iter().map(|(k, v)| (k.clone(), v.as_f64().unwrap_or(0.0), 0)).collect())
+                .unwrap_or_default();
+            ph.sort_by(|a, b| b.1.total_cmp(&a.1));
+            list(ui, "Phases (avg ms per frame)", ph);
+            let named = |k: &str| -> Vec<(String, f64, u64)> {
+                d[k].as_array()
+                    .map(|a| {
+                        a.iter()
+                            .map(|r| (r["name"].as_str().unwrap_or("").to_string(), r["ms"].as_f64().unwrap_or(0.0), r["calls"].as_u64().unwrap_or(0)))
+                            .collect()
+                    })
+                    .unwrap_or_default()
+            };
+            list(ui, "Scripts (total ms since reset)", named("scripts"));
+            list(ui, "Components (total ms since reset)", named("components"));
+            let spikes: Vec<(String, f64, u64)> = d["spikes"]
+                .as_array()
+                .map(|a| {
+                    a.iter()
+                        .rev()
+                        .map(|s| {
+                            let top = s["top"]["name"].as_str().map_or(String::new(), |t| format!(" · {t}"));
+                            (format!("frame {}{top}", s["frame"].as_u64().unwrap_or(0)), s["ms"].as_f64().unwrap_or(0.0), 0)
+                        })
+                        .collect()
+                })
+                .unwrap_or_default();
+            list(ui, "Slow-frame spikes", spikes);
+            if d["net"].is_object() {
+                let nt = &d["net"];
+                egui::CollapsingHeader::new("Network").default_open(true).show(ui, |ui| {
+                    ui.label(format!(
+                        "{} · {} peer(s) · ping {}",
+                        if nt["isHost"].as_bool().unwrap_or(false) { "host" } else { "guest" },
+                        nt["peers"].as_u64().unwrap_or(0),
+                        nt["pingMs"].as_f64().map_or("–".to_string(), |p| format!("{p:.0} ms"))
+                    ));
+                    ui.label(format!(
+                        "out {:.0} B/s · in {:.0} B/s · dropped {}",
+                        nt["outPerSec"].as_f64().unwrap_or(0.0),
+                        nt["inPerSec"].as_f64().unwrap_or(0.0),
+                        nt["dropped"].as_u64().unwrap_or(0)
+                    ));
+                });
+            }
             ui.separator();
             for c in d["costs"].as_array().into_iter().flatten() {
                 ui.label(format!(

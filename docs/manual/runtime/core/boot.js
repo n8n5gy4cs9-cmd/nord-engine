@@ -26,8 +26,25 @@ export function createGame(project, opts = {}) {
   if (opts.canvas) game._detachInput = attachDom(game.input, opts.canvas, globalThis.window, (x, y) => game.backend?.toWorld?.(x, y) ?? [x, y]);
   game.effects.attach(opts.canvas ?? null, opts.container ?? null);
   if (opts.container && (project.debug || /[?&]debug\b/.test(globalThis.location?.search ?? ''))) { game.enableDebug(); game._debugOverlay = attachDebugOverlay(game, opts.container); } // F9
+  autoNet(game);
   game.preload = (paths) => game.backend?.preload?.(paths) ?? Promise.resolve();
   return game;
+}
+
+/**
+ * Test helpers carried in the page URL (the editor's "Play N players" uses them): `?net=host:room` or `?net=join:room` (a guest retries
+ * until the host exists) and `?netsim=latencyMs,jitterMs,loss` (loss 0..1) for the network simulator.
+ */
+function autoNet(game) {
+  const q = new URLSearchParams(globalThis.location?.search ?? ''), n = q.get('net');
+  if (!n) return;
+  const [mode, room] = n.split(':');
+  if (!/^[\w-]+$/.test(room ?? '')) return;
+  const sim = q.get('netsim');
+  if (sim) { const [latency, jitter, loss] = sim.split(',').map(Number); game.net.simulate({ latency, jitter, loss }); }
+  const fail = (err) => game.warn?.(`[nord] ?net=${n}: ${err?.message ?? err}`);
+  if (mode === 'host') game.net.host(room).catch(fail);
+  else if (mode === 'join') { let tries = 0; const go = () => game.net.join(room, 4000).catch((err) => { if (++tries < 8) setTimeout(go, 1000); else fail(err); }); go(); }
 }
 
 /** Fill `container` with a sized stage div and return it. Dev pages call this: `const stage = makeStage(document.body, project)`. */

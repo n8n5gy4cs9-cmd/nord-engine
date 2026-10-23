@@ -16,6 +16,9 @@ use std::{
     process::Command,
 };
 
+pub mod hosting;
+pub use hosting::Host;
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Target {
     /// Pick from the project type.
@@ -80,6 +83,8 @@ pub struct Opts {
     pub zip: bool,
     /// Installable offline web app: `manifest.webmanifest` + `sw.js` (precache, cache-first) + registration in index.html.
     pub pwa: bool,
+    /// Hosting preset: extra deploy files for itch.io / GitHub Pages / Netlify / Vercel / Docker (see `hosting.rs`).
+    pub host: Host,
     /// Compile event sheets to JavaScript in the build output (needs Node; skipped with a note when unavailable). On by default.
     pub compile_events: bool,
 }
@@ -94,6 +99,7 @@ impl Default for Opts {
             optimize: false,
             zip: false,
             pwa: false,
+            host: Host::None,
             compile_events: true,
         }
     }
@@ -782,6 +788,16 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
         notes.push("pwa: manifest.webmanifest + sw.js (offline after first load, needs https or localhost)".into());
     }
 
+    // 5c. hosting preset files (also covered by the file list below)
+    if o.host != Host::None {
+        if matches!(target, Target::WasmGame | Target::WasmApp) && o.host == Host::GithubPages {
+            notes.push("github-pages: Rust/WASM builds need the right MIME for .wasm; GitHub Pages serves it correctly".into());
+        }
+        if let Some(n) = hosting::write(&out, &proj.name, o.host)? {
+            notes.push(n);
+        }
+    }
+
     // 6. manifest (folder builds)
     if !o.single_file {
         write_manifest(&out, &proj, target, &pl)?;
@@ -796,7 +812,7 @@ pub fn build(project: &Path, engine: &Path, o: &Opts) -> Result<Report> {
         .collect();
     sizes.sort_by(|a, b| b.1.cmp(&a.1).then(a.0.cmp(&b.0)));
     notes.extend(size_checks(&sizes));
-    let zip = if o.zip {
+    let zip = if o.zip || o.host == Host::Itch {
         Some(write_zip(&out, &files)?)
     } else {
         None

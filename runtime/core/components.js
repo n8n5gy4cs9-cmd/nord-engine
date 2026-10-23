@@ -2,6 +2,7 @@
 import { registerComponent } from './entity.js';
 import { attachGraph } from './graph/runner.js';
 import { AnimatorController, validateController } from './animator.js';
+import { registerNetSync } from './netsync.js';
 
 export function registerCoreComponents(game) {
   const ui = () => game.ui;
@@ -33,6 +34,7 @@ export function registerCoreComponents(game) {
   });
 
   registerComponent('audioListener', {});
+  registerNetSync();
 
   // graph: runs a visual-scripting graph file (graphs/*.graph.json) on this entity. data: { file }
   registerComponent('graph', {

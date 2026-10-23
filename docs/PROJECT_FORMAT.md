@@ -10,6 +10,9 @@ my-game/
 ├─ prefabs/player.prefab.json
 ├─ scripts/player.js            # JS scripts (ES modules); or src/ for Rust tiers
 ├─ assets/…                     # images, audio, models, fonts, tilemaps
+├─ anim/*.animator.json         # Animator controllers (docs/ANIMATOR.md)
+├─ models/*.mesh.json|glb|obj   # 3D Modeler output (docs/MODELER.md)
+├─ profiles/profile-N.json      # saved profiler recordings (docs/PROFILER.md)
 ├─ .nord-cache/                 # thumbs, import cache (gitignored)
 └─ dist/                        # build output (gitignored)
 ```
@@ -80,6 +83,9 @@ Optional attribute keys: `label`, `default`, `min`/`max`, `options` (enum), `ass
 
 ### Signal connections (`connections`)
 `"connections": [{ "event": "pressed", "target": "<entity id, empty = itself>", "method": "open" }]` on an entity: when it emits `event`, the runtime calls `method(data)` on the target's scripts (Inspector ▸ Signals).
+
+## New components (2026-10-23)
+`animator` `{ controller: 'anim/x.animator.json', params? }` (state machine for `animatedSprite` or `model`, docs/ANIMATOR.md), `netSync` `{ rate, rot, scale, vars[], interpolate, smoothing, id }` (multiplayer sync, docs/MULTIPLAYER.md).
 
 ## Prefab
 Same as a scene with a single root entity: `{ "format":1, "root": {entity…} }`.

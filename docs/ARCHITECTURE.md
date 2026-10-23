@@ -39,6 +39,7 @@ nord-engine/
 │  └─ nord-app-wasm/     eframe/egui app runtime (M5)
 ├─ runtime/              nord.js (ES modules): core/, phaser/, babylon/, ui/, util/
 ├─ editor/viewport/      JS side of the editor viewport (edit-mode glue loaded into the webview: gizmos, picking, IPC)
+├─ editor/{modeler,animator,uidesigner,graph,level2d,fpsc}/   embedded editor pages (3D Modeler uses vendor/three; Animator uses runtime/core/animator.js)
 ├─ vendor/               pinned third-party JS/wasm (+ VENDOR.json manifest) — committed
 ├─ library/              snippets/, controllers/, systems/, ui/, ai/, fx/, apps/, templates/, INDEX.json
 ├─ examples/             complete runnable games + apps (each is a full nord project)

@@ -1,6 +1,6 @@
 //! Export dialog: runs `nord_export::build` on a worker thread, logs the report to the console, can open the output folder.
 use crate::state::{EditorState, LogLevel};
-use nord_export::{Opts, Target};
+use nord_export::{Host, Opts, Target};
 use std::{
     path::PathBuf,
     sync::mpsc::{channel, Receiver},
@@ -14,6 +14,8 @@ pub struct ExportUi {
     pub optimize: bool,
     pub zip: bool,
     pub pwa: bool,
+    /// hosting preset (deploy files for itch.io, GitHub Pages, Netlify, Vercel, Docker)
+    pub host: Host,
     pub compile_events: bool,
     /// empty = `<project>/dist`
     pub out: String,
@@ -34,6 +36,7 @@ impl Default for ExportUi {
             optimize: false,
             zip: false,
             pwa: false,
+            host: Host::None,
             compile_events: true,
             out: String::new(),
             mobile: false,
@@ -64,7 +67,7 @@ pub fn start(st: &mut EditorState) {
             let e = &st.export_ui;
             let opts = serde_json::json!({
                 "target": (e.target != Target::Auto).then(|| e.target.as_str()),
-                "minify": e.minify, "single_file": e.single_file, "optimize": e.optimize, "pwa": e.pwa, "no_compile_events": !e.compile_events,
+                "minify": e.minify, "single_file": e.single_file, "optimize": e.optimize, "pwa": e.pwa, "host": (e.host != Host::None).then(|| e.host.as_str()), "no_compile_events": !e.compile_events,
             });
             crate::web::server_export(&root, opts.to_string());
             st.export_ui.status = "Exporting on the server… (progress in the Console)".into();
@@ -95,6 +98,7 @@ pub fn start(st: &mut EditorState) {
         optimize: e.optimize && !web,
         zip: e.zip || web,
         pwa: e.pwa,
+        host: if web { Host::None } else { e.host },
         compile_events: e.compile_events && !web,
     };
     let (tx, rx) = channel();
@@ -186,6 +190,13 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
             ui.checkbox(&mut e.zip, "Also write a .zip (itch.io style upload)");
             ui.add_enabled(!e.single_file, egui::Checkbox::new(&mut e.compile_events, "Compile event sheets to JavaScript (needs Node; faster start, no expression parsing)"));
             ui.add_enabled(!e.single_file, egui::Checkbox::new(&mut e.pwa, "Installable offline web app (PWA: manifest + service worker)"));
+            egui::ComboBox::from_label("Hosting preset")
+                .selected_text(e.host.label())
+                .show_ui(ui, |ui| {
+                    for h in Host::ALL {
+                        ui.selectable_value(&mut e.host, h, h.label());
+                    }
+                });
             ui.separator();
             ui.horizontal(|ui| {
                 if ui.add_enabled(!busy, egui::Button::new("Export")).clicked() {

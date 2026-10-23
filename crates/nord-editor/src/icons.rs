@@ -93,6 +93,7 @@ icons!(
     "focus",
     "git-branch",
     "workflow",
+    "users",
     "bug",
     "zap",
     "scissors",

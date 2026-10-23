@@ -220,3 +220,10 @@ Verified headlessly (egui_kittest UI tests, `runtime/core/core.test.mjs`, a real
 - Neon Harbor (T48, 2026-10-23): the project runs and wins headless in Chromium (`tools/neon-harbor-test.mjs`: menu, run, pause, 14 cores, OVERDRIVE, end screen, no console errors) and exports with `nord build`; it was not played in the native window or on a phone. Model material remap and `unique:false` models: instances share the source mesh's material (per-entity materials on instanced models need `unique: true`). The three risks listed after the first bug check are fixed (material thumbnail key, variant-aware prefab cache, no `prompt()`/`confirm()` in editor pages).
 
 - **Native macOS check (2026-10-23):** `nord-editor examples/neon-harbor` starts and stays up (8 s, no log output) and `cargo test -p nord-editor` passes (81 + 51 tests). The session had no screen capture or GUI-driving access, so asset drag into the Scene view, shortcut-rebind capture, live Hierarchy/Inspector highlights, F5/F6/F1 next to the web view and Window/menu overlays are **still unverified by hand** (G8-5 stays open). Headless Chromium re-run OK: `viewport-multi`, `viewport-multi3d`, `uidesigner-rect`, `graph-subgraph`, `neon-harbor`, `e2e edit-viewport-2d/3d`.
+
+## 3D Modeler, Animator, profiler, hosting, multiplayer tooling (2026-10-23)
+- Not run in the native macOS window (wry): the 3D Modeler and Animator tabs, the Profiler's Record/Save buttons, *Play multiplayer* (opens real browser windows), Assets ▸ New animator controller / double-click.
+- WebRTC did not connect between two tabs of the in-app browser pane (mDNS ICE candidates); the in-memory `Multiplayer.link` tests and `tools/multiplayer-test.mjs` cover the logic/handshake. Real devices and Safari/iOS unverified.
+- Hosting presets only write files; GitHub/Netlify/Vercel/itch/Docker deployments themselves were not exercised.
+- Animator: no blending, no layers/sub-state machines, no event-sheet actions yet; exit time for sprites uses the clip length Phaser reports (not seen running); 3D uses the Babylon animation group length.
+- 3D Modeler: no GLB import, texture is one image per mesh; Fill ignores Mirror X.

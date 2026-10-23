@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 304/318 tasks (96%)** · updated 2026-10-23
+**Overall: 308/322 tasks (96%)** · updated 2026-10-23
 
 | Milestone | Progress |
 |---|---|
@@ -20,7 +20,7 @@
 | M10 Construct-style editor | 36/36 (100%) |
 | M11 Web editor | 14/16 (88%) |
 | M12 FPS Creator addon | 30/31 (97%) |
-| M13 Unity-style editor (Godotize) | 15/16 (94%) |
+| M13 Unity-style editor (Godotize) | 19/20 (95%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -402,6 +402,10 @@ _Unity-like editor workflow on the existing tools: Scene/Game/Hierarchy/Inspecto
 - [x] **M13-14** Fix RMB-fly strafe, Hierarchy double-click frame, prefab expansion in Scene view, new splash/icon
 - [x] **M13-15** 3D Modeler tab: mesh editor + texture painter + UV editor (ported from BlockSmith)
 - [x] **M13-16** Animator controller: sprite state machine (runtime, component, editor tab)
+- [x] **M13-17** Hosting presets: nord build --host itch|github-pages|netlify|vercel|docker (+ editor combo)
+- [x] **M13-18** Deep profiler: phases, scripts, components, spikes, recorder, saved profiles, network
+- [x] **M13-19** Multiplayer tooling: RPC, replicated spawner, netSync, ping/stats, simulator, Play N players
+- [x] **M13-20** Tutorials T49-T53 + manual chapter Multiplayer for the new tools
 
 ## Features (PRD)
 

@@ -113,9 +113,12 @@ export class Entity {
   /** Run `fn` on every enabled script (errors are caught + reported so one bad script cannot kill the frame). */
   callScripts(method, ...args) {
     if (!this.enabled) return;
+    const dbg = this.scene.game.debug; // profiler hook (cost per script method)
     for (const s of this.scripts) {
       if (typeof s[method] !== 'function') continue;
+      const t = dbg ? dbg.now() : 0;
       try { s[method](...args); } catch (err) { this.scene.game.reportError(err, s, method); }
+      if (dbg) dbg.addScript(`${s.constructor?.name ?? 'script'}.${method}`, dbg.now() - t);
     }
   }
 

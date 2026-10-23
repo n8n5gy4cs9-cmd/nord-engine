@@ -100,6 +100,8 @@ struct ExportOpts {
     optimize: bool,
     #[serde(default)]
     pwa: bool,
+    /// hosting preset name (see `nord build --host`)
+    host: Option<String>,
     #[serde(default)]
     no_compile_events: bool,
 }
@@ -283,6 +285,11 @@ async fn run_export(
         // only known target names reach argv
         if t.chars().all(|c| c.is_ascii_alphanumeric() || c == '-') {
             cmd.arg("--target").arg(t);
+        }
+    }
+    if let Some(h) = &o.host {
+        if h.chars().all(|c| c.is_ascii_alphanumeric() || c == '-') {
+            cmd.arg("--host").arg(h);
         }
     }
     for (on, flag) in [

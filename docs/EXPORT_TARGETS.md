@@ -65,3 +65,14 @@ Paper Worlds and RSS River demonstrate local Phaser/Babylon modules inside a nor
 
 ## Android / iOS (Capacitor project)
 Build Settings ▸ *Android / iOS ▸ Mobile project* (API: `nord_export::build_mobile`) exports the web build into `dist/mobile/www` and writes `capacitor.config.json` (`appId` from `export.mobile.appId` or `com.nord.<name>`, `webDir: "www"`), `package.json` and `README-MOBILE.md`. `npx cap add android|ios` then creates the native projects. The engine does not bundle Android Studio / Xcode, so APK / IPA builds happen on the owner's machine.
+
+## Hosting presets (`--host`, 2026-10-23)
+`nord build <project> --host itch|github-pages|netlify|vercel|docker|none` (editor: **Export ▸ Hosting preset**; web-editor job option `host`). After the normal build it writes deploy files into the output folder (`crates/nord-export/src/hosting.rs`, covered by `nord.json`):
+| Preset | Files |
+|---|---|
+| `itch` | `ITCH.md` (butler line, upload notes) and forces the `.zip` |
+| `github-pages` | `.nojekyll`, `404.html` (copy of `index.html`), `.github/workflows/pages.yml` |
+| `netlify` | `netlify.toml`, `_headers` (no-cache page, immutable `lib/*`) |
+| `vercel` | `vercel.json` |
+| `docker` | `Dockerfile` (nginx:alpine), `nginx.conf` (gzip, caching), `.dockerignore` |
+Names are slugged before they reach any config text; an unknown preset is an error with the list. Presets only add files: the build itself is unchanged. Platforms already covered: web (folder/single-file/PWA), Rust/WASM, Mac app, Windows/Linux portable, Android/iOS (Capacitor project).

@@ -104,6 +104,9 @@ enum Cmd {
         /// Installable offline web app: manifest + service worker
         #[arg(long)]
         pwa: bool,
+        /// Hosting preset: none, itch, github-pages, netlify, vercel, docker (adds deploy files next to the build)
+        #[arg(long, default_value = "none")]
+        host: String,
         /// Keep event sheets as JSON (interpreted at runtime) instead of compiling them to JavaScript
         #[arg(long)]
         no_compile_events: bool,
@@ -384,6 +387,7 @@ fn main() -> anyhow::Result<()> {
             optimize,
             zip,
             pwa,
+            host,
             no_compile_events,
         } => {
             let engine =
@@ -399,6 +403,7 @@ fn main() -> anyhow::Result<()> {
                     optimize,
                     zip,
                     pwa,
+                    host: host.parse().map_err(anyhow::Error::msg)?,
                     compile_events: !no_compile_events,
                 },
             )?;

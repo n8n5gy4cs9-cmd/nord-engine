@@ -30,6 +30,8 @@ Toolbar **Play** toggles Stop, **Export…** opens the export dialog, and the se
 * **Library** — search ready-made scripts, prefabs and kits; **Insert** adds them to the project/selection.
 * **Console** — `console.*` output of the running game and build output. Click `file.js:12` to open that line.
 * **Code** — a native code editor with tabs, highlighting (10 languages), find/replace (regex), project search, autocomplete (nord.js API + library + file words), error squiggles, minimap, split view and multi-cursor.
+* **3D Modeler** — a small polygon modeller with a pixel texture painter and a UV editor; saves into `models/` ([guide](modeler.html), [T49](tut-t49-3d-modeler.html)).
+* **Animator** — a state machine that switches sprite or 3D-model animations from parameters ([guide](animator.html), [T50](tut-t50-animator.html)).
 * **Docs** — this manual.
 
 ## Play, stop, reload

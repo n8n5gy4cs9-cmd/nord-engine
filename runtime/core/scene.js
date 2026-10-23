@@ -148,6 +148,8 @@ export class Scene {
     this.game.time.delta = dt;
     this.game.time.elapsed += dt;
     this.game.input.beginFrame();
+    const d = this.game.debug; let t = d ? d.now() : 0; // profiler: per-phase time, zero cost when the debugger is off
+    const lap = (name) => { if (d) { const u = d.now(); d.phase(name, u - t); t = u; } };
     this.#flushSpawns();
     this.#acc += dt;
     for (let n = 0; this.#acc >= FIXED_DT && n < MAX_STEPS; n++, this.#acc -= FIXED_DT) {
@@ -155,13 +157,23 @@ export class Scene {
       this.backend?.step?.(FIXED_DT, this);
     }
     if (this.#acc > FIXED_DT * MAX_STEPS) this.#acc = 0;
+    lap('fixed+physics');
     this.scheduler.update(dt);
     for (const s of this.systems) { try { s.update?.(dt); } catch (err) { this.game.reportError(err, s, 'update'); } }
+    lap('systems');
     this.#each('update', dt);
-    for (const e of this.all()) for (const c of e.components) c.impl?.update?.(c, dt);
+    lap('scripts');
+    for (const e of this.all()) for (const c of e.components) {
+      if (!c.impl?.update) continue;
+      if (d) { const u = d.now(); c.impl.update(c, dt); d.addComponent(c.type, d.now() - u); } else c.impl.update(c, dt);
+    }
+    lap('components');
     for (const e of [...this.all()]) if (e.enabled) for (const b of e.behaviors) if (b.enabled) { try { b.tick(dt); } catch (err) { this.game.reportError(err, b, 'tick'); } }
+    lap('behaviors');
     this.#each('lateUpdate', dt);
+    lap('late');
     this.#flushDeaths();
+    lap('cleanup');
   }
   #each(method, dt) { for (const e of [...this.all()]) e.callScripts(method, dt); }
   #flushSpawns() {

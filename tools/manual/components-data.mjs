@@ -147,6 +147,13 @@ export const COMPONENTS = {
     handle: ['g — the running Graph (stop(), vars)'],
     example: { type: 'graph', file: 'graphs/player.graph.json' },
   },
+  netSync: {
+    tier: 'both', summary: 'Multiplayer: the owning peer sends this entity\'s position (and optionally rotation, scale and chosen `vars`) to everyone else, who see it move smoothly. Owner = the player given to `net.spawn`, otherwise the host. Needs `game.net` connected; see the Multiplayer chapter.',
+    dummies: 'Makes this object move the same way on every player\'s screen.',
+    notes: ['Only sends while the entity changes (plus a 1 second heartbeat). `rate` = sends per second. Scripts can read `comp.isMine` and `comp.id`.'],
+    handle: ['isMine — true on the owning peer', 'id — the network id (`id` field, else the spawned netId, else the entity id)'],
+    example: { type: 'netSync', rate: 15, vars: ['hp'] },
+  },
   animator: {
     tier: 'both', summary: 'Unity-style state machine (`anim/*.animator.json`) that switches the clip of the `animatedSprite` (or the glTF animation of the `model`) on the same entity from parameters (float, int, bool, trigger). Built in the Animator tab; see the Animator chapter.',
     dummies: 'Decides which animation plays (idle, run, jump…) from a few values your script sets.',
@@ -155,4 +162,4 @@ export const COMPONENTS = {
     example: { type: 'animator', controller: 'anim/player.animator.json', params: { speed: 0 } },
   },
 };
-export const COMPONENT_ORDER = ['sprite', 'animatedSprite', 'text', 'tilemap', 'parallax', 'particles', 'camera', 'light', 'mesh', 'model', 'material', 'skybox', 'postProcess', 'rigidbody', 'collider', 'trigger', 'audioSource', 'audioListener', 'uiPanel', 'uiLabel', 'uiImage', 'uiBar', 'uiButton', 'path', 'spawner', 'graph', 'animator'];
+export const COMPONENT_ORDER = ['sprite', 'animatedSprite', 'text', 'tilemap', 'parallax', 'particles', 'camera', 'light', 'mesh', 'model', 'material', 'skybox', 'postProcess', 'rigidbody', 'collider', 'trigger', 'audioSource', 'audioListener', 'uiPanel', 'uiLabel', 'uiImage', 'uiBar', 'uiButton', 'path', 'spawner', 'graph', 'animator', 'netSync'];

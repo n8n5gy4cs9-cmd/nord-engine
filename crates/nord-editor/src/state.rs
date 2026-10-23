@@ -265,6 +265,12 @@ pub enum Action {
     PrefabVariant(String),
     Tutorial,
     Screenshot,
+    /// Profiler window: start/stop the recorder in the running game
+    ProfilerRecord,
+    /// Profiler window: save the running game's profile to `profiles/profile-N.json`
+    ProfilerSave,
+    /// Project ▸ Play N players: N browser windows, the first hosts, the rest join (`lag` adds the network simulator)
+    PlayPlayers(u8, bool),
     /// Window ▸ Layout presets ("default", "2d", "3d", "coding", "visual")
     Layout(String),
     /// Pause / resume the running game, or advance it one frame while paused
@@ -1303,6 +1309,11 @@ impl EditorState {
                 }
             }
             Some("profiler") => self.fun_ui.profiler.data = Some(m.clone()),
+            Some("profile") => {
+                if let Some(j) = m["json"].as_str() {
+                    self.save_profile(j);
+                }
+            }
             Some("event-ran") => self.events.handle(m),
             Some("shot") => {
                 if let Some(d) = m["data"].as_str() {
