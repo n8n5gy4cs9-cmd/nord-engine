@@ -1601,6 +1601,10 @@ impl App {
     /// One UI frame. `frame` is `None` in headless tests (no native window => no embedded webview).
     pub fn frame_ui(&mut self, ctx: &Context, frame: Option<&eframe::Frame>) {
         egui_extras::install_image_loaders(ctx);
+        nord_core::thumbs::PLAIN_MATERIALS.store(
+            self.st.settings.plain_material_previews,
+            std::sync::atomic::Ordering::Relaxed,
+        );
         self.web_events(ctx);
         if let Some(rel) = ctx.data_mut(|d| d.remove_temp::<String>(egui::Id::new("ping_asset"))) {
             let a = &mut self.st.assets_ui;

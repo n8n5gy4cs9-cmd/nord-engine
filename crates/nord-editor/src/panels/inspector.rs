@@ -450,6 +450,9 @@ fn draw_material_preview(ui: &mut Ui, data: &Map<String, Value>) {
     let key = serde_json::to_string(data).unwrap_or_default();
     let mut h = std::collections::hash_map::DefaultHasher::new();
     key.hash(&mut h);
+    nord_core::thumbs::PLAIN_MATERIALS
+        .load(std::sync::atomic::Ordering::Relaxed)
+        .hash(&mut h);
     let (hash, tid) = (h.finish(), egui::Id::new("mat-preview-last"));
     // only the latest preview is kept (dragging a colour would otherwise leave hundreds of textures behind)
     let last: Option<(u64, egui::TextureHandle)> = ui.ctx().data(|d| d.get_temp(tid));

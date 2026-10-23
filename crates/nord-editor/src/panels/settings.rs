@@ -92,6 +92,10 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                 ui.label("UI scale");
                 changed |= ui.add(egui::Slider::new(&mut s.ui_scale, 0.8..=1.6)).changed();
                 ui.end_row();
+                ui.label("Material previews");
+                ui.checkbox(&mut s.plain_material_previews, "Flat colour only (faster)")
+                    .on_hover_text("Off (default): the preview ball and Assets thumbnails show the texture, normal map and emissive map. On: colour, metallic and roughness only.");
+                ui.end_row();
                 ui.label("Code font size");
                 ui.add(egui::Slider::new(&mut s.code_font_size, 9.0..=24.0));
                 ui.end_row();

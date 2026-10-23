@@ -62,6 +62,8 @@ pub struct Settings {
     #[serde(default)]
     pub appearance_version: u8,
     pub ui_scale: f32,
+    /// Material preview ball / thumbnails: flat colour only (no texture, normal or emissive maps) for slow machines
+    pub plain_material_previews: bool,
     pub code_font_size: f32,
     pub code_word_wrap: bool,
     /// Line-height multiplier relative to the code font size.
@@ -112,6 +114,7 @@ impl Default for Settings {
             theme: "playcanvas".into(),
             appearance_version: 1,
             ui_scale: 1.0,
+            plain_material_previews: false,
             code_font_size: 13.0,
             code_word_wrap: false,
             code_line_height: 1.6,

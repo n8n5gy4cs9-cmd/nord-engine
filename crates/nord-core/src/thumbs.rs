@@ -81,6 +81,15 @@ fn hex3(s: &str) -> [f32; 3] {
     [b(0), b(2), b(4)]
 }
 
+/// When set, material previews/thumbnails skip the texture, normal and emissive maps (flat colour only): the *Rich material
+/// previews* editor setting turned off, for slow machines.
+pub static PLAIN_MATERIALS: std::sync::atomic::AtomicBool =
+    std::sync::atomic::AtomicBool::new(false);
+
+fn plain_materials() -> bool {
+    PLAIN_MATERIALS.load(std::sync::atomic::Ordering::Relaxed)
+}
+
 /// CPU-lit sphere preview of a `*.mat.json` (colour, texture with tiling/offset, metallic, roughness, emissive, alpha):
 /// Lambert + Blinn-Phong with a metal-tinted specular and a Fresnel rim. Used for Project thumbnails and the Inspector preview.
 pub fn render_material(
@@ -116,12 +125,40 @@ pub fn render_material(
         })
     };
     let (tile, off) = (vec2("uvScale", [1.0, 1.0]), vec2("uvOffset", [0.0, 0.0]));
-    let tex = mat
-        .get("texture")
-        .and_then(|v| v.as_str())
-        .filter(|s| !s.is_empty() && !s.contains(".."))
-        .and_then(|p| image::open(root.join(p)).ok())
-        .map(|i| i.thumbnail(256, 256).to_rgba8());
+    let plain = plain_materials();
+    let load = |k: &str| {
+        mat.get(k)
+            .and_then(|v| v.as_str())
+            .filter(|s| !plain && !s.is_empty() && !s.contains(".."))
+            .and_then(|p| image::open(root.join(p)).ok())
+            .map(|i| i.thumbnail(256, 256).to_rgba8())
+    };
+    let (tex, emap, nmap) = (load("texture"), load("emissiveMap"), load("normalMap"));
+    let sample = |t: &RgbaImage, n: [f32; 3]| {
+        let u = (n[0].atan2(n[2]) / std::f32::consts::TAU + 0.5) * tile[0] + off[0];
+        let v = (n[1].clamp(-1.0, 1.0).acos() / std::f32::consts::PI) * tile[1] + off[1];
+        let (tw, th) = t.dimensions();
+        let p = t.get_pixel(
+            ((u.rem_euclid(1.0)) * tw as f32) as u32 % tw,
+            ((v.rem_euclid(1.0)) * th as f32) as u32 % th,
+        );
+        [
+            p[0] as f32 / 255.0,
+            p[1] as f32 / 255.0,
+            p[2] as f32 / 255.0,
+        ]
+    };
+    // an emissive map glows where it is bright; its colour defaults to white (like the game)
+    let emissive = if emap.is_some()
+        && mat
+            .get("emissive")
+            .and_then(|v| v.as_str())
+            .is_none_or(str::is_empty)
+    {
+        [1.0; 3]
+    } else {
+        emissive
+    };
     let l = {
         let v = [-0.45f32, 0.55, 0.7];
         let n = (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]).sqrt();
@@ -145,23 +182,43 @@ pub fn render_material(
             if d2 > 1.0 {
                 continue;
             }
-            let n = [px, py, (1.0 - d2).sqrt()];
+            let mut n = [px, py, (1.0 - d2).sqrt()];
             let mut albedo = base;
             if let Some(t) = &tex {
-                let u = (n[0].atan2(n[2]) / std::f32::consts::TAU + 0.5) * tile[0] + off[0];
-                let v = (n[1].clamp(-1.0, 1.0).acos() / std::f32::consts::PI) * tile[1] + off[1];
-                let (tw, th) = t.dimensions();
-                let p = t.get_pixel(
-                    ((u.rem_euclid(1.0)) * tw as f32) as u32 % tw,
-                    ((v.rem_euclid(1.0)) * th as f32) as u32 % th,
-                );
+                let c = sample(t, n);
                 for i in 0..3 {
-                    albedo[i] *= (p[i] as f32 / 255.0).powf(2.2);
+                    albedo[i] *= c[i].powf(2.2);
                 }
             } else {
                 for a in &mut albedo {
                     *a = a.powf(2.2);
                 }
+            }
+            let mut glow = emissive;
+            if let Some(t) = &emap {
+                let c = sample(t, n);
+                for i in 0..3 {
+                    glow[i] *= c[i];
+                }
+            }
+            if let Some(t) = &nmap {
+                // tangent-space normal map on the sphere (tangent around Y)
+                let c = sample(t, n);
+                let (tx, ty, tz) = (c[0] * 2.0 - 1.0, c[1] * 2.0 - 1.0, c[2] * 2.0 - 1.0);
+                let tl = (n[2] * n[2] + n[0] * n[0]).sqrt().max(1e-4);
+                let tan = [n[2] / tl, 0.0, -n[0] / tl];
+                let bit = [
+                    n[1] * tan[2] - n[2] * tan[1],
+                    n[2] * tan[0] - n[0] * tan[2],
+                    n[0] * tan[1] - n[1] * tan[0],
+                ];
+                let m = [
+                    tan[0] * tx + bit[0] * ty + n[0] * tz,
+                    tan[1] * tx + bit[1] * ty + n[1] * tz,
+                    tan[2] * tx + bit[2] * ty + n[2] * tz,
+                ];
+                let ml = (m[0] * m[0] + m[1] * m[1] + m[2] * m[2]).sqrt().max(1e-4);
+                n = [m[0] / ml, m[1] / ml, m[2] / ml];
             }
             let ndl = (n[0] * l[0] + n[1] * l[1] + n[2] * l[2]).max(0.0);
             let ndh = (n[0] * h[0] + n[1] * h[1] + n[2] * h[2]).max(0.0);
@@ -174,7 +231,7 @@ pub fn render_material(
                     + albedo[i] * metal * 0.1
                     + f0 * spec
                     + fres * (0.2 + 0.8 * f0)
-                    + emissive[i].powf(2.2);
+                    + glow[i].powf(2.2);
                 px_out[i] = (c.clamp(0.0, 1.0).powf(1.0 / 2.2) * 255.0) as u8;
             }
             px_out[3] = (alpha.clamp(0.1, 1.0) * 255.0) as u8;
@@ -206,6 +263,9 @@ pub fn thumb_path(root: &Path, a: &Asset) -> PathBuf {
                     }
                 }
             }
+        }
+        if plain_materials() {
+            key.push_str("|plain");
         }
         if key != a.sha256 {
             key = crate::assets::sha256_bytes(key.as_bytes());
@@ -338,5 +398,29 @@ mod material_tests {
         assert_eq!(img.get_pixel(0, 0)[3], 0, "corner is outside the sphere");
         let (lit, dark) = (img.get_pixel(24, 20), img.get_pixel(46, 50));
         assert!(lit[0] > dark[0], "light comes from the upper left");
+    }
+}
+
+#[cfg(test)]
+mod material_map_tests {
+    use super::*;
+
+    /// A white emissive colour must not wash the ball out when an emissive map is set (Neon Harbor towers).
+    #[test]
+    fn emissive_map_limits_glow() {
+        let dir = std::env::temp_dir().join("nord-mat-test");
+        let _ = std::fs::create_dir_all(&dir);
+        let mut tex = RgbaImage::new(4, 4);
+        for p in tex.pixels_mut() {
+            *p = Rgba([0, 0, 0, 255]);
+        }
+        let _ = tex.save(dir.join("dark.png"));
+        let mat: serde_json::Map<String, serde_json::Value> = serde_json::from_str(
+            r##"{"color":"#3a4268","emissive":"#ffffff","emissiveMap":"dark.png","texture":"dark.png"}"##,
+        )
+        .unwrap();
+        let img = render_material(&dir, &mat, 32);
+        let c = img.get_pixel(16, 16);
+        assert!(c[0] < 120 && c[1] < 120, "ball stays dark: {c:?}");
     }
 }
