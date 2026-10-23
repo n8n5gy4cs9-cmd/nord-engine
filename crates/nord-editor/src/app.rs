@@ -237,6 +237,8 @@ pub struct App {
     sent_sel: Vec<String>,
     sent_settings: String,
     quit_confirm: bool,
+    /// a top menu (File, Window…) is open this frame
+    menu_open: bool,
     allow_close: bool,
     last_window_save: Instant,
     saved_layout: String,
@@ -274,6 +276,7 @@ impl App {
             sent_sel: vec![],
             sent_settings: String::new(),
             quit_confirm: false,
+            menu_open: false,
             allow_close: false,
             last_window_save: Instant::now(),
             saved_layout: String::new(),
@@ -777,6 +780,8 @@ impl App {
 
     fn menu(&mut self, ui: &mut egui::Ui) {
         let st = &mut self.st;
+        // a menu's closure only runs while it is open: native web views would paint over it, so the panes hide meanwhile
+        let mut menu_open = false;
         egui::menu::bar(ui, |ui| {
             let act = |ui: &mut egui::Ui, label: &str, a: Action, st: &mut EditorState| {
                 let clicked = match action_icon(&a) {
@@ -789,6 +794,7 @@ impl App {
                 }
             };
             ui.menu_button("File", |ui| {
+                menu_open = true;
                 act(ui, "New project…", Action::NewProject, st);
                 act(ui, "Open project…", Action::OpenProject, st);
                 ui.menu_button("Open recent", |ui| {
@@ -814,6 +820,7 @@ impl App {
                 act(ui, "Close project", Action::CloseProject, st);
             });
             ui.menu_button("Edit", |ui| {
+                menu_open = true;
                 act(ui, "Undo  (Cmd+Z)", Action::Undo, st);
                 act(ui, "Redo  (Shift+Cmd+Z)", Action::Redo, st);
                 ui.separator();
@@ -831,6 +838,7 @@ impl App {
                 }
             });
             ui.menu_button("Assets", |ui| {
+                menu_open = true;
                 for (label, k) in [
                     ("Create ▸ Folder", "folder"),
                     ("Create ▸ Material", "material"),
@@ -859,10 +867,12 @@ impl App {
                 act(ui, "Library", Action::ShowTab(Tab::Library), st);
             });
             ui.menu_button("GameObject", |ui| {
+                menu_open = true;
                 let three = st.is_3d();
                 panels::hierarchy::create_menu(st, ui, three, None);
             });
             ui.menu_button("Component", |ui| {
+                menu_open = true;
                 egui::ScrollArea::vertical()
                     .max_height(400.0)
                     .show(ui, |ui| {
@@ -885,6 +895,7 @@ impl App {
                     });
             });
             ui.menu_button("Window", |ui| {
+                menu_open = true;
                 // grouped so the menu fits on small screens; clicking brings the panel back even if it was closed
                 ui.menu_button("Panels", |ui| {
                     for t in [
@@ -939,6 +950,7 @@ impl App {
                 act(ui, "Settings…", Action::Settings, st);
             });
             ui.menu_button("Project", |ui| {
+                menu_open = true;
                 let (rk, sk) = (st.settings.key_label(true), st.settings.key_label(false));
                 let play_action = if st.is_playing() {
                     Action::Stop
@@ -957,6 +969,7 @@ impl App {
                 act(ui, "Add / upgrade FPS Creator…", Action::FpsInstall, st);
             });
             ui.menu_button("Help", |ui| {
+                menu_open = true;
                 act(
                     ui,
                     "Manual (F1 in Inspector: component docs)",
@@ -969,6 +982,7 @@ impl App {
                 act(ui, "About", Action::About, st);
             });
         });
+        self.menu_open = menu_open;
     }
 }
 
@@ -1567,6 +1581,9 @@ impl App {
 
     fn overlays_open(&self, ctx: &Context) -> bool {
         ctx.memory(|m| m.any_popup_open())
+            || self.menu_open
+            // any other menu, context menu or drop-down (egui draws them in the Foreground layer order)
+            || ctx.memory(|m| m.areas().visible_layer_ids().iter().any(|l| l.order == egui::Order::Foreground))
             || self.st.palette.mode != PMode::Closed
             || self.st.settings_open
             || self.st.export_ui.open
