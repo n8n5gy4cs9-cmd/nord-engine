@@ -384,8 +384,9 @@ function pickImage(onPick) {
 const SLOT = ['name', 'anchor', 'x', 'y', 'w', 'h', 'grow', 'margin', 'visible'];
 async function makePrefab(n) {
   const base = (n.name || n.type).replace(/[^a-zA-Z0-9_-]/g, '-');
-  const raw = prompt('Prefab file name', 'ui/' + base + '.ui.json'); if (!raw) return;
-  const path = normName(raw);
+  // no prompt(): the native web view does not show it. Name = node name, first free number.
+  const taken = new Set(Array.from($('#files').options).map((o) => o.value));
+  let k = 1, path = normName(base); while (taken.has(path)) path = normName(`${base}-${++k}`);
   const r = find(S.def.root, n); if (!r?.parent) return;
   const root = clone(n); for (const k of ['anchor', 'x', 'y', 'name']) delete root[k]; root.name = 'root';
   const def = { version: S.def.version ?? 1, name: path.replace(/^ui\//, '').replace('.ui.json', ''), theme: {}, root };

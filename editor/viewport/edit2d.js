@@ -612,7 +612,7 @@ function onUp() {
     const m = drag; drag = null;
     if (Math.hypot(m.x - m.sx, m.y - m.sy) > 3) {
       const [ax, ay] = toWorld(Math.min(m.sx, m.x), Math.min(m.sy, m.y)), [bx, by] = toWorld(Math.max(m.sx, m.x), Math.max(m.sy, m.y));
-      const hit = items.filter((i) => i.w.x >= ax && i.w.x <= bx && i.w.y >= ay && i.w.y <= by).map((i) => i.e.id);
+      const hit = items.filter((i) => !i.locked && i.w.x >= ax && i.w.x <= bx && i.w.y >= ay && i.w.y <= by).map((i) => i.e.id);
       state.selection = [...new Set([...m.base, ...hit])];
       send({ t: 'select', id: state.selection[0] ?? null, ids: state.selection });
     }

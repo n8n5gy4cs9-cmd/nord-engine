@@ -444,9 +444,10 @@ fn draw_material_preview(ui: &mut Ui, data: &Map<String, Value>) {
     let key = serde_json::to_string(data).unwrap_or_default();
     let mut h = std::collections::hash_map::DefaultHasher::new();
     key.hash(&mut h);
-    let tid = egui::Id::new(("mat-preview", h.finish()));
-    let tex: Option<egui::TextureHandle> = ui.ctx().data(|d| d.get_temp(tid));
-    let tex = tex.unwrap_or_else(|| {
+    let (hash, tid) = (h.finish(), egui::Id::new("mat-preview-last"));
+    // only the latest preview is kept (dragging a colour would otherwise leave hundreds of textures behind)
+    let last: Option<(u64, egui::TextureHandle)> = ui.ctx().data(|d| d.get_temp(tid));
+    let tex = last.filter(|(k, _)| *k == hash).map(|(_, t)| t).unwrap_or_else(|| {
         let img = nord_core::thumbs::render_material(
             std::path::Path::new(root.as_deref().unwrap_or(".")),
             data,
@@ -456,7 +457,7 @@ fn draw_material_preview(ui: &mut Ui, data: &Map<String, Value>) {
         let t = ui
             .ctx()
             .load_texture("mat-preview", ci, egui::TextureOptions::LINEAR);
-        ui.ctx().data_mut(|d| d.insert_temp(tid, t.clone()));
+        ui.ctx().data_mut(|d| d.insert_temp(tid, (hash, t.clone())));
         t
     });
     ui.add(egui::Image::new(&tex).fit_to_exact_size(egui::vec2(120.0, 120.0)));

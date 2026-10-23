@@ -30,7 +30,6 @@ async function runGraph(def, files = {}) {
 try {
   const page = await (await browser.newContext({ viewport: { width: 1300, height: 800 } })).newPage();
   const errors = []; page.on('pageerror', (e) => errors.push(e.message));
-  page.on('dialog', (d) => d.accept('graphs/sub-test.graph.json'));
   await page.goto(`${base}/editor/graph/index.html`);
   await page.waitForFunction(() => window.__graph?.graph);
   await page.evaluate(() => {
@@ -45,20 +44,20 @@ try {
   const original = await page.evaluate(() => window.__graph.graph.serialize());
   const varsBefore = await runGraph(original);
   assert.equal(varsBefore.z, 5);
-  await page.evaluate(() => window.__graph.makeSubgraph());
+  await page.evaluate(() => { document.querySelector('#file').value = 'graphs/t.graph.json'; return window.__graph.makeSubgraph(); });
   await page.waitForTimeout(500);
   console.log('status:', await page.evaluate(() => document.querySelector('#status').textContent));
   const converted = await page.evaluate(() => window.__graph.graph.serialize());
-  const sub = JSON.parse(fs.readFileSync(path.join(proj, 'graphs/sub-test.graph.json'), 'utf8'));
+  const sub = JSON.parse(fs.readFileSync(path.join(proj, 'graphs/t-sub1.graph.json'), 'utf8'));
   assert.ok(sub.nodes.some((n) => n.type === 'flow/return') && sub.nodes.some((n) => n.type === 'var/get') && sub.nodes.some((n) => n.type === 'event/start'), 'subgraph has Start, Get Variable a, Return');
   assert.deepEqual(converted.nodes.map((n) => n.type).sort(), ['event/start', 'flow/call-graph', 'math/add', 'var/set'], 'A and B were replaced by one call node');
-  const varsAfter = await runGraph(converted, { 'graphs/sub-test.graph.json': sub });
+  const varsAfter = await runGraph(converted, { 'graphs/t-sub1.graph.json': sub });
   assert.equal(varsAfter.z, 5, `converted graph gives the same result: ${JSON.stringify(varsAfter)}`);
   // live highlight: a trace message flashes the node
   const id = converted.nodes.find((n) => n.type === 'var/set').id;
-  await page.evaluate((id) => { window.__graph.onTrace({ 'graphs/sub-test.graph.json': [id] }); }, id);
-  await page.evaluate(() => { document.querySelector('#file').value = 'graphs/sub-test.graph.json'; });
-  await page.evaluate((id) => window.__graph.onTrace({ 'graphs/sub-test.graph.json': [id] }), id);
+  await page.evaluate((id) => { window.__graph.onTrace({ 'graphs/t-sub1.graph.json': [id] }); }, id);
+  await page.evaluate(() => { document.querySelector('#file').value = 'graphs/t-sub1.graph.json'; });
+  await page.evaluate((id) => window.__graph.onTrace({ 'graphs/t-sub1.graph.json': [id] }), id);
   const col = await page.evaluate((id) => window.__graph.graph.getNodeById(id).bgcolor, id);
   assert.equal(col, '#1f5c40', 'traced node flashes green');
   // heartbeat reaches the server and the game-side poll sees it

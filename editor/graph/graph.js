@@ -189,8 +189,11 @@ async function makeSubgraph() {
   if (srcIn.length > 2) return status(`Too many values flow in (${srcIn.length}); a subgraph takes at most two (a, b)`, true);
   if (srcOut.length > 2) return status(`Too many values flow out (${srcOut.length}); a subgraph returns at most two (a, b)`, true);
   if (srcOut.length && !exits.length) return status('To return values the selection must continue with a flow link', true);
-  const name = norm(prompt('Subgraph file name', 'graphs/sub1.graph.json') ?? '');
-  if (!name || name === 'graphs/.graph.json') return;
+  // no prompt(): the native web view does not show it. Name = <this graph>-subN, first free number.
+  const stem = norm($('#file').value || 'main').replace(/\.graph\.json$/, '');
+  const taken = new Set(Array.from($('#files').options).map((o) => o.value));
+  let k = 1; while (taken.has(`${stem}-sub${k}.graph.json`)) k++;
+  const name = `${stem}-sub${k}.graph.json`;
   // 1. build the new graph in a scratch LGraph
   const g2 = new LG.LGraph(), copy = new Map();
   g2.last_node_id = Math.max(0, ...sel.map((n) => n.id));

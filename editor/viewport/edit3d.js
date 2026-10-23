@@ -246,6 +246,7 @@ let pivotNode = null, grp = null;
 const members = () => state.selection.map((id) => nodes.get(id)).filter(Boolean);
 /** Node the gizmos attach to: the primary object, or for several objects a pivot at the primary (Pivot) / the bounds centre (Center). */
 function attachNodeFor() {
+  if (grp && pivotNode) return pivotNode; // mid-drag (a Ctrl press re-applies settings): do not reset the pivot under the gizmo
   const ms = members();
   if (ms.length < 2) return ms[0]?.node ?? null;
   pivotNode ??= new B.TransformNode('pivot', scene);
