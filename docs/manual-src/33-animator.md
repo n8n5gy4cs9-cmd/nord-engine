@@ -16,7 +16,7 @@ The **Animator** switches the animation of a sprite for you. Instead of writing 
 5. **Any State** is a state that is always active: use it for things that can happen from anywhere (Hurt, Die).
 6. Press **▶ Test**, change the parameters in the left panel and watch the green state move.
 
-On the entity add an **Animated Sprite** and an **Animator** component (controller = your file).
+On the entity add an **Animated Sprite** (2D) or a **Model** (3D, then *Animation* = the glTF animation name) and an **Animator** component (controller = your file). For models, *Animation* in a state is the glTF animation name, *Speed* and *Loop* apply to it, and the model component's own *Animation* field should stay empty.
 
 ## From a script
 

@@ -148,9 +148,9 @@ export const COMPONENTS = {
     example: { type: 'graph', file: 'graphs/player.graph.json' },
   },
   animator: {
-    tier: 'both', summary: 'Unity-style state machine (`anim/*.animator.json`) that switches the clip of the `animatedSprite` on the same entity from parameters (float, int, bool, trigger). Built in the Animator tab; see the Animator chapter.',
+    tier: 'both', summary: 'Unity-style state machine (`anim/*.animator.json`) that switches the clip of the `animatedSprite` (or the glTF animation of the `model`) on the same entity from parameters (float, int, bool, trigger). Built in the Animator tab; see the Animator chapter.',
     dummies: 'Decides which animation plays (idle, run, jump…) from a few values your script sets.',
-    notes: ['Needs an `animatedSprite` on the same entity. A transition fires when its exit time is reached and all its conditions hold; triggers reset when used.'],
+    notes: ['Needs an `animatedSprite` (2D) or a `model` (3D, glTF animation by name) on the same entity. A transition fires when its exit time is reached and all its conditions hold; triggers reset when used.'],
     handle: ['setBool/setInt/setFloat(name, v), setTrigger(name), resetTrigger(name), get(name), play(state), state'],
     example: { type: 'animator', controller: 'anim/player.animator.json', params: { speed: 0 } },
   },

@@ -97,8 +97,9 @@ function renderProps() {
     if (sel.kind === 'any') el('h3', { text: 'Any State' }, box); else {
       el('h3', { text: 'State' }, box);
       field('Name', el('input', { value: s.name, spellcheck: false, onchange: (e) => renameState(s, e.target.value) }));
-      field('Animation', el('input', { value: s.anim ?? '', list: 'anims', placeholder: 'clip of the animatedSprite', onchange: (e) => { checkpoint(); s.anim = e.target.value; render(); } }));
+      field('Animation', el('input', { value: s.anim ?? '', list: 'anims', placeholder: 'sprite clip or glTF animation name', onchange: (e) => { checkpoint(); s.anim = e.target.value; render(); } }));
       field('Speed', el('input', { type: 'number', value: s.speed ?? 1, step: 0.1, onchange: (e) => { checkpoint(); s.speed = Number(e.target.value) || 1; render(); } }));
+      field('Loop', el('input', { type: 'checkbox', checked: s.loop !== false, title: '3D models: loop the animation group (sprites use the clip\'s own setting)', onchange: (e) => { checkpoint(); s.loop = e.target.checked; render(); } }));
       field('Clip length (s)', el('input', { type: 'number', value: s.length ?? 0, step: 0.1, min: 0, title: 'Used for exit times. 0 = ask the running sprite (Phaser) or 1 second here in the editor', onchange: (e) => { checkpoint(); s.length = Math.max(0, Number(e.target.value) || 0); render(); } }));
     }
     const acts = el('div', { className: 'acts' }, box);

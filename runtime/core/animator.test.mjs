@@ -74,3 +74,17 @@ test('animator component drives the animatedSprite of its entity', async () => {
   assert.equal(a.state, 'Run'); assert.ok(calls.some(([k, v]) => k === 'anim' && v === 'run'));
   a.setTrigger('jump'); g.tick(1 / 60 + 0.001); assert.equal(a.state, 'Jump');
 });
+
+test('animator component drives a 3D model (animation name, loop, speed)', async () => {
+  const { Game, registerComponent, MemoryStorage } = await import('./index.js');
+  const d = def(); d.states[1].loop = false;
+  const files = { 'anim/p.animator.json': d, s: { name: 's', entities: [{ id: 'p', name: 'P', components: [{ type: 'model' }, { type: 'animator', controller: 'anim/p.animator.json', params: { speed: 1 } }] }] } };
+  const g = new Game({ id: 'x', startScene: 's' }, { fetchJSON: async (p) => structuredClone(files[p]), importScript: async () => ({}), storage: new MemoryStorage(), onError: (e) => { throw e; } });
+  const calls = [];
+  registerComponent('model', { create(e, dd, comp) { setTimeout(() => { comp.play = (n, o) => calls.push([n, o]); }, 5); } }); // loads late, like a real glTF
+  (await import('./components.js')).registerCoreComponents(g); // components close over their game: register for this one
+  await g.loadScene('s'); await new Promise((r) => setTimeout(r, 30));
+  g.tick(1 / 60 + 0.001);
+  assert.deepEqual(calls[0], ['idle', { loop: true, speed: 1 }]); // pending state is applied once the model is ready
+  assert.deepEqual(calls.at(-1), ['run', { loop: false, speed: 2 }]);
+});

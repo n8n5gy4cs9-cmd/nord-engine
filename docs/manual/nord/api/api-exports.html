@@ -405,11 +405,18 @@ const POS = { tl: ['left', 'top'], tr: ['right', 'top'], bl: ['left', 'bottom'],
     destroy(comp) { comp.g?.destroy(); },
   });
 
-  // animator: Unity-style state machine (anim/*.animator.json, docs/ANIMATOR.md) that switches the clip of this entity's
-  // animatedSprite. data: { controller, params? }. Script API: setBool/setInt/setFloat/setTrigger/resetTrigger/get/play, `state`.
+  // animator: Unity-style state machine (anim/*.animator.json, docs/ANIMATOR.md) that switches the clip of this entity's animatedSprite (2D) or the glTF animation of its
+  // model component (3D, Babylon animation groups). data: { controller, params? }. Script API: setBool/setInt/setFloat/setTrigger/resetTrigger/get/play, `state`.
   registerComponent('animator', {
     create(e, d, comp) {
-      comp.ctrl = null; comp.pre = { ...(d.params ?? {}) }; comp.fresh = false;
+      comp.ctrl = null; comp.pre = { ...(d.params ?? {}) }; comp.want = null;
+      // Drives an animatedSprite (2D clip) or a model (3D glTF animation group); waits until the target has loaded.
+      comp.apply = () =&gt; {
+        const w = comp.want; if (!w) return;
+        const sprite = e.getComponent('animatedSprite'), model = e.getComponent('model');
+        if (sprite) { if (w.st.speed != null) e.set('animatedSprite', 'speed', w.st.speed); e.set('animatedSprite', 'anim', w.anim); comp.want = null; }
+        else if (typeof model?.play === 'function') { model.play(w.anim, { loop: w.st.loop !== false, speed: w.st.speed ?? 1 }); comp.want = null; }
+      };
       comp.param = (n, v) =&gt; { if (comp.ctrl) comp.ctrl.set(n, v); else comp.pre[n] = v; };
       comp.setBool = comp.setInt = comp.setFloat = comp.param;
       comp.setTrigger = (n) =&gt; comp.ctrl ? comp.ctrl.setTrigger(n) : (comp.pre[n] = true);
@@ -422,19 +429,16 @@ const POS = { tl: ['left', 'top'], tr: ['right', 'top'], bl: ['left', 'bottom'],
         if (e.destroyed) return;
         const bad = validateController(def);
         if (bad.length) game.warn(`[nord] animator ${d.controller}: ${bad.join('; ')}`);
-        comp.ctrl = new AnimatorController(def, (name, anim, st) =&gt; {
-          const sprite = e.getComponent('animatedSprite');
-          if (!sprite) return;
-          if (st.speed != null) e.set('animatedSprite', 'speed', st.speed);
-          e.set('animatedSprite', 'anim', anim);
-        });
+        comp.ctrl = new AnimatorController(def, (name, anim, st) =&gt; { comp.want = { anim, st }; comp.apply(); });
         for (const [n, v] of Object.entries(comp.pre)) { if (comp.ctrl.types[n] === 'trigger') { if (v) comp.ctrl.setTrigger(n); } else comp.ctrl.set(n, v); }
       }).catch((err) =&gt; game.reportError(err, { constructor: { name: `animator ${d.controller}` } }, 'load'));
     },
     update(comp, dt) {
       const c = comp.ctrl; if (!c || !comp.entity.enabled) return;
-      const clip = comp.entity.getComponent('animatedSprite')?.obj?.anims?.currentAnim; // Phaser: clip length for exit times
-      c.lengthHint = clip?.duration ? clip.duration / 1000 : 0;
+      comp.apply();
+      const e = comp.entity, clip = e.getComponent('animatedSprite')?.obj?.anims?.currentAnim, g = e.getComponent('model')?.current; // clip lengths for exit times
+      const fps = g?.targetedAnimations?.[0]?.animation?.framePerSecond || 60;
+      c.lengthHint = clip?.duration ? clip.duration / 1000 : g ? Math.max(g.to - g.from, 0) / fps : 0;
       c.update(dt);
     },
     set(comp, k, v) { comp.data[k] = v; if (k !== 'controller') comp.param(k, v); },

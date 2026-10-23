@@ -120,7 +120,8 @@ export function registerBabylonComponents(backend) {
         const g = groups.get(name);
         if (!g) { backend.game.warn(`[nord] model '${d.path}' has no animation '${name}' (have: ${[...groups.keys()].join(', ') || 'none'})`); return null; }
         if (comp.current && comp.current !== g) comp.current.stop();
-        g.start(loop, speed); comp.current = g; return g;
+        if (g.isPlaying) { g.speedRatio = speed; g.loopAnimation = loop; } else g.start(loop, speed); // start() on a running group would ignore the new speed
+        comp.current = g; return g;
       };
       comp.stop = () => { comp.current?.stop(); comp.current = null; };
       if (d.animation) comp.play(d.animation);
