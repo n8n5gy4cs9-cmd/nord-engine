@@ -35,6 +35,7 @@ pub enum Tab {
     Level2d,
     UiDesigner,
     Graph,
+    Modeler,
 }
 
 impl Tab {
@@ -52,6 +53,7 @@ impl Tab {
             Tab::Fps => "crosshair",
             Tab::Level2d => "map",
             Tab::Graph => "git-branch",
+            Tab::Modeler => "boxes",
             Tab::History => "undo-2",
             Tab::Project => "settings",
             Tab::Hierarchy => "list",
@@ -88,6 +90,7 @@ impl Tab {
             Tab::Level2d => "2D Level",
             Tab::UiDesigner => "UI Designer",
             Tab::Graph => "Graph",
+            Tab::Modeler => "3D Modeler",
         }
     }
 }
@@ -103,6 +106,7 @@ pub fn default_dock() -> DockState<Tab> {
         Tab::Level2d,
         Tab::UiDesigner,
         Tab::Graph,
+        Tab::Modeler,
         Tab::Animation,
         Tab::Sprite,
         Tab::Particles,
@@ -918,6 +922,7 @@ impl App {
                         Tab::Code,
                         Tab::Events,
                         Tab::Graph,
+                        Tab::Modeler,
                         Tab::UiDesigner,
                         Tab::Layout,
                         Tab::Animation,
@@ -1203,6 +1208,7 @@ impl TabViewer for Viewer<'_> {
             Tab::Level2d => panels::level2d::ui(st, ui, self.web, self.frame, self.overlay),
             Tab::UiDesigner => panels::uidesigner::ui(st, ui, self.web, self.frame, self.overlay),
             Tab::Graph => panels::graph::ui(st, ui, self.web, self.frame, self.overlay),
+            Tab::Modeler => panels::modeler::ui(st, ui, self.web, self.frame, self.overlay),
             Tab::Fps => panels::fps::ui(st, ui, self.web, self.frame, self.overlay),
             Tab::History => panels::history::ui(st, ui),
             Tab::Project => panels::project::ui(st, ui),

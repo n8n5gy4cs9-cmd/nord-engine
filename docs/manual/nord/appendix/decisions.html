@@ -86,7 +86,7 @@ multi-cursor, fixed themes, no gutter hooks) and rejected; CodeMirror-in-webview
 instantly, is ~450 lines, and is trivially testable. 3D uses Babylon (GizmoManager, picking, glTF) so models/lights look right. The <em>Game</em> tab
 (Play) always runs the real Phaser/Babylon runtime.</p>
 <h2 id="adr-018-one-window-for-splash-main-m3-2026-10-12">ADR-018 One window for splash + main (M3, 2026-10-12)<a class="anchor" href="#adr-018-one-window-for-splash-main-m3-2026-10-12">#</a></h2>
-<p>Splash is the same eframe window started borderless 640×360 and turned into the decorated main window (resize, centre, restore saved geometry)
+<p>Splash is the same eframe window started borderless 600×526 and turned into the decorated main window (resize, centre, restore saved geometry)
 after ≥ 2000 ms. Avoids multi-window plumbing; tradeoff: a visible resize on slow compositors.</p>
 <h2 id="adr-019-rust-wasm-tier-macroquad-rapier2d-scenes-stay-json-scripts-are-registry-names-m5-2026-10-12">ADR-019 Rust/WASM tier: macroquad + rapier2d, scenes stay JSON, scripts are registry names (M5, 2026-10-12)<a class="anchor" href="#adr-019-rust-wasm-tier-macroquad-rapier2d-scenes-stay-json-scripts-are-registry-names-m5-2026-10-12">#</a></h2>
 <p><code>crates/nord-runtime-wasm</code> (games) and <code>crates/nord-app-wasm</code> (egui apps) are <strong>not</strong> workspace members (own <code>[workspace]</code>, own lockfile): macroquad/eframe

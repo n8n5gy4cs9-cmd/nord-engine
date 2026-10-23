@@ -73,6 +73,10 @@
       "version": "0.7.18",
       "license": "MIT",
       "patched": "low_quality_scale threshold (see tools/vendor.mjs)"
+    },
+    "three": {
+      "version": "0.180.0",
+      "license": "MIT"
     }
   },
   "files": {
@@ -398,6 +402,12 @@
     "vendor/engine-docs/phaser.d.ts.gz": "b7752a4117bf95f1a452e36d715af9cb7b6f1561a4fa493a6b29f4a1d68dc794",
     "vendor/litegraph/litegraph.core.js": "64669daed54b69823d4595412be4a9e9d996d56fec96f0ced514067d32e992dd",
     "vendor/litegraph/litegraph.css": "565cee8d54e7dfd16295f0ec7b19f910a739c0f42d5263198e3416a38a6006b3",
-    "vendor/litegraph/LICENSE": "1b38cc30fe774bcc77538ab99eb460f4e1c8a47c4fddc6e991ee3b5cc2a96bb9"
+    "vendor/litegraph/LICENSE": "1b38cc30fe774bcc77538ab99eb460f4e1c8a47c4fddc6e991ee3b5cc2a96bb9",
+    "vendor/three/three.module.min.js": "e2b5ee6bccd38fd6d8a2428546b83c5f2426d84b152ef82be8055556e3b40eb6",
+    "vendor/three/three.core.min.js": "61ba0df005b05991361d040d8ff670e1aadfd0ce7aeebd1fdb0725957a8957de",
+    "vendor/three/OrbitControls.js": "b97879c748170baadeb3fb84cea1ffdf4674e283dc06042f34e2acb95a76042c",
+    "vendor/three/TransformControls.js": "621fb8894c0f748c2be2a6ff8a6bdd72c18a22b24ddfe21d506514544df5c84e",
+    "vendor/three/GLTFExporter.js": "e7c29444454eb321b39e4c8b3062944f4fd5299a0e7483e9cb8c0594cdec829f",
+    "vendor/three/LICENSE": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601"
   }
 }

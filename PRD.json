@@ -2391,6 +2391,12 @@
       "milestone": "M13",
       "title": "Fix RMB-fly strafe, Hierarchy double-click frame, prefab expansion in Scene view, new splash/icon",
       "status": "done"
+    },
+    {
+      "id": "M13-15",
+      "milestone": "M13",
+      "title": "3D Modeler tab: mesh editor + texture painter + UV editor (ported from BlockSmith)",
+      "status": "done"
     }
   ]
 }

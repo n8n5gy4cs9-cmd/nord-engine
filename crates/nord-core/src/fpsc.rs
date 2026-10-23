@@ -7,11 +7,11 @@ use serde_json::{json, Value};
 use std::path::{Component, Path, PathBuf};
 
 /// Folders (relative to the project) the editor page may read/write.
-pub const ALLOWED_DIRS: [&str; 4] = ["levels", "fpsc", "ui", "graphs"];
+pub const ALLOWED_DIRS: [&str; 5] = ["levels", "fpsc", "ui", "graphs", "models"];
 /// File extensions the editor may write.
-const ALLOWED_EXT: [&str; 17] = [
+const ALLOWED_EXT: [&str; 19] = [
     "json", "js", "md", "txt", "png", "jpg", "jpeg", "webp", "gif", "glb", "gltf", "bin", "wav",
-    "ogg", "mp3", "m4a", "flac",
+    "ogg", "mp3", "m4a", "flac", "obj", "mtl",
 ];
 /// Largest single upload.
 pub const MAX_BYTES: usize = 64 << 20;
@@ -339,6 +339,7 @@ mod tests {
         let _ = std::fs::remove_dir_all(&d);
         save(&d, "levels/one.fpsl.json", b"{}").unwrap();
         save(&d, "fpsc/textures/t.png", &[1, 2, 3]).unwrap();
+        save(&d, "models/m.mesh.json", b"{}").unwrap();
         assert!(save(&d, "scripts/evil.js", b"x").is_err());
         let l = ls(&d, "levels").unwrap();
         assert_eq!(l.len(), 1);

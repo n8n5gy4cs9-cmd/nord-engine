@@ -2,6 +2,7 @@
 // Vendor pinned third-party libs into vendor/ (committed) so built games have NO online dependencies.
 // Usage: node tools/vendor.mjs            install/update everything
 //        node tools/vendor.mjs --crates   (re)vendor only the Rust-crate assets (macroquad JS loader)
+//        node tools/vendor.mjs --only <name>   refresh a single lib (e.g. three)
 //        node tools/vendor.mjs --verify   check sha256 of vendor/ files against vendor/VENDOR.json
 import fs from 'node:fs';
 import os from 'node:os';
@@ -24,6 +25,7 @@ const LIBS = [
   { name: 'babylonjs-post-process', pkg: 'babylonjs-post-process@9.30.0', license: 'Apache-2.0', files: [['babylonjs.postProcess.min.js']] },
   { name: 'babylonjs-procedural-textures', pkg: 'babylonjs-procedural-textures@9.30.0', license: 'Apache-2.0', files: [['babylonjs.proceduralTextures.min.js']] },
   { name: 'babylonjs-serializers', pkg: 'babylonjs-serializers@9.30.0', license: 'Apache-2.0', files: [['babylonjs.serializers.min.js']] },
+  { name: 'three', pkg: 'three@0.180.0', license: 'MIT', files: [['build/three.module.min.js'], ['build/three.core.min.js'], ['examples/jsm/controls/OrbitControls.js'], ['examples/jsm/controls/TransformControls.js'], ['examples/jsm/exporters/GLTFExporter.js'], ['LICENSE']] },
   { name: 'havok', pkg: '@babylonjs/havok@1.3.14', license: 'MIT wrapper (Havok wasm free for use with Babylon.js)', files: [['lib/umd/HavokPhysics_umd.js'], ['lib/umd/HavokPhysics.wasm'], ['LICENSE.md']] },
   { name: 'playcanvas', pkg: 'playcanvas@2.23.2', license: 'MIT', optional: true, files: [['build/playcanvas.min.js'], ['LICENSE']] },
   { name: 'esbuild-wasm', pkg: 'esbuild-wasm@0.25.10', license: 'MIT', files: [['lib/browser.js'], ['esbuild.wasm'], ['LICENSE.md']] },
@@ -57,6 +59,8 @@ if (process.argv.includes('--verify')) {
 }
 
 if (process.argv.includes('--docs')) { execFileSync(process.execPath, [path.join(root, 'tools/vendor-docs.mjs')], { stdio: 'inherit' }); process.exit(0); }
+
+const only = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only') + 1] : null; // --only <name>: refresh one lib, keep the rest of vendor/
 
 const work = fs.mkdtempSync(path.join(os.tmpdir(), 'nord-vendor-'));
 const run = (cmd, args, cwd) => execFileSync(cmd, args, { cwd, stdio: ['ignore', 'pipe', 'inherit'] }).toString().trim();
@@ -94,6 +98,19 @@ const copy = (src, dst, lib, version, license) => {
 
 if (process.argv.includes('--crates')) { // add/refresh only the crate assets, keep everything else (and the manifest) as is
   vendorCrates();
+  const m = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  for (const e of entries) { m.libs[e.lib] = { version: e.version, license: e.license }; m.files[e.file] = sha(path.join(root, e.file)); }
+  fs.writeFileSync(manifestPath, JSON.stringify(m, null, 2) + '\n');
+  fs.rmSync(work, { recursive: true, force: true });
+  process.exit(0);
+}
+if (only) { // add/refresh only the named LIBS entries and merge them into the manifest
+  for (const L of LIBS.filter((l) => l.name === only)) {
+    const pkgDir = fetchPkg(L.pkg);
+    const version = JSON.parse(fs.readFileSync(path.join(pkgDir, 'package.json'))).version;
+    for (const [from] of L.files) copy(path.join(pkgDir, from), path.join(V, L.to ?? L.name, path.basename(from)), L.name, version, L.license);
+    console.log('vendored', L.pkg);
+  }
   const m = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   for (const e of entries) { m.libs[e.lib] = { version: e.version, license: e.license }; m.files[e.file] = sha(path.join(root, e.file)); }
   fs.writeFileSync(manifestPath, JSON.stringify(m, null, 2) + '\n');

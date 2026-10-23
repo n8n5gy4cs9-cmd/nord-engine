@@ -105,6 +105,7 @@ Nord stands on these open-source libraries. Versions are the ones bundled with N
 | **CodeMirror** | 6 | The code editor with highlighting and autocomplete. |
 | **esbuild (WASM)** | 0.25.10 | Minifies and bundles a game into a single file when you export (optional). |
 | **litegraph.js** | 0.7.18 | Draws the node canvas of the Graph editor. |
+| **three.js** | 0.180.0 | Draws the 3D Modeler (mesh editor, UV editor, texture painter). Editor only; never part of an exported game. |
 | **marked** | 18.1.0 | Turns Markdown into pages (this manual). |
 | **Lucide** | 1.55.0 | The icons. |
 | **Fonts** | 5.3.0 | The bundled typefaces. |

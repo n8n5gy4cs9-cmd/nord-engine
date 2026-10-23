@@ -12,6 +12,7 @@ Exact versions + sha256: `vendor/VENDOR.json` (reinstall/verify with `node tools
 | PlayCanvas engine | 2.23.2 | MIT | vendor/playcanvas | optional alternative 3D tier |
 | CodeMirror 6 bundle | see lock | MIT | vendor/codemirror | manual live examples |
 | litegraph.js | 0.7.18 | MIT (Javi Agenjo) | vendor/litegraph | node-graph canvas for the Graph editor (`editor/graph/`); execution is Nord's own `runtime/core/graph/` |
+| three.js (+ OrbitControls, TransformControls, GLTFExporter) | 0.180.0 | MIT | vendor/three | 3D Modeler tab (`editor/modeler/`); editor only. The mesh-editing core (`mesh-model.js`, parts of `modeler.js`) is ported from the owner's BlockSmith app (`BlockSmith_3d_app`: `shared/mesh-model.js`, `src/mesh-editor.js`) |
 | marked | 18.1.0 | MIT | vendor/marked | manual markdown |
 | Inter, Plus Jakarta Sans, IBM Plex Sans, JetBrains Mono, Fira Code, IBM Plex Mono (fontsource) | 5.3.0 | OFL-1.1 | vendor/fonts | UI/code fonts for runtime UI, editor, manual (woff2); skins in assets/themes/themes.json |
 | Lucide icons (subset) | 1.55.0 | ISC | assets/icons/lucide | editor + manual icons |

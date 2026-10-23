@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>3D Modeler — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="debugger.html">Debugger and profiler</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a><a href="ui-designer.html">UI Designer</a><a href="graph.html">Node graphs (visual scripting)</a><a href="unity-workflow.html">Unity-style workflow</a><a href="modeler.html" class="cur" aria-current="page">3D Modeler</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>3D Modeler</h1>
+<p>The <strong>3D Modeler</strong> tab (Window ▸ Editors ▸ 3D Modeler) is for <em>small changes</em>: build a crate from a cube, nudge a few vertices, repaint a texture, fix a UV. It is not a replacement for Blender. Everything is saved in the project&#39;s <code>models/</code> folder.</p>
+<h2 id="files">Files<a class="anchor" href="#files">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>models/&lt;name&gt;.mesh.json</code></td>
+<td>The editable mesh: vertices, faces, UVs, seams, vertex colours and the texture. <strong>Save</strong> / <strong>Open…</strong> use this.</td>
+</tr>
+<tr>
+<td><code>models/&lt;name&gt;.glb</code> / <code>.gltf</code></td>
+<td>Export for a 3D scene (texture and vertex colours included). Use it like any other model asset.</td>
+</tr>
+<tr>
+<td><code>models/&lt;name&gt;.obj</code> + <code>.mtl</code> + <code>.png</code></td>
+<td>Export for other tools.</td>
+</tr>
+<tr>
+<td><code>models/&lt;name&gt;.png</code></td>
+<td>The texture alone (<strong>Save PNG to project</strong>).</td>
+</tr>
+</tbody></table>
+<h2 id="3d-view">3D view<a class="anchor" href="#3d-view">#</a></h2>
+<p>Left panel: create primitives (cube, plane, cylinder, sphere) or draw a polygon on the grid; select faces, edges or vertices (click, Shift-click to extend); move/rotate/scale with the gizmo or by numbers; extrude, inset, loop cut, split edge, bevel, merge, weld, delete, flip, triangulate. <strong>Undo/Redo</strong> (Ctrl/Cmd+Z, Shift+Ctrl/Cmd+Z), <strong>Delete</strong> removes the selection, <strong>Ctrl/Cmd+S</strong> saves. Orbit with the left mouse button, pan with the right, zoom with the wheel.</p>
+<h2 id="texture-tab">Texture tab<a class="anchor" href="#texture-tab">#</a></h2>
+<p>A pixel painter: <strong>Pencil</strong>, <strong>Eraser</strong>, <strong>Fill</strong>, <strong>Picker</strong>, brush size, <strong>Mirror X</strong>, 16-512 px textures, a UV overlay so you see where the faces are. <strong>New blank</strong> fills a fresh texture with the chosen colour. <strong>Load image file</strong> / <strong>Load project PNG…</strong> replace the texture. Tick <strong>Paint on model</strong> in the top bar to paint straight onto the 3D model.</p>
+<h2 id="uv-editor-tab">UV editor tab<a class="anchor" href="#uv-editor-tab">#</a></h2>
+<p>Shows the UV layout over the texture. Click a face to select it (Shift extends), drag to move the selection; switch <strong>Drag</strong> to <em>points</em> to move single UV corners; <strong>snap to texel</strong> snaps to the texture pixels. Buttons: Flip U / Flip V, Rotate 90°, Fit to 0-1, Select island, Auto unwrap, Pack. Mark seams in the 3D view (edge mode) to split islands.</p>
+<aside class="box tip"><div class="box-title">Tip</div><p>The page also opens in a browser (<strong>Open in browser</strong>). Outside the editor it cannot write into the project, so Save downloads the file instead.</p>
+</aside>
+<div class="pager"><a href="unity-workflow.html"><small>← Previous</small>Unity-style workflow</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#files">Files </a><a href="#3d-view">3D view </a><a href="#texture-tab">Texture tab </a><a href="#uv-editor-tab">UV editor tab </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

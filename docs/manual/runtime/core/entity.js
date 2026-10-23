@@ -17,6 +17,7 @@ export class Entity {
     this.name = data.name ?? 'Entity';
     this.tags = [...(data.tags ?? [])];
     this.layer = data.layer ?? 0;
+    this.isStatic = data.static === true; // Inspector Static flag: does not move at runtime
     this._enabled = data.enabled !== false;
     this.t = {
       pos: [...(data.transform?.pos ?? [0, 0, 0])],
@@ -123,7 +124,7 @@ export class Entity {
 
   toJSON(fresh = false) {
     return {
-      id: fresh ? undefined : this.id, name: this.name, enabled: this._enabled, tags: [...this.tags], layer: this.layer,
+      id: fresh ? undefined : this.id, name: this.name, enabled: this._enabled, tags: [...this.tags], layer: this.layer, ...(this.isStatic ? { static: true } : {}),
       transform: structuredClone(this.t),
       components: this.components.map((c) => ({ type: c.type, ...structuredClone(c.data) })),
       scripts: this.scripts.map((s, i) => ({ path: this._scriptData[i]?.path, attributes: structuredClone(s.attrs) })),
