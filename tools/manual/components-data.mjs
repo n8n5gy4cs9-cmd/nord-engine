@@ -147,5 +147,12 @@ export const COMPONENTS = {
     handle: ['g — the running Graph (stop(), vars)'],
     example: { type: 'graph', file: 'graphs/player.graph.json' },
   },
+  animator: {
+    tier: 'both', summary: 'Unity-style state machine (`anim/*.animator.json`) that switches the clip of the `animatedSprite` on the same entity from parameters (float, int, bool, trigger). Built in the Animator tab; see the Animator chapter.',
+    dummies: 'Decides which animation plays (idle, run, jump…) from a few values your script sets.',
+    notes: ['Needs an `animatedSprite` on the same entity. A transition fires when its exit time is reached and all its conditions hold; triggers reset when used.'],
+    handle: ['setBool/setInt/setFloat(name, v), setTrigger(name), resetTrigger(name), get(name), play(state), state'],
+    example: { type: 'animator', controller: 'anim/player.animator.json', params: { speed: 0 } },
+  },
 };
-export const COMPONENT_ORDER = ['sprite', 'animatedSprite', 'text', 'tilemap', 'parallax', 'particles', 'camera', 'light', 'mesh', 'model', 'material', 'skybox', 'postProcess', 'rigidbody', 'collider', 'trigger', 'audioSource', 'audioListener', 'uiPanel', 'uiLabel', 'uiImage', 'uiBar', 'uiButton', 'path', 'spawner', 'graph'];
+export const COMPONENT_ORDER = ['sprite', 'animatedSprite', 'text', 'tilemap', 'parallax', 'particles', 'camera', 'light', 'mesh', 'model', 'material', 'skybox', 'postProcess', 'rigidbody', 'collider', 'trigger', 'audioSource', 'audioListener', 'uiPanel', 'uiLabel', 'uiImage', 'uiBar', 'uiButton', 'path', 'spawner', 'graph', 'animator'];

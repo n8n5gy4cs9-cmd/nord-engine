@@ -1,6 +1,7 @@
 // Backend-independent components: DOM ui* widgets, spawner, path. Registered by every backend's boot via registerCoreComponents().
 import { registerComponent } from './entity.js';
 import { attachGraph } from './graph/runner.js';
+import { AnimatorController, validateController } from './animator.js';
 
 export function registerCoreComponents(game) {
   const ui = () => game.ui;
@@ -40,6 +41,41 @@ export function registerCoreComponents(game) {
       attachGraph(game, e.scene, d.file, e).then((g) => { comp.g = g; if (e.destroyed) g.stop(); }).catch((err) => game.reportError(err, { constructor: { name: `graph ${d.file}` } }, 'load'));
     },
     destroy(comp) { comp.g?.destroy(); },
+  });
+
+  // animator: Unity-style state machine (anim/*.animator.json, docs/ANIMATOR.md) that switches the clip of this entity's
+  // animatedSprite. data: { controller, params? }. Script API: setBool/setInt/setFloat/setTrigger/resetTrigger/get/play, `state`.
+  registerComponent('animator', {
+    create(e, d, comp) {
+      comp.ctrl = null; comp.pre = { ...(d.params ?? {}) }; comp.fresh = false;
+      comp.param = (n, v) => { if (comp.ctrl) comp.ctrl.set(n, v); else comp.pre[n] = v; };
+      comp.setBool = comp.setInt = comp.setFloat = comp.param;
+      comp.setTrigger = (n) => comp.ctrl ? comp.ctrl.setTrigger(n) : (comp.pre[n] = true);
+      comp.resetTrigger = (n) => comp.ctrl ? comp.ctrl.resetTrigger(n) : delete comp.pre[n];
+      comp.get = (n) => comp.ctrl?.get(n) ?? comp.pre[n];
+      comp.play = (s) => comp.ctrl?.play(s);
+      Object.defineProperty(comp, 'state', { get: () => comp.ctrl?.state ?? null });
+      if (!d.controller) return;
+      game.loadJSON(d.controller).then((def) => {
+        if (e.destroyed) return;
+        const bad = validateController(def);
+        if (bad.length) game.warn(`[nord] animator ${d.controller}: ${bad.join('; ')}`);
+        comp.ctrl = new AnimatorController(def, (name, anim, st) => {
+          const sprite = e.getComponent('animatedSprite');
+          if (!sprite) return;
+          if (st.speed != null) e.set('animatedSprite', 'speed', st.speed);
+          e.set('animatedSprite', 'anim', anim);
+        });
+        for (const [n, v] of Object.entries(comp.pre)) { if (comp.ctrl.types[n] === 'trigger') { if (v) comp.ctrl.setTrigger(n); } else comp.ctrl.set(n, v); }
+      }).catch((err) => game.reportError(err, { constructor: { name: `animator ${d.controller}` } }, 'load'));
+    },
+    update(comp, dt) {
+      const c = comp.ctrl; if (!c || !comp.entity.enabled) return;
+      const clip = comp.entity.getComponent('animatedSprite')?.obj?.anims?.currentAnim; // Phaser: clip length for exit times
+      c.lengthHint = clip?.duration ? clip.duration / 1000 : 0;
+      c.update(dt);
+    },
+    set(comp, k, v) { comp.data[k] = v; if (k !== 'controller') comp.param(k, v); },
   });
 
   // spawner: periodically spawns a prefab at the entity's position. data: { prefab, interval, max, offset:[x,y,z], autostart, jitter }

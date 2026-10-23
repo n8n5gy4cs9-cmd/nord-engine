@@ -161,6 +161,7 @@ pub fn import_files(st: &mut EditorState, files: &[PathBuf]) {
 }
 
 const BLANK_UI: &str = "{\n  \"version\": 1,\n  \"name\": \"screen\",\n  \"theme\": {},\n  \"root\": { \"type\": \"panel\", \"name\": \"root\", \"anchor\": \"fill\", \"style\": { \"background\": \"none\", \"border\": \"none\", \"boxShadow\": \"none\", \"padding\": 0 }, \"children\": [] }\n}\n";
+const BLANK_ANIMATOR: &str = "{\n \"parameters\": [],\n \"states\": [{ \"name\": \"Idle\", \"anim\": \"idle\", \"speed\": 1, \"x\": 320, \"y\": 220 }],\n \"default\": \"Idle\",\n \"transitions\": [],\n \"editor\": { \"any\": { \"x\": 60, \"y\": 60 } }\n}\n";
 const BLANK_GRAPH: &str = "{\n \"last_node_id\": 1,\n \"last_link_id\": 0,\n \"nodes\": [{ \"id\": 1, \"type\": \"event/start\", \"pos\": [60, 80], \"size\": [200, 60], \"flags\": {}, \"order\": 0, \"mode\": 0, \"inputs\": [], \"outputs\": [{ \"name\": \"then\", \"type\": \"exec\", \"links\": null, \"shape\": 5 }], \"properties\": {} }],\n \"links\": [],\n \"groups\": [],\n \"config\": {},\n \"extra\": {},\n \"version\": 0.4,\n \"nord\": { \"version\": 1, \"vars\": {} }\n}\n";
 pub const NEW_MATERIAL: &str =
     "{\n  \"color\": \"#cccccc\",\n  \"metallic\": 0,\n  \"roughness\": 0.8,\n  \"alpha\": 1\n}\n";
@@ -183,6 +184,7 @@ const OP_NEW_SCRIPT: u8 = 9;
 const OP_IMPORT: u8 = 10;
 const OP_REFRESH: u8 = 11;
 const OP_NEW_GRAPH: u8 = 12;
+const OP_NEW_ANIMATOR: u8 = 40;
 const OP_NEW_MATERIAL: u8 = 16;
 const OP_FAVORITE: u8 = 17;
 const OP_OPEN_PREFAB: u8 = 19;
@@ -224,6 +226,11 @@ fn entry_menu(ui: &mut Ui, e: &Entry, out: &mut Option<(Entry, u8)>) {
         item(ui, "New Singleton script", OP_NEW_SINGLETON);
         item(ui, "New GameManager script", OP_NEW_MANAGER);
         item(ui, "New graph (.graph.json)", OP_NEW_GRAPH);
+        item(
+            ui,
+            "New animator controller (.animator.json)",
+            OP_NEW_ANIMATOR,
+        );
         ui.separator();
     }
     if !e.rel.is_empty() {
@@ -262,6 +269,11 @@ fn background_menu(ui: &mut Ui, dir: &str, out: &mut Option<(Entry, u8)>) {
     item(ui, "New UI scene (.ui.json)", OP_NEW_UI);
     item(ui, "New script (.js)", OP_NEW_SCRIPT);
     item(ui, "New graph (.graph.json)", OP_NEW_GRAPH);
+    item(
+        ui,
+        "New animator controller (.animator.json)",
+        OP_NEW_ANIMATOR,
+    );
     ui.separator();
     item(ui, "Import files…", OP_IMPORT);
     item(ui, "Refresh", OP_REFRESH);
@@ -448,6 +460,18 @@ fn handle_op(st: &mut EditorState, ui: &Ui, root: &Path, e: Entry, op: u8) {
             "graph.json",
             Some(BLANK_GRAPH),
         ),
+        OP_NEW_ANIMATOR => {
+            // controllers live in anim/ (the only folder the Animator page may write)
+            let _ = nord_core::vfs::create_dir_all(root.join("anim"));
+            create_in(
+                st,
+                root,
+                "anim",
+                "new-controller",
+                "animator.json",
+                Some(BLANK_ANIMATOR),
+            );
+        }
         OP_IMPORT => {
             if let Some(files) = crate::platform::pick_files() {
                 import_files(st, &files);
@@ -939,6 +963,11 @@ fn open_entry(st: &mut EditorState, e: &Entry) {
     if e.rel.ends_with(".graph.json") {
         st.graph_file = Some(e.rel.clone());
         st.push(Action::ShowTab(crate::app::Tab::Graph));
+        return;
+    }
+    if e.rel.ends_with(".animator.json") {
+        st.animator_file = Some(e.rel.clone());
+        st.push(Action::ShowTab(crate::app::Tab::Animator));
         return;
     }
     match e.kind {

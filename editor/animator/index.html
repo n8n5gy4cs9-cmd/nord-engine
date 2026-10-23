@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nord Animator</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="style.css">
+<script>window.__nord = { hotReload: () => true }; // saving a file here must not reload (and wipe) the page</script>
+</head>
+<body>
+<header id="top">
+  <strong>Animator</strong>
+  <input id="file" list="files" placeholder="anim/player.animator.json" spellcheck="false">
+  <datalist id="files"></datalist><datalist id="anims"></datalist>
+  <button id="new">New</button><button id="open">Open</button><button id="save" class="pri">Save</button>
+  <span class="sep"></span>
+  <button id="undo">Undo</button><button id="redo">Redo</button>
+  <span class="sep"></span>
+  <button id="addState">+ State</button><button id="test">▶ Test</button>
+  <span id="status"></span>
+</header>
+<main>
+  <aside id="left">
+    <h3>Parameters</h3><div id="params"></div><button id="addParam">+ Parameter</button>
+    <h3>Checks</h3><ul id="checks"></ul>
+  </aside>
+  <section id="center"><div id="stage"><svg id="wires"></svg><div id="nodes"></div></div></section>
+  <aside id="right"><div id="props"><p class="hint">Drag states to arrange them. Click a state or an arrow to edit it. Select a state, press <b>Make transition</b> and click the target. The orange state is the default (entry).</p></div></aside>
+</main>
+<script type="module" src="animator.js"></script>
+</body>
+</html>

@@ -2397,6 +2397,12 @@
       "milestone": "M13",
       "title": "3D Modeler tab: mesh editor + texture painter + UV editor (ported from BlockSmith)",
       "status": "done"
+    },
+    {
+      "id": "M13-16",
+      "milestone": "M13",
+      "title": "Animator controller: sprite state machine (runtime, component, editor tab)",
+      "status": "done"
     }
   ]
 }

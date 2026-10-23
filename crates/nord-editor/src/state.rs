@@ -360,6 +360,7 @@ pub struct EditorState {
     /// (entity id, text) while an entity is being renamed in the Hierarchy
     pub hierarchy_rename: Option<(String, String)>,
     pub graph_file: Option<String>,
+    pub animator_file: Option<String>,
     pub engine_root: Option<PathBuf>,
     pub themes: Arc<crate::theme::Themes>,
     pub code: crate::code::CodeState,
@@ -462,6 +463,7 @@ impl EditorState {
             designer_file: None,
             hierarchy_rename: None,
             graph_file: None,
+            animator_file: None,
             engine_root: crate::platform::engine_root(),
             themes: Arc::new(crate::theme::Themes::load()),
             code: Default::default(),
@@ -1266,6 +1268,10 @@ impl EditorState {
                     Some("uidesigner") => {
                         self.designer_file = file;
                         self.push(Action::ShowTab(crate::app::Tab::UiDesigner));
+                    }
+                    Some("animator") => {
+                        self.animator_file = file;
+                        self.push(Action::ShowTab(crate::app::Tab::Animator));
                     }
                     Some("graph") => {
                         self.graph_file = file;

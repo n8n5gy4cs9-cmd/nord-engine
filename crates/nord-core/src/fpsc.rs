@@ -7,7 +7,7 @@ use serde_json::{json, Value};
 use std::path::{Component, Path, PathBuf};
 
 /// Folders (relative to the project) the editor page may read/write.
-pub const ALLOWED_DIRS: [&str; 5] = ["levels", "fpsc", "ui", "graphs", "models"];
+pub const ALLOWED_DIRS: [&str; 6] = ["levels", "fpsc", "ui", "graphs", "models", "anim"];
 /// File extensions the editor may write.
 const ALLOWED_EXT: [&str; 19] = [
     "json", "js", "md", "txt", "png", "jpg", "jpeg", "webp", "gif", "glb", "gltf", "bin", "wav",

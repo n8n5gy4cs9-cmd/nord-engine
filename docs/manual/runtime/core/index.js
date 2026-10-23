@@ -18,6 +18,7 @@ export { Audio, BUSES } from './audio.js';
 export { touchToStart } from './start-gate.js';
 export { UI, THEME_CSS } from './ui.js';
 export { UIManager, createUI, validate as validateUI, blank as blankUI, richText, NODE_TYPES } from './uiscene.js';
+export { AnimatorController, validateController as validateAnimator } from './animator.js';
 export { Graph, graphSystem, attachGraph } from './graph/runner.js';
 export { NODES as GRAPH_NODES, validate as validateGraph } from './graph/nodes.js';
 export { createGame, makeStage, errorOverlay, devSceneOverride } from './boot.js';

@@ -1,4 +1,5 @@
 pub mod animation;
+pub mod animator;
 pub mod assets;
 pub mod build;
 pub mod console;

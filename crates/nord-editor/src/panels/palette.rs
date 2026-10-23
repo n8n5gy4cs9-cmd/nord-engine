@@ -119,6 +119,9 @@ pub const COMMANDS: &[(&str, CmdFn)] = &[
     ("View: Graph editor", || {
         Action::ShowTab(crate::app::Tab::Graph)
     }),
+    ("View: Animator", || {
+        Action::ShowTab(crate::app::Tab::Animator)
+    }),
     ("View: 3D Modeler", || {
         Action::ShowTab(crate::app::Tab::Modeler)
     }),
