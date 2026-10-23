@@ -131,6 +131,8 @@ export function createBattleServer({
       '/': 'index.html',
       '/index.html': 'index.html',
       '/app.js': 'app.js',
+      '/lib/nord-ui.js': 'lib/nord-ui.js',
+      '/ui/menu.ui.json': 'ui/menu.ui.json',
       '/rules.js': 'rules.js',
       '/chaos.js': 'chaos.js',
       '/style.css': 'style.css',

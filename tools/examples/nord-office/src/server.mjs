@@ -109,6 +109,8 @@ export function createOfficeServer({
       '/': 'index.html',
       '/index.html': 'index.html',
       '/app.js': 'app.js',
+      '/lib/nord-ui.js': 'lib/nord-ui.js',
+      '/ui/office.ui.json': 'ui/office.ui.json',
       '/rules.js': 'rules.js',
       '/style.css': 'style.css',
     },
