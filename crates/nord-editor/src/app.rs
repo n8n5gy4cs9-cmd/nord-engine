@@ -885,31 +885,40 @@ impl App {
                     });
             });
             ui.menu_button("Window", |ui| {
-                for t in [
-                    Tab::Scene,
-                    Tab::Game,
-                    Tab::Code,
-                    Tab::Animation,
-                    Tab::Sprite,
-                    Tab::Particles,
-                    Tab::Timeline,
-                    Tab::Events,
-                    Tab::Layout,
-                    Tab::Fps,
-                    Tab::Level2d,
-                    Tab::UiDesigner,
-                    Tab::Graph,
-                    Tab::History,
-                    Tab::Project,
-                    Tab::Hierarchy,
-                    Tab::Inspector,
-                    Tab::Assets,
-                    Tab::Console,
-                    Tab::Library,
-                    Tab::Docs,
-                ] {
-                    act(ui, t.title(), Action::ShowTab(t), st);
-                }
+                // grouped so the menu fits on small screens; clicking brings the panel back even if it was closed
+                ui.menu_button("Panels", |ui| {
+                    for t in [
+                        Tab::Hierarchy,
+                        Tab::Inspector,
+                        Tab::Scene,
+                        Tab::Game,
+                        Tab::Assets,
+                        Tab::Console,
+                        Tab::Project,
+                        Tab::History,
+                        Tab::Library,
+                        Tab::Docs,
+                    ] {
+                        act(ui, t.title(), Action::ShowTab(t), st);
+                    }
+                });
+                ui.menu_button("Editors", |ui| {
+                    for t in [
+                        Tab::Code,
+                        Tab::Events,
+                        Tab::Graph,
+                        Tab::UiDesigner,
+                        Tab::Layout,
+                        Tab::Animation,
+                        Tab::Sprite,
+                        Tab::Particles,
+                        Tab::Timeline,
+                        Tab::Fps,
+                        Tab::Level2d,
+                    ] {
+                        act(ui, t.title(), Action::ShowTab(t), st);
+                    }
+                });
                 ui.separator();
                 ui.menu_button("Layout", |ui| {
                     for (label, k) in [
