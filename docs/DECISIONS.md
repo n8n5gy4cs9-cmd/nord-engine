@@ -94,7 +94,7 @@ instantly, is ~450 lines, and is trivially testable. 3D uses Babylon (GizmoManag
 (Play) always runs the real Phaser/Babylon runtime.
 
 ## ADR-018 One window for splash + main (M3, 2026-10-12)
-Splash is the same eframe window started borderless 640×360 and turned into the decorated main window (resize, centre, restore saved geometry)
+Splash is the same eframe window started borderless 600×526 and turned into the decorated main window (resize, centre, restore saved geometry)
 after ≥ 2000 ms. Avoids multi-window plumbing; tradeoff: a visible resize on slow compositors.
 
 ## ADR-019 Rust/WASM tier: macroquad + rapier2d, scenes stay JSON, scripts are registry names (M5, 2026-10-12)

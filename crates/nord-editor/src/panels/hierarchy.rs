@@ -228,6 +228,9 @@ fn vnode(
         if r.clicked() {
             *clicked = Some((n.id.clone(), false));
         }
+        if double_clicked(ui, &r) {
+            frame_in_scene(st, &n.id);
+        }
     });
     if open && !n.children.is_empty() {
         ui.indent(("vhier", &n.id), |ui| {
@@ -338,12 +341,14 @@ fn pf_rows(
                 egui::Color32::from_rgb(110, 170, 255),
             ));
             let text = egui::RichText::new(&k.name).color(egui::Color32::from_rgb(110, 170, 255));
-            if ui
+            let r = ui
                 .selectable_label(st.selection.contains(&id), text)
-                .on_hover_text("Inside the prefab: edits are stored as overrides on the instance")
-                .clicked()
-            {
+                .on_hover_text("Inside the prefab: edits are stored as overrides on the instance");
+            if r.clicked() {
                 *clicked = Some((id.clone(), false));
+            }
+            if double_clicked(ui, &r) {
+                frame_in_scene(st, &id);
             }
         });
         if open && !k.children.is_empty() {
@@ -353,6 +358,24 @@ fn pf_rows(
         }
         path.pop();
     }
+}
+
+/// Double-click on a row (also when the row senses drags, which can swallow egui's own `double_clicked`).
+fn double_clicked(ui: &Ui, r: &egui::Response) -> bool {
+    r.double_clicked()
+        || (r.hovered()
+            && ui.input(|i| {
+                i.pointer
+                    .button_double_clicked(egui::PointerButton::Primary)
+            }))
+}
+
+/// Select `id`, show the Scene tab and frame it there (Unity: double-click in the Hierarchy).
+fn frame_in_scene(st: &mut EditorState, id: &str) {
+    st.select(Some(id.to_string()));
+    st.send_viewport(serde_json::json!({"t":"select","ids":st.selection}));
+    st.push(crate::state::Action::ShowTab(crate::app::Tab::Scene));
+    st.push(crate::state::Action::Focus);
 }
 
 fn row(
@@ -528,12 +551,8 @@ fn row(
             ));
         }
     }
-    if resp.double_clicked() {
-        // select first and tell the Scene view, so it frames this object even if the click handler has not run yet
-        st.select(Some(e.id.clone()));
-        st.send_viewport(serde_json::json!({"t":"select","ids":st.selection}));
-        st.push(crate::state::Action::ShowTab(crate::app::Tab::Scene));
-        st.push(crate::state::Action::Focus);
+    if double_clicked(ui, &resp) {
+        frame_in_scene(st, &e.id);
     }
     // F2 renames the selected entity (Unity/Godot); handled on the row that is selected and hovered panel
     if selected

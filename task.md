@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 301/315 tasks (96%)** · updated 2026-10-23
+**Overall: 302/316 tasks (96%)** · updated 2026-10-23
 
 | Milestone | Progress |
 |---|---|
@@ -20,7 +20,7 @@
 | M10 Construct-style editor | 36/36 (100%) |
 | M11 Web editor | 14/16 (88%) |
 | M12 FPS Creator addon | 30/31 (97%) |
-| M13 Unity-style editor (Godotize) | 12/13 (92%) |
+| M13 Unity-style editor (Godotize) | 13/14 (93%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -399,6 +399,7 @@ _Unity-like editor workflow on the existing tools: Scene/Game/Hierarchy/Inspecto
 - [x] **M13-11** Icon pass (G9-7)
 - [x] **M13-12** T48 Neon Harbor showcase tutorial + project
 - [ ] **M13-13** Checking: Playwright suites T36/T38/T40-T43, KNOWN_ISSUES walk, native macOS verification (G8-3/4/5)
+- [x] **M13-14** Fix RMB-fly strafe, Hierarchy double-click frame, prefab expansion in Scene view, new splash/icon
 
 ## Features (PRD)
 

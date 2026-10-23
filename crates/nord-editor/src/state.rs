@@ -1193,7 +1193,7 @@ impl EditorState {
             "t": "scene",
             "rev": self.rev,
             "project": self.project,
-            "scene": self.scene,
+            "scene": self.viewport_scene(),
             "selection": self.selection,
         })
     }

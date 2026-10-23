@@ -1,5 +1,6 @@
 # Changelog
 
+- 2026-10-23 — Fixes: Scene-view RMB-fly A/D strafed the wrong way (right vector was negated); Hierarchy double-click now selects + frames for prefab-child and read-only rows too; the Scene view now expands prefab instances (Neon Harbor was drawn as markers only, so nothing was there to frame); new splash (600×526) and app icon cut from the owner's reference image (`tools/gen/brand_ref.py`, `assets/brand/reference-splash-icon.jpg`). Not run natively here: double-click/fly need a macOS check.
 - 2026-10-23 — M13-13 (part): Playwright suites T36/T38/T40–T43 + Godotize headless suites pass; fixed JengaTedris/Nord Office servers not serving `lib/nord-ui.js`/`ui/*.ui.json`; native macOS GUI checks still open (see KNOWN_ISSUES).
 - 2026-10-22 — Tutorials updated for the Unity-style editor: View ▸ → Window ▸ in guides, notes in T01 (New scene, checklist), T03 (MonoBehaviour template), T10 (tools, navigation, Gizmos), T14 (Build Settings), T24 (Find in sheet), T44 (anchor grid, copy/paste), T46 (Group, minimap, F1); new **T47 The Unity-style workflow**.
 - 2026-10-22 — Godotize G1-7/8: drag assets from Assets into the Scene view (ghost + drop placement), Gizmos menu (grid, icons, colliders; 3D collider wireframes).

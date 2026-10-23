@@ -2385,6 +2385,12 @@
       "milestone": "M13",
       "title": "Checking: Playwright suites T36/T38/T40-T43, KNOWN_ISSUES walk, native macOS verification (G8-3/4/5)",
       "status": "todo"
+    },
+    {
+      "id": "M13-14",
+      "milestone": "M13",
+      "title": "Fix RMB-fly strafe, Hierarchy double-click frame, prefab expansion in Scene view, new splash/icon",
+      "status": "done"
     }
   ]
 }

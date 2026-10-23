@@ -242,7 +242,54 @@ pub fn file_for(e: &Entity) -> Option<String> {
     .ok()
 }
 
+/// Fill prefab instances with the prefab's content (what the game spawns) so the Scene view can draw and select it.
+/// Children get the Hierarchy's read-only ids ([`child_id`]).
+fn expand_instances(
+    st: &EditorState,
+    list: &mut [Entity],
+    cache: &mut std::collections::HashMap<String, Option<Entity>>,
+) {
+    for e in list {
+        if let (Some(p), true) = (&e.prefab, e.children.is_empty()) {
+            let base = cache
+                .entry(p.path.clone())
+                .or_insert_with(|| st.read_prefab(&p.path))
+                .clone();
+            if let Some(base) = base {
+                if let Ok(mut v) = serde_json::to_value(&base) {
+                    apply(&mut v, &Value::Object(p.overrides.clone()));
+                    if let Ok(m) = serde_json::from_value::<Entity>(v) {
+                        e.components = m.components;
+                        e.scripts = m.scripts;
+                        e.behaviors = m.behaviors;
+                        e.effects = m.effects;
+                        e.children = m.children;
+                        number_children(&e.id, &mut e.children, &mut vec![]);
+                    }
+                }
+            }
+        }
+        expand_instances(st, &mut e.children, cache);
+    }
+}
+
+fn number_children(inst: &str, kids: &mut [Entity], path: &mut Vec<usize>) {
+    for (i, k) in kids.iter_mut().enumerate() {
+        path.push(i);
+        k.id = child_id(inst, path);
+        number_children(inst, &mut k.children, path);
+        path.pop();
+    }
+}
+
 impl EditorState {
+    /// The scene as the Scene view shows it: prefab instances expanded.
+    pub fn viewport_scene(&self) -> Option<nord_core::scene::Scene> {
+        let mut sc = self.scene.clone()?;
+        expand_instances(self, &mut sc.entities, &mut Default::default());
+        Some(sc)
+    }
+
     /// `read_prefab` for per-frame callers (Hierarchy): re-read only when the prefab file or any of its `variantOf` bases changed.
     pub fn read_prefab_cached(&mut self, path: &str) -> Option<Entity> {
         let root = self.root.clone()?;

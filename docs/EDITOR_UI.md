@@ -82,7 +82,7 @@ crates/nord-serve/      dev server + Hub (shared by `nord serve` and the editor)
 - State = one `EditorState` struct; every scene mutation goes through `EditorState::edit` (snapshot command, ADR-015). Panels are `fn ui(&mut EditorState, &mut Ui)`.
 - Thumbnails: `nord-core` produces PNGs in `.nord-cache/thumbs`; assets panel loads via `egui_extras` image loaders (lazy, visible cells only).
 - Never block UI: thumbnails and JS syntax checks run on worker threads (`std::thread` + channel), repaint via `ctx.request_repaint*()`.
-- Splash: the same window starts borderless 640×360 showing `assets/brand/splash-640x360.png` and becomes the main window after ≥ 2000 ms (ADR-018).
+- Splash: the same window starts borderless 600×526 showing `assets/brand/splash-600x526.png` and becomes the main window after ≥ 2000 ms (ADR-018).
 - Text styles referencing the "bold" family are applied one frame after `set_fonts` (egui panics on an unbound family).
 - `egui::Button::image` must not be used for icon buttons before the image loads (it sizes to all remaining space): `icons::button` paints its own.
 

@@ -97,10 +97,14 @@ def run():
     save(mark(1024, with_bg=False), "brand", "logo-mark-transparent.png")
     open(out("brand", "logo.svg"), "w").write(logo_svg())
     save(wordmark(), "brand", "wordmark.png")
-    s = splash(); save(s, "brand", "splash.png"); save(s.resize((640, 360), Image.LANCZOS), "brand", "splash-640x360.png")
+    s = splash(); save(s, "brand", "splash.png"); save(s.resize((640, 360), Image.LANCZOS), "brand", "splash-640x360.png")  # superseded by brand_ref below
     for px in (16, 32, 48, 64, 128, 180, 256, 512): save(m.resize((px, px), Image.LANCZOS), "brand", "icons", f"icon-{px}.png")
     open(out("brand", "icon.icns"), "wb").write(icns(m))
     m.save(out("brand", "icon.ico"), sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
     save(m.resize((64, 64), Image.LANCZOS), "brand", "favicon.png")
     json.dump({"name": "Nord", "colors": PALETTE, "fonts": {"ui": "Inter", "code": "JetBrains Mono"}}, open(out("brand", "palette.json"), "w"), indent=2)
+    if os.path.exists(os.path.join(os.path.dirname(__file__), "..", "..", "assets", "brand", "reference-splash-icon.jpg")):
+        import sys; sys.path.insert(0, os.path.dirname(__file__)); import brand_ref
+        brand_ref.apply(save, out, icns)
+        os.remove(out("brand", "splash-640x360.png"))
     print("brand ok")

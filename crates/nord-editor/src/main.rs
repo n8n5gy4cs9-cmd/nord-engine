@@ -10,7 +10,7 @@ fn main() -> eframe::Result {
     let opts = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_title("Nord Engine")
-            .with_inner_size([640.0, 360.0])
+            .with_inner_size([600.0, 526.0])
             .with_decorations(false)
             .with_resizable(false)
             .with_icon(std::sync::Arc::new(load_icon())),

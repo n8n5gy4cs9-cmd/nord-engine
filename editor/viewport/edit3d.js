@@ -118,7 +118,7 @@ function flyNavigation() {
   scene.onBeforeRenderObservable.add(() => {
     if (!rmb || zoomDrag) return;
     const dt = engine.getDeltaTime() / 1000;
-    const fwd = camera.getTarget().subtract(camera.position).normalize(), right = B.Vector3.Cross(B.Vector3.Up(), fwd).normalize().scale(-1);
+    const fwd = camera.getTarget().subtract(camera.position).normalize(), right = B.Vector3.Cross(B.Vector3.Up(), fwd).normalize(); // Babylon is left-handed: Up x forward = camera right
     const mv = B.Vector3.Zero();
     if (keys.has('KeyW')) mv.addInPlace(fwd);
     if (keys.has('KeyS')) mv.subtractInPlace(fwd);

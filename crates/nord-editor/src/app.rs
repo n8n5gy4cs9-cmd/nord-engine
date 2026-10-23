@@ -315,7 +315,7 @@ impl App {
                 .show(ctx, |ui| {
                     ui.add(
                         egui::Image::new(egui::include_image!(
-                            "../../../assets/brand/splash-640x360.png"
+                            "../../../assets/brand/splash-600x526.png"
                         ))
                         .fit_to_exact_size(ui.available_size()),
                     );
