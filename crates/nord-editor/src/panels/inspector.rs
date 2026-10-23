@@ -1003,7 +1003,8 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         .auto_shrink([false; 2])
         .show(ui, |ui| {
             ui.horizontal(|ui| {
-                ui.checkbox(&mut e.enabled, "");
+                ui.checkbox(&mut e.enabled, "")
+                    .on_hover_text("Active: off = the entity (and its children) is not in the game and is hidden in the Scene view");
                 ui.add(egui::TextEdit::singleline(&mut e.name).desired_width(f32::INFINITY));
             });
             ui.horizontal(|ui| {
@@ -1069,22 +1070,22 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             for (i, c) in e.components.iter_mut().enumerate() {
                 let id = format!("c{i}");
                 let fields = schema::component_fields(&c.kind);
-                let r = egui::CollapsingHeader::new(schema::label_of(&c.kind).to_uppercase())
-                    .id_salt(&id)
-                    .icon(crate::icons::accent_arrow)
-                    .default_open(true)
-                    .show(ui, |ui| {
-                        let mut on = c.fields.get("componentEnabled") != Some(&Value::Bool(false));
-                        if ui.checkbox(&mut on, "Enabled").on_hover_text("Off = the component is not created in the game").changed() {
-                            if on {
-                                c.fields.remove("componentEnabled");
-                            } else {
-                                c.fields.insert("componentEnabled".into(), Value::Bool(false));
-                            }
-                        }
-                        fields_ui(ui, &cx, &fields, &mut c.fields, &id, base_comp(i, &c.kind));
-                        ui.horizontal(|ui| {
-                            ui.menu_button("⋮", |ui| {
+                let sid = ui.make_persistent_id(&id);
+                let mut on = c.fields.get("componentEnabled") != Some(&Value::Bool(false));
+                let was_on = on;
+                let state = egui::collapsing_header::CollapsingState::load_with_default_open(
+                    ui.ctx(),
+                    sid,
+                    true,
+                );
+                let header = state.show_header(ui, |ui| {
+                    // Unity: enable checkbox + name in the header, ⋮ menu at the right; off = greyed out, not created in the game
+                    ui.checkbox(&mut on, "")
+                        .on_hover_text("Enabled: off = the component is not created in the game and is not drawn in the Scene view");
+                    let t = egui::RichText::new(schema::label_of(&c.kind).to_uppercase()).strong();
+                    ui.label(if on { t } else { t.weak() });
+                    ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                        ui.menu_button("⋮", |ui| {
                                 let clip_id = egui::Id::new("component_clipboard");
                                 if ui.button("Reset").clicked() {
                                     c.fields.clear();
@@ -1129,9 +1130,21 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                     ui.close_menu();
                                 }
                             });
-                        });
                     });
-                if f1_over(&r.header_response, ui) {
+                });
+                if on != was_on {
+                    if on {
+                        c.fields.remove("componentEnabled");
+                    } else {
+                        c.fields.insert("componentEnabled".into(), Value::Bool(false));
+                    }
+                }
+                let (hdr, _, _) = header.body(|ui| {
+                    ui.add_enabled_ui(on, |ui| {
+                        fields_ui(ui, &cx, &fields, &mut c.fields, &id, base_comp(i, &c.kind));
+                    });
+                });
+                if f1_over(&hdr, ui) {
                     docs = Some(component_doc(&c.kind));
                 }
             }
@@ -1379,15 +1392,19 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     }
     if e != orig {
         if let (Some((iid, path)), Some(b)) = (&child_ctx, &base_ent) {
-            let patch = crate::prefab::overrides_for(&inst, b, &e);
+            let mut patch = crate::prefab::overrides_for(&inst, b, &e);
+            patch.remove("enabled");
+            if e.enabled != b.enabled {
+                patch.insert("enabled".into(), Value::Bool(e.enabled));
+            }
             let (iid, path) = (iid.clone(), path.clone());
             st.edit("Edit prefab child", Some(&format!("insp:{iid}")), |l| {
                 if let Some(slot) = scene_ops::find_mut(l, &iid) {
                     if let Some(p) = slot.prefab.as_mut() {
                         let mut mine = Map::new();
-                        for k in crate::prefab::KEYS {
-                            if let Some(v) = patch.get(k) {
-                                mine.insert(k.into(), v.clone());
+                        for k in crate::prefab::KEYS.iter().chain(&["enabled"]) {
+                            if let Some(v) = patch.get(*k) {
+                                mine.insert((*k).into(), v.clone());
                             }
                         }
                         crate::prefab::set_child_overrides(&mut p.overrides, &path, mine);

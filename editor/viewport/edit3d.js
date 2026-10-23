@@ -306,7 +306,7 @@ function emitTransform(final) {
   send({ t: 'transform', id, pos, rot, scale, final });
 }
 
-const comp = (e, t) => e.components?.find((c) => c.type === t);
+const comp = (e, t) => e.components?.find((c) => c.type === t && c.componentEnabled !== false);
 
 const lockedIds = new Set();
 function tag(mesh, id) { mesh.metadata = { entityId: id }; mesh.isPickable = !lockedIds.has(id); }

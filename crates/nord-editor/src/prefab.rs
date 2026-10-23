@@ -14,6 +14,16 @@ pub struct PrefabMode {
 /// Entity keys the Inspector can override (name/transform/enabled/tags stay on the instance itself).
 pub const KEYS: [&str; 5] = ["components", "scripts", "behaviors", "effects", "layer"];
 
+/// Keys a prefab *child* override can carry: the editable ones plus Active (`enabled`, the Inspector checkbox).
+const CHILD_KEYS: [&str; 6] = [
+    "components",
+    "scripts",
+    "behaviors",
+    "effects",
+    "layer",
+    "enabled",
+];
+
 /// Id of the read-only Hierarchy row for the prefab child at `path` (child indices from the prefab root) of instance `inst`.
 pub fn child_id(inst: &str, path: &[usize]) -> String {
     let p: Vec<String> = path.iter().map(usize::to_string).collect();
@@ -46,7 +56,7 @@ fn child_slot<'a>(ov: &'a Map<String, Value>, path: &[usize]) -> Option<&'a Map<
 pub fn child_overrides(ov: &Map<String, Value>, path: &[usize]) -> Map<String, Value> {
     let mut out = Map::new();
     if let Some(m) = child_slot(ov, path) {
-        for k in KEYS {
+        for k in CHILD_KEYS {
             if let Some(v) = m.get(k) {
                 out.insert(k.into(), v.clone());
             }
@@ -94,7 +104,7 @@ pub fn set_child_overrides(ov: &mut Map<String, Value>, path: &[usize], patch: M
         };
         cur = m;
     }
-    for k in KEYS {
+    for k in CHILD_KEYS {
         cur.remove(k);
     }
     cur.extend(patch);
@@ -190,7 +200,15 @@ pub fn effective(inst: &Entity, base: &Entity) -> Entity {
     out.behaviors = eff.behaviors;
     out.effects = eff.effects;
     out.layer = eff.layer;
+    // Active override stored on a prefab child (an instance root keeps its own `enabled`)
+    if let Some(on) = p_enabled(inst) {
+        out.enabled = on;
+    }
     out
+}
+
+fn p_enabled(inst: &Entity) -> Option<bool> {
+    inst.prefab.as_ref()?.overrides.get("enabled")?.as_bool()
 }
 
 /// New `overrides` for `inst` after the Inspector edited `edited` (an `effective` entity): other keys already stored are kept.
@@ -725,5 +743,30 @@ mod tests {
         let mut r = e.clone();
         r.components[0].fields.insert("tint".into(), json!("#fff"));
         assert!(!overrides_for(&inst, &b, &r).contains_key("components"));
+    }
+}
+
+#[cfg(test)]
+mod child_active_tests {
+    use super::*;
+
+    #[test]
+    fn child_active_override_roundtrips() {
+        let mut ov = Map::new();
+        let mut patch = Map::new();
+        patch.insert("enabled".into(), Value::Bool(false));
+        set_child_overrides(&mut ov, &[0], patch);
+        assert_eq!(
+            child_overrides(&ov, &[0]).get("enabled"),
+            Some(&Value::Bool(false))
+        );
+        let mut inst = Entity::new("t");
+        inst.prefab = Some(nord_core::scene::PrefabRef {
+            path: "p".into(),
+            overrides: child_overrides(&ov, &[0]),
+        });
+        assert!(!effective(&inst, &Entity::new("t")).enabled);
+        set_child_overrides(&mut ov, &[0], Map::new());
+        assert!(ov.is_empty(), "turning Active back on leaves no override");
     }
 }

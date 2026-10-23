@@ -75,7 +75,7 @@ function getMap(path) {
   return maps.get(path);
 }
 
-function comp(e, type) { return e.components?.find((c) => c.type === type); }
+function comp(e, type) { return e.components?.find((c) => c.type === type && c.componentEnabled !== false); }
 
 /** Local (unscaled) size in world px for picking + outline. */
 export function sizeOf(e) {
