@@ -61,8 +61,8 @@ Tick with `[x]`, also register in PRD.json via `node tools/tasks.mjs add M13 "�
 ## G8 Fix old things
 - [x] G8-1 `nord-core schema::schemas_parse` (23 vs 22) fix
 - [x] G8-2 Strict Clippy clean (`cargo clippy --workspace --all-targets -- -D warnings`)
-- [ ] G8-3 Playwright suites T36/T38/T40–T43 after UI conversion
-- [~] G8-4 KNOWN_ISSUES.md updated for G0–G9; full walk todo
+- [x] G8-3 Playwright suites T36/T38/T40–T43 after UI conversion
+- [~] G8-4 KNOWN_ISSUES.md updated for G0–G9; headless items re-verified 2026-10-23, native-window items remain
 - [ ] G8-5 Verify native egui parts on macOS (F5/F6, remote tree, F1) and record in KNOWN_ISSUES
 ## G9 Look: PlayCanvas-style UI aesthetics (owner reference screenshot: PlayCanvas editor)
 Target look (own theme + icons, no PlayCanvas assets/code copied; behaviour only): dark blue-grey panels (#20292b / #293538 range) with thin
