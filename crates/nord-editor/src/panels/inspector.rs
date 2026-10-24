@@ -6,7 +6,7 @@ use crate::{
     state::EditorState,
     theme,
 };
-use egui::{DragValue, Ui};
+use egui::{Color32, DragValue, Ui};
 use nord_core::vfs::PathExt;
 use nord_core::{
     assets::{Asset, AssetType},
@@ -37,6 +37,23 @@ fn drag(ui: &mut Ui, v: &mut f64, min: Option<f64>, max: Option<f64>, speed: f64
     ui.add(d).changed()
 }
 
+/// Axis letter in Unity-style colours (X red, Y green, Z blue, W grey).
+pub fn axis_letter(ui: &mut Ui, i: usize) {
+    let (t, c) = [
+        ("X", Color32::from_rgb(226, 88, 80)),
+        ("Y", Color32::from_rgb(112, 192, 72)),
+        ("Z", Color32::from_rgb(86, 148, 240)),
+        ("W", Color32::from_rgb(170, 170, 178)),
+    ][i.min(3)];
+    ui.label(egui::RichText::new(t).strong().color(c).small());
+}
+
+/// Width of one value box so that `n` "letter + box" pairs share `total` evenly (never tiny, never huge).
+fn axis_box_width(ui: &Ui, total: f32, n: usize) -> f32 {
+    let sp = ui.spacing().item_spacing.x;
+    ((total - n as f32 * (10.0 + 2.0 * sp)) / n as f32).clamp(34.0, 140.0)
+}
+
 fn vec_n(ui: &mut Ui, v: &mut Value, n: usize) -> bool {
     let mut a: Vec<f64> = v
         .as_array()
@@ -44,11 +61,12 @@ fn vec_n(ui: &mut Ui, v: &mut Value, n: usize) -> bool {
         .unwrap_or_default();
     a.resize(n, 0.0);
     let mut ch = false;
+    let w = axis_box_width(ui, ui.available_width(), n);
+    let h = ui.spacing().interact_size.y;
     ui.horizontal(|ui| {
         for (i, x) in a.iter_mut().enumerate() {
-            let label = ["x", "y", "z"][i];
-            ui.weak(label);
-            ch |= drag(ui, x, None, None, 0.1);
+            axis_letter(ui, i);
+            ch |= ui.add_sized([w, h], DragValue::new(x).speed(0.1)).changed();
         }
     });
     if ch {
@@ -1115,35 +1133,38 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 });
             });
             xf_header.body(|ui| {
-                    egui::Grid::new("xf").num_columns(2).show(ui, |ui| {
+                    let w = axis_box_width(ui, ui.available_width() - 70.0, 3);
+                    let h = ui.spacing().interact_size.y;
+                    egui::Grid::new("xf").num_columns(4).spacing([6.0, 4.0]).show(ui, |ui| {
                         for (label, arr, n3) in [
                             ("Position", &mut e.transform.pos, true),
                             ("Rotation", &mut e.transform.rot, is3d),
                             ("Scale", &mut e.transform.scale, true),
                         ] {
                             ui.label(label);
-                            ui.horizontal(|ui| {
-                                let axes: &[usize] = if is3d || (n3 && label == "Position") {
-                                    &[0, 1, 2]
-                                } else if label == "Rotation" {
-                                    &[2]
+                            let axes: &[usize] = if is3d || (n3 && label == "Position") {
+                                &[0, 1, 2]
+                            } else if label == "Rotation" {
+                                &[2]
+                            } else {
+                                &[0, 1]
+                            };
+                            let (unit, speed) = match label {
+                                "Rotation" => ("°", 0.5),
+                                "Scale" => ("×", 0.01),
+                                _ => (" u", 0.5),
+                            };
+                            #[allow(clippy::needless_range_loop)]
+                            for i in 0..3 {
+                                if axes.contains(&i) {
+                                    ui.horizontal(|ui| {
+                                        axis_letter(ui, i);
+                                        ui.add_sized([w, h], DragValue::new(&mut arr[i]).suffix(unit).speed(speed));
+                                    });
                                 } else {
-                                    &[0, 1]
-                                };
-                                for &i in axes {
-                                    ui.weak(["x", "y", "z"][i]);
-                                    let unit = match label {
-                                        "Rotation" => "°",
-                                        "Scale" => "×",
-                                        _ => " u",
-                                    };
-                                    ui.add(
-                                        DragValue::new(&mut arr[i])
-                                            .suffix(unit)
-                                            .speed(if label == "Scale" { 0.01 } else { 0.5 }),
-                                    );
+                                    ui.label("");
                                 }
-                            });
+                            }
                             ui.end_row();
                         }
                     });

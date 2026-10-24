@@ -353,6 +353,349 @@ fn add_editor_themes(cat: &mut Catalog) {
     }
 }
 
+/// Themes inspired by other game engines / editors (palette only, "Inspired" in the name). ui: bg panel panel2 border fg dim accent · code: keyword string number comment function type
+#[allow(clippy::type_complexity)]
+const INSPIRED: &[(&str, &str, bool, [&str; 7], [&str; 6])] = &[
+    (
+        "unity",
+        "Unity Inspired",
+        true,
+        [
+            "#282828", "#383838", "#424242", "#1a1a1a", "#d2d2d2", "#9a9a9a", "#3a79bb",
+        ],
+        [
+            "#569cd6", "#d69d85", "#b5cea8", "#57a64a", "#dcdcaa", "#4ec9b0",
+        ],
+    ),
+    (
+        "unreal",
+        "Unreal Inspired",
+        true,
+        [
+            "#151515", "#1f1f1f", "#2b2b2b", "#0d0d0d", "#c8c8c8", "#8a8a8a", "#0e86d4",
+        ],
+        [
+            "#c586c0", "#ce9178", "#b5cea8", "#6a9955", "#dcdcaa", "#4ec9b0",
+        ],
+    ),
+    (
+        "godot",
+        "Godot Inspired",
+        true,
+        [
+            "#1f242d", "#2b3039", "#363d4a", "#171b21", "#dfe3ea", "#8c96a6", "#478cbf",
+        ],
+        [
+            "#ff7085", "#ffeda1", "#a1ffe0", "#676e7a", "#57b3ff", "#42ffc2",
+        ],
+    ),
+    (
+        "blender",
+        "Blender Inspired",
+        true,
+        [
+            "#1d1d1d", "#303030", "#3d3d3d", "#161616", "#e0e0e0", "#999999", "#4772b3",
+        ],
+        [
+            "#e9a050", "#6fbf73", "#7aa9e0", "#808080", "#e0d070", "#5fc0c0",
+        ],
+    ),
+    (
+        "defold",
+        "Defold Inspired",
+        true,
+        [
+            "#26292d", "#2f3338", "#3a3f45", "#1d2023", "#dde1e6", "#8f98a3", "#fd6623",
+        ],
+        [
+            "#fd6623", "#a5e075", "#e5c07b", "#6b7480", "#61afef", "#56b6c2",
+        ],
+    ),
+    (
+        "cocos",
+        "Cocos Creator Inspired",
+        true,
+        [
+            "#252525", "#333333", "#3f3f3f", "#1a1a1a", "#d6d6d6", "#8f8f8f", "#09a2e6",
+        ],
+        [
+            "#09a2e6", "#e6a85c", "#b5cea8", "#6a9955", "#dcdcaa", "#4ec9b0",
+        ],
+    ),
+    (
+        "gamemaker",
+        "GameMaker Inspired",
+        true,
+        [
+            "#1b1d21", "#25282d", "#30343a", "#131518", "#e3e6ea", "#8b929b", "#3ddc84",
+        ],
+        [
+            "#3ddc84", "#f2c46d", "#7cc4ff", "#69727d", "#ffd479", "#c6a0f6",
+        ],
+    ),
+    (
+        "flax",
+        "Flax Inspired",
+        true,
+        [
+            "#1c1c1c", "#262626", "#313131", "#121212", "#d8d8d8", "#8c8c8c", "#f3a312",
+        ],
+        [
+            "#f3a312", "#a8cc8c", "#7fb4ff", "#6a6a6a", "#e5c07b", "#56b6c2",
+        ],
+    ),
+    (
+        "stride",
+        "Stride Inspired",
+        true,
+        [
+            "#202225", "#2b2e32", "#363a3f", "#16181a", "#dcdfe3", "#8e949b", "#e74c3c",
+        ],
+        [
+            "#e74c3c", "#98c379", "#d19a66", "#5c6370", "#61afef", "#e5c07b",
+        ],
+    ),
+    (
+        "construct",
+        "Construct Inspired",
+        false,
+        [
+            "#eceff3", "#f7f8fa", "#e1e5eb", "#c9d0da", "#222a35", "#6b7788", "#1f8cff",
+        ],
+        [
+            "#7c3aed", "#059669", "#d97706", "#94a3b8", "#1f6fd1", "#be185d",
+        ],
+    ),
+    (
+        "rpgmaker",
+        "RPG Maker Inspired",
+        true,
+        [
+            "#1e2230", "#272c3d", "#323851", "#151823", "#e1e4f0", "#8d94b0", "#8f7cff",
+        ],
+        [
+            "#c792ea", "#c3e88d", "#f78c6c", "#676e95", "#82aaff", "#ffcb6b",
+        ],
+    ),
+    (
+        "vscode-dark",
+        "VS Code Dark+ Inspired",
+        true,
+        [
+            "#1e1e1e", "#252526", "#2d2d30", "#3c3c3c", "#d4d4d4", "#858585", "#007acc",
+        ],
+        [
+            "#569cd6", "#ce9178", "#b5cea8", "#6a9955", "#dcdcaa", "#4ec9b0",
+        ],
+    ),
+    (
+        "vscode-light",
+        "VS Code Light+ Inspired",
+        false,
+        [
+            "#ffffff", "#f3f3f3", "#e8e8e8", "#cecece", "#333333", "#777777", "#007acc",
+        ],
+        [
+            "#0000ff", "#a31515", "#098658", "#008000", "#795e26", "#267f99",
+        ],
+    ),
+    (
+        "darcula",
+        "JetBrains Darcula Inspired",
+        true,
+        [
+            "#2b2b2b", "#3c3f41", "#45494a", "#323232", "#bbbbbb", "#808080", "#4a88c7",
+        ],
+        [
+            "#cc7832", "#6a8759", "#6897bb", "#808080", "#ffc66d", "#9876aa",
+        ],
+    ),
+    (
+        "intellij-light",
+        "IntelliJ Light Inspired",
+        false,
+        [
+            "#ffffff", "#f2f2f2", "#e6e6e6", "#d1d1d1", "#1e1f22", "#6c707e", "#3574f0",
+        ],
+        [
+            "#0033b3", "#067d17", "#1750eb", "#8c8c8c", "#00627a", "#871094",
+        ],
+    ),
+    (
+        "xcode-dark",
+        "Xcode Dark Inspired",
+        true,
+        [
+            "#1f1f24", "#292a30", "#33343b", "#17171b", "#dfdfe0", "#8e8e93", "#0a84ff",
+        ],
+        [
+            "#fc5fa3", "#fc6a5d", "#d0bf69", "#7f8c98", "#67b7a4", "#5dd8ff",
+        ],
+    ),
+    (
+        "ayu-dark",
+        "Ayu Dark Inspired",
+        true,
+        [
+            "#0b0e14", "#0f131a", "#151a23", "#1c2230", "#bfbdb6", "#6c7380", "#e6b450",
+        ],
+        [
+            "#ff8f40", "#aad94c", "#d2a6ff", "#5c6773", "#ffb454", "#59c2ff",
+        ],
+    ),
+    (
+        "ayu-mirage",
+        "Ayu Mirage Inspired",
+        true,
+        [
+            "#1f2430", "#232834", "#2a3040", "#171b24", "#cccac2", "#707a8c", "#ffcc66",
+        ],
+        [
+            "#ffa759", "#d5ff80", "#dfbfff", "#5c6773", "#ffd173", "#73d0ff",
+        ],
+    ),
+    (
+        "ayu-light",
+        "Ayu Light Inspired",
+        false,
+        [
+            "#fcfcfc", "#f3f4f5", "#e7e8ea", "#d5d7da", "#5c6166", "#8a9199", "#ff9940",
+        ],
+        [
+            "#fa8d3e", "#86b300", "#a37acc", "#abb0b6", "#f2ae49", "#399ee6",
+        ],
+    ),
+    (
+        "night-owl",
+        "Night Owl Inspired",
+        true,
+        [
+            "#011627", "#0b2942", "#13395c", "#010e1a", "#d6deeb", "#7a8fa6", "#82aaff",
+        ],
+        [
+            "#c792ea", "#ecc48d", "#f78c6c", "#637777", "#82aaff", "#ffcb8b",
+        ],
+    ),
+    (
+        "rose-pine",
+        "Rosé Pine Inspired",
+        true,
+        [
+            "#191724", "#1f1d2e", "#26233a", "#12101b", "#e0def4", "#908caa", "#c4a7e7",
+        ],
+        [
+            "#31748f", "#f6c177", "#ebbcba", "#6e6a86", "#ebbcba", "#9ccfd8",
+        ],
+    ),
+    (
+        "everforest",
+        "Everforest Inspired",
+        true,
+        [
+            "#232a2e", "#2d353b", "#343f44", "#1c2226", "#d3c6aa", "#859289", "#a7c080",
+        ],
+        [
+            "#e67e80", "#a7c080", "#d699b6", "#859289", "#7fbbb3", "#dbbc7f",
+        ],
+    ),
+    (
+        "kanagawa",
+        "Kanagawa Inspired",
+        true,
+        [
+            "#1f1f28", "#2a2a37", "#363646", "#16161d", "#dcd7ba", "#727169", "#7e9cd8",
+        ],
+        [
+            "#957fb8", "#98bb6c", "#d27e99", "#727169", "#7e9cd8", "#7aa89f",
+        ],
+    ),
+    (
+        "synthwave",
+        "Synthwave '84 Inspired",
+        true,
+        [
+            "#241b2f", "#2a2139", "#34294a", "#1a1325", "#ffffff", "#848bbd", "#ff7edb",
+        ],
+        [
+            "#fede5d", "#ff8b39", "#f97e72", "#848bbd", "#36f9f6", "#72f1b8",
+        ],
+    ),
+    (
+        "cobalt2",
+        "Cobalt2 Inspired",
+        true,
+        [
+            "#193549", "#15232d", "#1f4662", "#0d1a23", "#ffffff", "#8fa8bf", "#ffc600",
+        ],
+        [
+            "#ff9d00", "#a5ff90", "#ff628c", "#0088ff", "#ffc600", "#80ffbb",
+        ],
+    ),
+    (
+        "atom-light",
+        "Atom One Light Inspired",
+        false,
+        [
+            "#fafafa", "#f0f0f0", "#e5e5e6", "#d3d3d4", "#383a42", "#a0a1a7", "#4078f2",
+        ],
+        [
+            "#a626a4", "#50a14f", "#986801", "#a0a1a7", "#4078f2", "#c18401",
+        ],
+    ),
+    (
+        "gruvbox-light",
+        "Gruvbox Light Inspired",
+        false,
+        [
+            "#fbf1c7", "#f2e5bc", "#ebdbb2", "#d5c4a1", "#3c3836", "#7c6f64", "#d65d0e",
+        ],
+        [
+            "#9d0006", "#79740e", "#8f3f71", "#928374", "#b57614", "#076678",
+        ],
+    ),
+    (
+        "poimandres",
+        "Poimandres Inspired",
+        true,
+        [
+            "#1b1e28", "#252b37", "#303340", "#171922", "#e4f0fb", "#a6accd", "#5de4c7",
+        ],
+        [
+            "#5de4c7", "#5de4c7", "#add7ff", "#767c9d", "#add7ff", "#91b4d5",
+        ],
+    ),
+];
+
+fn add_inspired_themes(cat: &mut Catalog) {
+    let dark = cat
+        .themes
+        .iter()
+        .find(|t| t.dark)
+        .cloned()
+        .unwrap_or_else(|| cat.themes[0].clone());
+    let light = cat
+        .themes
+        .iter()
+        .find(|t| !t.dark)
+        .cloned()
+        .unwrap_or_else(|| dark.clone());
+    for (id, name, is_dark, u, c) in INSPIRED {
+        let (good, warn, bad) = if *is_dark {
+            ("#6ac26a", "#e3b341", "#e06060")
+        } else {
+            ("#2f8f3f", "#b8860b", "#c0392b")
+        };
+        cat.themes.push(make_theme(
+            if *is_dark { &dark } else { &light },
+            id,
+            name,
+            *is_dark,
+            [u[0], u[1], u[2], u[3], u[4], u[5], u[6], good, warn, bad],
+            *c,
+        ));
+    }
+}
+
 const CUSTOM_PREFIX: &str = "custom-";
 fn custom_path() -> std::path::PathBuf {
     nord_core::io::config_dir().join("themes.custom.json")
@@ -469,6 +812,7 @@ impl Themes {
         cat.themes.insert(0, pc);
         add_editor_skins(&mut cat);
         add_editor_themes(&mut cat);
+        add_inspired_themes(&mut cat);
         let mut me = Self { cat };
         me.cat.themes.extend(load_custom());
         me
@@ -683,7 +1027,11 @@ mod tests {
         ] {
             assert!(t.theme(id).dark && t.theme(id).id == id);
         }
-        for id in ["paper", "daylight"] {
+        assert!(t.themes().len() >= 50);
+        for id in ["unity", "godot", "vscode-dark", "darcula"] {
+            assert!(t.theme(id).dark && t.theme(id).id == id);
+        }
+        for id in ["paper", "daylight", "vscode-light"] {
             assert!(!t.theme(id).dark && t.theme(id).id == id);
         }
     }

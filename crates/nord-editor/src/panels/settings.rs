@@ -27,7 +27,7 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
         let mut open = true;
         let mut changed = false;
         let mut content_changed = false;
-        egui::Window::new("Settings").open(&mut open).default_width(560.0).default_height(560.0).vscroll(true).show(ctx, |ui| {
+        egui::Window::new("Settings").open(&mut open).default_width(580.0).default_height(820.0).vscroll(true).show(ctx, |ui| {
             let s = &mut st.settings;
             egui::CollapsingHeader::new("Shortcuts (Unity defaults)").show(ui, |ui| {
                 // capture: the next key press (with its modifiers) becomes the new chord; Esc cancels
@@ -91,33 +91,34 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                     }
                 });
                 ui.end_row();
+                // sizes are edited as a draft and only applied with the button: re-laying out the UI while dragging made it wiggle
+                let size_id = egui::Id::new("size_draft");
+                let mut d: (f32, f32, f32) = ui.ctx().data(|m| m.get_temp(size_id)).unwrap_or((s.ui_scale, s.font_scale, s.button_scale));
                 ui.label("Interface size");
-                ui.horizontal(|ui| {
-                    changed |= ui.add(egui::Slider::new(&mut s.ui_scale, 0.7..=1.8).fixed_decimals(2)).on_hover_text("Everything: text, buttons, spacing").changed();
-                    if ui.small_button("Reset").on_hover_text("Back to 1.00").clicked() {
-                        s.ui_scale = 1.0;
-                        changed = true;
-                    }
-                });
+                ui.add(egui::Slider::new(&mut d.0, 0.7..=1.8).fixed_decimals(2)).on_hover_text("Everything: text, buttons, spacing");
                 ui.end_row();
                 ui.label("Text size");
-                ui.horizontal(|ui| {
-                    changed |= ui.add(egui::Slider::new(&mut s.font_scale, 0.7..=1.8).fixed_decimals(2)).on_hover_text("Text only, on top of Interface size").changed();
-                    if ui.small_button("Reset").on_hover_text("Back to 1.00").clicked() {
-                        s.font_scale = 1.0;
-                        changed = true;
-                    }
-                });
+                ui.add(egui::Slider::new(&mut d.1, 0.7..=1.8).fixed_decimals(2)).on_hover_text("Text only, on top of Interface size");
                 ui.end_row();
                 ui.label("Button size");
+                ui.add(egui::Slider::new(&mut d.2, 0.7..=1.8).fixed_decimals(2)).on_hover_text("Buttons, inputs and icon buttons, on top of Interface size");
+                ui.end_row();
+                ui.label("");
                 ui.horizontal(|ui| {
-                    changed |= ui.add(egui::Slider::new(&mut s.button_scale, 0.7..=1.8).fixed_decimals(2)).on_hover_text("Buttons, inputs and icon buttons, on top of Interface size").changed();
-                    if ui.small_button("Reset").on_hover_text("Back to 1.00").clicked() {
-                        s.button_scale = 1.0;
+                    let pending = d != (s.ui_scale, s.font_scale, s.button_scale);
+                    if ui.add_enabled(pending, egui::Button::new("Apply sizes")).on_hover_text("Nothing changes until you press this").clicked() {
+                        (s.ui_scale, s.font_scale, s.button_scale) = d;
                         changed = true;
+                    }
+                    if ui.button("Reset to 1.00").on_hover_text("Puts the sliders back to the default size; press Apply sizes to use it").clicked() {
+                        d = (1.0, 1.0, 1.0);
+                    }
+                    if pending {
+                        ui.weak("not applied yet");
                     }
                 });
                 ui.end_row();
+                ui.ctx().data_mut(|m| m.insert_temp(size_id, d));
                 ui.label("Material previews");
                 ui.checkbox(&mut s.plain_material_previews, "Flat colour only (faster)")
                     .on_hover_text("Off (default): the preview ball and Assets thumbnails show the texture, normal map and emissive map. On: colour, metallic and roughness only.");

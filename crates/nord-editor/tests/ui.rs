@@ -225,7 +225,7 @@ fn whole_app_boots_to_hub_then_opens_project() {
             .collect::<Vec<_>>()
     );
     h.get_by_label("Select an entity"); // inspector
-    h.get_by_label("📁 (project)"); // assets
+    h.get_by_label("(project)"); // assets
     h.get_by_label("Open in browser"); // scene tab fallback (no embedded webview in this build)
                                        // Cmd+K opens the palette; typing filters commands
     h.press_key_modifiers(egui::Modifiers::COMMAND, egui::Key::K);

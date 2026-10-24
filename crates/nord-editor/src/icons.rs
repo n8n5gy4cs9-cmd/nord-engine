@@ -191,7 +191,7 @@ pub fn icon(name: &'static str, size: f32, tint: Color32) -> Image<'static> {
 /// Icon-only button with tooltip. Drawn by hand: `egui::Button::image` sizes a not-yet-loaded image to *all* remaining
 /// space, which starves the next widget (negative sizes -> panic) on the first frame.
 pub fn button(ui: &mut Ui, name: &'static str, tip: &str, selected: bool) -> egui::Response {
-    let side = (28.0 * (ui.text_style_height(&egui::TextStyle::Body) / 15.0)).max(24.0);
+    let side = ui.spacing().interact_size.y.max(20.0);
     let (rect, resp) = ui.allocate_exact_size(Vec2::splat(side), egui::Sense::click());
     resp.widget_info(|| {
         egui::WidgetInfo::selected(egui::WidgetType::Button, ui.is_enabled(), selected, tip)
@@ -206,13 +206,13 @@ pub fn button(ui: &mut Ui, name: &'static str, tip: &str, selected: bool) -> egu
             Color32::TRANSPARENT
         };
         ui.painter().rect_filled(rect, v.corner_radius, fill);
-        let r = egui::Rect::from_center_size(rect.center(), Vec2::splat(16.0));
+        let r = egui::Rect::from_center_size(rect.center(), Vec2::splat(15.0));
         let c = if selected {
             ui.visuals().hyperlink_color
         } else {
             v.fg_stroke.color
         };
-        icon(name, 16.0, c).paint_at(ui, r);
+        icon(name, 15.0, c).paint_at(ui, r);
     }
     resp.on_hover_cursor(egui::CursorIcon::PointingHand)
         .on_hover_text(tip)

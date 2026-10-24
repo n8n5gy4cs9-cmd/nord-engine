@@ -1,5 +1,6 @@
 //! Asset browser: folder tree + thumbnail grid (lazy, worker-thread thumbnails via nord-core), search/filter,
 //! import (dialog or OS drag&drop), rename/move/delete, drag out as `AssetDrag`.
+use crate::assetmeta::{COLORS, ICON_CHOICES};
 use crate::{
     icons,
     panels::inspector::AssetDrag,
@@ -40,6 +41,27 @@ pub struct AssetsUi {
     rx: Receiver<(String, Option<PathBuf>)>,
     /// model asset paths the edit viewport should render (drained by the app when a 3D viewport is connected)
     pub model_requests: Vec<String>,
+    /// open asset-metadata dialog (description, new tag, folder icon image)
+    meta_dialog: Option<MetaDialog>,
+    /// show only assets with this tag id
+    pub tag_filter: Option<String>,
+    dominant: HashMap<String, (Instant, &'static str)>,
+}
+
+#[derive(Clone)]
+enum MetaDialog {
+    Note(String, String),
+    NewTag(String, String, usize),
+    IconImage(String),
+}
+
+/// A change picked in an entry's context menu, applied after the panel was drawn.
+#[derive(Clone)]
+enum MetaOp {
+    Color(Option<String>),
+    Icon(Option<String>),
+    ToggleTag(String),
+    Dialog(MetaDialog),
 }
 
 #[derive(Clone)]
@@ -81,6 +103,9 @@ impl Default for AssetsUi {
             tx,
             rx,
             model_requests: vec![],
+            meta_dialog: None,
+            tag_filter: None,
+            dominant: HashMap::new(),
         }
     }
 }
@@ -249,6 +274,102 @@ fn entry_menu(ui: &mut Ui, e: &Entry, out: &mut Option<(Entry, u8)>) {
     }
     item(ui, reveal_label(), OP_REVEAL);
     item(ui, "Copy path", OP_COPY_PATH);
+    if !e.rel.is_empty() {
+        ui.separator();
+        meta_menu(ui, e);
+    }
+}
+
+/// Colour / icon / tags / description entries of the context menu. The pick is left in egui's temp memory (`meta_op`).
+fn meta_menu(ui: &mut Ui, e: &Entry) {
+    let meta: crate::assetmeta::AssetMeta = ui
+        .ctx()
+        .data(|d| d.get_temp(egui::Id::new("asset_meta")))
+        .unwrap_or_default();
+    let set = |ui: &Ui, op: MetaOp| {
+        ui.ctx()
+            .data_mut(|d| d.insert_temp(egui::Id::new("meta_op"), Some((e.rel.clone(), op))))
+    };
+    let cur = meta.item(&e.rel).cloned().unwrap_or_default();
+    if e.is_dir {
+        ui.menu_button("Folder color", |ui| {
+            ui.horizontal_wrapped(|ui| {
+                ui.set_max_width(170.0);
+                for (name, hex) in COLORS {
+                    let (r, resp) = ui.allocate_exact_size(Vec2::splat(20.0), Sense::click());
+                    ui.painter().rect_filled(r, 4.0, crate::theme::hex(hex));
+                    if cur.color.as_deref() == Some(*hex) {
+                        ui.painter().rect_stroke(
+                            r,
+                            4.0,
+                            egui::Stroke::new(2.0, ui.visuals().strong_text_color()),
+                            egui::StrokeKind::Outside,
+                        );
+                    }
+                    if resp.on_hover_text(*name).clicked() {
+                        set(ui, MetaOp::Color(Some((*hex).into())));
+                        ui.close_menu();
+                    }
+                }
+            });
+            if ui.button("Default color").clicked() {
+                set(ui, MetaOp::Color(None));
+                ui.close_menu();
+            }
+        });
+        ui.menu_button("Folder icon", |ui| {
+            ui.horizontal_wrapped(|ui| {
+                ui.set_max_width(210.0);
+                for n in ICON_CHOICES {
+                    if icons::button(ui, n, n, cur.icon.as_deref() == Some(*n)).clicked() {
+                        set(ui, MetaOp::Icon(Some((*n).into())));
+                        ui.close_menu();
+                    }
+                }
+            });
+            if ui.button("Your own image…").clicked() {
+                set(ui, MetaOp::Dialog(MetaDialog::IconImage(e.rel.clone())));
+                ui.close_menu();
+            }
+            if ui.button("Automatic (by content)").clicked() {
+                set(ui, MetaOp::Icon(None));
+                ui.close_menu();
+            }
+        });
+    }
+    ui.menu_button("Tags", |ui| {
+        for t in &meta.tags {
+            let on = cur.tags.contains(&t.id);
+            let (r, _) = ui.allocate_exact_size(Vec2::ZERO, Sense::hover());
+            let _ = r;
+            if ui
+                .checkbox(
+                    &mut on.clone(),
+                    egui::RichText::new(format!("● {}", t.name)).color(crate::theme::hex(&t.color)),
+                )
+                .clicked()
+            {
+                set(ui, MetaOp::ToggleTag(t.id.clone()));
+            }
+        }
+        if !meta.tags.is_empty() {
+            ui.separator();
+        }
+        if ui.button("New tag…").clicked() {
+            set(
+                ui,
+                MetaOp::Dialog(MetaDialog::NewTag(e.rel.clone(), String::new(), 5)),
+            );
+            ui.close_menu();
+        }
+    });
+    if ui.button("Description…").clicked() {
+        set(
+            ui,
+            MetaOp::Dialog(MetaDialog::Note(e.rel.clone(), cur.note)),
+        );
+        ui.close_menu();
+    }
 }
 
 /// Right-click menu on the empty area of the current folder ("Create" menu).
@@ -497,24 +618,55 @@ fn tree(st: &mut EditorState, ui: &mut Ui, rel: &str, depth: usize, ctx: &mut Op
         let has_sub = list_dir(&root, &d.rel).iter().any(|e| e.is_dir);
         let open =
             st.assets_ui.dir == d.rel || st.assets_ui.dir.starts_with(&format!("{}/", d.rel));
-        ui.horizontal(|ui| {
-            ui.add_space(depth as f32 * 12.0);
-            ui.add(icons::icon(
-                if open { "folder-open" } else { "folder" },
-                14.0,
-                icons::kind_color("folder", ui.visuals().text_color()),
-            ));
-            let r = ui.selectable_label(sel, &d.name);
-            if r.clicked() {
-                st.assets_ui.dir = d.rel.clone();
-                st.assets_ui.selected = Some(d.rel.clone());
-            }
-            r.context_menu(|ui| entry_menu(ui, &d, ctx));
-            // drop an asset on a folder = move
-            if let Some(p) = r.dnd_release_payload::<AssetDrag>() {
-                move_asset(st, &p.0, &d.rel);
-            }
+        // zebra stripe + indent guide lines are painted first, the row content goes on top
+        let row = ui.ctx().data_mut(|m| {
+            let n: &mut usize = m.get_temp_mut_or_default(egui::Id::new("tree_row"));
+            *n += 1;
+            *n
         });
+        let h = ui.spacing().interact_size.y;
+        let strip = egui::Rect::from_min_size(ui.cursor().min, Vec2::new(ui.available_width(), h));
+        if st.asset_meta.zebra && row.is_multiple_of(2) {
+            ui.painter()
+                .rect_filled(strip, 0.0, ui.visuals().faint_bg_color.gamma_multiply(0.6));
+        }
+        if st.asset_meta.guides {
+            for g in 0..depth {
+                let x = strip.left() + g as f32 * 12.0 + 7.0;
+                ui.painter().line_segment(
+                    [
+                        egui::pos2(x, strip.top()),
+                        egui::pos2(x, strip.bottom() + 4.0),
+                    ],
+                    egui::Stroke::new(1.0, ui.visuals().widgets.noninteractive.bg_stroke.color),
+                );
+            }
+        }
+        let resp = ui
+            .horizontal(|ui| {
+                ui.add_space(depth as f32 * 12.0);
+                let (ir, _) = ui.allocate_exact_size(Vec2::splat(14.0), Sense::hover());
+                paint_folder(st, ui, &root, &d.rel, ir, open);
+                let r = ui.selectable_label(sel, &d.name);
+                if r.clicked() {
+                    st.assets_ui.dir = d.rel.clone();
+                    st.assets_ui.selected = Some(d.rel.clone());
+                }
+                let tip = st.asset_meta.tooltip(&d.rel);
+                paint_tag_dots(st, ui, &d.rel, r.rect.right_center() + Vec2::new(6.0, 0.0));
+                let r = if tip.is_empty() {
+                    r
+                } else {
+                    r.on_hover_text(tip)
+                };
+                r.context_menu(|ui| entry_menu(ui, &d, ctx));
+                // drop an asset on a folder = move
+                if let Some(p) = r.dnd_release_payload::<AssetDrag>() {
+                    move_asset(st, &p.0, &d.rel);
+                }
+            })
+            .response;
+        let _ = resp;
         if has_sub && open {
             tree(st, ui, &d.rel, depth + 1, ctx);
         }
@@ -537,6 +689,8 @@ fn move_asset(st: &mut EditorState, from: &str, to_dir: &str) {
             root.join(format!("{from}.meta.json")),
             root.join(format!("{dest}.meta.json")),
         );
+        st.asset_meta.rekey(from, &dest);
+        st.asset_meta.save(&root);
         st.log(LogLevel::Info, format!("Moved {from} -> {dest}"));
         st.refresh_assets();
         st.assets_ui.listed_at = None;
@@ -562,6 +716,12 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
         ui.weak("No project open");
         return;
     };
+    st.asset_meta.ensure(&root);
+    let meta_copy = st.asset_meta.clone();
+    ui.ctx().data_mut(|d| {
+        d.insert_temp(egui::Id::new("asset_meta"), meta_copy);
+        d.insert_temp(egui::Id::new("tree_row"), 0usize);
+    });
     // OS drag&drop import
     let dropped: Vec<PathBuf> = ui.ctx().input(|i| {
         i.raw
@@ -640,6 +800,43 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
                     ui.selectable_value(&mut st.assets_ui.kind_filter, Some(k), format!("{k:?}"));
                 }
             });
+        let tag_name = st
+            .assets_ui
+            .tag_filter
+            .as_deref()
+            .and_then(|t| st.asset_meta.tag(t))
+            .map_or("Tags".to_string(), |t| t.name.clone());
+        egui::ComboBox::from_id_salt("tagf")
+            .selected_text(tag_name)
+            .show_ui(ui, |ui| {
+                ui.selectable_value(&mut st.assets_ui.tag_filter, None, "All");
+                for t in st.asset_meta.tags.clone() {
+                    ui.selectable_value(
+                        &mut st.assets_ui.tag_filter,
+                        Some(t.id.clone()),
+                        egui::RichText::new(format!("● {}", t.name))
+                            .color(crate::theme::hex(&t.color)),
+                    );
+                }
+            });
+        ui.menu_button("View", |ui| {
+            let mut ch = false;
+            ch |= ui
+                .checkbox(&mut st.asset_meta.zebra, "Zebra striping (tree)")
+                .changed();
+            ch |= ui
+                .checkbox(&mut st.asset_meta.guides, "Indent guide lines (tree)")
+                .changed();
+            ch |= ui
+                .checkbox(
+                    &mut st.asset_meta.auto_icons,
+                    "Automatic folder icons (by content)",
+                )
+                .changed();
+            if ch {
+                st.asset_meta.save(&root);
+            }
+        });
         let fav = st.assets_ui.only_favorites;
         if icons::mini_toggle(
             ui,
@@ -680,7 +877,7 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
                         is_dir: true,
                         kind: AssetType::Other,
                     };
-                    let r = ui.selectable_label(sel, "📁 (project)");
+                    let r = ui.selectable_label(sel, "(project)");
                     if r.clicked() {
                         st.assets_ui.dir.clear();
                     }
@@ -706,12 +903,22 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
             })
             .collect();
     }
+    let tag_f = st.assets_ui.tag_filter.clone();
     let only_fav = st.assets_ui.only_favorites;
     let favs = st.settings.asset_favorites.clone();
     let entries: Vec<Entry> = entries
         .into_iter()
         .filter(|e| filter.is_none_or(|k| e.is_dir || e.kind == k))
         .filter(|e| !only_fav || e.is_dir || favs.contains(&e.rel))
+        .filter(|e| {
+            tag_f.as_ref().is_none_or(|t| {
+                e.is_dir
+                    || st
+                        .asset_meta
+                        .item(&e.rel)
+                        .is_some_and(|i| i.tags.contains(t))
+            })
+        })
         .collect();
     let cell = st.assets_ui.size;
     let as_list = st.assets_ui.list;
@@ -763,6 +970,8 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
                                     root.join(format!("{from}.meta.json")),
                                     root.join(format!("{to}.meta.json")),
                                 );
+                                st.asset_meta.rekey(&from, &to);
+                                st.asset_meta.save(&root);
                                 st.refresh_assets();
                                 st.assets_ui.listed_at = None;
                             }
@@ -831,7 +1040,12 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
                             ui.visuals().text_color(),
                         );
                     }
-                    let resp = resp.on_hover_text(&e.rel);
+                    let tip = st.asset_meta.tooltip(&e.rel);
+                    let resp = resp.on_hover_text(if tip.is_empty() {
+                        e.rel.clone()
+                    } else {
+                        format!("{}\n{tip}", e.rel)
+                    });
                     if resp.clicked() || resp.secondary_clicked() {
                         st.assets_ui.selected = Some(e.rel.clone());
                         if e.rel.ends_with(".mat.json")
@@ -858,6 +1072,14 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
     if let Some(e) = open {
         open_entry(st, &e);
     }
+    let pending: Option<(String, MetaOp)> = ui
+        .ctx()
+        .data_mut(|d| d.remove_temp::<Option<(String, MetaOp)>>(egui::Id::new("meta_op")))
+        .flatten();
+    if let Some((rel, op)) = pending {
+        apply_meta_op(st, &root, rel, op);
+    }
+    meta_dialogs(st, ui, &root);
     // keyboard shortcuts on the selected entry (only when no text field has focus)
     if !ui.ctx().wants_keyboard_input() && ui.rect_contains_pointer(ui.max_rect()) {
         let sel = st.assets_ui.selected.clone();
@@ -897,6 +1119,8 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
                             nord_core::vfs::remove_file(&f)
                         };
                         let _ = nord_core::vfs::remove_file(root.join(format!("{p}.meta.json")));
+                        st.asset_meta.remove(&p);
+                        st.asset_meta.save(&root);
                         st.refresh_assets();
                         st.assets_ui.listed_at = None;
                         st.assets_ui.confirm_delete = None;
@@ -987,6 +1211,213 @@ fn open_entry(st: &mut EditorState, e: &Entry) {
     }
 }
 
+/// Icon of what a folder mostly contains (recursive, cached for a few seconds).
+fn dominant_icon(st: &mut EditorState, rel: &str) -> &'static str {
+    if let Some((t, i)) = st.assets_ui.dominant.get(rel) {
+        if t.elapsed() < Duration::from_secs(4) {
+            return i;
+        }
+    }
+    let prefix = format!("{rel}/");
+    let mut counts: HashMap<&'static str, usize> = HashMap::new();
+    for a in st.assets.iter().filter(|a| a.path.starts_with(&prefix)) {
+        let n = if a.path.ends_with(".js") || a.path.ends_with(".ts") {
+            "file-code"
+        } else {
+            match a.kind {
+                AssetType::Other | AssetType::Json => continue,
+                k => kind_icon(k, false),
+            }
+        };
+        *counts.entry(n).or_default() += 1;
+    }
+    let best = counts
+        .into_iter()
+        .max_by_key(|(n, c)| (*c, *n))
+        .map_or("folder", |(n, _)| n);
+    st.assets_ui
+        .dominant
+        .insert(rel.to_string(), (Instant::now(), best));
+    best
+}
+
+/// Folder icon: user colour/icon (or user texture), else the icon of its dominant content, else the plain folder.
+fn paint_folder(
+    st: &mut EditorState,
+    ui: &mut Ui,
+    root: &Path,
+    rel: &str,
+    rect: egui::Rect,
+    open: bool,
+) {
+    let it = st.asset_meta.item(rel).cloned().unwrap_or_default();
+    let base = icons::kind_color("folder", ui.visuals().text_color());
+    let color = it.color.as_deref().map_or(base, crate::theme::hex);
+    if let Some(img) = it.icon.as_deref().and_then(|i| i.strip_prefix("img:")) {
+        egui::Image::new(format!("file://{}/{img}", root.display()))
+            .fit_to_exact_size(rect.size())
+            .paint_at(ui, rect);
+        return;
+    }
+    let name: &'static str = match it
+        .icon
+        .as_deref()
+        .and_then(|n| ICON_CHOICES.iter().find(|c| **c == n))
+    {
+        Some(n) => n,
+        None if st.asset_meta.auto_icons && !rel.is_empty() => match dominant_icon(st, rel) {
+            "folder" => {
+                if open {
+                    "folder-open"
+                } else {
+                    "folder"
+                }
+            }
+            n => n,
+        },
+        None => {
+            if open {
+                "folder-open"
+            } else {
+                "folder"
+            }
+        }
+    };
+    icons::icon(name, rect.width(), color).paint_at(ui, rect);
+}
+
+/// Small coloured dots for the entry's tags.
+fn paint_tag_dots(st: &EditorState, ui: &Ui, rel: &str, at: egui::Pos2) {
+    let Some(it) = st.asset_meta.item(rel) else {
+        return;
+    };
+    for (i, t) in it
+        .tags
+        .iter()
+        .filter_map(|t| st.asset_meta.tag(t))
+        .take(5)
+        .enumerate()
+    {
+        ui.painter().circle_filled(
+            at + Vec2::new(i as f32 * 8.0, 0.0),
+            3.0,
+            crate::theme::hex(&t.color),
+        );
+    }
+}
+
+fn apply_meta_op(st: &mut EditorState, root: &Path, rel: String, op: MetaOp) {
+    match op {
+        MetaOp::Color(c) => st.asset_meta.item_mut(&rel).color = c,
+        MetaOp::Icon(i) => st.asset_meta.item_mut(&rel).icon = i,
+        MetaOp::ToggleTag(t) => st.asset_meta.toggle_tag(&rel, &t),
+        MetaOp::Dialog(d) => {
+            st.assets_ui.meta_dialog = Some(d);
+            return;
+        }
+    }
+    st.asset_meta.save(root);
+    st.assets_ui.dominant.clear();
+}
+
+/// Description / new tag / folder-image dialogs.
+fn meta_dialogs(st: &mut EditorState, ui: &Ui, root: &Path) {
+    let Some(mut d) = st.assets_ui.meta_dialog.clone() else {
+        return;
+    };
+    let mut close = false;
+    let mut save = false;
+    egui::Window::new(match &d {
+        MetaDialog::Note(..) => "Description",
+        MetaDialog::NewTag(..) => "New tag",
+        MetaDialog::IconImage(_) => "Folder icon image",
+    })
+    .collapsible(false)
+    .resizable(false)
+    .anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0])
+    .show(ui.ctx(), |ui| {
+        match &mut d {
+            MetaDialog::Note(rel, text) => {
+                ui.label(format!("Shown as the tooltip of {rel}"));
+                ui.add(
+                    egui::TextEdit::multiline(text)
+                        .desired_rows(4)
+                        .desired_width(300.0),
+                );
+            }
+            MetaDialog::NewTag(_, name, color) => {
+                ui.add(
+                    egui::TextEdit::singleline(name)
+                        .hint_text("Tag name (e.g. Needs art, Final, WIP)"),
+                );
+                ui.horizontal(|ui| {
+                    for (i, (n, hex)) in COLORS.iter().enumerate() {
+                        let (r, resp) = ui.allocate_exact_size(Vec2::splat(18.0), Sense::click());
+                        ui.painter().rect_filled(r, 4.0, crate::theme::hex(hex));
+                        if *color == i {
+                            ui.painter().rect_stroke(
+                                r,
+                                4.0,
+                                egui::Stroke::new(2.0, ui.visuals().strong_text_color()),
+                                egui::StrokeKind::Outside,
+                            );
+                        }
+                        if resp.on_hover_text(*n).clicked() {
+                            *color = i;
+                        }
+                    }
+                });
+            }
+            MetaDialog::IconImage(rel) => {
+                ui.label("Pick one of the project's images:");
+                let imgs: Vec<String> = st
+                    .assets
+                    .iter()
+                    .filter(|a| {
+                        matches!(a.kind, AssetType::Image | AssetType::Spritesheet)
+                            && !a.path.ends_with(".svg")
+                    })
+                    .map(|a| a.path.clone())
+                    .collect();
+                egui::ScrollArea::vertical()
+                    .max_height(220.0)
+                    .show(ui, |ui| {
+                        for p in imgs {
+                            if ui.selectable_label(false, &p).clicked() {
+                                st.asset_meta.item_mut(rel).icon = Some(format!("img:{p}"));
+                                st.asset_meta.save(root);
+                                close = true;
+                            }
+                        }
+                    });
+            }
+        }
+        ui.horizontal(|ui| {
+            if !matches!(d, MetaDialog::IconImage(_)) && ui.button("Save").clicked() {
+                save = true;
+            }
+            if ui.button("Cancel").clicked() {
+                close = true;
+            }
+        });
+    });
+    if save {
+        match &d {
+            MetaDialog::Note(rel, text) => {
+                st.asset_meta.item_mut(rel).note = text.trim().to_string()
+            }
+            MetaDialog::NewTag(rel, name, color) if !name.trim().is_empty() => {
+                let id = st.asset_meta.add_tag(name.trim(), COLORS[*color].1);
+                st.asset_meta.toggle_tag(rel, &id);
+            }
+            _ => {}
+        }
+        st.asset_meta.save(root);
+        close = true;
+    }
+    st.assets_ui.meta_dialog = if close { None } else { Some(d) };
+}
+
 fn kind_icon(k: AssetType, dir: bool) -> &'static str {
     if dir {
         return "folder-fill";
@@ -1006,6 +1437,13 @@ fn kind_icon(k: AssetType, dir: bool) -> &'static str {
 }
 
 fn draw_thumb(st: &mut EditorState, ui: &mut Ui, root: &Path, e: &Entry, rect: egui::Rect) {
+    if e.is_dir {
+        let r = egui::Rect::from_center_size(rect.center(), Vec2::splat(rect.width() * 0.7));
+        paint_folder(st, ui, root, &e.rel, r, false);
+        paint_tag_dots(st, ui, &e.rel, rect.left_bottom() + Vec2::new(4.0, -3.0));
+        return;
+    }
+    paint_tag_dots(st, ui, &e.rel, rect.left_bottom() + Vec2::new(4.0, -3.0));
     let wants_thumb = matches!(
         e.kind,
         AssetType::Image

@@ -416,6 +416,8 @@ pub struct EditorState {
     pub modeler_ctx: Option<ModelerCtx>,
     /// The Modeler page must be told a new context (after a prefab / variant was created from its save dialog).
     pub modeler_push: bool,
+    /// Asset colours / icons / tags / notes of the open project (`.nord/asset-meta.json`)
+    pub asset_meta: crate::assetmeta::AssetMeta,
     /// Theme editor: the theme being edited (live preview) and the theme id to go back to on Cancel.
     pub theme_draft: Option<(crate::theme::Theme, String)>,
     pub particles_ui: crate::panels::particles::ParticlesUi,
@@ -520,6 +522,7 @@ impl EditorState {
             sprite: Default::default(),
             modeler_ctx: None,
             modeler_push: false,
+            asset_meta: Default::default(),
             theme_draft: None,
             particles_ui: Default::default(),
             timeline_ui: Default::default(),
