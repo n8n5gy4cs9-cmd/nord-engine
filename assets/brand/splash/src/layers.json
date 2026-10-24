@@ -1,0 +1,164 @@
+[
+  {
+    "id": "background",
+    "name": "Background",
+    "x": 0,
+    "y": 0,
+    "w": 1024,
+    "h": 765,
+    "visible": true
+  },
+  {
+    "id": "title",
+    "name": "Title",
+    "x": 103,
+    "y": 203,
+    "w": 397,
+    "h": 56,
+    "visible": true
+  },
+  {
+    "id": "tagline",
+    "name": "Tagline",
+    "x": 306,
+    "y": 245,
+    "w": 194,
+    "h": 15,
+    "visible": true
+  },
+  {
+    "id": "splash-emblem",
+    "name": "Splash Emblem",
+    "x": 197,
+    "y": 278,
+    "w": 210,
+    "h": 209,
+    "visible": true
+  },
+  {
+    "id": "circuits-left",
+    "name": "Circuits Left",
+    "x": 64,
+    "y": 316,
+    "w": 135,
+    "h": 138,
+    "visible": true
+  },
+  {
+    "id": "circuits-right",
+    "name": "Circuits Right",
+    "x": 407,
+    "y": 307,
+    "w": 140,
+    "h": 146,
+    "visible": true
+  },
+  {
+    "id": "loader",
+    "name": "Loader",
+    "x": 278,
+    "y": 501,
+    "w": 42,
+    "h": 39,
+    "visible": true
+  },
+  {
+    "id": "loading-text",
+    "name": "Loading Text",
+    "x": 237,
+    "y": 544,
+    "w": 133,
+    "h": 24,
+    "visible": true
+  },
+  {
+    "id": "logo-phaser",
+    "name": "Logo Phaser",
+    "x": 92,
+    "y": 585,
+    "w": 92,
+    "h": 29,
+    "visible": true
+  },
+  {
+    "id": "logo-babylon",
+    "name": "Logo Babylon",
+    "x": 195,
+    "y": 585,
+    "w": 87,
+    "h": 29,
+    "visible": true
+  },
+  {
+    "id": "logo-havok",
+    "name": "Logo Havok",
+    "x": 292,
+    "y": 585,
+    "w": 63,
+    "h": 29,
+    "visible": true
+  },
+  {
+    "id": "logo-rust",
+    "name": "Logo Rust",
+    "x": 366,
+    "y": 583,
+    "w": 35,
+    "h": 33,
+    "visible": true
+  },
+  {
+    "id": "logo-eframe-egui",
+    "name": "Logo Eframe Egui",
+    "x": 410,
+    "y": 585,
+    "w": 105,
+    "h": 30,
+    "visible": true
+  },
+  {
+    "id": "splash-label",
+    "name": "Splash Label",
+    "x": 209,
+    "y": 635,
+    "w": 192,
+    "h": 33,
+    "visible": true
+  },
+  {
+    "id": "app-icon-frame",
+    "name": "App Icon Frame",
+    "x": 630,
+    "y": 209,
+    "w": 333,
+    "h": 345,
+    "visible": true
+  },
+  {
+    "id": "app-icon-glyph",
+    "name": "App Icon Glyph",
+    "x": 687,
+    "y": 264,
+    "w": 218,
+    "h": 202,
+    "visible": true
+  },
+  {
+    "id": "app-icon-wordmark",
+    "name": "App Icon Wordmark",
+    "x": 715,
+    "y": 473,
+    "w": 163,
+    "h": 43,
+    "visible": true
+  },
+  {
+    "id": "app-label",
+    "name": "App Label",
+    "x": 742,
+    "y": 574,
+    "w": 113,
+    "h": 32,
+    "visible": true
+  }
+]

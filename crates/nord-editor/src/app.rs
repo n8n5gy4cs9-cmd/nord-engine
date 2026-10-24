@@ -10,7 +10,45 @@ use std::sync::Arc;
 use std::time::Duration;
 use web_time::Instant;
 
-const SPLASH_MIN: Duration = Duration::from_millis(2000);
+const SPLASH_MIN: Duration = Duration::from_millis(3000);
+
+fn ease_out(x: f32) -> f32 {
+    1.0 - (1.0 - x.clamp(0.0, 1.0)).powi(3)
+}
+
+/// Intro animation of one splash layer at time `t` seconds: (opacity, offset in points, scale).
+fn splash_anim(name: &str, index: usize, t: f32) -> (f32, egui::Vec2, f32) {
+    use egui::vec2;
+    match name {
+        "title" => {
+            let p = ease_out(t / 0.6);
+            (p, vec2(0.0, (1.0 - p) * -14.0), 1.0)
+        }
+        "tagline" => {
+            let p = ease_out((t - 0.35) / 0.5);
+            (p, vec2((1.0 - p) * -10.0, 0.0), 1.0)
+        }
+        "splash-emblem" => {
+            let p = ease_out((t - 0.1) / 0.8);
+            let breathe = if t > 0.9 { 1.0 + 0.012 * (t * 2.9).sin() } else { 1.0 };
+            (p, vec2(0.0, 0.0), (0.85 + 0.15 * p) * breathe)
+        }
+        "circuits-left" | "circuits-right" => {
+            let p = ease_out((t - 0.4) / 0.7);
+            let dir = if name == "circuits-left" { -1.0 } else { 1.0 };
+            (p * (0.8 + 0.2 * (t * 3.0 + index as f32).sin()), vec2(dir * (1.0 - p) * 30.0, 0.0), 1.0)
+        }
+        "loading-text" => {
+            let p = ease_out((t - 0.8) / 0.4);
+            (p * (0.75 + 0.25 * (t * 4.0).sin()), vec2(0.0, 0.0), 1.0)
+        }
+        _ => {
+            // logos: rise in one after the other
+            let p = ease_out((t - 1.0 - 0.12 * index as f32) / 0.4);
+            (p, vec2(0.0, (1.0 - p) * 8.0), 1.0)
+        }
+    }
+}
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash, serde::Serialize, serde::Deserialize)]
 pub enum Tab {
@@ -326,18 +364,37 @@ impl App {
                 .frame(egui::Frame::NONE.fill(egui::Color32::BLACK))
                 .show(ctx, |ui| {
                     let rect = ui.available_rect_before_wrap();
+                    let k = rect.width() / 600.0;
+                    let t = t0.elapsed().as_secs_f32();
                     ui.put(
                         rect,
-                        egui::Image::new(egui::include_image!(
-                            "../../../assets/brand/splash-noloader-600x526.png"
-                        ))
-                        .fit_to_exact_size(rect.size()),
+                        egui::Image::new(crate::splash_layers::BACKGROUND)
+                            .fit_to_exact_size(rect.size()),
                     );
+                    // every design layer is its own image (assets/brand/splash, tools/make_splash.py), animated in turn
+                    for (i, l) in crate::splash_layers::layers().into_iter().enumerate() {
+                        let (alpha, off, scale) = splash_anim(l.name, i, t);
+                        if alpha <= 0.0 {
+                            continue;
+                        }
+                        let c = rect.min + (egui::vec2(l.x + l.w / 2.0, l.y + l.h / 2.0) + off) * k;
+                        let r = egui::Rect::from_center_size(c, egui::vec2(l.w, l.h) * k * scale);
+                        let tint = egui::Color32::from_white_alpha((alpha.clamp(0.0, 1.0) * 255.0) as u8);
+                        ui.put(r, egui::Image::new(l.image.clone()).tint(tint).fit_to_exact_size(r.size()));
+                        if l.name == "splash-emblem" && t > 0.9 {
+                            // soft pulsing glow: the emblem again, a little larger and faint
+                            let g = 0.5 + 0.5 * (t * 2.6).sin();
+                            let r2 = r.expand(r.width() * 0.04 * g);
+                            let tint = egui::Color32::from_rgba_unmultiplied(150, 200, 255, (50.0 * g) as u8);
+                            ui.put(r2, egui::Image::new(l.image.clone()).tint(tint).fit_to_exact_size(r2.size()));
+                        }
+                    }
+                    let spin_a = ease_out((t - 0.7) / 0.3);
                     // spinner: a metallic-blue arc with a fading tail, drawn as vectors so it turns exactly about its centre
                     let k = rect.width() / 600.0;
                     let c = rect.min + egui::vec2(297.1, 407.8) * k;
                     let (r, w) = (14.0 * k, 3.2 * k);
-                    let head = ui.input(|i| i.time) as f32 * std::f32::consts::TAU;
+                    let head = t * std::f32::consts::TAU;
                     let n = 48;
                     let sweep = 4.2_f32; // radians (about 240 degrees)
                     for s in 0..n {
@@ -354,7 +411,7 @@ impl App {
                             (90.0 + 145.0 * k2) as u8,
                             (130.0 + 125.0 * k2) as u8,
                             (170.0 + 85.0 * k2) as u8,
-                            (255.0 * k2) as u8,
+                            (255.0 * k2 * spin_a) as u8,
                         );
                         ui.painter().line_segment([pts[0], pts[1]], egui::Stroke::new(w, col));
                     }
