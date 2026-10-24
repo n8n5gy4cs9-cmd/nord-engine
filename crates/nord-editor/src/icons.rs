@@ -102,6 +102,29 @@ icons!(
     "maximize",
 );
 
+/// Lucide icon that stands for a component type in the Inspector header (falls back to the generic component icon).
+pub fn component_icon(kind: &str) -> &'static str {
+    match kind {
+        "model" | "mesh" => "box",
+        "sprite" | "animatedSprite" | "uiImage" | "parallax" => "image",
+        "tilemap" => "grid-3x3",
+        "text" | "uiLabel" => "type",
+        "camera" => "camera",
+        "light" => "lightbulb",
+        "material" | "skybox" => "brush",
+        "rigidbody" | "collider" | "trigger" => "magnet",
+        "audioSource" | "audioListener" => "music",
+        "uiPanel" | "uiButton" | "uiBar" => "layout-grid",
+        "particles" | "postProcess" => "sparkles",
+        "path" => "line",
+        "spawner" => "plus",
+        "graph" => "workflow",
+        "animator" => "film",
+        "netSync" => "globe",
+        _ => "component",
+    }
+}
+
 pub fn source(name: &'static str) -> ImageSource<'static> {
     let s = svg(name).unwrap_or("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'/>");
     let s = s.replace("currentColor", "#ffffff");

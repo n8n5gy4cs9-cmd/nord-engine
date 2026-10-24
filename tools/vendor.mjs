@@ -40,6 +40,15 @@ const LIBS = [
   { name: 'fonts', pkg: '@fontsource/orbitron@5.3.0', license: 'OFL-1.1', to: 'fonts/orbitron', files: [['files/orbitron-latin-700-normal.woff2'], ['files/orbitron-latin-900-normal.woff2'], ['LICENSE']] },
   { name: 'fonts', pkg: '@fontsource/vt323@5.3.0', license: 'OFL-1.1', to: 'fonts/vt323', files: [['files/vt323-latin-400-normal.woff2'], ['LICENSE']] },
   { name: 'fonts', pkg: '@fontsource/fira-code@5.3.0', license: 'OFL-1.1', to: 'fonts/fira-code', files: [['files/fira-code-latin-400-normal.woff2'], ['files/fira-code-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/roboto@5.3.0', license: 'OFL-1.1', to: 'fonts/roboto', files: [['files/roboto-latin-400-normal.woff2'], ['files/roboto-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/source-sans-3@5.3.1', license: 'OFL-1.1', to: 'fonts/source-sans-3', files: [['files/source-sans-3-latin-400-normal.woff2'], ['files/source-sans-3-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/dm-sans@5.3.0', license: 'OFL-1.1', to: 'fonts/dm-sans', files: [['files/dm-sans-latin-400-normal.woff2'], ['files/dm-sans-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/manrope@5.3.0', license: 'OFL-1.1', to: 'fonts/manrope', files: [['files/manrope-latin-400-normal.woff2'], ['files/manrope-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/open-sans@5.3.0', license: 'OFL-1.1', to: 'fonts/open-sans', files: [['files/open-sans-latin-400-normal.woff2'], ['files/open-sans-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/roboto-mono@5.3.0', license: 'OFL-1.1', to: 'fonts/roboto-mono', files: [['files/roboto-mono-latin-400-normal.woff2'], ['files/roboto-mono-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/source-code-pro@5.3.1', license: 'OFL-1.1', to: 'fonts/source-code-pro', files: [['files/source-code-pro-latin-400-normal.woff2'], ['files/source-code-pro-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/dm-mono@5.3.0', license: 'OFL-1.1', to: 'fonts/dm-mono', files: [['files/dm-mono-latin-400-normal.woff2'], ['files/dm-mono-latin-500-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/red-hat-mono@5.3.0', license: 'OFL-1.1', to: 'fonts/red-hat-mono', files: [['files/red-hat-mono-latin-400-normal.woff2'], ['files/red-hat-mono-latin-700-normal.woff2'], ['LICENSE']] },
 ];
 // Lucide icons: curated subset → assets/icons/lucide (used by the egui editor + manual)
 const LUCIDE = { pkg: 'lucide-static@1.55.0', license: 'ISC' };

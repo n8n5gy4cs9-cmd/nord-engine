@@ -62,6 +62,9 @@ pub struct Settings {
     #[serde(default)]
     pub appearance_version: u8,
     pub ui_scale: f32,
+    /// Extra scale for text only / for buttons and widget sizes only (1.0 = default); both multiply with `ui_scale`.
+    pub font_scale: f32,
+    pub button_scale: f32,
     /// Material preview ball / thumbnails: flat colour only (no texture, normal or emissive maps) for slow machines
     pub plain_material_previews: bool,
     pub code_font_size: f32,
@@ -114,6 +117,8 @@ impl Default for Settings {
             theme: "playcanvas".into(),
             appearance_version: 1,
             ui_scale: 1.0,
+            font_scale: 1.0,
+            button_scale: 1.0,
             plain_material_previews: false,
             code_font_size: 13.0,
             code_word_wrap: false,
@@ -173,6 +178,11 @@ impl Settings {
     pub fn load() -> Self {
         let mut s: Self = nord_core::io::load_json(&Self::path()).unwrap_or_default();
         s.migrate_appearance();
+        if s.theme == crate::theme::DRAFT_ID {
+            s.theme = "playcanvas".into(); // the app closed while a theme was being edited
+        }
+        s.font_scale = s.font_scale.clamp(0.7, 1.8);
+        s.button_scale = s.button_scale.clamp(0.7, 1.8);
         s
     }
     fn migrate_appearance(&mut self) {
@@ -404,6 +414,8 @@ pub struct EditorState {
     pub modeler_ctx: Option<ModelerCtx>,
     /// The Modeler page must be told a new context (after a prefab / variant was created from its save dialog).
     pub modeler_push: bool,
+    /// Theme editor: the theme being edited (live preview) and the theme id to go back to on Cancel.
+    pub theme_draft: Option<(crate::theme::Theme, String)>,
     pub particles_ui: crate::panels::particles::ParticlesUi,
     pub timeline_ui: crate::panels::timeline::TimelineUi,
     /// last camera reported by the 2D viewport: [x, y, zoom]
@@ -506,6 +518,7 @@ impl EditorState {
             sprite: Default::default(),
             modeler_ctx: None,
             modeler_push: false,
+            theme_draft: None,
             particles_ui: Default::default(),
             timeline_ui: Default::default(),
             viewport_cam: None,

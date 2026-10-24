@@ -1079,7 +1079,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             let xf_header = xf_state.show_header(ui, |ui| {
                 ui.label(egui::RichText::new("TRANSFORM").strong());
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                    ui.menu_button("⋮", |ui| {
+                    ui.menu_image_button(crate::icons::icon("more-vertical", 14.0, ui.visuals().text_color()), |ui| {
                         if ui.button("Reset").clicked() {
                             e.transform = nord_core::scene::Transform::default();
                             ui.close_menu();
@@ -1165,10 +1165,15 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     // Unity: enable checkbox + name in the header, ⋮ menu at the right; off = greyed out, not created in the game
                     ui.checkbox(&mut on, "")
                         .on_hover_text("Enabled: off = the component is not created in the game and is not drawn in the Scene view");
+                    ui.add(crate::icons::icon(
+                        crate::icons::component_icon(&c.kind),
+                        13.0,
+                        crate::icons::kind_color(crate::icons::component_icon(&c.kind), ui.visuals().text_color()),
+                    ));
                     let t = egui::RichText::new(schema::label_of(&c.kind).to_uppercase()).strong();
                     ui.label(if on { t } else { t.weak() });
                     ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                        ui.menu_button("⋮", |ui| {
+                        ui.menu_image_button(crate::icons::icon("more-vertical", 14.0, ui.visuals().text_color()), |ui| {
                                 let clip_id = egui::Id::new("component_clipboard");
                                 if ui.button("Reset").clicked() {
                                     c.fields.clear();
@@ -1239,7 +1244,8 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                         if c.kind == "model" {
                             let p = c.fields.get("path").and_then(Value::as_str).unwrap_or_default();
                             if ui
-                                .add_enabled(!p.is_empty(), egui::Button::new("✎ Open in 3D Modeler"))
+                                .add_enabled_ui(!p.is_empty(), |ui| crate::icons::label_icon(ui, "pencil", "Open in 3D Modeler"))
+                                .inner
                                 .on_hover_text("Edit this model with its textures; Save asks: overwrite, new model, new prefab or variant")
                                 .clicked()
                             {

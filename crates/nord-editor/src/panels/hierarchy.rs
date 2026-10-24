@@ -15,7 +15,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     }
     ui.horizontal(|ui| {
         let three = st.is_3d();
-        ui.menu_button("＋ Create", |ui| {
+        ui.menu_button("+ Create", |ui| {
             create_menu(st, ui, three, st.selection.first().cloned())
         });
         if icons::button(ui, "plus", "Add entity", false).clicked() {
@@ -416,7 +416,7 @@ fn row(
         ui.visuals().weak_text_color()
     };
     let label = if e.prefab.is_some() {
-        format!("{} ⬡", e.name)
+        format!("{} ◆", e.name)
     } else {
         e.name.clone()
     };

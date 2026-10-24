@@ -1,5 +1,6 @@
 use crate::state::{Action, EditorState};
 use egui::Context;
+use std::sync::Arc;
 
 pub const SHORTCUTS: &[(&str, &str)] = &[
     ("Cmd+P", "Quick open file"),
@@ -84,13 +85,38 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                 ui.end_row();
                 ui.label("Theme (colors)");
                 egui::ComboBox::from_id_salt("theme").selected_text(st.themes.theme(&s.theme).name.clone()).show_ui(ui, |ui| {
-                    for t in st.themes.themes() {
-                        changed |= ui.selectable_value(&mut s.theme, t.id.clone(), &t.name).changed();
+                    for t in st.themes.themes().iter().filter(|t| t.id != crate::theme::DRAFT_ID) {
+                        let label = if st.themes.is_custom(&t.id) { format!("{} (custom)", t.name) } else { t.name.clone() };
+                        changed |= ui.selectable_value(&mut s.theme, t.id.clone(), label).changed();
                     }
                 });
                 ui.end_row();
-                ui.label("UI scale");
-                changed |= ui.add(egui::Slider::new(&mut s.ui_scale, 0.8..=1.6)).changed();
+                ui.label("Interface size");
+                ui.horizontal(|ui| {
+                    changed |= ui.add(egui::Slider::new(&mut s.ui_scale, 0.7..=1.8).fixed_decimals(2)).on_hover_text("Everything: text, buttons, spacing").changed();
+                    if ui.small_button("Reset").on_hover_text("Back to 1.00").clicked() {
+                        s.ui_scale = 1.0;
+                        changed = true;
+                    }
+                });
+                ui.end_row();
+                ui.label("Text size");
+                ui.horizontal(|ui| {
+                    changed |= ui.add(egui::Slider::new(&mut s.font_scale, 0.7..=1.8).fixed_decimals(2)).on_hover_text("Text only, on top of Interface size").changed();
+                    if ui.small_button("Reset").on_hover_text("Back to 1.00").clicked() {
+                        s.font_scale = 1.0;
+                        changed = true;
+                    }
+                });
+                ui.end_row();
+                ui.label("Button size");
+                ui.horizontal(|ui| {
+                    changed |= ui.add(egui::Slider::new(&mut s.button_scale, 0.7..=1.8).fixed_decimals(2)).on_hover_text("Buttons, inputs and icon buttons, on top of Interface size").changed();
+                    if ui.small_button("Reset").on_hover_text("Back to 1.00").clicked() {
+                        s.button_scale = 1.0;
+                        changed = true;
+                    }
+                });
                 ui.end_row();
                 ui.label("Material previews");
                 ui.checkbox(&mut s.plain_material_previews, "Flat colour only (faster)")
@@ -167,6 +193,7 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                 });
                 ui.end_row();
             });
+            changed |= theme_editor(ui, st);
             let skin = st.themes.skin(&st.settings.skin);
             ui.add_space(6.0);
             ui.weak(format!(
@@ -195,6 +222,7 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
         });
         if changed {
             st.apply_theme = true;
+            st.settings.save();
         }
         if content_changed {
             st.script_cache.clear();
@@ -234,4 +262,142 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
             st.about_open = false;
         }
     }
+}
+
+/// Easy theme editor: edit a copy, preview live, save as a *new* custom theme (built-in themes are never overwritten).
+fn theme_editor(ui: &mut egui::Ui, st: &mut EditorState) -> bool {
+    use crate::theme::{hex, DRAFT_ID};
+    let mut apply = false;
+    egui::CollapsingHeader::new("Theme editor (make your own theme)").show(ui, |ui| {
+        ui.weak("Start from a theme, change the colours (the editor updates live), then save. Built-in themes are never changed: yours is added as a new \"(custom)\" theme and is kept when the app closes.");
+        let Some((mut t, prev)) = st.theme_draft.take() else {
+            if ui.button("New theme from the current one").clicked() {
+                let mut t = st.themes.theme(&st.settings.theme).clone();
+                t.name = format!("{} copy", t.name);
+                let prev = st.settings.theme.clone();
+                Arc::make_mut(&mut st.themes).set_draft(t.clone());
+                st.settings.theme = DRAFT_ID.into();
+                st.theme_draft = Some((t, prev));
+                apply = true;
+            }
+            let customs: Vec<(String, String)> = st.themes.themes().iter().filter(|t| st.themes.is_custom(&t.id) && t.id != DRAFT_ID).map(|t| (t.id.clone(), t.name.clone())).collect();
+            for (id, name) in customs {
+                ui.horizontal(|ui| {
+                    ui.label(&name);
+                    if ui.small_button("Use").clicked() {
+                        st.settings.theme = id.clone();
+                        apply = true;
+                    }
+                    if ui.small_button("Edit").clicked() {
+                        let t = st.themes.theme(&id).clone();
+                        let prev = st.settings.theme.clone();
+                        Arc::make_mut(&mut st.themes).set_draft(t.clone());
+                        st.settings.theme = DRAFT_ID.into();
+                        st.theme_draft = Some((t, prev));
+                        apply = true;
+                    }
+                    if ui.small_button("Delete").clicked() {
+                        if st.settings.theme == id {
+                            st.settings.theme = "playcanvas".into();
+                            apply = true;
+                        }
+                        Arc::make_mut(&mut st.themes).remove_custom(&id);
+                    }
+                });
+            }
+            return;
+        };
+        let mut changed = false;
+        ui.horizontal(|ui| {
+            ui.label("Name");
+            changed |= ui.text_edit_singleline(&mut t.name).changed();
+            changed |= ui.checkbox(&mut t.dark, "Dark").on_hover_text("Chooses egui's dark or light base for widgets").changed();
+        });
+        let mut pick = |ui: &mut egui::Ui, label: &str, v: &mut String| {
+            let c = hex(v);
+            let mut rgb = [c.r(), c.g(), c.b()];
+            ui.horizontal(|ui| {
+                if egui::color_picker::color_edit_button_srgb(ui, &mut rgb).changed() {
+                    *v = format!("#{:02x}{:02x}{:02x}", rgb[0], rgb[1], rgb[2]);
+                    changed = true;
+                }
+                ui.label(label);
+            });
+        };
+        ui.strong("Interface colours");
+        egui::Grid::new("theme-ui").num_columns(2).show(ui, |ui| {
+            pick(ui, "Background", &mut t.ui.bg);
+            pick(ui, "Panel", &mut t.ui.panel);
+            ui.end_row();
+            pick(ui, "Panel (raised)", &mut t.ui.panel2);
+            pick(ui, "Borders", &mut t.ui.border);
+            ui.end_row();
+            pick(ui, "Text", &mut t.ui.fg);
+            pick(ui, "Dim text", &mut t.ui.fg_dim);
+            ui.end_row();
+            pick(ui, "Accent", &mut t.ui.accent);
+            pick(ui, "Good", &mut t.ui.good);
+            ui.end_row();
+            pick(ui, "Warning", &mut t.ui.warn);
+            pick(ui, "Error", &mut t.ui.bad);
+            ui.end_row();
+        });
+        ui.strong("Code colours");
+        egui::Grid::new("theme-code").num_columns(2).show(ui, |ui| {
+            pick(ui, "Keyword", &mut t.code.keyword);
+            pick(ui, "String", &mut t.code.string);
+            ui.end_row();
+            pick(ui, "Number", &mut t.code.number);
+            pick(ui, "Comment", &mut t.code.comment);
+            ui.end_row();
+            pick(ui, "Function", &mut t.code.function);
+            pick(ui, "Type", &mut t.code.ty);
+            ui.end_row();
+        });
+        let mut save = false;
+        let mut cancel = false;
+        ui.horizontal(|ui| {
+            save = ui.button("Save as new theme").clicked();
+            cancel = ui.button("Cancel").clicked();
+        });
+        if save {
+            // derived code colours follow the interface colours
+            let base = t.clone();
+            let ui_c = &base.ui;
+            let th = crate::theme::make_theme(
+                &base,
+                "x",
+                &base.name,
+                base.dark,
+                [&ui_c.bg, &ui_c.panel, &ui_c.panel2, &ui_c.border, &ui_c.fg, &ui_c.fg_dim, &ui_c.accent, &ui_c.good, &ui_c.warn, &ui_c.bad],
+                [&base.code.keyword, &base.code.string, &base.code.number, &base.code.comment, &base.code.function, &base.code.ty],
+            );
+            let id = Arc::make_mut(&mut st.themes).save_custom(th);
+            st.settings.theme = id;
+            st.toast("Theme saved");
+            apply = true;
+            return;
+        }
+        if cancel {
+            Arc::make_mut(&mut st.themes).clear_draft();
+            st.settings.theme = prev;
+            apply = true;
+            return;
+        }
+        if changed {
+            let th = crate::theme::make_theme(
+                &t,
+                DRAFT_ID,
+                &t.name,
+                t.dark,
+                [&t.ui.bg, &t.ui.panel, &t.ui.panel2, &t.ui.border, &t.ui.fg, &t.ui.fg_dim, &t.ui.accent, &t.ui.good, &t.ui.warn, &t.ui.bad],
+                [&t.code.keyword, &t.code.string, &t.code.number, &t.code.comment, &t.code.function, &t.code.ty],
+            );
+            Arc::make_mut(&mut st.themes).set_draft(th);
+            st.settings.theme = DRAFT_ID.into();
+            apply = true;
+        }
+        st.theme_draft = Some((t, prev));
+    });
+    apply
 }

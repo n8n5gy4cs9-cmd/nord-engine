@@ -1140,7 +1140,7 @@ fn start_rust_build(st: &mut EditorState, play_after: bool) {
                 push("info", format!("✔ Rust build ok → {}", p.display()));
                 job.ok.store(true, SeqCst);
             }
-            Err(e) => push("error", format!("✘ {e}")),
+            Err(e) => push("error", format!("× {e}")),
         }
         job.done.store(true, SeqCst);
     });
@@ -1335,11 +1335,15 @@ fn viewport_bar(st: &mut crate::state::EditorState, ui: &mut egui::Ui) {
         if crate::icons::button(ui, "crosshair", "Frame all (Shift+F)", false).clicked() {
             st.push(Action::FocusAll);
         }
-        ui.menu_button("Gizmos ▾", |ui| {
-            ui.checkbox(&mut st.settings.grid, "Grid");
-            ui.checkbox(&mut st.settings.show_icons, "Camera / light icons");
-            ui.checkbox(&mut st.settings.show_colliders, "Collider outlines");
-        });
+        ui.menu_image_text_button(
+            crate::icons::icon("crosshair", 13.0, ui.visuals().text_color()),
+            "Gizmos",
+            |ui| {
+                ui.checkbox(&mut st.settings.grid, "Grid");
+                ui.checkbox(&mut st.settings.show_icons, "Camera / light icons");
+                ui.checkbox(&mut st.settings.show_colliders, "Collider outlines");
+            },
+        );
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             let playing = st.is_playing();
             let accent = ui.visuals().hyperlink_color;
@@ -1668,9 +1672,12 @@ impl App {
             self.st.apply_styles = true;
             ctx.request_repaint();
         } else if self.st.apply_styles {
-            self.st
-                .themes
-                .apply_text_styles(ctx, self.st.settings.ui_scale);
+            self.st.themes.apply_text_styles(
+                ctx,
+                self.st.settings.ui_scale,
+                self.st.settings.font_scale,
+                self.st.settings.button_scale,
+            );
             self.st.apply_styles = false;
         }
         // close handling
