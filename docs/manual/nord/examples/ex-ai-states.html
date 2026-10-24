@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>13 · Enemy AI and state machines — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html" class="cur" aria-current="page">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>13 · Enemy AI and state machines</h1>
+<p><strong>Goal:</strong> an enemy that patrols between two points, chases the player when close, and attacks when in range.</p>
+<h2 id="ready-made-ai-library">Ready-made AI (library)<a class="anchor" href="#ready-made-ai-library">#</a></h2>
+<p><span class="c-ui">Library</span> tab ▸ category <em>ai</em>: <code>ai-patrol</code>, <code>ai-chase</code>, <code>ai-shooter</code>, <code>ai-boss</code>, <code>ai-flock</code>, <code>ai-fsm</code>, <code>ai-behaviour-tree</code>, <code>ai-astar</code> (pathfinding), <code>ai-waypoints</code>. Insert one on the selected object and set its attributes. Reading them is the best way to learn the patterns.</p>
+<h2 id="your-own-finite-state-machine">Your own finite state machine<a class="anchor" href="#your-own-finite-state-machine">#</a></h2>
+<h3 id="unity">Unity<a class="anchor" href="#unity">#</a></h3>
+<pre class="code" data-lang="cs"><code>enum State { Patrol, Chase, Attack }
+State state = State.Patrol;
+void Update() { switch (state) { case State.Patrol: Patrol(); break; /* … */ } }</code></pre>
+<h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField } from 'nord';
+import Health from './health.js';
+
+const PATROL = 'patrol', CHASE = 'chase', ATTACK = 'attack';   // a &quot;string enum&quot;
+
+export default class Enemy extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 80, sight: 220, reach: 36, damage: 5, patrolDistance: 150 });
+
+  Awake() { this.state = PATROL; this.dir = 1; this.cool = 0; }
+  Start() { this.player = this.FindWithTag('player'); this.home = this.entity.pos[0]; }
+
+  FixedUpdate() {
+    const p = this.player;
+    if (!p || p.destroyed) return;
+    const dx = p.pos[0] - this.entity.pos[0], dy = p.pos[1] - this.entity.pos[1], dist = Math.hypot(dx, dy);
+
+    // 1. decide the state
+    if (dist &lt;= this.reach) this.SetState(ATTACK);
+    else if (dist &lt;= this.sight) this.SetState(CHASE);
+    else this.SetState(PATROL);
+
+    // 2. act in the state
+    switch (this.state) {
+      case PATROL: this.Patrol(); break;
+      case CHASE:  this.physics.setVelocity(this.entity, (dx / dist) * this.speed * 1.4, (dy / dist) * this.speed * 1.4); break;
+      case ATTACK: this.physics.setVelocity(this.entity, 0, 0); this.Attack(p); break;
+    }
+  }
+
+  SetState(s) { if (s === this.state) return; const prev = this.state; this.state = s; this.entity.emit('state', { state: s, prev }); }
+
+  Patrol() {
+    if (Math.abs(this.entity.pos[0] - this.home) &gt; this.patrolDistance) this.dir = -Math.sign(this.entity.pos[0] - this.home);
+    this.physics.setVelocity(this.entity, this.dir * this.speed, 0);
+  }
+
+  Attack(p) {
+    this.cool -= 1 / 60;                                       // FixedUpdate runs at 60 Hz
+    if (this.cool &lt;= 0) { p.getScript(Health)?.takeDamage(this.damage); this.cool = 1; }
+  }
+}</code></pre>
+<p>Other scripts can listen: <code>enemy.on(&#39;state&#39;, ({ state }) =&gt; this.exclamationMark.enabled = state === &#39;chase&#39;)</code>.</p>
+<h2 id="why-a-state-machine">Why a state machine<a class="anchor" href="#why-a-state-machine">#</a></h2>
+<p>Each state is one small function, and the &quot;decide&quot; part is the only place that changes states. Add states (<code>flee</code>, <code>stunned</code>) by adding a constant, a branch in the decision, and a case in the <code>switch</code>.</p>
+<h2 id="patrol-along-waypoints">Patrol along waypoints<a class="anchor" href="#patrol-along-waypoints">#</a></h2>
+<pre class="code" data-lang="js"><code>Start() { this.points = this.scene.findByTag('waypoint').map((e) =&gt; [...e.pos]); this.i = 0; }
+FixedUpdate() {
+  const t = this.points[this.i], p = this.entity.pos, dx = t[0] - p[0], dy = t[1] - p[1], d = Math.hypot(dx, dy);
+  if (d &lt; 6) this.i = (this.i + 1) % this.points.length;
+  else this.physics.setVelocity(this.entity, (dx / d) * 80, (dy / d) * 80);
+}</code></pre>
+<p>Mark waypoints with a <code>waypoint</code> tag (empty objects with a marker sprite).</p>
+<h2 id="line-of-sight-3d-and-vision-cones">Line of sight (3D) and vision cones<a class="anchor" href="#line-of-sight-3d-and-vision-cones">#</a></h2>
+<pre class="code" data-lang="js"><code>const hit = this.physics.raycast(this.entity.worldPos, this.player.worldPos, { ignore: this.entity });
+const canSee = hit &amp;&amp; hit.entity === this.player;</code></pre>
+<h2 id="pathfinding-on-a-grid">Pathfinding on a grid<a class="anchor" href="#pathfinding-on-a-grid">#</a></h2>
+<p>Library <code>ai-astar.js</code> exports <code>findPath(blocked, start, goal, opts)</code>; see its header for the call. Good for tile-based games.</p>
+<h2 id="behaviour-trees">Behaviour trees<a class="anchor" href="#behaviour-trees">#</a></h2>
+<p>The library <code>ai-behaviour-tree.js</code> and the <strong>Graph</strong> editor can express the same logic visually; code stays the simplest for small enemies.</p>
+<div class="pager"><a href="ex-events.html"><small>← Previous</small>12 · Events and messages</a><a href="ex-data-assets.html"><small>Next →</small>14 · Data assets (ScriptableObject)</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#ready-made-ai-library">Ready-made AI (library) </a><a href="#your-own-finite-state-machine">Your own finite state machine </a><a href="#why-a-state-machine">Why a state machine </a><a href="#patrol-along-waypoints">Patrol along waypoints </a><a href="#line-of-sight-3d-and-vision-cones">Line of sight (3D) and vision cones </a><a href="#pathfinding-on-a-grid">Pathfinding on a grid </a><a href="#behaviour-trees">Behaviour trees </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

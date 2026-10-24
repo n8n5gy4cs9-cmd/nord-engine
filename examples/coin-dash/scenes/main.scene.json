@@ -1,0 +1,207 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "c0a10001",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          480,
+          270,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "zoom": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "c0a10002",
+      "name": "Player",
+      "enabled": true,
+      "tags": [
+        "player"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          480,
+          270,
+          5
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            30,
+            30
+          ],
+          "tint": "#5ac8fa",
+          "alpha": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1,
+          "drag": 0,
+          "gravityScale": 0
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            30,
+            30
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/player.js",
+          "attributes": {
+            "speed": 240
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "c0a10003",
+      "name": "GameManager",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/game-manager.js",
+          "attributes": {
+            "startLives": 3
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "c0a10004",
+      "name": "Hud",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/hud.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "c0a10005",
+      "name": "Spawner",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/spawner.js",
+          "attributes": {
+            "coinEvery": 1.2,
+            "enemyEvery": 5
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

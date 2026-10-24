@@ -295,13 +295,14 @@ export class Singleton extends MonoBehaviour {
     const C = this.constructor;
     const cur = C.instance;
     if (cur && cur !== this) { this.warn(`second ${C.name} found, destroying the duplicate`); this.entity.destroy(); return; }
-    C._instance = this;
+    // register on the class and on every base class below Singleton, so a subclass of GameManager is also reachable as GameManager.instance
+    for (let k = C; k && k !== Singleton; k = Object.getPrototypeOf(k)) k._instance = this;
     if (C.persistent && !this.entity.behavior('Persist')) this.entity.addBehavior('Persist');
     super.init();
   }
   onDestroy() {
     const C = this.constructor;
-    if (Object.hasOwn(C, '_instance') && C._instance === this) C._instance = null;
+    for (let k = C; k && k !== Singleton; k = Object.getPrototypeOf(k)) if (Object.hasOwn(k, '_instance') && k._instance === this) k._instance = null;
     super.onDestroy();
   }
 }

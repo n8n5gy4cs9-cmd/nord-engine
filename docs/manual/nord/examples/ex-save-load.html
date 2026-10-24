@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>10 · Saving and loading — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html" class="cur" aria-current="page">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>10 · Saving and loading</h1>
+<p><strong>Goal:</strong> remember the high score and the player&#39;s progress between sessions.</p>
+<p>Saves go to the browser&#39;s <code>localStorage</code> (the packaged app uses the same API); data is stored per project id, as JSON, in numbered <strong>slots</strong>, with a version number.</p>
+<h2 id="simple-values-playerprefs">Simple values (PlayerPrefs)<a class="anchor" href="#simple-values-playerprefs">#</a></h2>
+<h3 id="unity">Unity<a class="anchor" href="#unity">#</a></h3>
+<pre class="code" data-lang="cs"><code>PlayerPrefs.SetInt(&quot;best&quot;, 120); int best = PlayerPrefs.GetInt(&quot;best&quot;, 0); PlayerPrefs.Save();</code></pre>
+<h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<pre class="code" data-lang="js"><code>this.save.set('best', 120);                   // anything JSON-able: numbers, strings, arrays, objects
+const best = this.save.get('best', 0);        // second argument = default
+// Unity names also work:
+import { PlayerPrefs } from 'nord';
+PlayerPrefs.SetInt('best', 120); PlayerPrefs.GetInt('best', 0); PlayerPrefs.HasKey('best'); PlayerPrefs.DeleteAll();</code></pre>
+<p>There is no <code>Save()</code> call: writes happen immediately.</p>
+<h2 id="high-score-the-easy-way">High score the easy way<a class="anchor" href="#high-score-the-easy-way">#</a></h2>
+<p><code>GameManager.instance.SaveHighScore()</code> stores the score only if it beats the old one and returns the best:</p>
+<pre class="code" data-lang="js"><code>const best = GameManager.instance.SaveHighScore('highscore');
+this.ui.label(`Best ${best}`, { anchor: 'c', y: 40 });</code></pre>
+<h2 id="whole-game-state-in-a-slot">Whole game state in a slot<a class="anchor" href="#whole-game-state-in-a-slot">#</a></h2>
+<pre class="code" data-lang="js"><code>// save
+saveGame() {
+  const p = this.scene.find('Player');
+  this.save.slot(1).set('game', {
+    scene: this.scene.name, pos: p.pos, hp: p.getScript(Health).hp,
+    inventory: Inventory.instance.items, score: GameManager.instance.score,
+  });
+}
+// load
+async loadGame() {
+  const g = this.save.slot(1).get('game', null);
+  if (!g) return;                                      // nothing saved yet
+  await this.game.loadScene(`scenes/${g.scene}.scene.json`);   // then restore the objects (the new scene's scripts are new!)
+  const p = this.game.scene.find('Player');
+  p.pos = g.pos; p.getScript(Health).hp = g.hp;
+}</code></pre>
+<ul>
+<li><code>save.slot(n)</code> selects the slot for the following calls (keep using <code>slot(1)</code> the same way everywhere).</li>
+<li><code>save.has(n)</code> tells whether a slot exists; <code>save.delete(n)</code> removes it; <code>save.all()</code> returns the slot&#39;s data object.</li>
+</ul>
+<aside class="box tip"><div class="box-title">Tip</div><p>Remember: loading a scene creates <strong>new</strong> objects. Restore values <em>after</em> <code>await loadScene</code>, from the new scene&#39;s objects.</p>
+</aside><h2 id="settings-volume-language-controls">Settings (volume, language, controls)<a class="anchor" href="#settings-volume-language-controls">#</a></h2>
+<pre class="code" data-lang="js"><code>const vol = this.save.get('settings.volume', 0.8);
+this.audio.volume('master', vol);
+this.save.set('settings.volume', 0.5);</code></pre>
+<p>(Audio volumes are also remembered by the audio system itself.)</p>
+<h2 id="versioning">Versioning<a class="anchor" href="#versioning">#</a></h2>
+<p>Slots store a version (<code>new Save(id, { version: 2, migrate: (data, fromVersion) =&gt; data })</code> when you create it yourself). A plain project keeps version 1; when you change your save format later, add a <code>migrate</code> function and bump the version so old saves still load.</p>
+<h2 id="clearing-saves-while-developing">Clearing saves while developing<a class="anchor" href="#clearing-saves-while-developing">#</a></h2>
+<p><code>this.save.delete()</code> in the Dev Console (<code>exec game.save.delete()</code>), or clear the site data of the browser pane. See <a href="ex-debug-tools.html">Debugging</a>.</p>
+<div class="pager"><a href="ex-audio.html"><small>← Previous</small>9 · Audio</a><a href="ex-scenes.html"><small>Next →</small>11 · Scenes and persistent objects</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#simple-values-playerprefs">Simple values (PlayerPrefs) </a><a href="#high-score-the-easy-way">High score the easy way </a><a href="#whole-game-state-in-a-slot">Whole game state in a slot </a><a href="#settings-volume-language-controls">Settings (volume, language, controls) </a><a href="#versioning">Versioning </a><a href="#clearing-saves-while-developing">Clearing saves while developing </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

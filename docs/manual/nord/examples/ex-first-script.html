@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>1 · Your first script — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html" class="cur" aria-current="page">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>1 · Your first script</h1>
+<p><strong>Goal:</strong> an object that spins and logs a message when the game starts, with a speed you can change in the Inspector.</p>
+<h2 id="unity-c">Unity (C#)<a class="anchor" href="#unity-c">#</a></h2>
+<pre class="code" data-lang="cs"><code>using UnityEngine;
+
+public class Spin : MonoBehaviour
+{
+    [SerializeField] float speed = 90f;
+
+    void Start() { Debug.Log(&quot;Spin ready&quot;); }
+    void Update() { transform.Rotate(0, 0, speed * Time.deltaTime); }
+}</code></pre>
+<h2 id="nord-the-unity-style">Nord: the Unity style<a class="anchor" href="#nord-the-unity-style">#</a></h2>
+<p><code>scripts/spin.js</code></p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Time, Debug } from 'nord';
+
+export default class Spin extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 90 }); // the [SerializeField]: shows in the Inspector
+
+  Start() { Debug.Log('Spin ready'); }
+  Update() { this.Rotate(0, 0, this.speed * Time.deltaTime); }
+}</code></pre>
+<h2 id="nord-the-native-style-lower-case">Nord: the native style (lower-case)<a class="anchor" href="#nord-the-native-style-lower-case">#</a></h2>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class Spin extends NordScript {
+  static attributes = { speed: { type: 'number', default: 90, min: 0, max: 720, label: 'Degrees per second' } };
+
+  start() { this.log('Spin ready'); }          // shows as [Spin] Spin ready in the Console
+  update(dt) {                                 // dt = seconds since the last frame
+    const r = this.entity.rot;                 // [x, y, z] degrees
+    this.entity.rot = [r[0], r[1], r[2] + this.attrs.speed * dt];
+  }
+}</code></pre>
+<p>Pick <strong>one style per script</strong>; do not mix <code>Update</code> and <code>update</code> in the same class. Both styles can be used in the same project.</p>
+<h2 id="try-it">Try it<a class="anchor" href="#try-it">#</a></h2>
+<ol>
+<li>Make a sprite object (<span class="c-ui">Hierarchy ▸ + Create ▸ Sprite</span>) and give it a texture.</li>
+<li><span class="c-ui">Assets ▸ right-click <code>scripts</code> ▸ New MonoBehaviour script</span>, name it <code>spin</code>, paste the code.</li>
+<li>Select the sprite, <span class="c-ui">Inspector ▸ + Add script ▸ spin</span>. The <strong>speed</strong> field appears. Press <span class="c-ui">Play</span> and change it while playing (it is a copy for this run; stopping resets it).</li>
+</ol>
+<h2 id="the-lifecycle-in-order">The lifecycle in order<a class="anchor" href="#the-lifecycle-in-order">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord MonoBehaviour</th>
+<th>Nord native</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Awake</code></td>
+<td><code>Awake()</code></td>
+<td><code>init()</code></td>
+<td>the object is created</td>
+</tr>
+<tr>
+<td><code>OnEnable</code></td>
+<td><code>OnEnable()</code></td>
+<td><code>onEnable()</code></td>
+<td>active (also after SetActive(true))</td>
+</tr>
+<tr>
+<td><code>Start</code></td>
+<td><code>Start()</code></td>
+<td><code>start()</code></td>
+<td>once, before the first frame, after every Awake</td>
+</tr>
+<tr>
+<td><code>FixedUpdate</code></td>
+<td><code>FixedUpdate()</code></td>
+<td><code>fixedUpdate(dt)</code></td>
+<td>60 times per second (physics)</td>
+</tr>
+<tr>
+<td><code>Update</code></td>
+<td><code>Update()</code></td>
+<td><code>update(dt)</code></td>
+<td>every frame</td>
+</tr>
+<tr>
+<td><code>LateUpdate</code></td>
+<td><code>LateUpdate()</code></td>
+<td><code>lateUpdate(dt)</code></td>
+<td>after all Updates</td>
+</tr>
+<tr>
+<td><code>OnDisable</code> / <code>OnDestroy</code></td>
+<td>same</td>
+<td><code>onDisable()</code> / <code>onDestroy()</code></td>
+<td>switched off / removed</td>
+</tr>
+</tbody></table>
+<h2 id="inspector-fields-attributes">Inspector fields (attributes)<a class="anchor" href="#inspector-fields-attributes">#</a></h2>
+<pre class="code" data-lang="js"><code>static attributes = {
+  speed:   { type: 'number', default: 5, min: 0, max: 20 },   // slider
+  name:    { type: 'string', default: 'Bob' },
+  alive:   { type: 'bool',   default: true },
+  tint:    { type: 'color',  default: '#ff8800' },
+  offset:  { type: 'vec3',   default: [0, 1, 0] },
+  mode:    { type: 'enum',   options: ['walk', 'run'], default: 'walk' },
+  target:  { type: 'entity' },                                 // name or id of another object
+  sound:   { type: 'asset',  assetType: 'audio' },             // pick a file
+};</code></pre>
+<p>Types: <code>number int bool string color vec2 vec3 enum entity asset curve array</code>. Read them as <code>this.attrs.speed</code> (native) or <code>this.speed</code> (MonoBehaviour with <code>SerializeField</code>). Wrong types fall back to the default with a warning in the Console.</p>
+<aside class="box tip"><div class="box-title">Tip</div><p>Unity runs <code>Awake</code> of <em>all</em> objects before any <code>Start</code>; Nord too. Put &quot;set up my own data&quot; in <code>Awake/init</code> and &quot;find other objects&quot; in <code>Start/start</code>.</p>
+</aside>
+<div class="pager"><a href="examples.html"><small>← Previous</small>Examples (coming from Unity)</a><a href="ex-input-movement.html"><small>Next →</small>2 · Input and movement</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#unity-c">Unity (C#) </a><a href="#nord-the-unity-style">Nord: the Unity style </a><a href="#nord-the-native-style-lower-case">Nord: the native style (lower-case) </a><a href="#try-it">Try it </a><a href="#the-lifecycle-in-order">The lifecycle in order </a><a href="#inspector-fields-attributes">Inspector fields (attributes) </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

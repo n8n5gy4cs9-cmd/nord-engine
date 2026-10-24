@@ -32,6 +32,7 @@ test('protocol: initialize, tools, resources, prompts', async () => {
   assert.ok((await c.rpc('prompts/get', { name: 'make-a-game', arguments: { idea: 'pong' } })).result.messages[0].content.text.includes('pong'));
   const g = await c.call('nord_guide', {}); assert.match(g.text, /The loop/);
   const s = await c.call('nord_guide', { topic: 'scripting' }); assert.match(s.text, /NordScript/);
+  assert.match((await c.call('nord_guide', { topic: 'ex-game-manager' })).text, /GameManager/);
   assert.equal((await c.call('nord_guide', { topic: 'nonsense' })).text.startsWith('Unknown topic'), true);
   c.close();
 });

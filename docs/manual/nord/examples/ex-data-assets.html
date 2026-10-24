@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>14 · Data assets (ScriptableObject) — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html" class="cur" aria-current="page">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>14 · Data assets (ScriptableObject)</h1>
+<p><strong>Goal:</strong> define swords and potions in one file and use them from any script.</p>
+<h2 id="unity-c">Unity (C#)<a class="anchor" href="#unity-c">#</a></h2>
+<pre class="code" data-lang="cs"><code>[CreateAssetMenu] public class ItemData : ScriptableObject { public string title; public int damage; public Sprite icon; }</code></pre>
+<h2 id="nord-a-json-file">Nord: a JSON file<a class="anchor" href="#nord-a-json-file">#</a></h2>
+<p><code>data/items.json</code> (any path you like; plain JSON)</p>
+<pre class="code" data-lang="json"><code>{
+  &quot;sword&quot;:  { &quot;title&quot;: &quot;Iron sword&quot;, &quot;damage&quot;: 5,  &quot;icon&quot;: &quot;assets/ui/sword.png&quot;, &quot;price&quot;: 40 },
+  &quot;potion&quot;: { &quot;title&quot;: &quot;Potion&quot;,     &quot;heal&quot;: 25,    &quot;icon&quot;: &quot;assets/ui/potion.png&quot;, &quot;price&quot;: 10 }
+}</code></pre>
+<p>Load it:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, ScriptableObject } from 'nord';
+
+export default class Shop extends MonoBehaviour {
+  async Start() {
+    this.items = await ScriptableObject.Load('data/items.json');   // loaded once, shared by everyone
+    for (const [id, item] of Object.entries(this.items)) this.log(id, item.title, item.price);
+  }
+}</code></pre>
+<p>Native: <code>const data = await this.game.loadJSON(&#39;data/items.json&#39;);</code> (each call loads again; cache it yourself or use <code>ScriptableObject.Load</code>). <code>ScriptableObject.Clear()</code> empties the cache (useful while editing in Play mode).</p>
+<h2 id="using-the-data">Using the data<a class="anchor" href="#using-the-data">#</a></h2>
+<pre class="code" data-lang="js"><code>buy(id) {
+  const item = this.items[id];
+  if (GameManager.instance.Get('coins', 0) &lt; item.price) return false;
+  GameManager.instance.Set('coins', GameManager.instance.Get('coins', 0) - item.price);
+  this.scene.find('Player').callScripts('equip', item);
+  return true;
+}</code></pre>
+<h2 id="share-one-data-object-between-scripts">Share one data object between scripts<a class="anchor" href="#share-one-data-object-between-scripts">#</a></h2>
+<pre class="code" data-lang="js"><code>// data/enemies.json: { &quot;slime&quot;: { &quot;hp&quot;: 10, &quot;speed&quot;: 40 }, &quot;bat&quot;: { &quot;hp&quot;: 4, &quot;speed&quot;: 90 } }
+async Start() {
+  const defs = await ScriptableObject.Load('data/enemies.json');
+  const d = defs[this.attrs.kind];                    // attribute: kind = &quot;slime&quot;
+  this.hp = d.hp; this.speed = d.speed;
+}</code></pre>
+<p>A designer edits a number in the JSON, no code change. Add an Inspector attribute <code>kind</code> (enum or string) to choose which row an enemy uses.</p>
+<h2 id="level-data-as-json">Level data as JSON<a class="anchor" href="#level-data-as-json">#</a></h2>
+<pre class="code" data-lang="js"><code>const level = await ScriptableObject.Load('data/level1.json');   // { &quot;enemies&quot;: [[&quot;slime&quot;, 100, 40], ...] }
+for (const [kind, x, y] of level.enemies)
+  await this.scene.spawn('prefabs/enemy.prefab.json', { pos: [x, y, 2], overrides: { scripts: { 0: { attributes: { kind } } } } });</code></pre>
+<h2 id="data-inside-the-inspector-instead">Data inside the Inspector instead<a class="anchor" href="#data-inside-the-inspector-instead">#</a></h2>
+<p>For small things, an <code>array</code> / <code>curve</code> attribute is enough:</p>
+<pre class="code" data-lang="js"><code>static attributes = { waves: { type: 'array', default: [3, 5, 8] }, damageCurve: { type: 'curve' } };</code></pre>
+<h2 id="validating">Validating<a class="anchor" href="#validating">#</a></h2>
+<p>The project checker (<code>nord check</code>, or the Console&#39;s <em>Validate project</em>) warns about files that scenes reference but are missing. Keep data files valid JSON: the editor&#39;s code tab marks syntax errors as you type.</p>
+<div class="pager"><a href="ex-ai-states.html"><small>← Previous</small>13 · Enemy AI and state machines</a><a href="ex-camera-3d.html"><small>Next →</small>15 · Camera, 3D and effects</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#unity-c">Unity (C#) </a><a href="#nord-a-json-file">Nord: a JSON file </a><a href="#using-the-data">Using the data </a><a href="#share-one-data-object-between-scripts">Share one data object between scripts </a><a href="#level-data-as-json">Level data as JSON </a><a href="#data-inside-the-inspector-instead">Data inside the Inspector instead </a><a href="#validating">Validating </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

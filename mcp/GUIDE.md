@@ -4,7 +4,7 @@ You are connected to the **Nord MCP server**. It works on one Nord *project fold
 
 ## The loop
 1. **Project.** `project_templates` → `project_new {dir, template}` (or `project_open {path}`). Use `2d` / `3d` for blank, or a starter like `platformer`, `endless-runner`, `fps-arena`, `card-game` when the game resembles one: starting from a working template is much faster than from nothing. `project_info` shows what exists.
-2. **Learn the API only when needed.** `nord_guide {topic}`: `scripting` (the `NordScript` API), `project-format`, `event-sheets`, `behaviors`, `ui`, `animator`, `multiplayer`, `cookbook`, `api`, `modeler`, `export`. Tutorials: `nord_guide {topic:"t04-platformer"}`. Do not guess API names: read the topic.
+2. **Learn the API only when needed.** Unity-style, runnable recipes: `nord_guide {topic:"ex-game-manager"}`, `ex-spawn-destroy`, `ex-collisions`, `ex-time-coroutines`, `ex-ui-hud`, `ex-events`, `ex-ai-states`, `ex-coin-dash` (a whole game), `ex-migration` (C# to JS traps). The project `examples/coin-dash` is a complete small game to copy from. `nord_guide {topic}`: `scripting` (the `NordScript` API), `project-format`, `event-sheets`, `behaviors`, `ui`, `animator`, `multiplayer`, `cookbook`, `api`, `modeler`, `export`. Tutorials: `nord_guide {topic:"t04-platformer"}`. Do not guess API names: read the topic.
 3. **Scenes.** `component_schema` lists every component and its fields. `scene_add_entity` / `scene_update_entity` / `scene_remove_entity` edit `scenes/*.scene.json` safely (unique ids, valid format). `scene_get` shows the outline.
 4. **Scripts.** Write behaviour with `write_file scripts/<name>.js`:
    ```js

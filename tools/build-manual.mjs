@@ -400,9 +400,9 @@ engineDocs({ root, add, renderMd, esc, slug });
 }
 
 // ---------- layout --------------------------------------------------------------------------------------------------------
-const SECTION_ORDER = ['Start here', 'Manual', 'Tutorials', 'Guides', 'API', 'Components', 'Reference', 'Appendix', 'Engine docs'];
+const SECTION_ORDER = ['Start here', 'Manual', 'Tutorials', 'Examples', 'Guides', 'API', 'Components', 'Reference', 'Appendix', 'Engine docs'];
 const SECTION_DIR = {
-  'Start here': 'nord/start', Manual: 'nord/manual', Tutorials: 'nord/tutorials', Guides: 'nord/guides',
+  'Start here': 'nord/start', Manual: 'nord/manual', Tutorials: 'nord/tutorials', Examples: 'nord/examples', Guides: 'nord/guides',
   API: 'nord/api', Components: 'nord/components', Reference: 'nord/reference', Appendix: 'nord/appendix',
 };
 for (const p of pages) {
@@ -414,7 +414,7 @@ const bySection = new Map();
 for (const p of pages) { if (!bySection.has(p.section)) bySection.set(p.section, []); bySection.get(p.section).push(p); }
 for (const s of bySection.keys()) if (!SECTION_ORDER.includes(s)) throw new Error(`unknown section '${s}'`);
 const area = p => ['API', 'Components', 'Reference', 'Engine docs'].includes(p.section) ? 'API' : p.section === 'Appendix' ? 'Guides' : p.section;
-const tabs = [['Start here', 'getting-started.html'], ['Manual', 'welcome.html'], ['Tutorials', 'tutorials.html'], ['Guides', 'cookbook.html'], ['API', 'api.html']];
+const tabs = [['Start here', 'getting-started.html'], ['Manual', 'welcome.html'], ['Tutorials', 'tutorials.html'], ['Examples', 'examples.html'], ['Guides', 'cookbook.html'], ['API', 'api.html']];
 const nav = cur => {
   const sections = [...bySection].filter(([s]) => area({ section: s }) === area(cur));
   return `<a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">${esc(area(cur))}</div>` + sections.map(([s, ps]) => {
@@ -502,7 +502,7 @@ copy(path.join(root, 'vendor/codemirror/cm.bundle.js'), 'assets/cm.bundle.js');
 for (const [source, name] of [['inter/inter-latin-400-normal.woff2', 'inter.woff2'], ['plus-jakarta-sans/plus-jakarta-sans-latin-700-normal.woff2', 'jakarta.woff2'], ['jetbrains-mono/jetbrains-mono-latin-400-normal.woff2', 'mono.woff2']]) copy(path.join(root, 'vendor/fonts', source), `assets/${name}`);
 copyTree(path.join(root, 'vendor/engine-docs'), 'assets/engine-docs');
 if (fs.existsSync(path.join(root, 'docs/tutorial-downloads'))) copyTree(path.join(root, 'docs/tutorial-downloads'), 'assets/downloads');
-for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png', ...fs.readdirSync(path.join(root, 'docs/screenshots')).filter((f) => /^(es|ed|ui|graph|mod)-.*\.png$/.test(f))]) copy(path.join(root, 'docs/screenshots', file), `assets/screenshots/${file}`);
+for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png', ...fs.readdirSync(path.join(root, 'docs/screenshots')).filter((f) => /^(es|ed|ui|graph|mod|ex)-.*\.png$/.test(f))]) copy(path.join(root, 'docs/screenshots', file), `assets/screenshots/${file}`);
 for (const [source, name] of [['notepaint/assets/ui/tools.png', 'notepaint-tools.png'], ['star-not/assets/sprites/space.png', 'star-not-space.png'], ['star-not/assets/ui/portraits.png', 'star-not-ui.png']]) copy(path.join(root, 'examples', source), `assets/tutorials/${name}`);
 // The vendored bundle is standalone ESM. Expose its exact exports as a classic-script global
 // so syntax highlighting also works when the user double-clicks the offline HTML file.

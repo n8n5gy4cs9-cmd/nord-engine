@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>9 · Audio — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html" class="cur" aria-current="page">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>9 · Audio</h1>
+<p><strong>Goal:</strong> a jump sound, looping music, and a volume slider.</p>
+<p>Put sounds in <code>assets/audio/</code> (<code>.wav</code>, <code>.mp3</code>, <code>.ogg</code>). Browsers only start audio after the player clicks or presses a key; Nord queues your calls so nothing is lost (a <em>touch-to-start</em> screen is available, see <a href="../manual/audio.html">Audio</a>).</p>
+<h2 id="sound-effects">Sound effects<a class="anchor" href="#sound-effects">#</a></h2>
+<h3 id="unity">Unity<a class="anchor" href="#unity">#</a></h3>
+<pre class="code" data-lang="cs"><code>[SerializeField] AudioClip jumpClip; AudioSource src;
+void Jump() { src.PlayOneShot(jumpClip, 0.8f); }</code></pre>
+<h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<pre class="code" data-lang="js"><code>jump() {
+  this.audio.play('assets/audio/jump.wav', { volume: 0.8, rate: 1 + this.game.rng.range(-0.05, 0.05) }); // slight pitch variation
+}</code></pre>
+<p>Options: <code>volume</code> (0..1), <code>loop</code>, <code>rate</code> (pitch/speed), <code>bus</code> (<code>sfx</code> default, <code>music</code>, <code>ui</code>), <code>pan</code> (-1 left … 1 right).
+To let designers pick the sound in the Inspector:</p>
+<pre class="code" data-lang="js"><code>static attributes = { jump: { type: 'asset', assetType: 'audio', default: 'assets/audio/jump.wav' } };
+// …
+this.audio.play(this.attrs.jump);</code></pre>
+<h2 id="music-with-crossfade">Music with crossfade<a class="anchor" href="#music-with-crossfade">#</a></h2>
+<pre class="code" data-lang="js"><code>start() { this.audio.music('assets/audio/music/level1.mp3', { fade: 1.5, volume: 0.7 }); }  // fades the old track out
+onDestroy() { this.audio.stopMusic({ fade: 0.5 }); }</code></pre>
+<p><code>music(path, { fade, volume, offset, restart })</code>: calling it with the same track does nothing; with another track it crossfades.</p>
+<h2 id="volume-buses-settings-menu">Volume buses (settings menu)<a class="anchor" href="#volume-buses-settings-menu">#</a></h2>
+<pre class="code" data-lang="js"><code>this.audio.volume('music', 0.5);      // set 0..1; reading: this.audio.volume('music')
+this.audio.mute('sfx', true);         // mute / unmute a bus</code></pre>
+<p>Buses: <code>master</code>, <code>music</code>, <code>sfx</code>, <code>ui</code>. Values are remembered between sessions. A ready-made settings screen: library script <code>ui-settings.js</code> (sliders for master / music / sfx).</p>
+<h2 id="unity-style-manager">Unity-style manager<a class="anchor" href="#unity-style-manager">#</a></h2>
+<pre class="code" data-lang="js"><code>import { AudioManager } from 'nord';       // extend it and put the script on one object (persistent)
+AudioManager.instance.PlaySfx('assets/audio/coin.wav');
+AudioManager.instance.PlayMusic('assets/audio/music/loop.mp3');
+AudioManager.instance.SetVolume('music', 0.4);</code></pre>
+<h2 id="sounds-from-events-no-audio-code-in-gameplay-scripts">Sounds from events (no audio code in gameplay scripts)<a class="anchor" href="#sounds-from-events-no-audio-code-in-gameplay-scripts">#</a></h2>
+<p>Add the library script <code>util-sfx.js</code> to any object and fill its <code>map</code> attribute, e.g. <code>{&quot;coin&quot;:&quot;assets/audio/coin.wav&quot;,&quot;hit&quot;:&quot;assets/audio/hit.wav&quot;}</code>. Then any script can do:</p>
+<pre class="code" data-lang="js"><code>this.events.emit('sfx', 'coin');</code></pre>
+<p>Gameplay code stays free of file names, and you can swap sounds in one place.</p>
+<div class="pager"><a href="ex-ui-hud.html"><small>← Previous</small>8 · UI: HUD, buttons and menus</a><a href="ex-save-load.html"><small>Next →</small>10 · Saving and loading</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#sound-effects">Sound effects </a><a href="#music-with-crossfade">Music with crossfade </a><a href="#volume-buses-settings-menu">Volume buses (settings menu) </a><a href="#unity-style-manager">Unity-style manager </a><a href="#sounds-from-events-no-audio-code-in-gameplay-scripts">Sounds from events (no audio code in gameplay scripts) </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

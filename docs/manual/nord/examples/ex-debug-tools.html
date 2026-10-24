@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>16 · Debugging and the Dev Console — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html" class="cur" aria-current="page">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>16 · Debugging and the Dev Console</h1>
+<h2 id="logging">Logging<a class="anchor" href="#logging">#</a></h2>
+<h3 id="unity">Unity<a class="anchor" href="#unity">#</a></h3>
+<pre class="code" data-lang="cs"><code>Debug.Log(&quot;hit&quot;); Debug.LogWarning(&quot;low&quot;); Debug.LogError(&quot;boom&quot;);</code></pre>
+<h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<pre class="code" data-lang="js"><code>this.log('hit', damage);                  // [ScriptName] hit 5      (also this.warn, this.error)
+console.log('[Combat] hit', damage);      // any console.* works; &quot;[Tag]&quot; at the start becomes a filterable tag
+import { Debug } from 'nord'; Debug.Log('x'); Debug.LogWarning('y'); Debug.LogError('z'); Debug.Assert(hp &gt;= 0, 'negative hp');</code></pre>
+<p>Lines appear in the editor <span class="c-ui">Console</span> tab (<strong>Play</strong> mode and the game running in a browser pane): grey info, yellow warnings, red errors. Use the <strong>tag drop-down</strong> to see only <code>[Combat]</code>, the search box to find text (highlighted), double-click a line with <code>file.js:12</code> to open it. See <a href="../manual/organise-project.html">Organising your project</a>.</p>
+<h2 id="errors">Errors<a class="anchor" href="#errors">#</a></h2>
+<p>A script that throws does <strong>not</strong> stop the game: the error is caught, shown in a red overlay and in the Console with the script and method (<code>Hud.update: TypeError…</code> plus the stack), and the other scripts keep running. <code>this.game.errors</code> lists them. Click the overlay to dismiss. In the Console, enable <em>Pause on error</em> to freeze the game at the first error.</p>
+<h2 id="hot-reload">Hot reload<a class="anchor" href="#hot-reload">#</a></h2>
+<p>Save a script while the game is running and the new code replaces the old one in the live objects (their fields are kept). If you need to migrate state, add <code>onHotReload(oldState) {}</code>. If a change cannot be swapped (scene JSON, new imports) the page reloads instead.</p>
+<h2 id="look-at-an-object-while-playing">Look at an object while playing<a class="anchor" href="#look-at-an-object-while-playing">#</a></h2>
+<p><span class="c-ui">Play</span> ▸ select the object in the Hierarchy: the Inspector shows its live values. Changes made while playing are lost when you stop (like Unity).</p>
+<h2 id="the-in-game-dev-console-cheats-and-qa">The in-game Dev Console (cheats and QA)<a class="anchor" href="#the-in-game-dev-console-cheats-and-qa">#</a></h2>
+<p>Add the library prefab <code>Dev Console</code> and press the key left of 1:</p>
+<pre class="code" data-lang=""><code>&gt; help
+&gt; entities
+&gt; get-object-info Player
+&gt; set-pos Player 200 120 0
+&gt; timescale 0.2
+&gt; instantiate prefabs/enemy.prefab.json 300 100 2
+&gt; exec game.scene.find('Player').getScript(Health).hp = 999</code></pre>
+<p>Your own commands, one line each: <a href="../manual/dev-console.html">In-game Dev Console</a>.</p>
+<h2 id="profiler">Profiler<a class="anchor" href="#profiler">#</a></h2>
+<p><code>game.enableDebug()</code> (or the editor&#39;s profiler panel) records per-phase time (scripts, physics, components…) and per-script-method cost. See the profiler page in the manual.</p>
+<h2 id="quick-checks-in-the-browser-console">Quick checks in the browser console<a class="anchor" href="#quick-checks-in-the-browser-console">#</a></h2>
+<p><code>window.__nord</code> is the running game: <code>__nord.scene.find(&#39;Player&#39;).pos</code>, <code>__nord.time.elapsed</code>, <code>__nord.errors</code>. Useful with the browser&#39;s developer tools (<span class="c-ui">Open in browser</span> on the Game panel).</p>
+<h2 id="common-problems">Common problems<a class="anchor" href="#common-problems">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Likely cause</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>nothing happens</td>
+<td>script not attached, object disabled, or you wrote <code>update</code> in a MonoBehaviour (use <code>Update</code>)</td>
+</tr>
+<tr>
+<td><code>X.instance</code> is null</td>
+<td>the Singleton&#39;s object is not in this scene yet, or you used it in <code>Awake</code></td>
+</tr>
+<tr>
+<td><code>Cannot read properties of null</code></td>
+<td><code>scene.find()</code> returned null (wrong name) or the object was destroyed: check <code>destroyed</code></td>
+</tr>
+<tr>
+<td>pick-up never fires</td>
+<td>the picker has no rigidbody, or the trigger object has no <code>trigger</code> component</td>
+</tr>
+<tr>
+<td>movement jitters</td>
+<td>moved with <code>pos</code> in <code>update</code> while physics also moves it: use <code>setVelocity</code> in <code>fixedUpdate</code></td>
+</tr>
+</tbody></table>
+<div class="pager"><a href="ex-camera-3d.html"><small>← Previous</small>15 · Camera, 3D and effects</a><a href="ex-coin-dash.html"><small>Next →</small>17 · Coin Dash: a whole small game</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#logging">Logging </a><a href="#errors">Errors </a><a href="#hot-reload">Hot reload </a><a href="#look-at-an-object-while-playing">Look at an object while playing </a><a href="#the-in-game-dev-console-cheats-and-qa">The in-game Dev Console (cheats and QA) </a><a href="#profiler">Profiler </a><a href="#quick-checks-in-the-browser-console">Quick checks in the browser console </a><a href="#common-problems">Common problems </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

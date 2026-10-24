@@ -108,6 +108,8 @@ Imports *of* the script (helper modules) are not re-fetched — reload the page 
 
 ## Unity-style scripting
 
+Coming from Unity? The [Examples](examples.html) section shows C# and Nord side by side for everything you do daily.
+
 Full guide with every method, examples and a Unity cheat sheet: [Unity-style scripting](unity-scripting.html).
 
 Prefer Unity's names? `import { MonoBehaviour, Singleton, GameManager, Mathf, Vector3, Time, UnityInput, WaitForSeconds } from 'nord'`. Plain `NordScript` scripts keep working; this layer is optional (`runtime/core/unity.js`, behaviour modelled on Unity's public API, no Unity code).

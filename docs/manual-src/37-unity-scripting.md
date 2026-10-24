@@ -169,4 +169,6 @@ A persistent singleton: add `AudioManager` (import from `'nord'` and extend it, 
 * @bad[Method never runs:] you used a lower-case name (`update`) in a MonoBehaviour class or a typo. Use `Update`.
 * Attributes you added show only after saving the script (the Inspector re-reads it).
 
+Many runnable recipes next to the C# versions: [Examples](examples.html) (start with [GameManager and Singletons](ex-game-manager.html) and the whole game [Coin Dash](ex-coin-dash.html)).
+
 Reference: [Scripting](scripting.html), [Unity-style editor](unity-workflow.html), [T03 First script](tut-t03-first-script.html). Source: `runtime/core/unity.js`.

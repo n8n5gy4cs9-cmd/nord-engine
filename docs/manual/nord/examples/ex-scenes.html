@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>11 · Scenes and persistent objects — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html" class="cur" aria-current="page">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>11 · Scenes and persistent objects</h1>
+<p><strong>Goal:</strong> a menu scene, a level scene, and a score that survives the change.</p>
+<h2 id="load-and-restart">Load and restart<a class="anchor" href="#load-and-restart">#</a></h2>
+<h3 id="unity">Unity<a class="anchor" href="#unity">#</a></h3>
+<pre class="code" data-lang="cs"><code>SceneManager.LoadScene(&quot;Level2&quot;);  SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);</code></pre>
+<h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<pre class="code" data-lang="js"><code>await this.game.loadScene('scenes/level2.scene.json');   // returns a Promise: await it if you do something afterwards
+await this.game.restart();                              // reload the current scene from its saved data
+// Unity names:
+import { SceneManager } from 'nord';
+SceneManager.LoadScene('scenes/level2.scene.json'); SceneManager.ReloadScene(); SceneManager.sceneName;</code></pre>
+<p>The first scene is <code>startScene</code> in <code>nord.project.json</code> (<span class="c-ui">File ▸ Build Settings</span>). Scene paths are project-relative.</p>
+<h2 id="what-happens-to-the-old-scene">What happens to the old scene<a class="anchor" href="#what-happens-to-the-old-scene">#</a></h2>
+<p>All its objects are destroyed (<code>onDestroy</code> runs on every script), its timers and tweens are cancelled, and a new scene is built and started. <strong>The UI layer is not cleared</strong>: remove your labels in <code>onDestroy</code>. The game services (<code>game.save</code>, <code>game.events</code>, <code>game.audio</code>, input) live on.</p>
+<h2 id="dontdestroyonload-persistent-objects">DontDestroyOnLoad: persistent objects<a class="anchor" href="#dontdestroyonload-persistent-objects">#</a></h2>
+<p>Two ways:</p>
+<ol>
+<li>A <strong>Singleton</strong> with <code>static persistent = true</code> (GameManager, AudioManager and your own). Put the object in the <strong>first</strong> scene only.</li>
+<li>Any object: <span class="c-ui">Inspector ▸ + Add behavior ▸ Persist</span>. When a scene loads, the surviving object replaces the copy of the same name that the new scene contains, so you can safely put the same <em>Music</em> object in every scene.</li>
+</ol>
+<pre class="code" data-lang="js"><code>import { Singleton } from 'nord';
+export default class PlayerData extends Singleton {
+  static persistent = true;
+  Awake() { this.coins = 0; this.level = 1; }
+}
+// level 1:  PlayerData.instance.coins += 5;   then load level 2:  PlayerData.instance.coins is still 5</code></pre>
+<h2 id="passing-data-to-the-next-scene">Passing data to the next scene<a class="anchor" href="#passing-data-to-the-next-scene">#</a></h2>
+<ul>
+<li>A persistent singleton (above): simplest.</li>
+<li><code>this.game.save.set(&#39;next&#39;, {...})</code> and read it in the next scene&#39;s <code>start()</code>.</li>
+<li>A game-wide variable: <code>GameManager.instance.Set(&#39;spawnPoint&#39;, &#39;door2&#39;)</code>, read with <code>Get</code>.</li>
+</ul>
+<h2 id="restart-rules">Restart rules<a class="anchor" href="#restart-rules">#</a></h2>
+<p><code>game.restart()</code> rebuilds the <em>current</em> scene, resets time scale / pause / input, and <strong>drops</strong> persistent objects (fresh game). <code>restart({ preservePersistent: true })</code> keeps them.</p>
+<h2 id="events-around-loading">Events around loading<a class="anchor" href="#events-around-loading">#</a></h2>
+<pre class="code" data-lang="js"><code>this.game.events.on('sceneLoad', (name) =&gt; this.log('loaded', name));
+this.game.events.on('sceneUnload', (name) =&gt; {});</code></pre>
+<h2 id="fade-between-scenes">Fade between scenes<a class="anchor" href="#fade-between-scenes">#</a></h2>
+<pre class="code" data-lang="js"><code>async goTo(path) {
+  this.game.camera.fade(400);                      // fade to black (ms)
+  await new Promise((r) =&gt; setTimeout(r, 420));
+  await this.game.loadScene(path);
+  this.game.camera.fadeIn(400);
+}</code></pre>
+<h2 id="several-scenes-at-once-ui-overlays">Several scenes at once (UI overlays)<a class="anchor" href="#several-scenes-at-once-ui-overlays">#</a></h2>
+<p>Nord has one active scene. For a HUD or pause screen that exists in every level, either use a persistent object or build it from code / a <code>.ui.json</code> screen (see <a href="ex-ui-hud.html">UI</a>): UI screens are independent of scenes.</p>
+<div class="pager"><a href="ex-save-load.html"><small>← Previous</small>10 · Saving and loading</a><a href="ex-events.html"><small>Next →</small>12 · Events and messages</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#load-and-restart">Load and restart </a><a href="#what-happens-to-the-old-scene">What happens to the old scene </a><a href="#dontdestroyonload-persistent-objects">DontDestroyOnLoad: persistent objects </a><a href="#passing-data-to-the-next-scene">Passing data to the next scene </a><a href="#restart-rules">Restart rules </a><a href="#events-around-loading">Events around loading </a><a href="#fade-between-scenes">Fade between scenes </a><a href="#several-scenes-at-once-ui-overlays">Several scenes at once (UI overlays) </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>15 · Camera, 3D and effects — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html" class="cur" aria-current="page">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>15 · Camera, 3D and effects</h1>
+<h2 id="2d-camera">2D camera<a class="anchor" href="#2d-camera">#</a></h2>
+<p>The scene&#39;s <span class="c-api">camera</span> entity has <code>follow</code> (name of the object), <code>lerp</code> (smoothing 0..1), <code>deadzone</code>, <code>zoom</code>. For a Cinemachine-like follow use the library script <code>camera-follow.js</code> (look-ahead, bounds). By hand:</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+export default class FollowCam extends NordScript {
+  static attributes = { target: { type: 'entity' }, smooth: { type: 'number', default: 6 } };
+  start() { this.t = this.scene.find(this.attrs.target); }
+  lateUpdate(dt) {                       // after the target moved this frame
+    if (!this.t || this.t.destroyed) return;
+    const p = this.entity.pos, k = Math.min(1, this.attrs.smooth * dt);
+    this.entity.pos = [p[0] + (this.t.pos[0] - p[0]) * k, p[1] + (this.t.pos[1] - p[1]) * k, p[2]];
+  }
+}</code></pre>
+<p>Put it on the Camera entity and set <code>target</code> to <code>Player</code>.</p>
+<h2 id="screen-effects-juice">Screen effects (juice)<a class="anchor" href="#screen-effects-juice">#</a></h2>
+<pre class="code" data-lang="js"><code>this.game.camera.shake(200, 0.01);            // duration ms, intensity
+this.game.camera.flash(120, '#ffffff');
+this.game.camera.fade(400, '#000000');        // fade out; fadeIn(400) to come back
+this.game.camera.zoom?.(1.2);</code></pre>
+<p>Hit-stop: library <code>fx-hitstop.js</code>. Slow motion: <code>Time.timeScale = 0.2</code> for a moment (<code>this.after</code> follows the scale, use real timers if you need real time).</p>
+<h2 id="3d-build-a-scene">3D: build a scene<a class="anchor" href="#3d-build-a-scene">#</a></h2>
+<ol>
+<li>New project: <code>nord new world -t 3d</code>. 3D uses <strong>y up</strong>, units are metres.</li>
+<li>Add objects: <span class="c-ui">Hierarchy ▸ + Create ▸ 3D</span>: a <code>mesh</code> (box, sphere…) or drag a <code>.glb</code> from Assets (becomes a <code>model</code> component).</li>
+<li>Add a <code>light</code> (directional = sun, <code>castShadows</code> on) and a <code>camera</code>.</li>
+</ol>
+<h3 id="unity-to-nord-components-3d">Unity to Nord components (3D)<a class="anchor" href="#unity-to-nord-components-3d">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord component</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MeshRenderer + MeshFilter</td>
+<td><code>mesh</code> (primitive shapes) or <code>model</code> (a .glb file)</td>
+</tr>
+<tr>
+<td>Material</td>
+<td><code>material</code> component or a shared <code>*.mat.json</code> asset</td>
+</tr>
+<tr>
+<td>Light</td>
+<td><code>light</code> (<code>kind</code>: point, directional, spot, hemispheric)</td>
+</tr>
+<tr>
+<td>Camera</td>
+<td><code>camera</code> (<code>type</code>: free / follow / arcRotate)</td>
+</tr>
+<tr>
+<td>Rigidbody + Collider</td>
+<td><code>rigidbody</code> + <code>collider</code> (Havok physics)</td>
+</tr>
+<tr>
+<td>Skybox, post-processing</td>
+<td><code>skybox</code>, <code>postProcess</code></td>
+</tr>
+<tr>
+<td>Animator (3D clips)</td>
+<td><code>model.play(&#39;Walk&#39;)</code> or the Animator editor</td>
+</tr>
+</tbody></table>
+<h2 id="move-and-turn-a-character-in-3d">Move and turn a character in 3D<a class="anchor" href="#move-and-turn-a-character-in-3d">#</a></h2>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+export default class Character extends NordScript {
+  static attributes = { speed: { type: 'number', default: 6 }, turn: { type: 'number', default: 10 } };
+  fixedUpdate(dt) {
+    const [x, z] = this.input.vec('left', 'right', 'up', 'down');    // forward key =&gt; z = -1
+    this.physics.setVelocity(this.entity, x * this.attrs.speed, null, z * this.attrs.speed);
+    if (x || z) {                                                    // face the movement direction (yaw in degrees)
+      const target = Math.atan2(x, z) * 180 / Math.PI + 180;
+      const r = this.entity.rot, d = ((target - r[1] + 540) % 360) - 180;
+      this.entity.rot = [r[0], r[1] + d * Math.min(1, this.attrs.turn * dt), r[2]];
+    }
+    const clip = x || z ? 'Walk' : 'Idle';                           // clip names come from the .glb
+    if (clip !== this.clip) { this.clip = clip; this.entity.getComponent('model')?.play(clip, { loop: true }); }   // only when it changes
+  }
+}</code></pre>
+<p>Rotation values are <strong>degrees</strong>. Use the <code>model</code> component&#39;s <code>animation</code> field in the Inspector for a default clip, and <code>entity.getComponent(&#39;model&#39;)</code> to read what the file offers.</p>
+<h2 id="third-person-camera">Third-person camera<a class="anchor" href="#third-person-camera">#</a></h2>
+<p>The library has <code>third-person3d.js</code>, <code>orbit-cam.js</code>, <code>fps3d.js</code>, <code>fly-cam.js</code>, <code>rts-cam.js</code>: insert one on the camera entity and set <code>target</code>. Or a child camera: make the Camera a <strong>child</strong> of the character at <code>[0, 2, 5]</code>; it follows automatically.</p>
+<h2 id="light-shadows-and-mood">Light, shadows and mood<a class="anchor" href="#light-shadows-and-mood">#</a></h2>
+<pre class="code" data-lang="js"><code>const sun = this.scene.find('Sun');
+sun.set('light', 'intensity', 0.4);                 // change a component field at runtime
+this.tween({ i: 1 }, { i: 0.2 }, { duration: 4, onUpdate: (o) =&gt; sun.set('light', 'intensity', o.i) });   // sunset</code></pre>
+<h2 id="raycast-from-the-camera-click-picking">Raycast from the camera / click picking<a class="anchor" href="#raycast-from-the-camera-click-picking">#</a></h2>
+<pre class="code" data-lang="js"><code>const hit = this.physics.raycast(this.entity.worldPos, [fx, fy, fz]);   // from, to
+if (hit) hit.entity.emit('clicked');</code></pre>
+<p>Library <code>interact-ray.js</code> does &quot;look at it and press E&quot; for you.</p>
+<h2 id="make-your-own-3d-model">Make your own 3D model<a class="anchor" href="#make-your-own-3d-model">#</a></h2>
+<p>Use the 3D Modeler: <a href="../manual/modeler.html">3D Modeler</a> and tutorials T49 / T54; it saves <code>models/x.glb</code> for a <code>model</code> component.</p>
+<div class="pager"><a href="ex-data-assets.html"><small>← Previous</small>14 · Data assets (ScriptableObject)</a><a href="ex-debug-tools.html"><small>Next →</small>16 · Debugging and the Dev Console</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#2d-camera">2D camera </a><a href="#screen-effects-juice">Screen effects (juice) </a><a href="#3d-build-a-scene">3D: build a scene </a><a href="#move-and-turn-a-character-in-3d">Move and turn a character in 3D </a><a href="#third-person-camera">Third-person camera </a><a href="#light-shadows-and-mood">Light, shadows and mood </a><a href="#raycast-from-the-camera-click-picking">Raycast from the camera / click picking </a><a href="#make-your-own-3d-model">Make your own 3D model </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

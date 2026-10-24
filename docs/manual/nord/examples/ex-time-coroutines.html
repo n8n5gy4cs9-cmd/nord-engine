@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>7 · Time: coroutines, Invoke, timers and tweens — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html" class="cur" aria-current="page">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>7 · Time: coroutines, Invoke, timers and tweens</h1>
+<p><strong>Goal:</strong> flash when hit, spawn something every 2 seconds, fade out, slide an object smoothly.</p>
+<h2 id="delta-time">Delta time<a class="anchor" href="#delta-time">#</a></h2>
+<pre class="code" data-lang="js"><code>update(dt) { this.entity.pos = [this.entity.pos[0] + 100 * dt, this.entity.pos[1], 0]; }   // dt = Time.deltaTime</code></pre>
+<p>In MonoBehaviours use <code>Time.deltaTime</code>, <code>Time.time</code>, <code>Time.timeScale</code> (set <code>Time.timeScale = 0.2</code> for slow motion, <code>0</code> to freeze everything driven by dt). <code>this.game.timeScale</code> is the same value.</p>
+<h2 id="invoke-unity-names">Invoke (Unity names)<a class="anchor" href="#invoke-unity-names">#</a></h2>
+<pre class="code" data-lang="js"><code>this.Invoke('Explode', 2);                 // call this.Explode() after 2 s
+this.InvokeRepeating('Spawn', 1, 0.5);     // first after 1 s, then every 0.5 s
+this.CancelInvoke('Spawn');                // or CancelInvoke() for all; IsInvoking('Spawn')</code></pre>
+<p>They are cancelled automatically when the object is destroyed.</p>
+<h2 id="coroutines">Coroutines<a class="anchor" href="#coroutines">#</a></h2>
+<h3 id="unity">Unity<a class="anchor" href="#unity">#</a></h3>
+<pre class="code" data-lang="cs"><code>IEnumerator Flash() {
+    for (int i = 0; i &lt; 3; i++) { sr.enabled = false; yield return new WaitForSeconds(0.1f); sr.enabled = true; yield return new WaitForSeconds(0.1f); }
+}
+StartCoroutine(Flash());</code></pre>
+<h3 id="nord-monobehaviour">Nord (MonoBehaviour)<a class="anchor" href="#nord-monobehaviour">#</a></h3>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, WaitForSeconds, WaitUntil } from 'nord';
+
+export default class Hurt extends MonoBehaviour {
+  *Flash() {                                       // a generator function: function*
+    for (let i = 0; i &lt; 3; i++) {
+      this.entity.set('sprite', 'alpha', 0.2);
+      yield new WaitForSeconds(0.1);
+      this.entity.set('sprite', 'alpha', 1);
+      yield new WaitForSeconds(0.1);
+    }
+  }
+  OnCollisionEnter() { this.StartCoroutine(this.Flash()); }
+}</code></pre>
+<p>Yield: <code>null</code> (next frame), <code>new WaitForSeconds(s)</code>, <code>new WaitUntil(() =&gt; cond)</code>, <code>new WaitWhile(() =&gt; cond)</code>, <code>new WaitForFixedUpdate()</code>, or another coroutine&#39;s generator (nested: <code>yield this.OtherCoroutine()</code>). <code>StopCoroutine(co)</code> / <code>StopAllCoroutines()</code>; they stop when the object is destroyed or disabled-and-destroyed.</p>
+<h2 id="async-await-instead-native-style">async / await instead (native style)<a class="anchor" href="#async-await-instead-native-style">#</a></h2>
+<p>JavaScript has its own way to wait; it is great for <em>loading</em> things, but it does not stop when the object dies. For gameplay timing use coroutines or the scheduler below.</p>
+<pre class="code" data-lang="js"><code>const bullet = await this.scene.spawn('prefabs/bullet.prefab.json');</code></pre>
+<h2 id="scheduler-after-every">Scheduler: after / every<a class="anchor" href="#scheduler-after-every">#</a></h2>
+<pre class="code" data-lang="js"><code>const cancel = this.after(2, () =&gt; this.explode());        // once, after 2 s (stops with the scene)
+const stop = this.every(0.5, () =&gt; this.blink());          // repeat until stopped
+cancel(); stop();                                          // call to cancel</code></pre>
+<p>These follow <code>timeScale</code> and the pause, and are cleaned up on scene change.</p>
+<h2 id="cooldown-pattern-no-coroutine-needed">Cooldown pattern (no coroutine needed)<a class="anchor" href="#cooldown-pattern-no-coroutine-needed">#</a></h2>
+<pre class="code" data-lang="js"><code>update(dt) {
+  this.cool = Math.max(0, this.cool - dt);
+  if (this.input.pressed('fire') &amp;&amp; this.cool === 0) { this.shoot(); this.cool = 0.3; }
+}</code></pre>
+<h2 id="tweens-move-fade-scale">Tweens: move, fade, scale<a class="anchor" href="#tweens-move-fade-scale">#</a></h2>
+<pre class="code" data-lang="js"><code>// slide the object to x = 400 over 1 second
+this.tween(this.entity.pos, { 0: 400 }, { duration: 1, ease: 'quadOut', onUpdate: () =&gt; this.entity.touch() });
+
+// fade a sprite: tween a plain object and apply it
+const s = { a: 1 };
+this.tween(s, { a: 0 }, { duration: 0.6, onUpdate: () =&gt; this.entity.set('sprite', 'alpha', s.a), onComplete: () =&gt; this.entity.destroy() });
+
+// pulse forever
+this.tween(this.entity.scale, { 0: 1.3, 1: 1.3 }, { duration: 0.4, yoyo: true, repeat: -1, ease: 'sineInOut', onUpdate: () =&gt; this.entity.touch() });</code></pre>
+<p>Options: <code>duration, delay, ease, onUpdate, onComplete, yoyo, repeat (-1 = forever)</code>. Ease names: <code>linear, quadIn, quadOut, quadInOut, cubicIn, cubicOut, cubicInOut, sineInOut, backOut, elasticOut, bounceIn, bounceOut</code>. Array targets use the index as key (<code>0</code> = x). After changing <code>pos/scale</code> arrays in place call <code>entity.touch()</code> (assigning a new array does it for you).</p>
+<h2 id="math-helpers">Math helpers<a class="anchor" href="#math-helpers">#</a></h2>
+<pre class="code" data-lang="js"><code>import { clamp, lerp, remap, vec } from 'nord';
+const t = clamp(value, 0, 1);
+this.entity.pos = vec.lerp(this.entity.pos, target, Math.min(1, 8 * dt));   // smooth follow</code></pre>
+<p>(<code>Mathf.Clamp</code>, <code>Mathf.Lerp</code>, <code>Mathf.MoveTowards</code>… also exist for Unity habits.)</p>
+<div class="pager"><a href="ex-collisions.html"><small>← Previous</small>6 · Collisions, triggers and raycasts</a><a href="ex-ui-hud.html"><small>Next →</small>8 · UI: HUD, buttons and menus</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#delta-time">Delta time </a><a href="#invoke-unity-names">Invoke (Unity names) </a><a href="#coroutines">Coroutines </a><a href="#async-await-instead-native-style">async / await instead (native style) </a><a href="#scheduler-after-every">Scheduler: after / every </a><a href="#cooldown-pattern-no-coroutine-needed">Cooldown pattern (no coroutine needed) </a><a href="#tweens-move-fade-scale">Tweens: move, fade, scale </a><a href="#math-helpers">Math helpers </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

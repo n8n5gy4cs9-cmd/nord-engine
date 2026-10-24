@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>12 · Events and messages — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html" class="cur" aria-current="page">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>12 · Events and messages</h1>
+<p><strong>Goal:</strong> a door that opens when a button is pressed, a HUD that reacts to the player&#39;s health, achievements that listen to everything: without the scripts knowing each other.</p>
+<h2 id="three-kinds-of-events">Three kinds of events<a class="anchor" href="#three-kinds-of-events">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Code</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Global</strong> (the whole game)</td>
+<td><code>this.game.events.emit(&#39;score&#39;, {score})</code> / <code>.on(&#39;score&#39;, fn)</code></td>
+<td>score, game over, level cleared, language changed</td>
+</tr>
+<tr>
+<td><strong>Per object</strong></td>
+<td><code>entity.emit(&#39;hp&#39;, data)</code> / <code>entity.on(&#39;hp&#39;, fn)</code></td>
+<td>&quot;this enemy died&quot;, &quot;this button was pressed&quot;, &quot;my health changed&quot;</td>
+</tr>
+<tr>
+<td><strong>Inspector signals</strong></td>
+<td>Inspector ▸ Signals: <em>event → target → method</em></td>
+<td>designers wire things up without code</td>
+</tr>
+</tbody></table>
+<p>All three return an <strong>unsubscribe function</strong>; <code>once</code> exists on the global bus.</p>
+<h2 id="global-events">Global events<a class="anchor" href="#global-events">#</a></h2>
+<h3 id="unity">Unity<a class="anchor" href="#unity">#</a></h3>
+<pre class="code" data-lang="cs"><code>public static event Action&lt;int&gt; OnScore;   // GameManager
+OnScore?.Invoke(5);   OnScore += Handler;   OnScore -= Handler;</code></pre>
+<h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<pre class="code" data-lang="js"><code>this.game.events.emit('score', { score: 5 });
+const off = this.game.events.on('score', ({ score }) =&gt; this.refresh(score));
+this.game.events.once('gameover', () =&gt; this.showEnd());
+off();                                       // unsubscribe (do it in onDestroy)
+this.game.events.on('*', ({ name, data }) =&gt; console.log(name, data));   // wildcard: every event (great for debugging)</code></pre>
+<p>Built-in events: <code>score</code>, <code>lives</code>, <code>state</code>, <code>gameover</code> (GameManager), <code>sceneLoad</code>, <code>sceneUnload</code>, <code>pause</code>, <code>resume</code>, <code>error</code>, <code>language</code>.</p>
+<h2 id="events-on-an-object">Events on an object<a class="anchor" href="#events-on-an-object">#</a></h2>
+<pre class="code" data-lang="js"><code>// health.js
+this.entity.emit('hp', { hp: this.hp, max: this.max });
+// healthbar.js (on the same object or any script that has a reference)
+const off = this.target.on('hp', ({ hp, max }) =&gt; this.bar.set(hp / max));</code></pre>
+<p>The enemy does not know a health bar exists; the bar needs a reference to the enemy it shows. Unsubscribe in <code>onDestroy</code>.</p>
+<h2 id="a-door-and-a-button-signals-without-code">A door and a button: signals without code<a class="anchor" href="#a-door-and-a-button-signals-without-code">#</a></h2>
+<ol>
+<li>Button object: script emits when pressed:</li>
+</ol>
+<pre class="code" data-lang="js"><code>onTriggerEnter(o) { if (o.hasTag('player')) this.entity.emit('pressed'); }</code></pre>
+<ol start="2">
+<li>Door object: script has <code>open()</code>:</li>
+</ol>
+<pre class="code" data-lang="js"><code>open() { this.entity.enabled = false; }</code></pre>
+<ol start="3">
+<li>Select the <strong>button</strong> ▸ <span class="c-ui">Inspector ▸ Signals ▸ +</span>: event <code>pressed</code>, target <code>Door</code>, method <code>open</code>. Done: when the button emits <code>pressed</code>, <code>Door</code>&#39;s scripts get <code>open(data)</code> called. (Target empty = the button itself.)</li>
+</ol>
+<h2 id="unityevent-and-eventbus-unity-names">UnityEvent and EventBus (Unity names)<a class="anchor" href="#unityevent-and-eventbus-unity-names">#</a></h2>
+<pre class="code" data-lang="js"><code>import { UnityEvent, EventBus } from 'nord';
+
+export default class Switch extends MonoBehaviour {
+  Awake() { this.onToggled = new UnityEvent(); }          // public UnityEvent onToggled
+  Toggle() { this.on = !this.on; this.onToggled.Invoke(this.on); }
+}
+// elsewhere
+const off = lever.onToggled.AddListener((on) =&gt; this.light.enabled = on);
+off(); // or lever.onToggled.RemoveListener(fn)
+
+EventBus.Subscribe('boss-dead', () =&gt; this.ui.show('win'));   // = game.events.on
+EventBus.Publish('boss-dead', { name: 'Hydra' });             // = game.events.emit</code></pre>
+<h2 id="event-sheets">Event sheets<a class="anchor" href="#event-sheets">#</a></h2>
+<p>If a designer wants &quot;when <code>score</code> happens, do X&quot; without code, the event-sheet system listens to the same global events (<a href="../manual/event-sheets.html">Event sheets</a>).</p>
+<h2 id="naming-rules-that-keep-you-sane">Naming rules that keep you sane<a class="anchor" href="#naming-rules-that-keep-you-sane">#</a></h2>
+<ul>
+<li>Past tense for facts: <code>died</code>, <code>coin-collected</code>, <code>door-opened</code>. Imperative for requests: <code>play-sfx</code>.</li>
+<li>Put data in one object: <code>{ score }</code>, <code>{ target, damage }</code>, not separate arguments (an event carries one payload).</li>
+<li>Unsubscribe in <code>onDestroy</code>. A global listener left behind keeps running after the scene is gone.</li>
+</ul>
+<h2 id="when-to-use-which">When to use which<a class="anchor" href="#when-to-use-which">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>You need…</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>the answer now</td>
+<td>a direct call / getScript</td>
+</tr>
+<tr>
+<td>to announce, many may listen</td>
+<td><code>game.events</code></td>
+</tr>
+<tr>
+<td>to announce about <em>this</em> object</td>
+<td><code>entity.emit</code></td>
+</tr>
+<tr>
+<td>designer wiring</td>
+<td>Inspector signals</td>
+</tr>
+</tbody></table>
+<div class="pager"><a href="ex-scenes.html"><small>← Previous</small>11 · Scenes and persistent objects</a><a href="ex-ai-states.html"><small>Next →</small>13 · Enemy AI and state machines</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#three-kinds-of-events">Three kinds of events </a><a href="#global-events">Global events </a><a href="#events-on-an-object">Events on an object </a><a href="#a-door-and-a-button-signals-without-code">A door and a button: signals without code </a><a href="#unityevent-and-eventbus-unity-names">UnityEvent and EventBus (Unity names) </a><a href="#event-sheets">Event sheets </a><a href="#naming-rules-that-keep-you-sane">Naming rules that keep you sane </a><a href="#when-to-use-which">When to use which </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

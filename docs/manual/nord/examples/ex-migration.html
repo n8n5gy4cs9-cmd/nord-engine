@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>18 · Migration guide: C# habits to JavaScript — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html" class="cur" aria-current="page">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>18 · Migration guide: C# habits to JavaScript</h1>
+<h2 id="api-translation-table">API translation table<a class="anchor" href="#api-translation-table">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord (Unity-style layer)</th>
+<th>Nord (native)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>transform.position</code></td>
+<td><code>this.position</code> (a <code>Vector3</code>)</td>
+<td><code>entity.pos</code> (<code>[x, y, z]</code> array)</td>
+</tr>
+<tr>
+<td><code>transform.localPosition</code></td>
+<td><code>this.localPosition</code></td>
+<td><code>entity.pos</code> (relative to parent); <code>entity.worldPos</code> absolute</td>
+</tr>
+<tr>
+<td><code>transform.rotation</code> / <code>eulerAngles</code></td>
+<td><code>this.Rotate(x,y,z)</code></td>
+<td><code>entity.rot = [x, y, z]</code> <strong>degrees</strong></td>
+</tr>
+<tr>
+<td><code>transform.localScale</code></td>
+<td>–</td>
+<td><code>entity.scale = [x, y, z]</code></td>
+</tr>
+<tr>
+<td><code>transform.Translate(v)</code></td>
+<td><code>this.Translate(x, y, z)</code></td>
+<td>assign <code>pos</code></td>
+</tr>
+<tr>
+<td><code>transform.parent</code>, <code>GetChild</code></td>
+<td>–</td>
+<td><code>entity.parent</code>, <code>entity.children</code>, <code>entity.find(&#39;Name&#39;)</code></td>
+</tr>
+<tr>
+<td><code>gameObject.name / tag / layer</code></td>
+<td><code>this.name</code>, <code>this.tag</code></td>
+<td><code>entity.name</code>, <code>entity.tags</code> (array), <code>entity.layer</code></td>
+</tr>
+<tr>
+<td><code>SetActive(false)</code></td>
+<td><code>this.SetActive(false)</code></td>
+<td><code>entity.enabled = false</code></td>
+</tr>
+<tr>
+<td><code>GetComponent&lt;T&gt;()</code></td>
+<td><code>this.GetComponent(T)</code></td>
+<td><code>entity.getScript(Class)</code> / <code>entity.getComponent(&#39;sprite&#39;)</code></td>
+</tr>
+<tr>
+<td><code>AddComponent&lt;T&gt;()</code></td>
+<td>–</td>
+<td><code>entity.addComponent(&#39;sprite&#39;, data)</code> / <code>entity.addScript(Class, attrs)</code></td>
+</tr>
+<tr>
+<td><code>Instantiate(p, pos, rot)</code></td>
+<td><code>this.Instantiate(path, {pos})</code></td>
+<td><code>await scene.spawn(path, {pos, rot})</code></td>
+</tr>
+<tr>
+<td><code>Destroy(o, t)</code></td>
+<td><code>this.Destroy(o, t)</code></td>
+<td><code>entity.destroy()</code></td>
+</tr>
+<tr>
+<td><code>Find / FindWithTag / FindObjectOfType</code></td>
+<td><code>this.Find…</code></td>
+<td><code>scene.find / findByTag / all()</code></td>
+</tr>
+<tr>
+<td><code>Time.deltaTime / time / timeScale</code></td>
+<td><code>Time.deltaTime…</code></td>
+<td><code>dt</code> argument, <code>game.time.elapsed</code>, <code>game.timeScale</code></td>
+</tr>
+<tr>
+<td><code>Input.GetKey / GetKeyDown / GetAxis</code></td>
+<td><code>UnityInput.GetKey…</code></td>
+<td><code>input.down / pressed / axis / vec</code> (actions)</td>
+</tr>
+<tr>
+<td><code>Rigidbody2D.velocity</code></td>
+<td>–</td>
+<td><code>physics.setVelocity(entity, vx, vy)</code></td>
+</tr>
+<tr>
+<td><code>Rigidbody.AddForce</code></td>
+<td>–</td>
+<td>set velocity each step, or use library <code>physics-*</code> scripts</td>
+</tr>
+<tr>
+<td><code>Physics.Raycast</code></td>
+<td>–</td>
+<td><code>physics.raycast(from, to, {ignore})</code> (3D)</td>
+</tr>
+<tr>
+<td><code>Physics2D.OverlapBox</code></td>
+<td>–</td>
+<td><code>physics.overlapBox(x, y, w, h)</code></td>
+</tr>
+<tr>
+<td><code>OnCollisionEnter / OnTriggerEnter</code></td>
+<td>same names</td>
+<td><code>onCollisionEnter / onTriggerEnter(other)</code></td>
+</tr>
+<tr>
+<td><code>StartCoroutine</code>, <code>WaitForSeconds</code></td>
+<td>same</td>
+<td><code>scheduler.after / every</code>, tweens</td>
+</tr>
+<tr>
+<td><code>Invoke / InvokeRepeating</code></td>
+<td>same</td>
+<td><code>this.after(sec, fn)</code> / <code>this.every(sec, fn)</code></td>
+</tr>
+<tr>
+<td><code>Mathf.*</code></td>
+<td><code>Mathf.*</code></td>
+<td><code>clamp, lerp, remap, deg2rad…</code></td>
+</tr>
+<tr>
+<td><code>Vector2/3</code>, <code>Quaternion</code></td>
+<td><code>Vector2/3</code></td>
+<td>plain arrays + <code>vec.add / sub / scale / len / norm / lerp</code> (no Quaternion: rotations are Euler degrees)</td>
+</tr>
+<tr>
+<td><code>Random.Range</code></td>
+<td><code>Mathf.Random</code> or rng</td>
+<td><code>this.rng.range(a, b)</code>, <code>.int</code>, <code>.chance</code>, <code>.pick(arr)</code></td>
+</tr>
+<tr>
+<td><code>PlayerPrefs</code></td>
+<td><code>PlayerPrefs</code></td>
+<td><code>this.save.get / set</code></td>
+</tr>
+<tr>
+<td><code>SceneManager.LoadScene</code></td>
+<td><code>SceneManager.LoadScene</code></td>
+<td><code>game.loadScene(path)</code>, <code>game.restart()</code></td>
+</tr>
+<tr>
+<td><code>DontDestroyOnLoad</code></td>
+<td><code>static persistent = true</code></td>
+<td>behavior <code>Persist</code></td>
+</tr>
+<tr>
+<td><code>ScriptableObject</code></td>
+<td><code>ScriptableObject.Load(path)</code></td>
+<td><code>game.loadJSON(path)</code></td>
+</tr>
+<tr>
+<td><code>Debug.Log</code></td>
+<td><code>Debug.Log</code></td>
+<td><code>this.log</code>, <code>console.log(&#39;[Tag] …&#39;)</code></td>
+</tr>
+<tr>
+<td><code>[SerializeField]</code>, <code>[Range]</code>, <code>[Header]</code></td>
+<td><code>SerializeField({...})</code></td>
+<td><code>static attributes = { x: { type, default, min, max, label, description } }</code></td>
+</tr>
+<tr>
+<td><code>UnityEvent</code></td>
+<td><code>UnityEvent</code></td>
+<td><code>entity.on / emit</code>, <code>game.events</code></td>
+</tr>
+<tr>
+<td><code>Animator.SetBool</code></td>
+<td>–</td>
+<td><code>entity.getComponent(&#39;animator&#39;).setBool(name, v)</code> (<a href="../manual/animator.html">Animator</a>)</td>
+</tr>
+<tr>
+<td><code>AudioSource.Play</code></td>
+<td>–</td>
+<td><code>this.audio.play(path, {volume})</code></td>
+</tr>
+<tr>
+<td><code>Canvas / Text / Button</code></td>
+<td>–</td>
+<td><code>this.ui.label / button / bar</code>, <code>.ui.json</code> scenes</td>
+</tr>
+<tr>
+<td><code>Application.Quit</code></td>
+<td><code>Application.Quit()</code></td>
+<td><code>game.pause()</code> (a web game cannot close its tab)</td>
+</tr>
+</tbody></table>
+<h2 id="the-traps-c-to-javascript">The traps (C# to JavaScript)<a class="anchor" href="#the-traps-c-to-javascript">#</a></h2>
+<p><strong>1. <code>this</code> and callbacks.</strong> Inside a normal <code>function () {}</code> callback <code>this</code> is not your script. Use arrow functions:</p>
+<pre class="code" data-lang="js"><code>this.after(1, () =&gt; this.explode());        // arrow: this = the script
+this.after(1, function () { this.explode(); });   // WRONG: this is not the script</code></pre>
+<p><strong>2. Positions are arrays and are copied.</strong> <code>const p = entity.pos; p[0] += 1;</code> changes the entity&#39;s data but the engine is not told: call <code>entity.touch()</code>, or assign a new array (<code>entity.pos = [x, y, z]</code>). <code>entity.pos</code> returns the real array, so copy it if you want a snapshot: <code>const old = [...entity.pos]</code>.</p>
+<p><strong>3. Equality.</strong> Use <code>===</code> (not <code>==</code>). Arrays and objects compare by identity: <code>[1,2] === [1,2]</code> is <code>false</code>. Compare entities with <code>===</code> (same object) and vectors with a distance check.</p>
+<p><strong>4. <code>null</code> vs <code>undefined</code>.</strong> A missing object is <code>null</code> from <code>find()</code>, a missing property is <code>undefined</code>. Guard with <code>if (!target)</code> or optional chaining <code>target?.getScript(Health)?.takeDamage(1)</code>.</p>
+<p><strong>5. No static types.</strong> A typo in a property name is not a compile error: it is <code>undefined</code> at runtime. The editor&#39;s Code tab underlines unknown names where it can, and the Console shows the line when it fails. Keep scripts small and test often (hot reload helps).</p>
+<p><strong>6. Numbers.</strong> All numbers are floating point; <code>5 / 2</code> is <code>2.5</code> (use <code>Math.floor</code> or <code>Math.trunc</code> for integer division). <code>%</code> can be negative: <code>((a % n) + n) % n</code>.</p>
+<p><strong>7. Async is not a coroutine.</strong> <code>await</code> waits for a Promise (loading); it does not stop when the object is destroyed. Spawning returns a Promise (<code>await this.scene.spawn(...)</code>). For gameplay waiting use coroutines or <code>this.after</code>.</p>
+<p><strong>8. Lifecycle names differ by style.</strong> MonoBehaviour: <code>Awake Start Update FixedUpdate LateUpdate</code>. NativeScript: <code>init start update fixedUpdate lateUpdate</code>. If a method never runs, check the capitals and do not mix.</p>
+<p><strong>9. Destroy is deferred.</strong> <code>Destroy(x)</code> removes it at the end of the frame; check <code>x.destroyed</code> instead of <code>x == null</code>.</p>
+<p><strong>10. Imports are the &quot;using&quot; and the references.</strong> One script per file, <code>export default class Name extends …</code>; reference another script by <code>import Name from &#39;./name.js&#39;;</code>. There are no namespaces and no assembly definitions; circular imports between two scripts work if you only use the other class inside methods.</p>
+<p><strong>11. Collections.</strong> <code>List&lt;T&gt;</code> = <code>Array</code> (<code>push</code>, <code>filter</code>, <code>map</code>, <code>find</code>, <code>includes</code>, <code>splice</code>); <code>Dictionary&lt;K,V&gt;</code> = <code>Map</code> or a plain object; <code>HashSet&lt;T&gt;</code> = <code>Set</code>. <code>foreach (var x in list)</code> = <code>for (const x of list)</code>.</p>
+<p><strong>12. Strings.</strong> <code>$&quot;Score {n}&quot;</code> = <code>`Score ${n}`</code> (backticks). <code>string.Format</code> does not exist; use template strings and <code>n.toFixed(1)</code>.</p>
+<p><strong>13. Time units.</strong> Everything is in seconds; rotations in degrees; 2D distances in pixels; 3D in metres. No <code>Quaternion</code>: to rotate towards a direction compute the angle with <code>Math.atan2</code> (see <a href="ex-camera-3d.html">Camera and 3D</a>).</p>
+<p><strong>14. Physics is stepped at 60 Hz.</strong> Put physics work in <code>FixedUpdate</code>; read input in <code>Update</code>. <code>Input.GetKeyDown</code> style checks must be in <code>Update</code>.</p>
+<p><strong>15. No Editor-only attributes.</strong> There is no <code>[ExecuteInEditMode]</code> and no custom inspectors: Inspector fields come from <code>static attributes</code>; editor tools are separate pages (UI Designer, Graph, Animator…).</p>
+<h2 id="where-things-live-project-layout">Where things live (project layout)<a class="anchor" href="#where-things-live-project-layout">#</a></h2>
+<pre class="code" data-lang=""><code>my-game/
+├─ nord.project.json      # = ProjectSettings: display, physics, input actions, start scene
+├─ scenes/*.scene.json    # = Scenes
+├─ prefabs/*.prefab.json  # = Prefabs (and variants)
+├─ scripts/*.js           # = Assets/Scripts
+├─ assets/…               # = images, audio, models, fonts, materials (*.mat.json)
+├─ ui/*.ui.json           # = UI Toolkit / Canvas prefabs
+├─ anim/*.animator.json   # = Animator controllers
+└─ data/*.json            # = ScriptableObject-style data</code></pre>
+<p>Nothing is compiled or imported into a hidden database: files are plain JSON and JavaScript, so Git diffs and merges work, and the whole project can be edited by hand or by an AI agent (see <a href="../manual/ai-mcp.html">AI and MCP</a>).</p>
+<h2 id="mental-model-cheat-sheet">Mental-model cheat sheet<a class="anchor" href="#mental-model-cheat-sheet">#</a></h2>
+<ul>
+<li><strong>GameObject</strong> = <em>Entity</em>; <strong>Component</strong> = data (sprite, collider…), <strong>Script</strong> = code on the entity.</li>
+<li><strong>Prefab</strong> = a saved entity; <strong>instances</strong> keep a link and store only overrides (Inspector shows the blue override markers).</li>
+<li><strong>Update order</strong>: all <code>fixedUpdate</code> steps, then timers/tweens, then <code>update</code>, built-in components, behaviors, <code>lateUpdate</code>, then deferred destroys.</li>
+<li>The <strong>Scene view</strong> and the <strong>Game view</strong> are what you know; <strong>Play</strong> runs the game in the Game panel with live Hierarchy / Inspector.</li>
+</ul>
+<div class="pager"><a href="ex-coin-dash.html"><small>← Previous</small>17 · Coin Dash: a whole small game</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#api-translation-table">API translation table </a><a href="#the-traps-c-to-javascript">The traps (C# to JavaScript) </a><a href="#where-things-live-project-layout">Where things live (project layout) </a><a href="#mental-model-cheat-sheet">Mental-model cheat sheet </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

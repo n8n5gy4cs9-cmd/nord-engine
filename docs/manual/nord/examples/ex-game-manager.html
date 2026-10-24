@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>4 · GameManager and Singletons — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html" class="cur" aria-current="page">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>4 · GameManager and Singletons</h1>
+<p><strong>Goal:</strong> one manager that knows the score, the lives and whether the game is over. A coin tells it &quot;+1&quot;, a HUD listens and redraws, an enemy asks &quot;is the game still running?&quot;.</p>
+<h2 id="unity-c">Unity (C#)<a class="anchor" href="#unity-c">#</a></h2>
+<pre class="code" data-lang="cs"><code>public class GameManager : MonoBehaviour
+{
+    public static GameManager Instance { get; private set; }
+    public int score; public event System.Action&lt;int&gt; OnScore;
+    void Awake() { if (Instance != null) { Destroy(gameObject); return; } Instance = this; DontDestroyOnLoad(gameObject); }
+    public void AddScore(int n) { score += n; OnScore?.Invoke(score); }
+}
+// elsewhere:  GameManager.Instance.AddScore(1);</code></pre>
+<h2 id="nord-use-the-built-in-gamemanager">Nord: use the built-in GameManager<a class="anchor" href="#nord-use-the-built-in-gamemanager">#</a></h2>
+<ol>
+<li><span class="c-ui">Assets ▸ right-click <code>scripts</code> ▸ New GameManager script</span>. It creates <code>export default class extends GameManager {}</code>.</li>
+<li>Create an empty object called <em>GameManager</em> in the <strong>first</strong> scene and add that script. (It survives scene loads by itself.)</li>
+<li>Use it anywhere:</li>
+</ol>
+<pre class="code" data-lang="js"><code>import { GameManager } from 'nord';
+
+GameManager.instance.AddScore(1);          // score += 1, emits 'score' { score }
+GameManager.instance.LoseLife();           // lives -= 1, emits 'lives' { lives }, at 0: GameOver()
+GameManager.instance.SetState('paused');   // emits 'state' { state, previous }
+if (GameManager.instance.state === 'playing') { /* … */ }
+GameManager.instance.Set('keys', 2);       // free data store: Get('keys', 0)
+GameManager.instance.Restart();            // score and lives reset, scene reloaded</code></pre>
+<p>Full member list: <a href="../manual/unity-scripting.html">Unity-style scripting</a>. Its Inspector field <code>startLives</code> sets the starting lives.</p>
+<aside class="box tip"><div class="box-title">Tip</div><p><code>GameManager.instance</code> is <code>null</code> until the manager&#39;s object exists in the <strong>current scene</strong> and has run <code>Awake</code>. Use it from <code>Start()</code> or later, not in a script&#39;s <code>Awake()</code>.</p>
+</aside><h2 id="listening-a-hud-that-redraws-itself">Listening: a HUD that redraws itself<a class="anchor" href="#listening-a-hud-that-redraws-itself">#</a></h2>
+<p>The manager does not know the HUD exists. It emits events on the global bus (<code>this.game.events</code>); the HUD subscribes.</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager } from 'nord';
+
+export default class Hud extends MonoBehaviour {
+  Start() {
+    const gm = GameManager.instance;
+    this.label = this.ui.label(`Score ${gm.score}`, { x: 16, y: 10, size: 26 });
+    this.off = [                                   // keep the unsubscribe functions
+      this.game.events.on('score', ({ score }) =&gt; this.label.set(`Score ${score}`)),
+      this.game.events.on('gameover', () =&gt; this.label.set('Game over')),
+    ];
+  }
+  OnDestroy() { this.off.forEach((f) =&gt; f()); this.label.remove(); }   // always clean up
+}</code></pre>
+<p>Unity&#39;s <code>OnScore += handler; … OnScore -= handler;</code> is <code>const off = events.on(...)</code> and <code>off()</code>.</p>
+<h2 id="writing-your-own-manager-any-singleton">Writing your own manager (any Singleton)<a class="anchor" href="#writing-your-own-manager-any-singleton">#</a></h2>
+<pre class="code" data-lang="js"><code>import { Singleton } from 'nord';
+
+export default class Inventory extends Singleton {
+  static persistent = true;                 // keep it when another scene loads (DontDestroyOnLoad)
+  Awake() { this.items = {}; }
+  Add(id, n = 1) {
+    this.items[id] = (this.items[id] ?? 0) + n;
+    this.game.events.emit('inventory', { id, count: this.items[id] });
+  }
+  Count(id) { return this.items[id] ?? 0; }
+}</code></pre>
+<ul>
+<li>Put the script on <strong>one</strong> object in the scene; a second copy destroys itself with a warning.</li>
+<li>Call it: <code>Inventory.instance.Add(&#39;key&#39;)</code> and <code>Inventory.require()</code> (throws a clear error when missing).</li>
+<li>Import the class where you use it: <code>import Inventory from &#39;./inventory.js&#39;;</code> (or call it by class name when it is registered as a library script).</li>
+</ul>
+<aside class="box warn"><div class="box-title">Careful</div><p><strong>Subclasses:</strong> <code>class CoinManager extends GameManager {}</code> is reachable as <code>CoinManager.instance</code> <strong>and</strong> as <code>GameManager.instance</code>. If you write your own base class between <code>Singleton</code> and your manager, the same applies up the chain.</p>
+</aside><h2 id="a-simple-state-machine-on-top">A simple state machine on top<a class="anchor" href="#a-simple-state-machine-on-top">#</a></h2>
+<pre class="code" data-lang="js"><code>// states: 'menu' | 'playing' | 'paused' | 'gameover'
+GameManager.instance.SetState('playing');
+this.game.events.on('state', ({ state, previous }) =&gt; {
+  if (state === 'paused') this.ui.show('pause'); else this.ui.hide('pause');
+});</code></pre>
+<p>Scripts that must stop when the game is over just check <code>GameManager.instance.state !== &#39;playing&#39;</code> at the top of <code>Update</code>.</p>
+<h2 id="which-way-to-talk-calls-vs-events">Which way to talk? calls vs events<a class="anchor" href="#which-way-to-talk-calls-vs-events">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Use a direct call</th>
+<th>Use an event</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;do this now and I need the result&quot;: <code>Inventory.instance.Count(&#39;key&#39;)</code></td>
+<td>&quot;something happened, whoever cares can react&quot;: <code>emit(&#39;score&#39;)</code></td>
+</tr>
+<tr>
+<td>the receiver is a known single object</td>
+<td>there can be zero, one or many listeners (HUD, sound, achievements)</td>
+</tr>
+</tbody></table>
+<div class="pager"><a href="ex-find-and-talk.html"><small>← Previous</small>3 · Finding objects and talking to scripts</a><a href="ex-spawn-destroy.html"><small>Next →</small>5 · Spawning, prefabs and Destroy</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#unity-c">Unity (C#) </a><a href="#nord-use-the-built-in-gamemanager">Nord: use the built-in GameManager </a><a href="#listening-a-hud-that-redraws-itself">Listening: a HUD that redraws itself </a><a href="#writing-your-own-manager-any-singleton">Writing your own manager (any Singleton) </a><a href="#a-simple-state-machine-on-top">A simple state machine on top </a><a href="#which-way-to-talk-calls-vs-events">Which way to talk? calls vs events </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

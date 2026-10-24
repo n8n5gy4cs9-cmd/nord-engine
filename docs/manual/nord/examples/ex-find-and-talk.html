@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>3 · Finding objects and talking to scripts — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html" class="cur" aria-current="page">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>3 · Finding objects and talking to scripts</h1>
+<p><strong>Goal:</strong> a turret finds the player, reads their health and tells them to take damage.</p>
+<h2 id="finding-things">Finding things<a class="anchor" href="#finding-things">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord (native)</th>
+<th>Nord (MonoBehaviour)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GameObject.Find(&quot;Player&quot;)</code></td>
+<td><code>this.scene.find(&#39;Player&#39;)</code></td>
+<td><code>this.Find(&#39;Player&#39;)</code></td>
+</tr>
+<tr>
+<td><code>GameObject.FindWithTag(&quot;enemy&quot;)</code></td>
+<td><code>this.scene.findByTag(&#39;enemy&#39;)[0]</code></td>
+<td><code>this.FindWithTag(&#39;enemy&#39;)</code></td>
+</tr>
+<tr>
+<td><code>FindGameObjectsWithTag</code></td>
+<td><code>this.scene.findByTag(&#39;enemy&#39;)</code></td>
+<td><code>this.FindGameObjectsWithTag(&#39;enemy&#39;)</code></td>
+</tr>
+<tr>
+<td><code>FindObjectOfType&lt;Health&gt;()</code></td>
+<td>loop <code>scene.all()</code> + <code>getScript(Health)</code></td>
+<td><code>this.FindObjectOfType(Health)</code></td>
+</tr>
+<tr>
+<td><code>transform.Find(&quot;Child&quot;)</code></td>
+<td><code>this.entity.find(&#39;Child&#39;)</code></td>
+<td>same</td>
+</tr>
+<tr>
+<td><code>other.CompareTag(&quot;x&quot;)</code></td>
+<td><code>other.hasTag(&#39;x&#39;)</code></td>
+<td><code>this.CompareTag(&#39;x&#39;)</code> (own tag)</td>
+</tr>
+</tbody></table>
+<p><code>scene.find()</code> returns <code>null</code> when nothing matches: check before using. Names are the object names in the Hierarchy; <strong>tags</strong> are the fast, safe way to find groups (Inspector ▸ Tag).</p>
+<pre class="code" data-lang="js"><code>start() {
+  this.player = this.scene.find('Player');          // do it once in start(), not every frame
+}
+update(dt) {
+  if (!this.player || this.player.destroyed) return; // the object may have been destroyed
+  const d = Math.hypot(this.player.pos[0] - this.entity.pos[0], this.player.pos[1] - this.entity.pos[1]);
+}</code></pre>
+<h2 id="components-and-other-scripts">Components and other scripts<a class="anchor" href="#components-and-other-scripts">#</a></h2>
+<p>Components (sprite, rigidbody, collider, …) are data on the entity; scripts are classes.</p>
+<pre class="code" data-lang="cs"><code>// Unity
+var health = target.GetComponent&lt;Health&gt;();
+health.TakeDamage(10);
+var sr = GetComponent&lt;SpriteRenderer&gt;(); sr.color = Color.red;</code></pre>
+<pre class="code" data-lang="js"><code>// Nord
+import Health from './health.js';                      // the other script's class (default export)
+const health = target.getScript(Health);               // null when the object has no Health script
+health?.takeDamage(10);
+
+this.entity.getComponent('sprite');                    // component data, or null
+this.entity.set('sprite', 'tint', '#ff0000');          // change a component field at runtime
+this.entity.set('text', 'text', 'Hello');              // a text component's string</code></pre>
+<p>Importing the class from its file (<code>import Health from &#39;./health.js&#39;</code>) is the Nord way of &quot;knowing the type&quot;. Paths are relative to the importing file.</p>
+<h2 id="a-complete-example-damage-and-health">A complete example: damage and health<a class="anchor" href="#a-complete-example-damage-and-health">#</a></h2>
+<p><code>scripts/health.js</code></p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+export default class Health extends NordScript {
+  static attributes = { max: { type: 'number', default: 100 } };
+  init() { this.hp = this.attrs.max; }
+  takeDamage(n) {
+    this.hp = Math.max(0, this.hp - n);
+    this.entity.emit('hp', { hp: this.hp, max: this.attrs.max });  // anyone can listen (see Events)
+    if (this.hp === 0) { this.entity.emit('died'); this.entity.destroy(); }
+  }
+}</code></pre>
+<p><code>scripts/turret.js</code></p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+import Health from './health.js';
+
+export default class Turret extends NordScript {
+  static attributes = { range: { type: 'number', default: 250 }, damage: { type: 'number', default: 5 }, every: { type: 'number', default: 1 } };
+  start() { this.player = this.scene.find('Player'); this.cool = 0; }
+  update(dt) {
+    this.cool -= dt;
+    const p = this.player;
+    if (!p || p.destroyed || this.cool &gt; 0) return;
+    const d = Math.hypot(p.pos[0] - this.entity.pos[0], p.pos[1] - this.entity.pos[1]);
+    if (d &lt; this.attrs.range) { p.getScript(Health)?.takeDamage(this.attrs.damage); this.cool = this.attrs.every; }
+  }
+}</code></pre>
+<h2 id="calling-a-method-by-name-sendmessage">Calling a method by name (SendMessage)<a class="anchor" href="#calling-a-method-by-name-sendmessage">#</a></h2>
+<pre class="code" data-lang="js"><code>other.callScripts('takeDamage', 10);     // calls takeDamage(10) on every script of `other` that has it</code></pre>
+<p>Unity&#39;s <code>SendMessage</code>. Handy, but a typed <code>getScript(Class)</code> call is easier to refactor.</p>
+<h2 id="parent-and-children">Parent and children<a class="anchor" href="#parent-and-children">#</a></h2>
+<pre class="code" data-lang="js"><code>this.entity.parent;                       // null for a root object
+this.entity.children;                     // array of child entities
+this.entity.find('Muzzle');               // child by name (searches all descendants)
+for (const e of this.entity.all()) {}     // this object and all descendants</code></pre>
+<p>Child positions are relative to the parent, like <code>localPosition</code>; <code>entity.worldPos</code> gives the absolute position.</p>
+<h2 id="enable-disable">Enable / disable<a class="anchor" href="#enable-disable">#</a></h2>
+<pre class="code" data-lang="js"><code>other.enabled = false;        // SetActive(false): hidden, scripts stop, onDisable is called
+other.tags.includes('boss');  // tags are a plain array</code></pre>
+<div class="pager"><a href="ex-input-movement.html"><small>← Previous</small>2 · Input and movement</a><a href="ex-game-manager.html"><small>Next →</small>4 · GameManager and Singletons</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#finding-things">Finding things </a><a href="#components-and-other-scripts">Components and other scripts </a><a href="#a-complete-example-damage-and-health">A complete example: damage and health </a><a href="#calling-a-method-by-name-sendmessage">Calling a method by name (SendMessage) </a><a href="#parent-and-children">Parent and children </a><a href="#enable-disable">Enable / disable </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

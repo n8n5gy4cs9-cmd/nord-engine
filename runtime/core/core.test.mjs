@@ -297,6 +297,16 @@ test('Singleton: instance, duplicate destroyed, GameManager state', async () => 
   GameManager.instance.LoseLife(); assert.equal(GameManager.instance.lives, 2);
 });
 
+test('Singleton: a subclass of GameManager is reachable as GameManager.instance (the library template)', async () => {
+  class MyManager extends GameManager {}
+  files['mod:my.js'] = MyManager;
+  files.sub = { name: 'sub', entities: [ent('M', { scripts: [{ path: 'my.js' }] })] };
+  const g = mk({ onError: (e) => { throw e; } }); await g.loadScene('sub');
+  assert.equal(MyManager.instance.entity.name, 'M');
+  assert.equal(GameManager.instance, MyManager.instance);
+  GameManager.instance.AddScore(3); assert.equal(MyManager.instance.score, 3);
+});
+
 test('Mathf / Vector3 / UnityEvent', () => {
   assert.equal(Mathf.MoveTowards(0, 10, 3), 3);
   assert.equal(Mathf.PingPong(3.5, 2), 0.5);

@@ -2451,6 +2451,12 @@
       "milestone": "M13",
       "title": "Assets organisation (colors/icons/tags), Notes tab, Console Pro, Dev Console prefab, themes, Unity scripting docs",
       "status": "done"
+    },
+    {
+      "id": "M13-25",
+      "milestone": "M13",
+      "title": "Examples section (Unity-style recipes + Coin Dash), Singleton subclass fix",
+      "status": "done"
     }
   ]
 }

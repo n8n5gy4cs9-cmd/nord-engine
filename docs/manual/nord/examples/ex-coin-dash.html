@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>17 · Coin Dash: a whole small game — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html" class="cur" aria-current="page">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>17 · Coin Dash: a whole small game</h1>
+<p><strong>Coin Dash:</strong> collect coins, avoid red squares, three lives, a game-over screen with restart and a saved best score. About 100 lines of JavaScript, no art needed. The finished project is <code>examples/coin-dash</code> (open it from the hub&#39;s <em>Examples</em>, or <code>nord serve examples/coin-dash</code>).</p>
+<figure class="shot"><img src="../../assets/screenshots/ex-coin-dash-play.png" alt="Coin Dash: a blue square, yellow coins, red enemies and the score" loading="lazy"><figcaption>Coin Dash while playing: you are the blue square.</figcaption></figure><h2 id="the-scene-and-the-objects">The scene and the objects<a class="anchor" href="#the-scene-and-the-objects">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Object</th>
+<th>Components</th>
+<th>Script</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Camera</td>
+<td><code>camera</code></td>
+<td>–</td>
+</tr>
+<tr>
+<td>Player (tag <code>player</code>)</td>
+<td><code>sprite</code>, <code>rigidbody</code> (gravityScale 0), <code>collider</code></td>
+<td><code>player.js</code></td>
+</tr>
+<tr>
+<td>GameManager</td>
+<td>–</td>
+<td><code>game-manager.js</code></td>
+</tr>
+<tr>
+<td>Hud</td>
+<td>–</td>
+<td><code>hud.js</code></td>
+</tr>
+<tr>
+<td>Spawner</td>
+<td>–</td>
+<td><code>spawner.js</code></td>
+</tr>
+</tbody></table>
+<p>Prefabs: <code>prefabs/coin.prefab.json</code> (sprite + <code>trigger</code>, tag <code>coin</code>, <code>coin.js</code>) and <code>prefabs/enemy.prefab.json</code> (sprite + rigidbody + collider, tag <code>enemy</code>, <code>enemy.js</code>).
+<code>nord.project.json</code>: 960×540, physics <code>arcade</code> with <strong>gravity <code>[0,0,0]</code></strong> (top-down), input actions <code>left right up down restart</code>.</p>
+<h2 id="build-it-step-by-step">Build it step by step<a class="anchor" href="#build-it-step-by-step">#</a></h2>
+<ol>
+<li><code>nord new coin-dash -t 2d</code>, copy two small PNGs (<code>assets/sprites/square.png</code>, <code>circle.png</code>) from any template.</li>
+<li>Edit <code>nord.project.json</code>: display 960×540, <code>physics.gravity</code> <code>[0,0,0]</code>.</li>
+<li>Make the objects in the table (the editor: <span class="c-ui">Hierarchy ▸ + Create</span>), add components in the Inspector, make the two prefabs (<span class="c-ui">right-click ▸ Create prefab</span>), delete the prefab instances from the scene.</li>
+<li>Create the scripts below and attach them. Press <span class="c-ui">Play</span>.</li>
+</ol>
+<h2 id="game-manager-js-score-lives-and-state-for-free">game-manager.js: score, lives and state for free<a class="anchor" href="#game-manager-js-score-lives-and-state-for-free">#</a></h2>
+<pre class="code" data-lang="js"><code>import { GameManager } from 'nord';
+export default class CoinGameManager extends GameManager {}</code></pre>
+<p>The built-in manager already has <code>AddScore</code>, <code>LoseLife</code>, <code>state</code>, <code>Restart</code>, <code>SaveHighScore</code> and emits <code>score</code>, <code>lives</code>, <code>gameover</code>. Inspector field: <code>startLives</code> (3).</p>
+<h2 id="player-js-movement-bounds-getting-hurt">player.js: movement, bounds, getting hurt<a class="anchor" href="#player-js-movement-bounds-getting-hurt">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, UnityInput as Input, GameManager } from 'nord';
+
+export default class Player extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 240 });
+  Awake() { this.hurtUntil = 0; }
+
+  FixedUpdate() {
+    const gm = GameManager.instance;
+    const alive = gm &amp;&amp; gm.state === 'playing';
+    const x = alive ? Input.GetAxis('Horizontal') : 0;
+    const y = alive ? -Input.GetAxis('Vertical') : 0;           // screens have y pointing down
+    this.physics.setVelocity(this.entity, x * this.speed, y * this.speed);
+  }
+  LateUpdate() {                                                // stay inside the 960 x 540 arena
+    const p = this.entity.pos;
+    this.entity.pos = [Math.min(945, Math.max(15, p[0])), Math.min(525, Math.max(15, p[1])), p[2]];
+  }
+  OnCollisionEnter(other) {
+    if (!other.hasTag('enemy') || performance.now() &lt; this.hurtUntil) return;
+    this.hurtUntil = performance.now() + 900;                   // short invulnerability
+    GameManager.instance.LoseLife();
+    this.Destroy(other);
+  }
+}</code></pre>
+<p>Unity parallels: <code>[SerializeField]</code> = <code>SerializeField({...})</code>; <code>Rigidbody2D.velocity</code> = <code>physics.setVelocity</code>; <code>OnCollisionEnter2D(Collision2D)</code> = <code>OnCollisionEnter(other)</code> (the other <em>entity</em>); <code>CompareTag</code> = <code>hasTag</code>.</p>
+<h2 id="coin-js-a-trigger-pick-up-that-vanishes">coin.js: a trigger pick-up that vanishes<a class="anchor" href="#coin-js-a-trigger-pick-up-that-vanishes">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager } from 'nord';
+export default class Coin extends MonoBehaviour {
+  Start() { this.Invoke('Vanish', 8); }                         // Invoke(&quot;Vanish&quot;, 8f)
+  OnTriggerEnter(other) {
+    if (!other.hasTag('player')) return;
+    GameManager.instance.AddScore(1);
+    this.Destroy();
+  }
+  Vanish() { this.Destroy(); }
+}</code></pre>
+<h2 id="enemy-js-chase-the-player">enemy.js: chase the player<a class="anchor" href="#enemy-js-chase-the-player">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField } from 'nord';
+export default class Enemy extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 90 });
+  Start() { this.player = this.FindWithTag('player'); }
+  FixedUpdate() {
+    if (!this.player || this.player.destroyed) return;
+    const dx = this.player.pos[0] - this.entity.pos[0], dy = this.player.pos[1] - this.entity.pos[1];
+    const d = Math.hypot(dx, dy) || 1;
+    this.physics.setVelocity(this.entity, (dx / d) * this.speed, (dy / d) * this.speed);
+  }
+}</code></pre>
+<h2 id="spawner-js-two-coroutines">spawner.js: two coroutines<a class="anchor" href="#spawner-js-two-coroutines">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, WaitForSeconds, GameManager } from 'nord';
+
+export default class Spawner extends MonoBehaviour {
+  static attributes = SerializeField({ coinEvery: 1.2, enemyEvery: 5 });
+  Start() { this.StartCoroutine(this.SpawnCoins()); this.StartCoroutine(this.SpawnEnemies()); }
+
+  *SpawnCoins() {
+    while (true) {
+      yield new WaitForSeconds(this.coinEvery);
+      if (GameManager.instance.state !== 'playing') continue;
+      this.Instantiate('prefabs/coin.prefab.json', { pos: [this.game.rng.range(40, 920), this.game.rng.range(40, 500), 1] });
+    }
+  }
+  *SpawnEnemies() {
+    while (true) {                                              // more score = enemies come faster, never faster than 1.5 s
+      yield new WaitForSeconds(Math.max(1.5, this.enemyEvery - GameManager.instance.score * 0.15));
+      if (GameManager.instance.state !== 'playing') continue;
+      const left = this.game.rng.chance(0.5);
+      this.Instantiate('prefabs/enemy.prefab.json', { pos: [left ? 20 : 940, this.game.rng.range(40, 500), 2] });
+    }
+  }
+}</code></pre>
+<p><code>this.game.rng</code> is the game&#39;s seedable random generator (<code>range</code>, <code>int</code>, <code>chance</code>, <code>pick</code>, <code>shuffle</code>): use it instead of <code>Math.random()</code> when you want replays or tests.</p>
+<h2 id="hud-js-listens-to-the-gamemanager-shows-game-over">hud.js: listens to the GameManager, shows game over<a class="anchor" href="#hud-js-listens-to-the-gamemanager-shows-game-over">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager } from 'nord';
+
+export default class Hud extends MonoBehaviour {
+  Start() {
+    const gm = GameManager.instance;
+    this.score = this.ui.label(`Score ${gm.score}`, { x: 16, y: 10, size: 26 });
+    this.lives = this.ui.label(this.Hearts(gm.lives), { anchor: 'tr', x: 16, y: 10, size: 26, color: '#ff8a8a' });
+    this.off = [
+      this.game.events.on('score', ({ score }) =&gt; this.score.set(`Score ${score}`)),
+      this.game.events.on('lives', ({ lives }) =&gt; this.lives.set(this.Hearts(lives))),
+      this.game.events.on('gameover', ({ score }) =&gt; this.ShowGameOver(score)),
+    ];
+  }
+  Hearts(n) { return '♥'.repeat(Math.max(0, n)) || '—'; }
+  ShowGameOver(score) {
+    this.ui.label('GAME OVER', { screen: 'over', anchor: 'c', y: -60, size: 56 });
+    this.ui.label(`Score ${score}   Best ${GameManager.instance.SaveHighScore()}`, { screen: 'over', anchor: 'c', y: 0, size: 26 });
+    this.ui.button('Play again (R)', () =&gt; GameManager.instance.Restart(), { screen: 'over', anchor: 'c', y: 70 });
+    this.ui.show('over');
+  }
+  Update() { if (GameManager.instance.state === 'gameover' &amp;&amp; this.game.input.pressed('restart')) GameManager.instance.Restart(); }
+  OnDestroy() { this.off?.forEach((f) =&gt; f()); this.score?.remove(); this.lives?.remove(); this.ui.clear('over'); this.ui.hide('over'); }
+}</code></pre>
+<figure class="shot"><img src="../../assets/screenshots/ex-coin-dash-over.png" alt="Coin Dash game over screen with score and best score" loading="lazy"><figcaption>The game-over screen: score, best score (saved) and a button.</figcaption></figure><h2 id="what-you-learned-and-where-it-is-explained">What you learned (and where it is explained)<a class="anchor" href="#what-you-learned-and-where-it-is-explained">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Idea</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>attributes in the Inspector</td>
+<td><a href="ex-first-script.html">1 · First script</a></td>
+</tr>
+<tr>
+<td>keyboard axes and physics velocity</td>
+<td><a href="ex-input-movement.html">2 · Input and movement</a></td>
+</tr>
+<tr>
+<td><code>FindWithTag</code>, <code>hasTag</code></td>
+<td><a href="ex-find-and-talk.html">3 · Finding objects</a></td>
+</tr>
+<tr>
+<td>GameManager, events and a HUD</td>
+<td><a href="ex-game-manager.html">4 · GameManager</a></td>
+</tr>
+<tr>
+<td>prefabs, <code>Instantiate</code>, <code>Destroy</code></td>
+<td><a href="ex-spawn-destroy.html">5 · Spawning</a></td>
+</tr>
+<tr>
+<td>triggers and collisions</td>
+<td><a href="ex-collisions.html">6 · Collisions</a></td>
+</tr>
+<tr>
+<td>coroutines, <code>Invoke</code></td>
+<td><a href="ex-time-coroutines.html">7 · Time</a></td>
+</tr>
+<tr>
+<td>labels, buttons, screens</td>
+<td><a href="ex-ui-hud.html">8 · UI</a></td>
+</tr>
+<tr>
+<td>best score</td>
+<td><a href="ex-save-load.html">10 · Saving</a></td>
+</tr>
+</tbody></table>
+<h2 id="ideas-to-extend-it">Ideas to extend it<a class="anchor" href="#ideas-to-extend-it">#</a></h2>
+<ul>
+<li>Power-up prefab (a trigger that sets <code>GameManager.instance.Set(&#39;shield&#39;, true)</code> for 5 s).</li>
+<li>Coins that fly into the score (tween the coin&#39;s <code>pos</code> to the corner, then <code>AddScore</code>).</li>
+<li>Sound: library <code>util-sfx.js</code> + <code>this.events.emit(&#39;sfx&#39;,&#39;coin&#39;)</code> (<a href="ex-audio.html">Audio</a>).</li>
+<li>Waves: a <code>data/waves.json</code> file loaded with <code>ScriptableObject.Load</code> (<a href="ex-data-assets.html">Data assets</a>).</li>
+<li>A start menu scene with the UI Designer.</li>
+</ul>
+<div class="pager"><a href="ex-debug-tools.html"><small>← Previous</small>16 · Debugging and the Dev Console</a><a href="ex-migration.html"><small>Next →</small>18 · Migration guide: C# habits to JavaScript</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#the-scene-and-the-objects">The scene and the objects </a><a href="#build-it-step-by-step">Build it step by step </a><a href="#game-manager-js-score-lives-and-state-for-free">game-manager.js: score, lives and state for free </a><a href="#player-js-movement-bounds-getting-hurt">player.js: movement, bounds, getting hurt </a><a href="#coin-js-a-trigger-pick-up-that-vanishes">coin.js: a trigger pick-up that vanishes </a><a href="#enemy-js-chase-the-player">enemy.js: chase the player </a><a href="#spawner-js-two-coroutines">spawner.js: two coroutines </a><a href="#hud-js-listens-to-the-gamemanager-shows-game-over">hud.js: listens to the GameManager, shows game over </a><a href="#what-you-learned-and-where-it-is-explained">What you learned (and where it is explained) </a><a href="#ideas-to-extend-it">Ideas to extend it </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

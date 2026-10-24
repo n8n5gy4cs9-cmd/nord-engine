@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>6 · Collisions, triggers and raycasts — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html" class="cur" aria-current="page">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>6 · Collisions, triggers and raycasts</h1>
+<p><strong>Goal:</strong> coins you pick up, spikes that hurt, and a melee attack that hits enemies in front of you.</p>
+<h2 id="setup-in-the-inspector">Setup in the Inspector<a class="anchor" href="#setup-in-the-inspector">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>You want</th>
+<th>Add to the object</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>a solid wall / floor</td>
+<td><code>collider</code> (no rigidbody = static)</td>
+</tr>
+<tr>
+<td>a moving solid thing</td>
+<td><code>rigidbody</code> (<code>dynamic</code>) + <code>collider</code></td>
+</tr>
+<tr>
+<td>a pick-up zone / damage area (no bump, only &quot;overlap&quot;)</td>
+<td><code>trigger</code> (or collider with <em>trigger</em> ticked)</td>
+</tr>
+<tr>
+<td>the thing that <em>enters</em> it</td>
+<td>needs a <code>rigidbody</code> + <code>collider</code> (the player)</td>
+</tr>
+</tbody></table>
+<p>Physics is chosen in <code>nord.project.json</code> ▸ <code>physics.engine</code> (<code>arcade</code> for 2D, <code>havok</code> for 3D). The collision events are called on <strong>both</strong> objects.</p>
+<h2 id="events">Events<a class="anchor" href="#events">#</a></h2>
+<h3 id="unity">Unity<a class="anchor" href="#unity">#</a></h3>
+<pre class="code" data-lang="cs"><code>void OnTriggerEnter2D(Collider2D other) { if (other.CompareTag(&quot;Player&quot;)) Pickup(); }
+void OnCollisionEnter2D(Collision2D c)  { if (c.gameObject.CompareTag(&quot;Enemy&quot;)) Hurt(); }</code></pre>
+<h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<pre class="code" data-lang="js"><code>onTriggerEnter(other)   { if (other.hasTag('player')) this.pickup(); }   // other = the other entity
+onTriggerExit(other)    {}
+onCollisionEnter(other, contact) { if (other.hasTag('enemy')) this.hurt(); }
+onCollisionExit(other)  {}
+// MonoBehaviour: OnTriggerEnter(other), OnTriggerExit, OnCollisionEnter, OnCollisionExit</code></pre>
+<p><code>other</code> is the <strong>entity</strong> (not a collider). In 3D, <code>contact</code> is <code>{ point, normal, impulse }</code>. The entity also emits <code>triggerEnter</code>, <code>collisionEnter</code>… on its own bus if you prefer listening: <code>this.entity.on(&#39;triggerEnter&#39;, (other) =&gt; …)</code>.</p>
+<h2 id="pick-up">Pick-up<a class="anchor" href="#pick-up">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager } from 'nord';
+export default class Coin extends MonoBehaviour {
+  OnTriggerEnter(other) {
+    if (!other.hasTag('player')) return;
+    GameManager.instance.AddScore(1);
+    this.Destroy();
+  }
+}</code></pre>
+<h2 id="damage-zone-with-a-cooldown">Damage zone with a cooldown<a class="anchor" href="#damage-zone-with-a-cooldown">#</a></h2>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+export default class Spikes extends NordScript {
+  static attributes = { damage: { type: 'number', default: 1 }, every: { type: 'number', default: 0.8 } };
+  init() { this.inside = new Set(); this.t = 0; }
+  onTriggerEnter(o) { if (o.hasTag('player')) this.inside.add(o); }
+  onTriggerExit(o)  { this.inside.delete(o); }
+  update(dt) {
+    this.t -= dt;
+    if (this.t &gt; 0) return;
+    for (const o of this.inside) if (!o.destroyed) { o.callScripts('takeDamage', this.attrs.damage); this.t = this.attrs.every; }
+  }
+}</code></pre>
+<p>(<code>trigger</code> events fire when entering; for &quot;while standing inside&quot; remember who is inside, like above.)</p>
+<h2 id="hit-things-in-an-area-2d-physics2d-overlapbox">Hit things in an area (2D): Physics2D.OverlapBox<a class="anchor" href="#hit-things-in-an-area-2d-physics2d-overlapbox">#</a></h2>
+<pre class="code" data-lang="js"><code>attack() {
+  const p = this.entity.pos, dir = this.facing;               // 1 or -1
+  const hits = this.physics.overlapBox(p[0] + dir * 30, p[1], 40, 30);   // centre x, y, width, height
+  for (const e of hits) if (e.hasTag?.('enemy')) e.callScripts('takeDamage', 2);
+}</code></pre>
+<p>Entries may also be <code>{ tile: true }</code> markers for solid tilemap tiles, hence the <code>hasTag?.</code>.</p>
+<h2 id="raycast-3d">Raycast (3D)<a class="anchor" href="#raycast-3d">#</a></h2>
+<pre class="code" data-lang="js"><code>const from = this.entity.worldPos, to = [from[0], from[1], from[2] - 20];
+const hit = this.physics.raycast(from, to, { ignore: this.entity });
+if (hit) console.log(hit.entity.name, hit.point, hit.normal, hit.distance);</code></pre>
+<p>Unity: <code>Physics.Raycast(origin, direction, out hit, maxDistance)</code>.</p>
+<h2 id="grounded-check">Grounded check<a class="anchor" href="#grounded-check">#</a></h2>
+<p><code>this.physics.isGrounded(this.entity)</code> works in 2D and 3D (use it before allowing a jump).</p>
+<h2 id="layers-and-what-collides-with-what">Layers and what collides with what<a class="anchor" href="#layers-and-what-collides-with-what">#</a></h2>
+<p>Use <strong>tags</strong> for &quot;who is this&quot; (<code>hasTag</code>) and check them in the event. The <code>layer</code> number on an entity is available as <code>entity.layer</code> for your own rules. There is no layer-collision matrix to configure: if two bodies should not collide, give one a trigger instead of a collider, or ignore the event.</p>
+<aside class="box warn"><div class="box-title">Careful</div><p>Fast small objects (bullets) can pass through thin walls between two physics steps. Make the wall thicker, the bullet slower, or move bullets with <code>physics.setVelocity</code> rather than by assigning <code>pos</code>.</p>
+</aside>
+<div class="pager"><a href="ex-spawn-destroy.html"><small>← Previous</small>5 · Spawning, prefabs and Destroy</a><a href="ex-time-coroutines.html"><small>Next →</small>7 · Time: coroutines, Invoke, timers and tweens</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#setup-in-the-inspector">Setup in the Inspector </a><a href="#events">Events </a><a href="#pick-up">Pick-up </a><a href="#damage-zone-with-a-cooldown">Damage zone with a cooldown </a><a href="#hit-things-in-an-area-2d-physics2d-overlapbox">Hit things in an area (2D): Physics2D.OverlapBox </a><a href="#raycast-3d">Raycast (3D) </a><a href="#grounded-check">Grounded check </a><a href="#layers-and-what-collides-with-what">Layers and what collides with what </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

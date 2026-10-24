@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>8 · UI: HUD, buttons and menus — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html" class="cur" aria-current="page">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>8 · UI: HUD, buttons and menus</h1>
+<p><strong>Goal:</strong> a score label, a health bar, a pause menu with buttons.</p>
+<p>Nord&#39;s game UI is a layer of HTML elements on top of the game (not world objects), so it is always sharp and works on phones. Two ways: from code (quick) or a <code>.ui.json</code> file made in the UI Designer (best for menus).</p>
+<h2 id="from-code-like-creating-a-canvas-in-a-script">From code (like creating a Canvas in a script)<a class="anchor" href="#from-code-like-creating-a-canvas-in-a-script">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager } from 'nord';
+
+export default class Hud extends MonoBehaviour {
+  Start() {
+    this.score = this.ui.label('Score 0', { x: 16, y: 12, size: 28 });                       // top-left
+    this.hp    = this.ui.bar(1, { anchor: 'tr', x: 16, y: 16, w: 200, color: '#ff6b6b' });   // top-right
+    this.help  = this.ui.label('WASD to move', { anchor: 'c', y: 200, size: 18 });             // centre, 200 px lower
+    this.off = this.game.events.on('score', ({ score }) =&gt; this.score.set(`Score ${score}`));
+  }
+  SetHealth(v) { this.hp.set(v); }                         // 0..1
+  OnDestroy() { this.off(); this.score.remove(); this.hp.remove(); this.help.remove(); }
+}</code></pre>
+<ul>
+<li><strong>Anchors:</strong> <code>tl</code> (default), <code>tr</code>, <code>bl</code>, <code>br</code>, <code>c</code> (centre; x / y are offsets). <code>x</code>/<code>y</code> are pixels from that corner.</li>
+<li><strong>Handles:</strong> every call returns <code>{ el, remove() }</code>; labels, buttons and bars also have <code>.set(...)</code>. <code>el</code> is the real HTML element if you want to style it (<code>h.el.style.color = &#39;red&#39;</code>).</li>
+<li><strong>Screens:</strong> group elements: <code>{ screen: &#39;pause&#39; }</code> puts them on a named screen; <code>ui.show(&#39;pause&#39;)</code>, <code>ui.hide(&#39;pause&#39;)</code>, <code>ui.toggle(&#39;pause&#39;)</code>, <code>ui.clear(&#39;pause&#39;)</code>. The default screen is <code>hud</code> (always shown).</li>
+<li>The UI is <strong>not</strong> destroyed when the scene changes: remove what you made in <code>OnDestroy</code>.</li>
+</ul>
+<h2 id="a-pause-menu">A pause menu<a class="anchor" href="#a-pause-menu">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager } from 'nord';
+
+export default class PauseMenu extends MonoBehaviour {
+  Start() {
+    this.ui.label('PAUSED', { screen: 'pause', anchor: 'c', y: -80, size: 48 });
+    this.ui.button('Resume',  () =&gt; this.Toggle(), { screen: 'pause', anchor: 'c', y: 0 });
+    this.ui.button('Restart', () =&gt; GameManager.instance.Restart(), { screen: 'pause', anchor: 'c', y: 60 });
+  }
+  Update() { if (this.game.input.pressed('pause')) this.Toggle(); }   // define a &quot;pause&quot; action: [&quot;Escape&quot;]
+  Toggle() {
+    const open = !this.ui.isShown('pause');
+    open ? this.ui.show('pause') : this.ui.hide('pause');
+    open ? this.game.pause() : this.game.resume();                     // freezes update(); UI buttons keep working
+  }
+  OnDestroy() { this.ui.clear('pause'); this.ui.hide('pause'); }
+}</code></pre>
+<p>Unity: <code>Time.timeScale = 0</code> + a Canvas panel. (Setting <code>Time.timeScale = 0</code> also works; <code>game.pause()</code> freezes the whole scene tick.)</p>
+<h2 id="menus-of-buttons">Menus of buttons<a class="anchor" href="#menus-of-buttons">#</a></h2>
+<pre class="code" data-lang="js"><code>this.ui.menu('title', [
+  { text: 'Play',    onClick: () =&gt; this.game.loadScene('scenes/level1.scene.json') },
+  { text: 'Options', onClick: () =&gt; this.ui.show('options') },
+], { x: 0, y: 0 });
+this.ui.show('title');</code></pre>
+<h2 id="declarative-ui-ui-designer">Declarative UI (UI Designer)<a class="anchor" href="#declarative-ui-ui-designer">#</a></h2>
+<ol>
+<li><span class="c-ui">Window ▸ Editors ▸ UI Designer</span>, build a menu with the node palette, save as <code>ui/menu.ui.json</code>. Name nodes (<code>score</code>, <code>start</code>) and give buttons an <em>Action</em>.</li>
+<li>Load it from a script:</li>
+</ol>
+<pre class="code" data-lang="js"><code>async Start() {
+  this.menu = await this.ui.load('ui/menu.ui.json');           // shows it as a screen
+  this.menu.on('start', () =&gt; this.game.loadScene('scenes/level1.scene.json'));   // button action name
+  this.menu.set('score', 0);                                    // fills {score} in label texts / bound values
+  this.unsub = this.game.events.on('score', ({ score }) =&gt; this.menu.set('score', score));
+}</code></pre>
+<ul>
+<li>In a label write text like <code>Score {score}</code>; <code>menu.set(&#39;score&#39;, 12)</code> updates it, and only changed values touch the page.</li>
+<li>Look and feel (fonts, colours, 9-slice pictures) is set in the designer. See <a href="../manual/ui-designer.html">UI Designer</a>.</li>
+</ul>
+<h2 id="health-bar-above-an-enemy-world-ui">Health bar above an enemy (world UI)<a class="anchor" href="#health-bar-above-an-enemy-world-ui">#</a></h2>
+<p>Easiest: make a child entity with a <code>sprite</code> (a small coloured rectangle) and scale its x by <code>hp / max</code>:</p>
+<pre class="code" data-lang="js"><code>const bar = this.entity.find('HpBar');
+bar.scale = [Math.max(0, hp / max), 1, 1];</code></pre>
+<div class="pager"><a href="ex-time-coroutines.html"><small>← Previous</small>7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-audio.html"><small>Next →</small>9 · Audio</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#from-code-like-creating-a-canvas-in-a-script">From code (like creating a Canvas in a script) </a><a href="#a-pause-menu">A pause menu </a><a href="#menus-of-buttons">Menus of buttons </a><a href="#declarative-ui-ui-designer">Declarative UI (UI Designer) </a><a href="#health-bar-above-an-enemy-world-ui">Health bar above an enemy (world UI) </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>
