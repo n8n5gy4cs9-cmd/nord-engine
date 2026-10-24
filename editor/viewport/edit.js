@@ -46,6 +46,7 @@ export function onMessage(m) {
     case 'settings': Object.assign(state.settings, m); delete state.settings.t; backend?.setSettings?.(); break;
     case 'dropPreview': backend?.dropPreview?.(m); break;
     case 'dropAsset': backend?.dropAsset?.(m); break;
+    case 'alignReq': { const pose = backend?.viewPose?.(); if (pose) send({ t: 'viewPose', ...pose }); break; }
     case 'focus': backend?.focus?.(!!m.all); break;
     case 'view': backend?.setView?.(m); break;
     case 'thumbs': backend?.thumbs?.(m.items ?? []); break;

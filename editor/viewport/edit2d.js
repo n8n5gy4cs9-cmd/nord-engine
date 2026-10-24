@@ -709,6 +709,9 @@ function drawGhost() {
   ctx.restore();
 }
 export function setSettings() { draw(); }
+/** Scene view centre + zoom for the game camera. */
+export function viewPose() { return { pos: [Math.round(cam.x), Math.round(cam.y)], zoom: Math.round(cam.zoom * 1000) / 1000 }; }
+
 export function focus(all) {
   if (all || !selected()) {
     if (!items.length) return;

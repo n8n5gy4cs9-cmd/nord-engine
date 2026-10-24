@@ -743,6 +743,7 @@ impl App {
             Action::AddEntity(p) => st.add_entity(p.or_else(|| st.selection.first().cloned())),
             Action::Focus => st.send_viewport(serde_json::json!({"t":"focus"})),
             Action::FocusAll => st.send_viewport(serde_json::json!({"t":"focus","all":true})),
+            Action::AlignCameraWithView => st.send_viewport(serde_json::json!({"t":"alignReq"})),
             Action::ToggleSpace => st.settings.space_local = !st.settings.space_local,
             Action::TogglePivot => st.settings.pivot_center = !st.settings.pivot_center,
             Action::SetTool(t) => st.tool = t,
@@ -989,6 +990,12 @@ impl App {
                 act(ui, "Add entity", Action::AddEntity(None), st);
                 act(ui, "Frame selected  (F)", Action::Focus, st);
                 act(ui, "Frame all  (Shift+F)", Action::FocusAll, st);
+                act(
+                    ui,
+                    "Align camera with Scene view  (Cmd+Shift+F)",
+                    Action::AlignCameraWithView,
+                    st,
+                );
                 if st.recover.is_some() && ui.button("Recover autosave").clicked() {
                     st.recover_autosave();
                     ui.close_menu();
@@ -1173,6 +1180,7 @@ fn action_icon(a: &Action) -> Option<&'static str> {
         Action::AddEntity(_) => "plus",
         Action::Focus => "focus",
         Action::FocusAll => "maximize",
+        Action::AlignCameraWithView => "video",
         Action::Play | Action::PlayScene => "play",
         Action::Stop => "square",
         Action::Settings | Action::DesktopSettings => "settings",

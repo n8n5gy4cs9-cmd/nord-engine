@@ -23,6 +23,7 @@ The menu bar follows Unity: **File** (New scene, Build Settings), **Edit**, **As
 | W / E / R | Move / Rotate / Scale |
 | T | Rect |
 | F / Shift+F | Frame selected / Frame all |
+| Cmd+Shift+F | Align camera with Scene view: the selected camera (else the active one; a new *Main Camera* if the scene has none) takes the Scene view's position and direction (2D: centre and zoom). Also in the Edit menu |
 
 * **Navigation (3D):** Alt+left-drag orbits, Alt+Cmd+left-drag or middle-drag pans, the wheel zooms, hold the right button to look around and fly with WASDQE (Shift = faster, wheel = speed), Alt+right-drag zooms. **2D:** Alt+left-drag, middle-drag, right-drag or the Hand tool (Q) pans, the wheel zooms. The **axis gizmo** in the top-right corner of the 3D view shows where you are looking; click an axis to look along it.
 * **FPS Level and 2D Level editors** use the same navigation: middle/right-drag, Space or Q (2D Level) pans, the wheel zooms about the cursor, **Ctrl/Cmd** flips snapping while dragging, **Home** fits everything and **Shift+F** frames the selection.

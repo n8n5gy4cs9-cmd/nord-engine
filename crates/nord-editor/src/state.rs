@@ -289,6 +289,8 @@ pub enum Action {
     Focus,
     /// Frame all (Shift+F): fit every entity in the Scene view
     FocusAll,
+    /// GameObject ▸ Align With View: the game camera takes the Scene view's position and direction (Unity Ctrl+Shift+F)
+    AlignCameraWithView,
     ToggleSpace,
     TogglePivot,
     SetTool(Tool),
@@ -1324,6 +1326,73 @@ impl EditorState {
     }
 
     /// Apply messages coming from the edit viewport.
+    /// The Scene view's pose arrived (`viewPose`): put it on the selected camera, else the active one, else a new "Main Camera".
+    /// 3D: position + direction (pitch/yaw, no roll). 2D: centre position + zoom.
+    pub fn apply_view_pose(&mut self, m: &Value) {
+        let Some(pos) = m["pos"].as_array().filter(|a| a.len() >= 2) else {
+            return;
+        };
+        let p = |i: usize| pos.get(i).and_then(Value::as_f64).unwrap_or(0.0);
+        let (px, py, pz) = (p(0), p(1), p(2));
+        let rot = m["rot"]
+            .as_array()
+            .map(|a| [0, 1, 2].map(|i| a.get(i).and_then(Value::as_f64).unwrap_or(0.0)));
+        let zoom = m["zoom"].as_f64();
+        let Some(scene) = self.scene.as_ref() else {
+            return;
+        };
+        let has_cam = |e: &Entity| e.components.iter().any(|c| c.kind == "camera");
+        let sel = self
+            .selection
+            .first()
+            .and_then(|id| scene_ops::find(&scene.entities, id))
+            .filter(|e| has_cam(e));
+        let found = sel.map(|e| e.id.clone()).or_else(|| {
+            let all = scene_ops::flatten(&scene.entities);
+            all.iter()
+                .find(|(_, e)| has_cam(e) && e.enabled)
+                .map(|(_, e)| e.id.clone())
+        });
+        let id = match found {
+            Some(id) => id,
+            None => {
+                let mut e = Entity::new("Main Camera");
+                if let Ok(c) = serde_json::from_value(json!({"type":"camera"})) {
+                    e.components.push(c);
+                }
+                let id = e.id.clone();
+                self.edit("Create camera", None, |l| {
+                    scene_ops::insert(l, None, usize::MAX, e);
+                });
+                id
+            }
+        };
+        let tid = id.clone();
+        self.edit("Align camera with view", None, move |l| {
+            if let Some(e) = scene_ops::find_mut(l, &tid) {
+                e.transform.pos = [
+                    px,
+                    py,
+                    if rot.is_some() {
+                        pz
+                    } else {
+                        e.transform.pos[2]
+                    },
+                ];
+                if let Some(r) = rot {
+                    e.transform.rot = r;
+                }
+                if let Some(z) = zoom {
+                    if let Some(c) = e.components.iter_mut().find(|c| c.kind == "camera") {
+                        c.fields.insert("zoom".into(), json!(z));
+                    }
+                }
+            }
+        });
+        self.select(Some(id));
+        self.toast("Camera aligned with the Scene view");
+    }
+
     pub fn handle_viewport(&mut self, m: &Value) {
         match m["t"].as_str() {
             Some("ready") => {
@@ -1333,6 +1402,7 @@ impl EditorState {
             }
             // 3D Modeler: the save dialog wrote a model file and says what to do with the scene object
             Some("model-saved") => self.modeler_saved(m),
+            Some("viewPose") => self.apply_view_pose(m),
             // embedded pages (UI Designer, Graph) ask the editor to open a project file in the code editor / another tab
             Some("open-file") => {
                 if let (Some(root), Some(p)) = (self.root.clone(), m["path"].as_str()) {
@@ -1648,5 +1718,48 @@ mod appearance_tests {
             );
         }
         assert_eq!(Settings::default().play_tint, [34, 56, 96]);
+    }
+}
+
+#[cfg(test)]
+mod align_camera_tests {
+    use super::*;
+
+    fn st() -> EditorState {
+        let mut st = EditorState::new();
+        st.scene = Some(nord_core::scene::Scene::new("t"));
+        st
+    }
+    fn cams(st: &EditorState) -> Vec<&Entity> {
+        st.scene
+            .as_ref()
+            .unwrap()
+            .entities
+            .iter()
+            .filter(|e| e.components.iter().any(|c| c.kind == "camera"))
+            .collect()
+    }
+
+    #[test]
+    fn creates_a_camera_when_the_scene_has_none_then_reuses_it() {
+        let mut st = st();
+        st.apply_view_pose(&json!({"pos":[1.0,2.0,3.0],"rot":[30.0,45.0,0.0]}));
+        let c = cams(&st);
+        assert_eq!(c.len(), 1);
+        assert_eq!(c[0].transform.pos, [1.0, 2.0, 3.0]);
+        assert_eq!(c[0].transform.rot, [30.0, 45.0, 0.0]);
+        st.apply_view_pose(&json!({"pos":[5.0,6.0,7.0],"rot":[0.0,90.0,0.0]}));
+        let c = cams(&st);
+        assert_eq!(c.len(), 1, "the existing camera is moved, none is added");
+        assert_eq!(c[0].transform.pos, [5.0, 6.0, 7.0]);
+    }
+
+    #[test]
+    fn two_d_pose_sets_position_and_zoom() {
+        let mut st = st();
+        st.apply_view_pose(&json!({"pos":[100.0,50.0],"zoom":2.0}));
+        let c = cams(&st);
+        assert_eq!(&c[0].transform.pos[..2], &[100.0, 50.0]);
+        assert_eq!(c[0].components[0].fields["zoom"], 2.0);
     }
 }

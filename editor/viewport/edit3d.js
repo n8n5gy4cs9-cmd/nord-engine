@@ -618,6 +618,13 @@ export function dropAsset(m) {
   send({ t: 'addAsset', path: m.path, pos: [snap3(p.x), 0, snap3(p.z)] });
 }
 
+/** Scene view camera as a game camera transform (entity rot = [pitch, yaw, roll] degrees, Babylon yaw/pitch/roll order). */
+export function viewPose() {
+  const p = camera.position, f = camera.getTarget().subtract(p).normalize();
+  const D = 180 / Math.PI, r = (v) => Math.round(v * 1000) / 1000;
+  return { pos: [r(p.x), r(p.y), r(p.z)], rot: [r(Math.asin(Math.max(-1, Math.min(1, -f.y))) * D), r(Math.atan2(f.x, f.z) * D), 0] };
+}
+
 export function focus(all) {
   if (all || !nodes.get(state.selection[0])) {
     const roots = [...nodes.values()].map((n) => n.node).filter((n) => n.getChildMeshes().length);
