@@ -440,9 +440,36 @@ impl EditorState {
             file: file.into(),
             entity: entity.into(),
             prefab,
+            mesh: None,
             nonce,
         });
         self.push(crate::state::Action::ShowTab(crate::app::Tab::Modeler));
+    }
+
+    /// Inspector ▸ MESH ▸ Edit in 3D Modeler: open the primitive as editable geometry. Saving writes a model and swaps the
+    /// object's `mesh` component for a `model`; closing without saving changes nothing.
+    pub fn open_mesh_in_modeler(&mut self, entity: &str, c: &nord_core::scene::Component) {
+        let f = |k: &str, d: f64| c.fields.get(k).and_then(Value::as_f64).unwrap_or(d);
+        let size = match c.fields.get("size").and_then(Value::as_array) {
+            Some(a) if a.len() >= 3 => [0, 1, 2].map(|i| a[i].as_f64().unwrap_or(1.0)),
+            _ => [1.0, 1.0, 1.0],
+        };
+        let shape = c
+            .fields
+            .get("shape")
+            .and_then(Value::as_str)
+            .unwrap_or("box")
+            .to_string();
+        let name = self
+            .scene
+            .as_ref()
+            .and_then(|s| scene_ops::find(&s.entities, entity))
+            .map(|e| e.name.clone())
+            .unwrap_or_default();
+        self.open_in_modeler(entity, "");
+        if let Some(ctx) = self.modeler_ctx.as_mut() {
+            ctx.mesh = Some((shape, size, f("segments", 24.0) as i64, name));
+        }
     }
 
     /// The Modeler's save dialog wrote `file`; `mode` says what happens to the scene object:
@@ -458,6 +485,13 @@ impl EditorState {
         let set_path = |e: &mut Entity, p: &str| {
             if let Some(c) = e.components.iter_mut().find(|c| c.kind == "model") {
                 c.fields.insert("path".into(), Value::String(p.into()));
+            } else if let Some(i) = e.components.iter().position(|c| c.kind == "mesh") {
+                // a primitive that was edited as a model becomes that model
+                e.components[i] = nord_core::scene::Component {
+                    kind: "model".into(),
+                    fields: serde_json::from_value(serde_json::json!({ "path": p }))
+                        .unwrap_or_default(),
+                };
             }
         };
         let mut ctx_prefab = prefab.clone();

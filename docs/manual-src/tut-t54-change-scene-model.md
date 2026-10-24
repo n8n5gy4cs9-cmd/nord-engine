@@ -19,6 +19,10 @@ Many entities can share **one** model file, and a **prefab** is a saved entity y
 
 If the status says animations or extra textures will be lost, remember it for step 4: choose a **new** model, not Overwrite.
 
+::: tip
+**No MODEL component, only MESH?** Built-in shapes (box, cylinder…) are not model files. In the **MESH** component press **Edit as model in 3D Modeler**; saving replaces the mesh with your new model, cancelling changes nothing. See the [3D Modeler chapter](modeler.html).
+:::
+
 ## 2. Change the shape
 Use **Face** mode, click faces, then **Extrude** / **Inset** / move with the gizmo. **Mirror X** for symmetric changes, **Center on ground** keeps it on the floor. Details of every tool: [3D Modeler chapter](modeler.html).
 

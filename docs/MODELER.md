@@ -10,6 +10,9 @@ Create: cube, plane, cylinder, sphere, draw polygon, add vertex, fill boundary, 
 ## Scene models (Inspector ▸ MODEL ▸ ⋮ ▸ Open in 3D Modeler)
 `?file=models/x.glb&entity=<id>&prefab=<path>` opens a `.glb`/`.gltf` as is (three.js `GLTFLoader`, vendored): meshes merged with node transforms, first texture kept (max 1024 px), plain material colours baked to vertex colours, duplicates welded. **Save** then shows a dialog (overwrite / new model / new prefab / new prefab variant) and POSTs `{t:'model-saved', mode, file, entity, prefab}` to `/api/ipc`; the editor (`EditorState::modeler_saved`, `prefab.rs`) switches the object's `model.path`, makes the prefab or the variant (override diff) and pushes the new context back to the page. Lost on save: skeleton/animation, extra textures, smooth normals. Full guide + tutorials: manual chapter *3D Modeler*, T49, T54. Screenshots: `node tools/modeler-shots.mjs`.
 
+## Scene mesh primitives (Inspector ▸ MESH ▸ Edit as model in 3D Modeler)
+`?mesh=<shape>&size=x,y,z&seg=n&ename=<name>&entity=<id>` builds the primitive as editable geometry (box→cube, sphere, cylinder, capsule→cylinder, plane/ground, torus; sizes as in `runtime/babylon/components.js`). **Save** offers *new model for this object* / *new prefab* (no overwrite: there is no file). The editor's `modeler_saved` replaces the object's `mesh` component by `model {path}` (also for the base entity when a prefab variant is made). Not saving sends no message, so the scene is untouched. Console: lines and the filter buttons now carry Info / Warn / Error / Build icons.
+
 ## Limits / not done
 GLB import only through Open in 3D Modeler (no menu to import an arbitrary file yet), no skeleton/animation authoring, no vertex-colour bake. Texture is one image per mesh. Undo keeps whole-mesh snapshots (80 steps / 32 MB). Native-window behaviour (wry) not verified here.
 

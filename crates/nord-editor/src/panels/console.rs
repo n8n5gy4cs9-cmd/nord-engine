@@ -45,6 +45,15 @@ pub fn find_location(s: &str) -> Option<(String, usize)> {
     None
 }
 
+fn level_color(i: usize, ui: &Ui, th: &crate::theme::Theme) -> egui::Color32 {
+    match i {
+        0 => ui.visuals().text_color(),
+        1 => hex(&th.ui.warn),
+        2 => hex(&th.ui.bad),
+        _ => hex(&th.ui.accent),
+    }
+}
+
 fn level_idx(l: &LogLevel) -> usize {
     match l {
         LogLevel::Info => 0,
@@ -78,17 +87,34 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         if ui.small_button("Clear").clicked() {
             st.console.clear();
         }
-        for (i, (n, c)) in [
-            ("Info", None),
-            ("Warn", Some("warn")),
-            ("Error", Some("bad")),
-            ("Build", None),
+        for (i, (n, icon)) in [
+            ("Info", "info"),
+            ("Warn", "alert-triangle"),
+            ("Error", "alert-circle"),
+            ("Build", "hammer"),
         ]
         .iter()
         .enumerate()
         {
-            let _ = c;
-            ui.toggle_value(&mut st.console_ui.show[i], *n);
+            let count = st
+                .console
+                .iter()
+                .filter(|l| level_idx(&l.level) == i)
+                .count();
+            let tint = level_color(i, ui, &st.themes.theme(&st.settings.theme).clone());
+            let on = st.console_ui.show[i];
+            let b = egui::Button::image_and_text(
+                crate::icons::icon(icon, 13.0, if on { tint } else { tint.gamma_multiply(0.5) }),
+                format!("{n} {count}"),
+            )
+            .selected(on);
+            if ui
+                .add(b)
+                .on_hover_text(format!("Show / hide {n} lines"))
+                .clicked()
+            {
+                st.console_ui.show[i] = !on;
+            }
         }
         ui.toggle_value(&mut st.console_ui.collapse, "Collapse")
             .on_hover_text("Show identical lines once, with a count");
@@ -137,30 +163,35 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     LogLevel::Build => hex(&th.ui.accent),
                 };
                 let loc = find_location(&l.text);
-                let r = ui.add(
-                    egui::Label::new(
-                        RichText::new(if n > 1 {
-                            format!("({n}) {}", l.text)
+                let icon = ["info", "alert-triangle", "alert-circle", "hammer"][idx];
+                ui.horizontal(|ui| {
+                    ui.add(crate::icons::icon(icon, 12.0, color));
+                    ui.spacing_mut().item_spacing.x = 4.0;
+                    let r = ui.add(
+                        egui::Label::new(
+                            RichText::new(if n > 1 {
+                                format!("({n}) {}", l.text)
+                            } else {
+                                l.text.clone()
+                            })
+                            .monospace()
+                            .color(color),
+                        )
+                        .sense(if loc.is_some() {
+                            egui::Sense::click()
                         } else {
-                            l.text.clone()
-                        })
-                        .monospace()
-                        .color(color),
-                    )
-                    .sense(if loc.is_some() {
-                        egui::Sense::click()
-                    } else {
-                        egui::Sense::hover()
-                    }),
-                );
-                if let Some(loc) = loc {
-                    if r.on_hover_cursor(egui::CursorIcon::PointingHand)
-                        .on_hover_text("Click to open")
-                        .clicked()
-                    {
-                        open = Some(loc);
+                            egui::Sense::hover()
+                        }),
+                    );
+                    if let Some(loc) = loc {
+                        if r.on_hover_cursor(egui::CursorIcon::PointingHand)
+                            .on_hover_text("Click to open")
+                            .clicked()
+                        {
+                            open = Some(loc);
+                        }
                     }
-                }
+                });
             }
         });
     if let Some((p, line)) = open {

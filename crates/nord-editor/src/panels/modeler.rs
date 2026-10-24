@@ -29,13 +29,27 @@ pub fn ui(
             enc(&c.prefab),
             c.nonce
         );
+        if let Some((shape, sz, seg, name)) = &c.mesh {
+            url += &format!(
+                "&mesh={}&size={},{},{}&seg={seg}&ename={}",
+                enc(shape),
+                sz[0],
+                sz[1],
+                sz[2],
+                enc(name)
+            );
+        }
     }
     ui.horizontal(|ui| {
         if ui.button("Open in browser").clicked() {
             open_in_browser(&url);
         }
         if let Some(c) = &st.modeler_ctx {
-            ui.label(format!("Editing {}", c.file));
+            ui.label(if c.file.is_empty() {
+                "Editing the object's mesh as a model".to_string()
+            } else {
+                format!("Editing {}", c.file)
+            });
             if ui
                 .small_button("Detach")
                 .on_hover_text("Forget the scene object: free modelling again")

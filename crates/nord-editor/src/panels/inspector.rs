@@ -1015,6 +1015,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     let mut e: Entity = orig.clone();
     let mut docs: Option<String> = None;
     let mut open_modeler: Option<String> = None;
+    let mut open_mesh: Option<nord_core::scene::Component> = None;
     let mut prefab_op: Option<(String, u8)> = None;
     egui::ScrollArea::vertical()
         .auto_shrink([false; 2])
@@ -1241,6 +1242,9 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 let (hdr, _, _) = header.body(|ui| {
                     ui.add_enabled_ui(on, |ui| {
                         fields_ui(ui, &cx, &fields, &mut c.fields, &id, base_comp(i, &c.kind));
+                        if c.kind == "mesh" && ui.button("Edit as model in 3D Modeler").on_hover_text("Turns this primitive into editable geometry. Save in the Modeler to use the result on this object (the mesh becomes a model); closing without saving changes nothing.").clicked() {
+                            open_mesh = Some(c.clone());
+                        }
                         if c.kind == "model" {
                             let p = c.fields.get("path").and_then(Value::as_str).unwrap_or_default();
                             if ui
@@ -1485,6 +1489,15 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     }
     if let Some(page) = docs {
         st.push(crate::state::Action::OpenDocs(page));
+    }
+    if let Some(c) = open_mesh {
+        let id = if child_ctx.is_some() {
+            ""
+        } else {
+            inst.id.as_str()
+        };
+        st.open_mesh_in_modeler(id, &c);
+        return;
     }
     if let Some(file) = open_modeler {
         // a prefab child has no scene id of its own: open the file only (save = overwrite / new file)

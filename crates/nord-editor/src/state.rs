@@ -235,6 +235,8 @@ pub struct ModelerCtx {
     pub file: String,
     pub entity: String,
     pub prefab: String,
+    /// A scene `mesh` primitive to open as editable geometry instead of a file: (shape, size, segments, entity name).
+    pub mesh: Option<(String, [f64; 3], i64, String)>,
     /// Bumped on every open so re-opening the same file reloads the page.
     pub nonce: u32,
 }

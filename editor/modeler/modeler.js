@@ -258,9 +258,21 @@ $('#mesh-obj').onchange=()=>run(async()=>{const file=$('#mesh-obj').files[0];if(
 
 // ---------- scene models: open a .glb/.gltf as is (mesh + texture), save back with "overwrite / new / prefab / variant" ----------
 const params=new URLSearchParams(location.search);
-const ctx={file:params.get('file')||'',entity:params.get('entity')||'',prefab:params.get('prefab')||''};
+const ctx={file:params.get('file')||'',entity:params.get('entity')||'',prefab:params.get('prefab')||'',mesh:params.get('mesh')||'',ename:params.get('ename')||''};
 const ipc=m=>fetch('/api/ipc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(m)}).catch(()=>{});
 window.addEventListener('message',e=>{if(e.data?.t==='ctx'){ctx.file=e.data.file||'';ctx.entity=e.data.entity||'';ctx.prefab=e.data.prefab||'';$('#mesh-name').value=ctx.file.split('/').pop().replace(/\.[^.]+$/,'');updateWhere();status('Now editing '+ctx.file);}});
+
+// A scene `mesh` primitive (box, sphere, cylinder, plane/ground, capsule, torus) as editable geometry; sizes match runtime/babylon/components.js.
+function meshFromShape(shape,size,seg){
+ const m={format:'nord-mesh-1',vertices:[],faces:[],colors:[],seams:[],color:'#ffffff',texture:null};
+ const [sx,sy,sz]=size.length>=3?size:[size[0]||1,size[1]||1,size[2]??size[0]??1];
+ if(shape==='torus'){const R=sx/2,r=(sy||.3)/2,a=Math.max(8,Math.min(48,seg||24)),b=12;for(let i=0;i<a;i++)for(let j=0;j<b;j++){const u=i/a*Math.PI*2,v=j/b*Math.PI*2,c=R+r*Math.cos(v);m.vertices.push([c*Math.cos(u),r*Math.sin(v),c*Math.sin(u)]);m.colors.push([1,1,1]);}
+  for(let i=0;i<a;i++)for(let j=0;j<b;j++){const n=(i+1)%a,k=(j+1)%b;m.faces.push({v:[i*b+j,n*b+j,n*b+k,i*b+k],uv:[[0,0],[0,0],[0,0],[0,0]]});}unwrap(m,m.faces.map((_,i)=>i),true);return m;}
+ const kind={box:'cube',sphere:'sphere',cylinder:'cylinder',capsule:'cylinder',plane:'plane',ground:'plane'}[shape]||'cube';
+ const ids=primitive(m,kind),k={cube:[sx,sy,sz],sphere:[sx,sx,sx],cylinder:[sx,sy,sx],plane:[sx,1,shape==='ground'?(sz||sy):sz],}[kind];
+ for(const i of ids){m.vertices[i]=m.vertices[i].map((v,a)=>v*k[a]/2);}
+ while(m.colors.length<m.vertices.length)m.colors.push([1,1,1]);
+ return m;}
 async function importGlb(buf,path){
  const dir=path.includes('/')?'/'+path.slice(0,path.lastIndexOf('/')+1):'/';
  const gltf=await new GLTFLoader().parseAsync(buf,dir);gltf.scene.updateMatrixWorld(true);
@@ -281,7 +293,7 @@ async function importGlb(buf,path){
 }
 async function glbBytes(){const g=geometry(model),mat=new THREE.MeshStandardMaterial({color:model.color,vertexColors:true,flatShading:true,side:THREE.DoubleSide,map:model.texture?texture:null});try{return await new GLTFExporter().parseAsync(new THREE.Mesh(g,mat),{binary:true});}finally{g.dispose();mat.dispose();}}
 function saveChoice(){return new Promise(resolve=>{
- const inModels=/^models\//.test(ctx.file),cur=ctx.file.split('/').pop().replace(/\.[^.]+$/,''),isPrefab=!!ctx.prefab,hasEntity=!!ctx.entity;
+ const inModels=/^models\//.test(ctx.file),cur=(ctx.file?ctx.file.split('/').pop().replace(/\.[^.]+$/,''):base()),isPrefab=!!ctx.prefab,hasEntity=!!ctx.entity;
  const opts=[];
  if(inModels)opts.push({mode:'overwrite',title:'Overwrite the model',text:`Replaces ${ctx.file}: EVERY entity${isPrefab?', prefab instance':''} using this model changes${ctx.lossy?' (animations / skeleton are lost)':''}.`});
  if(hasEntity&&isPrefab)opts.push({mode:'variant',title:'Save as a new prefab variant',text:'New model file + a variant of the prefab that uses it. The selected object switches to the variant; the original prefab and other instances stay as they are.',name:true});
@@ -303,5 +315,6 @@ async function saveForScene(){
 }
 
 // ---------- start ----------
+if(!ctx.file&&ctx.mesh){try{const size=(params.get('size')||'1,1,1').split(',').map(Number),seg=Number(params.get('seg'))||24;model=meshFromShape(ctx.mesh,size,seg);$('#mesh-name').value=(ctx.ename||ctx.mesh).replace(/[^\w-]+/g,'_');status(`Opened the ${ctx.mesh} mesh of the scene object as editable geometry. Save to put it on the object; closing without saving changes nothing.`);}catch(e){status('Could not build the mesh: '+e.message);}}
 {const q=ctx.file;if(q){try{const r=await fetch('/'+q.replace(/^\/+/,''),{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);if(/\.(glb|gltf)$/i.test(q)){model=await importGlb(await r.arrayBuffer(),q);}else model=validate(await r.json());$('#mesh-name').value=q.split('/').pop().replace(/\.mesh\.json$|\.json$|\.glb$|\.gltf$/i,'');}catch(e){status('Could not open '+q+': '+e.message);}}}
 updateWhere();setView('3d');$('#mesh-color').value=model.color;await loadTexture();fit();

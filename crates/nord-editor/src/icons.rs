@@ -100,6 +100,7 @@ icons!(
     "clipboard",
     "clipboard-paste",
     "maximize",
+    "hammer",
 );
 
 /// Lucide icon that stands for a component type in the Inspector header (falls back to the generic component icon).

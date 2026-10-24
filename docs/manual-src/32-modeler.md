@@ -23,6 +23,16 @@ Three ways, all do the same:
 If the button is greyed out the MODEL component has no **Path** yet. If you cannot see a MODEL component the object has no model: add one with **+ Add component ▸ Model**, or drag a `.glb` from the Assets tab onto the object. After updating Nord Engine, restart the editor so the new buttons appear.
 :::
 
+## Edit a built-in shape (mesh) as a model
+Objects like Neon Harbor's towers use a **MESH** component (box, sphere, cylinder, capsule, plane/ground, torus + size) instead of a model file, so there is no file to open. Turn one into a model:
+
+1. Select the object. In the Inspector, **MESH** component, press **Edit as model in 3D Modeler**.
+2. The Modeler opens with that shape as editable geometry, in the right size. Shape it, paint a texture.
+3. Press **Save** and choose **Save as a new model for the selected object** (or **Save as a new prefab**). The object's **MESH** component is replaced by a **MODEL** component that points at the new `.glb`.
+4. **Nothing is changed until you save.** Close the tab or never press Save and the object keeps its mesh exactly as it was.
+
+Notes: a capsule opens as a cylinder; the number of sides follows the Modeler's primitives, not the component's *segments*; the mesh's material component stays on the object (the model brings its own colours and texture), remove it if you do not want it.
+
 ## Quick tasks (step by step)
 
 **Make a model from nothing.** Press **New**, type a name in the box at the top, click **Cube**. Move/shape it (below), open the **Texture** tab and paint, then **Save** and press **GLB**. Full lesson: [T49](tut-t49-3d-modeler.html).
