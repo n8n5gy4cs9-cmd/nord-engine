@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>20 · A shooter: Star Shooter — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html" class="cur" aria-current="page">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>20 · A shooter: Star Shooter</h1>
+<p><strong>Goal:</strong> a top-down space shooter: WASD to fly, the mouse to aim, hold the button to fire, survive endless waves. Project: <code>examples/star-shooter</code>.</p>
+<figure class="shot"><img src="../../assets/screenshots/ex-star-shooter-play.png" alt="Star Shooter: a green ship firing yellow bullets at red enemies, score and wave counter, a health bar" loading="lazy"><figcaption>Star Shooter: bullets in flight, enemies closing in, an explosion fading.</figcaption></figure><h2 id="objects">Objects<a class="anchor" href="#objects">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Object</th>
+<th>Components</th>
+<th>Scripts</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Player (tag <code>player</code>)</td>
+<td><code>sprite</code>, <code>rigidbody</code> (gravity 0), <code>collider</code></td>
+<td><code>health.js</code> (library) + <code>ship.js</code></td>
+</tr>
+<tr>
+<td>GameManager, Hud, Spawner</td>
+<td>–</td>
+<td><code>game-manager.js</code>, <code>hud.js</code>, <code>spawner.js</code></td>
+</tr>
+<tr>
+<td><em>prefab</em> Bullet</td>
+<td><code>sprite</code>, <code>rigidbody</code>, <code>trigger</code></td>
+<td><code>bullet.js</code></td>
+</tr>
+<tr>
+<td><em>prefab</em> Enemy (tag <code>enemy</code>)</td>
+<td><code>sprite</code>, <code>rigidbody</code>, <code>collider</code></td>
+<td><code>health.js</code> + <code>enemy.js</code></td>
+</tr>
+<tr>
+<td><em>prefab</em> Explosion</td>
+<td><code>particles</code> (burst)</td>
+<td><code>explosion.js</code></td>
+</tr>
+</tbody></table>
+<p>Project: gravity <code>[0,0,0]</code>, actions <code>left right up down fire (Mouse0, Space) restart</code>.</p>
+<h2 id="aim-at-the-mouse">Aim at the mouse<a class="anchor" href="#aim-at-the-mouse">#</a></h2>
+<pre class="code" data-lang="js"><code>Update() {
+  const p = this.input.pointer, e = this.entity.pos;                 // pointer.worldX / worldY are in world units
+  const angle = Math.atan2(p.worldY - e[1], p.worldX - e[0]) * 180 / Math.PI;   // degrees, 0 = pointing right
+  this.entity.rot = [0, 0, angle];                                   // 2D rotation is the z angle in degrees
+  if (this.input.down('fire') &amp;&amp; this.game.time.elapsed &gt;= this.next) { this.next = this.game.time.elapsed + this.cooldown; this.Shoot(angle); }
+}</code></pre>
+<p>Unity: <code>Camera.main.ScreenToWorldPoint(Input.mousePosition)</code> + <code>Mathf.Atan2</code>. Here the engine already gives you world coordinates.</p>
+<h2 id="bullets-from-an-object-pool">Bullets from an object pool<a class="anchor" href="#bullets-from-an-object-pool">#</a></h2>
+<pre class="code" data-lang="js"><code>async Start() {
+  this.pool = new ObjectPool(this.scene, 'prefabs/bullet.prefab.json');
+  await this.pool.Warm(20);                              // create 20 bullets once, disabled
+}
+async Shoot(angle) {
+  const r = angle * Math.PI / 180, e = this.entity.pos;
+  const b = await this.pool.Get({ pos: [e[0] + Math.cos(r) * 26, e[1] + Math.sin(r) * 26, 4] });   // reuse a free bullet and enable it
+  b.getScript(Bullet).Launch(this.pool, r);
+}</code></pre>
+<pre class="code" data-lang="js"><code>// bullet.js
+Launch(pool, radians) { this.pool = pool; this.age = 0; this.alive = true; this.physics.setVelocity(this.entity, Math.cos(radians) * this.speed, Math.sin(radians) * this.speed); }
+Update(dt) { if (!this.alive) return; this.age += dt; if (this.age &gt; this.life) this.Recycle(); }
+OnTriggerEnter(other) { if (this.alive &amp;&amp; other.hasTag('enemy')) { other.emit('damage', { amount: this.damage, from: this.entity }); this.Recycle(); } }
+Recycle() { if (!this.alive) return; this.alive = false; this.physics.setVelocity(this.entity, 0, 0); this.pool?.Release(this.entity); }</code></pre>
+<p><code>Release</code> only <em>disables</em> the object, so the next <code>Get</code> costs nothing; the <code>alive</code> flag guards against recycling twice. See <a href="ex-spawn-destroy.html">Spawning</a> for pools in general.</p>
+<h2 id="health-reuse-the-library-script-talk-to-it-with-events">Health: reuse the library script, talk to it with events<a class="anchor" href="#health-reuse-the-library-script-talk-to-it-with-events">#</a></h2>
+<p>The library <code>health.js</code> (copied into <code>scripts/</code>) handles hit points on <strong>any</strong> object. You never call it directly; you send an event, and it answers with events:</p>
+<pre class="code" data-lang="js"><code>other.emit('damage', { amount: 1, from: this.entity });   // &quot;please take 1 damage&quot;
+// health.js emits on the same object:   'health' { hp, max }   and   'death'</code></pre>
+<pre class="code" data-lang="js"><code>this.entity.on('death', () =&gt; this.Die());                 // ship.js: game over
+player.on('health', ({ hp, max }) =&gt; this.bar.set(hp / max));   // hud.js: the health bar</code></pre>
+<p>Set <code>max</code>, <code>invulnTime</code> (blink time after a hit) and <code>destroyOnDeath</code> per object in the Inspector: the player has 5 hp and survives, enemies have 2 hp and <code>destroyOnDeath</code> on. More patterns: <a href="ex-health-damage.html">Health and damage</a>.</p>
+<h2 id="enemies-chase-ram-explode">Enemies: chase, ram, explode<a class="anchor" href="#enemies-chase-ram-explode">#</a></h2>
+<pre class="code" data-lang="js"><code>// enemy.js
+Start() { this.player = this.FindWithTag('player'); this.entity.on('death', () =&gt; this.Explode()); }
+FixedUpdate() { /* velocity towards the player, see the AI page */ }
+OnCollisionEnter(other) { if (other.hasTag('player')) { other.emit('damage', { amount: 1 }); this.entity.emit('damage', { amount: 99 }); } }
+Explode() {
+  GameManager.instance.AddScore(10);
+  this.Instantiate('prefabs/explosion.prefab.json', { pos: [this.entity.pos[0], this.entity.pos[1], 6] });
+}</code></pre>
+<p>The explosion prefab is a <code>particles</code> component with <strong>burst</strong> ticked (<code>quantity</code> 22, <code>lifespan</code> 550 ms, <code>speed</code> 240, small <code>scale</code>) and a script that destroys the object after 0.9 s.</p>
+<h2 id="waves-with-a-coroutine">Waves with a coroutine<a class="anchor" href="#waves-with-a-coroutine">#</a></h2>
+<pre class="code" data-lang="js"><code>*Waves() {
+  for (let wave = 1; ; wave++) {
+    GameManager.instance.Set('wave', wave);                               // the HUD listens to the 'data' event
+    yield new WaitForSeconds(1.5);
+    for (let i = 0; i &lt; 3 + wave; i++) { this.SpawnEnemy(wave); yield new WaitForSeconds(0.45); }
+    yield new WaitUntil(() =&gt; this.FindGameObjectsWithTag('enemy').length === 0 || GameManager.instance.state !== 'playing');
+  }
+}</code></pre>
+<p>One readable loop replaces a timer-and-state-variable mess; Unity people write exactly this with <code>IEnumerator</code>.</p>
+<figure class="shot"><img src="../../assets/screenshots/ex-star-shooter-over.png" alt="Star Shooter game over screen: Ship destroyed, score and best score" loading="lazy"><figcaption>When the player's health reaches 0 the ship emits <code>death</code>, the GameManager emits <code>gameover</code> and the HUD shows this screen.</figcaption></figure><h2 id="ideas">Ideas<a class="anchor" href="#ideas">#</a></h2>
+<p>Power-ups (a <code>pickup.js</code> that heals), shooter enemies (spawn bullets towards the player), a boss (library <code>ai-boss.js</code>), screen shake on hits (<a href="ex-juice-effects.html">Effects</a>), sound (<a href="ex-audio.html">Audio</a>).</p>
+<div class="pager"><a href="ex-platformer.html"><small>← Previous</small>19 · A platformer: Jump Dash</a><a href="ex-health-damage.html"><small>Next →</small>21 · Health, damage and death</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#objects">Objects </a><a href="#aim-at-the-mouse">Aim at the mouse </a><a href="#bullets-from-an-object-pool">Bullets from an object pool </a><a href="#health-reuse-the-library-script-talk-to-it-with-events">Health: reuse the library script, talk to it with events </a><a href="#enemies-chase-ram-explode">Enemies: chase, ram, explode </a><a href="#waves-with-a-coroutine">Waves with a coroutine </a><a href="#ideas">Ideas </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>21 · Health, damage and death — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html" class="cur" aria-current="page">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>21 · Health, damage and death</h1>
+<p><strong>Goal:</strong> anything can be damaged (player, enemy, crate) with the same script, and nothing needs to know who is who.</p>
+<h2 id="the-library-health-script">The library Health script<a class="anchor" href="#the-library-health-script">#</a></h2>
+<p>Library ▸ <em>gameplay</em> ▸ <strong>Health &amp; damage</strong> (<code>health.js</code>). Add it to any object:</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>max</code></td>
+<td>hit points (default 5)</td>
+</tr>
+<tr>
+<td><code>invulnTime</code></td>
+<td>seconds of invulnerability after a hit (the sprite blinks)</td>
+</tr>
+<tr>
+<td><code>destroyOnDeath</code></td>
+<td>remove the object at 0 hp</td>
+</tr>
+<tr>
+<td><code>barName</code></td>
+<td>name of a <code>uiBar</code> object to update automatically</td>
+</tr>
+<tr>
+<td><code>deathEvent</code></td>
+<td>name of the <em>global</em> event on death (default <code>died</code>)</td>
+</tr>
+</tbody></table>
+<p>Talk to it with events (Unity: <code>SendMessage(&quot;TakeDamage&quot;)</code> or an interface):</p>
+<pre class="code" data-lang="js"><code>target.emit('damage', { amount: 2, from: this.entity });     // hurt it
+target.emit('heal',   { amount: 1 });                         // heal it</code></pre>
+<p>It answers on the same object: <code>health</code> <code>{ hp, max }</code> after every change, <code>death</code> once; and <code>hit</code> on the global bus. Listen:</p>
+<pre class="code" data-lang="js"><code>const off = enemy.on('death', () =&gt; GameManager.instance.AddScore(10));
+const off2 = player.on('health', ({ hp, max }) =&gt; this.bar.set(hp / max));</code></pre>
+<h2 id="a-health-script-from-scratch-unity-style">A health script from scratch (Unity-style)<a class="anchor" href="#a-health-script-from-scratch-unity-style">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, UnityEvent } from 'nord';
+
+export default class Health extends MonoBehaviour {
+  static attributes = SerializeField({ max: 100, invulnerable: 0.5 });
+
+  Awake() {
+    this.hp = this.max; this.inv = 0;
+    this.onChanged = new UnityEvent();      // lever.onChanged.AddListener(fn) from elsewhere
+    this.onDied = new UnityEvent();
+  }
+  Update(dt) { this.inv = Math.max(0, this.inv - dt); }
+
+  TakeDamage(n) {                           // call: other.getScript(Health).TakeDamage(10)
+    if (this.inv &gt; 0 || this.hp &lt;= 0) return;
+    this.hp = Math.max(0, this.hp - n); this.inv = this.invulnerable;
+    this.onChanged.Invoke(this.hp, this.max);
+    if (this.hp === 0) { this.onDied.Invoke(); this.Destroy(); }
+  }
+  Heal(n) { this.hp = Math.min(this.max, this.hp + n); this.onChanged.Invoke(this.hp, this.max); }
+}</code></pre>
+<p><strong>Calls or events?</strong> Calls (<code>getScript(Health).TakeDamage</code>) are easy to follow; events (<code>emit(&#39;damage&#39;)</code>) work on anything that has a Health script and need no import. Pick one convention per project.</p>
+<h2 id="knockback-and-hit-reaction">Knockback and hit reaction<a class="anchor" href="#knockback-and-hit-reaction">#</a></h2>
+<pre class="code" data-lang="js"><code>// in the attacker: push the target away from us
+const dx = target.pos[0] - this.entity.pos[0], dy = target.pos[1] - this.entity.pos[1], d = Math.hypot(dx, dy) || 1;
+this.physics.applyImpulse(target, (dx / d) * 400, (dy / d) * 400);     // 2D: (entity, ix, iy)
+// flash red
+target.set('sprite', 'tint', '#ff6666');  this.after(0.1, () =&gt; target.set('sprite', 'tint', '#ffffff'));</code></pre>
+<h2 id="a-health-bar">A health bar<a class="anchor" href="#a-health-bar">#</a></h2>
+<ul>
+<li><strong>HUD bar</strong>: <code>this.ui.bar(1, { x: 16, y: 46, w: 180, color: &#39;#7ee787&#39; })</code> and <code>bar.set(hp / max)</code> (<a href="ex-ui-hud.html">UI</a>).</li>
+<li><strong>Above an enemy</strong>: a child object with a sprite; set its x-scale to <code>hp / max</code>.</li>
+<li><strong>No code</strong>: give Health the <code>barName</code> of a <code>uiBar</code> component object.</li>
+</ul>
+<h2 id="invulnerability-frames-blink">Invulnerability frames (blink)<a class="anchor" href="#invulnerability-frames-blink">#</a></h2>
+<p>The library script blinks the sprite while invulnerable. By hand: a coroutine toggling <code>alpha</code> (<a href="ex-platformer.html">Jump Dash</a> uses <code>Blink()</code>).</p>
+<h2 id="death">Death<a class="anchor" href="#death">#</a></h2>
+<pre class="code" data-lang="js"><code>this.entity.on('death', () =&gt; {
+  this.Instantiate('prefabs/explosion.prefab.json', { pos: [...this.entity.pos] });   // effects
+  GameManager.instance.AddScore(10);                                                 // rewards
+  this.game.camera.shake(150, 0.006);
+});</code></pre>
+<p>Spawn loot with <code>this.scene.spawn(&#39;prefabs/coin.prefab.json&#39;, { pos })</code>. For the player: <code>GameManager.instance.GameOver()</code> or show a respawn screen and <code>physics.teleport</code> back.</p>
+<h2 id="damage-from-a-danger-zone">Damage from a danger zone<a class="anchor" href="#damage-from-a-danger-zone">#</a></h2>
+<p><code>onTriggerEnter(other) { other.emit(&#39;damage&#39;, { amount: 1 }); }</code> on spikes, lava, bullets. Because the receiving script has the invulnerability timer, a zone that stays touching cannot hurt every frame (<a href="ex-collisions.html">Collisions</a>).</p>
+<div class="pager"><a href="ex-shooter.html"><small>← Previous</small>20 · A shooter: Star Shooter</a><a href="ex-animation.html"><small>Next →</small>22 · Animation: sprites and the Animator</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#the-library-health-script">The library Health script </a><a href="#a-health-script-from-scratch-unity-style">A health script from scratch (Unity-style) </a><a href="#knockback-and-hit-reaction">Knockback and hit reaction </a><a href="#a-health-bar">A health bar </a><a href="#invulnerability-frames-blink">Invulnerability frames (blink) </a><a href="#death">Death </a><a href="#damage-from-a-danger-zone">Damage from a danger zone </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

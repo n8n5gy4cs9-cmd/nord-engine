@@ -1,0 +1,59 @@
+{
+  "format": 1,
+  "root": {
+    "id": "ab000025",
+    "name": "Spikes",
+    "enabled": true,
+    "tags": [
+      "hazard"
+    ],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "sprite",
+        "texture": "assets/sprites/square.png",
+        "size": [
+          56,
+          18
+        ],
+        "tint": "#ff5d5d",
+        "alpha": 1
+      },
+      {
+        "type": "trigger",
+        "shape": "box",
+        "size": [
+          52,
+          14
+        ]
+      }
+    ],
+    "scripts": [
+      {
+        "path": "scripts/spikes.js",
+        "attributes": {
+          "damage": 1
+        }
+      }
+    ],
+    "children": [],
+    "prefab": null
+  }
+}

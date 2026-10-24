@@ -1,0 +1,61 @@
+{
+  "format": 1,
+  "root": {
+    "id": "cd000006",
+    "name": "Bullet",
+    "enabled": true,
+    "tags": [
+      "bullet"
+    ],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "sprite",
+        "texture": "assets/sprites/circle.png",
+        "size": [
+          10,
+          10
+        ],
+        "tint": "#fff3a0",
+        "alpha": 1
+      },
+      {
+        "type": "rigidbody",
+        "mode": "dynamic",
+        "mass": 1,
+        "drag": 0,
+        "gravityScale": 0
+      },
+      {
+        "type": "trigger",
+        "shape": "circle",
+        "radius": 5
+      }
+    ],
+    "scripts": [
+      {
+        "path": "scripts/bullet.js",
+        "attributes": {}
+      }
+    ],
+    "children": [],
+    "prefab": null
+  }
+}

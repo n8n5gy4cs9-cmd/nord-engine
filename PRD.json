@@ -2457,6 +2457,12 @@
       "milestone": "M13",
       "title": "Examples section (Unity-style recipes + Coin Dash), Singleton subclass fix",
       "status": "done"
+    },
+    {
+      "id": "M13-26",
+      "milestone": "M13",
+      "title": "Examples part 2 (platformer, shooter, 9 topic pages, editor map)",
+      "status": "done"
     }
   ]
 }

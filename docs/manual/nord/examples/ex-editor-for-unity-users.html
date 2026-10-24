@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>29 · The editor for Unity users — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html" class="cur" aria-current="page">29 · The editor for Unity users</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>29 · The editor for Unity users</h1>
+<p>If you have used Unity you already know this editor. This page maps the windows and the daily actions. (Menus are on the macOS menu bar; shortcuts follow Unity: Cmd instead of Ctrl.)</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-unity-layout.png" alt="The Unity 2 by 3 layout: Hierarchy, Scene and Game side by side, Inspector on the right, Assets below" loading="lazy"><figcaption><b>Window ▸ Layout ▸ Unity 2 by 3</b>: Hierarchy, Scene, Game, Inspector, Assets and Console.</figcaption></figure><h2 id="windows">Windows<a class="anchor" href="#windows">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord editor</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hierarchy</td>
+<td><strong>Hierarchy</strong> tab</td>
+<td>right-click ▸ Create child, Create prefab, Unpack; drag to reparent; F2 renames</td>
+</tr>
+<tr>
+<td>Scene view</td>
+<td><strong>Scene</strong> tab</td>
+<td>Q hand, W move, E rotate, R scale, T rect; F frames; snapping with the magnet; 2D and 3D</td>
+</tr>
+<tr>
+<td>Game view</td>
+<td><strong>Game</strong> tab</td>
+<td>Play runs here; <em>Maximize on Play</em>, Fullscreen, Stats</td>
+</tr>
+<tr>
+<td>Inspector</td>
+<td><strong>Inspector</strong> tab</td>
+<td>Transform grid, components with ⋮ menus, <strong>+ Add component</strong>, <strong>+ Add script</strong>, prefab override markers</td>
+</tr>
+<tr>
+<td>Project window</td>
+<td><strong>Assets</strong> tab</td>
+<td>folders and a thumbnail grid; colour folders, tags and descriptions (<a href="../manual/organise-project.html">Organising</a>)</td>
+</tr>
+<tr>
+<td>Console</td>
+<td><strong>Console</strong> tab</td>
+<td>tags, search, collapse, pause on error, double-click to open the file</td>
+</tr>
+<tr>
+<td>Animation / Animator</td>
+<td><strong>Animation</strong> tab, <strong>Animator</strong> tab</td>
+<td>clips from frames; state machine controllers</td>
+</tr>
+<tr>
+<td>Timeline</td>
+<td><strong>Timeline</strong> tab</td>
+<td>tracks and keyframes</td>
+</tr>
+<tr>
+<td>Particle System</td>
+<td><code>particles</code> component + <strong>Particles</strong> tab</td>
+<td></td>
+</tr>
+<tr>
+<td>Package Manager</td>
+<td><strong>Library</strong> tab</td>
+<td>ready-made scripts, prefabs and kits you insert with one click</td>
+</tr>
+<tr>
+<td>Profiler</td>
+<td><strong>Window ▸ Profiler</strong></td>
+<td>phases, per-script cost, network</td>
+</tr>
+<tr>
+<td>UI Toolkit / Canvas</td>
+<td><strong>UI Designer</strong> tab</td>
+<td></td>
+</tr>
+<tr>
+<td>Visual Scripting / Bolt</td>
+<td><strong>Event sheets</strong> and <strong>Graph</strong> tabs</td>
+<td>no-code logic</td>
+</tr>
+<tr>
+<td>ProBuilder</td>
+<td><strong>3D Modeler</strong> tab</td>
+<td></td>
+</tr>
+<tr>
+<td>(no equivalent)</td>
+<td><strong>Notes</strong> tab</td>
+<td>project notes and tasks</td>
+</tr>
+</tbody></table>
+<h2 id="create-things-gameobject-menu">Create things (GameObject menu)<a class="anchor" href="#create-things-gameobject-menu">#</a></h2>
+<p><strong>GameObject / Hierarchy ▸ + Create</strong> makes empty objects, sprites, text, lights, cameras, 3D shapes, UI elements. Drag an image from Assets onto the Scene view to make a sprite object at that spot; drop a model to make a <code>model</code> object; drop a script onto an object to attach it.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-new-scene.png" alt="The New scene dialog with a template list" loading="lazy"><figcaption><b>File ▸ New scene</b>: start from an empty scene or a template.</figcaption></figure><h2 id="components-and-scripts">Components and scripts<a class="anchor" href="#components-and-scripts">#</a></h2>
+<p>Select an object ▸ Inspector ▸ <strong>+ Add component</strong> (sprite, rigidbody, collider, trigger, camera, light, audioSource, text, tilemap, particles, animator, netSync…) or <strong>+ Add script</strong>. A script&#39;s <code>static attributes</code> become fields (<a href="ex-first-script.html">First script</a>).</p>
+<h2 id="prefabs">Prefabs<a class="anchor" href="#prefabs">#</a></h2>
+<p>Right-click an object ▸ <strong>Create prefab</strong> (or drag it to Assets). Instances show blue changed values with a revert button; <strong>Open prefab</strong> edits it alone; <strong>Create variant</strong> makes a variant; <strong>Unpack</strong> breaks the link. (<a href="../manual/unity-workflow.html">Unity-style workflow</a>)</p>
+<h2 id="materials-and-3d">Materials and 3D<a class="anchor" href="#materials-and-3d">#</a></h2>
+<p><strong>Assets ▸ Create ▸ Material</strong> makes a shared <code>*.mat.json</code> with a lit preview ball.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-material-asset.png" alt="Inspector with a material asset and a lit preview sphere" loading="lazy"><figcaption>A material asset: colour, metallic, roughness, texture, emissive.</figcaption></figure><h2 id="build-settings">Build settings<a class="anchor" href="#build-settings">#</a></h2>
+<p><strong>File ▸ Build Settings</strong> lists the start scene, target and options; Export builds a folder, a zip, a single file, a Mac app or a desktop bundle.</p>
+<figure class="shot"><img src="../../assets/screenshots/ed-build-settings.png" alt="The Build Settings window" loading="lazy"><figcaption><b>File ▸ Build Settings</b>.</figcaption></figure><h2 id="particles-and-timelines">Particles and timelines<a class="anchor" href="#particles-and-timelines">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/ed-particles.png" alt="The particle editor with a live preview" loading="lazy"><figcaption>The particle editor: live preview next to the settings.</figcaption></figure><h2 id="code-editor">Code editor<a class="anchor" href="#code-editor">#</a></h2>
+<p>Scripts open in the <strong>Code</strong> tab (syntax colours, completion with the Nord API, find, project search, errors from the Console link to the line). You can also edit scripts in any external editor: the project is plain files and the editor reloads them.</p>
+<h2 id="keyboard-shortcuts-you-already-know">Keyboard shortcuts you already know<a class="anchor" href="#keyboard-shortcuts-you-already-know">#</a></h2>
+<p><code>Cmd+S</code> save, <code>Cmd+Z / Shift+Cmd+Z</code> undo / redo, <code>Cmd+C / V / D</code> copy / paste / duplicate, <code>Delete</code>, <code>W E R</code> move / rotate / scale, <code>F</code> focus, <code>Cmd+R</code> play (and stop), <code>Cmd+.</code> stop, <code>Cmd+K</code> command palette, <code>Cmd+P</code> quick open a file, <code>Cmd+Shift+F</code> search in project, <code>Cmd+1/2/3/4</code> show Scene / Game / Code / Assets, <code>Cmd+,</code> settings. Rebind them in <strong>Settings ▸ Shortcuts</strong>.</p>
+<h2 id="differences-to-keep-in-mind">Differences to keep in mind<a class="anchor" href="#differences-to-keep-in-mind">#</a></h2>
+<ul>
+<li>There is <strong>no compile step</strong> and no &quot;domain reload&quot;: press Play and the new code runs; saving a script during play hot-reloads it.</li>
+<li>Scene and prefab files are readable JSON: they merge in Git. Meta files exist only for images (<code>.meta.json</code> next to a PNG for import settings, sprite animations, collision outline).</li>
+<li>A scene is built when it loads; everything in the Hierarchy at Play start is what runs. Nothing is left over from edit mode.</li>
+<li>Scripts are plain JavaScript modules: see <a href="ex-migration.html">the migration guide</a>.</li>
+</ul>
+<div class="pager"><a href="ex-multiplayer.html"><small>← Previous</small>28 · Multiplayer basics</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#windows">Windows </a><a href="#create-things-gameobject-menu">Create things (GameObject menu) </a><a href="#components-and-scripts">Components and scripts </a><a href="#prefabs">Prefabs </a><a href="#materials-and-3d">Materials and 3D </a><a href="#build-settings">Build settings </a><a href="#particles-and-timelines">Particles and timelines </a><a href="#code-editor">Code editor </a><a href="#keyboard-shortcuts-you-already-know">Keyboard shortcuts you already know </a><a href="#differences-to-keep-in-mind">Differences to keep in mind </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

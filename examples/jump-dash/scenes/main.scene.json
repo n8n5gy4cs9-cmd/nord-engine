@@ -1,0 +1,1340 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "ab000001",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          480,
+          270,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "zoom": 1
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/camera-follow.js",
+          "attributes": {
+            "target": "Player",
+            "minX": 480,
+            "maxX": 1920
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab000002",
+      "name": "Player",
+      "enabled": true,
+      "tags": [
+        "player"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          80,
+          470,
+          5
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            28,
+            40
+          ],
+          "tint": "#7ee787",
+          "alpha": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1,
+          "drag": 0,
+          "gravityScale": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            28,
+            40
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/player.js",
+          "attributes": {
+            "speed": 260,
+            "jump": 600
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab000003",
+      "name": "Ground 1",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          325.0,
+          525,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            650,
+            30
+          ],
+          "tint": "#2f3b52",
+          "alpha": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            650,
+            30
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab000004",
+      "name": "Ground 2",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1130.0,
+          525,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            740,
+            30
+          ],
+          "tint": "#2f3b52",
+          "alpha": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            740,
+            30
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab000005",
+      "name": "Ground 3",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          2010.0,
+          525,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            780,
+            30
+          ],
+          "tint": "#2f3b52",
+          "alpha": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            780,
+            30
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab000006",
+      "name": "Platform 1",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          300,
+          420,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            160,
+            18
+          ],
+          "tint": "#3b4a63",
+          "alpha": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            160,
+            18
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab000007",
+      "name": "Platform 2",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          560,
+          350,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            160,
+            18
+          ],
+          "tint": "#3b4a63",
+          "alpha": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            160,
+            18
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab000008",
+      "name": "Platform 3",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          850,
+          430,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            140,
+            18
+          ],
+          "tint": "#3b4a63",
+          "alpha": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            140,
+            18
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab000009",
+      "name": "Platform 4",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1090,
+          360,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            200,
+            18
+          ],
+          "tint": "#3b4a63",
+          "alpha": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            200,
+            18
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab00000a",
+      "name": "Platform 5",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1350,
+          300,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            160,
+            18
+          ],
+          "tint": "#3b4a63",
+          "alpha": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            160,
+            18
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab00000b",
+      "name": "Platform 6",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1560,
+          400,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            160,
+            18
+          ],
+          "tint": "#3b4a63",
+          "alpha": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            160,
+            18
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab00000c",
+      "name": "Platform 7",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1900,
+          330,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            180,
+            18
+          ],
+          "tint": "#3b4a63",
+          "alpha": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            180,
+            18
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab00000d",
+      "name": "Platform 8",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          2150,
+          420,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            160,
+            18
+          ],
+          "tint": "#3b4a63",
+          "alpha": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            160,
+            18
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab00000e",
+      "name": "Coin 1",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          300,
+          386,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab00000f",
+      "name": "Coin 2",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          340,
+          386,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab000010",
+      "name": "Coin 3",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          560,
+          316,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab000011",
+      "name": "Coin 4",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          600,
+          316,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab000012",
+      "name": "Coin 5",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          850,
+          396,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab000013",
+      "name": "Coin 6",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1090,
+          326,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab000014",
+      "name": "Coin 7",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1130,
+          326,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab000015",
+      "name": "Coin 8",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1350,
+          266,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab000016",
+      "name": "Coin 9",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1560,
+          366,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab000017",
+      "name": "Coin 10",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1900,
+          296,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab000018",
+      "name": "Coin 11",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1940,
+          296,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab000019",
+      "name": "Coin 12",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          2150,
+          386,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab00001a",
+      "name": "Coin 13",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          700,
+          480,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab00001b",
+      "name": "Coin 14",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1200,
+          480,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab00001c",
+      "name": "Coin 15",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1700,
+          480,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/coin.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab00001d",
+      "name": "Spikes 1",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          480,
+          501,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/spikes.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab00001e",
+      "name": "Spikes 2",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1000,
+          501,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/spikes.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab00001f",
+      "name": "Spikes 3",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1300,
+          501,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/spikes.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab000020",
+      "name": "Spikes 4",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          1800,
+          501,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/spikes.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab000021",
+      "name": "Goal",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          2320,
+          470,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [],
+      "prefab": {
+        "path": "prefabs/goal.prefab.json",
+        "overrides": {}
+      }
+    },
+    {
+      "id": "ab000022",
+      "name": "GameManager",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/game-manager.js",
+          "attributes": {
+            "startLives": 3
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ab000023",
+      "name": "Hud",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/hud.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

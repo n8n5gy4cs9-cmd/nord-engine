@@ -26,9 +26,12 @@ test('complete scripts in the Examples pages parse', () => {
   assert.deepEqual(bad, [], bad.join('\n---\n'));
 });
 
-test('examples/coin-dash scripts parse and the project is consistent', () => {
-  const dir = path.join(root, 'examples/coin-dash/scripts');
-  for (const f of fs.readdirSync(dir)) assert.equal(check(fs.readFileSync(path.join(dir, f), 'utf8'), 'cd-' + f), null, f);
-  const scene = JSON.parse(fs.readFileSync(path.join(root, 'examples/coin-dash/scenes/main.scene.json'), 'utf8'));
-  for (const e of scene.entities) for (const s of e.scripts) assert.ok(fs.existsSync(path.join(root, 'examples/coin-dash', s.path)), s.path);
-});
+for (const name of ['coin-dash', 'jump-dash', 'star-shooter']) {
+  test(`examples/${name} scripts parse and the scene only uses existing scripts`, () => {
+    const proj = path.join(root, 'examples', name), dir = path.join(proj, 'scripts');
+    for (const f of fs.readdirSync(dir)) assert.equal(check(fs.readFileSync(path.join(dir, f), 'utf8'), `${name}-${f}`), null, f);
+    const scene = JSON.parse(fs.readFileSync(path.join(proj, 'scenes/main.scene.json'), 'utf8'));
+    for (const e of scene.entities) for (const s of e.scripts) assert.ok(fs.existsSync(path.join(proj, s.path)), s.path);
+    for (const f of fs.readdirSync(path.join(proj, 'prefabs'))) for (const s of JSON.parse(fs.readFileSync(path.join(proj, 'prefabs', f), 'utf8')).root.scripts) assert.ok(fs.existsSync(path.join(proj, s.path)), s.path);
+  });
+}

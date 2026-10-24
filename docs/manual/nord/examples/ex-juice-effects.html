@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>26 · Juice: particles, shake, hit-stop and floating text — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html" class="cur" aria-current="page">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>26 · Juice: particles, shake, hit-stop and floating text</h1>
+<p><strong>Goal:</strong> a hit that feels powerful in under 20 lines.</p>
+<h2 id="particles">Particles<a class="anchor" href="#particles">#</a></h2>
+<p>A <code>particles</code> component on an object (a prefab you spawn) with fields: <code>texture</code>, <code>lifespan</code> (ms), <code>speed</code>, <code>angle</code>, <code>gravityY</code>, <code>scale</code>, <code>alpha</code>, <code>tint</code>, <code>frequency</code>, <code>quantity</code>, <code>burst</code>, <code>emitting</code>, <code>blend</code> (normal / add / multiply / screen).</p>
+<ul>
+<li><strong>Continuous</strong> (fire, smoke): <code>emitting</code> on, <code>burst</code> off, <code>frequency</code> 50 ms.</li>
+<li><strong>Burst</strong> (explosion, hit spark): <code>burst</code> on, <code>quantity</code> 20, then destroy the object a moment later.</li>
+</ul>
+<pre class="code" data-lang="js"><code>// a spark at the hit position
+hit(pos) { this.Instantiate('prefabs/spark.prefab.json', { pos: [pos[0], pos[1], 6] }); }
+// spark.js:  Start() { this.Destroy(this.entity, 0.7); }</code></pre>
+<p>Unity: Particle System + <code>Instantiate</code> + <code>Destroy(go, 1)</code>. Tune in play mode and copy the numbers. The library script <code>fx-particle-presets.js</code> has ready-made presets (sparks, dust, smoke, confetti).</p>
+<h2 id="screen-shake-flash-fade-2d">Screen shake, flash, fade (2D)<a class="anchor" href="#screen-shake-flash-fade-2d">#</a></h2>
+<pre class="code" data-lang="js"><code>this.game.camera.shake(150, 0.008);        // ms, intensity
+this.game.camera.flash(80, '#ffffff');     // white flash
+this.game.camera.fade(400, '#000000');     // fade out;  this.game.camera.fadeIn(400)</code></pre>
+<h2 id="hit-stop-freeze-for-a-moment">Hit-stop (freeze for a moment)<a class="anchor" href="#hit-stop-freeze-for-a-moment">#</a></h2>
+<pre class="code" data-lang="js"><code>async hitStop(ms = 60) {
+  this.game.timeScale = 0.02;
+  await new Promise((r) =&gt; setTimeout(r, ms));        // real time on purpose
+  this.game.timeScale = 1;
+}</code></pre>
+<p>or the library <code>fx-hitstop.js</code> (<code>this.events.emit(&#39;hitstop&#39;)</code>).</p>
+<h2 id="squash-and-stretch">Squash and stretch<a class="anchor" href="#squash-and-stretch">#</a></h2>
+<pre class="code" data-lang="js"><code>punch() {
+  this.tween(this.entity.scale, { 0: 1.35, 1: 0.7 }, { duration: 0.07, yoyo: true, onUpdate: () =&gt; this.entity.touch() });
+}</code></pre>
+<h2 id="flash-the-sprite-white">Flash the sprite white<a class="anchor" href="#flash-the-sprite-white">#</a></h2>
+<pre class="code" data-lang="js"><code>flash() { this.entity.set('sprite', 'tint', '#ff8888'); this.after(0.08, () =&gt; this.entity.set('sprite', 'tint', '#ffffff')); }</code></pre>
+<h2 id="floating-damage-numbers">Floating damage numbers<a class="anchor" href="#floating-damage-numbers">#</a></h2>
+<p>UI labels live on screen, so convert the world position first (2D with the default camera: world x/y equal screen x/y minus the camera offset; the simplest is a small world-space text entity):</p>
+<pre class="code" data-lang="js"><code>async floatText(text, pos, color = '#ffe066') {
+  const e = await this.scene.spawnData({ name: 'Float', transform: { pos: [pos[0], pos[1], 20], rot: [0, 0, 0], scale: [1, 1, 1] },
+    components: [{ type: 'text', text, size: 22, color }], scripts: [], children: [] });
+  this.tween(e.pos, { 1: pos[1] - 40 }, { duration: 0.7, ease: 'quadOut', onUpdate: () =&gt; e.touch(), onComplete: () =&gt; e.destroy() });
+}</code></pre>
+<p><code>scene.spawnData(json)</code> builds an entity from plain data, no prefab file needed. Use it for small throw-away effects.</p>
+<h2 id="trails-and-afterimages">Trails and afterimages<a class="anchor" href="#trails-and-afterimages">#</a></h2>
+<p>Library <code>fx-trail.js</code>. Parallax backgrounds: <code>fx-parallax.js</code>. Pixel/CRT look: <code>fx-pixelate-crt.js</code>, and scene <strong>effects</strong> (bloom, vignette, colour grading) in the scene settings (<a href="../manual/effects-particles-timelines.html">Effects, particles and timelines</a>); in 3D the <code>postProcess</code> component.</p>
+<h2 id="putting-it-together">Putting it together<a class="anchor" href="#putting-it-together">#</a></h2>
+<pre class="code" data-lang="js"><code>OnHit(target, point) {
+  target.emit('damage', { amount: 1, from: this.entity });
+  this.Instantiate('prefabs/spark.prefab.json', { pos: [point[0], point[1], 6] });
+  this.game.camera.shake(100, 0.006);
+  this.hitStop(50);
+  this.floatText('-1', point);
+}</code></pre>
+<p>Rule of thumb: every important event gets three kinds of feedback (something you see, something you hear, something that moves).</p>
+<div class="pager"><a href="ex-dialogue-npc.html"><small>← Previous</small>25 · Talking to NPCs: interaction and dialogue</a><a href="ex-mobile-touch.html"><small>Next →</small>27 · Touch, mobile and responsive games</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#particles">Particles </a><a href="#screen-shake-flash-fade-2d">Screen shake, flash, fade (2D) </a><a href="#hit-stop-freeze-for-a-moment">Hit-stop (freeze for a moment) </a><a href="#squash-and-stretch">Squash and stretch </a><a href="#flash-the-sprite-white">Flash the sprite white </a><a href="#floating-damage-numbers">Floating damage numbers </a><a href="#trails-and-afterimages">Trails and afterimages </a><a href="#putting-it-together">Putting it together </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

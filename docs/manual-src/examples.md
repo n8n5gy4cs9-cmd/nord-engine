@@ -54,6 +54,19 @@ Never used Unity? These pages still work: each example is a small script plus th
 17. [**Coin Dash**: a whole small game](ex-coin-dash.html) (project `examples/coin-dash`, every script explained)
 18. [Migration guide: C# habits to JavaScript](ex-migration.html): the traps.
 
+### Bigger examples and more topics
+19. [**A platformer: Jump Dash**](ex-platformer.html): coyote time, jump buffer, variable jump, hazards, camera, goal (project `examples/jump-dash`).
+20. [**A shooter: Star Shooter**](ex-shooter.html): mouse aiming, pooled bullets, waves, particles, health (project `examples/star-shooter`).
+21. [Health, damage and death](ex-health-damage.html)
+22. [Animation: sprites and the Animator](ex-animation.html)
+23. [Tilemaps and level design](ex-tilemap-levels.html)
+24. [Inventory, items and quests](ex-inventory-quests.html)
+25. [Talking to NPCs: interaction and dialogue](ex-dialogue-npc.html)
+26. [Juice: particles, shake, hit-stop](ex-juice-effects.html)
+27. [Touch, mobile and responsive games](ex-mobile-touch.html)
+28. [Multiplayer basics](ex-multiplayer.html)
+29. [The editor for Unity users](ex-editor-for-unity-users.html): every Unity window and menu, with screenshots.
+
 ## How to try an example
 1. Create a project: `nord new my-game -t 2d` (or start the editor and use @ui[New project]).
 2. Save the script in `my-game/scripts/`, for example `scripts/spin.js`.

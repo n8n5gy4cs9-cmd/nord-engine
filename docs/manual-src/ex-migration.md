@@ -79,6 +79,8 @@ this.after(1, function () { this.explode(); });   // WRONG: this is not the scri
 
 **15. No Editor-only attributes.** There is no `[ExecuteInEditMode]` and no custom inspectors: Inspector fields come from `static attributes`; editor tools are separate pages (UI Designer, Graph, Animator…).
 
+**16. Do not name your own fields like the lifecycle methods.** `this.start = [0, 0]` or `this.update = 5` replaces the method of the same name and the engine reports `s.start is not a function`. Avoid `init`, `start`, `update`, `fixedUpdate`, `lateUpdate`, `onEnable`, `onDisable`, `onDestroy`, and in MonoBehaviours the capitalised versions. Names such as `spawnPoint`, `startPos`, `timer` are safe. The same goes for the properties the base class already has: `entity`, `scene`, `game`, `input`, `audio`, `events`, `ui`, `physics`, `save`, `rng`, `time`: do not assign to them (a field called `this.input` would try to replace the engine's input).
+
 ## Where things live (project layout)
 ```
 my-game/

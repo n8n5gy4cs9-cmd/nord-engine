@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>28 · Multiplayer basics — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html" class="cur" aria-current="page">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>28 · Multiplayer basics</h1>
+<p><strong>Goal:</strong> two browser windows, each controlling its own square, both seeing both.</p>
+<p>Nord multiplayer is peer to peer (WebRTC) with a tiny relay built into <code>nord serve</code>: no server to run. Full reference: <a href="../manual/multiplayer.html">Multiplayer</a>. The pieces: <strong>host/join a room</strong>, <strong>spawn</strong> a prefab for everybody (the host creates it), <strong>netSync</strong> (position sync), <strong>messages / RPC</strong>.</p>
+<h2 id="1-a-player-prefab-with-netsync">1. A player prefab with netSync<a class="anchor" href="#1-a-player-prefab-with-netsync">#</a></h2>
+<p><code>prefabs/net-player.prefab.json</code> has <code>sprite</code>, <code>rigidbody</code>/<code>collider</code> if you want physics, a <strong>netSync</strong> component (<code>rate</code> 15, <code>interpolate</code> on, <code>smoothing</code> 15) and the script below. Remote copies are smoothed by <code>netSync</code>; you only move the one you own.</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField } from 'nord';
+
+export default class NetPlayer extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 200 });
+  Update(dt) {
+    if (!this.game.net.isAuthority(this.entity)) return;           // only the owner moves it
+    const [x, y] = this.input.vec('left', 'right', 'up', 'down');
+    const p = this.entity.pos;
+    this.entity.pos = [p[0] + x * this.speed * dt, p[1] + y * this.speed * dt, p[2]];
+  }
+}</code></pre>
+<h2 id="2-a-lobby-host-or-join">2. A lobby: host or join<a class="anchor" href="#2-a-lobby-host-or-join">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour } from 'nord';
+
+export default class Lobby extends MonoBehaviour {
+  Start() {
+    this.ui.button('Host', () =&gt; this.Host(), { screen: 'lobby', anchor: 'c', y: -30 });
+    this.ui.button('Join', () =&gt; this.Join(), { screen: 'lobby', anchor: 'c', y: 30 });
+    this.ui.show('lobby');
+    this.game.net.on('join', ({ id }) =&gt; this.OnJoin(id));          // the host hears about every new player
+  }
+  async Host() {
+    await this.game.net.host('room1');
+    this.ui.hide('lobby');
+    await this.SpawnFor(this.game.net.id);                          // the host's own ship
+  }
+  async Join() { await this.game.net.join('room1'); this.ui.hide('lobby'); }   // rejects after 10 s if nobody answers
+  OnJoin(id) { this.SpawnFor(id); }
+  SpawnFor(owner) {
+    return this.game.net.spawn('prefabs/net-player.prefab.json', { pos: [200 + Math.random() * 400, 200, 5], owner });   // creates it on every peer
+  }
+  OnDestroy() { this.ui.clear('lobby'); }
+}</code></pre>
+<p><code>net.id</code> is your player id, <code>net.isHost</code>, <code>net.peers</code>, <code>net.hostId</code>. When a player leaves, the objects they own are removed everywhere.</p>
+<h2 id="3-try-it">3. Try it<a class="anchor" href="#3-try-it">#</a></h2>
+<p><span class="c-ui">Project ▸ Play multiplayer (browser windows)</span> opens 2–3 windows (the first hosts, the others join) and can add <strong>100 ms lag and 2 % packet loss</strong>. Or run <code>nord serve</code> and open <code>http://localhost:4173/?net=host:room1</code> and <code>?net=join:room1</code> in two windows.</p>
+<h2 id="messages-and-rpc">Messages and RPC<a class="anchor" href="#messages-and-rpc">#</a></h2>
+<pre class="code" data-lang="js"><code>const net = this.game.net;
+net.send('chat', { text: 'hello' });                                   // to everybody else
+net.on('message', ({ from, name, data }) =&gt; this.log(from, name, data));
+
+net.rpc('damage', ({ amount }, { from }) =&gt; this.hp -= amount);        // register a function others may call
+net.call('damage', { amount: 5 });                                     // run it on every other player
+net.callHost('requestScore');                                          // run it on the host only</code></pre>
+<p><strong>Who decides?</strong> Let the <em>owner</em> move their own object and the <strong>host</strong> decide shared things (score, who won, spawning pick-ups) with <code>callHost</code> and then send results to everyone. There is no prediction or rollback: this is for friends on a network, jams and prototypes.</p>
+<h2 id="sync-other-values">Sync other values<a class="anchor" href="#sync-other-values">#</a></h2>
+<p><code>netSync.vars</code> lists entity variables to sync, e.g. <code>[&quot;hp&quot;]</code> (read and write them as <code>entity.vars.hp</code>). Per-frame state like a score can travel in messages: <code>net.send(&#39;score&#39;, { id, score })</code>.</p>
+<h2 id="debugging">Debugging<a class="anchor" href="#debugging">#</a></h2>
+<p><code>net.stats()</code> gives ping and bytes per second; <code>net.simulate({ latency: 150, jitter: 30, loss: 0.05 })</code> adds fake lag; the debugger&#39;s <em>network</em> tab shows traffic. Static hosts such as itch.io have no signalling relay: use a LAN or <code>nord serve --lan</code> for play tests.</p>
+<div class="pager"><a href="ex-mobile-touch.html"><small>← Previous</small>27 · Touch, mobile and responsive games</a><a href="ex-editor-for-unity-users.html"><small>Next →</small>29 · The editor for Unity users</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-a-player-prefab-with-netsync">1. A player prefab with netSync </a><a href="#2-a-lobby-host-or-join">2. A lobby: host or join </a><a href="#3-try-it">3. Try it </a><a href="#messages-and-rpc">Messages and RPC </a><a href="#sync-other-values">Sync other values </a><a href="#debugging">Debugging </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>
