@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 309/323 tasks (96%)** · updated 2026-10-24
+**Overall: 311/325 tasks (96%)** · updated 2026-10-24
 
 | Milestone | Progress |
 |---|---|
@@ -20,7 +20,7 @@
 | M10 Construct-style editor | 36/36 (100%) |
 | M11 Web editor | 14/16 (88%) |
 | M12 FPS Creator addon | 30/31 (97%) |
-| M13 Unity-style editor (Godotize) | 20/21 (95%) |
+| M13 Unity-style editor (Godotize) | 22/23 (96%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -407,6 +407,8 @@ _Unity-like editor workflow on the existing tools: Scene/Game/Hierarchy/Inspecto
 - [x] **M13-19** Multiplayer tooling: RPC, replicated spawner, netSync, ping/stats, simulator, Play N players
 - [x] **M13-20** Tutorials T49-T53 + manual chapter Multiplayer for the new tools
 - [x] **M13-21** 3D Modeler: open scene models, save overwrite/new/prefab/variant, full manual + T54
+- [x] **M13-22** Editor appearance: 10 themes, 10 fonts, theme editor, size sliders, icon fixes
+- [x] **M13-23** Nord MCP server (project + 3D Modeler tools, guidance, client configs)
 
 ## Features (PRD)
 

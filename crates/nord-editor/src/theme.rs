@@ -664,10 +664,23 @@ mod tests {
         for s in t.skins() {
             for face in [&s.ui, &s.code] {
                 let dir = t.cat.fonts.get(face).map(|e| e.dir.clone());
-                assert!(dir.as_deref().and_then(|d| font_bytes(d, false)).is_some(), "{} / {face}", s.id);
+                assert!(
+                    dir.as_deref().and_then(|d| font_bytes(d, false)).is_some(),
+                    "{} / {face}",
+                    s.id
+                );
             }
         }
-        for id in ["midnight", "obsidian", "carbon", "deep-ocean", "forest", "ember", "rose-night", "slate-gold"] {
+        for id in [
+            "midnight",
+            "obsidian",
+            "carbon",
+            "deep-ocean",
+            "forest",
+            "ember",
+            "rose-night",
+            "slate-gold",
+        ] {
             assert!(t.theme(id).dark && t.theme(id).id == id);
         }
         for id in ["paper", "daylight"] {

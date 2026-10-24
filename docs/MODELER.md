@@ -12,3 +12,6 @@ Create: cube, plane, cylinder, sphere, draw polygon, add vertex, fill boundary, 
 
 ## Limits / not done
 GLB import only through Open in 3D Modeler (no menu to import an arbitrary file yet), no skeleton/animation authoring, no vertex-colour bake. Texture is one image per mesh. Undo keeps whole-mesh snapshots (80 steps / 32 MB). Native-window behaviour (wry) not verified here.
+
+## AI / MCP
+The same files can be edited headlessly by an AI agent: see `docs/MCP.md` (`modeler_*` tools incl. `modeler_preview`).

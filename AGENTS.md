@@ -22,6 +22,8 @@ Owner: Crowelian. Credit: **Crowelian 2026 + Sonnet**. Keep it **pragmatic, not 
 - Don't add frameworks/abstractions "just in case". Prefer deleting code.
 - Verify before ticking: build/test/run (see `docs/TESTING.md`). Be honest in `KNOWN_ISSUES.md` about what is unverified (e.g. macOS-only parts).
 
+- **MCP stays true**: `mcp/` is the Nord MCP server for AI agents (project, scene, script and 3D Modeler tools + `mcp/GUIDE.md`). When you add or change a component, command, template, file format, Modeler tool or workflow, update the matching tool in `mcp/lib/`, `mcp/GUIDE.md` if the workflow changes, then run `node mcp/nord-mcp.mjs --docs` (writes `docs/MCP.md`) and `node --test mcp/mcp.test.mjs` (fails when docs/MCP.md is stale). `nord_guide` reads `docs/*.md` live, so keep those current too.
+
 ## Environment notes (cloud sandbox)
 Linux only; Rust 1.9x, Node 22, Python3+PIL/numpy, ffmpeg, Chromium via Playwright. `git clone` of GitHub works; npm + crates.io work.
 macOS-only things (egui window + wry child webview, codesign, dmg) cannot be run here → must be verified by CI `macos-14` or the owner.

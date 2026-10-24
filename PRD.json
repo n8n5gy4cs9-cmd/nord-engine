@@ -2433,6 +2433,18 @@
       "milestone": "M13",
       "title": "3D Modeler: open scene models, save overwrite/new/prefab/variant, full manual + T54",
       "status": "done"
+    },
+    {
+      "id": "M13-22",
+      "milestone": "M13",
+      "title": "Editor appearance: 10 themes, 10 fonts, theme editor, size sliders, icon fixes",
+      "status": "done"
+    },
+    {
+      "id": "M13-23",
+      "milestone": "M13",
+      "title": "Nord MCP server (project + 3D Modeler tools, guidance, client configs)",
+      "status": "done"
     }
   ]
 }
