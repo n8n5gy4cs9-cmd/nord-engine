@@ -290,7 +290,8 @@ class Screen {
     for (const k of ['click', 'input', 'change']) this.rootEl.addEventListener(k, (e) => this._dom(k, e));
     this.visible = def.visible !== false;
     this.host.style.display = this.visible ? '' : 'none';
-    if (def.scaler && !def.page && typeof ResizeObserver !== 'undefined') { this._ro = new ResizeObserver(() => this._applyScaler()); this._ro.observe(this.host); }
+    // re-scale on the next frame: resizing inside the callback logs "ResizeObserver loop completed with undelivered notifications"
+    if (def.scaler && !def.page && typeof ResizeObserver !== 'undefined') { this._ro = new ResizeObserver(() => { if (this._raf) return; this._raf = requestAnimationFrame(() => { this._raf = 0; if (this._ro) this._applyScaler(); }); }); this._ro.observe(this.host); }
     this._applyScaler();
   }
   /**
@@ -353,7 +354,7 @@ class Screen {
   toggle() { return this.visible ? this.hide() : this.show(); }
   /** Re-run translations (@keys) after a language change. */
   retranslate() { for (const n of this.byName.values()) if (n.el.dataset.raw !== undefined) this._renderTpl(n); return this; }
-  destroy() { this._ro?.disconnect(); this.host.remove(); this.mgr.screens.delete(this.name); this.byName.clear(); this.actions.clear(); }
+  destroy() { this._ro?.disconnect(); this._ro = null; if (this._raf) cancelAnimationFrame(this._raf); this.host.remove(); this.mgr.screens.delete(this.name); this.byName.clear(); this.actions.clear(); }
 
   _dom(kind, e) {
     let el = e.target;

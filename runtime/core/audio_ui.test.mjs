@@ -75,3 +75,25 @@ test('ui: screens, button click + sound hook, bar, label', () => {
   const l = ui.label('hi'); l.set(42); assert.equal(l.el.textContent, '42');
   ui.clear('hud'); assert.equal(ui.screen('hud').children.length, 0);
 });
+
+test('audio: a looping sound on the music bus is the one music track (Neon Harbor menu -> harbor played two)', async () => {
+  const ctx = fakeCtx();
+  const a = new Audio(loader, { ctxFactory: () => ctx });
+  // menu scene starts its music while the browser still blocks audio, the player clicks Play (unlocks), the harbor scene starts the same track
+  a.play('m.mp3', { bus: 'music', loop: true, volume: 0.2 });
+  a.stopMusic();                                   // menu OnDestroy
+  a.play('m.mp3', { bus: 'music', loop: true, volume: 0.35 });
+  await a.unlock(); await new Promise((r) => setTimeout(r, 5));
+  assert.equal(ctx.started.length, 1, 'exactly one music loop plays');
+  assert.equal(a.musicPath, 'm.mp3');
+  // same track requested again (another scene): keeps playing, follows the new volume
+  const g = ctx.started[0];
+  a.play('m.mp3', { bus: 'music', loop: true, volume: 0.5 });
+  assert.equal(ctx.started.length, 1);
+  a.stopMusic({ fade: 0 });
+  assert.equal(a.musicPath, null);
+  // other loops and one-shots are untouched
+  a.play('s.wav', { loop: true }); a.play('s.wav', { bus: 'music' });
+  await new Promise((r) => setTimeout(r, 5));
+  assert.equal(ctx.started.length, 3);
+});

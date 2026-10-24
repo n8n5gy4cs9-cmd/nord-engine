@@ -57,3 +57,6 @@ Add the library script `util-sfx.js` to any object and fill its `map` attribute,
 this.events.emit('sfx', 'coin');
 ```
 Gameplay code stays free of file names, and you can swap sounds in one place.
+
+## Music: one track at a time
+`audio.music(path)` is the music player: one track, crossfades when you change it, and **the same track requested again keeps playing** (so a menu and a level can both ask for it without a restart). A *looping* `audio.play(path, { bus: 'music', loop: true })` is treated the same way, so you never get two copies of the music on top of each other. `audio.stopMusic()` stops it (do this in `onDestroy` of a scene's script if the next scene should be quiet). Sound effects and jingles (`play` without `loop`) can overlap freely.

@@ -1,0 +1,3 @@
+17:07:17 [build] Play
+17:07:18 [error] ResizeObserver loop completed with undelivered notifications. (http://127.0.0.1:49294/?n=1:0)
+17:07:26 [build] ■ Stop

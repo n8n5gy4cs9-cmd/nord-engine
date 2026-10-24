@@ -1,0 +1,125 @@
+{
+  "format": 1,
+  "variantOf": "prefabs/tower.prefab.json",
+  "overrides": {
+    "components": {
+      "0": {
+        "size": [
+          5,
+          28,
+          5
+        ]
+      }
+    },
+    "children": {
+      "0": {
+        "transform": {
+          "pos": [
+            0,
+            14.4,
+            0
+          ]
+        },
+        "components": {
+          "2": {
+            "color": "#25e8ff"
+          }
+        }
+      }
+    }
+  },
+  "root": {
+    "id": "nh000004",
+    "name": "Tower",
+    "enabled": true,
+    "tags": [
+      "solid"
+    ],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        14,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "mesh",
+        "shape": "box",
+        "size": [
+          5,
+          28,
+          5
+        ]
+      },
+      {
+        "type": "material",
+        "asset": "assets/materials/tower.mat.json"
+      }
+    ],
+    "scripts": [],
+    "children": [
+      {
+        "id": "nh000003",
+        "name": "Roof light",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            0,
+            14.4,
+            0
+          ],
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "box",
+            "size": [
+              1.2,
+              0.8,
+              1.2
+            ]
+          },
+          {
+            "type": "material",
+            "asset": "assets/materials/neon-pink.mat.json"
+          },
+          {
+            "type": "light",
+            "kind": "point",
+            "color": "#25e8ff",
+            "intensity": 1.4,
+            "range": 16
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      }
+    ],
+    "prefab": null
+  }
+}

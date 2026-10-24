@@ -69,6 +69,11 @@ export class Audio {
 
   /** Play a one-shot (or loop). Returns a handle { stop(), source } or null if audio is unavailable. */
   play(path, { volume = 1, loop = false, rate = 1, bus = 'sfx', pan = 0 } = {}) {
+    // a looping sound on the music bus IS the music track: one at a time, same track keeps playing, stopMusic() and scene changes stop it
+    if (loop && bus === 'music') {
+      this.music(path, { fade: 0.3, volume });
+      return { stopped: false, source: null, stop: () => { if (this._music?.path === path) this.stopMusic(); } };
+    }
     const handle = { stopped: false, source: null, stop() { this.stopped = true; try { this.source?.stop(); } catch { /* already stopped */ } } };
     const run = async () => {
       const buf = await this.load(path);
@@ -90,16 +95,21 @@ export class Audio {
 
   /** Start looping music at offset seconds. Same path is a no-op unless restart is requested. */
   async music(path, { fade = 1, volume = 1, offset = 0, restart = false } = {}) {
-    if (this._music?.path === path && !restart) return;
+    if (this._music?.path === path && !restart) { // already playing: only follow the new volume
+      this._music.volume = volume;
+      const m = this._music;
+      if (m.gain && this.ctx) { const t = this.ctx.currentTime; m.gain.gain.cancelScheduledValues?.(t); m.gain.gain.setValueAtTime(m.gain.gain.value, t); m.gain.gain.linearRampToValueAtTime(volume, t + fade); }
+      return;
+    }
     const old = this._music;
-    this._music = { path, src: null, gain: null };
+    this._music = { path, src: null, gain: null, volume };
     const mine = this._music;
     const run = async () => {
       const buf = await this.load(path);
       if (!buf || this._music !== mine) return;
       const ctx = this.ctx, t = ctx.currentTime;
       const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
-      const g = ctx.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(volume, t + fade);
+      const g = ctx.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(mine.volume, t + fade);
       src.connect(g); g.connect(this.buses.music);
       src.start(0, Number.isFinite(offset) && offset >= 0 && offset < buf.duration ? offset : 0);
       mine.src = src; mine.gain = g;

@@ -1,0 +1,62 @@
+{
+  "tokens": {
+    "accent": "#25e8ff",
+    "hot": "#ff3fb8",
+    "fg": "#e6f6ff",
+    "panel": "#06101f"
+  },
+  "styles": {
+    "label": {
+      "color": "$fg",
+      "textShadow": "0 0 8px #00b8ff"
+    },
+    ".title": {
+      "color": "$accent",
+      "textShadow": "0 0 18px #00d0ff, 0 0 4px #ffffff"
+    },
+    ".hot": {
+      "color": "$hot",
+      "textShadow": "0 0 14px #ff3fb8"
+    },
+    ".chip": {
+      "image": {
+        "src": "assets/ui/chip.png",
+        "slice": [
+          10,
+          10,
+          10,
+          10
+        ],
+        "scale": 1,
+        "tint": "#25e8ff"
+      },
+      "padding": [
+        6,
+        14,
+        6,
+        14
+      ],
+      "color": "$fg"
+    },
+    ".card": {
+      "image": {
+        "src": "assets/ui/frame.png",
+        "slice": [
+          10,
+          10,
+          10,
+          10
+        ],
+        "scale": 1
+      },
+      "padding": 22,
+      "color": "$fg"
+    },
+    "bar": {
+      "background": "#0a1a30",
+      "border": "1px solid #1d6a8a",
+      "borderRadius": 6,
+      "height": 14
+    }
+  }
+}

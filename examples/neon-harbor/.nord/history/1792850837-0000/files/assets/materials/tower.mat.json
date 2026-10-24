@@ -1,0 +1,12 @@
+{
+  "color": "#3a4268",
+  "metallic": 0.2,
+  "roughness": 0.55,
+  "texture": "assets/textures/windows.png",
+  "uvScale": [
+    2,
+    4
+  ],
+  "emissiveMap": "assets/textures/windows.png",
+  "emissive": "#ffffff"
+}
