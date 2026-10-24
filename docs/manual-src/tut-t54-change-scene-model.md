@@ -34,6 +34,8 @@ Use **Face** mode, click faces, then **Extrude** / **Inset** / move with the giz
 
 If a face shows the wrong part of the texture, fix it in the **UV editor** tab.
 
+**Add a picture:** in the Texture tab press @ui[+ Add pictures…] (or drop / paste a PNG), drag, resize and rotate it with the @ui[Pictures] tool, then @ui[Fit to selected faces] to place it exactly over a face. Pictures merge into the one texture when you paint or save. See [3D Modeler](modeler.html).
+
 ## 4. Save: choose what happens
 Press **Save**. The Modeler asks:
 

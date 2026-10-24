@@ -227,3 +227,9 @@ Verified headlessly (egui_kittest UI tests, `runtime/core/core.test.mjs`, a real
 - Hosting presets only write files; GitHub/Netlify/Vercel/itch/Docker deployments themselves were not exercised.
 - Animator: no blending, no layers/sub-state machines, no event-sheet actions yet; exit time for sprites uses the clip length Phaser reports (not seen running); 3D uses the Babylon animation group length.
 - 3D Modeler: no GLB import, texture is one image per mesh; Fill ignores Mirror X.
+
+## Editor look, assets, notes, console, modeler pictures (2026-10-24)
+- Not seen in the native macOS window (egui needs a display): the new themes and font pairs, Transform grid, folder vector icons, Assets tags/colours/icons, Notes tab, Console Pro, Settings Apply/Theme editor, Inspector *Open in 3D Modeler* / *Edit as model* buttons and the save-choice handling (`modeler_saved`). `cargo test -p nord-editor` covers state/logic; the Modeler web page (open scene model, save dialog, mesh→model, picture layers) and the Dev Console were verified in a browser.
+- Local time in Console Pro timestamps comes from the `date` command on unix, UTC on Windows.
+- Modeler: opening a GLB drops skeleton/animations and keeps one texture; picture layers are not stored in `.mesh.json` (only the merged texture); rotating pictures on a non-square texture then using *Make square* is approximate.
+- Dev Console: `exec` runs JavaScript: turn `allowExec` off in shipped games. Capturing `console.log` replaces the page's console methods while the console exists.

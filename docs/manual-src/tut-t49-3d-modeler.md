@@ -35,6 +35,8 @@ A 3D model is a list of points (**vertices**) joined into flat faces. A **textur
 
 <figure class="shot"><img src="assets/screenshots/mod-6-paint-on-model.png" alt="Paint on model switched on" loading="lazy"><figcaption>With Paint on model the brush works on the 3D view.</figcaption></figure>
 
+**Use a picture instead of painting:** @ui[+ Add pictures…] puts a PNG on the texture; move, resize, rotate and stack it with the @ui[Pictures] tool. All pictures end up in the one texture.
+
 ## 3. Fix the UVs
 Open the **UV editor** tab. Click a face to select it and drag it onto a plank area of the texture. **Flip U / V** and **Rotate 90°** fix patterns that are the wrong way round; **snap to texel** lands exactly on pixels; **Auto unwrap** + **Pack** start over.
 

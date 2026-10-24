@@ -62,7 +62,11 @@ crates/nord-editor/src/
   state.rs undo.rs      EditorState (all state), snapshot Command undo/redo + coalescing, autosave/recovery, hub pump
   scene_ops.rs          pure tree ops: find/insert/remove/reparent/duplicate (unit-tested)
   schema.rs             inspector schemas: built-in component field table + `static attributes` parser (JS literal -> JSON)
-  theme.rs icons.rs     skins/themes from assets/themes/themes.json (fonts: assets/fonts/skins/*.ttf), Lucide SVG icons
+  theme.rs icons.rs     skins/themes from assets/themes/themes.json + built-in editor themes (8 dark, 2 light, ~30 *Inspired*) + custom themes (`themes.custom.json`), 10 extra font pairs (assets/fonts/skins/*.ttf), Hack symbol fallback, Lucide SVG icons, `icons::snap` for crisp icons
+  assetmeta.rs          per-project asset organisation (`.nord/asset-meta.json`): folder colours/icons, colour tags, descriptions, zebra/guides
+  panels/notes.rs       Notes manager tab (`.nord/notes.json`)
+  panels/console.rs     Console Pro: level icons, [Tag] filter, search highlight, timestamps, detail pane, export
+  panels/modeler.rs     3D Modeler tab: opens scene models / mesh primitives (`ModelerCtx`), save choice handled in prefab.rs `modeler_saved`
   panels/               hierarchy inspector assets console library docs hub palette settings toolbar animation
   code/                 mod.rs (tabs, find/replace, goto, project search, completion, minimap, split) edit.rs (pure text edits) highlight.rs api.rs
   viewport/webview.rs   wry child webview (feature `webview`) + "Open in browser" fallback
@@ -136,3 +140,9 @@ Creator game templates **Two Floors — Dungeon Creator** and **Tiny Tank Patrol
 
 ## 3D Modeler, Animator, Profiler (2026-10-23)
 Tabs **3D Modeler** (`editor/modeler/`, docs/MODELER.md) and **Animator** (`editor/animator/`, docs/ANIMATOR.md) are embedded pages like the UI Designer (Window ▸ Editors, command palette, double-click an `.animator.json`, Assets ▸ New animator controller). **Window ▸ Profiler** gained phases/scripts/components/spikes/network with Record and Save profile (docs/PROFILER.md). **Project ▸ Play multiplayer (browser windows)** opens 2–3 game windows (host + guests, optional lag). **Export ▸ Hosting preset** (docs/EXPORT_TARGETS.md). Panels are dockable (egui_dock): drag tabs to split, float or rearrange; Window ▸ Reset layout restores the default.
+
+## Look & feel (2026-10-24)
+* **Settings ▸ sizes:** Interface / Text / Button size are edited as a draft and applied with **Apply sizes** (no live re-layout); Reset goes back to 1.00. Theme editor makes *custom* themes (never overwrites built-ins) and everything is saved in `editor.json` / `themes.custom.json`.
+* **Inspector:** Transform is a grid (Position / Rotation / Scale rows, X/Y/Z columns with red/green/blue letters, same letters in every vector field). Component headers have per-type icons and a ⋮ icon menu.
+* **Assets:** folders are drawn as vector shapes (sharp at any scale) in the theme accent colour; user colour, icon badge, own image, tags and descriptions are stored per project. See manual *Organising your project*.
+* **Console Pro, Notes tab, Dev Console prefab:** see manual chapters *Organising your project* and *In-game Dev Console*.
