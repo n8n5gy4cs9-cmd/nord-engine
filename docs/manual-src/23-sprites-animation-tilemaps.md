@@ -32,3 +32,8 @@ Pick a spritesheet, make named animations (`idle`, `walk`…), and list their fr
 **New tilemap…** starts from any tileset image. Brushes: **Paint**, **Rectangle**, **Fill**, **Random** (ctrl-click several tiles; each cell always gets the same pick, so repainting does not flicker) and **Terrain**. The map can have several **layers** (add, rename, reorder, hide). Tick *tile N blocks movement* to make a tile solid, or give a tile **animated frames** (`5, 6, 7` at 6 fps) and the game cycles it.
 
 **Terrain (auto-tile):** choose *Define terrain*, pick a neighbour mask (which of North/East/South/West are the same terrain) and click the tileset tile for it — 16 combinations. Then paint with *Terrain*: every cell and its neighbours pick the right edge or corner automatically; right-click erases and tidies the neighbours.
+
+
+## Making a sprite object
+
+**Hierarchy ▸ Create ▸ Sprite** adds an object with a plain white square. Colour (`tint`), alpha and flips are Inspector fields and never change the picture. To draw on it, press **Open in Sprite editor** in the Sprite component: paint, then Save under a name (it goes to `assets/sprites/`, the folder is made for you) and the object switches to your new picture, in scenes and in prefabs. Open the component's button (or double-click the PNG in Assets) any time to keep editing; Save overwrites it for everyone using it. The default white square is never edited. The **Settings** tab sets filter (nearest for pixel art), wrap (repeat or clamp), pixels per unit and frame slicing.

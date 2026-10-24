@@ -27,6 +27,8 @@ pub enum Mode {
     #[default]
     Paint,
     Points,
+    /// import settings of the image: filter, wrap, pixels per unit, frame slicing
+    Settings,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -76,6 +78,88 @@ pub struct SpriteUi {
     pub trace_threshold: u8,
     pub trace_points: usize,
     pub frame: usize,
+    /// Scene object (Hierarchy selection id, also a prefab child) whose sprite texture follows the saved file.
+    pub link: Option<String>,
+}
+
+/// The read-only white square every new Sprite object starts with (Unity's default sprite). It is never edited: opening it in the
+/// Sprite editor starts a new image instead.
+pub const DEFAULT_SPRITE: &str = "assets/sprites/default-white.png";
+const SPRITES_DIR: &str = "assets/sprites";
+
+/// Free `name`, `name-2`, … (no extension) inside the sprites folder.
+pub fn unique_sprite_name(root: &std::path::Path, base: &str) -> String {
+    let mut n = 1;
+    loop {
+        let name = if n == 1 {
+            base.to_string()
+        } else {
+            format!("{base}-{n}")
+        };
+        if !root.join(format!("{SPRITES_DIR}/{name}.png")).exists() {
+            return name;
+        }
+        n += 1;
+    }
+}
+
+/// Point the first sprite component of `e` at `tex`; false when it has none.
+pub fn apply_texture(e: &mut nord_core::scene::Entity, tex: &str) -> bool {
+    match e
+        .components
+        .iter_mut()
+        .find(|c| matches!(c.kind.as_str(), "sprite" | "animatedSprite"))
+    {
+        Some(c) => {
+            c.fields.insert("texture".into(), json!(tex));
+            true
+        }
+        None => false,
+    }
+}
+
+impl EditorState {
+    /// Create the default white sprite file when the project does not have it yet; returns its path.
+    pub fn ensure_default_sprite(&mut self) -> Option<&'static str> {
+        let root = self.root.clone()?;
+        let full = root.join(DEFAULT_SPRITE);
+        if !full.exists() {
+            std::fs::create_dir_all(full.parent()?).ok()?;
+            RgbaImage::from_pixel(64, 64, image::Rgba([255, 255, 255, 255]))
+                .save(&full)
+                .ok()?;
+            self.refresh_assets();
+        }
+        Some(DEFAULT_SPRITE)
+    }
+
+    /// Open the Sprite editor for `tex`, tied to scene object `link` (its sprite follows the saved file). The default sprite or a
+    /// missing file opens a new white image named for saving into the sprites folder.
+    pub fn open_in_sprite_editor(&mut self, link: Option<String>, tex: &str) {
+        let Some(root) = self.root.clone() else {
+            return;
+        };
+        let loaded = (!tex.is_empty() && tex != DEFAULT_SPRITE)
+            .then(|| image::open(root.join(tex)).ok())
+            .flatten();
+        match loaded {
+            Some(i) => {
+                let meta = nord_core::io::load_json(&root.join(format!("{tex}.meta.json")))
+                    .unwrap_or(Value::Null);
+                self.sprite.load_image(tex, i.to_rgba8(), meta);
+                self.sprite.name.clear();
+            }
+            None => {
+                let img = RgbaImage::from_pixel(64, 64, image::Rgba([255, 255, 255, 255]));
+                self.sprite.load_image("", img, json!({}));
+                self.sprite.path = None;
+                self.sprite.name = unique_sprite_name(&root, "sprite");
+                self.sprite.dirty = true;
+            }
+        }
+        self.sprite.link = link;
+        self.push(crate::state::Action::ShowTab(crate::app::Tab::Sprite));
+    }
 }
 
 impl Default for SpriteUi {
@@ -115,6 +199,7 @@ impl Default for SpriteUi {
             trace_threshold: 8,
             trace_points: 8,
             frame: 0,
+            link: None,
         }
     }
 }
@@ -427,6 +512,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             Mode::Points,
             "Origin, points, collision",
         );
+        ui.selectable_value(&mut st.sprite.mode, Mode::Settings, "Settings");
         ui.separator();
         ui.add(
             egui::Slider::new(&mut st.sprite.zoom, 1.0..=48.0)
@@ -441,6 +527,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         .show_inside(ui, |ui| match st.sprite.mode {
             Mode::Paint => paint_tools(&mut st.sprite, ui),
             Mode::Points => points_tools(&mut st.sprite, ui),
+            Mode::Settings => settings_tools(&mut st.sprite, ui),
         });
     canvas(st, ui);
 }
@@ -471,6 +558,7 @@ fn top_bar(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
                         .selectable_label(st.sprite.path.as_deref() == Some(p), p)
                         .clicked()
                     {
+                        st.sprite.link = None;
                         match image::open(root.join(p)) {
                             Ok(i) => {
                                 let meta =
@@ -496,10 +584,12 @@ fn top_bar(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
         if ui.button("New image").clicked() {
             let (w, h) = (st.sprite.new_w, st.sprite.new_h);
             st.sprite.new_image(w, h);
+            st.sprite.link = None;
+            st.sprite.name = unique_sprite_name(root, "sprite");
         }
         ui.add(
             egui::TextEdit::singleline(&mut st.sprite.name)
-                .hint_text("save as: assets/sprites/name.png")
+                .hint_text("name (saved in assets/sprites)")
                 .desired_width(220.0),
         );
         if ui
@@ -532,7 +622,10 @@ fn top_bar(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
     });
     if save {
         let rel = if !st.sprite.name.trim().is_empty() {
-            let n = st.sprite.name.trim().to_string();
+            let mut n = st.sprite.name.trim().to_string();
+            if !n.contains('/') {
+                n = format!("{SPRITES_DIR}/{n}");
+            }
             if n.ends_with(".png") {
                 n
             } else {
@@ -542,7 +635,11 @@ fn top_bar(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
             st.sprite.path.clone().unwrap_or_default()
         };
         if rel.is_empty() || rel.contains("..") || rel.starts_with('/') {
-            st.toast("Give the image a name (assets/sprites/name.png)");
+            st.toast("Give the sprite a name");
+            return;
+        }
+        if rel == DEFAULT_SPRITE {
+            st.toast("The default white sprite is read-only: save under another name");
             return;
         }
         let full = root.join(&rel);
@@ -571,6 +668,12 @@ fn top_bar(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
                 st.sprite.name.clear();
                 st.sprite.dirty = false;
                 st.refresh_assets();
+                st.rev += 1; // viewport reloads the changed image
+                if let Some(l) = st.sprite.link.clone() {
+                    // the Inspector points the object's sprite at the file (works for prefab instances and children too)
+                    st.sprite_apply = Some((l.clone(), rel.clone()));
+                    st.select(Some(l));
+                }
                 st.toast(format!("Saved {rel}"));
             }
             Err(e) => st.log(LogLevel::Error, e),
@@ -656,6 +759,85 @@ fn paint_tools(s: &mut SpriteUi, ui: &mut Ui) {
     });
     if let Some((a, b, c, d)) = s.selection {
         ui.weak(format!("selection {}×{} at {a},{b}", c - a + 1, d - b + 1));
+    }
+}
+
+fn settings_tools(s: &mut SpriteUi, ui: &mut Ui) {
+    ui.label(RichText::new("Image settings").strong());
+    ui.weak("Saved with the sprite; every object that uses it follows.");
+    let mut meta = s.meta.as_object().cloned().unwrap_or_default();
+    let before = meta.clone();
+    for (key, label, opts, def, tip) in [
+        (
+            "filter",
+            "Filter",
+            ["linear", "nearest"],
+            "linear",
+            "nearest = crisp pixel art, linear = smooth",
+        ),
+        (
+            "wrap",
+            "Wrap",
+            ["repeat", "clamp"],
+            "repeat",
+            "repeat tiles the image, clamp stretches the edge pixels",
+        ),
+    ] {
+        let mut cur = meta
+            .get(key)
+            .and_then(Value::as_str)
+            .unwrap_or(def)
+            .to_string();
+        ui.horizontal(|ui| {
+            ui.label(label).on_hover_text(tip);
+            egui::ComboBox::from_id_salt(key)
+                .selected_text(cur.clone())
+                .show_ui(ui, |ui| {
+                    for o in opts {
+                        ui.selectable_value(&mut cur, o.to_string(), o);
+                    }
+                });
+        });
+        meta.insert(key.into(), json!(cur));
+    }
+    let mut ppu = meta.get("ppu").and_then(Value::as_f64).unwrap_or(1.0);
+    ui.horizontal(|ui| {
+        ui.label("Pixels per unit")
+            .on_hover_text("sprites are drawn at size ÷ this value");
+        ui.add(
+            egui::DragValue::new(&mut ppu)
+                .speed(0.1)
+                .range(0.01..=10000.0),
+        );
+    });
+    meta.insert("ppu".into(), json!(ppu));
+    ui.separator();
+    ui.label(RichText::new("Slice into frames").strong());
+    let sliced = meta.contains_key("frameWidth");
+    let mut on = sliced;
+    ui.checkbox(&mut on, "Sprite sheet (grid of frames)");
+    if on && !sliced {
+        let (w, h) = s.img.as_ref().map_or((16, 16), |i| (i.width(), i.height()));
+        meta.insert("frameWidth".into(), json!(w));
+        meta.insert("frameHeight".into(), json!(h));
+    } else if !on && sliced {
+        meta.remove("frameWidth");
+        meta.remove("frameHeight");
+    }
+    if on {
+        for (key, label) in [("frameWidth", "frame w"), ("frameHeight", "frame h")] {
+            let mut v = meta.get(key).and_then(Value::as_u64).unwrap_or(16);
+            ui.add(
+                egui::DragValue::new(&mut v)
+                    .range(1..=4096)
+                    .prefix(format!("{label} ")),
+            );
+            meta.insert(key.into(), json!(v));
+        }
+    }
+    if meta != before {
+        s.meta = Value::Object(meta);
+        s.dirty = true;
     }
 }
 
@@ -888,6 +1070,7 @@ fn canvas(st: &mut EditorState, ui: &mut Ui) {
                     }
                 }
             }
+            Mode::Settings => {}
             Mode::Points => {
                 if let Some(p) = resp.interact_pointer_pos() {
                     let (x, y) = to_f(p);
@@ -950,4 +1133,30 @@ fn canvas(st: &mut EditorState, ui: &mut Ui) {
             }
         }
     });
+}
+
+#[cfg(test)]
+mod link_tests {
+    use super::*;
+
+    #[test]
+    fn apply_texture_sets_first_sprite_component() {
+        let mut e = nord_core::scene::Entity::new("S");
+        assert!(!apply_texture(&mut e, "a.png"));
+        e.components.push(
+            serde_json::from_value(json!({"type":"sprite","texture":DEFAULT_SPRITE})).unwrap(),
+        );
+        assert!(apply_texture(&mut e, "assets/sprites/hero.png"));
+        assert_eq!(e.components[0].fields["texture"], "assets/sprites/hero.png");
+    }
+
+    #[test]
+    fn unique_name_skips_existing_files() {
+        let d = std::env::temp_dir().join(format!("nord-sprite-{}", std::process::id()));
+        std::fs::create_dir_all(d.join(SPRITES_DIR)).unwrap();
+        assert_eq!(unique_sprite_name(&d, "sprite"), "sprite");
+        std::fs::write(d.join(SPRITES_DIR).join("sprite.png"), b"").unwrap();
+        assert_eq!(unique_sprite_name(&d, "sprite"), "sprite-2");
+        let _ = std::fs::remove_dir_all(&d);
+    }
 }

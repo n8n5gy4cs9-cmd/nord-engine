@@ -12,3 +12,8 @@ Mode **Origin, points, collision** stores into `<image>.meta.json`:
 - `frameProps: { "<frame>": { duration, event } }` (spritesheets, frame size from the sheet's meta) — a per-frame duration multiplier and an event name; both are used by animated sprites (see ANIMATION_EDITOR.md).
 Not done: per-frame origin/points, multi-frame editing in one canvas (edit the whole sheet as one image), layers, blending/anti-aliased brushes, selection lasso.
 Tests: `cargo test -p nord-editor` (pixel unit tests, `sprite_editor_paints_saves_…`), `tools/plugin-objects-test.mjs` (origin), `tools/eventsheet-demo-test.mjs` (image points).
+
+## Sprites on objects (2026-10-24)
+- Hierarchy ▸ Create ▸ **Sprite** adds an object using `assets/sprites/default-white.png` (64×64, made when missing). That file is read-only by rule: *Open in Sprite editor* on it starts a new image, and Save refuses its name.
+- Inspector ▸ Sprite / Animated sprite ▸ **Open in Sprite editor** links the object to the editor. Save (name box = bare name, saved in `assets/sprites/`) sets the object's `texture`; for prefab instances/children the change is stored as an override, in prefab mode it edits the prefab. Saving an existing sprite overwrites it for every object that uses it. Assets: double-click a PNG opens it unlinked.
+- Mode **Settings**: `filter`, `wrap`, `ppu`, `frameWidth/frameHeight` in the `.meta.json` (same keys as the Assets import settings).

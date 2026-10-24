@@ -2475,6 +2475,12 @@
       "milestone": "M13",
       "title": "Lighting like Unity (2D+3D), light culling/priority, Quality settings, light-check test",
       "status": "done"
+    },
+    {
+      "id": "M13-29",
+      "milestone": "M13",
+      "title": "Create ▸ Sprite (default white sprite), Sprite editor linked to sprite components/prefabs, Settings tab",
+      "status": "done"
     }
   ]
 }

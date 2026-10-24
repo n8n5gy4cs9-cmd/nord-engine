@@ -1229,6 +1229,11 @@ fn open_entry(st: &mut EditorState, e: &Entry) {
                 st.log(LogLevel::Error, m);
             }
         }
+        AssetType::Image | AssetType::Spritesheet
+            if e.rel.to_ascii_lowercase().ends_with(".png") =>
+        {
+            st.open_in_sprite_editor(None, &e.rel)
+        }
         AssetType::Image
         | AssetType::Audio
         | AssetType::Model

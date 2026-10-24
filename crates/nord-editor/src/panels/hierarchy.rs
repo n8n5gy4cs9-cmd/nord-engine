@@ -138,6 +138,7 @@ pub(crate) fn create_menu(st: &mut EditorState, ui: &mut Ui, three: bool, parent
             "camera" => "video",
             "text" | "ui-label" => "type",
             "ui-button" | "ui-panel" => "layout-grid",
+            "sprite" => "image",
             "audio" => "music",
             "spawner" => "sparkles",
             "trigger" => "crosshair",
@@ -150,6 +151,7 @@ pub(crate) fn create_menu(st: &mut EditorState, ui: &mut Ui, three: bool, parent
         }
     };
     item(ui, "Empty", "empty");
+    item(ui, "Sprite", "sprite");
     if three {
         ui.separator();
         item(ui, "Cube", "cube");

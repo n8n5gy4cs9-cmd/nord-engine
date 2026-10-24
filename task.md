@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 316/330 tasks (96%)** · updated 2026-10-24
+**Overall: 317/331 tasks (96%)** · updated 2026-10-24
 
 | Milestone | Progress |
 |---|---|
@@ -20,7 +20,7 @@
 | M10 Construct-style editor | 36/36 (100%) |
 | M11 Web editor | 14/16 (88%) |
 | M12 FPS Creator addon | 30/31 (97%) |
-| M13 Unity-style editor (Godotize) | 27/28 (96%) |
+| M13 Unity-style editor (Godotize) | 28/29 (97%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -414,6 +414,7 @@ _Unity-like editor workflow on the existing tools: Scene/Game/Hierarchy/Inspecto
 - [x] **M13-26** Examples part 2 (platformer, shooter, 9 topic pages, editor map)
 - [x] **M13-27** Unity conversion playbook + MCP unity tools, Examples pages 30-41, examples smoke test
 - [x] **M13-28** Lighting like Unity (2D+3D), light culling/priority, Quality settings, light-check test
+- [x] **M13-29** Create ▸ Sprite (default white sprite), Sprite editor linked to sprite components/prefabs, Settings tab
 
 ## Features (PRD)
 

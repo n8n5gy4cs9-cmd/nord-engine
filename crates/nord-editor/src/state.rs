@@ -439,6 +439,8 @@ pub struct EditorState {
     pub prefab_mode: Option<crate::prefab::PrefabMode>,
     pub layout_ui: crate::panels::layout::LayoutUi,
     pub sprite: crate::panels::sprite::SpriteUi,
+    /// (Hierarchy selection id, texture): the Inspector sets that object's sprite texture on its next frame (Sprite editor save)
+    pub sprite_apply: Option<(String, String)>,
     /// What the 3D Modeler tab was opened for (Inspector ▸ Model ▸ Open in 3D Modeler); `None` = free modelling.
     pub modeler_ctx: Option<ModelerCtx>,
     /// The Modeler page must be told a new context (after a prefab / variant was created from its save dialog).
@@ -550,6 +552,7 @@ impl EditorState {
             prefab_mode: None,
             layout_ui: Default::default(),
             sprite: Default::default(),
+            sprite_apply: None,
             modeler_ctx: None,
             modeler_push: false,
             modeler_full: false,
@@ -761,8 +764,15 @@ impl EditorState {
 
     /// Hierarchy ▸ Create: a ready-made entity (name, components) under `parent` (Unity's GameObject menu).
     pub fn add_preset(&mut self, kind: &str, parent: Option<String>) {
+        let sprite = (kind == "sprite")
+            .then(|| self.ensure_default_sprite())
+            .flatten();
         let (name, comps): (&str, Vec<Value>) = match kind {
             "empty" => ("Empty", vec![]),
+            "sprite" => (
+                "Sprite",
+                vec![json!({"type":"sprite","texture":sprite.unwrap_or_default()})],
+            ),
             "camera" => ("Camera", vec![json!({"type":"camera"})]),
             "text" => (
                 "Text",

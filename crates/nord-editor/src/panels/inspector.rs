@@ -1031,8 +1031,18 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         })
         .unwrap_or_default();
     let mut e: Entity = orig.clone();
+    if st
+        .sprite_apply
+        .as_ref()
+        .is_some_and(|(t, _)| st.selection.first() == Some(t))
+    {
+        if let Some((_, tex)) = st.sprite_apply.take() {
+            crate::panels::sprite::apply_texture(&mut e, &tex);
+        }
+    }
     let mut docs: Option<String> = None;
     let mut open_modeler: Option<String> = None;
+    let mut open_sprite: Option<String> = None;
     let mut open_mesh: Option<nord_core::scene::Component> = None;
     let mut prefab_op: Option<(String, u8)> = None;
     egui::ScrollArea::vertical()
@@ -1265,6 +1275,15 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                         fields_ui(ui, &cx, &fields, &mut c.fields, &id, base_comp(i, &c.kind));
                         if c.kind == "mesh" && ui.button("Edit as model in 3D Modeler").on_hover_text("Turns this primitive into editable geometry. Save in the Modeler to use the result on this object (the mesh becomes a model); closing without saving changes nothing.").clicked() {
                             open_mesh = Some(c.clone());
+                        }
+                        if matches!(c.kind.as_str(), "sprite" | "animatedSprite") {
+                            let t = c.fields.get("texture").and_then(Value::as_str).unwrap_or_default();
+                            if crate::icons::label_icon(ui, "pencil", "Open in Sprite editor")
+                                .on_hover_text("Edit the pixels, origin and import settings. Save writes assets/sprites/<name>.png and this object uses it. The default white sprite is never changed: it starts a new sprite.")
+                                .clicked()
+                            {
+                                open_sprite = Some(t.to_string());
+                            }
                         }
                         if c.kind == "model" {
                             let p = c.fields.get("path").and_then(Value::as_str).unwrap_or_default();
@@ -1518,6 +1537,11 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             inst.id.as_str()
         };
         st.open_mesh_in_modeler(id, &c);
+        return;
+    }
+    if let Some(tex) = open_sprite {
+        let link = st.selection.first().cloned();
+        st.open_in_sprite_editor(link, &tex);
         return;
     }
     if let Some(file) = open_modeler {
