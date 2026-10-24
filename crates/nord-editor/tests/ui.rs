@@ -1851,3 +1851,48 @@ fn dropping_a_mesh_json_uses_its_glb_or_opens_the_modeler() {
         .expect("model component");
     assert_eq!(m.fields["path"], "models/a.glb");
 }
+
+#[test]
+fn assets_rename_ends_on_enter_with_the_typed_name_and_on_escape_without() {
+    let d = example_copy("assets-rename", "conformance-2d");
+    let mut st = EditorState::new();
+    st.open_project(&d).unwrap();
+    std::fs::write(d.join("assets/new-script.js"), "// x\n").unwrap();
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(1000.0, 500.0))
+        .build_ui_state(|ui, st: &mut EditorState| panels::assets::ui(st, ui), st);
+    loaders(&h);
+    h.state_mut().assets_ui.dir = "assets".into();
+    h.run_steps(3);
+    // like the right-click menu: a file is created and its name is being edited
+    h.state_mut().assets_ui.rename = Some(("assets/new-script.js".into(), "new-script.js".into()));
+    h.run_steps(4);
+    // the rename box already has the keyboard focus (and the name without its extension selected)
+    h.run_steps(2);
+    h.query_all_by_role(egui::accesskit::Role::TextInput)
+        .last()
+        .unwrap()
+        .type_text("player");
+    h.run_steps(2);
+    h.press_key(egui::Key::Enter);
+    h.run_steps(4);
+    assert!(
+        h.state().assets_ui.rename.is_none(),
+        "Enter ends the rename"
+    );
+    assert!(
+        d.join("assets/player.js").exists(),
+        "the typed name is used"
+    );
+    assert!(!d.join("assets/new-script.js").exists());
+    // Escape ends it too and keeps the old name
+    h.state_mut().assets_ui.rename = Some(("assets/player.js".into(), "player.js".into()));
+    h.run_steps(4);
+    h.press_key(egui::Key::Escape);
+    h.run_steps(3);
+    assert!(
+        h.state().assets_ui.rename.is_none(),
+        "Escape ends the rename"
+    );
+    assert!(d.join("assets/player.js").exists());
+}

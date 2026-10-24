@@ -430,14 +430,15 @@ fn row(
         ui.horizontal(|ui| {
             ui.add(icons::icon(icon, 14.0, tint));
             if let Some((_, buf)) = st.hierarchy_rename.as_mut() {
-                let r = ui.add(egui::TextEdit::singleline(buf).desired_width(f32::INFINITY));
-                r.request_focus();
-                if r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
-                    commit = true;
-                } else if ui.input(|i| i.key_pressed(egui::Key::Escape)) {
-                    cancel = true;
-                } else if r.lost_focus() {
-                    commit = true; // clicking elsewhere keeps the typed name, like Unity
+                match super::inline_rename(
+                    ui,
+                    buf,
+                    egui::Id::new(("hier-rename", &e.id)),
+                    f32::INFINITY,
+                ) {
+                    super::RenameOutcome::Commit => commit = true,
+                    super::RenameOutcome::Cancel => cancel = true,
+                    super::RenameOutcome::Editing => {}
                 }
             }
         });

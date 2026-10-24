@@ -952,16 +952,36 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
                     {
                         let mut commit = false;
                         let buf = &mut st.assets_ui.rename.as_mut().unwrap().1;
-                        let r = ui.add(egui::TextEdit::singleline(buf).desired_width(cell));
-                        r.request_focus();
-                        if r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
-                            commit = true;
-                        }
-                        if ui.input(|i| i.key_pressed(egui::Key::Escape)) {
-                            st.assets_ui.rename = None;
+                        match super::inline_rename(
+                            ui,
+                            buf,
+                            egui::Id::new(("asset-rename", &e.rel)),
+                            cell,
+                        ) {
+                            super::RenameOutcome::Commit => commit = true,
+                            super::RenameOutcome::Cancel => st.assets_ui.rename = None,
+                            super::RenameOutcome::Editing => {}
                         }
                         if commit {
                             let (from, new) = st.assets_ui.rename.take().unwrap();
+                            let mut new = new.trim().to_string();
+                            // typing just `player` for `new-script.js` keeps the extension
+                            if let Some((_, ext)) =
+                                from.rsplit('/').next().and_then(|n| n.rsplit_once('.'))
+                            {
+                                if !new.contains('.')
+                                    && !new.is_empty()
+                                    && !root.join(&from).is_dir()
+                                {
+                                    new = format!("{new}.{ext}");
+                                }
+                            }
+                            if new.is_empty()
+                                || new.contains('/')
+                                || new == from.rsplit('/').next().unwrap_or("")
+                            {
+                                continue;
+                            }
                             let dir = from.rsplit_once('/').map_or("", |x| x.0).to_string();
                             let to = if dir.is_empty() {
                                 new

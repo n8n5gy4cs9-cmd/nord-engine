@@ -30,13 +30,21 @@ fn splash_anim(name: &str, index: usize, t: f32) -> (f32, egui::Vec2, f32) {
         }
         "splash-emblem" => {
             let p = ease_out((t - 0.1) / 0.8);
-            let breathe = if t > 0.9 { 1.0 + 0.012 * (t * 2.9).sin() } else { 1.0 };
+            let breathe = if t > 0.9 {
+                1.0 + 0.012 * (t * 2.9).sin()
+            } else {
+                1.0
+            };
             (p, vec2(0.0, 0.0), (0.85 + 0.15 * p) * breathe)
         }
         "circuits-left" | "circuits-right" => {
             let p = ease_out((t - 0.4) / 0.7);
             let dir = if name == "circuits-left" { -1.0 } else { 1.0 };
-            (p * (0.8 + 0.2 * (t * 3.0 + index as f32).sin()), vec2(dir * (1.0 - p) * 30.0, 0.0), 1.0)
+            (
+                p * (0.8 + 0.2 * (t * 3.0 + index as f32).sin()),
+                vec2(dir * (1.0 - p) * 30.0, 0.0),
+                1.0,
+            )
         }
         "loading-text" => {
             let p = ease_out((t - 0.8) / 0.4);
@@ -379,14 +387,30 @@ impl App {
                         }
                         let c = rect.min + (egui::vec2(l.x + l.w / 2.0, l.y + l.h / 2.0) + off) * k;
                         let r = egui::Rect::from_center_size(c, egui::vec2(l.w, l.h) * k * scale);
-                        let tint = egui::Color32::from_white_alpha((alpha.clamp(0.0, 1.0) * 255.0) as u8);
-                        ui.put(r, egui::Image::new(l.image.clone()).tint(tint).fit_to_exact_size(r.size()));
+                        let tint =
+                            egui::Color32::from_white_alpha((alpha.clamp(0.0, 1.0) * 255.0) as u8);
+                        ui.put(
+                            r,
+                            egui::Image::new(l.image.clone())
+                                .tint(tint)
+                                .fit_to_exact_size(r.size()),
+                        );
                         if l.name == "splash-emblem" && t > 0.9 {
                             // soft pulsing glow: the emblem again, a little larger and faint
                             let g = 0.5 + 0.5 * (t * 2.6).sin();
                             let r2 = r.expand(r.width() * 0.04 * g);
-                            let tint = egui::Color32::from_rgba_unmultiplied(150, 200, 255, (50.0 * g) as u8);
-                            ui.put(r2, egui::Image::new(l.image.clone()).tint(tint).fit_to_exact_size(r2.size()));
+                            let tint = egui::Color32::from_rgba_unmultiplied(
+                                150,
+                                200,
+                                255,
+                                (50.0 * g) as u8,
+                            );
+                            ui.put(
+                                r2,
+                                egui::Image::new(l.image.clone())
+                                    .tint(tint)
+                                    .fit_to_exact_size(r2.size()),
+                            );
                         }
                     }
                     let spin_a = ease_out((t - 0.7) / 0.3);
@@ -413,7 +437,8 @@ impl App {
                             (170.0 + 85.0 * k2) as u8,
                             (255.0 * k2 * spin_a) as u8,
                         );
-                        ui.painter().line_segment([pts[0], pts[1]], egui::Stroke::new(w, col));
+                        ui.painter()
+                            .line_segment([pts[0], pts[1]], egui::Stroke::new(w, col));
                     }
                 });
             if t0.elapsed() < Duration::from_millis(100) {

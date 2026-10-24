@@ -1,6 +1,5 @@
 //! Nord Engine editor (library part so panels can be tested headlessly with egui_kittest). Credit: Crowelian 2026 + Sonnet.
 pub mod app;
-pub mod splash_layers;
 pub mod assetmeta;
 pub mod code;
 pub mod gif_import;
@@ -14,6 +13,7 @@ pub mod platform;
 pub mod prefab;
 pub mod scene_ops;
 pub mod schema;
+pub mod splash_layers;
 pub mod state;
 pub mod theme;
 pub mod tilemap;
