@@ -34,13 +34,21 @@ impl Default for ConsoleUi {
     }
 }
 
-/// `path/file.ext:LINE[:COL]` anywhere in a line -> (path, line0)
+/// `path/file.ext:LINE[:COL]` anywhere in a line -> (path, line0). Also understands browser stack frames
+/// (`Update@http://127.0.0.1:52547/scripts/mover.js:9:48`); project files win over `runtime/` and `vendor/` frames.
 pub fn find_location(s: &str) -> Option<(String, usize)> {
+    let mut fallback = None;
     for tok in s.split(|c: char| c.is_whitespace() || "()[]'\"<>".contains(c)) {
+        let mut tok = tok.rsplit('@').next().unwrap_or(tok);
+        if let Some(i) = tok.find("://") {
+            // drop `scheme://host[:port]/`
+            tok = tok[i + 3..].split_once('/').map_or("", |(_, rest)| rest);
+        }
         let mut parts = tok.trim_end_matches([':', ',', '.']).split(':');
         let (Some(p), Some(l)) = (parts.next(), parts.next()) else {
             continue;
         };
+        let p = p.split('?').next().unwrap_or(p);
         let ext_ok = [
             "js", "mjs", "ts", "rs", "json", "html", "css", "toml", "wgsl", "glsl",
         ]
@@ -48,11 +56,16 @@ pub fn find_location(s: &str) -> Option<(String, usize)> {
         .any(|e| p.ends_with(&format!(".{e}")));
         if ext_ok {
             if let Ok(n) = l.parse::<usize>() {
-                return Some((p.to_string(), n.saturating_sub(1)));
+                let hit = (p.to_string(), n.saturating_sub(1));
+                if p.starts_with("runtime/") || p.starts_with("vendor/") {
+                    fallback.get_or_insert(hit);
+                } else {
+                    return Some(hit);
+                }
             }
         }
     }
-    None
+    fallback
 }
 
 fn level_color(i: usize, ui: &Ui, th: &crate::theme::Theme) -> egui::Color32 {
@@ -524,6 +537,16 @@ mod tests {
         assert_eq!(
             find_location("http://x/y.js (scripts/a.js:3)"),
             Some(("scripts/a.js".into(), 2))
+        );
+        assert_eq!(
+            find_location(
+                "Mover.update: Update@http://127.0.0.1:52547/scripts/mover.js:9:48 update@http://127.0.0.1:52547/runtime/core/unity.js:384:18"
+            ),
+            Some(("scripts/mover.js".into(), 8))
+        );
+        assert_eq!(
+            find_location("at http://127.0.0.1:1/runtime/core/unity.js:3:1"),
+            Some(("runtime/core/unity.js".into(), 2))
         );
         assert_eq!(find_location("no location here"), None);
     }

@@ -1,4 +1,18 @@
 // Math, rng, easing, tween, timers, object pool. Engine-agnostic.
+/** `(scripts/spin.js:5)` of the first stack frame outside the engine, or '' (only under the editor / `nord serve`, so exports stay clean). */
+export const withLoc = (a) => { const l = callerLoc(); return l ? [...a, l] : a; };
+export function callerLoc() {
+  if (!globalThis.__nordServed) return '';
+  for (const line of String(new Error().stack ?? '').split('\n')) {
+    const m = /(https?:\/\/[^\s)]+?):(\d+):\d+\)?\s*$/.exec(line.trim());
+    if (!m) continue;
+    let path = m[1];
+    try { path = new URL(m[1]).pathname.slice(1); } catch { /* keep */ }
+    if (path.startsWith('runtime/') || path.startsWith('vendor/')) continue;
+    return ` (${path}:${m[2]})`;
+  }
+  return '';
+}
 export const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 export const lerp = (a, b, t) => a + (b - a) * t;
 export const remap = (v, a, b, c, d) => c + ((v - a) / (b - a)) * (d - c);

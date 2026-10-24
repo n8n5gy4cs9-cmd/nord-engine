@@ -93,7 +93,7 @@ Coroutine yields: `null` (next frame), @api[new WaitForSeconds(s)], @api[new Wai
 * @api[UnityInput] (import as `Input`): `GetKey / GetKeyDown / GetKeyUp('Space' | 'KeyA' | 'ArrowLeft' | 'Mouse0')`, `GetAxis('Horizontal' | 'Vertical')` (WASD + arrows + stick), `GetButton / GetButtonDown / GetButtonUp('jump')` for your project's input actions, `GetMouseButton(n)`, `mousePosition`.
 * @api[Mathf]: `PI, Abs, Floor, FloorToInt, Clamp, Lerp, LerpUnclamped, InverseLerp, MoveTowards, SmoothStep, Repeat, PingPong, Approximately, DeltaAngle, LerpAngle, Random`.
 * @api[Vector2] / @api[Vector3]: `zero, one, up, down, left, right, forward, back, Distance, Dot, Cross, Lerp, MoveTowards, magnitude, sqrMagnitude, normalized, Clone, Add, Sub, Mul, Set, Equals, toArray`.
-* @api[Debug]: `Log, LogWarning, LogError, Assert` (to the @ui[Console]).
+* @api[Debug]: `Log, LogWarning, LogError, Assert` (to the @ui[Console]). In the editor each line ends with `(scripts/file.js:LINE)`: **double-click it in the Console** to open that script in the @ui[Code] tab at that line (errors too, like Unity).
 * @api[PlayerPrefs]: `GetInt/GetFloat/GetString(key, default)`, `SetInt/SetFloat/SetString`, `HasKey`, `DeleteAll` (saved in the browser / app).
 * @api[Application]: `platform` (`RuntimePlatform.OSXEditor / WindowsPlayer / WebGLPlayer / IPhonePlayer…`), `isEditor`, `isDesktopApp`, `isWebPlayer`, `isMobilePlatform`, `os`. @api[Cursor]: `lockState = CursorLockMode.Locked`, `visible`. See [Input](input.html#which-platform-am-i-on).
 * @api[SceneManager]: `LoadScene('scenes/level2.scene.json')`, `ReloadScene()`, `sceneName`. @api[Application]: `Quit()`, `isPlaying`.

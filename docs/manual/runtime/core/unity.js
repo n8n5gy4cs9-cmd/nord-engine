@@ -3,7 +3,7 @@
 // Everything here is plain JS on top of NordScript/Entity/Scene — existing scripts keep working unchanged.
 import { NordScript } from './script.js';
 import { Game } from './game.js';
-import { clamp, lerp } from './util.js';
+import { clamp, lerp, withLoc } from './util.js';
 import { bbox } from './behaviors/util.js';
 import { runtimePlatform, RuntimePlatform, isEditor, isDesktopApp, isMobile, operatingSystem } from './platform.js';
 export { RuntimePlatform };
@@ -137,9 +137,9 @@ export const Time = {
   get realtimeSinceStartup() { return (globalThis.performance?.now?.() ?? Date.now()) / 1000; },
 };
 export const Debug = {
-  Log: (...a) => game()?.log(...a) ?? console.log(...a),
-  LogWarning: (...a) => console.warn(...a),
-  LogError: (...a) => console.error(...a),
+  Log: (...a) => { a = withLoc(a); return game()?.log(...a) ?? console.log(...a); },
+  LogWarning: (...a) => console.warn(...withLoc(a)),
+  LogError: (...a) => console.error(...withLoc(a)),
   Assert: (c, m = 'Assertion failed') => { if (!c) console.error(m); },
   LogFormat: (f, ...a) => Debug.Log(String(f).replace(/\{(\d+)\}/g, (_, i) => a[+i] ?? '')),
   DrawLine: () => {}, DrawRay: () => {}, Break: () => game()?.pause(),
