@@ -149,6 +149,9 @@ Drag the gizmo, or type **X/Y/Z**, choose **Move / Rotate (degrees) / Scale** an
 * **UV mapping:** **Mark seam / Clear seam** (edge mode) cut islands; **UV move U/V, rotate, scale** + **Transform selected UVs** change the UVs of selected faces numerically.
 * **Export:** **Up axis** (Y up, or Z up baked), **Scale**, then **GLB**, **glTF** or **OBJ + MTL** into `models/`.
 
+## Full window
+@ui[Full window] (top of the Modeler tab) makes the 3D Modeler fill the whole Nord Engine window; menus and panels are hidden. The red @ui[✕ Exit full view] button in the same place brings the normal layout back.
+
 ## Texture tab
 
 <figure class="shot"><img src="assets/screenshots/mod-4-texture.png" alt="Texture tab with two painted red lines and the UV overlay" loading="lazy"><figcaption>Pixel painter. The yellow rectangles are the UV overlay: the faces of the mesh on the texture.</figcaption></figure>
@@ -166,10 +169,14 @@ The model always has **one** texture. @ui[Picture layers] let you put pictures (
    * @ui[X / Y / Width / Height / Rotate / Opacity %], @ui[keep proportions], @ui[Flip horizontal / vertical], @ui[Smooth] (off = crisp pixels, on = soft edges).
    * **Cut:** @ui[Cut Left / Top / Right / Bottom] crop the picture (in picture pixels). @ui[Trim transparent] removes empty edges.
    * **Stacking (which picture is on top):** the list shows the top picture first. Use the small @ui[▲] / @ui[▼] on a row to move that picture up or down one step, or the buttons @ui[Forward], @ui[Backward], @ui[To front], @ui[To back]. Keys: @key[Ctrl/Cmd+]] forward, @key[Ctrl/Cmd+[] backward, add @key[Shift] for front / back. **A picture hidden under another?** Click its row in the list, or @key[Alt]+click the texture to pick the picture underneath (repeat to cycle).
+   * @ui[Mask (keep inside UV area)]: a big picture no longer spills onto the neighbouring UV boxes. Choose **Selected faces** (select faces in the 3D or UV tab first), **Face under the picture centre**, or **All faces**; the picture is then drawn only inside those UV areas. @ui[No mask] removes it.
+   * @ui[Blend]: Normal, Multiply (tint / darken), Screen, Overlay, Soft light, Darken, Lighten, Colour only: for dirt, shadows, colour washes.
    * Buttons: @ui[Duplicate], @ui[Delete], @ui[Forward], @ui[Backward], @ui[To front], @ui[To back], @ui[Center], @ui[Fill texture], @ui[Original size].
    * @ui[Fit to selected faces]: select faces in the 3D or UV tab first, then the picture is placed exactly over their UV area. This is the fastest way to texture a wall with a picture.
    * @ui[Remove painted colour]: makes the colour of the colour box transparent in this picture (with a tolerance), handy for white backgrounds.
 4. Pictures are **merged into the texture** when you press @ui[Merge … layers into texture], when you paint with any other tool, and automatically when you save or export. After merging they are normal pixels (use Undo to get the layers back, one step).
+
+**Smooth or pixelated:** pictures are smooth by default and a small texture is stepped up to 512×512 when you add the first picture, so photos do not turn into a few big pixels (a 64×64 texture can only hold 64 pixels across). For a pixel-art look tick @ui[Pixelated look] (texture view and model use hard pixels, remembered) and untick @ui[Smooth] on a picture; shrink the texture with the size menu if you want chunkier pixels.
 
 **Keeping it small:**
 * Big pictures are shrunk to 512 px on import; @ui[Shrink data] resamples a picture to its size on the texture.

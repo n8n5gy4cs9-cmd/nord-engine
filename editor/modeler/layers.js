@@ -20,7 +20,10 @@ export function initLayers(api) {
     tctx.drawImage(base, 0, 0);
     for (const l of layers) {
       if (!l.vis) continue;
-      tctx.save(); tctx.translate(l.cx, l.cy); tctx.rotate((l.rot * Math.PI) / 180); tctx.scale(l.fx ? -1 : 1, l.fy ? -1 : 1); tctx.globalAlpha = l.alpha; tctx.imageSmoothingEnabled = l.smooth;
+      tctx.save();
+      if (l.mask?.length) { tctx.beginPath(); for (const poly of api.uvPolys(l.mask)) { poly.forEach(([x, y], i) => tctx[i ? 'lineTo' : 'moveTo'](x, y)); tctx.closePath(); } tctx.clip(); } // keep the picture inside the chosen UV areas
+      tctx.globalCompositeOperation = l.blend || 'source-over';
+      tctx.translate(l.cx, l.cy); tctx.rotate((l.rot * Math.PI) / 180); tctx.scale(l.fx ? -1 : 1, l.fy ? -1 : 1); tctx.globalAlpha = l.alpha; tctx.imageSmoothingEnabled = l.smooth;
       tctx.drawImage(l.src, l.cl, l.ct, Math.max(1, l.src.width - l.cl - l.cr), Math.max(1, l.src.height - l.ct - l.cb), -l.w / 2, -l.h / 2, l.w, l.h);
       tctx.restore();
     }
@@ -40,9 +43,11 @@ export function initLayers(api) {
     if (layers.length >= MAX_LAYERS) throw Error(`At most ${MAX_LAYERS} layers: merge some first.`);
     const bmp = await createImageBitmap(blob), src = shrink(bmp);
     api.checkpoint(); api.ensureTexture();
+    // a picture on a tiny texture would turn into a few big pixels: step the texture up to 512 first (the painted pixels are kept as they are)
+    if (texCanvas.width < 256 && !layers.length) resizeTexture(512);
     if (!base) base = copyCanvas(texCanvas);
     const fit = Math.min(1, (texCanvas.width * 0.6) / src.width, (texCanvas.height * 0.6) / src.height), w = Math.max(1, Math.round(src.width * fit)), h = Math.max(1, Math.round(src.height * fit));
-    const l = { id: seq++, name, src, cx: texCanvas.width / 2, cy: texCanvas.height / 2, w, h, rot: 0, fx: false, fy: false, alpha: 1, vis: true, smooth: false, cl: 0, ct: 0, cr: 0, cb: 0 };
+    const l = { id: seq++, name, src, cx: texCanvas.width / 2, cy: texCanvas.height / 2, w, h, rot: 0, fx: false, fy: false, alpha: 1, vis: true, smooth: true, mask: null, blend: 'source-over', cl: 0, ct: 0, cr: 0, cb: 0 };
     layers.push(l); sel = l.id; api.selectTool(); compose(); renderPanel();
     api.status(`Added "${name}" (${src.width}×${src.height}${src.width !== bmp.width ? `, shrunk from ${bmp.width}×${bmp.height}` : ''}). Drag it; corner squares resize, the round handle rotates (Ctrl/Cmd = 15° steps). The Pictures tool is selected: pick another tool to paint (pictures merge first).`);
   }
@@ -173,7 +178,21 @@ export function initLayers(api) {
     const lock = root.querySelector('#layerlock');
     const field = (label, key, min, max, step = 1) => { const lb = el('label', { textContent: label + ' ' }, p); const i = el('input', { type: 'number', value: l[key], step, style: 'width:68px' }, lb); if (min !== undefined) i.min = min; if (max !== undefined) i.max = max; i.dataset.key = key; i.oninput = () => { const v = num(i.value, l[key]); if (key === 'alpha') l.alpha = Math.max(0, Math.min(1, v / 100)); else if (key === 'w' && lock.checked) { const k = Math.max(1, v) / l.w; l.w = Math.max(1, v); l.h = Math.max(1, Math.round(l.h * k)); } else if (key === 'h' && lock.checked) { const k = Math.max(1, v) / l.h; l.h = Math.max(1, v); l.w = Math.max(1, Math.round(l.w * k)); } else l[key] = v; compose(); syncProps(); }; i.onchange = () => api.commit(); return i; };
     field('X', 'cx', undefined, undefined, 0.5); field('Y', 'cy', undefined, undefined, 0.5); field('Width', 'w', 1); field('Height', 'h', 1); field('Rotate °', 'rot', -360, 360, 1); field('Opacity %', 'alpha', 0, 100, 5).value = Math.round(l.alpha * 100);
-    for (const [txt, key] of [['Flip horizontal', 'fx'], ['Flip vertical', 'fy'], ['Smooth (off = crisp pixels)', 'smooth']]) { const lb = el('label', {}, p), c = el('input', { type: 'checkbox', checked: l[key] }, lb); lb.append(' ' + txt); c.onchange = () => { l[key] = c.checked; compose(); api.commit(); }; }
+    for (const [txt, key] of [['Flip horizontal', 'fx'], ['Flip vertical', 'fy'], ['Smooth (off = pixelated)', 'smooth']]) { const lb = el('label', {}, p), c = el('input', { type: 'checkbox', checked: l[key] }, lb); lb.append(' ' + txt); c.onchange = () => { l[key] = c.checked; compose(); api.commit(); }; }
+    const mrow = el('label', { textContent: 'Mask (keep inside UV area) ' }, p), msel = el('select', {}, mrow);
+    for (const [v, t] of [['', 'No mask'], ['sel', 'Selected faces'], ['under', 'Face under the picture centre'], ['all', 'All faces']]) el('option', { value: v, textContent: t, selected: v === (l.maskMode || '') }, msel);
+    msel.onchange = () => {
+      try {
+        let ids = null;
+        if (msel.value === 'sel') { ids = api.selectedFaces(); if (!ids.length) throw Error('Select faces first (3D or UV tab), then choose this mask.'); }
+        else if (msel.value === 'under') { const f = api.faceAt(l.cx, l.cy); if (f === undefined) throw Error('No face under the centre of the picture: move the picture centre onto a UV box.'); ids = [f]; }
+        else if (msel.value === 'all') ids = api.allFaces();
+        api.checkpoint(); l.mask = ids; l.maskMode = msel.value; compose(); api.commit(); renderPanel();
+      } catch (x) { api.status(x.message); msel.value = l.maskMode || ''; }
+    };
+    const brow = el('label', { textContent: 'Blend ' }, p), bsel = el('select', {}, brow);
+    for (const [v, t] of [['source-over', 'Normal'], ['multiply', 'Multiply (darken, tint)'], ['screen', 'Screen (lighten)'], ['overlay', 'Overlay'], ['soft-light', 'Soft light'], ['darken', 'Darken'], ['lighten', 'Lighten'], ['color', 'Colour only']]) el('option', { value: v, textContent: t, selected: v === l.blend }, bsel);
+    bsel.onchange = () => { l.blend = bsel.value; compose(); api.commit(); };
     el('div', { className: 'hint', textContent: 'Stacking: the list shows the top picture first. ▲ ▼ move a picture up/down, To front / To back jump to the ends; Ctrl/Cmd+] and [ do the same; Alt+click on the texture picks the picture underneath.' }, p);
     el('div', { className: 'hint', textContent: 'Cut (crop) the picture, in picture pixels:' }, p);
     for (const [txt, key] of [['Left', 'cl'], ['Top', 'ct'], ['Right', 'cr'], ['Bottom', 'cb']]) field('Cut ' + txt, key, 0, 4096);

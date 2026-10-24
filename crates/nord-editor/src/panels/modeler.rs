@@ -41,6 +41,14 @@ pub fn ui(
         }
     }
     ui.horizontal(|ui| {
+        if st.modeler_full {
+            let exit = egui::Button::new(egui::RichText::new("  ✕  Exit full view  ").strong().color(egui::Color32::WHITE)).fill(egui::Color32::from_rgb(200, 50, 50));
+            if ui.add(exit).on_hover_text("Back to the normal editor layout").clicked() {
+                st.modeler_full = false;
+            }
+        } else if ui.button("Full window").on_hover_text("Make the 3D Modeler fill the whole editor window (a red button brings the layout back)").clicked() {
+            st.modeler_full = true;
+        }
         if ui.button("Open in browser").clicked() {
             open_in_browser(&url);
         }

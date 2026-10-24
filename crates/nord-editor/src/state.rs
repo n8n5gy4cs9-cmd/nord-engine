@@ -440,6 +440,8 @@ pub struct EditorState {
     pub modeler_ctx: Option<ModelerCtx>,
     /// The Modeler page must be told a new context (after a prefab / variant was created from its save dialog).
     pub modeler_push: bool,
+    /// the 3D Modeler fills the whole editor window (menus and panels hidden) until the red exit button is pressed
+    pub modeler_full: bool,
     pub notes: crate::panels::notes::NotesUi,
     /// Asset colours / icons / tags / notes of the open project (`.nord/asset-meta.json`)
     pub asset_meta: crate::assetmeta::AssetMeta,
@@ -547,6 +549,7 @@ impl EditorState {
             sprite: Default::default(),
             modeler_ctx: None,
             modeler_push: false,
+            modeler_full: false,
             notes: Default::default(),
             asset_meta: Default::default(),
             theme_draft: None,

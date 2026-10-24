@@ -16,6 +16,8 @@ Create: cube, plane, cylinder, sphere, draw polygon, add vertex, fill boundary, 
 ## Picture layers (editor/modeler/layers.js)
 Texture tab ▸ **Layer** tool + panel under the texture: add PNG/JPG/WebP pictures (file picker, drop, paste, project PNGs), move / resize (corner handles, Shift = free) / rotate (Shift = 15°) / flip / opacity / crop (cut) / duplicate / order / trim transparent / remove colour / fit to the UV area of the selected faces. Layers are working objects only: they are **merged into the single texture** (`bake`) when painting with another tool, on Merge, and before save/export (`finalizeTexture`), so the model keeps one PNG. Pictures shrink to 512 px on import; texture size 16–1024; optional colour reduction (6/5/4 bits) at save; PNG size shown (red over 2 MB). Layers are not stored in `.mesh.json`.
 
+Also: **mask** (clip a picture to selected faces / the face under its centre / all faces' UV areas), **blend modes**, smooth by default (set **Pixelated look** for nearest-filter view; `localStorage nord.modeler.pixel`), texture steps up to 512 when the first picture is added to a texture under 256 px. **Full window**: `EditorState::modeler_full` hides the editor chrome (`app.rs`), red exit button in `panels/modeler.rs`.
+
 ## Limits / not done
 GLB import only through Open in 3D Modeler (no menu to import an arbitrary file yet), no skeleton/animation authoring, no vertex-colour bake. Texture is one image per mesh. Undo keeps whole-mesh snapshots (80 steps / 32 MB). Native-window behaviour (wry) not verified here.
 

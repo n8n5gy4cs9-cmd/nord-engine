@@ -1741,7 +1741,8 @@ impl App {
             ctx.send_viewport_cmd(egui::ViewportCommand::Fullscreen(self.os_fullscreen));
         }
         let game_full = self.st.game_full && self.st.project.is_some();
-        if !game_full {
+        let modeler_full = self.st.modeler_full && self.st.project.is_some();
+        if !game_full && !modeler_full {
             egui::TopBottomPanel::top("menu").show(ctx, |ui| self.menu(ui));
             egui::TopBottomPanel::top("toolbar")
                 .frame(
@@ -1774,6 +1775,12 @@ impl App {
                     panels::hub::ui(&mut self.st, ui);
                 }
             });
+        } else if modeler_full {
+            egui::CentralPanel::default()
+                .frame(egui::Frame::NONE.inner_margin(egui::Margin::same(6)))
+                .show(ctx, |ui| {
+                    panels::modeler::ui(&mut self.st, ui, &mut self.web, frame, overlay);
+                });
         } else if game_full {
             egui::CentralPanel::default()
                 .frame(egui::Frame::NONE)
