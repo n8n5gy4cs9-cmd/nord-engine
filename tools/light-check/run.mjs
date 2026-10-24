@@ -57,6 +57,20 @@ try {
   await page.eval(`window.__nord.loadScene('scenes/spriteunlit.scene.json')`);
   const su = await lum();
   check('sprite with lit=false ignores lights', su.centre > 200 && su.corner > 200, su);
+  await page.eval(`window.__nord.loadScene('scenes/colors.scene.json')`); await sleep(600);
+  const rgb = async () => { await page.shot(tmp); const im = decodePng(fs.readFileSync(tmp)), i = ((im.h >> 1) * im.w + (im.w >> 1)) * 4; return [im.data[i], im.data[i + 1], im.data[i + 2]]; };
+  const both = await rgb();
+  check('red + blue point lights blend to magenta on a sprite', both[0] > 100 && both[2] > 100 && both[1] < 40, both);
+  await page.eval(`window.__nord.scene.find('Blue').enabled = false`); await sleep(400);
+  const red = await rgb();
+  check('red light alone gives red', red[0] > 100 && red[1] < 40 && red[2] < 40, red);
+  await page.eval(`window.__nord.loadScene('scenes/colors2.scene.json')`); await sleep(600);
+  const row = async () => { await page.shot(tmp); const im = decodePng(fs.readFileSync(tmp)), at = (fx) => { const i = ((im.h >> 1) * im.w + Math.floor(im.w * fx)) * 4; return [im.data[i], im.data[i + 1], im.data[i + 2]]; }; return [at(0.35), at(0.5), at(0.65)]; };
+  const rw = await row();
+  check('upright sprite: red left, blue right, both blend in the middle', rw[0][0] > rw[0][2] && rw[2][2] > rw[2][0] && rw[1][0] > 60 && rw[1][2] > 60, rw);
+  await page.eval(`window.__nord.loadScene('scenes/colors3.scene.json')`); await sleep(800);
+  const far = await row();
+  check('far from the origin, default light values: red/blue still blend on a unit sprite', far[1][0] > 40 && far[1][2] > 40, far);
   // the Modeler model keeps its point light while other lights are switched on and off (regression)
   await page.eval(`window.__nord.loadScene('scenes/modelrig.scene.json')`);
   const rig = async (label) => { const r = await lum(); return { label, ...r }; };
@@ -100,6 +114,10 @@ try {
     await page.eval(`window.__nord.scene.find('Lamp').set('light', 'radius', 60)`);
     const h = await lum();
     check('2D entity.set("light","radius",60) shrinks the light', h.centre > 100 && h.side < 20, h);
+    await page.eval(`window.__nord.loadScene('scenes/colors.scene.json')`); await sleep(800);
+    await page.shot(tmp); const im = decodePng(fs.readFileSync(tmp)), at = (fx) => { const i = ((im.h >> 1) * im.w + Math.floor(im.w * fx)) * 4; return [im.data[i], im.data[i + 1], im.data[i + 2]]; };
+    const c2 = [at(0.38), at(0.5), at(0.62)];
+    check('2D: red left, blue right, blended in the middle', c2[0][0] > c2[0][2] && c2[2][2] > c2[2][0] && c2[1][0] > 40 && c2[1][2] > 40, c2);
   } finally { s2.kill(); }
 } finally { page.close(); server.kill(); }
 process.exit(failed ? 1 : 0);

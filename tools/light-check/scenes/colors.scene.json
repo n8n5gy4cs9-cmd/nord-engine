@@ -1,0 +1,147 @@
+{
+ "format": 1,
+ "name": "colors",
+ "settings": {
+  "ambientIntensity": 0
+ },
+ "entities": [
+  {
+   "id": "cam1",
+   "name": "Camera",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     0,
+     9,
+     0
+    ],
+    "rot": [
+     90,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "camera",
+     "fov": 50
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "spr1",
+   "name": "Sprite",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     0,
+     0,
+     0
+    ],
+    "rot": [
+     90,
+     0,
+     0
+    ],
+    "scale": [
+     12,
+     12,
+     12
+    ]
+   },
+   "components": [
+    {
+     "type": "sprite",
+     "texture": "assets/sprites/white.png"
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "Red",
+   "name": "Red",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     0,
+     3,
+     0
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "light",
+     "kind": "point",
+     "intensity": 2,
+     "range": 12,
+     "color": "#ff0000"
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  },
+  {
+   "id": "Blue",
+   "name": "Blue",
+   "enabled": true,
+   "tags": [],
+   "layer": 0,
+   "transform": {
+    "pos": [
+     0,
+     3,
+     0.01
+    ],
+    "rot": [
+     0,
+     0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   "components": [
+    {
+     "type": "light",
+     "kind": "point",
+     "intensity": 2,
+     "range": 12,
+     "color": "#0000ff"
+    }
+   ],
+   "scripts": [],
+   "children": [],
+   "prefab": null
+  }
+ ]
+}
