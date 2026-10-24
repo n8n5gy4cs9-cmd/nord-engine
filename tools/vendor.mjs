@@ -25,7 +25,7 @@ const LIBS = [
   { name: 'babylonjs-post-process', pkg: 'babylonjs-post-process@9.30.0', license: 'Apache-2.0', files: [['babylonjs.postProcess.min.js']] },
   { name: 'babylonjs-procedural-textures', pkg: 'babylonjs-procedural-textures@9.30.0', license: 'Apache-2.0', files: [['babylonjs.proceduralTextures.min.js']] },
   { name: 'babylonjs-serializers', pkg: 'babylonjs-serializers@9.30.0', license: 'Apache-2.0', files: [['babylonjs.serializers.min.js']] },
-  { name: 'three', pkg: 'three@0.180.0', license: 'MIT', files: [['build/three.module.min.js'], ['build/three.core.min.js'], ['examples/jsm/controls/OrbitControls.js'], ['examples/jsm/controls/TransformControls.js'], ['examples/jsm/exporters/GLTFExporter.js'], ['LICENSE']] },
+  { name: 'three', pkg: 'three@0.180.0', license: 'MIT', files: [['build/three.module.min.js'], ['build/three.core.min.js'], ['examples/jsm/controls/OrbitControls.js'], ['examples/jsm/controls/TransformControls.js'], ['examples/jsm/exporters/GLTFExporter.js'], ['examples/jsm/loaders/GLTFLoader.js'], ['examples/jsm/utils/BufferGeometryUtils.js'], ['LICENSE']] },
   { name: 'havok', pkg: '@babylonjs/havok@1.3.14', license: 'MIT wrapper (Havok wasm free for use with Babylon.js)', files: [['lib/umd/HavokPhysics_umd.js'], ['lib/umd/HavokPhysics.wasm'], ['LICENSE.md']] },
   { name: 'playcanvas', pkg: 'playcanvas@2.23.2', license: 'MIT', optional: true, files: [['build/playcanvas.min.js'], ['LICENSE']] },
   { name: 'esbuild-wasm', pkg: 'esbuild-wasm@0.25.10', license: 'MIT', files: [['lib/browser.js'], ['esbuild.wasm'], ['LICENSE.md']] },

@@ -9,7 +9,12 @@
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
 <div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="debugger.html">Debugger and profiler</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a><a href="ui-designer.html">UI Designer</a><a href="graph.html">Node graphs (visual scripting)</a><a href="unity-workflow.html">Unity-style workflow</a><a href="modeler.html" class="cur" aria-current="page">3D Modeler</a><a href="animator.html">Animator</a><a href="multiplayer.html">Multiplayer</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>3D Modeler</h1>
-<p>The <strong>3D Modeler</strong> tab (Window ▸ Editors ▸ 3D Modeler) is for <em>small changes</em>: build a crate from a cube, nudge a few vertices, repaint a texture, fix a UV. It is not a replacement for Blender. Everything is saved in the project&#39;s <code>models/</code> folder.</p>
+<p>The <strong>3D Modeler</strong> tab (Window ▸ Editors ▸ 3D Modeler) is for <em>props and small fixes</em>: build a crate from a cube, nudge vertices, repaint a texture, fix a UV, change a model that is already in your scene. It is not a replacement for Blender. Everything is saved in the project&#39;s <code>models/</code> folder.</p>
+<figure class="shot"><img src="../../assets/screenshots/mod-1-overview.png" alt="The 3D Modeler: tool column on the left, 3D view in the middle, material, UV and export panels on the right" loading="lazy"><figcaption>The Modeler. Left: create, select, transform and edit tools. Middle: the 3D / UV editor / Texture views. Right: material colour, UV mapping, export. Bottom line: status messages.</figcaption></figure><p>Two ways to start:</p>
+<ul>
+<li><strong>From scratch</strong> - click a primitive (Cube, Plane...) and model. See <a href="../tutorials/tut-t49-3d-modeler.html">T49 Model and paint a crate</a>.</li>
+<li><strong>From the scene</strong> - select an object with a <strong>model</strong> component, open the <strong>⋮</strong> menu of that component and choose <strong>Open in 3D Modeler</strong> (or select a model asset in the Assets tab and press <strong>Open in 3D Modeler</strong> in the Inspector). It opens <strong>as is</strong>: geometry, textures and colours. See <a href="../tutorials/tut-t54-change-scene-model.html">T54 Change a model in your scene</a>.</li>
+</ul>
 <h2 id="files">Files<a class="anchor" href="#files">#</a></h2>
 <table>
 <thead>
@@ -24,7 +29,7 @@
 </tr>
 <tr>
 <td><code>models/&lt;name&gt;.glb</code> / <code>.gltf</code></td>
-<td>Export for a 3D scene (texture and vertex colours included). Use it like any other model asset.</td>
+<td>The model for a 3D scene (texture and vertex colours included). Saving a scene model writes this.</td>
 </tr>
 <tr>
 <td><code>models/&lt;name&gt;.obj</code> + <code>.mtl</code> + <code>.png</code></td>
@@ -35,13 +40,163 @@
 <td>The texture alone (<strong>Save PNG to project</strong>).</td>
 </tr>
 </tbody></table>
-<h2 id="3d-view">3D view<a class="anchor" href="#3d-view">#</a></h2>
-<p>Left panel: create primitives (cube, plane, cylinder, sphere) or draw a polygon on the grid; select faces, edges or vertices (click, Shift-click to extend); move/rotate/scale with the gizmo or by numbers; extrude, inset, loop cut, split edge, bevel, merge, weld, delete, flip, triangulate. <strong>Undo/Redo</strong> (Ctrl/Cmd+Z, Shift+Ctrl/Cmd+Z), <strong>Delete</strong> removes the selection, <strong>Ctrl/Cmd+S</strong> saves. <strong>Subdivide all</strong> splits every face into quads, <strong>Mirror X/Y/Z</strong> duplicates the mesh across the origin plane and welds the seam (move the half away from the plane first, otherwise the copy lies exactly on top of it), <strong>Center on ground</strong> puts the mesh at the origin with its bottom on y=0, and <strong>Import OBJ…</strong> loads a Wavefront file (faces keep their UVs, or are auto-unwrapped; textures are not imported). Orbit with the left mouse button, pan with the right, zoom with the wheel.</p>
+<h2 id="opening-a-scene-model-and-what-survives">Opening a scene model, and what survives<a class="anchor" href="#opening-a-scene-model-and-what-survives">#</a></h2>
+<p>Opening a <code>.glb</code> / <code>.gltf</code> merges all its meshes into one editable mesh (node transforms applied, duplicate points welded). You get the geometry, the UVs, the first texture and the material colours.</p>
+<aside class="box tip"><div class="box-title">Tip</div><p>What is <strong>not</strong> kept: skeleton and animations, more than one texture (the first is kept; plain material colours are baked into vertex colours), smooth normals (the Modeler is flat-shaded). The status line tells you when something will be lost. If the model is animated, save as a <strong>new</strong> model instead of overwriting.</p>
+</aside><figure class="shot"><img src="../../assets/screenshots/mod-7-open-scene-model.png" alt="A scene model opened in the Modeler with its faces and colours" loading="lazy"><figcaption>A model from the scene, opened as is. The name box shows the file; the status line reports vertices, faces and anything that will be lost.</figcaption></figure><h2 id="saving-a-scene-model-overwrite-new-prefab-variant">Saving a scene model: overwrite, new, prefab, variant<a class="anchor" href="#saving-a-scene-model-overwrite-new-prefab-variant">#</a></h2>
+<p>When the Modeler was opened from the editor, <strong>Save</strong> asks what to do, so you never change other things by accident:</p>
+<figure class="shot"><img src="../../assets/screenshots/mod-8-save-dialog.png" alt="Save dialog with overwrite and new prefab variant" loading="lazy"><figcaption>Selected object is a prefab instance: overwrite everything, or a new prefab variant.</figcaption></figure><table>
+<thead>
+<tr>
+<th>Choice</th>
+<th>Offered when</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Overwrite the model</strong></td>
+<td>the file is in <code>models/</code></td>
+<td>The <code>.glb</code> is replaced. <strong>Every</strong> entity and prefab that uses the file changes.</td>
+</tr>
+<tr>
+<td><strong>Save as a new model for the selected object</strong></td>
+<td>plain scene object</td>
+<td>A new <code>.glb</code> is written; only the selected object&#39;s <strong>model → Path</strong> is switched to it.</td>
+</tr>
+<tr>
+<td><strong>Save as a new prefab</strong></td>
+<td>plain scene object</td>
+<td>New <code>.glb</code> + a new prefab made from the selected object; the object becomes an instance of it.</td>
+</tr>
+<tr>
+<td><strong>Save as a new prefab variant</strong></td>
+<td>the object is a prefab instance</td>
+<td>New <code>.glb</code> + a variant of the prefab with the new model; the selected instance switches to the variant. The original prefab and other instances stay.</td>
+</tr>
+<tr>
+<td><strong>Save as a new model file</strong></td>
+<td>opened from an asset (no scene object)</td>
+<td>Writes a new file in <code>models/</code>; the scene is unchanged.</td>
+</tr>
+</tbody></table>
+<figure class="shot"><img src="../../assets/screenshots/mod-9-save-dialog-plain.png" alt="Save dialog for a plain scene object: overwrite, new model, new prefab" loading="lazy"><figcaption>A plain scene object: overwrite, new model for this object only, or a new prefab.</figcaption></figure><p>New files get a free name (<code>name-edit</code>, <code>name-edit-2</code>...). A model that lives outside <code>models/</code> (for example inside an asset pack) cannot be overwritten, only saved as a new file. Afterwards the Modeler stays tied to the new file/prefab, so another <strong>Save</strong> continues from there. <strong>Detach</strong> (top of the tab) forgets the scene object for free modelling. Next to the <code>.glb</code>, a <code>.mesh.json</code> is saved so you can continue editing without re-importing.</p>
+<h2 id="3d-view-tools">3D view tools<a class="anchor" href="#3d-view-tools">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/mod-3-extrude.png" alt="A cube after inset and extrude with the move gizmo" loading="lazy"><figcaption>Cube with all faces selected after Inset and Extrude. The coloured arrows are the transform gizmo.</figcaption></figure><p><strong>Navigation:</strong> orbit = left mouse drag, pan = right drag, zoom = wheel, <strong>Fit</strong> frames the mesh. <strong>Wireframe</strong>, <strong>Grid</strong> and <strong>Paint on model</strong> are toggles in the bar above the view. Shortcuts: Ctrl/Cmd+Z undo, Shift+Ctrl/Cmd+Z redo, Delete removes the selection, Ctrl/Cmd+S saves.</p>
+<h3 id="create">Create<a class="anchor" href="#create">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Cube / Plane / Cylinder / Sphere</strong></td>
+<td>Adds a primitive with UVs (it is selected, ready to move).</td>
+</tr>
+<tr>
+<td><strong>Draw polygon on grid</strong> + <strong>Finish polygon</strong></td>
+<td>Click ordered points on the ground grid, then Finish to make one face (3+ points).</td>
+</tr>
+<tr>
+<td><strong>Add vertex at X/Y/Z</strong></td>
+<td>Adds a single point at the numbers in the Transform fields.</td>
+</tr>
+<tr>
+<td><strong>Add face / fill boundary</strong></td>
+<td>Makes a face from selected vertices in order, or fills a hole bounded by selected edges.</td>
+</tr>
+<tr>
+<td><strong>Import OBJ…</strong></td>
+<td>Loads a Wavefront file (UVs kept or auto-unwrapped; no textures).</td>
+</tr>
+</tbody></table>
+<h3 id="selection">Selection<a class="anchor" href="#selection">#</a></h3>
+<p>Mode box: <strong>Face / Edge / Vertex</strong>. Click selects, Shift-click extends. <strong>Select all</strong>, <strong>Invert</strong>, <strong>Deselect</strong>, <strong>Edge loop</strong> (extends an edge selection along a regular quad ring).</p>
+<h3 id="transform">Transform<a class="anchor" href="#transform">#</a></h3>
+<p>Drag the gizmo, or type <strong>X/Y/Z</strong>, choose <strong>Move / Rotate (degrees) / Scale</strong> and press <strong>Apply numeric transform</strong>. <strong>Grid snap</strong> + <strong>Grid step</strong> snap moves.</p>
+<h3 id="edit-mesh-uses-the-amount-field">Edit mesh (uses the <strong>Amount</strong> field)<a class="anchor" href="#edit-mesh-uses-the-amount-field">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Extrude</strong></td>
+<td>Pushes selected faces out (negative Amount = in).</td>
+</tr>
+<tr>
+<td><strong>Inset</strong></td>
+<td>Shrinks selected faces into a smaller face with a border.</td>
+</tr>
+<tr>
+<td><strong>Loop cut</strong></td>
+<td>Adds a ring of edges across a face strip.</td>
+</tr>
+<tr>
+<td><strong>Split edge</strong></td>
+<td>Edge mode: puts a new vertex in the middle of each selected edge.</td>
+</tr>
+<tr>
+<td><strong>Add edge / cut face</strong></td>
+<td>Vertex mode: select two non-adjacent vertices of one polygon, then press: the polygon is cut in two along that line.</td>
+</tr>
+<tr>
+<td><strong>Detach faces</strong></td>
+<td>Separates selected faces from their neighbours.</td>
+</tr>
+<tr>
+<td><strong>Merge vertices / Weld</strong></td>
+<td>Merge = selected points into one; Weld = all points closer than Amount.</td>
+</tr>
+<tr>
+<td><strong>Optimize</strong></td>
+<td>Welds points that coincide (1e-5) and removes points no face uses.</td>
+</tr>
+<tr>
+<td><strong>Delete</strong></td>
+<td>Deletes selected faces/edges/vertices.</td>
+</tr>
+<tr>
+<td><strong>Flip normal</strong></td>
+<td>Turns a face inside out.</td>
+</tr>
+<tr>
+<td><strong>Triangulate</strong></td>
+<td>Splits n-gons into triangles.</td>
+</tr>
+<tr>
+<td><strong>Face bevel</strong></td>
+<td>Like Extrude, but the new faces are bevelled (chamfered) by Amount.</td>
+</tr>
+<tr>
+<td><strong>Subdivide all</strong></td>
+<td>Splits every face into quads.</td>
+</tr>
+<tr>
+<td><strong>Mirror X/Y/Z</strong></td>
+<td>Duplicates the mesh across that origin plane and welds the seam (move the half away from the plane first).</td>
+</tr>
+<tr>
+<td><strong>Center on ground</strong></td>
+<td>Moves the mesh so it is centred with its bottom on y = 0.</td>
+</tr>
+</tbody></table>
+<h3 id="material-uv-mapping-export-right-panel">Material, UV mapping, export (right panel)<a class="anchor" href="#material-uv-mapping-export-right-panel">#</a></h3>
+<ul>
+<li><strong>Solid colour</strong> + <strong>Apply solid colour</strong> sets the base colour. <strong>Paint selected vertices</strong> stores the colour box&#39;s colour as the vertex colour of the selected points (it multiplies with the solid colour and texture; white = no tint). <strong>Checker preview</strong> shows a test pattern to judge UV stretching.</li>
+<li><strong>UV mapping:</strong> <strong>Mark seam / Clear seam</strong> (edge mode) cut islands; <strong>UV move U/V, rotate, scale</strong> + <strong>Transform selected UVs</strong> change the UVs of selected faces numerically.</li>
+<li><strong>Export:</strong> <strong>Up axis</strong> (Y up, or Z up baked), <strong>Scale</strong>, then <strong>GLB</strong>, <strong>glTF</strong> or <strong>OBJ + MTL</strong> into <code>models/</code>.</li>
+</ul>
 <h2 id="texture-tab">Texture tab<a class="anchor" href="#texture-tab">#</a></h2>
-<p>A pixel painter: <strong>Pencil</strong>, <strong>Eraser</strong>, <strong>Fill</strong>, <strong>Picker</strong>, brush size, <strong>Mirror X</strong>, 16-512 px textures, a UV overlay so you see where the faces are. <strong>New blank</strong> fills a fresh texture with the chosen colour. <strong>Load image file</strong> / <strong>Load project PNG…</strong> replace the texture. Tick <strong>Paint on model</strong> in the top bar to paint straight onto the 3D model.</p>
-<h2 id="uv-editor-tab">UV editor tab<a class="anchor" href="#uv-editor-tab">#</a></h2>
-<p>Shows the UV layout over the texture. Click a face to select it (Shift extends), drag to move the selection; switch <strong>Drag</strong> to <em>points</em> to move single UV corners; <strong>snap to texel</strong> snaps to the texture pixels. Buttons: Flip U / Flip V, Rotate 90°, Fit to 0-1, Select island, Auto unwrap, Pack. Mark seams in the 3D view (edge mode) to split islands.</p>
-<aside class="box tip"><div class="box-title">Tip</div><p>The page also opens in a browser (<strong>Open in browser</strong>). Outside the editor it cannot write into the project, so Save downloads the file instead.</p>
-</aside>
-<div class="pager"><a href="unity-workflow.html"><small>← Previous</small>Unity-style workflow</a><a href="animator.html"><small>Next →</small>Animator</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#files">Files </a><a href="#3d-view">3D view </a><a href="#texture-tab">Texture tab </a><a href="#uv-editor-tab">UV editor tab </a></aside></div>
+<figure class="shot"><img src="../../assets/screenshots/mod-4-texture.png" alt="Texture tab with two painted red lines and the UV overlay" loading="lazy"><figcaption>Pixel painter. The yellow rectangles are the UV overlay: the faces of the mesh on the texture.</figcaption></figure><p>A pixel painter for the model&#39;s texture. <strong>Pencil</strong>, <strong>Eraser</strong>, <strong>Fill</strong> (flood fill), <strong>Picker</strong> (take a colour from the image); colour box + swatches; <strong>Size</strong> (brush); <strong>Mirror X</strong>; <strong>UV overlay</strong> shows where faces are. <strong>Texture</strong> size 16-512 px. <strong>New blank</strong> (fills with the colour), <strong>Fill with colour</strong>, <strong>Load image file</strong> / <strong>Load project PNG…</strong> (replace), <strong>Save PNG to project</strong>, <strong>Remove texture</strong>. A texture of a scene model is shown at its own size (up to 1024 px).</p>
+<h3 id="paint-on-model">Paint on model<a class="anchor" href="#paint-on-model">#</a></h3>
+<p>Tick <strong>Paint on model</strong> in the top bar and drag on the model in the 3D view: the pixels under the brush change. Same colour, size and tool as the Texture tab.</p>
+<figure class="shot"><img src="../../assets/screenshots/mod-6-paint-on-model.png" alt="3D view with Paint on model enabled" loading="lazy"><figcaption>Paint on model: the brush paints the texture where the model is clicked.</figcaption></figure><h2 id="uv-editor-tab">UV editor tab<a class="anchor" href="#uv-editor-tab">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/mod-5-uv.png" alt="UV editor with faces laid out on the texture" loading="lazy"><figcaption>UV editor: every face on the texture square.</figcaption></figure><p>Click a face to select it (Shift extends), drag to move it; switch <strong>Drag</strong> to <em>points</em> to move single corners; <strong>snap to texel</strong> snaps to texture pixels. Buttons: <strong>Flip U / V</strong>, <strong>Rotate 90°</strong>, <strong>Fit to 0-1</strong>, <strong>Select island</strong>, <strong>Auto unwrap</strong> (project each face), <strong>Pack</strong> (arrange all on the texture without overlap).</p>
+<h2 id="limits">Limits<a class="anchor" href="#limits">#</a></h2>
+<p>One texture per mesh. Flat shading only. No skeleton/animation authoring or import. Undo keeps whole-mesh snapshots (80 steps / 32 MB). A draft is kept in the browser (<code>nord.mesh-draft</code>). Outside the editor (<strong>Open in browser</strong>) Save downloads files and the save dialog cannot change scene objects. The Scene view picks up an overwritten model after a reload.</p>
+<div class="pager"><a href="unity-workflow.html"><small>← Previous</small>Unity-style workflow</a><a href="animator.html"><small>Next →</small>Animator</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#files">Files </a><a href="#opening-a-scene-model-and-what-survives">Opening a scene model, and what survives </a><a href="#saving-a-scene-model-overwrite-new-prefab-variant">Saving a scene model: overwrite, new, prefab, variant </a><a href="#3d-view-tools">3D view tools </a><a href="#texture-tab">Texture tab </a><a href="#uv-editor-tab">UV editor tab </a><a href="#limits">Limits </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

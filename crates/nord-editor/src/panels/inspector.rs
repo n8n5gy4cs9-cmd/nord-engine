@@ -691,7 +691,10 @@ fn texture_import_ui(st: &mut EditorState, ui: &mut Ui, rel: &str) {
                     });
                 ui.end_row();
             });
-        if ui.button("Open in Sprite editor").clicked() {
+        if is_model && ui.button("Open in 3D Modeler").clicked() {
+            st.open_in_modeler("", rel);
+        }
+        if !is_model && ui.button("Open in Sprite editor").clicked() {
             if let Some(root) = st.root.clone() {
                 match image::open(root.join(rel)) {
                     Ok(i) => {
@@ -1011,6 +1014,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         .unwrap_or_default();
     let mut e: Entity = orig.clone();
     let mut docs: Option<String> = None;
+    let mut open_modeler: Option<String> = None;
     let mut prefab_op: Option<(String, u8)> = None;
     egui::ScrollArea::vertical()
         .auto_shrink([false; 2])
@@ -1200,6 +1204,17 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                     ui.close_menu();
                                 }
                                 ui.separator();
+                                if c.kind == "model" {
+                                    let p = c.fields.get("path").and_then(Value::as_str).unwrap_or_default();
+                                    if ui
+                                        .add_enabled(!p.is_empty(), egui::Button::new("Open in 3D Modeler"))
+                                        .on_hover_text("Edit this model with its textures; saving asks whether to overwrite it, or keep the change as a new model / prefab / variant")
+                                        .clicked()
+                                    {
+                                        open_modeler = Some(p.to_string());
+                                        ui.close_menu();
+                                    }
+                                }
                                 if ui.button("Docs (F1)").clicked() {
                                     docs = Some(component_doc(&c.kind));
                                     ui.close_menu();
@@ -1454,6 +1469,16 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     }
     if let Some(page) = docs {
         st.push(crate::state::Action::OpenDocs(page));
+    }
+    if let Some(file) = open_modeler {
+        // a prefab child has no scene id of its own: open the file only (save = overwrite / new file)
+        let id = if child_ctx.is_some() {
+            ""
+        } else {
+            inst.id.as_str()
+        };
+        st.open_in_modeler(id, &file);
+        return;
     }
     if let Some((id, op)) = prefab_op {
         let path = st

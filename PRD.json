@@ -3,7 +3,7 @@
   "tagline": "Rust-based game/app engine + editor that exports static HTML web games and a native Mac app",
   "author": "Crowelian 2026 + Sonnet",
   "version": "0.0.1",
-  "updated": "2026-10-23",
+  "updated": "2026-10-24",
   "branch": "main",
   "statusValues": [
     "todo",
@@ -2426,6 +2426,12 @@
       "id": "M13-20",
       "milestone": "M13",
       "title": "Tutorials T49-T53 + manual chapter Multiplayer for the new tools",
+      "status": "done"
+    },
+    {
+      "id": "M13-21",
+      "milestone": "M13",
+      "title": "3D Modeler: open scene models, save overwrite/new/prefab/variant, full manual + T54",
       "status": "done"
     }
   ]

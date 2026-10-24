@@ -219,6 +219,16 @@ pub struct LogLine {
     pub text: String,
 }
 
+/// The scene object (and prefab) a model is being edited for in the 3D Modeler.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct ModelerCtx {
+    pub file: String,
+    pub entity: String,
+    pub prefab: String,
+    /// Bumped on every open so re-opening the same file reloads the page.
+    pub nonce: u32,
+}
+
 /// Things the UI asks the app to do (menu, palette, shortcuts all produce these).
 #[derive(Clone, Debug, PartialEq)]
 pub enum Action {
@@ -390,6 +400,10 @@ pub struct EditorState {
     pub prefab_mode: Option<crate::prefab::PrefabMode>,
     pub layout_ui: crate::panels::layout::LayoutUi,
     pub sprite: crate::panels::sprite::SpriteUi,
+    /// What the 3D Modeler tab was opened for (Inspector ▸ Model ▸ Open in 3D Modeler); `None` = free modelling.
+    pub modeler_ctx: Option<ModelerCtx>,
+    /// The Modeler page must be told a new context (after a prefab / variant was created from its save dialog).
+    pub modeler_push: bool,
     pub particles_ui: crate::panels::particles::ParticlesUi,
     pub timeline_ui: crate::panels::timeline::TimelineUi,
     /// last camera reported by the 2D viewport: [x, y, zoom]
@@ -490,6 +504,8 @@ impl EditorState {
             prefab_mode: None,
             layout_ui: Default::default(),
             sprite: Default::default(),
+            modeler_ctx: None,
+            modeler_push: false,
             particles_ui: Default::default(),
             timeline_ui: Default::default(),
             viewport_cam: None,
@@ -1233,6 +1249,8 @@ impl EditorState {
                 self.send_viewport(self.viewport_scene_msg());
                 self.send_viewport(self.viewport_settings_msg());
             }
+            // 3D Modeler: the save dialog wrote a model file and says what to do with the scene object
+            Some("model-saved") => self.modeler_saved(m),
             // embedded pages (UI Designer, Graph) ask the editor to open a project file in the code editor / another tab
             Some("open-file") => {
                 if let (Some(root), Some(p)) = (self.root.clone(), m["path"].as_str()) {

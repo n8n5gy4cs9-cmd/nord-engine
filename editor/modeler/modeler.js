@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {TransformControls} from 'three/addons/controls/TransformControls.js';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {edgeKey,edgesOf,normal,unwrap,pack,triangles,geometry,primitive,validate,weld,obj} from './mesh-model.js';
 
 const root=document.getElementById('app');
@@ -193,7 +194,7 @@ async function extra(name){
  async function action(name){
  if(await extra(name))return;
  if(name==='new'){checkpoint();model={format:'nord-mesh-1',vertices:[],faces:[],colors:[],seams:[],color:'#ffffff',texture:null};selection.clear();drawIds=[];drawing=false;await loadTexture();saveLocal();status('New empty mesh. The previous draft can be recovered with Undo.');return;}
- if(name==='save'){await output(base()+'.mesh.json',JSON.stringify(model,null,2),'application/json');return;}if(name==='open'){$('#mesh-file').click();return;}if(name==='texture'){$('#mesh-image').click();return;}if(name==='fit'){fit();return;}
+ if(name==='save'&&(ctx.file||ctx.entity)){await saveForScene();return;}if(name==='save'){await output(base()+'.mesh.json',JSON.stringify(model,null,2),'application/json');return;}if(name==='open'){$('#mesh-file').click();return;}if(name==='texture'){$('#mesh-image').click();return;}if(name==='fit'){fit();return;}
  if(!['draw','finish'].includes(name)){drawing=false;drawIds=[];}
  if(name==='undo'||name==='redo'){const source=name==='undo'?undo:redo,target=name==='undo'?redo:undo;if(!source.length)return;target.push(JSON.stringify(model));model=JSON.parse(source.pop());selection.clear();drawIds=[];drawing=false;await loadTexture();saveLocal();return;}
  if(name==='all'||name==='invert'||name==='none'){const ids=mode==='vertex'?model.vertices.map((_,i)=>i):mode==='face'?model.faces.map((_,i)=>i):[...edgesOf(model).keys()];selection=name==='none'?new Set():new Set(ids.filter(i=>name==='all'||!selection.has(i)));rebuild();return;}
@@ -254,6 +255,53 @@ function parseObj(text){
 }
 $('#mesh-obj').onchange=()=>run(async()=>{const file=$('#mesh-obj').files[0];if(!file)return;if(file.size>30*1024*1024)throw Error('OBJ file exceeds 30 MB.');const m=parseObj(await file.text());await adopt(m,file.name.replace(/\.obj$/i,''));$('#mesh-obj').value='';status(`Imported ${m.vertices.length} vertices, ${m.faces.length} faces. Texture is not imported: use Texture ▸ Load image file.`);});
 
+
+// ---------- scene models: open a .glb/.gltf as is (mesh + texture), save back with "overwrite / new / prefab / variant" ----------
+const params=new URLSearchParams(location.search);
+const ctx={file:params.get('file')||'',entity:params.get('entity')||'',prefab:params.get('prefab')||''};
+const ipc=m=>fetch('/api/ipc',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(m)}).catch(()=>{});
+window.addEventListener('message',e=>{if(e.data?.t==='ctx'){ctx.file=e.data.file||'';ctx.entity=e.data.entity||'';ctx.prefab=e.data.prefab||'';$('#mesh-name').value=ctx.file.split('/').pop().replace(/\.[^.]+$/,'');updateWhere();status('Now editing '+ctx.file);}});
+async function importGlb(buf,path){
+ const dir=path.includes('/')?'/'+path.slice(0,path.lastIndexOf('/')+1):'/';
+ const gltf=await new GLTFLoader().parseAsync(buf,dir);gltf.scene.updateMatrixWorld(true);
+ const m={format:'nord-mesh-1',vertices:[],faces:[],colors:[],seams:[],color:'#ffffff',texture:null},mats=new Set(),maps=new Set(),v=new THREE.Vector3();let image=null,skinned=false;
+ gltf.scene.traverse(o=>{if(!o.isMesh||!o.geometry?.attributes.position)return;if(o.isSkinnedMesh)skinned=true;
+  const g=o.geometry,pos=g.attributes.position,uv=g.attributes.uv,col=g.attributes.color,idx=g.index,mat=Array.isArray(o.material)?o.material[0]:o.material,base=m.vertices.length;
+  mats.add(mat);if(mat?.map?.image){maps.add(mat.map.image);if(!image)image=mat.map.image;}const tint=!mat?.map&&mat?.color?mat.color:null;
+  for(let i=0;i<pos.count;i++){v.fromBufferAttribute(pos,i).applyMatrix4(o.matrixWorld);m.vertices.push([v.x,v.y,v.z]);m.colors.push(col?[col.getX(i)*(tint?tint.r:1),col.getY(i)*(tint?tint.g:1),col.getZ(i)*(tint?tint.b:1)]:tint?[tint.r,tint.g,tint.b]:[1,1,1]);}
+  const n=idx?idx.count:pos.count,at=k=>idx?idx.getX(k):k;
+  for(let t=0;t+2<n;t+=3){const ids=[at(t),at(t+1),at(t+2)];if(new Set(ids).size<3)continue;m.faces.push({v:ids.map(i=>base+i),uv:ids.map(i=>uv?[uv.getX(i),1-uv.getY(i)]:[0,0])});}
+  if(m.faces.length>100000)throw Error('Model has more than 100,000 faces: too big for the Modeler.');});
+ if(!m.faces.length)throw Error('No triangle meshes found in '+path);
+ weld(m,0);
+ if(image){const w=image.width||image.naturalWidth,h=image.height||image.naturalHeight,k=Math.min(1,1024/Math.max(w,h)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*k));c.height=Math.max(1,Math.round(h*k));c.getContext('2d').drawImage(image,0,0,c.width,c.height);m.texture=c.toDataURL('image/png');}
+ const notes=[];if(maps.size>1)notes.push(maps.size+' textures: only the first is kept; plain material colours became vertex colours');if(gltf.animations?.length||skinned)notes.push('animations / skeleton are not kept when you save');
+ ctx.lossy=notes.length>0;status(`Opened ${path}: ${m.vertices.length} vertices, ${m.faces.length} faces${m.texture?', with texture':''}.${notes.length?' Note: '+notes.join('; ')+'.':''}`);
+ return m;
+}
+async function glbBytes(){const g=geometry(model),mat=new THREE.MeshStandardMaterial({color:model.color,vertexColors:true,flatShading:true,side:THREE.DoubleSide,map:model.texture?texture:null});try{return await new GLTFExporter().parseAsync(new THREE.Mesh(g,mat),{binary:true});}finally{g.dispose();mat.dispose();}}
+function saveChoice(){return new Promise(resolve=>{
+ const inModels=/^models\//.test(ctx.file),cur=ctx.file.split('/').pop().replace(/\.[^.]+$/,''),isPrefab=!!ctx.prefab,hasEntity=!!ctx.entity;
+ const opts=[];
+ if(inModels)opts.push({mode:'overwrite',title:'Overwrite the model',text:`Replaces ${ctx.file}: EVERY entity${isPrefab?', prefab instance':''} using this model changes${ctx.lossy?' (animations / skeleton are lost)':''}.`});
+ if(hasEntity&&isPrefab)opts.push({mode:'variant',title:'Save as a new prefab variant',text:'New model file + a variant of the prefab that uses it. The selected object switches to the variant; the original prefab and other instances stay as they are.',name:true});
+ else if(hasEntity){opts.push({mode:'new',title:'Save as a new model for the selected object',text:'New model file; only the selected scene object uses it. Other entities keep the old model.',name:true});opts.push({mode:'prefab',title:'Save as a new prefab',text:'New model file + a new prefab made from the selected object (it becomes an instance of it).',name:true});}
+ else opts.push({mode:'new',title:'Save as a new model file',text:'Writes a new file in models/; nothing in the scene changes.',name:true});
+ const back=document.createElement('div');back.className='modal';back.innerHTML='<div class="box"><strong>Save model</strong><div class="list"></div><label>New model name <input class="nm" spellcheck="false"></label><button class="cancel">Cancel</button></div>';
+ const list=back.querySelector('.list'),nm=back.querySelector('.nm'),done=v=>{back.remove();resolve(v);};nm.value=cur+'-edit';
+ for(const o of opts){const b=document.createElement('button'),t=document.createElement('strong'),d=document.createElement('div');t.textContent=o.title;d.textContent=o.text;d.style.fontSize='11px';d.style.opacity='.75';b.append(t,d);b.onclick=()=>done({mode:o.mode,name:o.name?nm.value.trim().replace(/\.(glb|gltf)$/i,'').replace(/[^\w-]+/g,'_')||cur+'-edit':null});list.append(b);}
+ back.querySelector('.cancel').onclick=()=>done(null);document.body.append(back);});}
+async function saveForScene(){
+ if(!model.faces.length)throw Error('Nothing to save: the mesh has no faces.');
+ const c=await saveChoice();if(!c)return;
+ let file=ctx.file.replace(/^models\//,'');
+ if(c.mode!=='overwrite'){const taken=new Set(await listModels('.glb'));let n=c.name,i=2;while(taken.has(n+'.glb'))n=c.name+'-'+i++;file=n+'.glb';}
+ const ok=await output(file,await glbBytes(),'model/gltf-binary');if(!ok)return;
+ await output(file.replace(/\.glb$/,'.mesh.json'),JSON.stringify(model,null,2),'application/json');
+ ipc({t:'model-saved',mode:c.mode,file:'models/'+file,entity:ctx.entity,prefab:ctx.prefab});
+ if(c.mode!=='overwrite'){ctx.file='models/'+file;$('#mesh-name').value=file.replace(/\.glb$/,'');updateWhere();}
+}
+
 // ---------- start ----------
-{const q=new URLSearchParams(location.search).get('file');if(q){try{const r=await fetch('/'+q.replace(/^\/+/,''),{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);model=validate(await r.json());$('#mesh-name').value=q.split('/').pop().replace(/\.mesh\.json$|\.json$/,'');}catch(e){status('Could not open '+q+': '+e.message);}}}
+{const q=ctx.file;if(q){try{const r=await fetch('/'+q.replace(/^\/+/,''),{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);if(/\.(glb|gltf)$/i.test(q)){model=await importGlb(await r.arrayBuffer(),q);}else model=validate(await r.json());$('#mesh-name').value=q.split('/').pop().replace(/\.mesh\.json$|\.json$|\.glb$|\.gltf$/i,'');}catch(e){status('Could not open '+q+': '+e.message);}}}
 updateWhere();setView('3d');$('#mesh-color').value=model.color;await loadTexture();fit();

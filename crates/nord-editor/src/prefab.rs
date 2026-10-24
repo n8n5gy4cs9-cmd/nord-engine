@@ -406,6 +406,100 @@ impl EditorState {
         Some(rel)
     }
 
+    /// Inspector ▸ Model ▸ Open in 3D Modeler (or a model asset): open `file` in the Modeler tab, tied to scene object `entity`
+    /// (empty = just the file). A prefab instance remembers its prefab so the save dialog can offer a variant.
+    pub fn open_in_modeler(&mut self, entity: &str, file: &str) {
+        let prefab = self
+            .scene
+            .as_ref()
+            .and_then(|s| scene_ops::find(&s.entities, entity))
+            .and_then(|e| e.prefab.as_ref().map(|p| p.path.clone()))
+            .unwrap_or_default();
+        let nonce = self.modeler_ctx.as_ref().map_or(0, |c| c.nonce + 1);
+        self.modeler_ctx = Some(crate::state::ModelerCtx {
+            file: file.into(),
+            entity: entity.into(),
+            prefab,
+            nonce,
+        });
+        self.push(crate::state::Action::ShowTab(crate::app::Tab::Modeler));
+    }
+
+    /// The Modeler's save dialog wrote `file`; `mode` says what happens to the scene object:
+    /// `overwrite` (same file, every user of it changes), `new` (this object only), `prefab` (new prefab from the object),
+    /// `variant` (new prefab variant with the new model, the instance is switched to it).
+    pub fn modeler_saved(&mut self, m: &Value) {
+        let get = |k: &str| m[k].as_str().unwrap_or_default().to_string();
+        let (mode, file, entity, prefab) = (get("mode"), get("file"), get("entity"), get("prefab"));
+        if !file.starts_with("models/") || file.contains("..") {
+            return;
+        }
+        self.refresh_assets();
+        let set_path = |e: &mut Entity, p: &str| {
+            if let Some(c) = e.components.iter_mut().find(|c| c.kind == "model") {
+                c.fields.insert("path".into(), Value::String(p.into()));
+            }
+        };
+        let mut ctx_prefab = prefab.clone();
+        match mode.as_str() {
+            "overwrite" => {
+                self.rev += 1;
+                self.toast(format!("{file} overwritten: every user of it changes"));
+            }
+            "new" | "prefab" if !entity.is_empty() => {
+                self.edit("Use edited model", None, |l| {
+                    if let Some(e) = scene_ops::find_mut(l, &entity) {
+                        set_path(e, &file);
+                    }
+                });
+                if mode == "prefab" {
+                    if let Some(p) = self.make_prefab(&entity, "prefabs") {
+                        ctx_prefab = p;
+                    }
+                } else {
+                    self.toast(format!("Object now uses {file}"));
+                }
+            }
+            "variant" if !entity.is_empty() && !prefab.is_empty() => {
+                let Some(base) = self.read_prefab(&prefab) else {
+                    return;
+                };
+                let Some(variant) = self.make_variant(&prefab) else {
+                    return;
+                };
+                let mut edited = base.clone();
+                set_path(&mut edited, &file);
+                if let (Ok(a), Ok(b)) = (serde_json::to_value(&base), serde_json::to_value(&edited))
+                {
+                    if let (Some(mut pf), Some(Value::Object(o))) =
+                        (self.read_prefab_file(&variant), diff(&a, &b))
+                    {
+                        pf.overrides = o;
+                        if let (Some(root), Ok(body)) =
+                            (self.root.clone(), serde_json::to_string_pretty(&pf))
+                        {
+                            let _ = nord_core::vfs::write(root.join(&variant), body);
+                        }
+                    }
+                }
+                let v = variant.clone();
+                self.edit("Use prefab variant", None, |l| {
+                    if let Some(p) = scene_ops::find_mut(l, &entity).and_then(|e| e.prefab.as_mut())
+                    {
+                        p.path = v;
+                    }
+                });
+                ctx_prefab = variant;
+            }
+            _ => {}
+        }
+        if let Some(c) = self.modeler_ctx.as_mut() {
+            c.file = file;
+            c.prefab = ctx_prefab;
+            self.modeler_push = true;
+        }
+    }
+
     /// Prefab mode: edit a prefab's root entity on its own (the scene is parked and comes back on exit).
     pub fn open_prefab_mode(&mut self, path: &str) {
         if self.prefab_mode.is_some() {

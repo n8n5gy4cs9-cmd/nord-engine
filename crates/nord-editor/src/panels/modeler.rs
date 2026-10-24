@@ -20,14 +20,54 @@ pub fn ui(
     let Some(base) = st.ensure_server() else {
         return;
     };
-    let url = format!("{base}/editor/modeler/index.html");
+    let mut url = format!("{base}/editor/modeler/index.html");
+    if let Some(c) = &st.modeler_ctx {
+        url += &format!(
+            "?file={}&entity={}&prefab={}&n={}",
+            enc(&c.file),
+            enc(&c.entity),
+            enc(&c.prefab),
+            c.nonce
+        );
+    }
     ui.horizontal(|ui| {
         if ui.button("Open in browser").clicked() {
             open_in_browser(&url);
         }
+        if let Some(c) = &st.modeler_ctx {
+            ui.label(format!("Editing {}", c.file));
+            if ui
+                .small_button("Detach")
+                .on_hover_text("Forget the scene object: free modelling again")
+                .clicked()
+            {
+                st.modeler_ctx = None;
+            }
+        }
         ui.weak("Saves models/<name>.mesh.json · Export GLB to use it in a 3D scene");
     });
     web.show(ui, frame, "modeler", &url, overlay);
+    // the save dialog created a prefab / variant: tell the page which object and prefab it is tied to now
+    if std::mem::take(&mut st.modeler_push) {
+        if let Some(c) = &st.modeler_ctx {
+            web.post_message(
+                "modeler",
+                &serde_json::json!({"t": "ctx", "file": c.file, "entity": c.entity, "prefab": c.prefab}),
+            );
+        }
+    }
     ui.ctx()
         .request_repaint_after(std::time::Duration::from_millis(250));
+}
+
+/// Percent-encode a query value.
+fn enc(s: &str) -> String {
+    s.bytes()
+        .map(|b| match b {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'/' => {
+                (b as char).to_string()
+            }
+            _ => format!("%{b:02X}"),
+        })
+        .collect()
 }
