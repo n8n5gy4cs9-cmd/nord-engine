@@ -41,6 +41,9 @@ try {
   await page.eval(`window.__nord.loadScene('scenes/shadow.scene.json')`);
   const sd = await lum();
   check('castShadows: the box casts a shadow on the ground beside it', sd.side < ns.side * 0.6, { with: sd.side, without: ns.side });
+  await page.eval(`window.__nord.loadScene('scenes/sprite.scene.json')`);
+  const sp = await lum();
+  check('a sprite is drawn in 3D as a plane (default 64 px = 1 unit, scaled 8x)', sp.centre > 120 && sp.corner < sp.centre, sp);
   // the Modeler model keeps its point light while other lights are switched on and off (regression)
   await page.eval(`window.__nord.loadScene('scenes/modelrig.scene.json')`);
   const rig = async (label) => { const r = await lum(); return { label, ...r }; };

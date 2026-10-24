@@ -463,6 +463,28 @@ function buildEntity(e, parentNode, token) {
       visual = true;
     }
   }
+  const spr = comp(e, 'sprite') ?? comp(e, 'animatedSprite');
+  if (spr) {
+    // flat textured plane, image size / ppu (3D default 64: the 64 px default sprite is 1 unit); see runtime/babylon/components.js
+    const m = B.MeshBuilder.CreatePlane(e.id + '.sprite', { size: 1 }, scene); m.parent = node; tag(m, e.id);
+    const sm = new B.StandardMaterial(e.id + 'spm', scene); sm.backFaceCulling = false; sm.specularColor = B.Color3.Black();
+    sm.diffuseColor = hex(spr.tint, '#ffffff'); sm.alpha = spr.alpha ?? 1; m.material = sm;
+    if (spr.lit === false) { sm.disableLighting = true; sm.emissiveColor = sm.diffuseColor; }
+    if (spr.texture) {
+      const t = new B.Texture('/' + spr.texture, scene); sm.diffuseTexture = t; t.hasAlpha = true; sm.useAlphaFromDiffuseTexture = true;
+      sm.transparencyMode = B.Material.MATERIAL_ALPHATESTANDBLEND; t.wrapU = t.wrapV = B.Texture.CLAMP_ADDRESSMODE;
+      matAsset(spr.texture + '.meta.json').then((meta) => {
+        if (m.isDisposed()) return;
+        if (meta?.filter === 'nearest') t.updateSamplingMode(B.Texture.NEAREST_SAMPLINGMODE);
+        const fit = () => {
+          const sz = t.getSize(), k = 1 / (meta?.ppu && meta.ppu !== 1 ? meta.ppu : 64);
+          m.scaling.x = (meta?.frameWidth || sz.width) * k * (spr.flipX ? -1 : 1); m.scaling.y = (meta?.frameHeight || sz.height) * k * (spr.flipY ? -1 : 1);
+        };
+        if (t.isReady()) fit(); else t.onLoadObservable.addOnce(fit);
+      });
+    }
+    visual = true;
+  }
   const model = comp(e, 'model');
   if (model?.path) {
     getContainer(model.path).then((c) => {

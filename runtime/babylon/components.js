@@ -92,6 +92,40 @@ export function registerBabylonComponents(backend) {
     destroy(comp) { const e = comp.entity; e.__meshes = (e.__meshes ?? []).filter((m) => m !== comp.mesh); comp.mesh?.dispose(); },
   });
 
+  // ---- sprites in 3D: a flat textured plane (Unity's SpriteRenderer) -------
+  // World size = image size ÷ pixels-per-unit (import setting `ppu`; 3D default 64 so the 64 px default sprite is 1 unit).
+  const SPRITE_PPU = 64;
+  const buildSprite = (comp) => {
+    const d = comp.data, e = comp.entity;
+    comp.mesh?.dispose(); comp.mat?.dispose();
+    const m = B.MeshBuilder.CreatePlane(`${e.name}.sprite`, { size: 1 }, scene);
+    const mat = new B.StandardMaterial(`${e.name}.spritemat`, scene);
+    mat.backFaceCulling = false; mat.specularColor = B.Color3.Black();
+    mat.diffuseColor = rgb(B, d.tint, '#ffffff'); mat.alpha = d.alpha ?? 1;
+    if (d.lit === false) { mat.disableLighting = true; mat.emissiveColor = mat.diffuseColor; }
+    const meta = backend.metaOf?.(d.texture) ?? {};
+    if (d.texture) {
+      const nearest = meta.filter === 'nearest' || backend.game.project?.display?.pixelArt;
+      const t = backend.texture(d.texture); mat.diffuseTexture = t; mat.useAlphaFromDiffuseTexture = true; mat.diffuseTexture.hasAlpha = true;
+      mat.transparencyMode = B.Material.MATERIAL_ALPHATESTANDBLEND;
+      if (nearest) t.updateSamplingMode?.(B.Texture.NEAREST_SAMPLINGMODE);
+      t.wrapU = t.wrapV = meta.wrap === 'repeat' ? B.Texture.WRAP_ADDRESSMODE : B.Texture.CLAMP_ADDRESSMODE;
+      const fit = () => {
+        const sz = t.getSize(), k = 1 / (meta.ppu && meta.ppu !== 1 ? meta.ppu : SPRITE_PPU);
+        const fw = meta.frameWidth || sz.width, fh = meta.frameHeight || sz.height;
+        m.scaling.x = fw * k * (d.flipX ? -1 : 1); m.scaling.y = fh * k * (d.flipY ? -1 : 1);
+      };
+      if (t.isReady()) fit(); else t.onLoadObservable.addOnce(fit);
+    }
+    m.material = mat; comp.mesh = m; comp.mat = mat;
+    (e.__meshes ??= []).push(m); m.parent = e.native; m.metadata = { entity: e }; m.__ownMat = mat; m.receiveShadows = true;
+  };
+  registerComponent('sprite', {
+    create(e, d, comp) { buildSprite(comp); },
+    set(comp, k, v) { comp.data[k] = v; if (k === 'visible') comp.mesh.isVisible = v; else buildSprite(comp); },
+    destroy(comp) { const e = comp.entity; e.__meshes = (e.__meshes ?? []).filter((x) => x !== comp.mesh); comp.mesh?.dispose(); comp.mat?.dispose(); },
+  });
+
   registerComponent('model', {
     create(e, d, comp) {
       const container = backend.models.get(d.path);

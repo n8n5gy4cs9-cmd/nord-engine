@@ -150,8 +150,9 @@ impl EditorState {
                 self.sprite.name.clear();
             }
             None => {
-                let img = RgbaImage::from_pixel(64, 64, image::Rgba([255, 255, 255, 255]));
-                self.sprite.load_image("", img, json!({}));
+                // a new sprite starts transparent (the default sprite is only the white placeholder; "Fill white" is a drawing aid)
+                self.sprite
+                    .load_image("", RgbaImage::new(64, 64), json!({}));
                 self.sprite.path = None;
                 self.sprite.name = unique_sprite_name(&root, "sprite");
                 self.sprite.dirty = true;
@@ -428,6 +429,12 @@ impl SpriteUi {
             ("rot-cw", _) => out = pixel::rotate_cw(&img),
             ("rot-ccw", _) => out = pixel::rotate_ccw(&img),
             ("clear", Some((x0, y0, x1, y1))) => pixel::clear_box(&mut out, x0, y0, x1, y1),
+            ("fill-white", Some((x0, y0, x1, y1))) => {
+                pixel::rect(&mut out, x0, y0, x1, y1, 1, [255; 4], true)
+            }
+            ("fill-white", None) => {
+                out = RgbaImage::from_pixel(img.width(), img.height(), image::Rgba([255; 4]))
+            }
             ("clear", None) => out = RgbaImage::new(img.width(), img.height()),
             _ => {}
         }
@@ -747,6 +754,7 @@ fn paint_tools(s: &mut SpriteUi, ui: &mut Ui) {
             ("Flip V", "flip-v", "flip-vertical"),
             ("Rotate right", "rot-cw", "rotate-cw"),
             ("Rotate left", "rot-ccw", "rotate-ccw"),
+            ("Fill white", "fill-white", "square"),
             ("Clear", "clear", "eraser"),
         ] {
             if crate::icons::label_icon(ui, icon, label)

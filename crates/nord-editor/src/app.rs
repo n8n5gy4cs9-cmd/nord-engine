@@ -359,6 +359,27 @@ impl App {
         if let Some(loc) = self.dock.find_tab(&t) {
             self.dock.set_active_tab(loc);
         } else {
+            // work tabs (Sprite, Modeler, Graph…) open in the centre next to the Scene view, not in the side panel that has focus
+            if matches!(
+                t,
+                Tab::Sprite
+                    | Tab::Modeler
+                    | Tab::Animator
+                    | Tab::Graph
+                    | Tab::UiDesigner
+                    | Tab::Events
+                    | Tab::Animation
+                    | Tab::Particles
+                    | Tab::Timeline
+                    | Tab::Level2d
+                    | Tab::Fps
+            ) {
+                if let Some((surface, node, _)) =
+                    self.dock.find_tab(&Tab::Scene).map(|l| (l.0, l.1, l.2))
+                {
+                    self.dock.set_focused_node_and_surface((surface, node));
+                }
+            }
             self.dock.push_to_focused_leaf(t);
         }
     }
