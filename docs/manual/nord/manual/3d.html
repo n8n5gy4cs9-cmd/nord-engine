@@ -84,5 +84,64 @@ See <a href="performance.html">Performance</a>.</p>
 </tbody></table>
 <p><strong>Ambient light</strong> is set per scene (<code>settings</code> in the scene file): <code>&quot;ambient&quot;: &quot;#202040&quot;</code> and <code>&quot;ambientIntensity&quot;: 1</code>. Intensity <code>0</code> turns ambient off (a pitch-dark scene lit only by your lights). 2D scenes without an <code>ambient</code> colour use a soft grey; 3D scenes without one have no ambient light except your own <code>hemispheric</code> lights.</p>
 <p><strong>In the editor</strong> the Scene view shows the scene&#39;s own lights and ambient, 2D and 3D. If the Scene view looks flat or too bright, check <strong>Gizmos ▸ Scene lighting</strong>: when it is off (or the scene has no light) you see neutral editor lighting. A light only changes the picture of objects whose material reacts to light: <code>unlit</code> materials and <code>emissive</code> colours do not change.</p>
+<h3 id="many-lights-and-which-ones-win">Many lights, and which ones win<a class="anchor" href="#many-lights-and-which-ones-win">#</a></h3>
+<p>A material can use only a limited number of lights at once (<strong>Lights per object</strong> in the quality settings, 8 by default). Nord first limits every point/spot light to the objects inside its <code>range</code>, so a light far away costs nothing. If still more lights than the limit reach one object (a big ground plane under a whole city), the <strong>strongest</strong> ones (<code>intensity x range x range</code>) are used and the weakest are dropped from that object. If a light seems to do nothing, check that the object is inside its <code>range</code> and raise <code>range</code> or <em>Lights per object</em>.</p>
+<h3 id="quality-settings-like-unity-39-s-quality">Quality settings (like Unity&#39;s Quality)<a class="anchor" href="#quality-settings-like-unity-39-s-quality">#</a></h3>
+<p><strong>Project ▸ Quality and lighting</strong> (also in <code>nord.project.json</code> as <code>quality</code>). Pick a <strong>level</strong> (<code>low</code>, <code>medium</code>, <code>high</code>, <code>ultra</code>); a level is a preset, and you can change single values after it:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>low</th>
+<th>medium</th>
+<th>high</th>
+<th>ultra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Shadows</td>
+<td>off</td>
+<td>hard</td>
+<td>soft</td>
+<td>soft</td>
+</tr>
+<tr>
+<td>Shadow resolution</td>
+<td>512</td>
+<td>1024</td>
+<td>1024</td>
+<td>2048</td>
+</tr>
+<tr>
+<td>Lights per object</td>
+<td>4</td>
+<td>4</td>
+<td>8</td>
+<td>12</td>
+</tr>
+<tr>
+<td>Anti-aliasing (MSAA)</td>
+<td>off</td>
+<td>on</td>
+<td>on</td>
+<td>on</td>
+</tr>
+<tr>
+<td>Render scale</td>
+<td>0.75</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Post-processing (bloom, tonemap, vignette)</td>
+<td>off</td>
+<td>on</td>
+<td>on</td>
+<td>on</td>
+</tr>
+</tbody></table>
+<p>The same panel edits the open scene&#39;s <strong>ambient colour and intensity</strong> (Unity&#39;s Environment Lighting). 3D only: these quality settings are applied by the 3D (Babylon) runtime.</p>
+<pre class="code" data-lang="json"><code>&quot;quality&quot;: { &quot;level&quot;: &quot;medium&quot;, &quot;shadows&quot;: &quot;soft&quot;, &quot;maxLights&quot;: 8 }</code></pre>
 <div class="pager"><a href="2d.html"><small>← Previous</small>2D games</a><a href="physics.html"><small>Next →</small>Physics</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#building-blocks">Building blocks </a><a href="#material-assets">Material assets </a><a href="#cameras">Cameras </a><a href="#animation">Animation </a><a href="#3d-ui">3D UI </a><a href="#picking-and-rays">Picking and rays </a><a href="#performance-tips">Performance tips </a><a href="#a-real-3d-scene">A real 3D scene </a><a href="#lighting-like-unity">Lighting (like Unity) </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

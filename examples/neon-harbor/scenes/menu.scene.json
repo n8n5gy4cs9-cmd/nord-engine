@@ -522,9 +522,9 @@
           "layer": 0,
           "transform": {
             "pos": [
-              -0.7587,
-              3.107,
-              0.0572
+              -0.8271,
+              3.3869,
+              0.0573
             ],
             "rot": [
               0.0,
@@ -541,8 +541,9 @@
             {
               "type": "light",
               "kind": "point",
-              "intensity": 5.5,
-              "radius": 209.6
+              "intensity": 6.2,
+              "radius": 209.6,
+              "castShadows": true
             }
           ],
           "scripts": [],

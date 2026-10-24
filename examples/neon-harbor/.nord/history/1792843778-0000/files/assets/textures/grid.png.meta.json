@@ -1,0 +1,5 @@
+{
+  "wrap": "repeat",
+  "filter": "linear",
+  "maxSize": 512
+}

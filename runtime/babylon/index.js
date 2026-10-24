@@ -5,7 +5,7 @@ import { attachDom } from '../core/input.js';
 import { registerBabylonComponents } from './components.js';
 import { HavokAdapter } from './physics.js';
 import { createGui } from './gui.js';
-import { applyAmbient, allowManyLights } from './lighting.js';
+import { applyAmbient, allowManyLights, createLightCuller, qualitySettings } from './lighting.js';
 
 export const rgb = (B, c, d = '#ffffff') => B.Color3.FromHexString((typeof c === 'string' && /^#[0-9a-f]{6}/i.test(c) ? c : d).slice(0, 7));
 const D2R = Math.PI / 180;
@@ -23,16 +23,19 @@ export async function boot(project, opts = {}) {
   const canvas = document.createElement('canvas');
   canvas.style.cssText = 'width:100%;height:100%;display:block;outline:none;touch-action:none';
   container.insertBefore(canvas, container.firstChild);
-  const engine = new B.Engine(canvas, !d.pixelArt, { preserveDrawingBuffer: !!opts.preserveDrawingBuffer, stencil: true, adaptToDeviceRatio: true });
+  const quality = qualitySettings(project);
+  const engine = new B.Engine(canvas, quality.antialiasing && !d.pixelArt, { preserveDrawingBuffer: !!opts.preserveDrawingBuffer, stencil: true, adaptToDeviceRatio: true });
+  if (quality.renderScale < 1) engine.setHardwareScalingLevel(1 / quality.renderScale);
   const scene = new B.Scene(engine);
   scene.clearColor = B.Color4.FromHexString(`${(d.background ?? '#2e3440').slice(0, 7)}ff`);
   scene.useRightHandedSystem = false;
 
   const backend = new Backend(game, project, B, engine, scene, canvas);
-  game.backend = backend;
+  game.backend = backend; backend.quality = quality;
   registerCoreComponents(game);
   registerBabylonComponents(backend);
-  allowManyLights(B, scene);
+  allowManyLights(B, scene, quality.maxLights);
+  const culler = createLightCuller(B, scene);
   game.events.on('sceneLoad', () => applyAmbient(B, scene, game.scene?.settings)); // scene ambient light
 
   const eng = project.physics?.engine;
@@ -53,6 +56,7 @@ export async function boot(project, opts = {}) {
   engine.runRenderLoop(() => {
     for (const pad of navigator.getGamepads?.() ?? []) if (pad) { game.input.pollGamepad(pad); break; }
     backend.physics?.flushDirty();
+    culler.update(engine.getDeltaTime() / 1000);
     game.tick(engine.getDeltaTime() / 1000);
     if (scene.activeCamera) scene.render();
   });
@@ -68,7 +72,7 @@ export async function boot(project, opts = {}) {
 export class Backend {
   constructor(game, project, B, engine, scene, canvas) {
     this.game = game; this.project = project; this.B = B; this.engine = engine; this.scene = scene; this.canvas = canvas;
-    this.physics = null; this.models = new Map(); this.textures = new Map(); this._q = Promise.resolve();
+    this.physics = null; this.shadows = new Set(); this.models = new Map(); this.textures = new Map(); this._q = Promise.resolve();
   }
   // ---- assets ----------------------------------------------------------
   prepare(data) {

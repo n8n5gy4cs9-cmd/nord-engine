@@ -103,3 +103,7 @@ Sidecar `assets/foo.png.meta.json` only when non-default: `{ "type":"spritesheet
 `levels/*.level2d.json` uses `format: "nord-level2d/1"`: `name`, `mode` (`platform/topdown`), `physics` (`arcade/matter`), map `width/height/tileSize`, `gravity/background`, ordered `layers` (id/name/visible/locked/parallax/opacity and sparse `"x,y"` tiles), `entities` (sprite ID, transform/body fields, tags, scripts), custom image definitions and level-local variants. Save compiles this to ordinary `scenes/*.scene.json` and copies referenced assets. Authoring is not round-tripped from a modified scene. See `LEVEL_CREATOR_2D.md`; normal scene/runtime/export format is unchanged.
 
 2D authoring files may include `items: [{id,title,entity}]`, persistent project item definitions. Placement clones the definition with a new instance ID, location and active layer. These definitions do not create runtime objects until placed. Older files derive defaults from existing entities on editor load.
+
+
+## `quality` (optional, 3D)
+`{ "level": "low|medium|high|ultra", "shadows": "off|hard|soft", "shadowResolution": 1024, "maxLights": 8, "antialiasing": true, "renderScale": 1, "postProcessing": true }`. `level` is a preset; the other keys override single values. Edited in Project ▸ Quality and lighting. Scene settings `ambient` (colour) and `ambientIntensity` (0 = off) are the environment light.

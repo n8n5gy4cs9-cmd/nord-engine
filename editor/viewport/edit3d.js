@@ -1,6 +1,6 @@
 // 3D edit view (Babylon): orbit/fly camera, grid, picking, move/rotate/scale gizmos, snap, IPC sync, offscreen model thumbnails.
 import { canvas, state, send, log } from './edit.js';
-import { createLight, applyAmbient, allowManyLights } from '/runtime/babylon/lighting.js';
+import { createLight, applyAmbient, allowManyLights, createLightCuller, qualitySettings } from '/runtime/babylon/lighting.js';
 
 let B, engine, scene, camera, gizmoManager, gridMesh;
 const nodes = new Map();       // entity id -> {node, entity}
@@ -35,7 +35,7 @@ export async function init() {
   camera.inputs.attached.mousewheel.wheelDeltaPercentage = 0.0005; // Unity: zoom is relative to the distance
   camera.panningSensibility = 400;
   hemi = new B.HemisphericLight('h', new B.Vector3(0.2, 1, 0.1), scene); hemi.intensity = 0.9;
-  allowManyLights(B, scene);
+  allowManyLights(B, scene, Math.max(8, qualitySettings(state.project).maxLights));
   sun = new B.DirectionalLight('d', new B.Vector3(-0.4, -1, -0.3), scene); sun.intensity = 0.6;
 
   gridMesh = B.MeshBuilder.CreateGround('grid', { width: 400, height: 400 }, scene);
@@ -83,7 +83,8 @@ export async function init() {
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
   new ResizeObserver(() => engine.resize()).observe(canvas);
-  engine.runRenderLoop(() => { scene.render(); hudUpdate(); });
+  const culler = createLightCuller(B, scene);
+  engine.runRenderLoop(() => { culler.update(engine.getDeltaTime() / 1000); scene.render(); hudUpdate(); });
   setSettings();
 }
 

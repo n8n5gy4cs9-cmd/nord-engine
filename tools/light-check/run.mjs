@@ -16,7 +16,7 @@ const tmp = path.join(ROOT, 'target/light-check.png');
 const lum = async () => {
   await sleep(600); await page.shot(tmp);
   const im = decodePng(fs.readFileSync(tmp)), px = (x, y) => { const i = (y * im.w + x) * 4; return (im.data[i] + im.data[i + 1] + im.data[i + 2]) / 3; };
-  return { centre: px(im.w >> 1, im.h >> 1), corner: px(30, 100) };
+  return { centre: px(im.w >> 1, im.h >> 1), corner: px(30, 100), side: px(575, 300) }; // side: ground in the box shadow, just past the box edge (800x600 window, camera 9 above)
 };
 let failed = 0;
 const check = (name, ok, info) => { console.log(`${ok ? '✔' : '✖'} ${name} ${JSON.stringify(info)}`); if (!ok) failed++; };
@@ -33,6 +33,14 @@ try {
   await page.eval(`window.__nord.loadScene('scenes/off.scene.json')`);
   const d = await lum();
   check('ambientIntensity 0 switches ambient off', d.centre < 15 && d.corner < 15, d);
+  await page.eval(`window.__nord.loadScene('scenes/many.scene.json')`);
+  const m = await lum();
+  check('a light is not lost when the scene has more lights than a material can use', m.centre > 60, m);
+  await page.eval(`window.__nord.loadScene('scenes/noshadow.scene.json')`);
+  const ns = await lum();
+  await page.eval(`window.__nord.loadScene('scenes/shadow.scene.json')`);
+  const sd = await lum();
+  check('castShadows: the box casts a shadow on the ground beside it', sd.side < ns.side * 0.6, { with: sd.side, without: ns.side });
   // 2D (Phaser Light2D): ambient + a point light
   const s2 = spawn(nord, ['serve', path.join(ROOT, 'tools/light-check/2d'), '-p', '4172'], { stdio: 'ignore' });
   try {

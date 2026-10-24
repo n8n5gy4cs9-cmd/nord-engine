@@ -40,6 +40,8 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         .show(ui, |ui| {
             properties(st, ui, &root);
             ui.add_space(8.0);
+            quality_section(st, ui, &root);
+            ui.add_space(8.0);
             refs_section(st, ui, &root);
         });
 }
@@ -314,4 +316,129 @@ fn refs_section(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
                 }
             }
         });
+}
+
+/// Quality presets (must match `qualityPreset` in runtime/babylon/lighting.js): shadows, shadow map size, max lights per material, antialiasing, render scale, post-processing.
+const QUALITY: [(&str, &str, i64, i64, bool, f64, bool); 4] = [
+    ("low", "off", 512, 4, false, 0.75, false),
+    ("medium", "hard", 1024, 4, true, 1.0, true),
+    ("high", "soft", 1024, 8, true, 1.0, true),
+    ("ultra", "soft", 2048, 12, true, 1.0, true),
+];
+
+fn quality_section(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
+    let mut save = false;
+    egui::CollapsingHeader::new(RichText::new("Quality and lighting").strong())
+        .default_open(true)
+        .show(ui, |ui| {
+            if let Some(p) = st.project.as_mut() {
+                let q = &mut p.quality;
+                let level = q.get("level").and_then(|v| v.as_str()).unwrap_or("high").to_string();
+                let pre = QUALITY.iter().find(|r| r.0 == level).unwrap_or(&QUALITY[2]);
+                egui::Grid::new("quality").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
+                    ui.label("Quality level");
+                    egui::ComboBox::from_id_salt("q-level").selected_text(level.clone()).show_ui(ui, |ui| {
+                        for r in QUALITY {
+                            if ui.selectable_label(level == r.0, r.0).clicked() {
+                                q.clear(); // a level is a preset: drop the overrides
+                                q.insert("level".into(), json!(r.0));
+                                save = true;
+                            }
+                        }
+                    });
+                    ui.end_row();
+                    let mut sh = q.get("shadows").and_then(|v| v.as_str()).unwrap_or(pre.1).to_string();
+                    ui.label("Shadows");
+                    egui::ComboBox::from_id_salt("q-sh").selected_text(sh.clone()).show_ui(ui, |ui| {
+                        for k in ["off", "hard", "soft"] {
+                            ui.selectable_value(&mut sh, k.to_string(), k);
+                        }
+                    });
+                    if q.get("shadows").and_then(|v| v.as_str()).unwrap_or(pre.1) != sh {
+                        q.insert("shadows".into(), json!(sh));
+                        save = true;
+                    }
+                    ui.end_row();
+                    let mut res = q.get("shadowResolution").and_then(|v| v.as_i64()).unwrap_or(pre.2);
+                    ui.label("Shadow resolution");
+                    egui::ComboBox::from_id_salt("q-res").selected_text(res.to_string()).show_ui(ui, |ui| {
+                        for k in [256, 512, 1024, 2048, 4096] {
+                            ui.selectable_value(&mut res, k, k.to_string());
+                        }
+                    });
+                    if q.get("shadowResolution").and_then(|v| v.as_i64()).unwrap_or(pre.2) != res {
+                        q.insert("shadowResolution".into(), json!(res));
+                        save = true;
+                    }
+                    ui.end_row();
+                    let mut ml = q.get("maxLights").and_then(|v| v.as_i64()).unwrap_or(pre.3);
+                    ui.label("Lights per object");
+                    if ui.add(egui::DragValue::new(&mut ml).range(1..=16)).changed() {
+                        q.insert("maxLights".into(), json!(ml));
+                        save = true;
+                    }
+                    ui.end_row();
+                    let mut aa = q.get("antialiasing").and_then(|v| v.as_bool()).unwrap_or(pre.4);
+                    ui.label("Anti-aliasing");
+                    if ui.checkbox(&mut aa, "smooth edges (MSAA)").changed() {
+                        q.insert("antialiasing".into(), json!(aa));
+                        save = true;
+                    }
+                    ui.end_row();
+                    let mut rs = q.get("renderScale").and_then(|v| v.as_f64()).unwrap_or(pre.5);
+                    ui.label("Render scale");
+                    if ui.add(egui::Slider::new(&mut rs, 0.25..=1.0)).changed() {
+                        q.insert("renderScale".into(), json!((rs * 100.0).round() / 100.0));
+                        save = true;
+                    }
+                    ui.end_row();
+                    let mut pp = q.get("postProcessing").and_then(|v| v.as_bool()).unwrap_or(pre.6);
+                    ui.label("Post-processing");
+                    if ui.checkbox(&mut pp, "bloom, tonemap, vignette").changed() {
+                        q.insert("postProcessing".into(), json!(pp));
+                        save = true;
+                    }
+                    ui.end_row();
+                });
+            }
+            ui.separator();
+            ui.label(RichText::new("Environment lighting (open scene)").strong());
+            let (mut amb, mut on, mut k) = st
+                .scene
+                .as_ref()
+                .map(|s| {
+                    let c = s.settings.ambient.clone();
+                    (
+                        c.clone().unwrap_or_else(|| "#b8b8c8".into()),
+                        c.is_some(),
+                        s.settings.extra.get("ambientIntensity").and_then(|v| v.as_f64()).unwrap_or(1.0),
+                    )
+                })
+                .unwrap_or_default();
+            if st.scene.is_none() {
+                ui.weak("Open a scene to edit its ambient light.");
+            } else {
+                let (before_amb, before_on, before_k) = (amb.clone(), on, k);
+                ui.horizontal(|ui| {
+                    ui.checkbox(&mut on, "Ambient colour");
+                    ui.add_enabled(on, egui::TextEdit::singleline(&mut amb).desired_width(80.0));
+                });
+                ui.add_enabled(on, egui::Slider::new(&mut k, 0.0..=3.0).text("intensity (0 = dark)"));
+                ui.weak("Off: 3D scenes use only their own lights, 2D scenes a soft grey.");
+                if (before_amb, before_on, before_k) != (amb.clone(), on, k) {
+                    st.edit_scene("Scene ambient light", Some("ambient"), |s| {
+                        s.settings.ambient = on.then(|| amb.clone());
+                        s.settings.extra.insert("ambientIntensity".into(), json!(k));
+                    });
+                }
+            }
+            ui.weak("Lights and shadows are set per light (Light component); see Manual: Lighting.");
+        });
+    if save {
+        if let Some(p) = &st.project {
+            if let Err(e) = nord_core::io::save_project(root, p) {
+                st.log(LogLevel::Error, e.to_string());
+            }
+        }
+    }
 }

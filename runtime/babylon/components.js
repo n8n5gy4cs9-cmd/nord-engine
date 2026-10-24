@@ -44,7 +44,7 @@ export function registerBabylonComponents(backend) {
     (e.__meshes ??= []).push(mesh);
     mesh.parent = e.native; mesh.metadata = { entity: e }; mesh.__ownMat = ownMat;
     applyMaterial(e);
-    if (backend.shadow) { backend.shadow.addShadowCaster(mesh); }
+    for (const sg of backend.shadows) sg.addShadowCaster(mesh);
     mesh.receiveShadows = e.getComponent('mesh')?.data.receiveShadow !== false;
   };
 
@@ -86,7 +86,7 @@ export function registerBabylonComponents(backend) {
       comp.mesh = make();
       comp.mesh.__castShadow = d.castShadow !== false;
       addMesh(e, comp.mesh);
-      if (d.castShadow === false && backend.shadow) backend.shadow.removeShadowCaster(comp.mesh);
+      if (d.castShadow === false) for (const sg of backend.shadows) sg.removeShadowCaster(comp.mesh);
     },
     set(comp, k, v) { comp.data[k] = v; if (k === 'visible') comp.mesh.isVisible = v; },
     destroy(comp) { const e = comp.entity; e.__meshes = (e.__meshes ?? []).filter((m) => m !== comp.mesh); comp.mesh?.dispose(); },
@@ -112,7 +112,7 @@ export function registerBabylonComponents(backend) {
           }).catch((err) => backend.game.warn(`[nord] model material ${asset}: ${err?.message ?? err}`));
         }
       }).catch(() => {});
-      for (const r of inst.rootNodes) { r.parent = e.native; for (const m of [r, ...r.getChildMeshes()]) if (m.getTotalVertices) { (e.__meshes ??= []).push(m); m.__ownMat = m.material; m.metadata = { entity: e }; if (backend.shadow) backend.shadow.addShadowCaster(m); if (!m.isAnInstance) m.receiveShadows = true; /* Babylon warns when this is set on instances */ } }
+      for (const r of inst.rootNodes) { r.parent = e.native; for (const m of [r, ...r.getChildMeshes()]) if (m.getTotalVertices) { (e.__meshes ??= []).push(m); m.__ownMat = m.material; m.metadata = { entity: e }; for (const sg of backend.shadows) sg.addShadowCaster(m); (m.isAnInstance ? m.sourceMesh : m).receiveShadows = true; /* instances read it from their source mesh */ } }
       const groups = new Map(inst.animationGroups.map((g) => [g.name.startsWith(`${e.name}.`) ? g.name.slice(e.name.length + 1) : g.name, g]));
       comp.animations = groups;
       for (const g of groups.values()) g.stop();
@@ -137,13 +137,12 @@ export function registerBabylonComponents(backend) {
       const l = createLight(B, scene, `${e.name}.light`, d, e.native);
       comp.light = l;
       if (d.castShadows && d.kind !== 'hemispheric') {
-        const sg = createShadows(B, l, d.shadowMapSize ?? 1024);
-        backend.shadow = sg; comp.sg = sg;
-        for (const x of scene.meshes) if (x.metadata?.entity && x.__castShadow !== false) sg.addShadowCaster(x);
+        const sg = createShadows(B, l, d.shadowMapSize ?? backend.quality.shadowResolution, backend.quality);
+        if (sg) { backend.shadows.add(sg); comp.sg = sg; for (const x of scene.meshes) if (x.metadata?.entity && x.__castShadow !== false) sg.addShadowCaster(x); }
       }
     },
     update(comp) { comp.light.setEnabled(comp.entity.enabled); },
-    destroy(comp) { if (backend.shadow === comp.sg) backend.shadow = null; comp.sg?.dispose(); comp.light.dispose(); },
+    destroy(comp) { backend.shadows.delete(comp.sg); comp.sg?.dispose(); comp.light.dispose(); },
   });
 
   registerComponent('camera', {
@@ -227,7 +226,7 @@ export function registerBabylonComponents(backend) {
     ip.toneMappingEnabled = !!d.tonemap; if (d.tonemap) ip.toneMappingType = B.ImageProcessingConfiguration.TONEMAPPING_ACES;
   };
   registerComponent('postProcess', {
-    create(e, d, comp) { comp.pending = true; },
+    create(e, d, comp) { comp.pending = backend.quality.postProcessing; },
     update(comp) {
       if (comp.pending && scene.activeCamera) {
         comp.pending = false;

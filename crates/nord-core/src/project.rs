@@ -105,6 +105,10 @@ pub struct Project {
     /// Desktop-app settings (M9): `{ "permissions": {…}, "menu"?, … }`; see docs/DESKTOP_APPS.md. Free-form here, parsed by `nord-desktop`.
     #[serde(default, skip_serializing_if = "Map::is_empty")]
     pub desktop: Map<String, Value>,
+    /// Graphics quality like Unity's Quality settings: `level` (low|medium|high|ultra) plus optional overrides
+    /// `shadows` (off|hard|soft), `shadowResolution`, `maxLights`, `antialiasing`, `renderScale`, `postProcessing`. See docs/QUALITY.md.
+    #[serde(default, skip_serializing_if = "Map::is_empty")]
+    pub quality: Map<String, Value>,
 }
 
 fn default_engine_version() -> String {
@@ -128,6 +132,7 @@ impl Project {
             addons: vec![],
             export: Map::new(),
             desktop: Map::new(),
+            quality: Map::new(),
         }
     }
 }

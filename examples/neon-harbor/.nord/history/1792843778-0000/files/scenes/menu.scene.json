@@ -1,0 +1,556 @@
+{
+  "format": 1,
+  "name": "menu",
+  "settings": {
+    "ambient": null,
+    "skybox": null,
+    "gravity": null
+  },
+  "entities": [
+    {
+      "id": "nh000043",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0.0,
+          14.0,
+          -60.0
+        ],
+        "rot": [
+          14.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "fov": 62
+        },
+        {
+          "type": "postProcess",
+          "fxaa": true,
+          "bloom": true,
+          "bloomThreshold": 0.55,
+          "bloomWeight": 0.55,
+          "vignette": 0.35,
+          "tonemap": true,
+          "exposure": 1.1
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/orbit-cam.js",
+          "attributes": {
+            "radius": 70,
+            "height": 18,
+            "speed": 6
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "nh000048",
+      "name": "Environment",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rot": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [
+        {
+          "id": "nh000044",
+          "name": "Moon",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0.0,
+              30.0,
+              0.0
+            ],
+            "rot": [
+              48.0,
+              -35.0,
+              0.0
+            ],
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": [
+            {
+              "type": "light",
+              "kind": "directional",
+              "color": "#7f98ff",
+              "intensity": 0.4
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        },
+        {
+          "id": "nh000045",
+          "name": "Ambient",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": [
+            {
+              "type": "light",
+              "kind": "hemispheric",
+              "color": "#3a4688",
+              "intensity": 0.3
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        },
+        {
+          "id": "nh000046",
+          "name": "Sky",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": [
+            {
+              "type": "skybox",
+              "path": "assets/skybox/night"
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        },
+        {
+          "id": "nh000047",
+          "name": "Water",
+          "enabled": true,
+          "locked": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "rot": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": [
+            {
+              "type": "mesh",
+              "shape": "ground",
+              "size": [
+                260,
+                0.2,
+                260
+              ]
+            },
+            {
+              "type": "material",
+              "asset": "assets/materials/water.mat.json"
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        }
+      ],
+      "prefab": null
+    },
+    {
+      "id": "nh00004f",
+      "name": "Districts",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rot": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [
+        {
+          "id": "nh000049",
+          "name": "Block 1",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -34.0,
+              0.0,
+              -30.0
+            ],
+            "rot": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/block.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh00004a",
+          "name": "Block 2",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              34.0,
+              0.0,
+              -32.0
+            ],
+            "rot": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/block.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh00004b",
+          "name": "Block 3",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -40.0,
+              0.0,
+              22.0
+            ],
+            "rot": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/block.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh00004c",
+          "name": "Block 4",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              42.0,
+              0.0,
+              26.0
+            ],
+            "rot": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/block.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh00004d",
+          "name": "Tall tower 1",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -52.0,
+              14.0,
+              -4.0
+            ],
+            "rot": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/tower-tall.prefab.json",
+            "overrides": {}
+          }
+        },
+        {
+          "id": "nh00004e",
+          "name": "Tall tower 2",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              54.0,
+              14.0,
+              -4.0
+            ],
+            "rot": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": [],
+          "scripts": [],
+          "children": [],
+          "prefab": {
+            "path": "prefabs/tower-tall.prefab.json",
+            "overrides": {}
+          }
+        }
+      ],
+      "prefab": null
+    },
+    {
+      "id": "nh000050",
+      "name": "Director",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rot": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/menu.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "e4w97pwe",
+      "name": "testCmesh",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -14.9311,
+          4.2743,
+          7.3149
+        ],
+        "rot": [
+          -0.0187,
+          89.9235,
+          -13.723
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "components": [
+        {
+          "type": "model",
+          "path": "models/testCmesh.glb",
+          "shadow": true
+        }
+      ],
+      "scripts": [],
+      "children": [
+        {
+          "id": "7hbu4i2b",
+          "name": "Light",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -0.7587,
+              3.107,
+              0.0572
+            ],
+            "rot": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "scale": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "components": [
+            {
+              "type": "light",
+              "kind": "point",
+              "intensity": 5.5,
+              "radius": 209.6
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        }
+      ],
+      "prefab": null
+    }
+  ]
+}

@@ -2469,6 +2469,12 @@
       "milestone": "M13",
       "title": "Unity conversion playbook + MCP unity tools, Examples pages 30-41, examples smoke test",
       "status": "done"
+    },
+    {
+      "id": "M13-28",
+      "milestone": "M13",
+      "title": "Lighting like Unity (2D+3D), light culling/priority, Quality settings, light-check test",
+      "status": "done"
     }
   ]
 }

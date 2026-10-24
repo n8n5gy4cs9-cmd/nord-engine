@@ -246,3 +246,14 @@ Click a face to select it (Shift extends), drag to move it; switch **Drag** to *
 
 ## Limits
 One texture per mesh. Flat shading only. No skeleton/animation authoring or import. Undo keeps whole-mesh snapshots (80 steps / 32 MB). A draft is kept in the browser (`nord.mesh-draft`). Outside the editor (**Open in browser**) Save downloads files and the save dialog cannot change scene objects. The Scene view picks up an overwritten model after a reload.
+
+
+## Lights and shadows on your model
+A model from the Modeler needs **no extra component** to be lit: it is an ordinary model, so every light in the scene lights it, and it casts and receives shadows like any mesh. If a point light seems to do nothing, check these in order:
+
+1. **The light has a `range`** (default 10) and the model is **inside it**. The light fades out linearly to nothing at `range`. Put the light closer, or raise `range` (and `intensity`).
+2. **Shadows:** tick `castShadows` on the *light* (a point light shadows in all directions), and look at a surface *behind* the model: a shadow needs a floor or wall to fall on. The model casts and receives shadows by default.
+3. **It is not an unlit material.** Materials set to `unlit`, or very strong `emissive` colours, do not change with light. A Modeler texture is a normal lit colour texture, so it reacts.
+4. **Too many lights:** if more than *Lights per object* (Project ▸ Quality) reach the model, the weakest are dropped from it. See *Many lights* in the 3D chapter.
+5. **Scene view:** the Scene view shows the scene's own lights only with **Gizmos ▸ Scene lighting** on; with it off, you see neutral editor light.
+6. The light is **enabled** (its entity checkbox) and **Ambient light** is not hiding the effect: a bright ambient makes a point light hard to see, so lower `ambientIntensity` to compare.
