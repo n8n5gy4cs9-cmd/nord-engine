@@ -218,5 +218,31 @@
     "requires": [],
     "demo": "",
     "source": "original"
+  },
+  {
+    "id": "prefab.dev-console",
+    "title": "Dev Console (in-game command console)",
+    "kind": "prefab",
+    "category": "utilities",
+    "tags": [
+      "console",
+      "cheats",
+      "debug",
+      "commands",
+      "dev"
+    ],
+    "tier": [
+      "2d",
+      "3d"
+    ],
+    "file": "library/prefabs/dev-console.prefab.json",
+    "files": [
+      "library/scripts/dev-console.js"
+    ],
+    "description": "Drag the prefab into the Hierarchy. In the running game press the key left of 1 (Backquote / \u00a7) to open a command console with autocomplete and history; built-ins: help, entities, get-object-info, set-pos, instantiate, destroy, timescale, call-instance, exec, macros. Add your own with command('name', fn, {description, params}) from any script (import { command } from './dev-console.js').",
+    "attributes": [],
+    "requires": [],
+    "demo": "",
+    "source": "original"
   }
 ]

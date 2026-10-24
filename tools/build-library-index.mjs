@@ -31,7 +31,7 @@ export function attributeNames(src) {
 export function build() {
   const items = [], errors = [];
   for (const f of walk(lib).sort()) {
-    if (!/\.(js|rs)$/.test(f) || /\/_[^/]*$/.test(f)) continue;
+    if (!/\.(js|rs)$/.test(f) || /\/_[^/]*$/.test(f) || f.includes('/addons/')) continue;
     const src = readFileSync(f, 'utf8');
     const m = /@nord\s+(\{.*\})/.exec(src);
     if (!m) { errors.push(`${relative(root, f)}: missing @nord header`); continue; }

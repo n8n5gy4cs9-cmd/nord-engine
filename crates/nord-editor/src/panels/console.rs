@@ -386,8 +386,12 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                     ui.painter()
                         .rect_filled(rect, 0.0, ui.visuals().selection.bg_fill);
                 }
-                let text_for_a11y = if *n > 1 { format!("({n}) {}", l.text) } else { l.text.clone() };
-            let mut x = rect.left() + 4.0;
+                let text_for_a11y = if *n > 1 {
+                    format!("({n}) {}", l.text)
+                } else {
+                    l.text.clone()
+                };
+                let mut x = rect.left() + 4.0;
                 let icon = ["info", "alert-triangle", "alert-circle", "hammer"][li];
                 crate::icons::icon(icon, 12.0, color).paint_at(
                     ui,
@@ -441,8 +445,10 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 ui.painter()
                     .with_clip_rect(rect)
                     .galley(egui::pos2(x, gy), galley, color);
-                resp.widget_info(|| egui::WidgetInfo::labeled(egui::WidgetType::Button, true, &text_for_a11y));
-            let resp = if loc.is_some() {
+                resp.widget_info(|| {
+                    egui::WidgetInfo::labeled(egui::WidgetType::Button, true, &text_for_a11y)
+                });
+                let resp = if loc.is_some() {
                     resp.on_hover_text("Double-click to open the file and line")
                 } else {
                     resp

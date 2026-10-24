@@ -1,0 +1,15 @@
+{
+  "format": 1,
+  "root": {
+    "id": "devcons1",
+    "name": "Dev Console",
+    "enabled": true,
+    "tags": [],
+    "layer": 0,
+    "transform": { "pos": [0, 0, 0], "rot": [0, 0, 0], "scale": [1, 1, 1] },
+    "components": [],
+    "scripts": [{ "path": "scripts/dev-console.js", "attributes": {} }],
+    "children": [],
+    "prefab": null
+  }
+}

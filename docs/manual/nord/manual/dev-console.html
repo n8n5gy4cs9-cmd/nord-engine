@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>In-game Dev Console — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="debugger.html">Debugger and profiler</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a><a href="ui-designer.html">UI Designer</a><a href="graph.html">Node graphs (visual scripting)</a><a href="unity-workflow.html">Unity-style workflow</a><a href="modeler.html">3D Modeler</a><a href="animator.html">Animator</a><a href="multiplayer.html">Multiplayer</a><a href="appearance.html">Editor appearance</a><a href="ai-mcp.html">AI and MCP</a><a href="unity-scripting.html">Unity-style scripting</a><a href="dev-console.html" class="cur" aria-current="page">In-game Dev Console</a><a href="organise-project.html">Organising your project</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>In-game Dev Console</h1>
+<p>The <strong>Dev Console</strong> is a command line inside your running game, for cheats, QA and debugging. Press the key left of <span class="c-key">1</span> (<span class="c-key">§</span> on Nordic keyboards, <span class="c-key">`</span> on US) and type. It is a library prefab: nothing to install, works in every Nord project (2D and 3D), exports with the game unless you turn it off.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A <strong>command</strong> is a word you type, like <code>heal 20</code> or <code>spawn prefabs/enemy.prefab.json 100 50 0</code>. The console runs the matching function you (or the engine) wrote. It is the quickest way to test &quot;what happens if I have 999 coins?&quot; without changing the game.</p>
+</aside><h2 id="add-it-to-a-game-1-minute">Add it to a game (1 minute)<a class="anchor" href="#add-it-to-a-game-1-minute">#</a></h2>
+<ol>
+<li>Open the <span class="c-ui">Library</span> tab, search <span class="c-ui">console</span>, select <span class="c-ui">Dev Console (in-game command console)</span> and press <span class="c-ui">Insert</span>. This copies <code>scripts/dev-console.js</code> and <code>prefabs/dev-console.prefab.json</code> into your project and places a <em>Dev Console</em> object in the scene.
+<em>Or drag it yourself:</em> the files are in the project&#39;s <code>prefabs</code> folder after inserting once: drag <code>dev-console.prefab.json</code> from <span class="c-ui">Assets</span> into the <span class="c-ui">Hierarchy</span> of any other scene.</li>
+<li>Press <span class="c-ui">Play</span> and press the key left of <span class="c-key">1</span>. The console slides down. <span class="c-key">Esc</span> or the same key closes it.</li>
+<li>Type <span class="c-api">help</span>. Done.</li>
+</ol>
+<p>AI agents: <code>library_add {id:&quot;prefab.dev-console&quot;}</code> in the MCP server does step 1.</p>
+<h2 id="built-in-commands">Built-in commands<a class="anchor" href="#built-in-commands">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span class="c-api">help</span> <code>[command]</code> (also <code>man</code>, <code>?</code>)</td>
+<td>list commands, or the usage of one</td>
+</tr>
+<tr>
+<td><span class="c-api">entities</span> / <span class="c-api">find</span> <code>text</code></td>
+<td>list or search objects in the scene</td>
+</tr>
+<tr>
+<td><span class="c-api">get-object-info</span> <code>object</code></td>
+<td>transform, components, scripts, children</td>
+</tr>
+<tr>
+<td><span class="c-api">set-pos</span> <code>object x y z</code></td>
+<td>move an object</td>
+</tr>
+<tr>
+<td><span class="c-api">set-active</span> <code>object on</code></td>
+<td>enable / disable an object</td>
+</tr>
+<tr>
+<td><span class="c-api">instantiate</span> <code>prefab [x y z]</code> (also <code>spawn</code>)</td>
+<td>spawn a prefab</td>
+</tr>
+<tr>
+<td><span class="c-api">destroy</span> <code>object</code></td>
+<td>remove an object</td>
+</tr>
+<tr>
+<td><span class="c-api">call-instance</span> <code>object method args</code></td>
+<td>call a method on an object&#39;s scripts</td>
+</tr>
+<tr>
+<td><span class="c-api">emit</span> <code>event json</code></td>
+<td>send a game event</td>
+</tr>
+<tr>
+<td><span class="c-api">timescale</span> <code>n</code></td>
+<td>game speed: 1 normal, 0.1 slow motion</td>
+</tr>
+<tr>
+<td><span class="c-api">pause</span> / <span class="c-api">resume</span> / <span class="c-api">restart</span> / <span class="c-api">load-scene</span> <code>path</code></td>
+<td>control the game</td>
+</tr>
+<tr>
+<td><span class="c-api">save-get</span> / <span class="c-api">save-set</span></td>
+<td>read and write saved data</td>
+</tr>
+<tr>
+<td><span class="c-api">exec</span> <code>javascript</code></td>
+<td>run a JavaScript expression with <code>game</code> and <code>scene</code></td>
+</tr>
+<tr>
+<td><span class="c-api">console-key</span> <code>code</code></td>
+<td>change the opening key (saved), e.g. <code>console-key F1</code></td>
+</tr>
+<tr>
+<td><span class="c-api">#define</span> <code>name = cmd; cmd</code></td>
+<td>make a macro; chain commands with <code>;</code></td>
+</tr>
+<tr>
+<td><span class="c-api">clear</span>, <span class="c-api">echo</span>, <span class="c-api">fps</span>, <span class="c-api">macros</span>, <span class="c-api">hello</span></td>
+<td>small helpers; <code>hello</code> shows an interactive command</td>
+</tr>
+</tbody></table>
+<p>Quotes group words: <code>get-object-info &quot;Dev Console&quot;</code>. <span class="c-key">Tab</span> completes command names, enum values and object names. <span class="c-key">↑</span> <span class="c-key">↓</span> browse your history.</p>
+<h2 id="add-your-own-commands">Add your own commands<a class="anchor" href="#add-your-own-commands">#</a></h2>
+<p>In any script of your game:</p>
+<pre class="code" data-lang="js"><code>import { command, bindVar } from './dev-console.js';
+
+// a simple cheat
+command('heal', function (amount) { Player.instance.hp += amount; return `hp ${Player.instance.hp}`; },
+        { description: 'Heal the player', params: 'amount:number=10' });
+
+// get / set a variable: &quot;god&quot; prints it, &quot;god true&quot; sets it
+bindVar('god', () =&gt; Player.instance.god, (v) =&gt; (Player.instance.god = v), 'bool', 'Take no damage');</code></pre>
+<ul>
+<li><strong>Parameters</strong> are a string: <code>name:type=default</code>, separated by spaces. Types: <span class="c-term">number</span>, <span class="c-term">int</span>, <span class="c-term">bool</span>, <span class="c-term">string</span>, <span class="c-term">rest</span> (all remaining text), <span class="c-term">vec3</span> (three numbers), <span class="c-term">entity</span> (an object by name, you receive the object), <span class="c-term">enum(a|b|c)</span> (autocomplete lists the options). A <code>=default</code> makes the parameter optional.</li>
+<li><strong>Overloads:</strong> register the same name again with a different parameter list (like <code>instantiate</code> with and without a position).</li>
+<li><strong>Async:</strong> return a Promise (or write an <code>async</code> function); the console waits and prints the result.</li>
+<li><strong>Interactive:</strong> write a generator and <code>yield</code> a question: <code>command(&#39;name&#39;, function* () { const n = yield &#39;Your name?&#39;; return &#39;Hi &#39; + n; })</code>.</li>
+<li><strong>Lambda / at runtime:</strong> call <code>command(...)</code> any time, for example when a level loads. Remove with <code>removeCommand(&#39;name&#39;)</code>.</li>
+<li><strong>Platform:</strong> <code>{ platform: &#39;desktop&#39; }</code> or <code>&#39;mobile&#39;</code> limits a command.</li>
+<li><strong>Aliases:</strong> <code>{ aliases: [&#39;h&#39;] }</code>.</li>
+</ul>
+<h2 id="settings-inspector-on-the-dev-console-object">Settings (Inspector, on the Dev Console object)<a class="anchor" href="#settings-inspector-on-the-dev-console-object">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>toggleKey</code></td>
+<td>the key that opens it (<code>Backquote</code> = left of 1). Also <code>console-key</code> in the console</td>
+</tr>
+<tr>
+<td><code>startOpen</code></td>
+<td>open when the game starts</td>
+</tr>
+<tr>
+<td><code>pauseWhileOpen</code></td>
+<td>freeze the game while typing</td>
+</tr>
+<tr>
+<td><code>captureLogs</code></td>
+<td>show <code>console.log</code> / <code>warn</code> / <code>error</code> lines in the console</td>
+</tr>
+<tr>
+<td><code>allowExec</code></td>
+<td>allow <code>exec</code> (runs JavaScript). <strong>Turn off for shipped games</strong> or delete the object</td>
+</tr>
+<tr>
+<td><code>persist</code></td>
+<td>keep the console when you load another scene</td>
+</tr>
+</tbody></table>
+<h2 id="tagged-logs-also-for-the-editor-console">Tagged logs (also for the editor Console)<a class="anchor" href="#tagged-logs-also-for-the-editor-console">#</a></h2>
+<p><code>log.combat(&#39;hit for 5&#39;)</code>, <code>log.ui(...)</code>, <code>log.network(...)</code>, <code>log.tag(&#39;Boss&#39;, ...)</code>, <code>log.if(cond, ...)</code>, <code>log.timed(&#39;label&#39;, fn)</code> print lines that start with <code>[Tag]</code>. The editor <span class="c-ui">Console</span> can filter by tag (see <a href="organise-project.html">Organising your project</a>). 18 presets: Combat, UI, Network, AI, Player, Save, Audio, Physics, Level, Input, Scene, Inventory, Quest, Dialogue, Economy, Debug, Perf, Tutorial.</p>
+<aside class="box warn"><div class="box-title">Careful</div><p>The console can change anything in a running game. Ship builds with <code>allowExec</code> off, or remove the prefab from the final scene.</p>
+</aside>
+<div class="pager"><a href="unity-scripting.html"><small>← Previous</small>Unity-style scripting</a><a href="organise-project.html"><small>Next →</small>Organising your project</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#add-it-to-a-game-1-minute">Add it to a game (1 minute) </a><a href="#built-in-commands">Built-in commands </a><a href="#add-your-own-commands">Add your own commands </a><a href="#settings-inspector-on-the-dev-console-object">Settings (Inspector, on the Dev Console object) </a><a href="#tagged-logs-also-for-the-editor-console">Tagged logs (also for the editor Console) </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

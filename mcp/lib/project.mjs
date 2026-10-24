@@ -87,6 +87,23 @@ export function projectTools(ctx) {
     const assets = list('assets'), by = {}; assets.forEach((f) => { const k = path.extname(f).slice(1) || 'none'; by[k] = (by[k] || 0) + 1; });
     return `Project "${p.name}" (${p.type}) at ${root}\nstartScene: ${p.startScene}\ndisplay: ${JSON.stringify(p.display)}\nphysics: ${JSON.stringify(p.physics)}\nscenes: ${list('scenes', /\.scene\.json$/).join(', ') || '-'}\nscripts: ${list('scripts', /\.(js|ts)$/).join(', ') || '-'}\nprefabs: ${list('prefabs', /\.prefab\.json$/).join(', ') || '-'}\nmodels: ${list('models').join(', ') || '-'}\nassets: ${assets.length} files ${JSON.stringify(by)}\nnext: nord_guide, component_schema, scene_get, scene_add_entity`;
   });
+  tool('library_list', 'Search the engine\'s ready-made library (scripts, prefabs, shaders, snippets): AI, camera, UI, inventory, dialogue, a Dev Console prefab and more. Returns id, kind, title, description. Prefer these over writing the same thing again.', obj({ query: { type: 'string', description: 'Words to search (id, title, tags, description). Empty = categories.' }, limit: { type: 'integer' } }), ({ query = '', limit = 25 }) => {
+    const idx = JSON.parse(fs.readFileSync(path.join(engine, 'library/INDEX.json'), 'utf8')), q = query.toLowerCase().split(/\s+/).filter(Boolean);
+    if (!q.length) { const c = {}; idx.forEach((i) => { c[i.category] = (c[i.category] || 0) + 1; }); return 'Categories: ' + Object.entries(c).map(([k, v]) => `${k} (${v})`).join(', ') + '\nSearch with a query, then library_add {id}.'; }
+    const hit = idx.filter((i) => q.every((w) => `${i.id} ${i.title} ${i.category} ${(i.tags || []).join(' ')} ${i.description}`.toLowerCase().includes(w))).slice(0, limit);
+    return hit.map((i) => `${i.id} [${i.kind}, ${(i.tier || []).join('/')}] ${i.title}: ${i.description.slice(0, 160)}${i.attributes?.length ? ' (attributes: ' + i.attributes.join(', ') + ')' : ''}`).join('\n') || 'No match.';
+  });
+  tool('library_add', 'Copy a library item into the open project: scripts go to scripts/, prefabs to prefabs/ (with the scripts they need). Then attach the script with scene_add_entity / scene_update_entity (scripts), or instance the prefab with scene_add_entity {prefab:{path}}. Example: id "prefab.dev-console" adds an in-game command console.', obj({ id: { type: 'string' } }, ['id']), ({ id }) => {
+    const idx = JSON.parse(fs.readFileSync(path.join(engine, 'library/INDEX.json'), 'utf8')), it = idx.find((i) => i.id === id); if (!it) throw new Error('Unknown library id ' + id + ' (library_list to search)');
+    const out = [];
+    for (const f of [it.file, ...(it.files || [])]) {
+      if (/\.rs$/.test(f)) { out.push(`${f} is Rust: copy it by hand into src/`); continue; }
+      const rel2 = f.replace(/^library\//, ''), dest = jail(rel2.startsWith('snippets/') || rel2.startsWith('apps/') || rel2.startsWith('addons/') ? 'library/' + rel2 : rel2, { write: true });
+      if (fs.existsSync(dest)) { out.push(`${rel(dest)} (already there, kept)`); continue; }
+      fs.mkdirSync(path.dirname(dest), { recursive: true }); fs.copyFileSync(path.join(engine, f), dest); out.push(rel(dest));
+    }
+    return `Added: ${out.join(', ')}\n${it.kind === 'prefab' ? `Instance it: scene_add_entity {name:"${it.title}", prefab:{path:"prefabs/${path.basename(it.file)}"}}` : `Attach: scene_add_entity/scene_update_entity scripts:[{path:"scripts/${path.basename(it.file)}"}]`}`;
+  });
   tool('list_files', 'List files in a project folder (recursive, max 300).', obj({ dir: { type: 'string', description: 'Default "."' }, pattern: { type: 'string', description: 'Optional substring filter' } }), ({ dir = '.', pattern }) => {
     const out = []; const w = (x) => { for (const e of fs.readdirSync(x, { withFileTypes: true })) { const f = path.join(x, e.name); if (DENY.test(rel(f))) continue; if (e.isDirectory()) w(f); else if (!pattern || rel(f).includes(pattern)) out.push(rel(f)); if (out.length >= 300) return; } }; w(jail(dir)); return out.join('\n') || '(none)';
   });

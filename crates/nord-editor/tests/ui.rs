@@ -141,7 +141,10 @@ fn console_filters_and_opens_locations() {
     h.run();
     h.get_by_label("hello world");
     // opening a location is a double-click (a single click only selects the line)
-    let r = h.get_by_label("TypeError at scripts/player.js:12:5").bounding_box().unwrap();
+    let r = h
+        .get_by_label("TypeError at scripts/player.js:12:5")
+        .bounding_box()
+        .unwrap();
     let c = egui::pos2(((r.x0 + r.x1) / 2.0) as f32, ((r.y0 + r.y1) / 2.0) as f32);
     h.input_mut().events.push(egui::Event::PointerMoved(c));
     for _ in 0..2 {

@@ -2445,6 +2445,12 @@
       "milestone": "M13",
       "title": "Nord MCP server (project + 3D Modeler tools, guidance, client configs)",
       "status": "done"
+    },
+    {
+      "id": "M13-24",
+      "milestone": "M13",
+      "title": "Assets organisation (colors/icons/tags), Notes tab, Console Pro, Dev Console prefab, themes, Unity scripting docs",
+      "status": "done"
     }
   ]
 }

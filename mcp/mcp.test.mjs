@@ -65,6 +65,9 @@ test('project: files jailed, scenes edited, check passes', { skip: !nord && 'bui
   const k = client(dir);
   try {
   assert.match((await k.call('project_info')).text, /startScene/);
+  assert.match((await k.call('library_list', { query: 'console' })).text, /prefab\.dev-console/);
+  assert.match((await k.call('library_add', { id: 'prefab.dev-console' })).text, /scripts\/dev-console\.js/);
+  assert.match((await k.call('scene_add_entity', { name: 'Dev Console', prefab: { path: 'prefabs/dev-console.prefab.json' } })).text, /Added/);
   await k.call('write_file', { path: 'assets/sprites/square.png', encoding: 'base64', content: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==' });
   assert.equal((await k.call('read_file', { path: '../../etc/passwd' })).isError, true);
   assert.equal((await k.call('write_file', { path: '.git/x', content: 'a' })).isError, true);

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Organising your project — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="debugger.html">Debugger and profiler</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a><a href="ui-designer.html">UI Designer</a><a href="graph.html">Node graphs (visual scripting)</a><a href="unity-workflow.html">Unity-style workflow</a><a href="modeler.html">3D Modeler</a><a href="animator.html">Animator</a><a href="multiplayer.html">Multiplayer</a><a href="appearance.html">Editor appearance</a><a href="ai-mcp.html">AI and MCP</a><a href="unity-scripting.html">Unity-style scripting</a><a href="dev-console.html">In-game Dev Console</a><a href="organise-project.html" class="cur" aria-current="page">Organising your project</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Organising your project</h1>
+<h2 id="assets-colours-icons-tags-descriptions">Assets: colours, icons, tags, descriptions<a class="anchor" href="#assets-colours-icons-tags-descriptions">#</a></h2>
+<p>Right-click any folder or asset in the <span class="c-ui">Assets</span> tab. Everything is saved <strong>per project</strong> in <code>.nord/asset-meta.json</code> (commit it to share with your team).</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span class="c-term">Folder colour</span></td>
+<td><span class="c-ui">Folder color</span> ▸ pick a swatch; <span class="c-ui">Default color</span> resets. Shown in the tree, grid and list.</td>
+</tr>
+<tr>
+<td><span class="c-term">Folder icon</span></td>
+<td><span class="c-ui">Folder icon</span> ▸ pick one of 28 icons, <strong>or</strong> <span class="c-ui">Your own image…</span> to use any image of the project as the icon, <strong>or</strong> <span class="c-ui">Automatic (by content)</span>.</td>
+</tr>
+<tr>
+<td><span class="c-term">Automatic icons</span></td>
+<td>A folder without its own icon shows the icon of what it mostly contains: images, audio, models, scripts, prefabs… (turn off in <span class="c-ui">View</span>).</td>
+</tr>
+<tr>
+<td><span class="c-term">Colour tags</span></td>
+<td><span class="c-ui">Tags ▸ New tag…</span> makes a tag (name + colour); tick tags on any asset or folder. Coloured dots show next to the name; filter the browser with the <span class="c-ui">Tags</span> drop-down.</td>
+</tr>
+<tr>
+<td><span class="c-term">Descriptions</span></td>
+<td><span class="c-ui">Description…</span> on any asset or folder. Shown as a tooltip when you hover it.</td>
+</tr>
+<tr>
+<td><span class="c-term">Zebra striping</span> and <span class="c-term">indent guides</span></td>
+<td><span class="c-ui">View</span> menu of the Assets toolbar: alternate row shading and vertical guide lines in the folder tree.</td>
+</tr>
+</tbody></table>
+<p>Renaming, moving and deleting keep the colours, icons, tags and descriptions in sync.</p>
+<h2 id="notes-manager">Notes manager<a class="anchor" href="#notes-manager">#</a></h2>
+<p><span class="c-ui">Window ▸ Editors ▸ Notes</span> opens a notes and planning board that lives in the project (<code>.nord/notes.json</code>).</p>
+<ol>
+<li><span class="c-ui">+ New note</span>, type a title.</li>
+<li>Pick a <strong>colour</strong> and a <strong>status</strong>: Note, Planned, In progress, Done. The list on the left shows the colour stripe, status and task progress; filter by status or search.</li>
+<li>Add <strong>tasks</strong> (type and press <span class="c-key">Enter</span>), tick them off, and watch the progress bar.</li>
+<li>Write ideas, bugs and design text in the big text area. Everything saves as you type.</li>
+</ol>
+<h2 id="console-like-console-pro">Console (like Console Pro)<a class="anchor" href="#console-like-console-pro">#</a></h2>
+<p><span class="c-ui">Console</span> tab:</p>
+<ul>
+<li><strong>Colours and icons:</strong> grey info, yellow warnings, red errors, accent-coloured build lines; each filter button shows how many lines it holds.</li>
+<li><strong>[Tag] prefix:</strong> a log line that starts with <code>[Combat]</code> gets a tag. Pick tags in the <span class="c-ui">All tags</span> drop-down. In your game: <code>console.log(&#39;[Combat] hit&#39;)</code> or <code>log.combat(&#39;hit&#39;)</code> from the Dev Console library.</li>
+<li><strong>Search</strong> highlights matches in yellow. <strong>Time</strong> shows when each line arrived. <strong>Collapse</strong> groups identical lines with a count. <strong>Auto-scroll</strong> follows the newest line.</li>
+<li><strong>Click a line</strong> to see its full text in the resizable detail pane (drag the splitter). <strong>Double-click</strong> a line with <code>file.js:12</code> to open the file at that line. Right-click ▸ copy, or show only that tag.</li>
+<li><strong>Font size</strong> slider, <strong>Clear on Play</strong>, <strong>Pause on error</strong> (pauses the game when an error is logged), <strong>Export…</strong> (writes the visible lines to <code>logs/console-&lt;time&gt;.txt</code> for bug reports).</li>
+</ul>
+<h2 id="inspector-transform-grid">Inspector: Transform grid<a class="anchor" href="#inspector-transform-grid">#</a></h2>
+<p>The Transform section is a grid: <strong>Position / Rotation / Scale</strong> rows, and the columns are the axes with coloured letters, X red, Y green, Z blue, so values line up like in Unity. The same coloured letters are used in every vector field of the Inspector. Icon buttons such as <span class="c-ui">Show in Assets</span> are centred on their row.</p>
+<div class="pager"><a href="dev-console.html"><small>← Previous</small>In-game Dev Console</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#assets-colours-icons-tags-descriptions">Assets: colours, icons, tags, descriptions </a><a href="#notes-manager">Notes manager </a><a href="#console-like-console-pro">Console (like Console Pro) </a><a href="#inspector-transform-grid">Inspector: Transform grid </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

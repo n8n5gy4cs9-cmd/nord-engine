@@ -23,6 +23,9 @@ pub struct Item {
     pub description: String,
     #[serde(default)]
     pub attributes: Vec<String>,
+    /// extra engine files a prefab needs (copied next to it: `library/scripts/x.js` -> `scripts/x.js`)
+    #[serde(default)]
+    pub files: Vec<String>,
 }
 
 #[derive(Default)]
@@ -78,6 +81,19 @@ pub fn insert(st: &mut EditorState, it: &Item) -> Result<String, String> {
             }
         }
         "prefab" => {
+            for f in &it.files {
+                let from = engine.join(f);
+                let rel_dir = f.strip_prefix("library/").unwrap_or(f);
+                if !rel_dir.contains("..") && from.v_exists() {
+                    let to = root.join(rel_dir);
+                    if let Some(d) = to.parent() {
+                        let _ = nord_core::vfs::create_dir_all(d);
+                    }
+                    if !to.v_exists() {
+                        nord_core::vfs::copy(&from, &to).map_err(|e| e.to_string())?;
+                    }
+                }
+            }
             let rel = format!("prefabs/{name}");
             nord_core::vfs::create_dir_all(root.join("prefabs")).map_err(|e| e.to_string())?;
             if !root.join(&rel).v_exists() {

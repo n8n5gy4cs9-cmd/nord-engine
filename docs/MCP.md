@@ -77,7 +77,7 @@ Two entries are possible: `nord` (everything) and `nord-modeler` (`--only modele
 ## Safety
 File tools are jailed to the project folder (no `..`, symlinks resolved, `.git`/`target`/`node_modules` protected, 8 MB limit, JSON validated). There is no delete tool and no shell tool. `serve_start` runs only `nord serve` on the project.
 
-## Tools (37)
+## Tools (39)
 ### Project, scenes and guidance
 ### `nord_guide`
 READ THIS FIRST. Guidance for making games with Nord Engine. No topic: the workflow guide and the topic list. With a topic: the matching engine documentation (always the current text from the engine's docs/). Also accepts "docs/<file>.md" or "tut-t05-physics" style names.
@@ -103,6 +103,16 @@ No parameters.
 Summary of the open project: manifest, scenes, scripts, prefabs, models, asset counts.
 
 No parameters.
+
+### `library_list`
+Search the engine's ready-made library (scripts, prefabs, shaders, snippets): AI, camera, UI, inventory, dialogue, a Dev Console prefab and more. Returns id, kind, title, description. Prefer these over writing the same thing again.
+
+Parameters: `query` (string), `limit` (integer)
+
+### `library_add`
+Copy a library item into the open project: scripts go to scripts/, prefabs to prefabs/ (with the scripts they need). Then attach the script with scene_add_entity / scene_update_entity (scripts), or instance the prefab with scene_add_entity {prefab:{path}}. Example: id "prefab.dev-console" adds an in-game command console.
+
+Parameters: `id`* (string)
 
 ### `list_files`
 List files in a project folder (recursive, max 300).
