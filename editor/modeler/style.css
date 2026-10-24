@@ -47,3 +47,29 @@ h3{margin:10px 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06e
 .layerprops .bar,.layerprops .hint{grid-column:1/-1}
 
 #texpane>.bar:first-child{position:sticky;top:0;z-index:6;background:#22272f;padding:4px 0}
+
+/* texture view: toolbar with icon buttons, centred stage with zoom */
+#texpane.show{display:flex;flex-direction:column;overflow:hidden;padding:6px 8px;gap:6px}
+#texpane .tbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0}
+#texpane .tgroup{display:flex;gap:4px;align-items:stretch;padding:3px;background:#ffffff0a;border-radius:8px}
+#texpane .tbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:50px;padding:4px 6px;border-radius:6px;font-size:11px;line-height:1.1;cursor:pointer;background:transparent;border:1px solid transparent;color:inherit}
+#texpane .tbtn:hover{background:#ffffff18}
+#texpane .tbtn.on{background:var(--accent,#78b8ff);color:#0c1018}
+#texpane .tbtn.on svg{color:#0c1018}
+#texpane .tbtn.ico{min-width:34px;min-height:34px}
+#texpane .tbtn.zread{min-width:62px;font-size:12px;font-variant-numeric:tabular-nums}
+#texpane .tbtn.chk input[type=checkbox]{position:absolute;opacity:0;pointer-events:none}
+#texpane .tbtn.chk{position:relative}
+#texpane .tbtn.chk:has(input:checked){background:#e7ff6526;border-color:#e7ff65}
+#texpane .tbtn input[type=color]{width:34px;height:22px;padding:0;border:1px solid var(--border);background:none}
+#texpane .tbtn input[type=number]{padding:1px 2px}
+#texpane .tbar.sub{gap:6px}
+#texpane .sbtn{display:inline-flex;gap:5px;align-items:center;font-size:12px}
+#texpane .tsel{display:flex;gap:6px;align-items:center;font-size:12px}
+#texstage{position:relative;flex:1 1 220px;min-height:200px;overflow:hidden;background:#161a20;border:1px solid var(--border);border-radius:8px;touch-action:none}
+#texpane .canvasbox{position:absolute;left:50%;top:50%;width:300px;height:300px;aspect-ratio:auto;transform-origin:center center;outline:1px solid #ffffff40;box-shadow:0 6px 30px #0008}
+#texhud{position:absolute;left:10px;bottom:6px;font-size:11px;opacity:.55;pointer-events:none}
+#texpane .swatches{display:flex;justify-content:center;margin:0}
+#texpane #layers{flex:0 1 auto;max-height:38%;overflow:auto;width:auto}
+svg.ic{flex:none;vertical-align:-3px}
+.mesh-tools button svg.ic,#top button svg.ic,.mesh-side button svg.ic{margin-right:2px}

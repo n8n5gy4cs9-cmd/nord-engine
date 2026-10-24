@@ -18,6 +18,9 @@ Texture tab ▸ **Layer** tool + panel under the texture: add PNG/JPG/WebP pictu
 
 Also: **mask** (clip a picture to selected faces / the face under its centre / all faces' UV areas), **blend modes**, smooth by default (set **Pixelated look** for nearest-filter view; `localStorage nord.modeler.pixel`), texture steps up to 512 when the first picture is added to a texture under 256 px. **Full window**: `EditorState::modeler_full` hides the editor chrome (`app.rs`), red exit button in `panels/modeler.rs`.
 
+## Texture view layout (2026-10-24)
+`editor/modeler/modeler.js`: icon toolbar (inline Lucide SVGs generated into `editor/modeler/icons.js` by `node tools/gen-modeler-icons.mjs`), centred `#texstage` with CSS-transform zoom/pan (`layoutTex`, `zoomAt`; wheel, middle/right/Space drag, + - 0), hover titles on all buttons (`decorate` block adds icons to the side panels). Fixed along the way: `askYes` (Replace texture? dialog) was not imported.
+
 ## Limits / not done
 GLB import only through Open in 3D Modeler (no menu to import an arbitrary file yet), no skeleton/animation authoring, no vertex-colour bake. Texture is one image per mesh. Undo keeps whole-mesh snapshots (80 steps / 32 MB). Native-window behaviour (wry) not verified here.
 

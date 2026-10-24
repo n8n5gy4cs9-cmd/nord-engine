@@ -6,6 +6,8 @@ import {TransformControls} from 'three/addons/controls/TransformControls.js';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {initLayers} from './layers.js';
+import {icon as ic,has as hasIcon} from './icons.js';
+import {askYes} from '/editor/common/dialog.js';
 import {edgeKey,edgesOf,normal,unwrap,pack,triangles,geometry,primitive,validate,weld,obj} from './mesh-model.js';
 
 const root=document.getElementById('app');
@@ -18,9 +20,42 @@ root.innerHTML=`<header id="top"><strong>3D Modeler</strong><input id="mesh-name
 </aside><div class="mesh-center"><div class="mesh-viewbar"><div class="tabs"><button data-view="3d" class="on">3D</button><button data-view="uv">UV editor</button><button data-view="tex">Texture</button></div><label><input id="mesh-wire" type="checkbox"> Wireframe</label><label><input id="mesh-grid" type="checkbox" checked> Grid</label><button data-action="fit">Fit</button><label title="Left-drag paints the texture straight onto the model (Texture tab colour and tool)"><input id="paint3d" type="checkbox"> Paint on model</label><span id="mesh-count"></span></div>
 <div class="mesh-stage"><div class="mesh-viewport"></div>
 <div class="pane" id="uvpane"><div class="bar"><label>Drag <select id="uvmode"><option value="face">faces</option><option value="point">points</option></select></label><label><input id="uvsnap" type="checkbox"> snap to texel</label><button data-action="uvflipu">Flip U</button><button data-action="uvflipv">Flip V</button><button data-action="uvrot90">Rotate 90°</button><button data-action="uvfit">Fit to 0–1</button><button data-action="island">Select island</button><button data-action="unwrap">Auto unwrap</button><button data-action="pack">Pack</button></div><div class="canvasbox"><canvas id="uvbig" width="640" height="640"></canvas></div><p>Click a face to select (Shift extends), drag to move the selection. “points” moves single UV corners. Selection is shared with the 3D view.</p></div>
-<div class="pane" id="texpane"><div class="bar"><button data-tool="pencil" class="on">Pencil</button><button data-tool="eraser">Eraser</button><button data-tool="fill">Fill</button><button data-tool="pick">Picker</button><button data-tool="layer" title="Select, move, resize and rotate the pictures you added (also: double-click the texture)">Pictures</button><label title="Picture layers: keep the picture proportions while resizing (hold Shift to flip this for one drag)"><input id="layerlock" type="checkbox" checked> Keep aspect</label><input id="texcolor" type="color" value="#a8c980"><label>Size <input id="texbrush" type="number" value="1" min="1" max="16" style="width:56px"></label><label><input id="texmirror" type="checkbox"> Mirror X</label><label><input id="texuv" type="checkbox" checked> UV overlay</label><label title="Show the texture and the model with hard pixels (nearest filter) instead of smooth. Default: smooth"><input id="texpixel" type="checkbox"> Pixelated look</label></div>
-<div class="bar"><label>Texture <select id="texsize"><option>16</option><option>32</option><option selected>64</option><option>128</option><option>256</option><option>512</option><option>1024</option></select></label><button data-action="texnew">New blank</button><button data-action="texfill">Fill with colour</button><button data-action="texpng">Save PNG to project</button><button data-action="texpick">Load project PNG…</button><button data-action="texload">Load image file</button><button data-action="cleartexture">Remove texture</button></div>
-<div class="canvasbox"><canvas id="texview" width="64" height="64"></canvas><canvas id="texoverlay" width="640" height="640" style="pointer-events:none"></canvas><canvas id="layerui" width="640" height="640" style="pointer-events:none"></canvas></div><div class="swatches" id="swatches"></div><input type="file" id="layerfiles" accept="image/*" multiple hidden><div id="layers"></div></div></div></div>
+<div class="pane" id="texpane">
+<div class="tbar">
+ <div class="tgroup">
+  <button class="tbtn on" data-tool="pencil" title="Pencil: paint pixels with the colour (hold Shift for a straight line is not needed: drag to draw)">${ic('pencil',18)}<span>Pencil</span></button>
+  <button class="tbtn" data-tool="eraser" title="Eraser: make pixels transparent">${ic('eraser',18)}<span>Eraser</span></button>
+  <button class="tbtn" data-tool="fill" title="Fill: flood-fill an area with the colour">${ic('paint-bucket',18)}<span>Fill</span></button>
+  <button class="tbtn" data-tool="pick" title="Picker: take the colour of a pixel">${ic('pipette',18)}<span>Picker</span></button>
+  <button class="tbtn" data-tool="layer" title="Pictures: select, move, resize and rotate the pictures you added (also: double-click the texture)">${ic('images',18)}<span>Pictures</span></button>
+ </div>
+ <div class="tgroup opts">
+  <label class="tbtn chk" title="Pictures: keep the proportions while resizing (hold Shift to flip this for one drag)"><input id="layerlock" type="checkbox" checked>${ic('link',18)}<span>Keep aspect</span></label>
+  <label class="tbtn" title="Paint colour">${'<input id="texcolor" type="color" value="#a8c980">'}<span>Colour</span></label>
+  <label class="tbtn" title="Brush size in pixels"><input id="texbrush" type="number" value="1" min="1" max="16" style="width:48px"><span>Brush</span></label>
+  <label class="tbtn chk" title="Mirror X: paint on both sides at once">${'<input id="texmirror" type="checkbox">'}${ic('flip-horizontal',18)}<span>Mirror X</span></label>
+  <label class="tbtn chk" title="Show the UV layout (the faces of the model) over the texture">${'<input id="texuv" type="checkbox" checked>'}${ic('grid-3x3',18)}<span>UV overlay</span></label>
+  <label class="tbtn chk" title="Show the texture and the model with hard pixels (nearest filter) instead of smooth. Default: smooth">${'<input id="texpixel" type="checkbox">'}${ic('square',18)}<span>Pixelated</span></label>
+ </div>
+ <div class="tgroup zoom">
+  <button class="tbtn ico" id="zout" title="Zoom out (−)">${ic('zoom-out',18)}</button>
+  <button class="tbtn zread" id="texzoom" title="Zoom: click for 1 screen pixel per texture pixel (100%)">100%</button>
+  <button class="tbtn ico" id="zin" title="Zoom in (+)">${ic('zoom-in',18)}</button>
+  <button class="tbtn ico" id="zfit" title="Fit the texture in the view and centre it (0)">${ic('maximize',18)}</button>
+  <button class="tbtn ico" id="zcenter" title="Centre the texture without changing the zoom">${ic('crosshair',18)}</button>
+ </div>
+</div>
+<div class="tbar sub">
+ <label class="tsel" title="Size of a NEW blank texture (use the size menu under the view to resize the current one)">Texture <select id="texsize"><option>16</option><option>32</option><option selected>64</option><option>128</option><option>256</option><option>512</option><option>1024</option></select></label>
+ <button class="sbtn" data-action="texnew" title="New blank texture (asks before replacing)">${ic('file-plus',15)} New blank</button>
+ <button class="sbtn" data-action="texfill" title="Fill the whole texture with the colour">${ic('droplet',15)} Fill with colour</button>
+ <button class="sbtn" data-action="texpng" title="Write the texture as models/<name>.png">${ic('save',15)} Save PNG to project</button>
+ <button class="sbtn" data-action="texpick" title="Load a PNG from the project's models/ folder as the texture">${ic('folder-open',15)} Load project PNG…</button>
+ <button class="sbtn" data-action="texload" title="Load an image file from your computer as the texture">${ic('upload',15)} Load image file</button>
+ <button class="sbtn" data-action="cleartexture" title="Remove the texture from the model">${ic('trash-2',15)} Remove texture</button>
+</div>
+<div id="texstage"><div class="canvasbox"><canvas id="texview" width="64" height="64"></canvas><canvas id="texoverlay" width="640" height="640" style="pointer-events:none"></canvas><canvas id="layerui" width="640" height="640" style="pointer-events:none"></canvas></div><div id="texhud">Wheel = zoom · Middle / right mouse or Space + drag = pan · + − 0 keys</div></div>
+<div class="swatches" id="swatches"></div><input type="file" id="layerfiles" accept="image/*" multiple hidden><div id="layers"></div></div></div></div>
 <aside class="mesh-side">
  <h3>Material</h3><label><span>Solid colour</span><input type="color" id="mesh-color" value="#a8c980"></label><button data-action="color">Apply solid colour</button><button data-action="paint">Paint selected vertices</button><label><span>Checker preview</span><input type="checkbox" id="mesh-checker"></label><p>Flat shading is always on. Vertex paint multiplies the solid colour; use white for pure vertex colours.</p>
  <h3>UV mapping</h3><div class="mesh-buttons"><button data-action="seam">Mark seam</button><button data-action="clearseam">Clear seam</button></div><canvas class="mesh-uv" width="256" height="256" aria-label="UV layout; click to select a face island"></canvas><label><span>UV move U</span><input id="mesh-u" type="number" value="0" step="0.05"></label><label><span>UV move V</span><input id="mesh-v" type="number" value="0" step="0.05"></label><label><span>UV rotate °</span><input id="mesh-uv-angle" type="number" value="0" step="15"></label><label><span>UV scale</span><input id="mesh-uv-scale" type="number" value="1" step="0.1"></label><button data-action="uv">Transform selected UVs</button>
@@ -96,8 +131,8 @@ async function loadTexture(){
  if(!disposed){$('#mesh-color').value=model.color;rebuild();}
 }
 function ensureTexture(){if(model.texture)return;model.texture=texCanvas.toDataURL('image/png');texture=makeTexture();rebuild();}
-function fitBox(){const w=texCanvas.width,h=texCanvas.height,box=texCanvas.parentElement;{const o=$('#texsize');if(o&&[...o.options].some(x=>+x.value===w&&w===h))o.value=String(w);}box.style.aspectRatio=`${w} / ${h}`;const oh=Math.max(16,Math.round(640*h/w));for(const c of [texOverlay,$('#layerui')])if(c&&(c.width!==640||c.height!==oh)){c.width=640;c.height=oh;}}
-function commitTexture(){fitBox();model.texture=texCanvas.toDataURL('image/png');if(texture)texture.needsUpdate=true;saveLocal();drawUVs();texInfo();}
+function fitBox(){const w=texCanvas.width,h=texCanvas.height,box=texCanvas.parentElement;{const o=$('#texsize');if(o&&[...o.options].some(x=>+x.value===w&&w===h))o.value=String(w);}const oh=Math.max(16,Math.round(640*h/w));for(const c of [texOverlay,$('#layerui')])if(c&&(c.width!==640||c.height!==oh)){c.width=640;c.height=oh;}}
+function commitTexture(){fitBox();layoutTex();model.texture=texCanvas.toDataURL('image/png');if(texture)texture.needsUpdate=true;saveLocal();drawUVs();texInfo();}
 function texInfo(){const i=$('#texinfo');if(!i)return;texCanvas.toBlob(b=>{if(!b||!$('#texinfo'))return;const kb=Math.round(b.size/1024);$('#texinfo').textContent=`${texCanvas.width}×${texCanvas.height} · PNG ≈ ${kb>=1024?(kb/1024).toFixed(1)+' MB':kb+' KB'}${kb>2048?' — large: use a smaller size or Compress':''}`;$('#texinfo').style.color=kb>2048?'#ff7b72':'';},'image/png');}
 let layersApi=null,texCompression=8;
 function finalizeTexture(){if(layersApi?.count())layersApi.bake(true);if(texCompression<8&&model.texture){layersApi.quantize(texCompression);commitTexture();}}
@@ -125,7 +160,28 @@ function setTool(t){tool=t;root.querySelectorAll('[data-tool]').forEach(o=>o.cla
 root.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
 // double-click the texture while picture layers exist: switch to the Pictures tool and select the picture under the cursor
 texCanvas.addEventListener('dblclick',e=>{if(tool!=='layer'&&layersApi?.count()){setTool('layer');layersApi.pointerDown(e);layersApi.pointerUp();}});
+
+// ---------- texture view: centred, zoom + pan ----------
+const stage=$('#texstage'),tbox=texCanvas.parentElement;let tz={z:1,x:0,y:0},spaceDown=false;
+const fitK=()=>Math.min((stage.clientWidth-24)/texCanvas.width,(stage.clientHeight-24)/texCanvas.height);
+function layoutTex(){const sw=stage.clientWidth,sh=stage.clientHeight;if(!sw||!sh)return;const k=Math.max(0.01,fitK());tbox.style.width=Math.max(8,texCanvas.width*k)+'px';tbox.style.height=Math.max(8,texCanvas.height*k)+'px';tbox.style.transform=`translate(-50%,-50%) translate(${tz.x}px,${tz.y}px) scale(${tz.z})`;const px=k*tz.z;$('#texzoom').textContent=Math.round(px*100)+'%';texCanvas.classList.toggle('pix',pixelLook()||px>=6);layersApi?.drawOverlay();}
+function zoomAt(f,cx,cy){const r=stage.getBoundingClientRect(),mx=(cx??r.left+r.width/2)-(r.left+r.width/2),my=(cy??r.top+r.height/2)-(r.top+r.height/2),z0=tz.z,z1=Math.max(0.1,Math.min(80/Math.max(0.01,fitK()),z0*f));tz.x=mx-(mx-tz.x)*(z1/z0);tz.y=my-(my-tz.y)*(z1/z0);tz.z=z1;layoutTex();}
+const fitView=()=>{tz={z:1,x:0,y:0};layoutTex();};
+new ResizeObserver(layoutTex).observe(stage);
+stage.addEventListener('wheel',e=>{e.preventDefault();zoomAt(Math.exp(-e.deltaY*0.0016),e.clientX,e.clientY);},{passive:false});
+stage.addEventListener('contextmenu',e=>e.preventDefault());
+let pan=null;
+stage.addEventListener('pointerdown',e=>{if(e.button===1||e.button===2||(e.button===0&&spaceDown)){e.preventDefault();e.stopPropagation();pan={x:e.clientX-tz.x,y:e.clientY-tz.y};stage.setPointerCapture(e.pointerId);stage.style.cursor='grabbing';}},true);
+stage.addEventListener('pointermove',e=>{if(!pan)return;tz.x=e.clientX-pan.x;tz.y=e.clientY-pan.y;layoutTex();});
+stage.addEventListener('pointerup',()=>{pan=null;stage.style.cursor='';});
+window.addEventListener('keydown',e=>{if(!$('#texpane').classList.contains('show')||/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName??''))return;if(e.code==='Space'){spaceDown=true;e.preventDefault();}else if(e.key==='+'||e.key==='='){zoomAt(1.25);}else if(e.key==='-'){zoomAt(0.8);}else if(e.key==='0'&&!e.ctrlKey&&!e.metaKey){fitView();}});
+window.addEventListener('keyup',e=>{if(e.code==='Space')spaceDown=false;});
+$('#zin').onclick=()=>zoomAt(1.25);$('#zout').onclick=()=>zoomAt(0.8);$('#zfit').onclick=fitView;$('#zcenter').onclick=()=>{tz.x=tz.y=0;layoutTex();};$('#texzoom').onclick=()=>{tz.z=1/Math.max(0.01,fitK());tz.x=tz.y=0;layoutTex();};
 {const cb=$('#texpixel');const apply=()=>{const on=pixelLook();cb.checked=on;texCanvas.classList.toggle('pix',on);if(texture){texture.magFilter=on?THREE.NearestFilter:THREE.LinearFilter;texture.needsUpdate=true;}};cb.onchange=()=>{try{localStorage.setItem('nord.modeler.pixel',cb.checked?'1':'0');}catch{}apply();};apply();window.__pixelApply=apply;}
+
+// ---------- icons + hover labels for the other buttons ----------
+{const MAP={cube:'box',plane:'square',cylinder:'cylinder',sphere:'circle',draw:'pen',finish:'check',vertex:'plus',fill:'shapes',importobj:'upload',all:'box-select',invert:'repeat',none:'x',loop:'route',extrude:'arrow-up',inset:'minimize',loopcut:'scissors',cut:'spline',edge:'spline',split:'ungroup',merge:'group',weld:'link',optimize:'sparkles',delete:'trash-2',flip:'repeat',triangulate:'triangle',bevel:'cone',subdivide:'grid-2x2',mirrorx:'flip-horizontal',mirrory:'flip-horizontal',mirrorz:'flip-horizontal',ground:'arrow-down',save:'save',undo:'undo-2',redo:'redo-2','new':'file-plus','open-project':'folder-open',color:'droplet',paint:'brush',seam:'scissors',clearseam:'unlink',uv:'move',glb:'download',gltf:'download',obj:'download',transform:'move'};
+ root.querySelectorAll('.mesh-tools button, #top button, .mesh-side button').forEach(b=>{if(b.querySelector('svg')||b.classList.contains('sbtn')||b.classList.contains('tbtn'))return;const k=b.dataset.action||b.dataset.primitive;const n=MAP[k];if(!b.title)b.title=b.textContent.trim();if(n&&hasIcon(n))b.innerHTML=ic(n,14)+' '+b.innerHTML;});}
 layersApi=initLayers({uvPolys:ids=>ids.filter(i=>model.faces[i]).map(i=>model.faces[i].uv.map(([u,v])=>[u*texCanvas.width,(1-v)*texCanvas.height])),selectedFaces:()=>mode==='face'?[...selection]:[],allFaces:()=>model.faces.map((_,i)=>i),faceAt:(x,y)=>faceAt(new THREE.Vector2(x/texCanvas.width,1-y/texCanvas.height)),selectTool:()=>setTool('layer'),texCanvas,tctx,root,touch:()=>{if(texture)texture.needsUpdate=true;},commit:commitTexture,status,checkpoint,ensureTexture,texViewVisible:()=>$('#texpane').classList.contains('show'),color:()=>$('#texcolor').value,compression:()=>texCompression,setCompression:v=>{texCompression=v;status(v<8?'Colours will be reduced when you save (smaller PNG).':'Full colour.');},refreshInfo:texInfo,
  uvBounds:()=>{const ids=mode==='face'?[...selection]:[];if(!ids.length)return null;let u0=1,v0=1,u1=0,v1=0;for(const i of ids)for(const [u,v] of model.faces[i].uv){u0=Math.min(u0,u);u1=Math.max(u1,u);v0=Math.min(v0,v);v1=Math.max(v1,v);}return {x:u0*texCanvas.width,y:(1-v1)*texCanvas.height,w:Math.max(1,(u1-u0)*texCanvas.width),h:Math.max(1,(v1-v0)*texCanvas.height)};},
  pickProjectPng:async()=>{const n=await pick('Add picture from models/',await listModels('.png'));if(!n)return null;const r=await fetch('/models/'+encodeURIComponent(n),{cache:'no-store'});if(!r.ok)throw Error('Could not read models/'+n);return {blob:await r.blob(),name:n.replace(/\.png$/,'')};}});

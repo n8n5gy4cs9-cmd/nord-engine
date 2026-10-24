@@ -131,7 +131,9 @@ export function initLayers(api) {
   }
 
   // ---------- selection / handles drawing ----------
+  let lastW = 0;
   function drawUi() {
+    if (texCanvas.width !== lastW) { lastW = texCanvas.width; renderPanel(); } // the size menu follows the texture
     const c = over.getContext('2d'); c.clearRect(0, 0, over.width, over.height);
     const l = cur(); if (!l || !api.texViewVisible()) return;
     // the texture is shown stretched over the square view: texture px -> overlay px with separate x / y scales
@@ -163,7 +165,7 @@ export function initLayers(api) {
     comp.onchange = () => api.setCompression(+comp.value);
     el('span', { id: 'texinfo', className: 'hint' }, bar);
     const list = el('div', { className: 'layerlist' }, ui);
-    if (!layers.length) el('p', { className: 'hint', textContent: 'No picture layers. Add PNG / JPG pictures (several at once), arrange them with the Layer tool, and they are merged into the single texture of the model.' }, list);
+    if (!layers.length) el('p', { className: 'hint', textContent: 'No picture layers. Add PNG / JPG pictures (several at once), arrange them with the Pictures tool, and they are merged into the single texture of the model.' }, list);
     [...layers].reverse().forEach((l) => {
       const row = el('div', { className: 'layerrow' + (l.id === sel ? ' on' : '') }, list);
       const t = el('canvas', { width: 28, height: 28 }, row); const x = t.getContext('2d'), k = Math.min(28 / l.src.width, 28 / l.src.height); x.drawImage(l.src, 0, 0, l.src.width * k, l.src.height * k);
