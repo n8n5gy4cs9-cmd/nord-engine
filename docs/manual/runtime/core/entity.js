@@ -130,7 +130,7 @@ export class Entity {
       id: fresh ? undefined : this.id, name: this.name, enabled: this._enabled, tags: [...this.tags], layer: this.layer, ...(this.isStatic ? { static: true } : {}),
       transform: structuredClone(this.t),
       components: this.components.map((c) => ({ type: c.type, ...structuredClone(c.data) })),
-      scripts: this.scripts.map((s, i) => ({ path: this._scriptData[i]?.path, attributes: structuredClone(s.attrs) })),
+      scripts: this.scripts.map((s, i) => ({ path: this._scriptData[i]?.path ?? s._path, attributes: structuredClone(s.attrs) })).filter((s) => s.path),
       children: this.children.map((c) => c.toJSON(fresh)),
       ...(this._connData.length ? { connections: structuredClone(this._connData) } : {}),
       ...(this._effectData.length ? { effects: structuredClone(this._effectData) } : {}),

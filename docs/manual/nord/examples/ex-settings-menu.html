@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>33 · Options menu: volume, language, fullscreen, key rebinding — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html" class="cur" aria-current="page">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>33 · Options menu: volume, language, fullscreen, key rebinding</h1>
+<p><strong>Goal:</strong> an options screen like a real game, saved between sessions.</p>
+<h2 id="ready-made">Ready-made<a class="anchor" href="#ready-made">#</a></h2>
+<p>Library <strong>Settings screen</strong> <code>ui-settings.js</code> (sliders for master / music / sfx, remembered) and <code>ui-pause.js</code>, <code>ui-main-menu.js</code>. Add them and you have the basics. The pieces below show how each part works so you can build your own.</p>
+<h2 id="volumes">Volumes<a class="anchor" href="#volumes">#</a></h2>
+<pre class="code" data-lang="js"><code>// sliders from the UI Designer: nodes named &quot;music&quot; and &quot;sfx&quot; of type slider with on.changed actions &quot;music&quot; / &quot;sfx&quot;
+const menu = await this.ui.load('ui/options.ui.json');
+menu.on('music', (v) =&gt; this.audio.volume('music', v));      // v = the slider value (0..1), sent when the player lets go
+menu.on('sfx',   (v) =&gt; this.audio.volume('sfx', v));
+menu.set('music', this.audio.volume('music'));               // show the current value</code></pre>
+<p>Audio volumes are saved by the audio system itself. Mute: <code>this.audio.mute(&#39;music&#39;, true)</code>.</p>
+<h2 id="language">Language<a class="anchor" href="#language">#</a></h2>
+<pre class="code" data-lang="js"><code>// nord.project.json: &quot;strings&quot;: { &quot;en&quot;: { &quot;play&quot;: &quot;Play&quot; }, &quot;fi&quot;: { &quot;play&quot;: &quot;Pelaa&quot; } }   (text objects use textKey: &quot;play&quot;)
+this.game.i18n.setLanguage('fi');                 // every textKey text updates
+this.game.i18n.t('play');                         // &quot;Pelaa&quot; for code-made text
+this.game.i18n.languages;                         // ['en', 'fi']
+// the chosen language is remembered automatically and restored at the next start</code></pre>
+<p>Event <code>language</code> is emitted on the global bus when it changes: redraw your own labels there.</p>
+<h2 id="fullscreen">Fullscreen<a class="anchor" href="#fullscreen">#</a></h2>
+<pre class="code" data-lang="js"><code>this.ui.button('Fullscreen', () =&gt; {                     // must happen inside a click (browser rule)
+  if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+}, { screen: 'options', anchor: 'c', y: 40 });</code></pre>
+<p>(The desktop app has its own window controls: <a href="../manual/desktop-apps.html">Desktop apps</a>.)</p>
+<h2 id="accessibility">Accessibility<a class="anchor" href="#accessibility">#</a></h2>
+<pre class="code" data-lang="js"><code>this.game.a11y.setColorBlind('deuteranopia');     // 'none', 'protanopia', 'deuteranopia', 'tritanopia', 'achromatopsia'
+this.game.a11y.setUiScale(1.25);                  // bigger UI</code></pre>
+<h2 id="rebinding-keys">Rebinding keys<a class="anchor" href="#rebinding-keys">#</a></h2>
+<p>The actions are just a map: <code>this.input.actions</code> is <code>{ jump: [&#39;Space&#39;], left: [&#39;KeyA&#39;, &#39;ArrowLeft&#39;], … }</code> and it can be changed while the game runs.</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour } from 'nord';
+
+export default class Rebind extends MonoBehaviour {
+  Start() {
+    const saved = this.save.get('keys', null);
+    if (saved) Object.assign(this.input.actions, saved);              // apply the player's keys at startup
+  }
+
+  // call from a button: this.Capture('jump')
+  Capture(action) {
+    this.label?.set(`Press a key for &quot;${action}&quot;…`);
+    const once = (e) =&gt; {
+      e.preventDefault(); e.stopPropagation();
+      window.removeEventListener('keydown', once, true);
+      this.input.actions[action] = [e.code];                           // 'KeyZ', 'Space', 'ArrowUp'…
+      this.save.set('keys', this.input.actions);                       // remember
+      this.label?.set(`${action} = ${e.code}`);
+    };
+    window.addEventListener('keydown', once, true);                    // capture phase: the game does not see this key press
+  }
+}</code></pre>
+<p>Gamepad buttons are codes like <code>Gamepad0</code>; mouse buttons <code>Mouse0</code>. To list the current bindings: <code>Object.entries(this.input.actions)</code>.</p>
+<h2 id="a-pause-screen-that-opens-the-options">A pause screen that opens the options<a class="anchor" href="#a-pause-screen-that-opens-the-options">#</a></h2>
+<pre class="code" data-lang="js"><code>this.ui.button('Options', () =&gt; { this.ui.hide('pause'); this.ui.show('options'); }, { screen: 'pause', anchor: 'c', y: 60 });
+this.ui.button('Back',    () =&gt; { this.ui.hide('options'); this.ui.show('pause'); }, { screen: 'options', anchor: 'c', y: 120 });</code></pre>
+<p>See <a href="ex-ui-hud.html">UI</a> for pausing the game while it is open.</p>
+<h2 id="settings-in-one-place">Settings in one place<a class="anchor" href="#settings-in-one-place">#</a></h2>
+<pre class="code" data-lang="js"><code>const DEFAULTS = { language: 'en', shake: true, difficulty: 'normal' };
+export const settings = () =&gt; ({ ...DEFAULTS, ...this.save.get('settings', {}) });</code></pre>
+<p>Keep all options in one saved object so adding one more option is one line.</p>
+<div class="pager"><a href="ex-picking-dragging.html"><small>← Previous</small>32 · Clicking, hovering and dragging objects</a><a href="ex-3d-controllers.html"><small>Next →</small>34 · 3D: controllers, cameras, vehicles and interaction</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#ready-made">Ready-made </a><a href="#volumes">Volumes </a><a href="#language">Language </a><a href="#fullscreen">Fullscreen </a><a href="#accessibility">Accessibility </a><a href="#rebinding-keys">Rebinding keys </a><a href="#a-pause-screen-that-opens-the-options">A pause screen that opens the options </a><a href="#settings-in-one-place">Settings in one place </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

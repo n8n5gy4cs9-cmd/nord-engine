@@ -67,6 +67,22 @@ Never used Unity? These pages still work: each example is a small script plus th
 28. [Multiplayer basics](ex-multiplayer.html)
 29. [The editor for Unity users](ex-editor-for-unity-users.html): every Unity window and menu, with screenshots.
 
+### Language, systems and shipping
+30. [C# to JavaScript: the language side by side](ex-language.html)
+31. [Physics recipes](ex-physics-recipes.html)
+32. [Clicking, hovering and dragging objects](ex-picking-dragging.html)
+33. [Options menu: volume, language, fullscreen, key rebinding](ex-settings-menu.html)
+34. [3D: controllers, cameras, vehicles, interaction](ex-3d-controllers.html)
+35. [Structuring a bigger game: patterns](ex-architecture.html)
+36. [Unity packages and features: what to use in Nord](ex-unity-packages.html)
+37. [Starting points by game type](ex-genres.html)
+38. [Build, publish and ship](ex-build-publish.html)
+39. [Optimising and testing your game](ex-optimization-testing.html)
+40. [Procedural content and randomness](ex-procedural.html)
+
+### Converting an existing Unity project or tutorial
+41. [Converting Unity projects and tutorials to Nord](ex-unity-conversion.html): the step-by-step playbook, also for AI agents (the MCP server has tools for it).
+
 ## How to try an example
 1. Create a project: `nord new my-game -t 2d` (or start the editor and use @ui[New project]).
 2. Save the script in `my-game/scripts/`, for example `scripts/spin.js`.

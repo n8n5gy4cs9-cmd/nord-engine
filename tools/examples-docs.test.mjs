@@ -26,6 +26,16 @@ test('complete scripts in the Examples pages parse', () => {
   assert.deepEqual(bad, [], bad.join('\n---\n'));
 });
 
+test('library scripts named in the Examples pages exist', () => {
+  const lib = new Set(fs.readdirSync(path.join(root, 'library/scripts')));
+  const missing = [];
+  for (const f of fs.readdirSync(src).filter((x) => x.startsWith('ex-') || x === 'examples.md')) {
+    const text = fs.readFileSync(path.join(src, f), 'utf8');
+    for (const m of text.matchAll(/`((?:physics|ai|camera|fx|ui|util|interact|dialogue|inventory|quests|pickup|checkpoint|health|save)[a-z0-9-]*\.js)`/g)) if (!lib.has(m[1])) missing.push(`${f}: ${m[1]}`);
+  }
+  assert.deepEqual(missing, []);
+});
+
 for (const name of ['coin-dash', 'jump-dash', 'star-shooter']) {
   test(`examples/${name} scripts parse and the scene only uses existing scripts`, () => {
     const proj = path.join(root, 'examples', name), dir = path.join(proj, 'scripts');

@@ -42,7 +42,7 @@
       id: fresh ? undefined : this.id, name: this.name, enabled: this._enabled, tags: [...this.tags], layer: this.layer, ...(this.isStatic ? { static: true } : {}),
       transform: structuredClone(this.t),
       components: this.components.map((c) =&gt; ({ type: c.type, ...structuredClone(c.data) })),
-      scripts: this.scripts.map((s, i) =&gt; ({ path: this._scriptData[i]?.path, attributes: structuredClone(s.attrs) })),
+      scripts: this.scripts.map((s, i) =&gt; ({ path: this._scriptData[i]?.path ?? s._path, attributes: structuredClone(s.attrs) })).filter((s) =&gt; s.path),
       children: this.children.map((c) =&gt; c.toJSON(fresh)),
       ...(this._connData.length ? { connections: structuredClone(this._connData) } : {}),
       ...(this._effectData.length ? { effects: structuredClone(this._effectData) } : {}),

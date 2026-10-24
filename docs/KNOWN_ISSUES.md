@@ -233,3 +233,6 @@ Verified headlessly (egui_kittest UI tests, `runtime/core/core.test.mjs`, a real
 - Local time in Console Pro timestamps comes from the `date` command on unix, UTC on Windows.
 - Modeler: opening a GLB drops skeleton/animations and keeps one texture; picture layers are not stored in `.mesh.json` (only the merged texture); rotating pictures on a non-square texture then using *Make square* is approximate.
 - Dev Console: `exec` runs JavaScript: turn `allowExec` off in shipped games. Capturing `console.log` replaces the page's console methods while the console exists.
+
+- Asset icon/thumbnail sharpness (256 px thumbs, pixel-snapped rects) is covered by unit tests but was not seen in the native egui window in this session: please check the .glb icon on a real display.
+- `unity_scene_to_nord` is a conservative YAML reader tested on a small synthetic project (`mcp/fixtures/unity-sample`), not on large real Unity projects; nested prefab overrides are only listed in `todo`.

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>36 · Unity packages and features: what to use in Nord — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html" class="cur" aria-current="page">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>36 · Unity packages and features: what to use in Nord</h1>
+<table>
+<thead>
+<tr>
+<th>Unity package / feature</th>
+<th>In Nord</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Cinemachine</strong></td>
+<td><code>camera</code> component (<code>follow</code>, <code>lerp</code>, <code>deadzone</code>, <code>bounds</code>), library <code>camera-follow.js</code>, <code>camera-cinematic.js</code>, <code>camera-shake.js</code>, <code>camera-zoom.js</code>, 3D <code>camera-follow3d.js</code>, <code>orbit-cam.js</code></td>
+<td>no virtual-camera blending; switch with <code>getComponent(&#39;camera&#39;).activate()</code> (3D)</td>
+</tr>
+<tr>
+<td><strong>TextMeshPro</strong></td>
+<td><code>text</code> component (world text), <code>ui.label</code>, UI Designer labels (rich text, outline, bold, fonts)</td>
+<td>many bundled fonts, including pixel fonts (<a href="ex-ui-hud.html">UI</a>)</td>
+</tr>
+<tr>
+<td><strong>Input System</strong></td>
+<td>project <strong>actions</strong> (<code>input.actions</code>), gamepad, touch (<code>ui-joystick.js</code>)</td>
+<td>rebinding at runtime: <a href="ex-settings-menu.html">Options menu</a></td>
+</tr>
+<tr>
+<td><strong>DOTween / LeanTween</strong></td>
+<td><code>this.tween(target, to, opts)</code>, <code>util-tween.js</code>, <code>tween-fade</code> snippet</td>
+<td>easing names, yoyo, repeat, delay</td>
+</tr>
+<tr>
+<td><strong>NavMesh / A*</strong></td>
+<td><code>ai-astar.js</code> (grid), <code>click-move.js</code>, <code>ai-waypoints.js</code>, <code>ai-patrol.js</code></td>
+<td>no navmesh baking: grid or waypoints</td>
+</tr>
+<tr>
+<td><strong>Timeline</strong></td>
+<td><strong>Timeline</strong> tab (tracks, keyframes) and scene <code>timelines</code></td>
+<td>cutscenes, camera moves (<a href="../manual/effects-particles-timelines.html">Effects</a>)</td>
+</tr>
+<tr>
+<td><strong>Animation / Animator</strong></td>
+<td>Animation tab (clips), <strong>Animator</strong> tab (state machine), <code>animatedSprite</code>, <code>model.play</code></td>
+<td><a href="ex-animation.html">Animation</a></td>
+</tr>
+<tr>
+<td><strong>2D Tilemap, Rule Tiles</strong></td>
+<td><code>tilemap</code> + tilemap painter with terrain auto-tiling; <code>proc-autotile.js</code></td>
+<td><a href="ex-tilemap-levels.html">Tilemaps</a></td>
+</tr>
+<tr>
+<td><strong>2D Physics / 3D Physics</strong></td>
+<td>arcade / matter (2D), Havok (3D)</td>
+<td><a href="ex-physics-recipes.html">Physics recipes</a></td>
+</tr>
+<tr>
+<td><strong>Particle System / VFX Graph</strong></td>
+<td><code>particles</code> component + particle editor, <code>fx-particle-presets.js</code></td>
+<td>CPU particles (2D Phaser / 3D Babylon)</td>
+</tr>
+<tr>
+<td><strong>Post-processing, URP volumes</strong></td>
+<td>scene effects (2D) and the <code>postProcess</code> component (3D): bloom, vignette, tonemap, grain, colour grading</td>
+<td><a href="../manual/effects-particles-timelines.html">Effects</a></td>
+</tr>
+<tr>
+<td><strong>Shader Graph / HLSL</strong></td>
+<td>GLSL snippets in <code>library/shaders/</code> and material properties</td>
+<td>outline, toon, dissolve, water…</td>
+</tr>
+<tr>
+<td><strong>Lighting / light probes</strong></td>
+<td><code>light</code> component (+ <code>light2d.js</code>, <code>light2d-source.js</code> for 2D lights)</td>
+<td>no baked lightmaps</td>
+</tr>
+<tr>
+<td><strong>Addressables / Resources</strong></td>
+<td>files loaded on demand: <code>scene.spawn(path)</code>, <code>game.loadJSON(path)</code>, <code>loadScene(path)</code></td>
+<td>everything is a file path; the build includes the project folder</td>
+</tr>
+<tr>
+<td><strong>ScriptableObject</strong></td>
+<td>JSON + <code>ScriptableObject.Load</code></td>
+<td><a href="ex-data-assets.html">Data assets</a></td>
+</tr>
+<tr>
+<td><strong>Localization package</strong></td>
+<td><code>strings</code> tables + <code>textKey</code> + <code>game.i18n</code></td>
+<td><a href="ex-settings-menu.html">Options menu</a></td>
+</tr>
+<tr>
+<td><strong>UI Toolkit / uGUI</strong></td>
+<td>UI Designer (<code>.ui.json</code>) and <code>this.ui.*</code></td>
+<td>HTML-based, always sharp</td>
+</tr>
+<tr>
+<td><strong>ProBuilder</strong></td>
+<td><strong>3D Modeler</strong></td>
+<td><a href="../manual/modeler.html">3D Modeler</a></td>
+</tr>
+<tr>
+<td><strong>Netcode / Mirror / Photon</strong></td>
+<td><code>game.net</code> (WebRTC peer to peer: host/join, spawn, netSync, RPC)</td>
+<td><a href="ex-multiplayer.html">Multiplayer</a>; no dedicated servers</td>
+</tr>
+<tr>
+<td><strong>Save systems (Easy Save…)</strong></td>
+<td><code>game.save</code> slots, <code>save-slots.js</code></td>
+<td>JSON in the browser/app storage</td>
+</tr>
+<tr>
+<td><strong>Unity Test Framework</strong></td>
+<td>Node&#39;s <code>node --test</code> for logic, a headless browser smoke test for gameplay</td>
+<td><a href="ex-optimization-testing.html">Testing</a></td>
+</tr>
+<tr>
+<td><strong>Profiler</strong></td>
+<td>built-in profiler tab and <code>game.enableDebug()</code></td>
+<td>per-phase and per-script cost</td>
+</tr>
+<tr>
+<td><strong>Cinemachine Impulse / Feel</strong></td>
+<td><code>game.camera.shake</code>, <code>fx-hitstop.js</code>, <code>ui-damage-numbers.js</code>, tweens</td>
+<td><a href="ex-juice-effects.html">Juice</a></td>
+</tr>
+<tr>
+<td><strong>Visual Scripting / Bolt / PlayMaker</strong></td>
+<td><strong>Event sheets</strong> and <strong>Graph</strong> tabs</td>
+<td>no-code logic</td>
+</tr>
+<tr>
+<td><strong>Version control / Collab</strong></td>
+<td>the project is plain JSON + JS: use Git</td>
+<td>scene and prefab files merge well</td>
+</tr>
+<tr>
+<td><strong>Asset Store</strong></td>
+<td>the <strong>Library</strong> tab (ready-made scripts, prefabs, kits) and <code>.nordaddon</code> addons</td>
+<td><code>nord addon install</code></td>
+</tr>
+<tr>
+<td><strong>Burst / Jobs / DOTS</strong></td>
+<td>–</td>
+<td>not needed at this scale; keep entity counts reasonable and pool</td>
+</tr>
+<tr>
+<td><strong>ML-Agents, Ads, IAP, Analytics</strong></td>
+<td>–</td>
+<td>out of scope for a local web/desktop engine</td>
+</tr>
+<tr>
+<td><strong>Custom editors / gizmos</strong></td>
+<td><code>static attributes</code> with labels, tooltips, ranges; Library <code>@nord</code> header</td>
+<td>the Inspector is generated from attributes</td>
+</tr>
+<tr>
+<td><strong>WebGL build</strong></td>
+<td><code>nord build</code> (the main target)</td>
+<td><a href="ex-build-publish.html">Build and publish</a></td>
+</tr>
+<tr>
+<td><strong>Standalone build (Win/Mac/Linux)</strong></td>
+<td><code>nord bundle-mac</code>, <code>nord bundle-portable</code></td>
+<td><a href="ex-build-publish.html">Build and publish</a></td>
+</tr>
+</tbody></table>
+<div class="pager"><a href="ex-architecture.html"><small>← Previous</small>35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-genres.html"><small>Next →</small>37 · Starting points by game type</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

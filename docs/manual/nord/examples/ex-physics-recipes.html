@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>31 · Physics recipes — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html" class="cur" aria-current="page">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>31 · Physics recipes</h1>
+<h2 id="the-knobs">The knobs<a class="anchor" href="#the-knobs">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity (2D)</th>
+<th>Nord</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Project Settings ▸ Physics 2D ▸ Gravity</td>
+<td><code>nord.project.json</code> ▸ <code>physics.gravity</code> (<code>[0, 900, 0]</code> px/s²; 3D <code>[0, -9.81, 0]</code>); at runtime <code>this.physics.setGravity(0, 400)</code></td>
+</tr>
+<tr>
+<td><code>Rigidbody2D</code> Body Type Dynamic / Kinematic / Static</td>
+<td><code>rigidbody</code> <code>mode</code>: <code>dynamic</code>, <code>kinematic</code>, <code>static</code>; <strong>no rigidbody</strong> + a collider = static</td>
+</tr>
+<tr>
+<td>Mass, Drag, Gravity Scale</td>
+<td><code>mass</code>, <code>drag</code>, <code>gravityScale</code> fields of <code>rigidbody</code></td>
+</tr>
+<tr>
+<td>Collider2D / Is Trigger</td>
+<td><code>collider</code> / <code>trigger</code> component (or <code>trigger</code> ticked on a collider)</td>
+</tr>
+<tr>
+<td>Physics Material (bounce, friction)</td>
+<td>rigidbody <code>bounce</code> (0..1) and <code>drag</code>; bouncy things: library <code>physics-bounce-pad.js</code></td>
+</tr>
+</tbody></table>
+<h2 id="move-push-and-stop">Move, push and stop<a class="anchor" href="#move-push-and-stop">#</a></h2>
+<pre class="code" data-lang="js"><code>this.physics.setVelocity(this.entity, vx, vy);        // null = keep that axis
+const [vx, vy] = this.physics.velocity(this.entity);  // read the speed
+this.physics.applyImpulse(this.entity, ix, iy);       // instant push (divided by mass)
+this.physics.teleport(this.entity, x, y);             // move without keeping speed
+this.physics.enable(this.entity, false);              // switch the body off / on (e.g. while carried)</code></pre>
+<p>Unity: <code>rb.velocity</code>, <code>rb.AddForce(v, ForceMode2D.Impulse)</code>, <code>rb.position = p</code>. There is <strong>no continuous AddForce</strong>: for a steady push, set the velocity every <code>fixedUpdate</code>, or add a small impulse each step.</p>
+<h2 id="jump-height-from-physics">Jump height from physics<a class="anchor" href="#jump-height-from-physics">#</a></h2>
+<p>With gravity <code>g</code> (px/s²) and a jump speed <code>v</code>, the jump is <code>v² / (2g)</code> high. For a 120 px jump at g = 1500: <code>v = Math.sqrt(2 * 1500 * 120)</code> ≈ 600. (<a href="ex-platformer.html">Jump Dash</a> uses this.)</p>
+<h2 id="knockback-and-explosions">Knockback and explosions<a class="anchor" href="#knockback-and-explosions">#</a></h2>
+<pre class="code" data-lang="js"><code>// push everything near a point away from it
+explode(x, y, radius, power) {
+  for (const e of this.physics.overlapBox(x, y, radius * 2, radius * 2)) {
+    if (!e.pos || e.tile) continue;                         // ignore tile markers
+    const dx = e.pos[0] - x, dy = e.pos[1] - y, d = Math.hypot(dx, dy) || 1;
+    this.physics.applyImpulse(e, (dx / d) * power, (dy / d) * power);
+    e.emit('damage', { amount: Math.round(3 * (1 - Math.min(1, d / radius))) });
+  }
+}</code></pre>
+<h2 id="moving-platform">Moving platform<a class="anchor" href="#moving-platform">#</a></h2>
+<p>A <strong>kinematic</strong> rigidbody moved with velocity; the player standing on it must be carried:</p>
+<pre class="code" data-lang="js"><code>fixedUpdate() {
+  const t = this.game.time.elapsed;
+  this.physics.setVelocity(this.entity, Math.cos(t) * 80, 0);          // slides left and right
+}</code></pre>
+<p>Library: <code>physics-moving-platform.js</code> (carries riders, waypoints). A cheap carry: in the platform script remember <code>dx</code> each step and add it to riders standing on it (<code>overlapBox</code> above the platform).</p>
+<h2 id="one-way-platforms-and-ladders">One-way platforms and ladders<a class="anchor" href="#one-way-platforms-and-ladders">#</a></h2>
+<p>Library <code>physics-one-way.js</code> (jump up through, stand on top, press down to drop). Ladders: a trigger zone; while the player is inside and presses up, switch the player&#39;s <code>gravityScale</code> to 0 and set <code>vy</code>:</p>
+<pre class="code" data-lang="js"><code>// ladder.js on a trigger; player has a script with a field climbing = false
+onTriggerEnter(o) { if (o.hasTag('player')) o.vars.onLadder = true; }
+onTriggerExit(o)  { if (o.hasTag('player')) o.vars.onLadder = false; }
+// player fixedUpdate:
+if (this.entity.vars.onLadder &amp;&amp; this.input.axis('down', 'up') !== 0) this.physics.setVelocity(this.entity, null, -this.input.axis('down', 'up') * 120);</code></pre>
+<p><code>entity.vars</code> is a free object stored per entity (event sheets read it too).</p>
+<h2 id="push-and-carry">Push and carry<a class="anchor" href="#push-and-carry">#</a></h2>
+<p>Dynamic crates with a collider simply get pushed by a moving player body. For pick-up and carry use <code>physics-pickup-carry.js</code>; for a rope or spring use matter physics (<code>physics.engine: &quot;matter&quot;</code>) which supports constraints.</p>
+<h2 id="conveyor-bounce-pad-magnet">Conveyor, bounce pad, magnet<a class="anchor" href="#conveyor-bounce-pad-magnet">#</a></h2>
+<p>Library: <code>physics-conveyor.js</code>, <code>physics-bounce-pad.js</code>, <code>physics-magnet.js</code>, <code>physics-drag.js</code> (mouse dragging), <code>physics-door.js</code>, <code>physics-projectile.js</code>, <code>physics-crate.js</code>, <code>physics-explosion.js</code>, <code>physics-knockback.js</code>. Open them to see how short they are.</p>
+<h2 id="raycasts-and-queries">Raycasts and queries<a class="anchor" href="#raycasts-and-queries">#</a></h2>
+<pre class="code" data-lang="js"><code>const hits = this.physics.overlapBox(x, y, w, h);                      // 2D area query (entities, plus { tile: true } for solid tiles)
+const hit = this.physics.raycast(fromXYZ, toXYZ, { ignore: this.entity });   // 3D: { entity, point, normal, distance }
+const onGround = this.physics.isGrounded(this.entity);</code></pre>
+<p>2D line-of-sight: step along the line with <code>overlapBox</code> samples (every 16 px) and stop at the first <code>{ tile: true }</code> or <code>solid</code>-tagged entity.</p>
+<h2 id="2d-physics-engines">2D physics engines<a class="anchor" href="#2d-physics-engines">#</a></h2>
+<p><code>arcade</code> (default, fast boxes and circles, great for platformers and top-down), <code>matter</code> (rotation, polygons, joints, stacking: physics puzzles). Same script API; set in <code>nord.project.json</code> ▸ <code>physics.engine</code>. 3D uses Havok.</p>
+<h2 id="layers-and-collision-rules">Layers and collision rules<a class="anchor" href="#layers-and-collision-rules">#</a></h2>
+<p>Use <strong>tags</strong> and decide in the event (<code>other.hasTag(&#39;enemy&#39;)</code>). To make two bodies pass through each other, make one a trigger. To toggle collisions at runtime: <code>this.physics.enable(entity, false)</code> (e.g. a dash that ignores enemies).</p>
+<div class="pager"><a href="ex-language.html"><small>← Previous</small>30 · C# to JavaScript: the language side by side</a><a href="ex-picking-dragging.html"><small>Next →</small>32 · Clicking, hovering and dragging objects</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#the-knobs">The knobs </a><a href="#move-push-and-stop">Move, push and stop </a><a href="#jump-height-from-physics">Jump height from physics </a><a href="#knockback-and-explosions">Knockback and explosions </a><a href="#moving-platform">Moving platform </a><a href="#one-way-platforms-and-ladders">One-way platforms and ladders </a><a href="#push-and-carry">Push and carry </a><a href="#conveyor-bounce-pad-magnet">Conveyor, bounce pad, magnet </a><a href="#raycasts-and-queries">Raycasts and queries </a><a href="#2d-physics-engines">2D physics engines </a><a href="#layers-and-collision-rules">Layers and collision rules </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

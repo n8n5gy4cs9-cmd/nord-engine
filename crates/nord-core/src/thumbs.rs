@@ -6,7 +6,10 @@ use crate::{io, Error, Result};
 use image::{Rgba, RgbaImage};
 use std::path::{Path, PathBuf};
 
-pub const SIZE: u32 = 128;
+/// Thumbnail edge in pixels (2x the largest tile at 1x, so retina screens stay sharp). The cache file name carries it, so a size change regenerates.
+pub const SIZE: u32 = 256;
+/// Suffix of cached thumbnail files: `<key>-256.png`.
+pub const CACHE_TAG: &str = "-256";
 
 fn waveform(samples: &[i16]) -> RgbaImage {
     let (w, h) = (SIZE, SIZE / 2);
@@ -271,7 +274,8 @@ pub fn thumb_path(root: &Path, a: &Asset) -> PathBuf {
             key = crate::assets::sha256_bytes(key.as_bytes());
         }
     }
-    root.join(".nord-cache/thumbs").join(format!("{key}.png"))
+    root.join(".nord-cache/thumbs")
+        .join(format!("{key}{CACHE_TAG}.png"))
 }
 
 /// Returns the cached thumbnail path for an asset (generating it if needed), or `None` if the type has no thumbnail.
@@ -359,7 +363,7 @@ mod tests {
         let (ok, skip, bad) = generate_all(&d, &assets);
         assert_eq!((ok, skip, bad.len()), (2, 0, 0), "{bad:?}");
         let t = image::open(thumb_for(&d, &assets[0]).unwrap().unwrap()).unwrap();
-        assert_eq!((t.width(), t.height()), (128, 64));
+        assert_eq!((t.width(), t.height()), (SIZE, SIZE / 2));
     }
 }
 

@@ -61,6 +61,54 @@
 <p>The Modeler also keeps a <em>draft</em> of the current model inside its web view, but that only survives while the editor keeps its web storage (by default it does not), so <strong>always press Save</strong> before you close the editor.</p>
 <h2 id="where-the-files-live-and-why-models">Where the files live (and why <code>models/</code>)<a class="anchor" href="#where-the-files-live-and-why-models">#</a></h2>
 <p><code>models/</code> in the project root is the Modeler&#39;s folder: the editor&#39;s safe save API writes only to a few project folders and <code>models/</code> is one of them, the asset index and the model picker read it, and builds copy it. Move or rename files in the Assets tab if you prefer another folder (for example <code>assets/models/</code>): scene objects keep working when you re-pick the path, and colours/tags you set on assets follow renames.</p>
+<h2 id="export-glb-gltf-obj-png-for-other-tools">Export (GLB, glTF, OBJ, PNG) for other tools<a class="anchor" href="#export-glb-gltf-obj-png-for-other-tools">#</a></h2>
+<p>For <strong>your Nord game you do not need Export</strong>: <strong>Save</strong> already writes the game-ready <code>models/&lt;name&gt;.glb</code>. Use the <strong>Export</strong> buttons (right panel, bottom) when you want the model in <em>another</em> program (Blender, Unity, Godot, a 3D printer slicer…), in another format, or with another size or axis.</p>
+<ol>
+<li><strong>Name</strong> the model (top left).</li>
+<li>In the right panel, <strong>Export</strong> section, set:<ul>
+<li><strong>Up axis</strong>: <em>Y up</em> (the normal for Nord, Unity, Godot, glTF) or <em>Z up (baked)</em> (Blender, 3D printing: the vertices are rotated into the file).</li>
+<li><strong>Scale</strong>: a factor applied to every coordinate (for example <code>0.01</code> for centimetres to metres, <code>100</code> for the opposite). Nord models are in metres-like units.</li>
+</ul>
+</li>
+<li>Press one of the buttons. The files go to the project&#39;s <code>models/</code> folder (outside the editor, in a browser, they download instead), and the status line names them:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Files written</th>
+<th>Contains</th>
+<th>Good for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>GLB</strong></td>
+<td><code>models/&lt;name&gt;.glb</code></td>
+<td>shape, UVs, <strong>texture</strong>, vertex colours, in <strong>one</strong> binary file</td>
+<td>Nord, Blender, Unity, Godot, web viewers: the best choice</td>
+</tr>
+<tr>
+<td><strong>glTF</strong></td>
+<td><code>models/&lt;name&gt;.gltf</code></td>
+<td>the same as JSON text (texture and data embedded)</td>
+<td>when you need a readable file or want to diff it in Git</td>
+</tr>
+<tr>
+<td><strong>OBJ + MTL</strong></td>
+<td><code>models/&lt;name&gt;.obj</code>, <code>&lt;name&gt;.mtl</code> and <code>&lt;name&gt;.png</code> (the texture, if there is one)</td>
+<td>geometry, UVs, a material that points to the PNG, vertex colours as extra numbers on the <code>v</code> lines</td>
+<td>old tools, simple importers, Blender (import OBJ)</td>
+</tr>
+<tr>
+<td><strong>Save PNG to project</strong> (Texture tab)</td>
+<td><code>models/&lt;name&gt;.png</code></td>
+<td>the texture alone, with your painted pixels and pictures merged</td>
+<td>editing the texture in an image program, or reusing it on another model</td>
+</tr>
+</tbody></table>
+<p>What is <strong>not</strong> exported: skeletons and animations (the Modeler has none), and more than one texture or material per model (one texture per mesh). Faces are exported flat-shaded (hard edges), as they look in the Modeler.</p>
+<p><strong>Use an exported file in Nord:</strong> a <code>.glb</code> or <code>.gltf</code> in <code>models/</code> (or <code>assets/</code>) works like the Saved one: drag it into the scene or set a <code>model</code> component&#39;s <strong>Path</strong>. <strong>Bring a model from another program in:</strong> put its <code>.glb</code> in <code>models/</code>, then <span class="c-ui">Open…</span> (the list shows <code>.glb</code> files) imports it into the Modeler as one mesh (first texture kept, see <em>Opening a scene model</em>), or <strong>Import OBJ…</strong> (Create section, left panel) for an OBJ.</p>
+<p><strong>Export a model you opened from a scene object:</strong> the save choices (overwrite / new / prefab / variant) already write the game <code>.glb</code>; Export is still available if you want the other formats.</p>
 <h2 id="open-a-model-from-your-scene">Open a model from your scene<a class="anchor" href="#open-a-model-from-your-scene">#</a></h2>
 <p>Three ways, all do the same:</p>
 <ol>
@@ -282,5 +330,5 @@
 <figure class="shot"><img src="../../assets/screenshots/mod-5-uv.png" alt="UV editor with faces laid out on the texture" loading="lazy"><figcaption>UV editor: every face on the texture square.</figcaption></figure><p>Click a face to select it (Shift extends), drag to move it; switch <strong>Drag</strong> to <em>points</em> to move single corners; <strong>snap to texel</strong> snaps to texture pixels. Buttons: <strong>Flip U / V</strong>, <strong>Rotate 90°</strong>, <strong>Fit to 0-1</strong>, <strong>Select island</strong>, <strong>Auto unwrap</strong> (project each face), <strong>Pack</strong> (arrange all on the texture without overlap).</p>
 <h2 id="limits">Limits<a class="anchor" href="#limits">#</a></h2>
 <p>One texture per mesh. Flat shading only. No skeleton/animation authoring or import. Undo keeps whole-mesh snapshots (80 steps / 32 MB). A draft is kept in the browser (<code>nord.mesh-draft</code>). Outside the editor (<strong>Open in browser</strong>) Save downloads files and the save dialog cannot change scene objects. The Scene view picks up an overwritten model after a reload.</p>
-<div class="pager"><a href="unity-workflow.html"><small>← Previous</small>Unity-style workflow</a><a href="animator.html"><small>Next →</small>Animator</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#save-your-model-and-use-it-in-the-game-3-steps">Save your model and use it in the game (3 steps) </a><a href="#continue-editing-later-after-closing-or-restarting">Continue editing later (after closing or restarting) </a><a href="#where-the-files-live-and-why-models">Where the files live (and why models/ ) </a><a href="#open-a-model-from-your-scene">Open a model from your scene </a><a href="#edit-a-built-in-shape-mesh-as-a-model">Edit a built-in shape (mesh) as a model </a><a href="#quick-tasks-step-by-step">Quick tasks (step by step) </a><a href="#opening-a-scene-model-and-what-survives">Opening a scene model, and what survives </a><a href="#saving-a-scene-model-overwrite-new-prefab-variant">Saving a scene model: overwrite, new, prefab, variant </a><a href="#3d-view-tools">3D view tools </a><a href="#full-window">Full window </a><a href="#texture-tab">Texture tab </a><a href="#uv-editor-tab">UV editor tab </a><a href="#limits">Limits </a></aside></div>
+<div class="pager"><a href="unity-workflow.html"><small>← Previous</small>Unity-style workflow</a><a href="animator.html"><small>Next →</small>Animator</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#save-your-model-and-use-it-in-the-game-3-steps">Save your model and use it in the game (3 steps) </a><a href="#continue-editing-later-after-closing-or-restarting">Continue editing later (after closing or restarting) </a><a href="#where-the-files-live-and-why-models">Where the files live (and why models/ ) </a><a href="#export-glb-gltf-obj-png-for-other-tools">Export (GLB, glTF, OBJ, PNG) for other tools </a><a href="#open-a-model-from-your-scene">Open a model from your scene </a><a href="#edit-a-built-in-shape-mesh-as-a-model">Edit a built-in shape (mesh) as a model </a><a href="#quick-tasks-step-by-step">Quick tasks (step by step) </a><a href="#opening-a-scene-model-and-what-survives">Opening a scene model, and what survives </a><a href="#saving-a-scene-model-overwrite-new-prefab-variant">Saving a scene model: overwrite, new, prefab, variant </a><a href="#3d-view-tools">3D view tools </a><a href="#full-window">Full window </a><a href="#texture-tab">Texture tab </a><a href="#uv-editor-tab">UV editor tab </a><a href="#limits">Limits </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

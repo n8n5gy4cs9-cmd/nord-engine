@@ -37,6 +37,30 @@ test('protocol: initialize, tools, resources, prompts', async () => {
   c.close();
 });
 
+test('unity conversion tools read a Unity project', async () => {
+  const c = client();
+  const fx = path.join(root, 'mcp/fixtures/unity-sample');
+  const scan = JSON.parse((await c.call('unity_scan', { path: fx })).text);
+  assert.equal(scan.unityVersion, '2022.3.10f1');
+  assert.deepEqual(scan.buildScenes, ['Assets/Scenes/Main.unity']);
+  assert.ok(scan.tags.includes('Coin') && scan.layers['6'] === 'Ground' && scan.inputAxes.includes('Jump'));
+  const pl = scan.scripts.find((s) => s.file.endsWith('Player.cs'));
+  assert.deepEqual(pl.fields.map((f) => f.name), ['speed', 'jumpForce', 'maxHealth', 'coinPrefab', 'jumpSfx']);
+  assert.ok(pl.lifecycle.includes('Awake') && pl.lifecycle.includes('Update') && pl.coroutines.includes('Flash') && pl.apis.includes('physics'));
+  assert.ok(scan.hints.some((h) => /Cinemachine/.test(h)));
+  const sc = JSON.parse((await c.call('unity_scene_to_nord', { unityProject: fx, file: 'Assets/Scenes/Main.unity' })).text);
+  const player = sc.entities.find((e) => e.name === 'Player');
+  assert.deepEqual(player.transform.pos, [200, -100, 0]);
+  assert.equal(player.scripts[0].path, 'scripts/player.js'); assert.equal(player.scripts[0].attributes.speed, 6);
+  assert.equal(player.children[0].name, 'Weapon'); assert.equal(player.children[0].enabled, false);
+  assert.ok(player.components.some((x) => x.type === 'sprite') && player.components.some((x) => x.type === 'rigidbody'));
+  assert.ok(sc.todo.some((t) => /Coin\.prefab/.test(t)));
+  const out = JSON.parse((await c.call('unity_cs_outline', { source: 'public class A : MonoBehaviour { public int hp = 3; void Start(){} }' })).text);
+  assert.equal(out.fields[0].name, 'hp');
+  assert.match((await c.call('nord_guide', { topic: 'unity-conversion' })).text, /Unity/);
+  c.close();
+});
+
 test('modeler: build, texture, preview, save GLB, reopen GLB', async () => {
   fs.mkdirSync(proj, { recursive: true }); fs.writeFileSync(path.join(proj, 'nord.project.json'), '{"format":1,"name":"t","type":"3d","startScene":"scenes/main.scene.json"}');
   const c = client();

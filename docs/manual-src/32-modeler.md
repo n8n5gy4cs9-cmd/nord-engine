@@ -45,6 +45,28 @@ The Modeler also keeps a *draft* of the current model inside its web view, but t
 ## Where the files live (and why `models/`)
 `models/` in the project root is the Modeler's folder: the editor's safe save API writes only to a few project folders and `models/` is one of them, the asset index and the model picker read it, and builds copy it. Move or rename files in the Assets tab if you prefer another folder (for example `assets/models/`): scene objects keep working when you re-pick the path, and colours/tags you set on assets follow renames.
 
+## Export (GLB, glTF, OBJ, PNG) for other tools
+For **your Nord game you do not need Export**: **Save** already writes the game-ready `models/<name>.glb`. Use the **Export** buttons (right panel, bottom) when you want the model in *another* program (Blender, Unity, Godot, a 3D printer slicer…), in another format, or with another size or axis.
+
+1. **Name** the model (top left).
+2. In the right panel, **Export** section, set:
+   * **Up axis**: *Y up* (the normal for Nord, Unity, Godot, glTF) or *Z up (baked)* (Blender, 3D printing: the vertices are rotated into the file).
+   * **Scale**: a factor applied to every coordinate (for example `0.01` for centimetres to metres, `100` for the opposite). Nord models are in metres-like units.
+3. Press one of the buttons. The files go to the project's `models/` folder (outside the editor, in a browser, they download instead), and the status line names them:
+
+| Button | Files written | Contains | Good for |
+|---|---|---|---|
+| **GLB** | `models/<name>.glb` | shape, UVs, **texture**, vertex colours, in **one** binary file | Nord, Blender, Unity, Godot, web viewers: the best choice |
+| **glTF** | `models/<name>.gltf` | the same as JSON text (texture and data embedded) | when you need a readable file or want to diff it in Git |
+| **OBJ + MTL** | `models/<name>.obj`, `<name>.mtl` and `<name>.png` (the texture, if there is one) | geometry, UVs, a material that points to the PNG, vertex colours as extra numbers on the `v` lines | old tools, simple importers, Blender (import OBJ) |
+| **Save PNG to project** (Texture tab) | `models/<name>.png` | the texture alone, with your painted pixels and pictures merged | editing the texture in an image program, or reusing it on another model |
+
+What is **not** exported: skeletons and animations (the Modeler has none), and more than one texture or material per model (one texture per mesh). Faces are exported flat-shaded (hard edges), as they look in the Modeler.
+
+**Use an exported file in Nord:** a `.glb` or `.gltf` in `models/` (or `assets/`) works like the Saved one: drag it into the scene or set a `model` component's **Path**. **Bring a model from another program in:** put its `.glb` in `models/`, then @ui[Open…] (the list shows `.glb` files) imports it into the Modeler as one mesh (first texture kept, see *Opening a scene model*), or **Import OBJ…** (Create section, left panel) for an OBJ.
+
+**Export a model you opened from a scene object:** the save choices (overwrite / new / prefab / variant) already write the game `.glb`; Export is still available if you want the other formats.
+
 ## Open a model from your scene
 
 Three ways, all do the same:

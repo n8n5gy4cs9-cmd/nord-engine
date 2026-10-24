@@ -1,0 +1,57 @@
+{
+  "format": 1,
+  "root": {
+    "id": "pf000001",
+    "name": "Thing",
+    "enabled": true,
+    "tags": [
+      "thing"
+    ],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "sprite",
+        "texture": "assets/sprites/square.png",
+        "size": [
+          20,
+          20
+        ],
+        "tint": "#ffffff",
+        "alpha": 1
+      },
+      {
+        "type": "trigger",
+        "shape": "circle",
+        "radius": 10
+      }
+    ],
+    "scripts": [
+      {
+        "path": "scripts/probe.js",
+        "attributes": {
+          "speed": 3,
+          "label": "prefab"
+        }
+      }
+    ],
+    "children": [],
+    "prefab": null
+  }
+}

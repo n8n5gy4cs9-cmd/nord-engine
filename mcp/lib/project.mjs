@@ -30,6 +30,7 @@ export const GUIDE_TOPICS = {
   profiler: ['docs/PROFILER.md'],
   addons: ['docs/ADDONS.md'],
   localisation: ['docs/LOCALISATION.md'],
+  'unity-conversion': ['docs/manual-src/ex-unity-conversion.md', 'docs/manual-src/ex-migration.md'],
   cookbook: ['docs/manual-src/cookbook.md'],
   api: ['docs/manual-src/api.md'],
   'how-nord-works': ['docs/manual-src/how-nord-works.md'],

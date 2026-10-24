@@ -1,0 +1,11 @@
+%YAML 1.1
+--- !u!13 &1
+InputManager:
+  m_Axes:
+  - serializedVersion: 3
+    m_Name: Horizontal
+    positiveButton: right
+    altPositiveButton: d
+  - serializedVersion: 3
+    m_Name: Jump
+    positiveButton: space

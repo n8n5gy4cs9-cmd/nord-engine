@@ -1504,6 +1504,7 @@ fn draw_thumb(st: &mut EditorState, ui: &mut Ui, root: &Path, e: &Entry, rect: e
         return;
     }
     paint_tag_dots(st, ui, &e.rel, rect.left_bottom() + Vec2::new(4.0, -3.0));
+    let rect = icons::snap(ui.ctx(), rect); // whole physical pixels: thumbnails and icons are not resampled between pixels
     let wants_thumb = matches!(
         e.kind,
         AssetType::Image
@@ -1537,9 +1538,11 @@ fn draw_thumb(st: &mut EditorState, ui: &mut Ui, root: &Path, e: &Entry, rect: e
                 if let Some(a) = st.assets.iter().find(|a| a.path == e.rel).cloned() {
                     if e.kind == AssetType::Model {
                         // models are rendered by the edit viewport (Babylon offscreen); see viewport "thumb" command
-                        let cached = root
-                            .join(".nord-cache/thumbs")
-                            .join(format!("{}.png", a.sha256));
+                        let cached = root.join(".nord-cache/thumbs").join(format!(
+                            "{}{}.png",
+                            a.sha256,
+                            nord_core::thumbs::CACHE_TAG
+                        ));
                         if cached.v_exists() {
                             st.assets_ui.thumbs.insert(e.rel.clone(), Some(cached));
                         } else if !st.assets_ui.pending.contains(&e.rel) {
@@ -1556,7 +1559,10 @@ fn draw_thumb(st: &mut EditorState, ui: &mut Ui, root: &Path, e: &Entry, rect: e
     }
     let name = kind_icon(e.kind, e.is_dir);
     let c = icons::kind_color(name, ui.visuals().weak_text_color());
-    let r = egui::Rect::from_center_size(rect.center(), Vec2::splat(rect.width() * 0.62));
+    let r = icons::snap(
+        ui.ctx(),
+        egui::Rect::from_center_size(rect.center(), Vec2::splat(rect.width() * 0.62)),
+    );
     // The cell already owns its layout space. `ui.put` would advance the wrapped
     // row's cursor again, pushing each following tile down into a staircase.
     icons::icon(name, r.width(), c).paint_at(ui, r);

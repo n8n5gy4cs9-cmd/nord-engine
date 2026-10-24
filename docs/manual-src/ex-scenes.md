@@ -38,6 +38,7 @@ export default class PlayerData extends Singleton {
 }
 // level 1:  PlayerData.instance.coins += 5;   then load level 2:  PlayerData.instance.coins is still 5
 ```
+The object comes back in the next scene and every script gets its **field values** back (like Unity's `DontDestroyOnLoad`): score, coins, state, your own arrays and objects. What does *not* carry over: running coroutines, `Invoke` timers and tweens of that object (they are cancelled with the old scene: start them again in `Start()`), UI you created (remove and recreate it), and scripts added to the object from code with `addScript` (they have no file to rebuild from: put the script in the Inspector instead). `game.restart()` starts from scratch on purpose.
 
 ## Passing data to the next scene
 * A persistent singleton (above): simplest.

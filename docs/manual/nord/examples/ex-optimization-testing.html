@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>39 · Optimising and testing your game — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html" class="cur" aria-current="page">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>39 · Optimising and testing your game</h1>
+<h2 id="find-the-problem-first-unity-profiler">Find the problem first (Unity: Profiler)<a class="anchor" href="#find-the-problem-first-unity-profiler">#</a></h2>
+<pre class="code" data-lang="js"><code>const dbg = this.game.enableDebug();         // or the editor's Profiler tab</code></pre>
+<p>It records the time per phase (fixed + physics, timers, scripts, components, behaviors, late, cleanup) and the cost of <strong>every script method</strong> (<code>Enemy.update</code> …), plus spikes and network numbers. Open <strong>Window ▸ Profiler</strong>: look at the top of the script list. Fix the top entry, measure again (<a href="../tutorials/tut-t52-profiler.html">Profiler tutorial</a>).</p>
+<h2 id="typical-fixes">Typical fixes<a class="anchor" href="#typical-fixes">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>scene.find(&#39;X&#39;)</code> / <code>findByTag</code> in <code>update</code></td>
+<td>find once in <code>start()</code>, store the reference (check <code>destroyed</code>)</td>
+</tr>
+<tr>
+<td>creating and destroying many objects (bullets, particles)</td>
+<td><code>ObjectPool</code> (<a href="ex-spawn-destroy.html">Spawning</a>)</td>
+</tr>
+<tr>
+<td>looping over every entity every frame (<code>scene.all()</code>)</td>
+<td>keep your own array of the things you need, update it on spawn/destroy events</td>
+</tr>
+<tr>
+<td>many small scripts doing the same each frame</td>
+<td>one manager script that loops over its group</td>
+</tr>
+<tr>
+<td><code>overlapBox</code> for every enemy every frame</td>
+<td>do it every few frames: a timer <code>if ((this.t += dt) &gt; 0.1)</code></td>
+</tr>
+<tr>
+<td>huge textures</td>
+<td>2048 px or less; pixel art at its real size with <em>nearest</em> filter; <code>nord build --optimize</code></td>
+</tr>
+<tr>
+<td>long audio as WAV</td>
+<td>use mp3 / ogg</td>
+</tr>
+<tr>
+<td>lots of UI elements updating each frame</td>
+<td>update labels only when the value changes (<code>events</code>), not in <code>update</code></td>
+</tr>
+<tr>
+<td>expensive post effects</td>
+<td>fewer effects, test on the weakest target; <code>postProcess</code> sparingly in 3D</td>
+</tr>
+</tbody></table>
+<h2 id="frame-time-budget">Frame time budget<a class="anchor" href="#frame-time-budget">#</a></h2>
+<p>60 fps = 16 ms per frame. The game loop caps one frame at 0.25 s, so a slow frame never causes a giant physics step. <code>this.game.time.delta</code> is the (scaled) frame time; <code>this.game.debug?.stats()</code> returns numbers you can show on screen.</p>
+<h2 id="memory">Memory<a class="anchor" href="#memory">#</a></h2>
+<p>Scene objects and their scripts are garbage collected after <code>destroy()</code> and scene changes: just remove your listeners, UI elements and references (<code>events.on</code> returns an unsubscribe function; call it in <code>onDestroy</code>).</p>
+<h2 id="test-your-logic-plain-node-tests">Test your logic: plain Node tests<a class="anchor" href="#test-your-logic-plain-node-tests">#</a></h2>
+<p>Put game rules in plain modules with no engine dependency, and test them with Node&#39;s built-in runner:</p>
+<pre class="code" data-lang="js"><code>// scripts/util/score.js
+export const bonus = (combo) =&gt; Math.min(5, 1 + Math.floor(combo / 3));</code></pre>
+<pre class="code" data-lang="js"><code>// scripts/util/score.test.mjs
+import test from 'node:test'; import assert from 'node:assert/strict';
+import { bonus } from './score.js';
+test('combo bonus', () =&gt; { assert.equal(bonus(0), 1); assert.equal(bonus(9), 4); assert.equal(bonus(99), 5); });</code></pre>
+<pre class="code" data-lang="bash"><code>node --test scripts/util/</code></pre>
+<p>The engine core itself is tested like this (<code>node --test runtime/core/</code>), including a fake game for script lifecycle tests (see <code>runtime/core/core.test.mjs</code> for the pattern).</p>
+<h2 id="test-gameplay-a-headless-smoke-run">Test gameplay: a headless smoke run<a class="anchor" href="#test-gameplay-a-headless-smoke-run">#</a></h2>
+<p>The most useful automatic test for a game: start it in a headless browser, drive it, and assert on the state. This is how the example games in this documentation are verified (<code>node tools/example-shots.mjs</code>, <code>node tools/examples-smoke.mjs</code> in the engine repository). The recipe:</p>
+<pre class="code" data-lang="js"><code>// 1. serve the project:  nord serve my-game -p 4170
+// 2. in a headless Chromium (CDP / Playwright), open http://localhost:4170/ and wait for window.__nord_ready
+// 3. window.__nord is the running Game: drive and inspect it
+const g = window.__nord;
+g.input.setKey('KeyD', true);                       // hold a key
+await new Promise((r) =&gt; setTimeout(r, 1000));
+g.scene.find('Player').pos;                          // assert on positions, scores, g.errors.length === 0</code></pre>
+<p>Use the seeded random generator for repeatable runs: <code>new Game(project, { seed: 42 })</code> (or in the page: <code>g.rng = new Rng(42)</code>).</p>
+<h2 id="replays-and-determinism">Replays and determinism<a class="anchor" href="#replays-and-determinism">#</a></h2>
+<p>Gameplay code that uses <code>this.game.rng</code>, <code>dt</code> and input actions (never <code>Math.random()</code> / <code>Date.now()</code>) is repeatable: record the inputs per frame and the seed, replay later for bug reports or a ghost run.</p>
+<h2 id="before-you-blame-the-engine">Before you blame the engine<a class="anchor" href="#before-you-blame-the-engine">#</a></h2>
+<p>Errors never kill the game loop: look at the Console / <code>g.errors</code>; they carry the script name, the method and the stack. See <a href="ex-debug-tools.html">Debugging</a>.</p>
+<div class="pager"><a href="ex-build-publish.html"><small>← Previous</small>38 · Build, publish and ship</a><a href="ex-procedural.html"><small>Next →</small>40 · Procedural content and randomness</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#find-the-problem-first-unity-profiler">Find the problem first (Unity: Profiler) </a><a href="#typical-fixes">Typical fixes </a><a href="#frame-time-budget">Frame time budget </a><a href="#memory">Memory </a><a href="#test-your-logic-plain-node-tests">Test your logic: plain Node tests </a><a href="#test-gameplay-a-headless-smoke-run">Test gameplay: a headless smoke run </a><a href="#replays-and-determinism">Replays and determinism </a><a href="#before-you-blame-the-engine">Before you blame the engine </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

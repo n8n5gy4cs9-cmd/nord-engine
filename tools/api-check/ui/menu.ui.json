@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "name": "t",
+  "theme": {},
+  "root": {
+    "type": "panel",
+    "name": "root",
+    "layout": "vbox",
+    "children": [
+      {
+        "type": "label",
+        "name": "score",
+        "text": "Score {score}"
+      },
+      {
+        "type": "button",
+        "name": "go",
+        "text": "Go",
+        "on": {
+          "pressed": "start"
+        }
+      }
+    ]
+  }
+}

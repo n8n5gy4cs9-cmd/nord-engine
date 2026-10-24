@@ -307,6 +307,29 @@ test('Singleton: a subclass of GameManager is reachable as GameManager.instance 
   GameManager.instance.AddScore(3); assert.equal(MyManager.instance.score, 3);
 });
 
+test('Persist: a persistent object keeps its script fields across loadScene (score, lives…), restart drops them', async () => {
+  class Keeper extends Singleton { static persistent = true; Awake() { this.value = 41; } }
+  files['mod:keeper.js'] = Keeper;
+  files.pa = { name: 'pa', entities: [ent('Keeper', { scripts: [{ path: 'keeper.js' }], behaviors: [{ type: 'Persist', properties: {} }] })] };
+  files.pb = { name: 'pb', entities: [ent('Keeper', { scripts: [{ path: 'keeper.js' }], behaviors: [{ type: 'Persist', properties: {} }] })] };
+  const g = mk({ onError: (e) => { throw e; } }); await g.loadScene('pa'); g.tick(0.016);
+  Keeper.instance.value = 99;
+  await g.loadScene('pb'); g.tick(0.016);
+  assert.equal(Keeper.instance.value, 99, 'field kept');
+  assert.equal(g.scene.roots.filter((r) => r.name === 'Keeper').length, 1, 'no duplicate');
+  await g.restart(); g.tick(0.016);
+  assert.equal(Keeper.instance.value, 41, 'restart starts fresh');
+});
+
+test('a script added from code does not break scene changes (it has no file to rebuild from)', async () => {
+  class Mine extends Singleton { static persistent = true; }
+  files.pc = { name: 'pc', entities: [] }; files.pd = { name: 'pd', entities: [] };
+  const g = mk({ onError: (e) => { throw e; } }); await g.loadScene('pc');
+  const e = await g.scene.spawnData({ name: 'FromCode', transform: { pos: [0, 0, 0] }, components: [], scripts: [], children: [] }); e.addScript(Mine, {}); g.tick(0.016);
+  await g.loadScene('pd'); g.tick(0.016);
+  assert.equal(g.scene.name, 'pd');
+});
+
 test('Mathf / Vector3 / UnityEvent', () => {
   assert.equal(Mathf.MoveTowards(0, 10, 3), 3);
   assert.equal(Mathf.PingPong(3.5, 2), 0.5);

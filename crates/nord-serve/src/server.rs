@@ -479,7 +479,7 @@ async fn thumb_upload(
     let p = a
         .project
         .join(".nord-cache/thumbs")
-        .join(format!("{sha}.png"));
+        .join(format!("{sha}{}.png", nord_core::thumbs::CACHE_TAG));
     if let Some(d) = p.parent() {
         let _ = std::fs::create_dir_all(d);
     }

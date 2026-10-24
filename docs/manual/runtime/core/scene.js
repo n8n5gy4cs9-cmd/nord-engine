@@ -75,6 +75,7 @@ export class Scene {
       e.addComponent(type, rest);
     }
     for (const sd of e._scriptData) {
+      if (!sd.path) continue; // a script added from code (entity.addScript) has no file: it cannot be rebuilt from data
       const Class = await this.game.loadScript(sd.path);
       if (!Class) continue;
       const s = new Class(e, resolveAttributes(Class, sd.attributes, (m) => this.game.warn(m)));
@@ -127,12 +128,14 @@ export class Scene {
   /** init() all, then start() all, once the whole tree exists. */
   start() {
     const ents = [...this.all()];
-    for (const e of ents) for (const s of e.scripts) { try { s.init?.(); } catch (err) { this.game.reportError(err, s, 'init'); } }
+    for (const e of ents) for (const s of e.scripts) { try { s.init?.(); this.#restore(s); } catch (err) { this.game.reportError(err, s, 'init'); } }
     this.running = true;
     for (const e of ents) this.#startEntity(e);
     this.#pending = [];
     for (const s of this.systems) { try { s.start?.(); } catch (err) { this.game.reportError(err, s, 'start'); } }
   }
+  /** Persist: give a script that came back from the previous scene its old field values (after its own init()). */
+  #restore(s) { if (s._restoreState) { Object.assign(s, s._restoreState); delete s._restoreState; } }
   #startEntity(e) {
     for (const s of e.scripts) {
       if (s._started) continue;
@@ -178,7 +181,7 @@ export class Scene {
   #each(method, dt) { for (const e of [...this.all()]) e.callScripts(method, dt); }
   #flushSpawns() {
     const p = this.#pending; this.#pending = [];
-    for (const root of p) for (const e of root.all()) { for (const s of e.scripts) { try { s.init?.(); } catch (err) { this.game.reportError(err, s, 'init'); } } }
+    for (const root of p) for (const e of root.all()) { for (const s of e.scripts) { try { s.init?.(); this.#restore(s); } catch (err) { this.game.reportError(err, s, 'init'); } } }
     for (const root of p) for (const e of root.all()) this.#startEntity(e);
     for (const root of p) for (const e of root.all()) for (const s of this.systems) s.onCreated?.(e);
   }

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>32 · Clicking, hovering and dragging objects — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html" class="cur" aria-current="page">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>32 · Clicking, hovering and dragging objects</h1>
+<p><strong>Goal:</strong> click a unit to select it, hover to highlight, drag a card or an item across the screen.</p>
+<h2 id="pointer-basics">Pointer basics<a class="anchor" href="#pointer-basics">#</a></h2>
+<p><code>this.input.pointer</code> is <code>{ x, y, worldX, worldY, down }</code>: screen pixels and world coordinates (the camera is already applied). A mouse button or a finger is the action you bind to <code>Mouse0</code> (<code>&quot;fire&quot;: [&quot;Mouse0&quot;]</code>), so <code>pressed / down / released</code> work for both.</p>
+<h2 id="which-object-is-under-the-pointer-unity-physics2d-overlappoint-raycasthit2d">Which object is under the pointer? (Unity: <code>Physics2D.OverlapPoint</code> / <code>RaycastHit2D</code>)<a class="anchor" href="#which-object-is-under-the-pointer-unity-physics2d-overlappoint-raycasthit2d">#</a></h2>
+<p>For 2D, the easy way is a small helper that tests the object&#39;s size:</p>
+<pre class="code" data-lang="js"><code>// scripts/pick.js : export a function you can import everywhere
+export function hit(entity, x, y) {
+  const s = entity.getComponent('sprite')?.data.size ?? [32, 32];
+  const w = s[0] * entity.scale[0], h = s[1] * entity.scale[1];
+  return Math.abs(x - entity.pos[0]) &lt;= w / 2 &amp;&amp; Math.abs(y - entity.pos[1]) &lt;= h / 2;
+}
+export function pickAt(scene, x, y, tag) {                     // the top-most tagged object under (x, y)
+  return scene.findByTag(tag).filter((e) =&gt; e.enabled &amp;&amp; hit(e, x, y)).sort((a, b) =&gt; b.pos[2] - a.pos[2])[0] ?? null;
+}</code></pre>
+<p>Sprites are centred on their position (origin 0.5); rotated objects need a rotated test. The physics alternative: <code>this.physics.overlapBox(p.worldX, p.worldY, 2, 2)</code> returns every body at the point (only objects with colliders).</p>
+<h2 id="click-to-select">Click to select<a class="anchor" href="#click-to-select">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour } from 'nord';
+import { pickAt } from './pick.js';
+
+export default class Selector extends MonoBehaviour {
+  Update() {
+    const p = this.input.pointer;
+    if (!this.input.pressed('fire')) return;
+    const unit = pickAt(this.scene, p.worldX, p.worldY, 'unit');
+    if (this.selected &amp;&amp; this.selected !== unit) this.selected.set('sprite', 'tint', '#ffffff');   // deselect
+    this.selected = unit;
+    if (unit) { unit.set('sprite', 'tint', '#ffe066'); this.game.events.emit('selected', { unit }); }
+  }
+}</code></pre>
+<p>Right-click to command: bind <code>&quot;command&quot;: [&quot;Mouse2&quot;]</code> and <code>if (this.input.pressed(&#39;command&#39;) &amp;&amp; this.selected) this.selected.callScripts(&#39;moveTo&#39;, p.worldX, p.worldY)</code>. (Library <code>click-move.js</code> does click-to-move; <code>click-move3d.js</code> in 3D.)</p>
+<h2 id="hover">Hover<a class="anchor" href="#hover">#</a></h2>
+<pre class="code" data-lang="js"><code>Update() {
+  const p = this.input.pointer, over = pickAt(this.scene, p.worldX, p.worldY, 'button');
+  if (over !== this.over) { this.over?.set('sprite', 'tint', '#ffffff'); over?.set('sprite', 'tint', '#ccddff'); this.over = over; }
+}</code></pre>
+<p>Fine for a mouse; touch has no hover.</p>
+<h2 id="drag-and-drop">Drag and drop<a class="anchor" href="#drag-and-drop">#</a></h2>
+<pre class="code" data-lang="js"><code>Update() {
+  const p = this.input.pointer;
+  if (this.input.pressed('fire')) {
+    this.drag = pickAt(this.scene, p.worldX, p.worldY, 'card');
+    if (this.drag) { this.off = [this.drag.pos[0] - p.worldX, this.drag.pos[1] - p.worldY]; this.drag.pos = [this.drag.pos[0], this.drag.pos[1], 50]; }   // bring to front
+  }
+  if (this.drag &amp;&amp; this.input.down('fire')) this.drag.pos = [p.worldX + this.off[0], p.worldY + this.off[1], 50];
+  if (this.drag &amp;&amp; this.input.released('fire')) {
+    const slot = pickAt(this.scene, p.worldX, p.worldY, 'slot');              // dropped on a slot?
+    if (slot) this.drag.pos = [slot.pos[0], slot.pos[1], 5]; else this.drag.pos = [...this.home];
+    this.drag = null;
+  }
+}</code></pre>
+<p>The library <code>physics-drag.js</code> drags <em>physics</em> bodies with a spring. A complete card game: template <code>card-game</code>.</p>
+<h2 id="drag-select-rectangle">Drag-select rectangle<a class="anchor" href="#drag-select-rectangle">#</a></h2>
+<pre class="code" data-lang="js"><code>if (this.input.pressed('fire')) this.start = [p.worldX, p.worldY];
+if (this.input.released('fire') &amp;&amp; this.start) {
+  const [x0, x1] = [this.start[0], p.worldX].sort((a, b) =&gt; a - b), [y0, y1] = [this.start[1], p.worldY].sort((a, b) =&gt; a - b);
+  const picked = this.scene.findByTag('unit').filter((u) =&gt; u.pos[0] &gt;= x0 &amp;&amp; u.pos[0] &lt;= x1 &amp;&amp; u.pos[1] &gt;= y0 &amp;&amp; u.pos[1] &lt;= y1);
+  this.start = null;
+}</code></pre>
+<h2 id="ui-clicks-vs-world-clicks">UI clicks vs world clicks<a class="anchor" href="#ui-clicks-vs-world-clicks">#</a></h2>
+<p>UI elements (buttons, labels) are HTML on top of the game: a click on a button never reaches the game&#39;s pointer state through the canvas, but the key <code>Mouse0</code> is also set by <code>pointerdown</code> on the canvas only, so a button click does <strong>not</strong> count as a world click. If you make an area that must block clicks (an inventory panel), put it in a UI screen: it is above the canvas.</p>
+<h2 id="3d-picking">3D picking<a class="anchor" href="#3d-picking">#</a></h2>
+<pre class="code" data-lang="js"><code>const hit = this.physics.raycast(camPos, targetPos, { ignore: this.entity });   // ray between two world points
+if (hit) hit.entity.emit('clicked');</code></pre>
+<p>Library <code>click-move3d.js</code> and <code>interact-ray.js</code> already convert the mouse / the crosshair to a ray.</p>
+<h2 id="touch">Touch<a class="anchor" href="#touch">#</a></h2>
+<p>Same code: a finger down is <code>Mouse0</code>. Make hit areas generous (at least 48 px) and avoid hover.</p>
+<div class="pager"><a href="ex-physics-recipes.html"><small>← Previous</small>31 · Physics recipes</a><a href="ex-settings-menu.html"><small>Next →</small>33 · Options menu: volume, language, fullscreen, key rebinding</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#pointer-basics">Pointer basics </a><a href="#which-object-is-under-the-pointer-unity-physics2d-overlappoint-raycasthit2d">Which object is under the pointer? (Unity: Physics2D.OverlapPoint / RaycastHit2D ) </a><a href="#click-to-select">Click to select </a><a href="#hover">Hover </a><a href="#drag-and-drop">Drag and drop </a><a href="#drag-select-rectangle">Drag-select rectangle </a><a href="#ui-clicks-vs-world-clicks">UI clicks vs world clicks </a><a href="#3d-picking">3D picking </a><a href="#touch">Touch </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

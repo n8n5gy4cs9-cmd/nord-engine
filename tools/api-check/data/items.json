@@ -1,0 +1,10 @@
+{
+  "sword": {
+    "title": "Iron sword",
+    "damage": 5
+  },
+  "potion": {
+    "title": "Potion",
+    "heal": 25
+  }
+}

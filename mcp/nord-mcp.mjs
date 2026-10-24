@@ -9,6 +9,7 @@ import readline from 'node:readline';
 import { fileURLToPath } from 'node:url';
 import { projectTools, GUIDE_TOPICS } from './lib/project.mjs';
 import { modelerTools } from './lib/modeler.mjs';
+import { unityTools } from './lib/unity.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const engineRoot = path.resolve(here, '..');
@@ -19,10 +20,12 @@ const VERSION = '0.1.0';
 
 let project = path.resolve(arg('--project') ?? process.env.NORD_PROJECT ?? process.cwd());
 const ctx = { engineRoot, projectRoot: () => project, setProject: (p) => { project = p; }, server: null, call: (n, a) => tools.get(n).handler(a, ctx) };
-const list = [...(only === 'modeler' ? [] : projectTools(ctx)), ...(only === 'project' ? [] : modelerTools(ctx))];
+const list = [...(only === 'modeler' ? [] : [...projectTools(ctx), ...unityTools(ctx)]), ...(only === 'project' ? [] : modelerTools(ctx))];
 const tools = new Map(list.map((t) => [t.name, t]));
 
 const PROMPTS = {
+  'convert-unity-project': { description: 'Convert a Unity project (or tutorial) to a Nord project.', text: (a) => `Convert the Unity project at ${a.path || '(ask the user for the absolute path of the Unity project folder)'} into the open Nord project.\nFirst nord_guide topic "ex-unity-conversion" (the playbook) and "ex-migration", then unity_scan. Plan the order (scenes, prefabs, scripts, UI, audio), use unity_scene_to_nord for each scene/prefab, rewrite every script with unity_cs_outline as the checklist, copy assets, run check_project after each batch, serve_start and verify it plays. List what could not be converted at the end.` },
+  'convert-unity-tutorial': { description: 'Rebuild a Unity tutorial (pasted text/code) in Nord.', text: (a) => `Rebuild this Unity tutorial in the open Nord project: ${a.path || '(ask the user for the tutorial text or link)'}.\nRead nord_guide topic "ex-unity-conversion" and "ex-migration" first. Translate each step (scene setup, components, C# scripts) to Nord scenes, entities and scripts; use unity_cs_outline on pasted C#; run check_project after each step and test the result.` },
   'make-a-game': { description: 'Plan and build a complete game with Nord.', text: (a) => `Build a complete, playable game: ${a.idea || '(ask the user what game)'}.\nFirst call nord_guide (no topic), then follow its loop: pick a template with project_templates, create the project, add scenes/entities/scripts, run check_project after each batch, serve_start, and build_project at the end. Use the modeler_* tools and modeler_preview for any 3D props. Keep a short todo list and finish every item.` },
   'model-a-prop': { description: 'Model and texture a 3D prop with the Modeler tools and put it in a scene.', text: (a) => `Model "${a.prop || 'a prop'}" for the open Nord project using the modeler_* tools. Build it from primitives, unwrap, texture it, check it with modeler_preview (iso, front, top), fix problems, then modeler_save and add it to the scene with scene_add_entity (model component).` },
 };
@@ -40,7 +43,7 @@ async function handle(msg) {
     }
     case 'resources/list': return { resources: Object.keys(GUIDE_TOPICS).map((k) => ({ uri: `nord://guide/${k}`, name: `Nord guide: ${k}`, mimeType: 'text/markdown' })) };
     case 'resources/read': { const k = String(params.uri || '').replace('nord://guide/', ''); const text = tools.get('nord_guide') ? await tools.get('nord_guide').handler({ topic: k }, ctx) : 'guide tool not enabled'; return { contents: [{ uri: params.uri, mimeType: 'text/markdown', text }] }; }
-    case 'prompts/list': return { prompts: Object.entries(PROMPTS).map(([name, p]) => ({ name, description: p.description, arguments: [{ name: name === 'make-a-game' ? 'idea' : 'prop', required: false }] })) };
+    case 'prompts/list': return { prompts: Object.entries(PROMPTS).map(([name, p]) => ({ name, description: p.description, arguments: [{ name: name === 'make-a-game' ? 'idea' : name.startsWith('convert') ? 'path' : 'prop', required: false }] })) };
     case 'prompts/get': { const p = PROMPTS[params.name]; if (!p) throw Object.assign(new Error('Unknown prompt'), { code: -32602 }); return { description: p.description, messages: [{ role: 'user', content: { type: 'text', text: p.text(params.arguments || {}) } }] }; }
     default: if (id === undefined) return undefined; throw Object.assign(new Error(`Method not found: ${method}`), { code: -32601 });
   }

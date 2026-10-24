@@ -107,7 +107,11 @@ export class Game {
   }
   async loadScene(path = this.project.startScene, { preservePersistent = true, reset = false } = {}) {
     if (!this._i18nReady) { this._i18nReady = true; await this.i18n.init(); await loadAddons(this); }
-    const kept = (preservePersistent ? (this.scene?.roots ?? []) : []).flatMap((r) => [...r.all()]).filter((e) => e.behavior('Persist') && !e.parent).map((e) => e.toJSON());
+    // Persist: the object comes back in the next scene from its data, and every script gets its own field values back
+    // (score, lives, inventory…) after its init() ran, like Unity's DontDestroyOnLoad keeps the instance state.
+    const keptEnts = (preservePersistent ? (this.scene?.roots ?? []) : []).flatMap((r) => [...r.all()]).filter((e) => e.behavior('Persist') && !e.parent);
+    const kept = keptEnts.map((e) => e.toJSON());
+    const keptState = keptEnts.map((e) => e.scripts.filter((s) => s._path).map((s) => { const o = { ...s }; for (const k of ['entity', 'attrs', '_started', '_path', '_co', '_inv']) delete o[k]; return o; }));
     this.effects.clear('scene'); this.effects.prune();
     this.scene?.destroy();
     this.events.emit('sceneUnload', this.scene?.name);
@@ -120,10 +124,11 @@ export class Game {
     const scene = new Scene(this, structuredClone(await this.loadJSON(path)));
     this.scene = scene;
     await scene.build();
-    for (const d of kept) { // Persist behavior: the surviving instance replaces the layout's own copy of the same name
+    for (const [i, d] of kept.entries()) { // Persist behavior: the surviving instance replaces the layout's own copy of the same name
       const dup = scene.roots.find((r) => r.name === d.name && r.behavior('Persist'));
       if (dup) dup.destroy();
-      await scene.spawnData(d);
+      const e = await scene.spawnData(d);
+      e.scripts.forEach((s, j) => { if (keptState[i][j]) s._restoreState = keptState[i][j]; });
     }
     this.effects.addAll('scene', scene.settings.effects);
     for (const e of scene.all()) if (e._effectData?.length) this.effects.addAll(e, e._effectData);

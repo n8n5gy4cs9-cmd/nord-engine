@@ -589,7 +589,7 @@ export function focus(all) {
 
 // ---------- offscreen model thumbnails ----------
 async function renderThumb(path, sha) {
-  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const c = document.createElement('canvas'); c.width = c.height = 256;
   const eng = new B.Engine(c, true, { preserveDrawingBuffer: true });
   try {
     const sc = new B.Scene(eng); sc.clearColor = new B.Color4(0.16, 0.18, 0.22, 1);

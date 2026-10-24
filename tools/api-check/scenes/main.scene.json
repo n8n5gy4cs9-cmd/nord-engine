@@ -1,0 +1,297 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "a0000001",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          480,
+          270,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "zoom": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "a0000002",
+      "name": "Hero",
+      "enabled": true,
+      "tags": [
+        "player",
+        "alive"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          100,
+          100,
+          5
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            20,
+            20
+          ],
+          "tint": "#ffffff",
+          "alpha": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1,
+          "drag": 0,
+          "gravityScale": 0
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            20,
+            20
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/probe.js",
+          "attributes": {
+            "speed": 7,
+            "label": "hi"
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "a0000003",
+      "name": "Label",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          10,
+          10,
+          5
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "text",
+          "text": "x",
+          "size": 16,
+          "color": "#ffffff"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "a0000004",
+      "name": "Parent",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          200,
+          200,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [],
+      "children": [
+        {
+          "id": "a0000005",
+          "name": "Kid",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              10,
+              0,
+              0
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "sprite",
+              "texture": "assets/sprites/square.png",
+              "size": [
+                20,
+                20
+              ],
+              "tint": "#ffffff",
+              "alpha": 1
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        }
+      ],
+      "prefab": null
+    },
+    {
+      "id": "a0000006",
+      "name": "Ground",
+      "enabled": true,
+      "tags": [
+        "solid"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          480,
+          520,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            960,
+            20
+          ],
+          "tint": "#445566",
+          "alpha": 1
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            960,
+            20
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "a0000007",
+      "name": "Keeper",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/keeper.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null,
+      "behaviors": [
+        {
+          "type": "Persist",
+          "properties": {},
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}

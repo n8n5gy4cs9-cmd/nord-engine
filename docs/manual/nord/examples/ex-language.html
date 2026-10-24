@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>30 · C# to JavaScript: the language side by side — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html" class="cur" aria-current="page">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>30 · C# to JavaScript: the language side by side</h1>
+<p>You do not need to learn &quot;all of JavaScript&quot;. These are the C# habits and what to write instead, so a Unity script converts line by line.</p>
+<h2 id="classes-fields-constructors">Classes, fields, constructors<a class="anchor" href="#classes-fields-constructors">#</a></h2>
+<pre class="code" data-lang="cs"><code>public class Enemy : Character {
+    public int hp = 10;
+    private float speed;
+    public Enemy(float s) { speed = s; }
+    public override void Hit(int n) { base.Hit(n); hp -= n; }
+}</code></pre>
+<pre class="code" data-lang="js"><code>class Enemy extends Character {
+  hp = 10;                                   // a field (public by default)
+  #speed;                                    // # makes it private (really private)
+  constructor(s) { super(); this.#speed = s; }
+  Hit(n) { super.Hit(n); this.hp -= n; }     // no &quot;override&quot; keyword: same name = override
+}</code></pre>
+<p>In Nord, <strong>scripts</strong> are classes that extend <code>NordScript</code> or <code>MonoBehaviour</code>; you do not write constructors for them (use <code>Awake</code> / <code>init</code>). Plain helper classes (no engine base) are fine and need <code>new</code>.</p>
+<h2 id="visibility-and-static">Visibility and static<a class="anchor" href="#visibility-and-static">#</a></h2>
+<p><code>public</code>/<code>private</code> keywords do not exist. Convention: a leading <code>_</code> (&quot;please do not touch&quot;) or <code>#private</code> fields. <code>static</code> works the same: <code>static count = 0; static Create() {}</code> called as <code>Enemy.Create()</code>. A class-level constant: <code>static MAX = 10</code>.</p>
+<h2 id="interfaces-and-abstract-classes">Interfaces and abstract classes<a class="anchor" href="#interfaces-and-abstract-classes">#</a></h2>
+<p>There are no interfaces. Use <strong>duck typing</strong>: if it has the method, call it.</p>
+<pre class="code" data-lang="cs"><code>interface IDamageable { void TakeDamage(int n); }
+if (other.TryGetComponent&lt;IDamageable&gt;(out var d)) d.TakeDamage(5);</code></pre>
+<pre class="code" data-lang="js"><code>const target = other.getScript(Health);          // a concrete class, or:
+other.callScripts('takeDamage', 5);              // calls it on every script that has that method (SendMessage style)
+other.emit('damage', { amount: 5 });             // or an event: anything that listens reacts</code></pre>
+<p>Abstract base: a base class whose methods <code>throw new Error(&#39;override me&#39;)</code>.</p>
+<h2 id="properties">Properties<a class="anchor" href="#properties">#</a></h2>
+<pre class="code" data-lang="cs"><code>public int Hp { get; private set; }
+public bool Alive =&gt; Hp &gt; 0;</code></pre>
+<pre class="code" data-lang="js"><code>get alive() { return this.hp &gt; 0; }              // getter (no parentheses when you read it: this.alive)
+set hp(v) { this._hp = Math.max(0, v); }         // setter</code></pre>
+<h2 id="enums">Enums<a class="anchor" href="#enums">#</a></h2>
+<pre class="code" data-lang="cs"><code>enum State { Idle, Run, Jump }   var s = State.Run;</code></pre>
+<pre class="code" data-lang="js"><code>const State = Object.freeze({ Idle: 'idle', Run: 'run', Jump: 'jump' });   // string &quot;enum&quot;: easy to log
+let s = State.Run;  if (s === State.Run) { /* … */ }</code></pre>
+<p>Inspector dropdown: <code>{ type: &#39;enum&#39;, options: [&#39;idle&#39;, &#39;run&#39;, &#39;jump&#39;], default: &#39;idle&#39; }</code>.</p>
+<h2 id="variables-types-null">Variables, types, null<a class="anchor" href="#variables-types-null">#</a></h2>
+<pre class="code" data-lang="cs"><code>int a = 5; float f = 1.5f; string s = &quot;x&quot;; bool b = true; var list = new List&lt;int&gt;();</code></pre>
+<pre class="code" data-lang="js"><code>let a = 5, f = 1.5, s = 'x', b = true;     // let = changeable, const = fixed reference (the object's insides can still change)
+const list = [];</code></pre>
+<p>There is one number type. Integer division: <code>Math.trunc(7 / 2)</code> → 3. <code>null</code> and <code>undefined</code> both mean &quot;nothing&quot;: <code>x ?? 5</code> (default when null/undefined), <code>x?.y</code> (safe access), <code>x ||= 5</code> (assign default).</p>
+<h2 id="collections-and-linq">Collections and LINQ<a class="anchor" href="#collections-and-linq">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>C#</th>
+<th>JavaScript</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>List&lt;T&gt;</code>, <code>T[]</code></td>
+<td><code>Array</code>: <code>push</code>, <code>pop</code>, <code>shift</code>, <code>splice</code>, <code>includes</code>, <code>indexOf</code>, <code>length</code></td>
+</tr>
+<tr>
+<td><code>Dictionary&lt;K,V&gt;</code></td>
+<td><code>Map</code> (<code>set/get/has/delete</code>) or a plain object <code>{ key: value }</code></td>
+</tr>
+<tr>
+<td><code>HashSet&lt;T&gt;</code></td>
+<td><code>Set</code> (<code>add/has/delete</code>)</td>
+</tr>
+<tr>
+<td><code>foreach (var x in list)</code></td>
+<td><code>for (const x of list)</code></td>
+</tr>
+<tr>
+<td><code>for (int i = 0; i &lt; n; i++)</code></td>
+<td>same</td>
+</tr>
+<tr>
+<td><code>list.Where(x =&gt; x &gt; 1)</code></td>
+<td><code>list.filter((x) =&gt; x &gt; 1)</code></td>
+</tr>
+<tr>
+<td><code>list.Select(x =&gt; x * 2)</code></td>
+<td><code>list.map((x) =&gt; x * 2)</code></td>
+</tr>
+<tr>
+<td><code>list.FirstOrDefault(x =&gt; ...)</code></td>
+<td><code>list.find((x) =&gt; ...)</code> (undefined when none)</td>
+</tr>
+<tr>
+<td><code>list.Any(...)</code> / <code>All(...)</code></td>
+<td><code>list.some(...)</code> / <code>list.every(...)</code></td>
+</tr>
+<tr>
+<td><code>list.OrderBy(x =&gt; x.hp)</code></td>
+<td><code>[...list].sort((a, b) =&gt; a.hp - b.hp)</code> (sort changes the array: copy first)</td>
+</tr>
+<tr>
+<td><code>list.Sum(x =&gt; x.hp)</code></td>
+<td><code>list.reduce((t, x) =&gt; t + x.hp, 0)</code></td>
+</tr>
+<tr>
+<td><code>list.Count</code> / <code>Count(pred)</code></td>
+<td><code>list.length</code> / <code>list.filter(pred).length</code></td>
+</tr>
+<tr>
+<td><code>list.Contains(x)</code></td>
+<td><code>list.includes(x)</code></td>
+</tr>
+<tr>
+<td><code>string.Join(&quot;,&quot;, list)</code></td>
+<td><code>list.join(&#39;,&#39;)</code></td>
+</tr>
+<tr>
+<td><code>new int[5]</code></td>
+<td><code>new Array(5).fill(0)</code> or <code>Array.from({ length: 5 }, () =&gt; 0)</code></td>
+</tr>
+<tr>
+<td><code>(a, b)</code> tuple</td>
+<td><code>[a, b]</code> array, destructured: <code>const [a, b] = f();</code></td>
+</tr>
+</tbody></table>
+<h2 id="strings">Strings<a class="anchor" href="#strings">#</a></h2>
+<p><code>$&quot;HP {hp}/{max}&quot;</code> → <code>`HP ${hp}/${max}`</code> (backticks). <code>s.Length</code> → <code>s.length</code>; <code>s.Substring(1, 3)</code> → <code>s.slice(1, 4)</code>; <code>s.Split(&#39;,&#39;)</code> → <code>s.split(&#39;,&#39;)</code>; <code>s.ToUpper()</code> → <code>s.toUpperCase()</code>; <code>float.ToString(&quot;F1&quot;)</code> → <code>n.toFixed(1)</code>; <code>int.Parse(&quot;5&quot;)</code> → <code>Number(&#39;5&#39;)</code> or <code>parseInt(&#39;5&#39;, 10)</code>.</p>
+<h2 id="delegates-events-lambdas">Delegates, events, lambdas<a class="anchor" href="#delegates-events-lambdas">#</a></h2>
+<pre class="code" data-lang="cs"><code>public event Action&lt;int&gt; OnHit;   OnHit += Handler;   OnHit?.Invoke(5);   Action a = () =&gt; Debug.Log(&quot;x&quot;);</code></pre>
+<pre class="code" data-lang="js"><code>this.entity.emit('hit', 5);   const off = this.entity.on('hit', (n) =&gt; this.log(n));   off();   const a = () =&gt; this.log('x');</code></pre>
+<p>Arrow functions (<code>(x) =&gt; x + 1</code>) are lambdas. Always use them for callbacks inside scripts so <code>this</code> stays your script (<a href="ex-migration.html">Migration</a>).</p>
+<h2 id="generics-and-types">Generics and types<a class="anchor" href="#generics-and-types">#</a></h2>
+<p>There are none: one function works with any value. <code>GetComponent&lt;Health&gt;()</code> becomes <code>getScript(Health)</code> (pass the class). If you want documentation of types, JSDoc comments (<code>/** @param {number} n */</code>) help the editor.</p>
+<h2 id="exceptions">Exceptions<a class="anchor" href="#exceptions">#</a></h2>
+<p><code>try { ... } catch (e) { this.error(e.message); } finally { ... }</code> works like C#. <code>throw new Error(&#39;message&#39;)</code>. A script that throws in <code>update</code> is caught by the engine and shown in the Console; the game continues.</p>
+<h2 id="async-await-instead-of-task">async / await instead of Task<a class="anchor" href="#async-await-instead-of-task">#</a></h2>
+<pre class="code" data-lang="cs"><code>async Task Load() { var t = await Download(); }</code></pre>
+<pre class="code" data-lang="js"><code>async load() { const data = await this.game.loadJSON('data/items.json'); }</code></pre>
+<p><code>await</code> pauses <em>this function</em> until the Promise is done. It is for loading, not for game timing (use coroutines). Run several in parallel: <code>await Promise.all([a(), b()])</code>.</p>
+<h2 id="equality-copying-comparing">Equality, copying, comparing<a class="anchor" href="#equality-copying-comparing">#</a></h2>
+<p><code>===</code> strict equality (never <code>==</code>). Objects and arrays are compared by identity; copy with <code>[...arr]</code>, <code>{ ...obj }</code> (shallow) or <code>structuredClone(x)</code> (deep). <code>Vector3</code> equality: compare numbers or use <code>Vector3.Distance(a, b) &lt; 0.001</code>.</p>
+<h2 id="math">Math<a class="anchor" href="#math">#</a></h2>
+<p><code>Mathf.Sin</code> → <code>Math.sin</code> (radians; convert with <code>deg2rad</code> / <code>rad2deg</code> from <code>&#39;nord&#39;</code>), <code>Mathf.Abs</code> → <code>Math.abs</code>, <code>Mathf.Max/Min</code> → <code>Math.max/min</code>, <code>Mathf.Clamp</code> → <code>clamp</code> (import from <code>&#39;nord&#39;</code>), <code>Mathf.Lerp</code> → <code>lerp</code>, <code>Mathf.Floor</code> → <code>Math.floor</code>, <code>Mathf.PI</code> → <code>Math.PI</code>, <code>Random.Range(a, b)</code> → <code>this.rng.range(a, b)</code> (float) / <code>this.rng.int(a, b)</code> (integer, both ends included).</p>
+<h2 id="namespaces-and-files">Namespaces and files<a class="anchor" href="#namespaces-and-files">#</a></h2>
+<p>One class per file, <code>export default class X</code>, and <code>import X from &#39;./x.js&#39;</code> where you use it. There is no <code>using</code>, no namespace and no assembly. Helpers that are not classes: <code>export function f() {}</code> and <code>import { f } from &#39;./util.js&#39;</code>.</p>
+<h2 id="unity-attributes">Unity attributes<a class="anchor" href="#unity-attributes">#</a></h2>
+<p><code>[SerializeField]</code> / <code>public</code> fields → <code>static attributes = { name: { type, default } }</code>. <code>[Range(0,10)]</code> → <code>min</code> / <code>max</code>. <code>[Header(&quot;x&quot;)]</code> → <code>label</code>. <code>[Tooltip(&quot;x&quot;)]</code> → <code>description</code>. <code>[RequireComponent(typeof(Rigidbody))]</code> → just add the component to the object. <code>[ContextMenu]</code>, custom editors, <code>[ExecuteInEditMode]</code>: not available.</p>
+<div class="pager"><a href="ex-editor-for-unity-users.html"><small>← Previous</small>29 · The editor for Unity users</a><a href="ex-physics-recipes.html"><small>Next →</small>31 · Physics recipes</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#classes-fields-constructors">Classes, fields, constructors </a><a href="#visibility-and-static">Visibility and static </a><a href="#interfaces-and-abstract-classes">Interfaces and abstract classes </a><a href="#properties">Properties </a><a href="#enums">Enums </a><a href="#variables-types-null">Variables, types, null </a><a href="#collections-and-linq">Collections and LINQ </a><a href="#strings">Strings </a><a href="#delegates-events-lambdas">Delegates, events, lambdas </a><a href="#generics-and-types">Generics and types </a><a href="#exceptions">Exceptions </a><a href="#async-await-instead-of-task">async / await instead of Task </a><a href="#equality-copying-comparing">Equality, copying, comparing </a><a href="#math">Math </a><a href="#namespaces-and-files">Namespaces and files </a><a href="#unity-attributes">Unity attributes </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

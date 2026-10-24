@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>34 · 3D: controllers, cameras, vehicles and interaction — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html" class="cur" aria-current="page">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>34 · 3D: controllers, cameras, vehicles and interaction</h1>
+<p>Most 3D games start from one of these ready-made controllers. Insert the script from the <strong>Library</strong> tab onto the player (or camera) and tune its attributes in the Inspector; open the file to learn how it works (they are short).</p>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord library script</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FPS Controller (CharacterController + mouse look)</td>
+<td><code>fps3d.js</code> (+ <code>mouse-capture.js</code> for pointer lock)</td>
+</tr>
+<tr>
+<td>Third-person (Cinemachine FreeLook)</td>
+<td><code>third-person3d.js</code>, <code>orbit-cam.js</code>, <code>camera-follow3d.js</code></td>
+</tr>
+<tr>
+<td>3D platformer</td>
+<td><code>platformer3d.js</code></td>
+</tr>
+<tr>
+<td>Car / vehicle</td>
+<td><code>vehicle3d.js</code> (2D: <code>car2d.js</code>), tank: <code>tank.js</code></td>
+</tr>
+<tr>
+<td>Space / flying</td>
+<td><code>spaceship6dof.js</code>, <code>fly-cam.js</code>, <code>swim-fly.js</code></td>
+</tr>
+<tr>
+<td>RTS camera and click-to-move</td>
+<td><code>rts-cam.js</code>, <code>click-move3d.js</code></td>
+</tr>
+<tr>
+<td>Rolling ball</td>
+<td><code>marble3d.js</code></td>
+</tr>
+<tr>
+<td>Look-at-and-press-E</td>
+<td><code>interact-ray.js</code></td>
+</tr>
+<tr>
+<td>Hitscan weapon</td>
+<td><code>physics-hitscan.js</code></td>
+</tr>
+</tbody></table>
+<p>Templates to copy: <code>platformer-3d</code>, <code>fps-arena</code>, <code>racing</code>, <code>tank-patrol</code>. Example projects: <code>examples/fps-arena</code>, <code>examples/platformer3d</code>, <code>examples/automies</code> (a 3D driving game).</p>
+<h2 id="a-minimal-first-person-player">A minimal first-person player<a class="anchor" href="#a-minimal-first-person-player">#</a></h2>
+<p>Project type <code>3d</code>. Player object with <code>rigidbody</code> (mode dynamic) + <code>collider</code> (capsule), the camera as a <strong>child</strong> at <code>[0, 1.6, 0]</code>, and the library <code>fps3d.js</code> on the player: WASD to move, the mouse to look (click the game once to capture the pointer), Space to jump. Attributes: <code>speed</code>, <code>jump</code>, <code>sensitivity</code>.</p>
+<h2 id="look-at-and-press-e">Look-at-and-press-E<a class="anchor" href="#look-at-and-press-e">#</a></h2>
+<p>Add the library <code>interact-ray.js</code> to the player (or camera). It casts a ray from the camera, shows a prompt and, on the <code>interact</code> action (bind <code>&quot;interact&quot;: [&quot;KeyE&quot;]</code>), emits an event on the object it looks at. The objects only listen:</p>
+<pre class="code" data-lang="js"><code>// a door
+start() { this.entity.on('interact', () =&gt; { this.entity.enabled = false; }); }      // open: hide it (or play an animation, or load a scene)
+// a pick-up
+start() { this.entity.on('interact', () =&gt; { GameManager.instance.AddScore(1); this.entity.destroy(); }); }</code></pre>
+<p>Doing the ray yourself: <code>this.physics.raycast(fromXYZ, toXYZ, { ignore: this.entity })</code> returns <code>{ entity, point, normal, distance }</code> (<a href="ex-collisions.html">Collisions</a>); <code>from</code> is the camera&#39;s <code>worldPos</code>, <code>to</code> a point in front of it.</p>
+<h2 id="lights-shadows-sky">Lights, shadows, sky<a class="anchor" href="#lights-shadows-sky">#</a></h2>
+<ul>
+<li><code>light</code> component: <code>kind</code> directional (sun), point, spot, hemispheric (ambient); <code>castShadows</code> on a directional / spot light turns shadows on for objects whose <code>mesh</code>/<code>model</code> has <code>shadow</code> on.</li>
+<li><code>skybox</code> component (<code>assets/skybox/day</code>, <code>sunset</code>, <code>night</code> ship with the engine), <code>postProcess</code> (bloom, fxaa, vignette, tonemap, grain).</li>
+<li>Time of day: library <code>proc-daynight.js</code>; weather <code>proc-weather.js</code>; fog <code>proc-fog.js</code>.</li>
+</ul>
+<pre class="code" data-lang="js"><code>this.scene.find('Sun').set('light', 'intensity', 0.6);                    // change at runtime
+this.scene.find('Sun').rot = [50, t * 20, 0];                              // rotate the sun for a day cycle (degrees)</code></pre>
+<h2 id="materials-and-shaders">Materials and shaders<a class="anchor" href="#materials-and-shaders">#</a></h2>
+<p><code>material</code> component or a shared <code>*.mat.json</code> (colour, metallic, roughness, texture, normal map, emissive, alpha, uv scale, double-sided, unlit) set in the Inspector (with a lit preview). Custom shader snippets in <code>library/shaders/</code> (outline, toon, dissolve, water, hologram, fresnel rim, triplanar, scroll uv, wind sway, CRT) with usage notes in the Library tab.</p>
+<h2 id="models-and-animation">Models and animation<a class="anchor" href="#models-and-animation">#</a></h2>
+<p>Import <code>.glb</code> into <code>assets/</code> or <code>models/</code>; drag onto the Scene. Animations: <code>entity.getComponent(&#39;model&#39;).play(&#39;Walk&#39;)</code> or an Animator controller (<a href="ex-animation.html">Animation</a>). Make or fix props yourself in the <a href="../manual/modeler.html">3D Modeler</a>.</p>
+<h2 id="2-5d-and-mixed">2.5D and mixed<a class="anchor" href="#2-5d-and-mixed">#</a></h2>
+<p>A 3D project can use sprites; a 2D project cannot use meshes. For a 2.5D side-scroller use a 3D project, <code>platformer3d.js</code> and lock movement to two axes.</p>
+<h2 id="performance-in-3d">Performance in 3D<a class="anchor" href="#performance-in-3d">#</a></h2>
+<p>Reuse models and materials (instancing is automatic), one shadow-casting light, small textures, <code>postProcess</code> sparingly, pool bullets. See <a href="../manual/performance.html">Performance</a> and <a href="ex-optimization-testing.html">Optimising and testing</a>.</p>
+<div class="pager"><a href="ex-settings-menu.html"><small>← Previous</small>33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-architecture.html"><small>Next →</small>35 · Structuring a bigger game: patterns you know from Unity</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#a-minimal-first-person-player">A minimal first-person player </a><a href="#look-at-and-press-e">Look-at-and-press-E </a><a href="#lights-shadows-sky">Lights, shadows, sky </a><a href="#materials-and-shaders">Materials and shaders </a><a href="#models-and-animation">Models and animation </a><a href="#2-5d-and-mixed">2.5D and mixed </a><a href="#performance-in-3d">Performance in 3D </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

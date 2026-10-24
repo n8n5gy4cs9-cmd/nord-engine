@@ -77,7 +77,7 @@ Two entries are possible: `nord` (everything) and `nord-modeler` (`--only modele
 ## Safety
 File tools are jailed to the project folder (no `..`, symlinks resolved, `.git`/`target`/`node_modules` protected, 8 MB limit, JSON validated). There is no delete tool and no shell tool. `serve_start` runs only `nord serve` on the project.
 
-## Tools (39)
+## Tools (42)
 ### Project, scenes and guidance
 ### `nord_guide`
 READ THIS FIRST. Guidance for making games with Nord Engine. No topic: the workflow guide and the topic list. With a topic: the matching engine documentation (always the current text from the engine's docs/). Also accepts "docs/<file>.md" or "tut-t05-physics" style names.
@@ -183,6 +183,21 @@ Parameters: `port` (integer)
 Stop the dev server started by serve_start.
 
 No parameters.
+
+### `unity_scan`
+Read-only inventory of a Unity project folder (the one with Assets/ and ProjectSettings/): Unity version, packages, scenes in build order, prefabs, every C# script with classes/base types/serialized fields/lifecycle/Unity APIs used, assets by type, tags, layers, input axes, physics gravity. Use it FIRST when converting a Unity project; then read the nord_guide topic "ex-unity-conversion". Never modifies the Unity folder.
+
+Parameters: `path`* (string)
+
+### `unity_cs_outline`
+Outline of one C# file (or pasted C# source): classes, base types, [SerializeField]/public fields with defaults, lifecycle methods, coroutines and which Unity systems it touches. Use it before rewriting a script as a Nord script.
+
+Parameters: `path` (string), `source` (string)
+
+### `unity_scene_to_nord`
+Convert a Unity .unity scene or .prefab (text YAML) into a Nord scene/prefab skeleton: GameObjects become entities with the hierarchy, position/rotation/scale, tag, layer, active flag, sprite/camera/collider/rigidbody components, and scripts whose GUID resolves to a .cs file become script references with the serialized values. Unity units are converted: 2D positions to pixels (y flipped; default 100 px per unit, set pixelsPerUnit). Conservative: anything it cannot map is listed in "todo". Writes a Nord file in the open project only when out is given (never overwrites); otherwise returns the JSON. Review the result, then finish by hand with scene_update_entity.
+
+Parameters: `unityProject`* (string), `file`* (string), `pixelsPerUnit` (number), `out` (string)
 
 ### 3D Modeler
 ### `modeler_list`

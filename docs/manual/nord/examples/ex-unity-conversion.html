@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>41 · Convert a Unity project or tutorial (for you and for AI) — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html" class="cur" aria-current="page">41 · Convert a Unity project or tutorial (for you and for AI)</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>41 · Convert a Unity project or tutorial (for you and for AI)</h1>
+<p>This page is the <strong>playbook</strong> for moving a Unity game (or following a Unity tutorial) into Nord. It is written for a person <em>and</em> for an AI agent: give the AI this page (<code>nord_guide {topic:&quot;unity-conversion&quot;}</code> over MCP) and it can do most of the work.</p>
+<h2 id="the-7-steps">The 7 steps<a class="anchor" href="#the-7-steps">#</a></h2>
+<ol>
+<li><strong>Inventory</strong> the Unity project. With MCP: <code>unity_scan {path}</code>. By hand: list <code>Assets/Scenes</code>, <code>Assets/Prefabs</code>, every <code>.cs</code> file, <code>Packages/manifest.json</code>, <code>ProjectSettings/TagManager.asset</code> (tags and layers), <code>InputManager.asset</code> (axes).</li>
+<li><strong>Create the Nord project</strong> (<code>project_new</code>, pick the 2D or 3D template) and set the display size to match the Unity Game view.</li>
+<li><strong>Copy assets</strong>: sprites to <code>assets/</code>, audio to <code>assets/</code>, models (<code>.glb</code>/<code>.fbx</code> converted to <code>.glb</code>) to <code>models/</code>. Skip <code>.meta</code>, <code>Library/</code>, <code>Temp/</code>.</li>
+<li><strong>Convert scenes and prefabs</strong> (<code>unity_scene_to_nord</code>) to get entities, hierarchy, transforms, sprites, colliders and script references. Everything it cannot map is printed in <code>todo</code>.</li>
+<li><strong>Rewrite every script</strong> from C# to a Nord script (rules below). Use <code>unity_cs_outline</code> as the checklist: fields become attributes, lifecycle methods map one to one.</li>
+<li><strong>Rebuild UI, input, audio and settings</strong> (tables below).</li>
+<li><strong>Verify</strong>: <code>check_project</code>, play it (<code>serve_start</code>), compare against the Unity build side by side, tick the checklist at the end.</li>
+</ol>
+<h2 id="what-maps-to-what">What maps to what<a class="anchor" href="#what-maps-to-what">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>.unity</code> scene, <code>.prefab</code> (YAML)</td>
+<td><code>scenes/*.scene.json</code>, <code>prefabs/*.prefab.json</code></td>
+</tr>
+<tr>
+<td>GUID in <code>.meta</code> files</td>
+<td>not needed: Nord references files by project path</td>
+</tr>
+<tr>
+<td><code>GameObject</code> + components</td>
+<td>entity + components (<code>sprite</code>, <code>collider</code>, <code>rigidbody</code>, <code>camera</code>, <code>light</code>, <code>audioSource</code>, ...)</td>
+</tr>
+<tr>
+<td><code>MonoBehaviour</code></td>
+<td>script class extending <code>NordScript</code> (or <code>MonoBehaviour</code> from the Unity layer, see <a href="ex-migration.html">Migration</a>)</td>
+</tr>
+<tr>
+<td><code>[SerializeField]</code> / public field</td>
+<td>field in the class, shown in the Inspector (<code>attributes</code> in the scene file)</td>
+</tr>
+<tr>
+<td><code>ScriptableObject</code></td>
+<td>JSON file in <code>data/</code> loaded with <code>game.assets</code> (see <a href="ex-data-assets.html">Data assets</a>)</td>
+</tr>
+<tr>
+<td><code>Canvas</code> + UGUI/TextMeshPro</td>
+<td>a <code>.ui.json</code> scene made in the UI Designer (<a href="ex-ui-hud.html">HUD</a>)</td>
+</tr>
+<tr>
+<td><code>Input.GetAxis</code> / Input System</td>
+<td><code>game.input.actions</code> (<a href="ex-input-movement.html">Input</a>)</td>
+</tr>
+<tr>
+<td><code>Animator</code> + controller</td>
+<td>Animator JSON (<a href="ex-animation.html">Animation</a>)</td>
+</tr>
+<tr>
+<td><code>Tilemap</code></td>
+<td>tilemap editor (<a href="ex-tilemap-levels.html">Tilemaps</a>)</td>
+</tr>
+<tr>
+<td>Cinemachine, Packages</td>
+<td><a href="ex-unity-packages.html">Unity packages</a></td>
+</tr>
+<tr>
+<td>Mirror, Netcode, Photon</td>
+<td>rewrite with Nord multiplayer (<a href="ex-multiplayer.html">Multiplayer</a>)</td>
+</tr>
+<tr>
+<td><code>UnityEditor</code> code, custom inspectors</td>
+<td>drop them: the editor is different</td>
+</tr>
+</tbody></table>
+<h2 id="units-axes-and-sizes-the-usual-2d-traps">Units, axes and sizes (the usual 2D traps)<a class="anchor" href="#units-axes-and-sizes-the-usual-2d-traps">#</a></h2>
+<ul>
+<li><strong>Pixels, not units.</strong> Unity 2D uses world units (default 100 pixels per unit, see the sprite import setting). Nord 2D uses pixels. Multiply positions and sizes by pixels-per-unit. <code>unity_scene_to_nord</code> does this (parameter <code>pixelsPerUnit</code>).</li>
+<li><strong>Y points down in Nord 2D.</strong> Unity Y is up. Flip the sign of Y positions, of upward velocities and of <code>Vector2.up</code> forces. Rotation direction flips too.</li>
+<li><strong>Camera size.</strong> Unity &quot;Orthographic Size 5&quot; shows 10 units of height. In Nord set the display height (e.g. 1000 px at 100 px/unit) and the camera zoom.</li>
+<li><strong>Gravity</strong> is in px/s^2: Unity <code>-9.81</code> units/s^2 is about <code>981</code> px/s^2 downwards at 100 px/unit.</li>
+<li><strong>3D keeps world units and Y up.</strong> Rotations are in degrees. Check the model&#39;s forward axis after importing.</li>
+<li><strong>Z order:</strong> Unity sorting layers / order in layer become entity <code>layer</code> and the sprite&#39;s draw order. Check that the background really is behind.</li>
+</ul>
+<h2 id="c-to-nord-script-the-rules">C# to Nord script: the rules<a class="anchor" href="#c-to-nord-script-the-rules">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>C#</th>
+<th>Nord JS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>class Player : MonoBehaviour</code></td>
+<td><code>export default class Player extends NordScript</code></td>
+</tr>
+<tr>
+<td><code>Awake / Start / Update / FixedUpdate / LateUpdate</code></td>
+<td><code>init / start / update(dt) / fixedUpdate(dt) / lateUpdate(dt)</code> (lowercase)</td>
+</tr>
+<tr>
+<td><code>OnEnable / OnDisable / OnDestroy</code></td>
+<td><code>onEnable / onDisable / onDestroy</code></td>
+</tr>
+<tr>
+<td><code>Time.deltaTime</code></td>
+<td>the <code>dt</code> argument</td>
+</tr>
+<tr>
+<td><code>transform.position += v * speed * Time.deltaTime</code></td>
+<td><code>this.entity.x += vx * speed * dt</code></td>
+</tr>
+<tr>
+<td><code>GetComponent&lt;Rigidbody2D&gt;()</code></td>
+<td><code>this.entity.rigidbody</code> / <code>this.entity.setVelocity(x, y)</code></td>
+</tr>
+<tr>
+<td><code>Instantiate(prefab, pos, rot)</code></td>
+<td><code>await this.game.spawn(&#39;prefabs/x.prefab.json&#39;, { x, y })</code> (<a href="ex-spawn-destroy.html">Spawn</a>)</td>
+</tr>
+<tr>
+<td><code>Destroy(go, 2f)</code></td>
+<td><code>entity.destroy()</code> / <code>this.after(2, () =&gt; entity.destroy())</code></td>
+</tr>
+<tr>
+<td><code>StartCoroutine(Routine())</code> + <code>yield return new WaitForSeconds(1)</code></td>
+<td><code>async</code> method with <code>await this.wait(1)</code> (<a href="ex-time-coroutines.html">Coroutines</a>)</td>
+</tr>
+<tr>
+<td><code>OnTriggerEnter2D(Collider2D c)</code> / <code>OnCollisionEnter2D</code></td>
+<td><code>onTriggerEnter(other)</code> / <code>onCollisionEnter(other)</code> (<a href="ex-collisions.html">Collisions</a>)</td>
+</tr>
+<tr>
+<td><code>CompareTag(&quot;Coin&quot;)</code></td>
+<td><code>other.hasTag(&#39;Coin&#39;)</code></td>
+</tr>
+<tr>
+<td><code>FindObjectOfType&lt;T&gt;()</code>, <code>GameObject.Find</code></td>
+<td><code>this.game.find(name)</code> / the singleton (<a href="ex-game-manager.html">Game manager</a>)</td>
+</tr>
+<tr>
+<td><code>public static X Instance</code></td>
+<td><code>Singleton</code> base class</td>
+</tr>
+<tr>
+<td><code>UnityEvent</code>, <code>event Action</code></td>
+<td><code>EventBus</code> / <code>this.on(&#39;name&#39;, fn)</code> (<a href="ex-events.html">Events</a>)</td>
+</tr>
+<tr>
+<td><code>PlayerPrefs</code></td>
+<td><code>PlayerPrefs</code> (same names) or <code>game.save</code> (<a href="ex-save-load.html">Save/load</a>)</td>
+</tr>
+<tr>
+<td><code>SceneManager.LoadScene(&quot;Level2&quot;)</code></td>
+<td><code>this.game.loadScene(&#39;scenes/level2.scene.json&#39;)</code></td>
+</tr>
+<tr>
+<td><code>Debug.Log</code></td>
+<td><code>console.log</code> / <code>Debug.log</code></td>
+</tr>
+<tr>
+<td><code>Random.Range(a, b)</code></td>
+<td><code>this.game.rng.range(a, b)</code> (ints: <code>rng.int</code>)</td>
+</tr>
+<tr>
+<td><code>AudioSource.Play()</code></td>
+<td><code>this.game.audio.play(&#39;assets/x.wav&#39;)</code> (<a href="ex-audio.html">Audio</a>)</td>
+</tr>
+</tbody></table>
+<p>Do not rename a <em>field</em> to a lifecycle name (<code>start</code>, <code>update</code>, ...): it replaces the method (see the migration traps).</p>
+<h2 id="prompt-templates-for-an-ai">Prompt templates for an AI<a class="anchor" href="#prompt-templates-for-an-ai">#</a></h2>
+<p><strong>Whole project</strong></p>
+<blockquote>
+<p>Convert the Unity project at <code>/path/to/UnityProject</code> to my open Nord project. Read the guide topics <code>unity-conversion</code> and <code>ex-migration</code>. Run <code>unity_scan</code>, plan the order (scenes, prefabs, scripts, UI, audio), convert each scene with <code>unity_scene_to_nord</code>, rewrite every script (use <code>unity_cs_outline</code>), run <code>check_project</code> after each batch, and play the result. At the end list what could not be converted.</p>
+</blockquote>
+<p><strong>One tutorial</strong></p>
+<blockquote>
+<p>I am following this Unity tutorial: (paste text and C# code). Build the same thing in my Nord project step by step. Read <code>unity-conversion</code> first. After each step run <code>check_project</code>, and describe how to test it.</p>
+</blockquote>
+<p><strong>One script</strong></p>
+<blockquote>
+<p>Rewrite this C# script as a Nord script. Keep the same field names so the Inspector values still match. Use the mapping table in <code>unity-conversion</code>. (paste C#)</p>
+</blockquote>
+<p>With MCP the prompts <code>convert-unity-project</code> and <code>convert-unity-tutorial</code> give the same instructions.</p>
+<h2 id="verification-checklist">Verification checklist<a class="anchor" href="#verification-checklist">#</a></h2>
+<ul>
+<li><input disabled="" type="checkbox"> <code>check_project</code> reports no errors; the game starts without red console lines.</li>
+<li><input disabled="" type="checkbox"> Same start position, camera framing and background as the Unity Game view.</li>
+<li><input disabled="" type="checkbox"> Movement speed and jump height feel the same (compare numbers after the pixels-per-unit conversion).</li>
+<li><input disabled="" type="checkbox"> Every Unity tag/layer you used is a Nord tag/layer; collision pairs still hit (or ignore) the same objects.</li>
+<li><input disabled="" type="checkbox"> Every serialized prefab reference (<code>coinPrefab: {fileID: 0}</code> in YAML) is assigned again in the Inspector.</li>
+<li><input disabled="" type="checkbox"> Audio plays once, not looped by accident; music starts in the right scene.</li>
+<li><input disabled="" type="checkbox"> UI scales on a small and a large window (<a href="ex-mobile-touch.html">Mobile</a>).</li>
+<li><input disabled="" type="checkbox"> Save, load and scene changes still work (<a href="ex-scenes.html">Scenes</a>).</li>
+<li><input disabled="" type="checkbox"> Build and run the exported game (<a href="ex-build-publish.html">Build</a>).</li>
+</ul>
+<h2 id="what-is-not-converted">What is not converted<a class="anchor" href="#what-is-not-converted">#</a></h2>
+<p>Shaders and Shader Graph (rebuild with the effects library), custom editors, <code>NavMesh</code> bake data, terrain, baked lighting, <code>Animation</code> clips from <code>.anim</code> (recreate in the Animation editor), and anything from a paid asset package: check the package licence before copying its art or code.</p>
+<div class="pager"><a href="ex-procedural.html"><small>← Previous</small>40 · Procedural content and randomness</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#the-7-steps">The 7 steps </a><a href="#what-maps-to-what">What maps to what </a><a href="#units-axes-and-sizes-the-usual-2d-traps">Units, axes and sizes (the usual 2D traps) </a><a href="#c-to-nord-script-the-rules">C# to Nord script: the rules </a><a href="#prompt-templates-for-an-ai">Prompt templates for an AI </a><a href="#verification-checklist">Verification checklist </a><a href="#what-is-not-converted">What is not converted </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>
