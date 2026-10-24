@@ -1,0 +1,6 @@
+{
+  "scale": 1.4,
+  "materials": {
+    "colormap": "assets/materials/worker.mat.json"
+  }
+}

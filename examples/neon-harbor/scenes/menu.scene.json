@@ -522,9 +522,9 @@
           "layer": 0,
           "transform": {
             "pos": [
-              -0.8271,
-              3.3869,
-              0.0573
+              -0.081,
+              2.9867,
+              0.8208
             ],
             "rot": [
               0.0,
@@ -541,9 +541,10 @@
             {
               "type": "light",
               "kind": "point",
-              "intensity": 6.2,
+              "intensity": 24.2,
               "radius": 209.6,
-              "castShadows": true
+              "castShadows": true,
+              "color": "#ff2020"
             }
           ],
           "scripts": [],

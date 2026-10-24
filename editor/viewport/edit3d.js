@@ -491,7 +491,9 @@ function buildEntity(e, parentNode, token) {
 
 export function setScene() {
   buildToken++;
-  iconMeshes = []; colliderMeshes = []; sceneLights = [];
+  iconMeshes = []; colliderMeshes = [];
+  for (const l of sceneLights) if (!l.isDisposed()) l.dispose(); // hemispheric lights have no parent node, so they would pile up on every rebuild
+  sceneLights = [];
   for (const { node } of nodes.values()) { node.getChildMeshes(false).forEach((m) => m.dispose()); }
   for (const { node } of [...nodes.values()].reverse()) node.dispose();
   nodes.clear(); lockedIds.clear(); matCache.clear();

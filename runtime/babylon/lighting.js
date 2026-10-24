@@ -66,7 +66,7 @@ export function allowManyLights(B, scene, max = 8) {
  * inside its range, so a mesh only competes for the lights that actually touch it.
  */
 export function createLightCuller(B, scene, every = 0.25) {
-  let t = 0, none = null, prio = ''; const last = new Map(); // an empty includedOnlyMeshes means "every mesh", so an unreachable light gets a dummy mesh
+  let t = 0, none = null, prio = ''; const last = new WeakMap(); // an empty includedOnlyMeshes means "every mesh", so an unreachable light gets a dummy mesh
   const update = (dt) => {
     t += dt; if (t < every) return; t = 0;
     // when more lights reach one object than its material can use, the strongest win (directional/hemispheric always)

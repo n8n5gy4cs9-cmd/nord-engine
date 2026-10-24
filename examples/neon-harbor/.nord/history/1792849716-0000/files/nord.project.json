@@ -1,0 +1,58 @@
+{
+  "format": 1,
+  "name": "Neon Harbor",
+  "id": "com.crowelian.neonharbor",
+  "type": "3d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/menu.scene.json",
+  "display": {
+    "width": 1280,
+    "height": 720,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#050a18"
+  },
+  "physics": {
+    "engine": "havok",
+    "gravity": [
+      0,
+      -9.81,
+      0
+    ]
+  },
+  "input": {
+    "actions": {
+      "left": [
+        "KeyA",
+        "ArrowLeft"
+      ],
+      "right": [
+        "KeyD",
+        "ArrowRight"
+      ],
+      "up": [
+        "KeyW",
+        "ArrowUp"
+      ],
+      "down": [
+        "KeyS",
+        "ArrowDown"
+      ],
+      "boost": [
+        "ShiftLeft",
+        "ShiftRight"
+      ],
+      "pause": [
+        "KeyP",
+        "Escape"
+      ]
+    }
+  },
+  "plugins": [
+    "ui",
+    "audio"
+  ],
+  "ui": {
+    "theme": "nord"
+  }
+}
