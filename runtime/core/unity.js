@@ -5,6 +5,8 @@ import { NordScript } from './script.js';
 import { Game } from './game.js';
 import { clamp, lerp } from './util.js';
 import { bbox } from './behaviors/util.js';
+import { runtimePlatform, RuntimePlatform, isEditor, isDesktopApp, isMobile, operatingSystem } from './platform.js';
+export { RuntimePlatform };
 
 const game = () => Game.current;
 
@@ -204,6 +206,19 @@ export const Screen = {
   get width() { return globalThis.innerWidth ?? 0; },
   get height() { return globalThis.innerHeight ?? 0; },
 };
+/** Unity's Cursor: `Cursor.lockState = CursorLockMode.Locked` (FPS look), `Cursor.visible = false`. In the editor Esc unlocks (Settings). */
+export const CursorLockMode = Object.freeze({ None: 'None', Locked: 'Locked', Confined: 'Confined' });
+let lockState = 'None', cursorVisible = true;
+const cv = () => globalThis.document?.querySelector('canvas');
+export const Cursor = {
+  get lockState() { return globalThis.document?.pointerLockElement ? 'Locked' : lockState === 'Locked' ? 'None' : lockState; },
+  set lockState(v) {
+    lockState = v;
+    try { if (v === 'Locked') cv()?.requestPointerLock?.(); else globalThis.document?.exitPointerLock?.(); } catch { /* needs a user gesture */ }
+  },
+  get visible() { return cursorVisible; },
+  set visible(v) { cursorVisible = !!v; const c = cv(); if (c) c.style.cursor = v ? '' : 'none'; },
+};
 /** 2D physics queries on the active physics backend. `Physics2D.OverlapBox(center, size)` → array of entities. */
 export const Physics2D = {
   OverlapBox: (c, size) => game()?.physics?.overlapBox?.(c.x, c.y, size.x, size.y) ?? [],
@@ -225,6 +240,17 @@ export const SceneManager = {
 };
 /** `Application.Quit()` stops the game; `Application.targetFrameRate` is informational in the web runtime. */
 export const Application = {
+  /** Unity's RuntimePlatform string: 'OSXEditor' | 'WindowsEditor' | 'LinuxEditor' (in the Nord editor), 'OSXPlayer' | 'WindowsPlayer' | 'LinuxPlayer' (desktop app), 'WebGLPlayer' (browser), 'IPhonePlayer' | 'Android'. */
+  get platform() { return runtimePlatform(); },
+  /** true while playing inside the Nord editor (Unity's `Application.isEditor` / `#if UNITY_EDITOR`). */
+  get isEditor() { return isEditor; },
+  get isMobilePlatform() { return isMobile; },
+  /** true in the exported desktop app (Mac / Windows / Linux shell). */
+  get isDesktopApp() { return isDesktopApp; },
+  /** true when running in a web page (exported web game or the editor's Game view). */
+  get isWebPlayer() { return runtimePlatform() === 'WebGLPlayer' || isEditor; },
+  /** The machine's OS regardless of the shell: 'mac' | 'win' | 'linux' | 'ios' | 'android'. */
+  get os() { return operatingSystem(); },
   Quit: () => game()?.pause(),
   get isPlaying() { return !!game()?.scene?.running; },
 };
@@ -550,4 +576,4 @@ export class ObjectPool {
 }
 
 /** The whole layer as one object (`Unity.Mathf`…), handy for event-sheet expressions and the console. */
-export const Unity = { Mathf, Vector2, Vector3, Color, Random, KeyCode, Screen, Physics2D, GameObject, Time, Debug, Input: UnityInput, PlayerPrefs, SceneManager, Application, EventBus, ScriptableObject };
+export const Unity = { Cursor, CursorLockMode, RuntimePlatform, Mathf, Vector2, Vector3, Color, Random, KeyCode, Screen, Physics2D, GameObject, Time, Debug, Input: UnityInput, PlayerPrefs, SceneManager, Application, EventBus, ScriptableObject };

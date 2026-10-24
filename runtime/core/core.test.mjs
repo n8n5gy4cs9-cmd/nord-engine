@@ -397,3 +397,11 @@ test('Unity smoke: helpers (Random, Color, KeyCode, Vector, Mathf, Instantiate/D
   g.input.pointer.down = false; g.tick(0.016);
   assert.deepEqual(hits, ['down', 'up']);
 });
+
+test('platform: Application.platform / isEditor outside a browser', () => {
+  assert.equal(U.Application.isEditor, false);
+  assert.equal(U.Application.platform, 'WebGLPlayer');
+  assert.ok(['mac', 'win', 'linux'].includes(U.Application.os));
+  assert.equal(U.RuntimePlatform.OSXEditor, 'OSXEditor');
+  assert.equal(U.CursorLockMode.Locked, 'Locked');
+});

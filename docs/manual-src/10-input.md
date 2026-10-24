@@ -40,8 +40,8 @@ An **action** is a job name ("jump") that several buttons can trigger. Your code
 **Codes** are `KeyboardEvent.code` names (`KeyA`, `Space`, `ArrowLeft`, `ShiftLeft`…), `Mouse0/1/2`, `Gamepad0…n` (button index) and
 `GamepadLeft/Right/Up/Down` (left stick past 50 %). Gamepads are polled each frame (first connected pad; dead-zone 0.2).
 
-## Input editor (per project)
-Open the @ui[Project] tab ▸ @ui[Input (actions and keys)]. Every new project starts with the basic map: `left right up down` (WASD + arrows), `jump` (Space/W/Up), `fire` (Space/Mouse0), `interact` (E/Enter). Per project you can:
+## Input Manager (per project)
+This is Nord's version of Unity's **Edit ▸ Project Settings ▸ Input Manager**. Open the @ui[Project] tab (bottom, next to Console; or the Window menu ▸ Project) and scroll to @ui[Input Manager (actions and keys)]. Every new project starts with the basic map: `left right up down` (WASD + arrows), `jump` (Space/W/Up), `fire` (Space/Mouse0), `interact` (E/Enter). Per project you can:
 * press @ui[＋ key], then the key on your keyboard, to bind it; @ui[＋ mouse/pad] adds `Mouse0-2`, `Gamepad0-3`, Shift/Ctrl/Alt; click a key chip to remove it;
 * @ui[Add action] with a new name (then press its first key); the 🗑 button deletes an action;
 * @ui[Add missing basics] restores only the basic actions you deleted (your own are never touched); @ui[Reset to basics] replaces the whole map.
@@ -61,3 +61,23 @@ Use `fixedUpdate` for physics-related input (jumping) and `update` for everythin
 
 ## Mobile and on-screen controls
 For a complete code-drawn joystick plus hold buttons, see **[Mobile and on-screen touch controls](mobile-controls.html)**. It includes the existing virtual joystick, reusable button code, action mapping, pointer cancellation/cleanup, desktop pointer testing, and the Star-Not touch example.
+
+## Keyboard focus in the editor (like Unity)
+While you play in the editor, the **Game view** owns the keyboard once it has focus (Play focuses it; clicking inside it focuses it): `Q W E R T F Delete`, arrows and every other plain key go to **your game**, never to the editor tools. Cmd/Ctrl combos and F-keys (Play, Pause, Step, Save…) still work. Click the Scene view, Hierarchy, Inspector or any other panel and the editor shortcuts are back.
+
+**Esc releases the mouse.** If your game locked the cursor (first-person look), Esc in the Game view unlocks it, even when your code never does. Turn it off in @ui[Settings ▸ Game view mouse ▸ Esc releases a locked mouse]. This exists only in the editor: an exported web game or desktop app does not add it (the browser's own Esc still unlocks a locked mouse; your game decides the rest).
+
+## Which platform am I on?
+```js
+import { Application, RuntimePlatform } from 'nord';
+if (Application.isEditor) Debug.Log('testing inside the Nord editor');
+switch (Application.platform) {
+  case RuntimePlatform.WebGLPlayer: /* browser tab or exported web game */ break;
+  case RuntimePlatform.OSXPlayer: case RuntimePlatform.WindowsPlayer: case RuntimePlatform.LinuxPlayer: /* exported desktop app */ break;
+  case RuntimePlatform.OSXEditor: case RuntimePlatform.WindowsEditor: case RuntimePlatform.LinuxEditor: /* Game view in the editor */ break;
+  case RuntimePlatform.IPhonePlayer: case RuntimePlatform.Android: /* phone browser */ break;
+}
+if (Application.os === 'mac') { /* the machine, whatever the shell: 'mac' | 'win' | 'linux' | 'ios' | 'android' */ }
+if (Application.isMobilePlatform) showTouchControls();
+```
+`isEditor`, `isDesktopApp`, `isWebPlayer`, `isMobilePlatform` are plain booleans. Use it to hide a Quit button on the web, show touch controls on phones, enable cheats only in the editor, or choose Cmd vs Ctrl labels with `Application.os`. Also `Cursor.lockState = CursorLockMode.Locked` (lock the mouse) and `Cursor.visible = false`.

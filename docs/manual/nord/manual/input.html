@@ -61,8 +61,8 @@
 </tbody></table>
 <p><strong>Codes</strong> are <code>KeyboardEvent.code</code> names (<code>KeyA</code>, <code>Space</code>, <code>ArrowLeft</code>, <code>ShiftLeft</code>…), <code>Mouse0/1/2</code>, <code>Gamepad0…n</code> (button index) and
 <code>GamepadLeft/Right/Up/Down</code> (left stick past 50 %). Gamepads are polled each frame (first connected pad; dead-zone 0.2).</p>
-<h2 id="input-editor-per-project">Input editor (per project)<a class="anchor" href="#input-editor-per-project">#</a></h2>
-<p>Open the <span class="c-ui">Project</span> tab ▸ <span class="c-ui">Input (actions and keys)</span>. Every new project starts with the basic map: <code>left right up down</code> (WASD + arrows), <code>jump</code> (Space/W/Up), <code>fire</code> (Space/Mouse0), <code>interact</code> (E/Enter). Per project you can:</p>
+<h2 id="input-manager-per-project">Input Manager (per project)<a class="anchor" href="#input-manager-per-project">#</a></h2>
+<p>This is Nord&#39;s version of Unity&#39;s <strong>Edit ▸ Project Settings ▸ Input Manager</strong>. Open the <span class="c-ui">Project</span> tab (bottom, next to Console; or the Window menu ▸ Project) and scroll to <span class="c-ui">Input Manager (actions and keys)</span>. Every new project starts with the basic map: <code>left right up down</code> (WASD + arrows), <code>jump</code> (Space/W/Up), <code>fire</code> (Space/Mouse0), <code>interact</code> (E/Enter). Per project you can:</p>
 <ul>
 <li>press <span class="c-ui">＋ key</span>, then the key on your keyboard, to bind it; <span class="c-ui">＋ mouse/pad</span> adds <code>Mouse0-2</code>, <code>Gamepad0-3</code>, Shift/Ctrl/Alt; click a key chip to remove it;</li>
 <li><span class="c-ui">Add action</span> with a new name (then press its first key); the 🗑 button deletes an action;</li>
@@ -77,5 +77,20 @@ Build a settings screen with <code>game.ui</code> (the library&#39;s <code>ui-se
 <aside class="box tip"><div class="box-title">Tip</div><p>Use <code>fixedUpdate</code> for physics-related input (jumping) and <code>update</code> for everything else; <code>pressed</code> is evaluated once per rendered frame, so read it in <code>update</code> if you must not miss a tap.</p>
 </aside><h2 id="mobile-and-on-screen-controls">Mobile and on-screen controls<a class="anchor" href="#mobile-and-on-screen-controls">#</a></h2>
 <p>For a complete code-drawn joystick plus hold buttons, see <strong><a href="../guides/mobile-controls.html">Mobile and on-screen touch controls</a></strong>. It includes the existing virtual joystick, reusable button code, action mapping, pointer cancellation/cleanup, desktop pointer testing, and the Star-Not touch example.</p>
-<div class="pager"><a href="ui.html"><small>← Previous</small>UI &amp; HUD</a><a href="assets.html"><small>Next →</small>Assets</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#input-editor-per-project">Input editor (per project) </a><a href="#rebinding">Rebinding </a><a href="#touch">Touch </a><a href="#mobile-and-on-screen-controls">Mobile and on-screen controls </a></aside></div>
+<h2 id="keyboard-focus-in-the-editor-like-unity">Keyboard focus in the editor (like Unity)<a class="anchor" href="#keyboard-focus-in-the-editor-like-unity">#</a></h2>
+<p>While you play in the editor, the <strong>Game view</strong> owns the keyboard once it has focus (Play focuses it; clicking inside it focuses it): <code>Q W E R T F Delete</code>, arrows and every other plain key go to <strong>your game</strong>, never to the editor tools. Cmd/Ctrl combos and F-keys (Play, Pause, Step, Save…) still work. Click the Scene view, Hierarchy, Inspector or any other panel and the editor shortcuts are back.</p>
+<p><strong>Esc releases the mouse.</strong> If your game locked the cursor (first-person look), Esc in the Game view unlocks it, even when your code never does. Turn it off in <span class="c-ui">Settings ▸ Game view mouse ▸ Esc releases a locked mouse</span>. This exists only in the editor: an exported web game or desktop app does not add it (the browser&#39;s own Esc still unlocks a locked mouse; your game decides the rest).</p>
+<h2 id="which-platform-am-i-on">Which platform am I on?<a class="anchor" href="#which-platform-am-i-on">#</a></h2>
+<pre class="code" data-lang="js"><code>import { Application, RuntimePlatform } from 'nord';
+if (Application.isEditor) Debug.Log('testing inside the Nord editor');
+switch (Application.platform) {
+  case RuntimePlatform.WebGLPlayer: /* browser tab or exported web game */ break;
+  case RuntimePlatform.OSXPlayer: case RuntimePlatform.WindowsPlayer: case RuntimePlatform.LinuxPlayer: /* exported desktop app */ break;
+  case RuntimePlatform.OSXEditor: case RuntimePlatform.WindowsEditor: case RuntimePlatform.LinuxEditor: /* Game view in the editor */ break;
+  case RuntimePlatform.IPhonePlayer: case RuntimePlatform.Android: /* phone browser */ break;
+}
+if (Application.os === 'mac') { /* the machine, whatever the shell: 'mac' | 'win' | 'linux' | 'ios' | 'android' */ }
+if (Application.isMobilePlatform) showTouchControls();</code></pre>
+<p><code>isEditor</code>, <code>isDesktopApp</code>, <code>isWebPlayer</code>, <code>isMobilePlatform</code> are plain booleans. Use it to hide a Quit button on the web, show touch controls on phones, enable cheats only in the editor, or choose Cmd vs Ctrl labels with <code>Application.os</code>. Also <code>Cursor.lockState = CursorLockMode.Locked</code> (lock the mouse) and <code>Cursor.visible = false</code>.</p>
+<div class="pager"><a href="ui.html"><small>← Previous</small>UI &amp; HUD</a><a href="assets.html"><small>Next →</small>Assets</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#input-manager-per-project">Input Manager (per project) </a><a href="#rebinding">Rebinding </a><a href="#touch">Touch </a><a href="#mobile-and-on-screen-controls">Mobile and on-screen controls </a><a href="#keyboard-focus-in-the-editor-like-unity">Keyboard focus in the editor (like Unity) </a><a href="#which-platform-am-i-on">Which platform am I on? </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

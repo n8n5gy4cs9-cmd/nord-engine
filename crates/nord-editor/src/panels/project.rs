@@ -519,8 +519,8 @@ const EXTRA_INPUTS: &[&str] = &[
 /// Input editor: edit the project's action map (`input.actions`). New projects start with the basic map.
 fn input_section(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
     let mut save = false;
-    egui::CollapsingHeader::new(RichText::new("Input (actions and keys)").strong())
-        .default_open(false)
+    egui::CollapsingHeader::new(RichText::new("Input Manager (actions and keys)").strong())
+        .default_open(true)
         .show(ui, |ui| {
             let Some(p) = st.project.as_mut() else { return };
             let pu = &mut st.project_ui;

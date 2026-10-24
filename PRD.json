@@ -2493,6 +2493,12 @@
       "milestone": "M13",
       "title": "Per-project Input editor (Project tab) + basic input map for new projects",
       "status": "done"
+    },
+    {
+      "id": "M13-32",
+      "milestone": "M13",
+      "title": "Game view keyboard focus + Esc unlocks mouse + Application.platform/isEditor + Cursor",
+      "status": "done"
     }
   ]
 }

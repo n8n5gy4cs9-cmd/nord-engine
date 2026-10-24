@@ -497,6 +497,11 @@ impl App {
         if st.rebinding.is_some() {
             return;
         }
+        // Unity: a click on any other panel takes the keyboard from the Game view (clicks inside the native game view never reach egui)
+        if ctx.input(|i| i.pointer.any_pressed()) {
+            st.game_focused = false;
+        }
+        let game_keys = st.is_playing() && st.game_focused;
         ctx.input_mut(|i| {
             let cmd = Modifiers::COMMAND;
             // browsers keep Cmd/Ctrl+P (print), +K (search) and +1..4 (tabs): the web build uses Alt for those (M11-04)
@@ -528,6 +533,14 @@ impl App {
                 let Some((m, k)) = crate::keymap::resolve(&map, def) else {
                     continue;
                 };
+                // the Game view owns plain keys (Q/W/E/R/F/Delete…) and Shift/Alt combos; only Cmd/Ctrl chords and F-keys stay editor-wide
+                let name = format!("{k:?}");
+                let f_key = name.len() > 1
+                    && name.starts_with('F')
+                    && name[1..].chars().all(|c| c.is_ascii_digit());
+                if game_keys && !(m.command || m.ctrl || f_key) {
+                    continue;
+                }
                 if !i.consume_key(m, k) {
                     continue;
                 }
@@ -570,6 +583,7 @@ impl App {
             p.running = true;
         }
         st.game_nonce += 1;
+        st.game_focused = true; // Unity focuses the Game view when Play starts
         st.game_paused = false;
         if st.console_ui.clear_on_play {
             st.console.clear();
@@ -1656,6 +1670,11 @@ pub fn game_tab(
                 Some(sc) => format!("{base}/?n={}&scene={sc}", st.game_nonce),
                 None => format!("{base}/?n={}", st.game_nonce),
             };
+            // tells the page it runs inside the editor (Application.isEditor, Esc unlocks the mouse)
+            let url = format!(
+                "{url}&editor=1&esc={}",
+                u8::from(st.settings.esc_releases_mouse)
+            );
             let fixed = Some({
                 let d = st
                     .project

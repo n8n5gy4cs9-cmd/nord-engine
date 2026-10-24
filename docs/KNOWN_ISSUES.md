@@ -236,3 +236,5 @@ Verified headlessly (egui_kittest UI tests, `runtime/core/core.test.mjs`, a real
 
 - Asset icon/thumbnail sharpness (256 px thumbs, pixel-snapped rects) is covered by unit tests but was not seen in the native egui window in this session: please check the .glb icon on a real display.
 - `unity_scene_to_nord` is a conservative YAML reader tested on a small synthetic project (`mcp/fixtures/unity-sample`), not on large real Unity projects; nested prefab overrides are only listed in `todo`.
+
+- **Game view keyboard focus (2026-10-24, unverified by hand):** editor shortcuts are muted while `game_focused`; it relies on the game page's `focus`/`blur`/`pointerdown` events reaching the editor over `/api/ipc`. If Q/W/E still switch tools while playing, check that the Game page really receives focus on the native webview (click it once) and report which platform.

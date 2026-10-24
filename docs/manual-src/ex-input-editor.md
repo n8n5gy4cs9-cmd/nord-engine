@@ -11,7 +11,7 @@ summary: Edit your project's input map in the Project tab: bind keys by pressing
 New projects start with: `left right up down` (WASD + arrows), `jump` (Space / W / Up), `fire` (Space / left mouse), `interact` (E / Enter).
 
 ## Edit them
-1. @ui[Project] tab ▸ open @ui[Input (actions and keys)].
+1. This is Unity's Input Manager. @ui[Project] tab ▸ (next to Console) scroll to @ui[Input Manager (actions and keys)].
 2. Click @ui[＋ key] next to `jump`, then press the key you want. Click a key chip to remove it.
 3. @ui[＋ mouse/pad] adds `Mouse0-2`, `Gamepad0-3`, Shift, Ctrl, Alt.
 4. Type a name and press @ui[Add action] (for example `dash`), then press its first key.

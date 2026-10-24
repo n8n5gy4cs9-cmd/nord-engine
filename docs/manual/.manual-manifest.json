@@ -9478,6 +9478,7 @@
   "runtime/core/loader.js",
   "runtime/core/multiplayer.js",
   "runtime/core/netsync.js",
+  "runtime/core/platform.js",
   "runtime/core/save.js",
   "runtime/core/scene.js",
   "runtime/core/script.js",

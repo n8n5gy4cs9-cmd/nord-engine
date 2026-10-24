@@ -96,6 +96,8 @@ pub struct Settings {
     pub window: Option<[f32; 4]>, // x, y, w, h
     /// Unity-style feedback: tint the whole editor while the game is playing / a Rust game is compiling
     pub tint: bool,
+    /// Esc in the Game view releases a locked mouse (Unity editor behaviour); never applies to exported/standalone games
+    pub esc_releases_mouse: bool,
     /// PLAYMODE-COLOR (rgb)
     pub play_tint: [u8; 3],
     /// colour while compiling (before the game starts)
@@ -142,6 +144,7 @@ impl Default for Settings {
             asset_favorites: vec![],
             window: None,
             tint: true,
+            esc_releases_mouse: true,
             play_tint: [34, 56, 96],
             build_tint: [104, 72, 20],
             game_anchor: [0.5, 0.0],
@@ -476,6 +479,8 @@ pub struct EditorState {
     pub status_msg: Option<(String, Instant)>,
     /// bumps on Play/Reload so the Game webview reloads
     pub game_nonce: u32,
+    /// The Game view has keyboard focus (set by Play and by the game page's focus event, cleared by clicking any other panel or the Scene view): editor shortcuts stay silent, like Unity
+    pub game_focused: bool,
     /// scene path passed to the game page as `?scene=` for Run This Scene; None = project start scene
     pub play_scene: Option<String>,
     pub game_paused: bool,
@@ -578,6 +583,7 @@ impl EditorState {
             base_visuals: None,
             status_msg: None,
             game_nonce: 0,
+            game_focused: false,
             play_scene: None,
             game_paused: false,
             stopping: None,
@@ -1395,6 +1401,7 @@ impl EditorState {
 
     pub fn handle_viewport(&mut self, m: &Value) {
         match m["t"].as_str() {
+            Some("gameFocus") => self.game_focused = m["on"].as_bool().unwrap_or(false),
             Some("ready") => {
                 self.viewport_ready = true;
                 self.send_viewport(self.viewport_scene_msg());
@@ -1605,7 +1612,8 @@ impl EditorState {
                 });
             }
             Some("key") => {
-                // the Scene view page forwards every key; the (rebindable) keymap decides what it means
+                self.game_focused = false; // the Scene view page only forwards keys while it owns the keyboard
+                                           // the Scene view page forwards every key; the (rebindable) keymap decides what it means
                 let flag = |k: &str| m[k].as_bool().unwrap_or(false);
                 let id = crate::keymap::from_page_key(
                     &self.settings.keymap,

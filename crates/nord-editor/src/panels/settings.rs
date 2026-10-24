@@ -148,6 +148,10 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                     .on_hover_text("OFF (default): current example files and temporary webview storage. ON: saved example copies and persistent webview storage for testing. Reopen an example to switch its source.")
                     .changed();
                 ui.end_row();
+                ui.label("Game view mouse");
+                ui.checkbox(&mut s.esc_releases_mouse, "Esc releases a locked mouse")
+                    .on_hover_text("Like Unity's editor: Esc in the Game view unlocks the cursor even if the game never does. Never applies to an exported or standalone game. Takes effect on the next Play.");
+                ui.end_row();
                 ui.label("Play-mode tint");
                 ui.horizontal(|ui| {
                     ui.checkbox(&mut s.tint, "tint the editor");
