@@ -1241,6 +1241,51 @@ fn dominant_icon(st: &mut EditorState, rel: &str) -> &'static str {
     best
 }
 
+/// The filled folder drawn with the painter (anti-aliased vector shapes, no texture): perfectly sharp at every size and display scale.
+fn draw_folder_shape(p: &egui::Painter, r: egui::Rect, c: egui::Color32, open: bool) {
+    let at = |x: f32, y: f32| egui::pos2(r.left() + r.width() * x, r.top() + r.height() * y);
+    let rr = |x0: f32, y0: f32, x1: f32, y1: f32| egui::Rect::from_min_max(at(x0, y0), at(x1, y1));
+    let k = r.width();
+    let dark = c.gamma_multiply(0.78);
+    // back of the folder: tab + body
+    p.rect_filled(
+        rr(0.08, 0.17, 0.46, 0.40),
+        egui::CornerRadius::same((k * 0.07) as u8 + 1),
+        if open { dark } else { c },
+    );
+    p.rect_filled(
+        rr(0.08, 0.27, 0.92, 0.82),
+        egui::CornerRadius::same((k * 0.09) as u8 + 1),
+        if open { dark } else { c },
+    );
+    if open {
+        // front flap, slanted
+        let pts = vec![
+            at(0.20, 0.45),
+            at(0.98, 0.45),
+            at(0.86, 0.84),
+            at(0.08, 0.84),
+        ];
+        p.add(egui::Shape::convex_polygon(
+            pts,
+            c,
+            egui::Stroke::new(0.5, c),
+        ));
+    } else {
+        // subtle light edge along the top of the body
+        p.rect_filled(
+            rr(0.08, 0.27, 0.92, 0.33),
+            egui::CornerRadius {
+                nw: (k * 0.09) as u8 + 1,
+                ne: (k * 0.09) as u8 + 1,
+                sw: 0,
+                se: 0,
+            },
+            c.gamma_multiply(1.12),
+        );
+    }
+}
+
 /// Folder: the filled folder shape in the theme's accent colour; the user can colour it, put an icon badge on it, or replace it
 /// with one of the project's images. Optional automatic badge by dominant content (View menu).
 fn paint_folder(
@@ -1262,16 +1307,8 @@ fn paint_folder(
             .paint_at(ui, rect);
         return;
     }
-    icons::icon(
-        if open {
-            "folder-open-fill"
-        } else {
-            "folder-fill"
-        },
-        rect.width(),
-        color,
-    )
-    .paint_at(ui, rect);
+    let rect = icons::snap(ui.ctx(), rect);
+    draw_folder_shape(ui.painter(), rect, color, open);
     let badge: Option<&'static str> = match it
         .icon
         .as_deref()
