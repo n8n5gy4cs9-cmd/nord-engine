@@ -95,3 +95,53 @@ export function setLightField(B, l, key, value) {
   else if (key === 'angle' && l.angle !== undefined) l.angle = (value ?? 30) * D2R;
   else if (key === 'exponent' && l.exponent !== undefined) l.exponent = value ?? 2;
 }
+
+// ---- lit sprites (Unity's Sprite-Lit-Default) ---------------------------------------------------------------------------
+// A sprite is a flat picture, so its light does not depend on the angle to the light: every point/spot light adds
+// colour x intensity x falloff(distance, range) per pixel; ambient/directional/hemispheric lights add colour x intensity;
+// the sum multiplies the picture (colours blend additively, like Unity). A scene without any light shows the picture as it is.
+const SPRITE_LIGHTS = 8;
+const SPRITE_VS = `precision highp float; attribute vec3 position; attribute vec2 uv; uniform mat4 world; uniform mat4 viewProjection; varying vec3 vW; varying vec2 vUV;
+void main(){ vec4 w = world * vec4(position, 1.0); vW = w.xyz; vUV = uv; gl_Position = viewProjection * w; }`;
+const SPRITE_FS = `precision highp float; varying vec3 vW; varying vec2 vUV; uniform sampler2D tex; uniform vec4 tint; uniform float uLit; uniform float uN; uniform vec3 uAmb;
+uniform vec3 uLP[${SPRITE_LIGHTS}]; uniform vec4 uLC[${SPRITE_LIGHTS}];
+void main(){ vec4 c = texture2D(tex, vUV) * tint; vec3 L = vec3(1.0);
+  if (uLit > 0.5) { L = uAmb; for (int i = 0; i < ${SPRITE_LIGHTS}; i++) { if (float(i) >= uN) break; float d = distance(vW, uLP[i]); L += uLC[i].rgb * clamp(1.0 - d / uLC[i].a, 0.0, 1.0); } }
+  if (c.a < 0.01) discard; gl_FragColor = vec4(c.rgb * L, c.a); }`;
+
+/** Material for a sprite plane. `m.setSprite({ texture, tint: Color3, alpha, lit })`; lights are read from the scene on every draw. */
+export function createSpriteMaterial(B, scene, name) {
+  B.Effect.ShadersStore.nordSpriteVertexShader ??= SPRITE_VS;
+  B.Effect.ShadersStore.nordSpriteFragmentShader ??= SPRITE_FS;
+  const m = new B.ShaderMaterial(name, scene, 'nordSprite', { attributes: ['position', 'uv'], uniforms: ['world', 'viewProjection', 'tint', 'uLit', 'uN', 'uAmb', 'uLP', 'uLC'], samplers: ['tex'], needAlphaBlending: true });
+  m.backFaceCulling = false;
+  const lp = new Float32Array(SPRITE_LIGHTS * 3), lc = new Float32Array(SPRITE_LIGHTS * 4);
+  const st = { lit: true, tint: [1, 1, 1], alpha: 1 };
+  m.setSprite = (o) => {
+    Object.assign(st, o);
+    if (o.texture) m.setTexture('tex', o.texture); else if (!st.white) { st.white = new B.RawTexture(new Uint8Array([255, 255, 255, 255]), 1, 1, B.Engine.TEXTUREFORMAT_RGBA, scene); m.setTexture('tex', st.white); }
+    m.setVector4('tint', new B.Vector4(st.tint.r ?? 1, st.tint.g ?? 1, st.tint.b ?? 1, st.alpha));
+    m.setFloat('uLit', st.lit ? 1 : 0);
+  };
+  m.onBindObservable.add(() => {
+    const e = m.getEffect(); if (!e || !st.lit) return;
+    let n = 0, ar = 0, ag = 0, ab = 0; const near = [];
+    for (const l of scene.lights) {
+      if (!l.isEnabled()) continue;
+      const k = l.intensity ?? 1, c = l.diffuse;
+      if (l instanceof B.PointLight || l instanceof B.SpotLight) near.push(l);
+      else { ar += c.r * k; ag += c.g * k; ab += c.b * k; } // hemispheric / directional / ambient: flat
+    }
+    for (const l of near) {
+      if (n >= SPRITE_LIGHTS) break;
+      l.computeTransformedInformation?.(); // world position of a light parented to an entity
+      const p = l.transformedPosition ?? l.position, c = l.diffuse, k = l.intensity ?? 1;
+      lp.set([p.x, p.y, p.z], n * 3); lc.set([c.r * k, c.g * k, c.b * k, l.range > 0 && l.range < 1e6 ? l.range : 1e6], n * 4); n++;
+    }
+    // no light in the scene at all: the picture as it is (Unity's unlit Sprites-Default); lights that are all off: dark
+    const none = scene.lights.length === 0;
+    e.setFloat('uN', n); e.setFloat('uLit', none ? 0 : 1);
+    e.setFloat3('uAmb', ar, ag, ab); e.setArray3('uLP', lp); e.setArray4('uLC', lc);
+  });
+  return m;
+}

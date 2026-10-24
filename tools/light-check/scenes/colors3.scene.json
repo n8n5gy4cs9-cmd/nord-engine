@@ -98,7 +98,7 @@
     {
      "type": "light",
      "kind": "point",
-     "intensity": 1,
+     "intensity": 0.8,
      "range": 10,
      "color": "#ff0000"
     }
@@ -134,7 +134,7 @@
     {
      "type": "light",
      "kind": "point",
-     "intensity": 1,
+     "intensity": 0.8,
      "range": 10,
      "color": "#0000ff"
     }

@@ -15,12 +15,13 @@ const tmp = path.join(ROOT, 'target/vp-sprite-lights.png');
 let failed = 0;
 try {
   await page.goto('http://127.0.0.1:4177/__edit?mode=3d', 3000);
-  const sc = JSON.parse(fs.readFileSync(`${ROOT}/tools/light-check/scenes/colors2.scene.json`, 'utf8'));
+  const sc = JSON.parse(fs.readFileSync(`${ROOT}/tools/light-check/scenes/colors2.scene.json`, 'utf8')); if (process.env.SCENE) Object.assign(sc, JSON.parse(fs.readFileSync(process.env.SCENE, 'utf8')));
   sc.entities = sc.entities.filter((e) => e.name !== 'Camera');
   await page.eval(`window.__nordEdit.onMessage(${JSON.stringify({ t: 'scene', rev: 1, project: { display: { width: 1280, height: 720 } }, selection: [], scene: sc })}); 1`);
   await sleep(1500);
-  await page.eval(`(() => { const c = window.BABYLON.EngineStore.LastCreatedScene.activeCamera; c.setTarget(new window.BABYLON.Vector3(0, 0, 0)); c.alpha = -Math.PI / 2; c.beta = Math.PI / 2; c.radius = 9; })()`);
-  await sleep(800); await page.shot(tmp);
+  await page.eval(`(() => { const c = window.BABYLON.EngineStore.LastCreatedScene.activeCamera; c.setTarget(new window.BABYLON.Vector3(0, 0, 0)); c.alpha = -Math.PI / 2; c.beta = Math.PI / 2; c.radius = ${+(process.env.RADIUS ?? 9)}; })()`);
+  await sleep(800); await page.shot(tmp); if (process.env.KEEP) fs.copyFileSync(tmp, process.env.KEEP);
+  if (process.env.DEBUG) console.log(await page.eval(`JSON.stringify(window.BABYLON.EngineStore.LastCreatedScene.lights.map((l) => ({ n: l.name, c: l.getClassName(), i: l.intensity, r: l.range, d: l.diffuse, p: l.getAbsolutePosition(), on: l.isEnabled(), inc: (l.includedOnlyMeshes || []).map((m) => m.name), pr: l.renderPriority })))`));
   const im = decodePng(fs.readFileSync(tmp)), at = (fx) => { const i = ((im.h >> 1) * im.w + Math.floor(im.w * fx)) * 4; return [im.data[i], im.data[i + 1], im.data[i + 2]]; };
   const row = [at(0.4), at(0.5), at(0.6)];
   const ok = row[1][0] > 60 && row[1][2] > 60;

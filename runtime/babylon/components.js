@@ -1,7 +1,7 @@
 // Babylon 3D components. Each entity's native is a TransformNode; visuals are parented to it.
 import { registerComponent } from '../core/index.js';
 import { rgb } from './index.js';
-import { createLight, createShadows, setLightField } from './lighting.js';
+import { createLight, createShadows, setLightField, createSpriteMaterial } from './lighting.js';
 
 const D2R = Math.PI / 180;
 const v3 = (B, a, d = [0, 0, 0]) => new B.Vector3(...(a ?? d));
@@ -99,15 +99,12 @@ export function registerBabylonComponents(backend) {
     const d = comp.data, e = comp.entity;
     comp.mesh?.dispose(); comp.mat?.dispose();
     const m = B.MeshBuilder.CreatePlane(`${e.name}.sprite`, { size: 1 }, scene);
-    const mat = new B.StandardMaterial(`${e.name}.spritemat`, scene);
-    mat.backFaceCulling = false; mat.twoSidedLighting = true; mat.specularColor = B.Color3.Black();
-    mat.diffuseColor = rgb(B, d.tint, '#ffffff'); mat.alpha = d.alpha ?? 1;
-    if (d.lit === false) { mat.disableLighting = true; mat.emissiveColor = mat.diffuseColor; }
+    const mat = createSpriteMaterial(B, scene, `${e.name}.spritemat`);
+    mat.setSprite({ tint: rgb(B, d.tint, '#ffffff'), alpha: d.alpha ?? 1, lit: d.lit !== false });
     const meta = backend.metaOf?.(d.texture) ?? {};
     if (d.texture) {
       const nearest = meta.filter === 'nearest' || backend.game.project?.display?.pixelArt;
-      const t = backend.texture(d.texture); mat.diffuseTexture = t; mat.useAlphaFromDiffuseTexture = true; mat.diffuseTexture.hasAlpha = true;
-      mat.transparencyMode = B.Material.MATERIAL_ALPHATESTANDBLEND;
+      const t = backend.texture(d.texture); mat.setSprite({ texture: t });
       if (nearest) t.updateSamplingMode?.(B.Texture.NEAREST_SAMPLINGMODE);
       t.wrapU = t.wrapV = meta.wrap === 'repeat' ? B.Texture.WRAP_ADDRESSMODE : B.Texture.CLAMP_ADDRESSMODE;
       const fit = () => {

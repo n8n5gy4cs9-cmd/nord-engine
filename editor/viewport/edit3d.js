@@ -1,6 +1,6 @@
 // 3D edit view (Babylon): orbit/fly camera, grid, picking, move/rotate/scale gizmos, snap, IPC sync, offscreen model thumbnails.
 import { canvas, state, send, log } from './edit.js';
-import { createLight, applyAmbient, allowManyLights, createLightCuller, qualitySettings } from '/runtime/babylon/lighting.js';
+import { createSpriteMaterial, createLight, applyAmbient, allowManyLights, createLightCuller, qualitySettings } from '/runtime/babylon/lighting.js';
 
 let B, engine, scene, camera, gizmoManager, gridMesh;
 const nodes = new Map();       // entity id -> {node, entity}
@@ -467,12 +467,10 @@ function buildEntity(e, parentNode, token) {
   if (spr) {
     // flat textured plane, image size / ppu (3D default 64: the 64 px default sprite is 1 unit); see runtime/babylon/components.js
     const m = B.MeshBuilder.CreatePlane(e.id + '.sprite', { size: 1 }, scene); m.parent = node; tag(m, e.id);
-    const sm = new B.StandardMaterial(e.id + 'spm', scene); sm.backFaceCulling = false; sm.twoSidedLighting = true; sm.specularColor = B.Color3.Black();
-    sm.diffuseColor = hex(spr.tint, '#ffffff'); sm.alpha = spr.alpha ?? 1; m.material = sm;
-    if (spr.lit === false) { sm.disableLighting = true; sm.emissiveColor = sm.diffuseColor; }
+    const sm = createSpriteMaterial(B, scene, e.id + 'spm'); m.material = sm;
+    sm.setSprite({ tint: hex(spr.tint, '#ffffff'), alpha: spr.alpha ?? 1, lit: spr.lit !== false });
     if (spr.texture) {
-      const t = new B.Texture('/' + spr.texture, scene); sm.diffuseTexture = t; t.hasAlpha = true; sm.useAlphaFromDiffuseTexture = true;
-      sm.transparencyMode = B.Material.MATERIAL_ALPHATESTANDBLEND; t.wrapU = t.wrapV = B.Texture.CLAMP_ADDRESSMODE;
+      const t = new B.Texture('/' + spr.texture, scene); sm.setSprite({ texture: t }); t.wrapU = t.wrapV = B.Texture.CLAMP_ADDRESSMODE;
       matAsset(spr.texture + '.meta.json').then((meta) => {
         if (m.isDisposed()) return;
         if (meta?.filter === 'nearest') t.updateSamplingMode(B.Texture.NEAREST_SAMPLINGMODE);
