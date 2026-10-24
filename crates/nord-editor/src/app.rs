@@ -325,11 +325,24 @@ impl App {
             egui::CentralPanel::default()
                 .frame(egui::Frame::NONE.fill(egui::Color32::BLACK))
                 .show(ctx, |ui| {
-                    ui.add(
+                    let rect = ui.available_rect_before_wrap();
+                    ui.put(
+                        rect,
                         egui::Image::new(egui::include_image!(
-                            "../../../assets/brand/splash-600x526.png"
+                            "../../../assets/brand/splash-noloader-600x526.png"
                         ))
-                        .fit_to_exact_size(ui.available_size()),
+                        .fit_to_exact_size(rect.size()),
+                    );
+                    // the loader icon spins about its centre (artwork coordinates are 600 x 526)
+                    let k = rect.width() / 600.0;
+                    let c = rect.min + egui::vec2(297.1, 407.8) * k;
+                    let angle = t0.elapsed().as_secs_f32() * std::f32::consts::TAU;
+                    ui.put(
+                        egui::Rect::from_center_size(c, egui::Vec2::splat(48.0 * k)),
+                        egui::Image::new(egui::include_image!(
+                            "../../../assets/brand/splash-loader.png"
+                        ))
+                        .rotate(angle, egui::Vec2::splat(0.5)),
                     );
                 });
             if t0.elapsed() < Duration::from_millis(100) {
@@ -337,7 +350,7 @@ impl App {
                     ctx.send_viewport_cmd(c);
                 }
             }
-            ctx.request_repaint_after(Duration::from_millis(50));
+            ctx.request_repaint_after(Duration::from_millis(16));
             return true;
         }
         // splash done: become the main window
