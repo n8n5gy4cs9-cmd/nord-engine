@@ -36,18 +36,21 @@ update(dt) {
 
 ## Unity names, if you prefer them
 ```js
-import { MonoBehaviour, UnityInput as Input, Time } from 'nord';
+import { MonoBehaviour, SerializeField, UnityInput as Input, Time } from 'nord';
 
 export default class Mover extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 5 });   // 3D: metres per second. For a 2D project use about 200 (pixels)
   Update() {
-    const h = Input.GetAxis('Horizontal');          // A/D and arrows, also gamepad stick
-    const v = Input.GetAxis('Vertical');            // W / Up = +1
-    this.Translate(h * 200 * Time.deltaTime, -v * 200 * Time.deltaTime); // 2D: y points DOWN on screen
-    if (Input.GetKeyDown('Space')) this.Jump();
-    if (Input.GetMouseButtonDown(0)) this.Shoot();
+    const h = Input.GetAxis('Horizontal');            // A/D and arrows, also gamepad stick
+    const v = Input.GetAxis('Vertical');              // W / Up = +1
+    // 3D: x = right, z = forward. 2D: use this.Translate(h * s, -v * s) because y points DOWN on screen
+    this.Translate(h * this.speed * Time.deltaTime, 0, v * this.speed * Time.deltaTime);
+    if (Input.GetKeyDown('Space')) this.Debug_Jump();
   }
+  Debug_Jump() { this.Translate(0, 1, 0); }          // replace with your own Jump()/Shoot() methods: they do not exist by default
 }
 ```
+@bad[Trap:] `Jump()` and `Shoot()` are not built in; calling a method you did not write throws `this.Jump is not a function`. Also pick speeds for the project type: 3D units are metres (`5`), 2D units are pixels (`200`). A 2D speed in a 3D scene flies off screen.
 
 ## 2D: move by position
 ```js

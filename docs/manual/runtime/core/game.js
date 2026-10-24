@@ -159,6 +159,27 @@ export class Game {
     if (d) { dt = d.begin(dt); if (dt === null) return; }
     if (!this.paused) this.scene?.tick(dt);
     d?.end();
+    this.#liveSync();
+  }
+
+  /** Under the editor / `nord serve`: stream changed transforms to the Scene view so it follows play mode (it restores itself when this stops). */
+  #liveSync() {
+    if (!globalThis.__nordServed || !this.scene || this.paused) return;
+    const now = performance.now();
+    if (now - (this._liveAt ?? 0) < 50) return;
+    this._liveAt = now;
+    const last = (this._liveLast ??= new Map());
+    const items = [];
+    for (const e of this.scene.all()) {
+      const t = e.t;
+      if (!t || !e.id) continue;
+      const k = `${t.pos}|${t.rot}|${t.scale}`;
+      if (last.get(e.id) === k) continue;
+      last.set(e.id, k);
+      items.push({ id: e.id, pos: t.pos, rot: t.rot, scale: t.scale });
+    }
+    if (!items.length) return;
+    try { fetch('/__edit/cmd', { method: 'POST', headers: { 'x-nord': '1', 'content-type': 'application/json' }, body: JSON.stringify({ t: 'live', items }), keepalive: true }); } catch { /* editor gone */ }
   }
   /** Debugger + profiler (see debug.js). Returns the Debugger. */
   enableDebug() { return this.debug ??= new Debugger(this); }

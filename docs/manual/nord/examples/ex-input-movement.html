@@ -30,17 +30,20 @@ if (Input.GetButtonDown(&quot;Jump&quot;)) Jump();</code></pre>
   if (this.input.released('fire')) this.stopShooting();
 }</code></pre>
 <h2 id="unity-names-if-you-prefer-them">Unity names, if you prefer them<a class="anchor" href="#unity-names-if-you-prefer-them">#</a></h2>
-<pre class="code" data-lang="js"><code>import { MonoBehaviour, UnityInput as Input, Time } from 'nord';
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, UnityInput as Input, Time } from 'nord';
 
 export default class Mover extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 5 });   // 3D: metres per second. For a 2D project use about 200 (pixels)
   Update() {
-    const h = Input.GetAxis('Horizontal');          // A/D and arrows, also gamepad stick
-    const v = Input.GetAxis('Vertical');            // W / Up = +1
-    this.Translate(h * 200 * Time.deltaTime, -v * 200 * Time.deltaTime); // 2D: y points DOWN on screen
-    if (Input.GetKeyDown('Space')) this.Jump();
-    if (Input.GetMouseButtonDown(0)) this.Shoot();
+    const h = Input.GetAxis('Horizontal');            // A/D and arrows, also gamepad stick
+    const v = Input.GetAxis('Vertical');              // W / Up = +1
+    // 3D: x = right, z = forward. 2D: use this.Translate(h * s, -v * s) because y points DOWN on screen
+    this.Translate(h * this.speed * Time.deltaTime, 0, v * this.speed * Time.deltaTime);
+    if (Input.GetKeyDown('Space')) this.Debug_Jump();
   }
+  Debug_Jump() { this.Translate(0, 1, 0); }          // replace with your own Jump()/Shoot() methods: they do not exist by default
 }</code></pre>
+<p><span class="c-bad">Trap:</span> <code>Jump()</code> and <code>Shoot()</code> are not built in; calling a method you did not write throws <code>this.Jump is not a function</code>. Also pick speeds for the project type: 3D units are metres (<code>5</code>), 2D units are pixels (<code>200</code>). A 2D speed in a 3D scene flies off screen.</p>
 <h2 id="2d-move-by-position">2D: move by position<a class="anchor" href="#2d-move-by-position">#</a></h2>
 <pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
 export default class Walker extends NordScript {

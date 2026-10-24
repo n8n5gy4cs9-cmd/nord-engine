@@ -681,6 +681,8 @@ export function setScene() {
   draw();
 }
 export function setSelection() { draw(); }
+/** Play mode: entity data was updated by edit.js; redraw. */
+export function setLive() { draw(); }
 
 // Drag an asset from the Assets panel over the Scene view: ghost preview, then drop = new entity at that spot.
 let ghost = null;

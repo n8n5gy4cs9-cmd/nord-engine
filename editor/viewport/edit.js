@@ -35,6 +35,31 @@ export function flatten(list, parent = null, out = []) {
 let backend = null;
 const queue = [];
 
+// Play mode: the running game streams transforms; show them here. ~1 s after the stream stops (Stop pressed) the saved scene comes back.
+let liveBackup = null;
+let liveTimer = 0;
+function applyLive(items) {
+  if (!state.scene) return;
+  const byId = new Map(flatten(state.scene.entities).map(({ e }) => [e.id, e]));
+  liveBackup ??= new Map();
+  for (const it of items) {
+    const e = byId.get(it.id);
+    if (!e) continue;
+    if (!liveBackup.has(it.id)) liveBackup.set(it.id, e.transform ? structuredClone(e.transform) : null);
+    e.transform = { ...(e.transform ?? {}), pos: it.pos, rot: it.rot, scale: it.scale };
+  }
+  backend?.setLive?.(items);
+  clearTimeout(liveTimer);
+  liveTimer = setTimeout(endLive, 1000);
+}
+function endLive() {
+  if (!liveBackup || !state.scene) return;
+  const byId = new Map(flatten(state.scene.entities).map(({ e }) => [e.id, e]));
+  for (const [id, t] of liveBackup) { const e = byId.get(id); if (e) e.transform = t; }
+  liveBackup = null;
+  backend?.setScene?.();
+}
+
 export function onMessage(m) {
   switch (m.t) {
     case 'scene':
@@ -49,6 +74,7 @@ export function onMessage(m) {
     case 'alignReq': { const pose = backend?.viewPose?.(); if (pose) send({ t: 'viewPose', ...pose }); break; }
     case 'focus': backend?.focus?.(!!m.all); break;
     case 'view': backend?.setView?.(m); break;
+    case 'live': applyLive(m.items ?? []); break;
     case 'thumbs': backend?.thumbs?.(m.items ?? []); break;
     default: break;
   }

@@ -526,6 +526,10 @@ function buildEntity(e, parentNode, token) {
   for (const c of e.children ?? []) buildEntity(c, node, token);
 }
 
+/** Play mode: move the existing nodes (no rebuild). */
+export function setLive(items) {
+  for (const it of items) { const n = nodes.get(it.id); if (n) applyTransform(n.node, { pos: it.pos, rot: it.rot, scale: it.scale }); }
+}
 export function setScene() {
   buildToken++;
   iconMeshes = []; colliderMeshes = [];
