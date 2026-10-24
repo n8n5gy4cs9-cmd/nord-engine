@@ -354,6 +354,35 @@ function tri(x, y, dir) {
   ctx.fill();
 }
 
+
+// Scene lighting preview (Gizmos ▸ Scene lighting): like the game's 2D lights = ambient colour + additive radial lights, multiplied over the picture.
+let litCanvas = null;
+function drawLighting() {
+  const d = state.project?.display, st = state.scene?.settings ?? {};
+  if (!d || state.settings.sceneLighting === false) return;
+  const lights = items.filter((it) => it.e.enabled !== false && comp(it.e, 'light'));
+  if (!lights.length) return;
+  const k = Math.max(0, st.ambientIntensity ?? 1), base = /^#[0-9a-f]{6}/i.test(st.ambient ?? '') ? st.ambient : '#b8b8c8';
+  const ch = (i) => Math.min(255, Math.round(parseInt(base.slice(1 + i * 2, 3 + i * 2), 16) * k));
+  const [x0, y0] = toScreen(0, 0), w = Math.round(d.width * cam.zoom), h = Math.round(d.height * cam.zoom);
+  if (w < 2 || h < 2 || w > 8192 || h > 8192) return;
+  litCanvas ??= document.createElement('canvas');
+  litCanvas.width = w; litCanvas.height = h;
+  const c = litCanvas.getContext('2d');
+  c.fillStyle = `rgb(${ch(0)},${ch(1)},${ch(2)})`; c.fillRect(0, 0, w, h);
+  c.globalCompositeOperation = 'lighter';
+  for (const it of lights) {
+    const l = comp(it.e, 'light'), [sx, sy] = toScreen(it.w.x + (l.offset?.[0] ?? 0), it.w.y + (l.offset?.[1] ?? 0));
+    const r = Math.max(1, (l.radius ?? 200) * cam.zoom), x = sx - x0, y = sy - y0, a = Math.max(0, l.intensity ?? 1);
+    const col = /^#[0-9a-f]{6}/i.test(l.color ?? '') ? l.color : '#ffffff';
+    const rgb = [0, 1, 2].map((i) => parseInt(col.slice(1 + i * 2, 3 + i * 2), 16));
+    const g = c.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, `rgba(${rgb},${Math.min(1, a)})`); g.addColorStop(1, `rgba(${rgb},0)`);
+    c.fillStyle = g; c.fillRect(x - r, y - r, r * 2, r * 2);
+  }
+  ctx.save(); ctx.globalCompositeOperation = 'multiply'; ctx.drawImage(litCanvas, x0, y0); ctx.restore();
+}
+
 export function draw() {
   if (!W) return;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -369,6 +398,7 @@ export function draw() {
   if (d) { const [x0, y0] = toScreen(0, 0); ctx.strokeStyle = 'rgba(79,163,255,.6)'; ctx.lineWidth = 1; ctx.strokeRect(x0 + .5, y0 + .5, d.width * cam.zoom, d.height * cam.zoom); }
   drawTilemaps();
   for (const it of items) drawEntity(it);
+  drawLighting();
   for (const id of state.selection.slice(1)) {
     const o = items.find((i) => i.e.id === id);
     if (!o) continue;

@@ -12,7 +12,7 @@ const findEntity = (scene, ref) => (ref ? scene.findById(ref) ?? scene.find(ref)
 
 export function registerPhaserComponents(backend) {
   const { scene: ps } = backend; // Phaser.Scene
-  const track = (comp, obj) => { (comp.visuals ??= []).push(obj); backend.visuals.add(obj); if (backend.lightsOn) obj.setLighting?.(true); return obj; };
+  const track = (comp, obj) => { (comp.visuals ??= []).push(obj); backend.visuals.add(obj); if (comp.data?.lit === false) obj.__unlit = true; else if (backend.lightsOn) obj.setLighting?.(true); return obj; };
 
   /** Pivot: the component's own `origin` (0..1), else the sprite editor's `origin` pixel point from <image>.meta.json, else the centre. */
   const originOf = (d) => {

@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "name": "hud",
+  "skin": "ui/neon.skin.json",
+  "theme": {},
+  "scaler": {
+    "mode": "scale",
+    "ref": [
+      1280,
+      720
+    ],
+    "match": 0.5
+  },
+  "root": {
+    "type": "panel",
+    "name": "root",
+    "anchor": "fill",
+    "style": {
+      "background": "none",
+      "border": "none",
+      "boxShadow": "none",
+      "padding": 0
+    },
+    "children": [
+      {
+        "type": "hbox",
+        "name": "stats",
+        "anchor": "tl",
+        "x": 18,
+        "y": 14,
+        "gap": 10,
+        "children": [
+          {
+            "type": "label",
+            "name": "score",
+            "text": "SCORE {score}",
+            "class": "chip",
+            "size": 22,
+            "bold": true
+          },
+          {
+            "type": "label",
+            "name": "orbs",
+            "text": "CORES {orbs}",
+            "class": "chip",
+            "size": 22,
+            "bold": true
+          },
+          {
+            "type": "label",
+            "name": "time",
+            "text": "TIME {time}",
+            "class": "chip",
+            "size": 22,
+            "bold": true
+          }
+        ]
+      },
+      {
+        "type": "vbox",
+        "name": "energyBox",
+        "anchor": "bl",
+        "x": 18,
+        "y": -18,
+        "gap": 4,
+        "w": 320,
+        "children": [
+          {
+            "type": "label",
+            "name": "energyLabel",
+            "text": "BOOST ENERGY",
+            "size": 14
+          },
+          {
+            "type": "bar",
+            "name": "energy",
+            "value": 1,
+            "color": "#25e8ff",
+            "bind": {
+              "value": "energy"
+            }
+          }
+        ]
+      },
+      {
+        "type": "panel",
+        "name": "mapFrame",
+        "anchor": "tr",
+        "x": -18,
+        "y": 14,
+        "w": 196,
+        "h": 196,
+        "class": "card",
+        "style": {
+          "padding": 10
+        },
+        "children": [
+          {
+            "type": "canvas",
+            "name": "minimap",
+            "w": 168,
+            "h": 168
+          }
+        ]
+      },
+      {
+        "type": "instance",
+        "name": "banner",
+        "ref": "ui/banner.ui.json",
+        "anchor": "t",
+        "y": 84
+      },
+      {
+        "type": "label",
+        "name": "hint",
+        "text": "W/S throttle · A/D steer · SHIFT boost · P pause",
+        "anchor": "b",
+        "y": -16,
+        "size": 14
+      }
+    ]
+  }
+}

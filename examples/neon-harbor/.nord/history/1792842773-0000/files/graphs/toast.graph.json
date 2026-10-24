@@ -1,0 +1,241 @@
+{
+  "last_node_id": 5,
+  "last_link_id": 4,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "event/start",
+      "pos": [
+        40,
+        40
+      ],
+      "size": [
+        230,
+        80
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {}
+    },
+    {
+      "id": 2,
+      "type": "ui/set-text",
+      "pos": [
+        300,
+        40
+      ],
+      "size": [
+        230,
+        80
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 1
+        },
+        {
+          "name": "screen",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "node",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "text",
+          "type": "any",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "screen": "hud",
+        "node": "toast",
+        "text": ""
+      }
+    },
+    {
+      "id": 3,
+      "type": "var/get",
+      "pos": [
+        40,
+        200
+      ],
+      "size": [
+        230,
+        80
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "value",
+          "type": "any",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "name": "a"
+      }
+    },
+    {
+      "id": 4,
+      "type": "flow/delay",
+      "pos": [
+        560,
+        40
+      ],
+      "size": [
+        230,
+        80
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 3
+        },
+        {
+          "name": "seconds",
+          "type": "number",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "seconds": 1.4
+      }
+    },
+    {
+      "id": 5,
+      "type": "ui/set-text",
+      "pos": [
+        820,
+        40
+      ],
+      "size": [
+        230,
+        80
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 4
+        },
+        {
+          "name": "screen",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "node",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "text",
+          "type": "any",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": null
+        }
+      ],
+      "properties": {
+        "screen": "hud",
+        "node": "toast",
+        "text": ""
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "exec"
+    ],
+    [
+      2,
+      3,
+      0,
+      2,
+      3,
+      "any"
+    ],
+    [
+      3,
+      2,
+      0,
+      4,
+      0,
+      "exec"
+    ],
+    [
+      4,
+      4,
+      0,
+      5,
+      0,
+      "exec"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4,
+  "nord": {
+    "version": 1,
+    "vars": {}
+  }
+}

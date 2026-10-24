@@ -1,5 +1,6 @@
 // 3D edit view (Babylon): orbit/fly camera, grid, picking, move/rotate/scale gizmos, snap, IPC sync, offscreen model thumbnails.
 import { canvas, state, send, log } from './edit.js';
+import { createLight, applyAmbient, allowManyLights } from '/runtime/babylon/lighting.js';
 
 let B, engine, scene, camera, gizmoManager, gridMesh;
 const nodes = new Map();       // entity id -> {node, entity}
@@ -33,8 +34,9 @@ export async function init() {
   p.buttons = [1]; p.panningMouseButton = 1; // MMB pan; Alt+LMB orbit (navButtons); RMB = fly look + zoom, handled below like Unity
   camera.inputs.attached.mousewheel.wheelDeltaPercentage = 0.0005; // Unity: zoom is relative to the distance
   camera.panningSensibility = 400;
-  const hemi = new B.HemisphericLight('h', new B.Vector3(0.2, 1, 0.1), scene); hemi.intensity = 0.9;
-  const sun = new B.DirectionalLight('d', new B.Vector3(-0.4, -1, -0.3), scene); sun.intensity = 0.6;
+  hemi = new B.HemisphericLight('h', new B.Vector3(0.2, 1, 0.1), scene); hemi.intensity = 0.9;
+  allowManyLights(B, scene);
+  sun = new B.DirectionalLight('d', new B.Vector3(-0.4, -1, -0.3), scene); sun.intensity = 0.6;
 
   gridMesh = B.MeshBuilder.CreateGround('grid', { width: 400, height: 400 }, scene);
   if (B.GridMaterial) {
@@ -459,6 +461,7 @@ function buildEntity(e, parentNode, token) {
     const m = B.MeshBuilder.CreateSphere(e.id + '.light', { diameter: 0.35 }, scene);
     iconMeshes.push(m);
     const mt = new B.StandardMaterial(e.id + 'lm', scene); mt.emissiveColor = hex(light.color, '#ffe9a8'); mt.disableLighting = true; m.material = mt; m.parent = node; tag(m, e.id);
+    const l = createLight(B, scene, e.id + '.lt', light, node); l.metadata = { on: e.enabled !== false }; sceneLights.push(l);
     visual = true;
   }
   const cam = comp(e, 'camera');
@@ -487,15 +490,17 @@ function buildEntity(e, parentNode, token) {
 
 export function setScene() {
   buildToken++;
-  iconMeshes = []; colliderMeshes = [];
+  iconMeshes = []; colliderMeshes = []; sceneLights = [];
   for (const { node } of nodes.values()) { node.getChildMeshes(false).forEach((m) => m.dispose()); }
   for (const { node } of [...nodes.values()].reverse()) node.dispose();
   nodes.clear(); lockedIds.clear(); matCache.clear();
   for (const e of state.scene?.entities ?? []) buildEntity(e, null, buildToken);
+  ambientLight = applyAmbient(B, scene, state.scene?.settings);
   setSelection();
   setSettings();
 }
 
+let hemi, sun, ambientLight = null, sceneLights = []; // default editor lights vs the scene's own lights
 let outlined = [];
 let iconMeshes = [], colliderMeshes = [], ghostMesh = null;
 export function setSelection() {
@@ -525,6 +530,10 @@ function applyGizmos(node) {
 export function setSettings() {
   const s = state.settings;
   gridMesh?.setEnabled(!!s.grid);
+  // Scene lighting (Gizmos menu): the scene's own lights, ambient included; otherwise the editor's default light rig
+  const useScene = s.sceneLighting !== false && (sceneLights.some((l) => l.metadata?.on) || !!ambientLight);
+  hemi?.setEnabled(!useScene); sun?.setEnabled(!useScene); ambientLight?.setEnabled(useScene);
+  for (const l of sceneLights) if (!l.isDisposed()) l.setEnabled(useScene && l.metadata?.on);
   for (const m of iconMeshes) if (!m.isDisposed()) m.setEnabled(s.icons !== false);
   for (const m of colliderMeshes) if (!m.isDisposed()) m.setEnabled(s.colliders !== false);
   const g = gizmoManager?.gizmos;

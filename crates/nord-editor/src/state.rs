@@ -89,6 +89,8 @@ pub struct Settings {
     /// Gizmos menu: camera / light icons and collider outlines in the Scene view
     pub show_icons: bool,
     pub show_colliders: bool,
+    /// Gizmos menu: preview the scene's own lights (off: neutral editor lighting)
+    pub scene_lighting: bool,
     /// Assets panel ★ favourites (project-relative paths)
     pub asset_favorites: Vec<String>,
     pub window: Option<[f32; 4]>, // x, y, w, h
@@ -136,6 +138,7 @@ impl Default for Settings {
             grid: true,
             show_icons: true,
             show_colliders: true,
+            scene_lighting: true,
             asset_favorites: vec![],
             window: None,
             tint: true,
@@ -1304,6 +1307,7 @@ impl EditorState {
             "grid": self.settings.grid,
             "icons": self.settings.show_icons,
             "colliders": self.settings.show_colliders,
+            "sceneLighting": self.settings.scene_lighting,
             "local": self.settings.space_local,
             "center": self.settings.pivot_center,
         })

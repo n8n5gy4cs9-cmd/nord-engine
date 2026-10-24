@@ -1,0 +1,124 @@
+{
+  "format": 1,
+  "root": {
+    "id": "nh000007",
+    "name": "Lamp",
+    "enabled": true,
+    "tags": [],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        0
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [],
+    "scripts": [],
+    "children": [
+      {
+        "id": "nh000005",
+        "name": "Pole",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            0,
+            2.2,
+            0
+          ],
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "cylinder",
+            "size": [
+              0.22,
+              4.4,
+              0.22
+            ]
+          },
+          {
+            "type": "material",
+            "asset": "assets/materials/pier.mat.json"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "nh000006",
+        "name": "Bulb",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            0,
+            4.5,
+            0
+          ],
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "sphere",
+            "size": [
+              0.55,
+              0.55,
+              0.55
+            ]
+          },
+          {
+            "type": "material",
+            "asset": "assets/materials/neon-pink.mat.json"
+          },
+          {
+            "type": "light",
+            "kind": "point",
+            "color": "#ff4fd8",
+            "intensity": 1.1,
+            "range": 13,
+            "flicker": 0.15
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      }
+    ],
+    "prefab": null
+  }
+}

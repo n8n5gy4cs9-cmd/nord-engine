@@ -163,8 +163,17 @@ class Backend {
   enableLights() {
     if (this.lightsOn) return;
     this.lightsOn = true;
-    this.scene.lights.enable().setAmbientColor(parseInt((this.game.scene?.settings?.ambient ?? '#b8b8c8').slice(1, 7), 16));
-    for (const v of this.visuals) if (v.scene) v.setLighting?.(true);
+    this.scene.lights.enable();
+    this.applyAmbient();
+    this.game.events.on('sceneLoad', () => this.applyAmbient());
+    for (const v of this.visuals) if (v.scene && !v.__unlit) v.setLighting?.(true);
+  }
+  /** Scene ambient: `settings.ambient` colour (default light grey) times `settings.ambientIntensity` (0 = pitch dark). */
+  applyAmbient() {
+    const st = this.game.scene?.settings ?? {}, k = Math.max(0, st.ambientIntensity ?? 1);
+    const c = parseInt((typeof st.ambient === 'string' ? st.ambient : '#b8b8c8').slice(1, 7), 16) || 0;
+    const ch = (sh) => Math.min(255, Math.round(((c >> sh) & 255) * k));
+    this.scene.lights.setAmbientColor((ch(16) << 16) | (ch(8) << 8) | ch(0));
   }
 
   // ---- entity <-> native -----------------------------------------------

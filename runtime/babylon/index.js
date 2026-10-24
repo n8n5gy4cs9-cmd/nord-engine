@@ -5,6 +5,7 @@ import { attachDom } from '../core/input.js';
 import { registerBabylonComponents } from './components.js';
 import { HavokAdapter } from './physics.js';
 import { createGui } from './gui.js';
+import { applyAmbient, allowManyLights } from './lighting.js';
 
 export const rgb = (B, c, d = '#ffffff') => B.Color3.FromHexString((typeof c === 'string' && /^#[0-9a-f]{6}/i.test(c) ? c : d).slice(0, 7));
 const D2R = Math.PI / 180;
@@ -31,6 +32,8 @@ export async function boot(project, opts = {}) {
   game.backend = backend;
   registerCoreComponents(game);
   registerBabylonComponents(backend);
+  allowManyLights(B, scene);
+  game.events.on('sceneLoad', () => applyAmbient(B, scene, game.scene?.settings)); // scene ambient light
 
   const eng = project.physics?.engine;
   if (eng === 'havok' || eng === undefined) {

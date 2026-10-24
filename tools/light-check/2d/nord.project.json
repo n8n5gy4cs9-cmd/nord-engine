@@ -1,0 +1,45 @@
+{
+  "format": 1,
+  "name": "Light check 2D",
+  "id": "com.crowelian.lightcheck2d",
+  "type": "2d",
+  "engineVersion": "0.0.1",
+  "startScene": "scenes/main.scene.json",
+  "display": {
+    "width": 960,
+    "height": 540,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#000000"
+  },
+  "physics": {
+    "engine": "none"
+  },
+  "input": {
+    "actions": {
+      "left": [
+        "KeyA",
+        "ArrowLeft"
+      ],
+      "right": [
+        "KeyD",
+        "ArrowRight"
+      ],
+      "up": [
+        "KeyW",
+        "ArrowUp"
+      ],
+      "down": [
+        "KeyS",
+        "ArrowDown"
+      ],
+      "restart": [
+        "KeyR",
+        "Enter"
+      ]
+    }
+  },
+  "ui": {},
+  "plugins": [],
+  "export": {}
+}

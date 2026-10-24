@@ -1,0 +1,121 @@
+{
+  "format": 1,
+  "name": "rules",
+  "events": [
+    {
+      "type": "comment",
+      "text": "Neon Harbor rules, no code: three data cores in a row trigger OVERDRIVE (+5 s, full energy). The combo fades if you wait too long."
+    },
+    {
+      "type": "variable",
+      "name": "combo",
+      "valueType": "number",
+      "value": 0
+    },
+    {
+      "type": "variable",
+      "name": "overdrives",
+      "valueType": "number",
+      "value": 0
+    },
+    {
+      "type": "group",
+      "title": "Combo",
+      "active": true,
+      "children": [
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "Events",
+              "id": "on-event",
+              "params": {
+                "name": "orb"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "add-to-var",
+              "params": {
+                "variable": "combo",
+                "value": "1"
+              }
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "System",
+              "id": "compare-variable",
+              "params": {
+                "variable": "combo",
+                "comparison": ">=",
+                "value": "3"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "Events",
+              "id": "emit",
+              "params": {
+                "name": "overdrive"
+              }
+            },
+            {
+              "object": "System",
+              "id": "set-var",
+              "params": {
+                "variable": "combo",
+                "value": "0"
+              }
+            },
+            {
+              "object": "System",
+              "id": "add-to-var",
+              "params": {
+                "variable": "overdrives",
+                "value": "1"
+              }
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "conditions": [
+            {
+              "object": "System",
+              "id": "every-x-seconds",
+              "params": {
+                "seconds": "6"
+              }
+            },
+            {
+              "object": "System",
+              "id": "compare-variable",
+              "params": {
+                "variable": "combo",
+                "comparison": ">",
+                "value": "0"
+              }
+            }
+          ],
+          "actions": [
+            {
+              "object": "System",
+              "id": "subtract-from-var",
+              "params": {
+                "variable": "combo",
+                "value": "1"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

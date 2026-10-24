@@ -1,0 +1,433 @@
+{
+  "last_node_id": 13,
+  "last_link_id": 5,
+  "nodes": [
+    {
+      "id": 6,
+      "type": "event/game",
+      "pos": [
+        40,
+        40
+      ],
+      "size": [
+        230,
+        80
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            1
+          ]
+        },
+        {
+          "name": "data",
+          "type": "any",
+          "links": null
+        }
+      ],
+      "properties": {
+        "name": "orb"
+      }
+    },
+    {
+      "id": 7,
+      "type": "flow/call-graph",
+      "pos": [
+        340,
+        40
+      ],
+      "size": [
+        230,
+        80
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 1
+        },
+        {
+          "name": "file",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "a",
+          "type": "any",
+          "link": null
+        },
+        {
+          "name": "b",
+          "type": "any",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": null
+        },
+        {
+          "name": "a",
+          "type": "any",
+          "links": null
+        },
+        {
+          "name": "b",
+          "type": "any",
+          "links": null
+        }
+      ],
+      "properties": {
+        "file": "graphs/toast.graph.json",
+        "a": "DATA CORE +10"
+      }
+    },
+    {
+      "id": 8,
+      "type": "event/game",
+      "pos": [
+        40,
+        260
+      ],
+      "size": [
+        230,
+        80
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            2
+          ]
+        },
+        {
+          "name": "data",
+          "type": "any",
+          "links": null
+        }
+      ],
+      "properties": {
+        "name": "overdrive"
+      }
+    },
+    {
+      "id": 9,
+      "type": "audio/play",
+      "pos": [
+        340,
+        260
+      ],
+      "size": [
+        230,
+        80
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 2
+        },
+        {
+          "name": "clip",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "volume",
+          "type": "number",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "clip": "assets/audio/sfx/bell.wav",
+        "volume": 0.9,
+        "bus": "sfx"
+      }
+    },
+    {
+      "id": 10,
+      "type": "flow/call-graph",
+      "pos": [
+        640,
+        260
+      ],
+      "size": [
+        230,
+        80
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 3
+        },
+        {
+          "name": "file",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "a",
+          "type": "any",
+          "link": null
+        },
+        {
+          "name": "b",
+          "type": "any",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": null
+        },
+        {
+          "name": "a",
+          "type": "any",
+          "links": null
+        },
+        {
+          "name": "b",
+          "type": "any",
+          "links": null
+        }
+      ],
+      "properties": {
+        "file": "graphs/toast.graph.json",
+        "a": "OVERDRIVE  +5s"
+      }
+    },
+    {
+      "id": 11,
+      "type": "event/game",
+      "pos": [
+        40,
+        480
+      ],
+      "size": [
+        230,
+        80
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            4
+          ]
+        },
+        {
+          "name": "data",
+          "type": "any",
+          "links": null
+        }
+      ],
+      "properties": {
+        "name": "low-time"
+      }
+    },
+    {
+      "id": 12,
+      "type": "audio/play",
+      "pos": [
+        340,
+        480
+      ],
+      "size": [
+        230,
+        80
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 4
+        },
+        {
+          "name": "clip",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "volume",
+          "type": "number",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "clip": "assets/audio/sfx/alarm.wav",
+        "volume": 0.5,
+        "bus": "sfx"
+      }
+    },
+    {
+      "id": 13,
+      "type": "flow/call-graph",
+      "pos": [
+        640,
+        480
+      ],
+      "size": [
+        230,
+        80
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "exec",
+          "type": "exec",
+          "link": 5
+        },
+        {
+          "name": "file",
+          "type": "string",
+          "link": null
+        },
+        {
+          "name": "a",
+          "type": "any",
+          "link": null
+        },
+        {
+          "name": "b",
+          "type": "any",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "then",
+          "type": "exec",
+          "links": null
+        },
+        {
+          "name": "a",
+          "type": "any",
+          "links": null
+        },
+        {
+          "name": "b",
+          "type": "any",
+          "links": null
+        }
+      ],
+      "properties": {
+        "file": "graphs/toast.graph.json",
+        "a": "10 SECONDS LEFT"
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      6,
+      0,
+      7,
+      0,
+      "exec"
+    ],
+    [
+      2,
+      8,
+      0,
+      9,
+      0,
+      "exec"
+    ],
+    [
+      3,
+      9,
+      0,
+      10,
+      0,
+      "exec"
+    ],
+    [
+      4,
+      11,
+      0,
+      12,
+      0,
+      "exec"
+    ],
+    [
+      5,
+      12,
+      0,
+      13,
+      0,
+      "exec"
+    ]
+  ],
+  "groups": [
+    {
+      "title": "Reactions to the game's events",
+      "bounding": [
+        20,
+        -20,
+        960,
+        640
+      ],
+      "color": "#3f789e",
+      "font_size": 24
+    }
+  ],
+  "config": {},
+  "extra": {},
+  "version": 0.4,
+  "nord": {
+    "version": 1,
+    "vars": {}
+  }
+}

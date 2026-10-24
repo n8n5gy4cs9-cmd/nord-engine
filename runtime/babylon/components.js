@@ -1,6 +1,7 @@
 // Babylon 3D components. Each entity's native is a TransformNode; visuals are parented to it.
 import { registerComponent } from '../core/index.js';
 import { rgb } from './index.js';
+import { createLight, createShadows } from './lighting.js';
 
 const D2R = Math.PI / 180;
 const v3 = (B, a, d = [0, 0, 0]) => new B.Vector3(...(a ?? d));
@@ -133,19 +134,10 @@ export function registerBabylonComponents(backend) {
   // ---- lights, camera, sky ---------------------------------------------------
   registerComponent('light', {
     create(e, d, comp) {
-      const n = `${e.name}.light`, kind = d.kind ?? 'directional', col = rgb(B, d.color);
-      let l;
-      if (kind === 'point') l = new B.PointLight(n, B.Vector3.Zero(), scene);
-      else if (kind === 'spot') l = new B.SpotLight(n, B.Vector3.Zero(), new B.Vector3(0, 0, 1), (d.angle ?? 45) * D2R, d.exponent ?? 2, scene);
-      else if (kind === 'hemispheric') { l = new B.HemisphericLight(n, new B.Vector3(0, 1, 0), scene); l.groundColor = rgb(B, d.groundColor, '#404050'); }
-      else l = new B.DirectionalLight(n, d.direction ? v3(B, d.direction) : new B.Vector3(0, 0, 1), scene);
-      l.diffuse = col; l.specular = col; l.intensity = d.intensity ?? 1;
-      if (d.range && l.range !== undefined) l.range = d.range;
-      if (kind !== 'hemispheric') l.parent = e.native; // direction/position follow the entity transform
+      const l = createLight(B, scene, `${e.name}.light`, d, e.native);
       comp.light = l;
-      if (d.castShadows && (kind === 'directional' || kind === 'spot')) {
-        const sg = new B.ShadowGenerator(d.shadowMapSize ?? 1024, l);
-        sg.useBlurExponentialShadowMap = true; sg.blurKernel = 16; sg.bias = 0.002;
+      if (d.castShadows && d.kind !== 'hemispheric') {
+        const sg = createShadows(B, l, d.shadowMapSize ?? 1024);
         backend.shadow = sg; comp.sg = sg;
         for (const x of scene.meshes) if (x.metadata?.entity && x.__castShadow !== false) sg.addShadowCaster(x);
       }

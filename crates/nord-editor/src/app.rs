@@ -333,17 +333,31 @@ impl App {
                         ))
                         .fit_to_exact_size(rect.size()),
                     );
-                    // the loader icon spins about its centre (artwork coordinates are 600 x 526)
+                    // spinner: a metallic-blue arc with a fading tail, drawn as vectors so it turns exactly about its centre
                     let k = rect.width() / 600.0;
                     let c = rect.min + egui::vec2(297.1, 407.8) * k;
-                    let angle = t0.elapsed().as_secs_f32() * std::f32::consts::TAU;
-                    ui.put(
-                        egui::Rect::from_center_size(c, egui::Vec2::splat(48.0 * k)),
-                        egui::Image::new(egui::include_image!(
-                            "../../../assets/brand/splash-loader.png"
-                        ))
-                        .rotate(angle, egui::Vec2::splat(0.5)),
-                    );
+                    let (r, w) = (14.0 * k, 3.2 * k);
+                    let head = ui.input(|i| i.time) as f32 * std::f32::consts::TAU;
+                    let n = 48;
+                    let sweep = 4.2_f32; // radians (about 240 degrees)
+                    for s in 0..n {
+                        let (t0, t1) = (s as f32 / n as f32, (s + 1) as f32 / n as f32);
+                        let pts: Vec<egui::Pos2> = [t0, t1]
+                            .iter()
+                            .map(|t| {
+                                let a = head - sweep * (1.0 - t);
+                                c + egui::vec2(a.cos(), a.sin()) * r
+                            })
+                            .collect();
+                        let k2 = t1 * t1; // 0 at the tail, 1 at the head
+                        let col = egui::Color32::from_rgba_unmultiplied(
+                            (90.0 + 145.0 * k2) as u8,
+                            (130.0 + 125.0 * k2) as u8,
+                            (170.0 + 85.0 * k2) as u8,
+                            (255.0 * k2) as u8,
+                        );
+                        ui.painter().line_segment([pts[0], pts[1]], egui::Stroke::new(w, col));
+                    }
                 });
             if t0.elapsed() < Duration::from_millis(100) {
                 if let Some(c) = egui::ViewportCommand::center_on_screen(ctx) {
@@ -1361,6 +1375,7 @@ fn viewport_bar(st: &mut crate::state::EditorState, ui: &mut egui::Ui) {
                 ui.checkbox(&mut st.settings.grid, "Grid");
                 ui.checkbox(&mut st.settings.show_icons, "Camera / light icons");
                 ui.checkbox(&mut st.settings.show_colliders, "Collider outlines");
+                ui.checkbox(&mut st.settings.scene_lighting, "Scene lighting");
             },
         );
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {

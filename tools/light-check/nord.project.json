@@ -1,0 +1,37 @@
+{
+  "format": 1,
+  "name": "Light check",
+  "id": "com.crowelian.lightcheck",
+  "type": "3d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/main.scene.json",
+  "display": {
+    "width": 1280,
+    "height": 720,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#000000"
+  },
+  "physics": {
+    "engine": "none"
+  },
+  "input": {
+    "actions": {
+      "left": [
+        "KeyA",
+        "ArrowLeft"
+      ],
+      "right": [
+        "KeyD",
+        "ArrowRight"
+      ],
+      "jump": [
+        "Space"
+      ]
+    }
+  },
+  "plugins": [
+    "ui",
+    "audio"
+  ]
+}
