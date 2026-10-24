@@ -6,6 +6,8 @@
 #   ./run.sh examples/conformance-2d
 #   ./run.sh --release          # optimized build
 #   ./run.sh --no-webview       # skip the wry embedded webview (viewport opens in your browser instead)
+#   ./run.sh --clean            # delete target/ (all old build output) first, then build and run only the latest
+#   ./run.sh --clean-only       # delete target/ and exit
 #
 # Needs: Rust (https://rustup.rs). Node 18+ is optional (JS syntax checking in the code editor + dev tooling).
 set -euo pipefail
@@ -16,11 +18,15 @@ PROFILE=()
 FEATURES=()
 ARGS=()
 WEBVIEW=1
+CLEAN=0
+CLEAN_ONLY=0
 for a in "$@"; do
   case "$a" in
     --release) PROFILE=(--release) ;;
     --no-webview) WEBVIEW=0 ;;
-    -h|--help) sed -n '2,11p' "$0"; exit 0 ;;
+    --clean) CLEAN=1 ;;
+    --clean-only) CLEAN=1; CLEAN_ONLY=1 ;;
+    -h|--help) sed -n '2,12p' "$0"; exit 0 ;;
     *) ARGS+=("$a") ;;
   esac
 done
@@ -30,6 +36,11 @@ if ! command -v cargo >/dev/null; then
   exit 1
 fi
 command -v node >/dev/null || echo "note: node not found - JS syntax checking in the code editor is disabled" >&2
+
+if [ "$CLEAN" = 1 ]; then
+  if [ -d target ]; then echo "==> removing target/ ($(du -sh target 2>/dev/null | cut -f1))"; rm -rf target; else echo "==> target/ is already gone"; fi
+  [ "$CLEAN_ONLY" = 1 ] && exit 0
+fi
 
 # The webview (WKWebView child view) is the macOS viewport; on other systems it is not wired up.
 if [ "$(uname -s)" = "Darwin" ] && [ "$WEBVIEW" = 1 ]; then FEATURES=(--features webview); fi
