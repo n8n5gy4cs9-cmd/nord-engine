@@ -185,6 +185,21 @@ pub fn accent_arrow(ui: &mut Ui, openness: f32, response: &egui::Response) {
         .add(egui::Shape::convex_polygon(pts, c, egui::Stroke::NONE));
 }
 
+/// Snap a rect to whole physical pixels (same size in points -> exact texel size and position), so rasterised icons stay crisp
+/// instead of being resampled between pixels.
+pub fn snap(ctx: &egui::Context, r: egui::Rect) -> egui::Rect {
+    let ppp = ctx.pixels_per_point();
+    let px = |v: f32| (v * ppp).round() / ppp;
+    let size = Vec2::splat(px(r.width().min(r.height())).max(1.0 / ppp));
+    egui::Rect::from_min_size(
+        egui::pos2(
+            px(r.center().x - size.x / 2.0),
+            px(r.center().y - size.y / 2.0),
+        ),
+        size,
+    )
+}
+
 pub fn icon(name: &'static str, size: f32, tint: Color32) -> Image<'static> {
     Image::new(source(name))
         .fit_to_exact_size(Vec2::splat(size))
@@ -215,7 +230,7 @@ pub fn button(ui: &mut Ui, name: &'static str, tip: &str, selected: bool) -> egu
         } else {
             v.fg_stroke.color
         };
-        icon(name, 15.0, c).paint_at(ui, r);
+        icon(name, 15.0, c).paint_at(ui, snap(ui.ctx(), r));
     }
     resp.on_hover_cursor(egui::CursorIcon::PointingHand)
         .on_hover_text(tip)
@@ -248,7 +263,10 @@ pub fn mini_toggle(ui: &mut Ui, name: &'static str, tip: &str, selected: bool) -
         ui.painter().rect_filled(rect, v.corner_radius, fill);
         icon(name, 13.0, v.fg_stroke.color).paint_at(
             ui,
-            egui::Rect::from_center_size(rect.center(), Vec2::splat(13.0)),
+            snap(
+                ui.ctx(),
+                egui::Rect::from_center_size(rect.center(), Vec2::splat(13.0)),
+            ),
         );
     }
     resp.on_hover_cursor(egui::CursorIcon::PointingHand)

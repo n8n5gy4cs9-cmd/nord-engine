@@ -1,0 +1,27 @@
+{
+  "tags": [],
+  "items": {
+    "assets/audio": {
+      "color": "#e5534b",
+      "icon": null,
+      "tags": [],
+      "note": ""
+    },
+    "assets/materials": {
+      "color": "#4c9aff",
+      "icon": null,
+      "tags": [],
+      "note": ""
+    },
+    "assets/models": {
+      "color": "#3fb8af",
+      "icon": null,
+      "tags": [],
+      "note": ""
+    }
+  },
+  "zebra": true,
+  "guides": true,
+  "auto_icons": false,
+  "view_v": 2
+}

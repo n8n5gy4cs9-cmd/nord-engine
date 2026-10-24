@@ -645,7 +645,7 @@ fn tree(st: &mut EditorState, ui: &mut Ui, rel: &str, depth: usize, ctx: &mut Op
         let resp = ui
             .horizontal(|ui| {
                 ui.add_space(depth as f32 * 12.0);
-                let (ir, _) = ui.allocate_exact_size(Vec2::splat(14.0), Sense::hover());
+                let (ir, _) = ui.allocate_exact_size(Vec2::splat(16.0), Sense::hover());
                 paint_folder(st, ui, &root, &d.rel, ir, open);
                 let r = ui.selectable_label(sel, &d.name);
                 if r.clicked() {
@@ -1296,7 +1296,7 @@ fn paint_folder(
             rect.center() + Vec2::new(0.0, rect.height() * 0.06),
             Vec2::splat(rect.width() * 0.46),
         );
-        icons::icon(n, g.width(), ink).paint_at(ui, g);
+        icons::icon(n, g.width(), ink).paint_at(ui, icons::snap(ui.ctx(), g));
     }
 }
 
