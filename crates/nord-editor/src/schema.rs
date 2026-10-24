@@ -312,7 +312,31 @@ pub fn script_attributes(src: &str) -> Vec<Field> {
         .collect()
 }
 
+/// `SerializeField({ speed: 5, name: 'Bob', jump: { default: 3, min: 0 } })` shorthand (mirrors `SerializeField` in
+/// `runtime/core/unity.js`): a plain value or `{ default }` without `type` gets its type from the value.
+fn normalize_attr(v: &Value) -> Option<Value> {
+    let (ty, def) = match v {
+        Value::Object(o) if o.contains_key("type") => return Some(v.clone()),
+        Value::Object(o) => (None, o.get("default")?.clone()),
+        other => (None::<&str>, other.clone()),
+    };
+    let ty = ty.unwrap_or(match &def {
+        Value::Bool(_) => "bool",
+        Value::Number(_) => "number",
+        Value::String(s) if s.starts_with('#') && matches!(s.len(), 4 | 7 | 9) => "color",
+        Value::String(_) => "string",
+        Value::Array(a) if a.len() == 3 => "vec3",
+        Value::Array(_) => "vec2",
+        _ => return None,
+    });
+    let mut o = v.as_object().cloned().unwrap_or_default();
+    o.insert("type".into(), Value::String(ty.into()));
+    o.insert("default".into(), def);
+    Some(Value::Object(o))
+}
+
 fn attr_field(name: &str, v: &Value) -> Option<Field> {
+    let v = normalize_attr(v)?;
     let o = v.as_object()?;
     let t = o.get("type").and_then(Value::as_str).unwrap_or("string");
     let mut ty = match t {
@@ -445,5 +469,23 @@ export default class P extends NordScript {
         assert_eq!(f[3].default, json!("b"));
         assert_eq!(f[3].hint, "How it works");
         assert_eq!(f[5].ty, FieldType::Array(Box::new(FieldType::Vec2)));
+    }
+}
+
+#[cfg(test)]
+mod serialize_field_tests {
+    use super::*;
+
+    #[test]
+    fn serialize_field_shorthand_shows_in_the_inspector() {
+        let src = "export default class Spin extends MonoBehaviour {\n  static attributes = SerializeField({ speed: 90, label: 'Hi', on: true, tint: '#ff0000', jump: { default: 3, min: 0, max: 10 } }); // comment {\n  Update() {}\n}";
+        let f = script_attributes(src);
+        let names: Vec<_> = f.iter().map(|f| f.name.as_str()).collect();
+        assert_eq!(names, ["speed", "label", "on", "tint", "jump"]);
+        assert_eq!(f[0].default, 90);
+        assert!(matches!(f[0].ty, FieldType::Number { .. }));
+        assert!(matches!(f[2].ty, FieldType::Bool));
+        assert!(matches!(f[3].ty, FieldType::Color));
+        assert!(matches!(f[4].ty, FieldType::Number { max: Some(m), .. } if m == 10.0));
     }
 }
