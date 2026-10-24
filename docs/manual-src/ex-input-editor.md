@@ -33,3 +33,6 @@ Native style: `this.input.pressed('dash')`, `this.input.down('left')`, `this.inp
 
 ## Let players rebind
 `this.input.actions.dash = ['KeyQ']` at runtime, saved with `this.save.set('bindings', this.input.actions)`; see [Options menu](ex-settings-menu.html).
+
+## Keyboard in the editor while playing
+The Game view owns the keyboard once it has focus: Q/W/E/R and other plain keys reach your game, never the editor tools; click another panel to get the editor shortcuts back. Esc releases a locked mouse in the editor (Settings ▸ Game view mouse). See [Which platform?](ex-platform.html) for `Application.isEditor`.

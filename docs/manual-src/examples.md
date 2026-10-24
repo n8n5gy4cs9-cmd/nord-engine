@@ -93,3 +93,4 @@ Never used Unity? These pages still work: each example is a small script plus th
 42. [Unity helpers cookbook](ex-unity-helpers.html): Random, Color, KeyCode, mouse events, free Instantiate/Destroy.
 43. [Input actions and the Input editor](ex-input-editor.html)
 44. [Tutorial: Coin Clicker in pure Unity style](ex-tutorial-clicker.html)
+45. [Which platform? Editor, Mac, Windows, web, phone](ex-platform.html): `Application.platform`, `isEditor`, `os`, `Cursor`.
