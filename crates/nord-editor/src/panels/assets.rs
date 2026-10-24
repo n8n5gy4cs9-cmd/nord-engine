@@ -1241,7 +1241,8 @@ fn dominant_icon(st: &mut EditorState, rel: &str) -> &'static str {
     best
 }
 
-/// Folder icon: user colour/icon (or user texture), else the icon of its dominant content, else the plain folder.
+/// Folder: the filled folder shape in the theme's accent colour; the user can colour it, put an icon badge on it, or replace it
+/// with one of the project's images. Optional automatic badge by dominant content (View menu).
 fn paint_folder(
     st: &mut EditorState,
     ui: &mut Ui,
@@ -1251,39 +1252,52 @@ fn paint_folder(
     open: bool,
 ) {
     let it = st.asset_meta.item(rel).cloned().unwrap_or_default();
-    let base = icons::kind_color("folder", ui.visuals().text_color());
-    let color = it.color.as_deref().map_or(base, crate::theme::hex);
+    let color = it
+        .color
+        .as_deref()
+        .map_or(ui.visuals().hyperlink_color, crate::theme::hex);
     if let Some(img) = it.icon.as_deref().and_then(|i| i.strip_prefix("img:")) {
         egui::Image::new(format!("file://{}/{img}", root.display()))
             .fit_to_exact_size(rect.size())
             .paint_at(ui, rect);
         return;
     }
-    let name: &'static str = match it
+    icons::icon(
+        if open {
+            "folder-open-fill"
+        } else {
+            "folder-fill"
+        },
+        rect.width(),
+        color,
+    )
+    .paint_at(ui, rect);
+    let badge: Option<&'static str> = match it
         .icon
         .as_deref()
         .and_then(|n| ICON_CHOICES.iter().find(|c| **c == n))
     {
-        Some(n) => n,
-        None if st.asset_meta.auto_icons && !rel.is_empty() => match dominant_icon(st, rel) {
-            "folder" => {
-                if open {
-                    "folder-open"
-                } else {
-                    "folder"
-                }
-            }
-            n => n,
-        },
-        None => {
-            if open {
-                "folder-open"
-            } else {
-                "folder"
-            }
+        Some(n) if *n != "folder" => Some(n),
+        Some(_) => None,
+        None if st.asset_meta.auto_icons && !rel.is_empty() => {
+            Some(dominant_icon(st, rel)).filter(|n| *n != "folder")
         }
+        None => None,
     };
-    icons::icon(name, rect.width(), color).paint_at(ui, rect);
+    if let Some(n) = badge {
+        // glyph centred on the folder body, dark or light so it reads on any folder colour
+        let lum = 0.299 * color.r() as f32 + 0.587 * color.g() as f32 + 0.114 * color.b() as f32;
+        let ink = if lum > 140.0 {
+            egui::Color32::from_black_alpha(190)
+        } else {
+            egui::Color32::from_white_alpha(230)
+        };
+        let g = egui::Rect::from_center_size(
+            rect.center() + Vec2::new(0.0, rect.height() * 0.06),
+            Vec2::splat(rect.width() * 0.46),
+        );
+        icons::icon(n, g.width(), ink).paint_at(ui, g);
+    }
 }
 
 /// Small coloured dots for the entry's tags.

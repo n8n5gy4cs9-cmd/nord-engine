@@ -12,6 +12,7 @@ macro_rules! icons {
                 "flip-horizontal" => Some(include_str!("../../../assets/icons/nord/flip-horizontal.svg")),
                 "flip-vertical" => Some(include_str!("../../../assets/icons/nord/flip-vertical.svg")),
                 "line" => Some(include_str!("../../../assets/icons/nord/line.svg")),
+                "folder-open-fill" => Some(include_str!("../../../assets/icons/nord/folder-open-fill.svg")),
                 "folder-fill" => Some(include_str!("../../../assets/icons/nord/folder-fill.svg")),
                 "box-select" => Some(include_str!("../../../assets/icons/nord/box-select.svg")),
                 _ => None,
@@ -138,7 +139,9 @@ pub fn source(name: &'static str) -> ImageSource<'static> {
 /// Colour of a type icon (PlayCanvas-style coloured asset/entity icons). `fallback` is used for icons without a colour.
 pub fn kind_color(name: &str, fallback: Color32) -> Color32 {
     match name {
-        "folder" | "folder-open" | "folder-fill" => Color32::from_rgb(232, 168, 56),
+        "folder" | "folder-open" | "folder-fill" | "folder-open-fill" => {
+            Color32::from_rgb(232, 168, 56)
+        }
         "image" => Color32::from_rgb(108, 203, 122),
         "music" => Color32::from_rgb(181, 140, 240),
         "box" | "boxes" => Color32::from_rgb(76, 201, 216),

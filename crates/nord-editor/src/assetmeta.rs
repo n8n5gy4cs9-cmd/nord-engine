@@ -41,8 +41,10 @@ pub struct AssetMeta {
     pub zebra: bool,
     /// vertical indent guide lines in the folder tree
     pub guides: bool,
-    /// folders without their own icon show the icon of their dominant content
+    /// off by default: a small badge of the dominant content type is drawn on the folder
     pub auto_icons: bool,
+    /// view-option defaults version (2: filled folders, automatic badges off)
+    pub view_v: u8,
     #[serde(skip)]
     loaded_for: Option<PathBuf>,
 }
@@ -54,7 +56,8 @@ impl Default for AssetMeta {
             items: BTreeMap::new(),
             zebra: true,
             guides: true,
-            auto_icons: true,
+            auto_icons: false,
+            view_v: 2,
             loaded_for: None,
         }
     }
@@ -118,6 +121,10 @@ impl AssetMeta {
             return;
         }
         let mut m: AssetMeta = nord_core::io::load_json(&Self::path(root)).unwrap_or_default();
+        if m.view_v < 2 {
+            m.auto_icons = false; // the first version replaced folders by content icons; filled folders are the default now
+            m.view_v = 2;
+        }
         m.loaded_for = Some(root.to_path_buf());
         *self = m;
     }

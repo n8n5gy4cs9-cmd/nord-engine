@@ -10,9 +10,9 @@ Right-click any folder or asset in the @ui[Assets] tab. Everything is saved **pe
 
 | Feature | How |
 |---|---|
-| @term[Folder colour] | @ui[Folder color] ▸ pick a swatch; @ui[Default color] resets. Shown in the tree, grid and list. |
-| @term[Folder icon] | @ui[Folder icon] ▸ pick one of 28 icons, **or** @ui[Your own image…] to use any image of the project as the icon, **or** @ui[Automatic (by content)]. |
-| @term[Automatic icons] | A folder without its own icon shows the icon of what it mostly contains: images, audio, models, scripts, prefabs… (turn off in @ui[View]). |
+| @term[Folder colour] | Folders are the filled folder shape in your theme's accent colour. @ui[Folder color] ▸ pick a swatch; @ui[Default color] goes back to the theme colour. Shown in the tree, grid and list. |
+| @term[Folder icon] | @ui[Folder icon] ▸ pick one of 28 icons (drawn as a badge on the folder), **or** @ui[Your own image…] to use any image of the project instead of the folder shape, **or** @ui[Automatic (by content)] for a badge of what the folder mostly contains. |
+| @term[Automatic badges] | Off by default. Turn on in @ui[View]: folders without their own icon get a small badge for what they mostly contain (images, audio, models, scripts, prefabs…). |
 | @term[Colour tags] | @ui[Tags ▸ New tag…] makes a tag (name + colour); tick tags on any asset or folder. Coloured dots show next to the name; filter the browser with the @ui[Tags] drop-down. |
 | @term[Descriptions] | @ui[Description…] on any asset or folder. Shown as a tooltip when you hover it. |
 | @term[Zebra striping] and @term[indent guides] | @ui[View] menu of the Assets toolbar: alternate row shading and vertical guide lines in the folder tree. |
