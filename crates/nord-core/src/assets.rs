@@ -87,10 +87,11 @@ fn walk(dir: &Path, out: &mut Vec<PathBuf>) {
     }
 }
 
-/// Scan `<root>/assets`, sorted by path. Sidecars are folded into their asset, not listed.
+/// Scan `<root>/assets` and `<root>/models` (the 3D Modeler's output folder), sorted by path. Sidecars are folded into their asset, not listed.
 pub fn scan(root: &Path) -> Result<Vec<Asset>> {
     let mut files = vec![];
     walk(&root.join("assets"), &mut files);
+    walk(&root.join("models"), &mut files);
     files.sort();
     let mut out = vec![];
     for f in files {
@@ -150,5 +151,14 @@ mod tests {
         assert_eq!(a[0].path, "assets/hit.ogg");
         assert_eq!(a[1].kind, AssetType::Spritesheet);
         assert_eq!(a[1].sha256.len(), 64);
+        // the 3D Modeler writes to models/: those files are assets too (model pickers, thumbnails, checks)
+        crate::vfs::create_dir_all(d.join("models")).unwrap();
+        crate::vfs::write(d.join("models/crate.glb"), b"g").unwrap();
+        crate::vfs::write(d.join("models/crate.mesh.json"), b"{}").unwrap();
+        let a = scan(&d).unwrap();
+        assert!(a
+            .iter()
+            .any(|x| x.path == "models/crate.glb" && x.kind == AssetType::Model));
+        assert!(a.iter().any(|x| x.path == "models/crate.mesh.json"));
     }
 }

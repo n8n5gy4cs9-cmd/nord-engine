@@ -10,7 +10,58 @@
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
 <div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="debugger.html">Debugger and profiler</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a><a href="ui-designer.html">UI Designer</a><a href="graph.html">Node graphs (visual scripting)</a><a href="unity-workflow.html">Unity-style workflow</a><a href="modeler.html" class="cur" aria-current="page">3D Modeler</a><a href="animator.html">Animator</a><a href="multiplayer.html">Multiplayer</a><a href="appearance.html">Editor appearance</a><a href="ai-mcp.html">AI and MCP</a><a href="unity-scripting.html">Unity-style scripting</a><a href="dev-console.html">In-game Dev Console</a><a href="organise-project.html">Organising your project</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>3D Modeler</h1>
 <p>The <strong>3D Modeler</strong> tab (Window ▸ Editors ▸ 3D Modeler) is for <em>props and small fixes</em>: build a crate from a cube, nudge vertices, repaint a texture, fix a UV, change a model that is already in your scene. It is not a replacement for Blender. Everything is saved in the project&#39;s <code>models/</code> folder.</p>
-<figure class="shot"><img src="../../assets/screenshots/mod-1-overview.png" alt="The 3D Modeler: tool column on the left, 3D view in the middle, material, UV and export panels on the right" loading="lazy"><figcaption>The Modeler. Left: create, select, transform and edit tools. Middle: the 3D / UV editor / Texture views. Right: material colour, UV mapping, export. Bottom line: status messages.</figcaption></figure><h2 id="open-a-model-from-your-scene">Open a model from your scene<a class="anchor" href="#open-a-model-from-your-scene">#</a></h2>
+<figure class="shot"><img src="../../assets/screenshots/mod-1-overview.png" alt="The 3D Modeler: tool column on the left, 3D view in the middle, material, UV and export panels on the right" loading="lazy"><figcaption>The Modeler. Left: create, select, transform and edit tools. Middle: the 3D / UV editor / Texture views. Right: material colour, UV mapping, export. Bottom line: status messages.</figcaption></figure><h2 id="save-your-model-and-use-it-in-the-game-3-steps">Save your model and use it in the game (3 steps)<a class="anchor" href="#save-your-model-and-use-it-in-the-game-3-steps">#</a></h2>
+<p><strong>Everything the Modeler saves goes into the project&#39;s <code>models/</code> folder</strong> (next to <code>assets/</code>, <code>scenes/</code>, <code>scripts/</code>).</p>
+<ol>
+<li><p><strong>Name it and press <span class="c-ui">Save</span></strong> (name box at the top left, or <span class="c-key">Ctrl/Cmd+S</span>). Save writes <strong>two files</strong> and the status line at the bottom tells you which:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>models/&lt;name&gt;.glb</code></td>
+<td>the <strong>game-ready model</strong>: shape, UVs, texture and colours in one file</td>
+<td><strong>put this in your game</strong></td>
+</tr>
+<tr>
+<td><code>models/&lt;name&gt;.mesh.json</code></td>
+<td>the <strong>editable</strong> model</td>
+<td>open it again in the Modeler to keep working</td>
+</tr>
+<tr>
+<td><code>models/&lt;name&gt;.png</code></td>
+<td>the texture alone (only if you press <em>Save PNG to project</em>)</td>
+<td>other tools</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>Put it in the scene.</strong> Any of these:</p>
+<ul>
+<li>Open the <span class="c-ui">Assets</span> tab, click the <code>models</code> folder, and <strong>drag <code>&lt;name&gt;.glb</code> into the Scene view</strong> (or onto the Hierarchy). A <em>model</em> object appears at that spot.</li>
+<li>Select an object, <span class="c-ui">Inspector ▸ + Add component ▸ Model</span>, and set <strong>Path</strong> to <code>models/&lt;name&gt;.glb</code> (the picker lists it).</li>
+<li>Dragging the <code>&lt;name&gt;.mesh.json</code> instead also works: Nord uses the <code>.glb</code> next to it. If there is no <code>.glb</code> yet it opens the Modeler on that mesh: press <span class="c-ui">Save</span> there to make it.</li>
+</ul>
+</li>
+<li><p><strong>Press <span class="c-ui">Play</span>.</strong> Your model is in the game with its texture. Export/build includes the <code>models/</code> folder automatically.</p>
+</li>
+</ol>
+<aside class="box tip"><div class="box-title">Tip</div><p><strong>Model changed later?</strong> Open it (below), edit, press <strong>Save</strong> again: the same <code>.glb</code> is overwritten, and every object that uses it shows the new version the next time the scene loads. To keep the old one, change the name before saving, or use the save choices when you opened the model from a scene object (below).</p>
+</aside><aside class="box warn"><div class="box-title">Careful</div><p>The <code>.mesh.json</code> is <strong>not</strong> a game asset. It is the Modeler&#39;s working file, which is why dragging it used to do nothing. The game only needs the <code>.glb</code>.</p>
+</aside><h2 id="continue-editing-later-after-closing-or-restarting">Continue editing later (after closing or restarting)<a class="anchor" href="#continue-editing-later-after-closing-or-restarting">#</a></h2>
+<p>Your work is safe once you pressed <strong>Save</strong> (check the status line for the file names). To continue:</p>
+<ul>
+<li><span class="c-ui">Assets</span> tab ▸ <code>models</code> ▸ <strong>double-click</strong> <code>&lt;name&gt;.mesh.json</code>, or right-click it ▸ <span class="c-ui">Open in 3D Modeler</span>.</li>
+<li>In the Modeler: <span class="c-ui">Open…</span> lists every <code>.mesh.json</code> (editable) and <code>.glb</code> in <code>models/</code>.</li>
+<li>From a scene object: <span class="c-ui">Inspector ▸ MODEL ▸ ✎ Open in 3D Modeler</span> (see below).</li>
+</ul>
+<p>The Modeler also keeps a <em>draft</em> of the current model inside its web view, but that only survives while the editor keeps its web storage (by default it does not), so <strong>always press Save</strong> before you close the editor.</p>
+<h2 id="where-the-files-live-and-why-models">Where the files live (and why <code>models/</code>)<a class="anchor" href="#where-the-files-live-and-why-models">#</a></h2>
+<p><code>models/</code> in the project root is the Modeler&#39;s folder: the editor&#39;s safe save API writes only to a few project folders and <code>models/</code> is one of them, the asset index and the model picker read it, and builds copy it. Move or rename files in the Assets tab if you prefer another folder (for example <code>assets/models/</code>): scene objects keep working when you re-pick the path, and colours/tags you set on assets follow renames.</p>
+<h2 id="open-a-model-from-your-scene">Open a model from your scene<a class="anchor" href="#open-a-model-from-your-scene">#</a></h2>
 <p>Three ways, all do the same:</p>
 <ol>
 <li><strong>Inspector button.</strong> Select the object in the Hierarchy (or click it in the Scene view). In the Inspector scroll to the <strong>MODEL</strong> component and press <strong>✎ Open in 3D Modeler</strong> under its fields.</li>
@@ -29,7 +80,7 @@
 </ol>
 <p>Notes: a capsule opens as a cylinder; the number of sides follows the Modeler&#39;s primitives, not the component&#39;s <em>segments</em>; the mesh&#39;s material component stays on the object (the model brings its own colours and texture), remove it if you do not want it.</p>
 <h2 id="quick-tasks-step-by-step">Quick tasks (step by step)<a class="anchor" href="#quick-tasks-step-by-step">#</a></h2>
-<p><strong>Make a model from nothing.</strong> Press <strong>New</strong>, type a name in the box at the top, click <strong>Cube</strong>. Move/shape it (below), open the <strong>Texture</strong> tab and paint, then <strong>Save</strong> and press <strong>GLB</strong>. Full lesson: <a href="../tutorials/tut-t49-3d-modeler.html">T49</a>.</p>
+<p><strong>Make a model from nothing.</strong> Press <strong>New</strong>, type a name in the box at the top, click <strong>Cube</strong>. Move/shape it (below), open the <strong>Texture</strong> tab and paint, then press <strong>Save</strong> (it writes the game-ready <code>models/&lt;name&gt;.glb</code> too). Full lesson: <a href="../tutorials/tut-t49-3d-modeler.html">T49</a>.</p>
 <p><strong>Select something.</strong> Choose <strong>Face</strong>, <strong>Edge</strong> or <strong>Vertex</strong> in the Selection box, then click in the 3D view. <strong>Shift-click</strong> adds more. <strong>Select all</strong> / <strong>Deselect</strong> / <strong>Invert</strong> are in the same panel.</p>
 <p><strong>Move, rotate or scale a selection.</strong> Select it, then drag the coloured arrows of the gizmo in the view, or type numbers in <strong>X / Y / Z</strong>, pick <strong>Move / Rotate / Scale</strong> and press <strong>Apply numeric transform</strong>. Turn on <strong>Grid snap</strong> to move in steps of <strong>Grid step</strong>.</p>
 <p><strong>Make a part bigger or add a bump.</strong> Select a face, set <strong>Amount</strong> (for example <code>0.3</code>) and press <strong>Extrude</strong>. A negative Amount pushes in.</p>
@@ -45,31 +96,6 @@
 <p><strong>Change a model everywhere.</strong> Same, but choose <strong>Overwrite the model</strong>. Every object and prefab that uses the file changes.</p>
 <p><strong>Make a new prefab / prefab variant.</strong> Save ▸ <strong>Save as a new prefab</strong> (plain object) or <strong>Save as a new prefab variant</strong> (prefab instance).</p>
 <p><strong>Undo a mistake.</strong> Ctrl/Cmd+Z, or <strong>Undo</strong>. Shift+Ctrl/Cmd+Z redoes.</p>
-<h2 id="files">Files<a class="anchor" href="#files">#</a></h2>
-<table>
-<thead>
-<tr>
-<th>File</th>
-<th>What it is</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>models/&lt;name&gt;.mesh.json</code></td>
-<td>The editable mesh: vertices, faces, UVs, seams, vertex colours and the texture. <strong>Save</strong> / <strong>Open…</strong> use this.</td>
-</tr>
-<tr>
-<td><code>models/&lt;name&gt;.glb</code> / <code>.gltf</code></td>
-<td>The model for a 3D scene (texture and vertex colours included). Saving a scene model writes this.</td>
-</tr>
-<tr>
-<td><code>models/&lt;name&gt;.obj</code> + <code>.mtl</code> + <code>.png</code></td>
-<td>Export for other tools.</td>
-</tr>
-<tr>
-<td><code>models/&lt;name&gt;.png</code></td>
-<td>The texture alone (<strong>Save PNG to project</strong>).</td>
-</tr>
-</tbody></table>
 <h2 id="opening-a-scene-model-and-what-survives">Opening a scene model, and what survives<a class="anchor" href="#opening-a-scene-model-and-what-survives">#</a></h2>
 <p>Opening a <code>.glb</code> / <code>.gltf</code> merges all its meshes into one editable mesh (node transforms applied, duplicate points welded). You get the geometry, the UVs, the first texture and the material colours.</p>
 <aside class="box tip"><div class="box-title">Tip</div><p>What is <strong>not</strong> kept: skeleton and animations, more than one texture (the first is kept; plain material colours are baked into vertex colours), smooth normals (the Modeler is flat-shaded). The status line tells you when something will be lost. If the model is animated, save as a <strong>new</strong> model instead of overwriting.</p>
@@ -218,7 +244,7 @@
 <ul>
 <li><strong>Solid colour</strong> + <strong>Apply solid colour</strong> sets the base colour. <strong>Paint selected vertices</strong> stores the colour box&#39;s colour as the vertex colour of the selected points (it multiplies with the solid colour and texture; white = no tint). <strong>Checker preview</strong> shows a test pattern to judge UV stretching.</li>
 <li><strong>UV mapping:</strong> <strong>Mark seam / Clear seam</strong> (edge mode) cut islands; <strong>UV move U/V, rotate, scale</strong> + <strong>Transform selected UVs</strong> change the UVs of selected faces numerically.</li>
-<li><strong>Export:</strong> <strong>Up axis</strong> (Y up, or Z up baked), <strong>Scale</strong>, then <strong>GLB</strong>, <strong>glTF</strong> or <strong>OBJ + MTL</strong> into <code>models/</code>.</li>
+<li><strong>Export:</strong> only needed for <em>other</em> tools or a different scale / axis: <strong>Up axis</strong> (Y up, or Z up baked), <strong>Scale</strong>, then <strong>GLB</strong>, <strong>glTF</strong> or <strong>OBJ + MTL</strong> into <code>models/</code>. For your game, <strong>Save</strong> is enough: it already writes the <code>.glb</code> (Y up, scale 1).</li>
 </ul>
 <h2 id="full-window">Full window<a class="anchor" href="#full-window">#</a></h2>
 <p><span class="c-ui">Full window</span> (top of the Modeler tab) makes the 3D Modeler fill the whole Nord Engine window; menus and panels are hidden. The red <span class="c-ui">✕ Exit full view</span> button in the same place brings the normal layout back.</p>
@@ -256,5 +282,5 @@
 <figure class="shot"><img src="../../assets/screenshots/mod-5-uv.png" alt="UV editor with faces laid out on the texture" loading="lazy"><figcaption>UV editor: every face on the texture square.</figcaption></figure><p>Click a face to select it (Shift extends), drag to move it; switch <strong>Drag</strong> to <em>points</em> to move single corners; <strong>snap to texel</strong> snaps to texture pixels. Buttons: <strong>Flip U / V</strong>, <strong>Rotate 90°</strong>, <strong>Fit to 0-1</strong>, <strong>Select island</strong>, <strong>Auto unwrap</strong> (project each face), <strong>Pack</strong> (arrange all on the texture without overlap).</p>
 <h2 id="limits">Limits<a class="anchor" href="#limits">#</a></h2>
 <p>One texture per mesh. Flat shading only. No skeleton/animation authoring or import. Undo keeps whole-mesh snapshots (80 steps / 32 MB). A draft is kept in the browser (<code>nord.mesh-draft</code>). Outside the editor (<strong>Open in browser</strong>) Save downloads files and the save dialog cannot change scene objects. The Scene view picks up an overwritten model after a reload.</p>
-<div class="pager"><a href="unity-workflow.html"><small>← Previous</small>Unity-style workflow</a><a href="animator.html"><small>Next →</small>Animator</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#open-a-model-from-your-scene">Open a model from your scene </a><a href="#edit-a-built-in-shape-mesh-as-a-model">Edit a built-in shape (mesh) as a model </a><a href="#quick-tasks-step-by-step">Quick tasks (step by step) </a><a href="#files">Files </a><a href="#opening-a-scene-model-and-what-survives">Opening a scene model, and what survives </a><a href="#saving-a-scene-model-overwrite-new-prefab-variant">Saving a scene model: overwrite, new, prefab, variant </a><a href="#3d-view-tools">3D view tools </a><a href="#full-window">Full window </a><a href="#texture-tab">Texture tab </a><a href="#uv-editor-tab">UV editor tab </a><a href="#limits">Limits </a></aside></div>
+<div class="pager"><a href="unity-workflow.html"><small>← Previous</small>Unity-style workflow</a><a href="animator.html"><small>Next →</small>Animator</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#save-your-model-and-use-it-in-the-game-3-steps">Save your model and use it in the game (3 steps) </a><a href="#continue-editing-later-after-closing-or-restarting">Continue editing later (after closing or restarting) </a><a href="#where-the-files-live-and-why-models">Where the files live (and why models/ ) </a><a href="#open-a-model-from-your-scene">Open a model from your scene </a><a href="#edit-a-built-in-shape-mesh-as-a-model">Edit a built-in shape (mesh) as a model </a><a href="#quick-tasks-step-by-step">Quick tasks (step by step) </a><a href="#opening-a-scene-model-and-what-survives">Opening a scene model, and what survives </a><a href="#saving-a-scene-model-overwrite-new-prefab-variant">Saving a scene model: overwrite, new, prefab, variant </a><a href="#3d-view-tools">3D view tools </a><a href="#full-window">Full window </a><a href="#texture-tab">Texture tab </a><a href="#uv-editor-tab">UV editor tab </a><a href="#limits">Limits </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

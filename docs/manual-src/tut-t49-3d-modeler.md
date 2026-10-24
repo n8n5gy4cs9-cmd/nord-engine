@@ -43,8 +43,9 @@ Open the **UV editor** tab. Click a face to select it and drag it onto a plank a
 <figure class="shot"><img src="assets/screenshots/mod-5-uv.png" alt="UV editor" loading="lazy"><figcaption>Each square is one face of the crate on the texture.</figcaption></figure>
 
 ## 4. Save and use it
-1. **Save** writes `models/crate.mesh.json` (editable). Press **GLB** to export `models/crate.glb`.
-2. In your scene add an entity with a **model** component, set **Path** to `models/crate.glb`. Press Play.
+1. Press @ui[Save]. The status line says: `Saved models/crate.mesh.json (editable…) and models/crate.glb (game-ready…)`. The `.glb` is the file for your game; the `.mesh.json` is for editing the crate again later.
+2. In the editor open the @ui[Assets] tab ▸ `models` ▸ **drag `crate.glb` into the Scene view** (or: add an entity with a **model** component and set **Path** to `models/crate.glb`). Press @ui[Play].
+3. Come back tomorrow: double-click `models/crate.mesh.json` in Assets (or @ui[Open…] in the Modeler) and continue.
 
 **Check yourself:** the crate is visible, the painted nail is where you drew it, and **Open…** in the Modeler brings back the editable mesh. Need symmetry? **Mirror X** after moving half the mesh away from the middle.
 

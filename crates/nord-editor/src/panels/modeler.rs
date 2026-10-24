@@ -62,7 +62,7 @@ pub fn ui(
                 st.modeler_ctx = None;
             }
         }
-        ui.weak("Saves models/<name>.mesh.json · Export GLB to use it in a 3D scene");
+        ui.weak("Save writes models/<name>.mesh.json (editable) and models/<name>.glb (game-ready, drag it into the scene)");
     });
     web.show(ui, frame, "modeler", &url, overlay);
     // the save dialog created a prefab / variant: tell the page which object and prefab it is tied to now

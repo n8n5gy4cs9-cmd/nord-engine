@@ -2,6 +2,7 @@
 A small polygon modeller + pixel texture painter + UV editor for quick prop fixes, in `editor/modeler/` (web page embedded in the editor like the UI Designer; **Open in browser** works too). Mesh editing core ported from the owner's BlockSmith app (`mesh-model.js`, parts of `modeler.js`); texture painter and UV editor are new. Uses vendored **three.js 0.180.0** (`vendor/three/`, editor only; never part of an export).
 
 ## Files (project `models/`, written through `/api/fpsc/save`)
+**Save** writes `models/<name>.mesh.json` (editable) **and** `models/<name>.glb` (game-ready, `saveProject()` in `modeler.js`). Dropping a `.mesh.json` on the Scene/Hierarchy uses the sibling `.glb` (`EditorState::game_model_for`) or opens the Modeler when it does not exist. The asset index (`nord_core::assets::scan`) covers `assets/` **and** `models/`; Assets: double-click a `.mesh.json` opens the Modeler.
 `<name>.mesh.json` (format `nord-mesh-1`: `vertices`, `faces[{v, uv}]`, `colors`, `seams`, `color`, `texture` as PNG data URL; `blocksmith-mesh-1` files open too), `<name>.glb`/`.gltf` (texture + vertex colours), `<name>.obj` + `.mtl` + `.png`, `<name>.png` (texture only). `?file=models/x.mesh.json` opens a file. Outside the editor Save downloads instead.
 
 ## Tools

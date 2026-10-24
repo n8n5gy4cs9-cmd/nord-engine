@@ -215,6 +215,7 @@ const OP_FAVORITE: u8 = 17;
 const OP_OPEN_PREFAB: u8 = 19;
 const OP_VARIANT: u8 = 20;
 const OP_FIND_REFS: u8 = 18;
+const OP_OPEN_MODELER: u8 = 41;
 const OP_NEW_MONO: u8 = 13;
 const OP_NEW_SINGLETON: u8 = 14;
 const OP_NEW_MANAGER: u8 = 15;
@@ -267,6 +268,9 @@ fn entry_menu(ui: &mut Ui, e: &Entry, out: &mut Option<(Entry, u8)>) {
     if e.kind == AssetType::Prefab && !e.is_dir {
         item(ui, "Open prefab (Prefab mode)", OP_OPEN_PREFAB);
         item(ui, "Create variant", OP_VARIANT);
+    }
+    if e.rel.ends_with(".mesh.json") || e.rel.ends_with(".glb") || e.rel.ends_with(".gltf") {
+        item(ui, "Open in 3D Modeler", OP_OPEN_MODELER);
     }
     if !e.is_dir {
         item(ui, "★ Favourite on/off", OP_FAVORITE);
@@ -540,6 +544,7 @@ fn handle_op(st: &mut EditorState, ui: &Ui, root: &Path, e: Entry, op: u8) {
         OP_NEW_FOLDER => create_in(st, root, &e.rel, "folder", "", None),
         OP_NEW_UI => create_in(st, root, &e.rel, "new-screen", "ui.json", Some(BLANK_UI)),
         OP_NEW_SCRIPT => create_in(st, root, &e.rel, "new-script", "js", Some(NEW_SCRIPT)),
+        OP_OPEN_MODELER => st.open_in_modeler("", &e.rel),
         OP_OPEN_PREFAB => st.push(Action::OpenPrefab(e.rel.clone())),
         OP_VARIANT => st.push(Action::PrefabVariant(e.rel.clone())),
         OP_FAVORITE => {
@@ -1187,6 +1192,10 @@ fn open_entry(st: &mut EditorState, e: &Entry) {
     if e.rel.ends_with(".graph.json") {
         st.graph_file = Some(e.rel.clone());
         st.push(Action::ShowTab(crate::app::Tab::Graph));
+        return;
+    }
+    if e.rel.ends_with(".mesh.json") {
+        st.open_in_modeler("", &e.rel); // the editable 3D model
         return;
     }
     if e.rel.ends_with(".animator.json") {

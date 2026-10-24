@@ -104,7 +104,7 @@ try{const saved=localStorage.getItem('nord.mesh-draft');if(saved)model=validate(
 
 // ---------- project files (models/ in the open project, via the jailed /api/fpsc/save) ----------
 const base=()=>$('#mesh-name').value.trim().replace(/\.mesh\.json$|\.json$/,'').replace(/[^\w-]+/g,'_')||'mesh';
-const updateWhere=()=>$('#mesh-where').textContent=`models/${base()}.mesh.json`;
+const updateWhere=()=>$('#mesh-where').textContent=`models/${base()}.mesh.json + .glb`;
 $('#mesh-name').oninput=updateWhere;
 function download(data,name,type='application/octet-stream'){const url=URL.createObjectURL(data instanceof Blob?data:new Blob([data],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);}
 async function output(file,data,type){
@@ -249,7 +249,7 @@ root.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setView(b.dataset.
 
 // ---------- actions that do not touch the mesh topology ----------
 async function extra(name){
- if(name==='open-project'){const n=await pick('Open mesh from models/',await listModels('.mesh.json'));if(!n)return true;const r=await fetch('/models/'+encodeURIComponent(n),{cache:'no-store'});if(!r.ok)throw Error('Could not read models/'+n);await adopt(validate(await r.json()),n.replace(/\.mesh\.json$/,''));status('Opened models/'+n);return true;}
+ if(name==='open-project'){const n=await pick('Open from models/ (.mesh.json = editable, .glb = import)',[...await listModels('.mesh.json'),...await listModels('.glb')]);if(!n)return true;const r=await fetch('/models/'+encodeURIComponent(n),{cache:'no-store'});if(!r.ok)throw Error('Could not read models/'+n);if(/\.glb$/i.test(n)){await adopt(await importGlb(await r.arrayBuffer(),'models/'+n),n.replace(/\.glb$/i,''));}else await adopt(validate(await r.json()),n.replace(/\.mesh\.json$/,''));status('Opened models/'+n);return true;}
  if(name==='texnew'||name==='texfill'){
   const size=name==='texnew'?+$('#texsize').value:texCanvas.width;
   if(model.texture&&name==='texnew'&&!await askYes('Replace the current texture with a new blank one?','Replace'))return true;
@@ -266,7 +266,7 @@ async function extra(name){
  if(layersApi&&['save','glb','gltf','obj','texpng','texnew','texfill','cleartexture','texload','texpick','undo','redo','open','open-project','importobj','new'].includes(name))finalizeTexture();
  if(await extra(name))return;
  if(name==='new'){checkpoint();model={format:'nord-mesh-1',vertices:[],faces:[],colors:[],seams:[],color:'#ffffff',texture:null};selection.clear();drawIds=[];drawing=false;await loadTexture();saveLocal();status('New empty mesh. The previous draft can be recovered with Undo.');return;}
- if(name==='save'&&(ctx.file||ctx.entity)){await saveForScene();return;}if(name==='save'){await output(base()+'.mesh.json',JSON.stringify(model,null,2),'application/json');return;}if(name==='open'){$('#mesh-file').click();return;}if(name==='texture'){$('#mesh-image').click();return;}if(name==='fit'){fit();return;}
+ if(name==='save'&&(ctx.file||ctx.entity)){await saveForScene();return;}if(name==='save'){await saveProject();return;}if(name==='open'){$('#mesh-file').click();return;}if(name==='texture'){$('#mesh-image').click();return;}if(name==='fit'){fit();return;}
  if(!['draw','finish'].includes(name)){drawing=false;drawIds=[];}
  if(name==='undo'||name==='redo'){const source=name==='undo'?undo:redo,target=name==='undo'?redo:undo;if(!source.length)return;target.push(JSON.stringify(model));model=JSON.parse(source.pop());selection.clear();drawIds=[];drawing=false;await loadTexture();saveLocal();return;}
  if(name==='all'||name==='invert'||name==='none'){const ids=mode==='vertex'?model.vertices.map((_,i)=>i):mode==='face'?model.faces.map((_,i)=>i):[...edgesOf(model).keys()];selection=name==='none'?new Set():new Set(ids.filter(i=>name==='all'||!selection.has(i)));rebuild();return;}
@@ -375,6 +375,13 @@ function saveChoice(){return new Promise(resolve=>{
  const list=back.querySelector('.list'),nm=back.querySelector('.nm'),done=v=>{back.remove();resolve(v);};nm.value=cur+'-edit';
  for(const o of opts){const b=document.createElement('button'),t=document.createElement('strong'),d=document.createElement('div');t.textContent=o.title;d.textContent=o.text;d.style.fontSize='11px';d.style.opacity='.75';b.append(t,d);b.onclick=()=>done({mode:o.mode,name:o.name?nm.value.trim().replace(/\.(glb|gltf)$/i,'').replace(/[^\w-]+/g,'_')||cur+'-edit':null});list.append(b);}
  back.querySelector('.cancel').onclick=()=>done(null);document.body.append(back);});}
+/** Save = two files in the project's models/ folder: the editable mesh and the game-ready GLB (geometry + UVs + texture + colours). */
+async function saveProject(){
+ const b=base(),inProject=await output(b+'.mesh.json',JSON.stringify(model,null,2),'application/json');
+ if(!model.faces.length){status('Saved the empty mesh. Add some faces, then Save again to get the .glb.');return;}
+ const glbOk=await output(b+'.glb',await glbBytes(),'model/gltf-binary');
+ status(inProject&&glbOk?`Saved models/${b}.mesh.json (editable: Open… / double-click in Assets) and models/${b}.glb (game-ready: use THIS file in your scene: drag it in, or a model component with path "models/${b}.glb").`:`Downloaded ${b}.mesh.json and ${b}.glb (the project save API is not available here: put them in the project's models/ folder).`);
+}
 async function saveForScene(){
  finalizeTexture();
  if(!model.faces.length)throw Error('Nothing to save: the mesh has no faces.');

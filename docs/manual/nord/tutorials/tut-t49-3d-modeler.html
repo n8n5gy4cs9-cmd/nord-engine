@@ -37,8 +37,9 @@
 <p>Open the <strong>UV editor</strong> tab. Click a face to select it and drag it onto a plank area of the texture. <strong>Flip U / V</strong> and <strong>Rotate 90°</strong> fix patterns that are the wrong way round; <strong>snap to texel</strong> lands exactly on pixels; <strong>Auto unwrap</strong> + <strong>Pack</strong> start over.</p>
 <figure class="shot"><img src="../../assets/screenshots/mod-5-uv.png" alt="UV editor" loading="lazy"><figcaption>Each square is one face of the crate on the texture.</figcaption></figure><h2 id="4-save-and-use-it">4. Save and use it<a class="anchor" href="#4-save-and-use-it">#</a></h2>
 <ol>
-<li><strong>Save</strong> writes <code>models/crate.mesh.json</code> (editable). Press <strong>GLB</strong> to export <code>models/crate.glb</code>.</li>
-<li>In your scene add an entity with a <strong>model</strong> component, set <strong>Path</strong> to <code>models/crate.glb</code>. Press Play.</li>
+<li>Press <span class="c-ui">Save</span>. The status line says: <code>Saved models/crate.mesh.json (editable…) and models/crate.glb (game-ready…)</code>. The <code>.glb</code> is the file for your game; the <code>.mesh.json</code> is for editing the crate again later.</li>
+<li>In the editor open the <span class="c-ui">Assets</span> tab ▸ <code>models</code> ▸ <strong>drag <code>crate.glb</code> into the Scene view</strong> (or: add an entity with a <strong>model</strong> component and set <strong>Path</strong> to <code>models/crate.glb</code>). Press <span class="c-ui">Play</span>.</li>
+<li>Come back tomorrow: double-click <code>models/crate.mesh.json</code> in Assets (or <span class="c-ui">Open…</span> in the Modeler) and continue.</li>
 </ol>
 <p><strong>Check yourself:</strong> the crate is visible, the painted nail is where you drew it, and <strong>Open…</strong> in the Modeler brings back the editable mesh. Need symmetry? <strong>Mirror X</strong> after moving half the mesh away from the middle.</p>
 <p>Reference: <a href="../manual/modeler.html">3D Modeler</a>. <strong>Next:</strong> <a href="tut-t54-change-scene-model.html">T54 Change a model in your scene</a>, then <a href="tut-t50-animator.html">T50 Animator</a>.</p>

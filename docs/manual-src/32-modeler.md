@@ -9,6 +9,42 @@ The **3D Modeler** tab (Window ▸ Editors ▸ 3D Modeler) is for *props and sma
 
 <figure class="shot"><img src="assets/screenshots/mod-1-overview.png" alt="The 3D Modeler: tool column on the left, 3D view in the middle, material, UV and export panels on the right" loading="lazy"><figcaption>The Modeler. Left: create, select, transform and edit tools. Middle: the 3D / UV editor / Texture views. Right: material colour, UV mapping, export. Bottom line: status messages.</figcaption></figure>
 
+## Save your model and use it in the game (3 steps)
+**Everything the Modeler saves goes into the project's `models/` folder** (next to `assets/`, `scenes/`, `scripts/`).
+
+1. **Name it and press @ui[Save]** (name box at the top left, or @key[Ctrl/Cmd+S]). Save writes **two files** and the status line at the bottom tells you which:
+
+   | File | What it is | Use it for |
+   |---|---|---|
+   | `models/<name>.glb` | the **game-ready model**: shape, UVs, texture and colours in one file | **put this in your game** |
+   | `models/<name>.mesh.json` | the **editable** model | open it again in the Modeler to keep working |
+   | `models/<name>.png` | the texture alone (only if you press *Save PNG to project*) | other tools |
+
+2. **Put it in the scene.** Any of these:
+   * Open the @ui[Assets] tab, click the `models` folder, and **drag `<name>.glb` into the Scene view** (or onto the Hierarchy). A *model* object appears at that spot.
+   * Select an object, @ui[Inspector ▸ + Add component ▸ Model], and set **Path** to `models/<name>.glb` (the picker lists it).
+   * Dragging the `<name>.mesh.json` instead also works: Nord uses the `.glb` next to it. If there is no `.glb` yet it opens the Modeler on that mesh: press @ui[Save] there to make it.
+3. **Press @ui[Play].** Your model is in the game with its texture. Export/build includes the `models/` folder automatically.
+
+::: tip
+**Model changed later?** Open it (below), edit, press **Save** again: the same `.glb` is overwritten, and every object that uses it shows the new version the next time the scene loads. To keep the old one, change the name before saving, or use the save choices when you opened the model from a scene object (below).
+:::
+
+::: warn
+The `.mesh.json` is **not** a game asset. It is the Modeler's working file, which is why dragging it used to do nothing. The game only needs the `.glb`.
+:::
+
+## Continue editing later (after closing or restarting)
+Your work is safe once you pressed **Save** (check the status line for the file names). To continue:
+* @ui[Assets] tab ▸ `models` ▸ **double-click** `<name>.mesh.json`, or right-click it ▸ @ui[Open in 3D Modeler].
+* In the Modeler: @ui[Open…] lists every `.mesh.json` (editable) and `.glb` in `models/`.
+* From a scene object: @ui[Inspector ▸ MODEL ▸ ✎ Open in 3D Modeler] (see below).
+
+The Modeler also keeps a *draft* of the current model inside its web view, but that only survives while the editor keeps its web storage (by default it does not), so **always press Save** before you close the editor.
+
+## Where the files live (and why `models/`)
+`models/` in the project root is the Modeler's folder: the editor's safe save API writes only to a few project folders and `models/` is one of them, the asset index and the model picker read it, and builds copy it. Move or rename files in the Assets tab if you prefer another folder (for example `assets/models/`): scene objects keep working when you re-pick the path, and colours/tags you set on assets follow renames.
+
 ## Open a model from your scene
 
 Three ways, all do the same:
@@ -35,7 +71,7 @@ Notes: a capsule opens as a cylinder; the number of sides follows the Modeler's 
 
 ## Quick tasks (step by step)
 
-**Make a model from nothing.** Press **New**, type a name in the box at the top, click **Cube**. Move/shape it (below), open the **Texture** tab and paint, then **Save** and press **GLB**. Full lesson: [T49](tut-t49-3d-modeler.html).
+**Make a model from nothing.** Press **New**, type a name in the box at the top, click **Cube**. Move/shape it (below), open the **Texture** tab and paint, then press **Save** (it writes the game-ready `models/<name>.glb` too). Full lesson: [T49](tut-t49-3d-modeler.html).
 
 **Select something.** Choose **Face**, **Edge** or **Vertex** in the Selection box, then click in the 3D view. **Shift-click** adds more. **Select all** / **Deselect** / **Invert** are in the same panel.
 
@@ -66,15 +102,6 @@ Notes: a capsule opens as a cylinder; the number of sides follows the Modeler's 
 **Make a new prefab / prefab variant.** Save ▸ **Save as a new prefab** (plain object) or **Save as a new prefab variant** (prefab instance).
 
 **Undo a mistake.** Ctrl/Cmd+Z, or **Undo**. Shift+Ctrl/Cmd+Z redoes.
-
-## Files
-
-| File | What it is |
-|---|---|
-| `models/<name>.mesh.json` | The editable mesh: vertices, faces, UVs, seams, vertex colours and the texture. **Save** / **Open…** use this. |
-| `models/<name>.glb` / `.gltf` | The model for a 3D scene (texture and vertex colours included). Saving a scene model writes this. |
-| `models/<name>.obj` + `.mtl` + `.png` | Export for other tools. |
-| `models/<name>.png` | The texture alone (**Save PNG to project**). |
 
 ## Opening a scene model, and what survives
 
@@ -147,7 +174,7 @@ Drag the gizmo, or type **X/Y/Z**, choose **Move / Rotate (degrees) / Scale** an
 ### Material, UV mapping, export (right panel)
 * **Solid colour** + **Apply solid colour** sets the base colour. **Paint selected vertices** stores the colour box's colour as the vertex colour of the selected points (it multiplies with the solid colour and texture; white = no tint). **Checker preview** shows a test pattern to judge UV stretching.
 * **UV mapping:** **Mark seam / Clear seam** (edge mode) cut islands; **UV move U/V, rotate, scale** + **Transform selected UVs** change the UVs of selected faces numerically.
-* **Export:** **Up axis** (Y up, or Z up baked), **Scale**, then **GLB**, **glTF** or **OBJ + MTL** into `models/`.
+* **Export:** only needed for *other* tools or a different scale / axis: **Up axis** (Y up, or Z up baked), **Scale**, then **GLB**, **glTF** or **OBJ + MTL** into `models/`. For your game, **Save** is enough: it already writes the `.glb` (Y up, scale 1).
 
 ## Full window
 @ui[Full window] (top of the Modeler tab) makes the 3D Modeler fill the whole Nord Engine window; menus and panels are hidden. The red @ui[✕ Exit full view] button in the same place brings the normal layout back.

@@ -1826,3 +1826,28 @@ fn asset_dropped_on_the_scene_view_becomes_an_entity_at_that_spot() {
     assert_eq!(m["icons"], true);
     assert_eq!(m["colliders"], true);
 }
+
+#[test]
+fn dropping_a_mesh_json_uses_its_glb_or_opens_the_modeler() {
+    let mut st = state_with_scene("meshdrop");
+    let root = st.root.clone().unwrap();
+    std::fs::create_dir_all(root.join("models")).unwrap();
+    std::fs::write(root.join("models/a.mesh.json"), "{}").unwrap();
+    // no .glb yet: nothing is added, the Modeler opens on that mesh
+    st.add_asset_entity("models/a.mesh.json");
+    assert!(st.scene.as_ref().unwrap().entities.is_empty());
+    assert_eq!(
+        st.modeler_ctx.as_ref().map(|c| c.file.as_str()),
+        Some("models/a.mesh.json")
+    );
+    // with the exported .glb next to it the drop makes a model entity that points at the .glb
+    std::fs::write(root.join("models/a.glb"), b"glb").unwrap();
+    st.add_asset_entity("models/a.mesh.json");
+    let e = &st.scene.as_ref().unwrap().entities[0];
+    let m = e
+        .components
+        .iter()
+        .find(|c| c.kind == "model")
+        .expect("model component");
+    assert_eq!(m.fields["path"], "models/a.glb");
+}

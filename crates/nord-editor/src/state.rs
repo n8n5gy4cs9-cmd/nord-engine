@@ -843,7 +843,27 @@ impl EditorState {
 
     /// Dropping an asset on the hierarchy: image -> sprite entity, model -> model entity, prefab -> instance,
     /// audio -> audioSource entity, script -> attached to the selection.
+    /// A dropped `models/x.mesh.json` is the *editable* source of a model: the game uses the `x.glb` the 3D Modeler writes next to it.
+    /// Returns the model to use, or `None` (after telling the user and opening the Modeler, where Save writes the .glb).
+    pub fn game_model_for(&mut self, path: &str) -> Option<String> {
+        let Some(stem) = path.strip_suffix(".mesh.json") else {
+            return Some(path.to_string());
+        };
+        let glb = format!("{stem}.glb");
+        if self.root.as_ref().is_some_and(|r| r.join(&glb).exists()) {
+            self.toast(format!("Using {glb} (the game-ready export of this mesh)"));
+            return Some(glb);
+        }
+        self.toast("This mesh has no .glb yet: open it in the 3D Modeler and press Save (it writes the .glb)");
+        self.open_in_modeler("", path);
+        None
+    }
+
     pub fn add_asset_entity(&mut self, path: &str) {
+        let Some(path) = self.game_model_for(path) else {
+            return;
+        };
+        let path = path.as_str();
         use nord_core::assets::{classify, AssetType};
         let name = path
             .rsplit('/')
@@ -896,6 +916,10 @@ impl EditorState {
     /// Drop an asset onto an existing entity (Hierarchy row or Scene object): set/add the matching component or script.
     /// Returns false when the asset kind has no such meaning (prefabs, scenes…), so the caller can create an entity instead.
     pub fn drop_asset_on_entity(&mut self, id: &str, path: &str) -> bool {
+        let Some(path) = self.game_model_for(path) else {
+            return true; // handled: the Modeler was opened
+        };
+        let path = path.as_str();
         use nord_core::assets::{classify, AssetType};
         let (kind, key): (&str, &str) = match classify(path) {
             AssetType::Image | AssetType::Spritesheet => ("sprite", "texture"),
