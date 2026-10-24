@@ -1236,6 +1236,16 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                 let (hdr, _, _) = header.body(|ui| {
                     ui.add_enabled_ui(on, |ui| {
                         fields_ui(ui, &cx, &fields, &mut c.fields, &id, base_comp(i, &c.kind));
+                        if c.kind == "model" {
+                            let p = c.fields.get("path").and_then(Value::as_str).unwrap_or_default();
+                            if ui
+                                .add_enabled(!p.is_empty(), egui::Button::new("✎ Open in 3D Modeler"))
+                                .on_hover_text("Edit this model with its textures; Save asks: overwrite, new model, new prefab or variant")
+                                .clicked()
+                            {
+                                open_modeler = Some(p.to_string());
+                            }
+                        }
                     });
                 });
                 if f1_over(&hdr, ui) {

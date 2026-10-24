@@ -12,7 +12,7 @@ Many entities can share **one** model file, and a **prefab** is a saved entity y
 
 ## 1. Open the scene model in the Modeler
 1. Select the object in the Hierarchy or the Scene view.
-2. In the Inspector, find the **MODEL** component. Click its **⋮** menu ▸ **Open in 3D Modeler**. (For a model file with no object: select it in the Assets tab and press **Open in 3D Modeler** in the Inspector.)
+2. In the Inspector, scroll to the **MODEL** component and press **✎ Open in 3D Modeler** below its fields. (Or right-click the object in the Hierarchy ▸ **Open model in 3D Modeler**; or select a `.glb` in the Assets tab and press **Open in 3D Modeler** in the Inspector, which has no scene object.)
 3. The Modeler tab opens with the model as it is, with its colours and texture. The status line shows what was read.
 
 <figure class="shot"><img src="assets/screenshots/mod-7-open-scene-model.png" alt="Scene model opened in the Modeler" loading="lazy"><figcaption>The model from the scene, opened as is. The top of the tab says which file and object you are editing.</figcaption></figure>

@@ -9,10 +9,53 @@ The **3D Modeler** tab (Window ▸ Editors ▸ 3D Modeler) is for *props and sma
 
 <figure class="shot"><img src="assets/screenshots/mod-1-overview.png" alt="The 3D Modeler: tool column on the left, 3D view in the middle, material, UV and export panels on the right" loading="lazy"><figcaption>The Modeler. Left: create, select, transform and edit tools. Middle: the 3D / UV editor / Texture views. Right: material colour, UV mapping, export. Bottom line: status messages.</figcaption></figure>
 
-Two ways to start:
+## Open a model from your scene
 
-* **From scratch** - click a primitive (Cube, Plane...) and model. See [T49 Model and paint a crate](tut-t49-3d-modeler.html).
-* **From the scene** - select an object with a **model** component, open the **⋮** menu of that component and choose **Open in 3D Modeler** (or select a model asset in the Assets tab and press **Open in 3D Modeler** in the Inspector). It opens **as is**: geometry, textures and colours. See [T54 Change a model in your scene](tut-t54-change-scene-model.html).
+Three ways, all do the same:
+
+1. **Inspector button.** Select the object in the Hierarchy (or click it in the Scene view). In the Inspector scroll to the **MODEL** component and press **✎ Open in 3D Modeler** under its fields.
+2. **Hierarchy.** Right-click the object ▸ **Open model in 3D Modeler** (only shown when the object has a model).
+3. **Assets tab.** Select a `.glb` / `.gltf` file, then press **Open in 3D Modeler** in the Inspector. No scene object is attached, so Save can only write a new file.
+
+(The MODEL header's **⋮** menu has the same command.) The Modeler tab comes to the front, showing the model as it is. The top bar says **Editing models/x.glb**; **Detach** there cuts the link to the scene object.
+
+::: tip
+If the button is greyed out the MODEL component has no **Path** yet. If you cannot see a MODEL component the object has no model: add one with **+ Add component ▸ Model**, or drag a `.glb` from the Assets tab onto the object. After updating Nord Engine, restart the editor so the new buttons appear.
+:::
+
+## Quick tasks (step by step)
+
+**Make a model from nothing.** Press **New**, type a name in the box at the top, click **Cube**. Move/shape it (below), open the **Texture** tab and paint, then **Save** and press **GLB**. Full lesson: [T49](tut-t49-3d-modeler.html).
+
+**Select something.** Choose **Face**, **Edge** or **Vertex** in the Selection box, then click in the 3D view. **Shift-click** adds more. **Select all** / **Deselect** / **Invert** are in the same panel.
+
+**Move, rotate or scale a selection.** Select it, then drag the coloured arrows of the gizmo in the view, or type numbers in **X / Y / Z**, pick **Move / Rotate / Scale** and press **Apply numeric transform**. Turn on **Grid snap** to move in steps of **Grid step**.
+
+**Make a part bigger or add a bump.** Select a face, set **Amount** (for example `0.3`) and press **Extrude**. A negative Amount pushes in.
+
+**Make a window or a panel.** Select a face, **Inset** (Amount `0.2`), then **Extrude** with `-0.1`.
+
+**Add detail across a wall.** Edge mode, select one edge of the wall, press **Loop cut**: a new ring of edges appears. Move it with the gizmo.
+
+**Make it symmetric.** Move half of the model away from the centre plane, press **Mirror X** (or Y / Z). The copy is welded on.
+
+**Put it on the floor.** **Center on ground**.
+
+**Change the colour of the whole model.** Pick a colour in **Solid colour** (right panel), press **Apply solid colour**. A part only: select its vertices, pick a colour, **Paint selected vertices**.
+
+**Paint the texture.** Open the **Texture** tab. If the model has no texture yet press **New blank** (size 32 or 64 is plenty). Choose **Pencil**, pick a colour, drag on the picture. **Fill** floods an area, **Picker** copies a colour, **Eraser** removes. Tick **UV overlay** to see where each face sits.
+
+**Paint straight on the model.** In the **3D** tab tick **Paint on model**, pick the tool/colour in the Texture tab, then drag on the model. Untick it to select faces again.
+
+**Fix a face that shows the wrong part of the texture.** Open **UV editor**, click the face, drag it to the right spot. **Flip U / V** or **Rotate 90°** if mirrored/turned. If everything is a mess: **Auto unwrap**, then **Pack**.
+
+**Change a model in the scene and keep the others.** Open it from the scene (above), edit, press **Save**, choose **Save as a new model for the selected object**, type a name, confirm. Only the selected object now uses it. Lesson: [T54](tut-t54-change-scene-model.html).
+
+**Change a model everywhere.** Same, but choose **Overwrite the model**. Every object and prefab that uses the file changes.
+
+**Make a new prefab / prefab variant.** Save ▸ **Save as a new prefab** (plain object) or **Save as a new prefab variant** (prefab instance).
+
+**Undo a mistake.** Ctrl/Cmd+Z, or **Undo**. Shift+Ctrl/Cmd+Z redoes.
 
 ## Files
 

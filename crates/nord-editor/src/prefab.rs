@@ -406,6 +406,26 @@ impl EditorState {
         Some(rel)
     }
 
+    /// The `model` component's path of an entity (a prefab instance: of the prefab merged with its overrides).
+    pub fn model_path_of(&mut self, e: &Entity) -> Option<String> {
+        let eff = match e.prefab.as_ref() {
+            Some(p) => {
+                let base = self.read_prefab_cached(&p.path)?;
+                effective(e, &base)
+            }
+            None => e.clone(),
+        };
+        let path = eff
+            .components
+            .iter()
+            .find(|c| c.kind == "model")?
+            .fields
+            .get("path")?
+            .as_str()?
+            .to_string();
+        (!path.is_empty()).then_some(path)
+    }
+
     /// Inspector ▸ Model ▸ Open in 3D Modeler (or a model asset): open `file` in the Modeler tab, tied to scene object `entity`
     /// (empty = just the file). A prefab instance remembers its prefab so the save dialog can offer a variant.
     pub fn open_in_modeler(&mut self, entity: &str, file: &str) {

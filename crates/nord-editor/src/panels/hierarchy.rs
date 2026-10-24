@@ -584,6 +584,12 @@ fn row(
             st.make_prefab(&e.id, "prefabs");
             ui.close_menu();
         }
+        if let Some(path) = st.model_path_of(e) {
+            if ui.button("Open model in 3D Modeler").clicked() {
+                st.open_in_modeler(&e.id, &path);
+                ui.close_menu();
+            }
+        }
         if ui.button("Create empty parent").clicked() {
             st.select(Some(e.id.clone()));
             st.group_selected();
