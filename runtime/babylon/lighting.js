@@ -30,16 +30,17 @@ export function createLight(B, scene, name, d, parent) {
   else l = new B.DirectionalLight(name, d.direction ? new B.Vector3(...d.direction) : new B.Vector3(0, 0, 1), scene);
   l.diffuse = col; l.specular = col; l.intensity = d.intensity ?? 1;
   if (l.range !== undefined) l.range = d.range ?? 10; // linear fall-off to 0 at `range`, like Unity's Range
-  if (kind !== 'hemispheric' && parent) l.parent = parent;
+  if (parent) l.parent = parent; // direction/position follow the entity; a disabled parent entity disables the light
   return l;
 }
 
 /** Soft shadow map for a light; returns the generator (add casters with `sg.addShadowCaster`). */
-export function createShadows(B, l, size = 1024, q = QUALITY.high) {
+export function createShadows(B, l, size = 1024, q = QUALITY.high, d = {}) {
   if (q.shadows === 'off') return null;
   const sg = new B.ShadowGenerator(size, l);
   if (q.shadows === 'soft') { if (l instanceof B.PointLight) sg.usePoissonSampling = true; else { sg.useBlurExponentialShadowMap = true; sg.blurKernel = 16; } }
   sg.bias = 0.002;
+  sg.setDarkness(1 - Math.min(1, Math.max(0, d.shadowStrength ?? 1)));
   return sg;
 }
 
@@ -83,4 +84,14 @@ export function createLightCuller(B, scene, every = 0.25) {
     }
   };
   return { update };
+}
+
+/** Apply a changed light field to a live Babylon light (`entity.set('light', 'intensity', 2)`, Inspector edits while playing). */
+export function setLightField(B, l, key, value) {
+  if (key === 'color') { const c = rgb(B, value); l.diffuse = c; l.specular = c; }
+  else if (key === 'groundColor' && l.groundColor) l.groundColor = rgb(B, value, '#404050');
+  else if (key === 'intensity') l.intensity = value ?? 1;
+  else if (key === 'range' && l.range !== undefined) l.range = value ?? 10;
+  else if (key === 'angle' && l.angle !== undefined) l.angle = (value ?? 30) * D2R;
+  else if (key === 'exponent' && l.exponent !== undefined) l.exponent = value ?? 2;
 }

@@ -233,6 +233,12 @@ export function registerPhaserComponents(backend) {
       l.x = w[0] + (d.offset?.[0] ?? 0); l.y = w[1] + (d.offset?.[1] ?? 0);
       l.intensity = comp.entity.enabled ? comp.base * (d.flicker ? 1 - Math.random() * d.flicker : 1) : 0;
     },
+    set(comp, k, v) {
+      comp.data[k] = v;
+      if (k === 'radius') comp.light.radius = v ?? 160;
+      else if (k === 'color') comp.light.setColor(hex(v));
+      else if (k === 'intensity') comp.base = v ?? 1;
+    },
     destroy(comp) { backend.scene.lights.removeLight(comp.light); },
   });
 

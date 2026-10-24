@@ -1,7 +1,7 @@
 // Babylon 3D components. Each entity's native is a TransformNode; visuals are parented to it.
 import { registerComponent } from '../core/index.js';
 import { rgb } from './index.js';
-import { createLight, createShadows } from './lighting.js';
+import { createLight, createShadows, setLightField } from './lighting.js';
 
 const D2R = Math.PI / 180;
 const v3 = (B, a, d = [0, 0, 0]) => new B.Vector3(...(a ?? d));
@@ -112,7 +112,7 @@ export function registerBabylonComponents(backend) {
           }).catch((err) => backend.game.warn(`[nord] model material ${asset}: ${err?.message ?? err}`));
         }
       }).catch(() => {});
-      for (const r of inst.rootNodes) { r.parent = e.native; for (const m of [r, ...r.getChildMeshes()]) if (m.getTotalVertices) { (e.__meshes ??= []).push(m); m.__ownMat = m.material; m.metadata = { entity: e }; for (const sg of backend.shadows) sg.addShadowCaster(m); (m.isAnInstance ? m.sourceMesh : m).receiveShadows = true; /* instances read it from their source mesh */ } }
+      for (const r of inst.rootNodes) { r.parent = e.native; for (const m of [r, ...r.getChildMeshes()]) if (m.getTotalVertices) { (e.__meshes ??= []).push(m); m.__ownMat = m.material; m.metadata = { entity: e }; if (d.shadow !== false) for (const sg of backend.shadows) sg.addShadowCaster(m); (m.isAnInstance ? m.sourceMesh : m).receiveShadows = true; /* instances read it from their source mesh */ } }
       const groups = new Map(inst.animationGroups.map((g) => [g.name.startsWith(`${e.name}.`) ? g.name.slice(e.name.length + 1) : g.name, g]));
       comp.animations = groups;
       for (const g of groups.values()) g.stop();
@@ -135,13 +135,18 @@ export function registerBabylonComponents(backend) {
   registerComponent('light', {
     create(e, d, comp) {
       const l = createLight(B, scene, `${e.name}.light`, d, e.native);
-      comp.light = l;
+      comp.light = l; comp.base = d.intensity ?? 1;
       if (d.castShadows && d.kind !== 'hemispheric') {
-        const sg = createShadows(B, l, d.shadowMapSize ?? backend.quality.shadowResolution, backend.quality);
+        const sg = createShadows(B, l, d.shadowMapSize ?? backend.quality.shadowResolution, backend.quality, d);
         if (sg) { backend.shadows.add(sg); comp.sg = sg; for (const x of scene.meshes) if (x.metadata?.entity && x.__castShadow !== false) sg.addShadowCaster(x); }
       }
     },
-    update(comp) { comp.light.setEnabled(comp.entity.enabled); },
+    update(comp) {
+      const l = comp.light, d = comp.data;
+      l.setEnabled(comp.entity.enabled);
+      if (d.flicker) l.intensity = comp.base * (1 - Math.random() * d.flicker); // 0..1 random brightness loss, like 2D lights
+    },
+    set(comp, k, v) { comp.data[k] = v; if (k === 'intensity') comp.base = v ?? 1; if (k !== 'intensity' || !comp.data.flicker) setLightField(B, comp.light, k, v); },
     destroy(comp) { backend.shadows.delete(comp.sg); comp.sg?.dispose(); comp.light.dispose(); },
   });
 

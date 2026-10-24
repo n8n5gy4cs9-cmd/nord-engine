@@ -417,6 +417,22 @@ function fillMaterial(sm, d) {
   if ((d?.alpha ?? 1) < 1) sm.alpha = d.alpha;
 }
 
+// Unity-style light gizmo, shown while the light is selected: wire sphere of `range` (point), cone (spot), arrow (directional).
+function lightGizmo(id, d, node) {
+  const V = (x, y, z) => new B.Vector3(x, y, z), kind = d.kind ?? 'point', r = d.range ?? 10, N = 48;
+  const circle = (f) => Array.from({ length: N + 1 }, (_, i) => { const a = (i / N) * Math.PI * 2; return f(Math.cos(a), Math.sin(a)); });
+  let lines;
+  if (kind === 'point') lines = [circle((c, s) => V(c * r, s * r, 0)), circle((c, s) => V(c * r, 0, s * r)), circle((c, s) => V(0, c * r, s * r))];
+  else if (kind === 'spot') {
+    const a = ((d.angle ?? 30) / 2) * Math.PI / 180, rad = Math.tan(a) * r, rim = (c, s) => V(c * rad, s * rad, r);
+    lines = [circle(rim), ...[0, 1, 2, 3].map((i) => [V(0, 0, 0), rim(Math.cos(i * Math.PI / 2), Math.sin(i * Math.PI / 2))])];
+  } else if (kind === 'directional') lines = [[V(0, 0, 0), V(0, 0, 3)], [V(-.3, 0, 2.6), V(0, 0, 3), V(.3, 0, 2.6)], [V(0, -.3, 2.6), V(0, 0, 3), V(0, .3, 2.6)], circle((c, s) => V(c * .5, s * .5, 0))];
+  else return null; // hemispheric: no shape
+  const m = B.MeshBuilder.CreateLineSystem(id + '.lightgizmo', { lines }, scene);
+  m.color = hex(d.color, '#ffe9a8'); m.parent = node; m.isPickable = false; m.setEnabled(false);
+  return m;
+}
+
 function buildEntity(e, parentNode, token) {
   const node = new B.TransformNode(e.name || e.id, scene);
   node.parent = parentNode;
@@ -463,6 +479,7 @@ function buildEntity(e, parentNode, token) {
     iconMeshes.push(m);
     const mt = new B.StandardMaterial(e.id + 'lm', scene); mt.emissiveColor = hex(light.color, '#ffe9a8'); mt.disableLighting = true; m.material = mt; m.parent = node; tag(m, e.id);
     const l = createLight(B, scene, e.id + '.lt', light, node); l.metadata = { on: e.enabled !== false }; sceneLights.push(l);
+    const g = lightGizmo(e.id, light, node); if (g) lightGizmos.set(e.id, g);
     visual = true;
   }
   const cam = comp(e, 'camera');
@@ -492,6 +509,7 @@ function buildEntity(e, parentNode, token) {
 export function setScene() {
   buildToken++;
   iconMeshes = []; colliderMeshes = [];
+  lightGizmos.clear();
   for (const l of sceneLights) if (!l.isDisposed()) l.dispose(); // hemispheric lights have no parent node, so they would pile up on every rebuild
   sceneLights = [];
   for (const { node } of nodes.values()) { node.getChildMeshes(false).forEach((m) => m.dispose()); }
@@ -503,11 +521,12 @@ export function setScene() {
   setSettings();
 }
 
-let hemi, sun, ambientLight = null, sceneLights = []; // default editor lights vs the scene's own lights
+let hemi, sun, ambientLight = null, sceneLights = [], lightGizmos = new Map(); // default editor lights vs the scene's own lights
 let outlined = [];
 let iconMeshes = [], colliderMeshes = [], ghostMesh = null;
 export function setSelection() {
   const id = state.selection[0];
+  for (const [gid, g] of lightGizmos) if (!g.isDisposed()) g.setEnabled(state.selection.includes(gid) && state.settings.icons !== false);
   applyGizmos(attachNodeFor());
   for (const m of outlined) { if (!m.isDisposed()) m.renderOutline = false; }
   outlined = [];

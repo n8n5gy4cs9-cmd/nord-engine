@@ -32,5 +32,8 @@ try {
   await sleep(1500);
   const b = await probe();
   assert.deepEqual(b, a, `same lights after edit/undo: ${JSON.stringify(a)} -> ${JSON.stringify(b)}`);
+  await page.eval(`window.__nordEdit.onMessage({ t: 'scene', rev: 99, project: { display: { width: 1280, height: 720 } }, selection: ['lamp'], scene: ${JSON.stringify(sceneJson)} }); 1`); await sleep(1200);
+  const gz = JSON.parse(await page.eval(`JSON.stringify(window.BABYLON.EngineStore.LastCreatedScene.meshes.filter((m) => m.name.endsWith('.lightgizmo') && m.isEnabled()).map((m) => [m.name, m.isEnabled()]))`));
+  assert.deepEqual(gz, [['lamp.lightgizmo', true]], 'the selected light shows its range gizmo');
   console.log('ok: Scene view keeps the point light on the model after editing the Ambient light', JSON.stringify(b));
 } finally { page.close(); srv.kill(); }

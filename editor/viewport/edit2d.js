@@ -43,12 +43,13 @@ function localToWorld(parentW, t) {
 
 function rebuild() {
   items = [];
-  const walk = (list, parentW, lockedAbove = false) => {
+  const walk = (list, parentW, lockedAbove = false, inactive = false) => {
     for (const e of list ?? []) {
       if (e.hidden) continue; // Hierarchy eye toggle: hidden here and below
       const w = localToWorld(parentW, e.transform);
-      items.push({ e, w, parentW, locked: lockedAbove || !!e.locked });
-      walk(e.children, w, lockedAbove || !!e.locked);
+      const off = inactive || e.enabled === false;
+      items.push({ e, w, parentW, locked: lockedAbove || !!e.locked, off });
+      walk(e.children, w, lockedAbove || !!e.locked, off);
     }
   };
   walk(state.scene?.entities, null);
@@ -189,6 +190,7 @@ function drawEntity(it) {
     const g = ctx.createRadialGradient(0, 0, 0, 0, 0, l.radius ?? 100);
     g.addColorStop(0, (l.color ?? '#ffe9a8') + '88'); g.addColorStop(1, (l.color ?? '#ffe9a8') + '00');
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, l.radius ?? 100, 0, 7); ctx.fill(); drawn = true;
+    if (state.selection.includes(e.id)) { ctx.strokeStyle = (l.color ?? '#ffe9a8'); ctx.lineWidth = 1.5 / cam.zoom; ctx.setLineDash([6 / cam.zoom, 4 / cam.zoom]); ctx.beginPath(); ctx.arc(0, 0, l.radius ?? 100, 0, 7); ctx.stroke(); ctx.setLineDash([]); } // radius gizmo
   }
   const u = comp(e, 'uiPanel') ?? comp(e, 'uiLabel') ?? comp(e, 'uiButton') ?? comp(e, 'uiBar') ?? comp(e, 'uiImage');
   if (u) {
@@ -360,7 +362,7 @@ let litCanvas = null;
 function drawLighting() {
   const d = state.project?.display, st = state.scene?.settings ?? {};
   if (!d || state.settings.sceneLighting === false) return;
-  const lights = items.filter((it) => it.e.enabled !== false && comp(it.e, 'light'));
+  const lights = items.filter((it) => !it.off && comp(it.e, 'light'));
   if (!lights.length) return;
   const k = Math.max(0, st.ambientIntensity ?? 1), base = /^#[0-9a-f]{6}/i.test(st.ambient ?? '') ? st.ambient : '#b8b8c8';
   const ch = (i) => Math.min(255, Math.round(parseInt(base.slice(1 + i * 2, 3 + i * 2), 16) * k));

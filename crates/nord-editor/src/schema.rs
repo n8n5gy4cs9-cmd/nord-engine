@@ -170,7 +170,7 @@ pub fn component_fields(kind: &str) -> Vec<Field> {
         "tilemap" => "map:asset(json) tileset:asset(image) tilesetName:string collides:bool",
         "particles" => "texture:asset(image) lifespan:number=1000 speed:number=100 angle:number gravityY:number scale:number=1 alpha:number=1 tint:color frequency:number=50 quantity:int=1 burst:bool emitting:bool=true blend:enum(normal|add|multiply|screen)",
         "camera" => "zoom:number=1 follow:entity lerp:number=0.1 background:color deadzone:vec2 roundPixels:bool fov:number=60 near:number=0.1 far:number=1000 type:enum(free|follow|arcRotate)=\"follow\" active:bool=true",
-        "light" => "kind:enum(point|directional|spot|hemispheric)=\"point\" color:color intensity:number=1 radius:number=200 range:number=10 angle:number=30 flicker:number castShadows:bool",
+        "light" => "kind:enum(point|directional|spot|hemispheric)=\"point\" color:color intensity:number=1 radius:number=200 range:number=10 angle:number=30 groundColor:color offset:vec2 flicker:number castShadows:bool shadowStrength:number=1 shadowMapSize:int=1024",
         "mesh" => "shape:enum(box|sphere|cylinder|plane|ground|capsule|torus)=\"box\" size:vec3 segments:int=24 castShadow:bool=true receiveShadow:bool=true",
         "model" => "path:asset(model) animation:string speed:number=1 shadow:bool unique:bool",
         "material" => "asset:asset(material) color:color metallic:number roughness:number=0.8 texture:asset(image) normalMap:asset(image) emissive:color emissiveMap:asset(image) alpha:number=1 uvScale:vec2=[1,1] uvOffset:vec2 doubleSided:bool unlit:bool",

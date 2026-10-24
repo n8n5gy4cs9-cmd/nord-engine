@@ -58,6 +58,16 @@ try {
   }
   const again = await rig('after toggling');
   check('point light still works after toggling ambient/sun', again.top > only.top * 0.8, { only: only.top, again: again.top });
+  // live changes through entity.set, like a script or the Inspector while playing
+  await page.eval(`window.__nord.scene.find('Lamp').set('light', 'intensity', 0)`);
+  const live0 = await rig('intensity 0');
+  check('entity.set("light","intensity",0) darkens the model', live0.top < 8, live0);
+  await page.eval(`window.__nord.scene.find('Lamp').set('light', 'intensity', 6.2)`);
+  const live1 = await rig('intensity back');
+  check('entity.set("light","intensity",6.2) lights it again', live1.top > only.top * 0.8, live1);
+  await page.eval(`window.__nord.scene.find('Cube').enabled = false`);
+  await sleep(300);
+  check('a disabled parent entity switches its child light off', await page.eval(`!window.__nord.backend.scene.lights.find((l) => l.name === 'Lamp.light').isEnabled()`), {});
   // 2D (Phaser Light2D): ambient + a point light
   const s2 = spawn(nord, ['serve', path.join(ROOT, 'tools/light-check/2d'), '-p', '4172'], { stdio: 'ignore' });
   try {
@@ -70,6 +80,10 @@ try {
     await page.eval(`window.__nord.loadScene('scenes/off.scene.json')`);
     const g = await lum();
     check('2D ambientIntensity 0 is dark', g.centre < 15 && g.corner < 15, g);
+    await page.eval(`window.__nord.loadScene('scenes/main.scene.json')`); await sleep(500);
+    await page.eval(`window.__nord.scene.find('Lamp').set('light', 'radius', 60)`);
+    const h = await lum();
+    check('2D entity.set("light","radius",60) shrinks the light', h.centre > 100 && h.side < 20, h);
   } finally { s2.kill(); }
 } finally { page.close(); server.kill(); }
 process.exit(failed ? 1 : 0);

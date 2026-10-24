@@ -74,14 +74,27 @@ See <a href="performance.html">Performance</a>.</p>
 <td>3D: shadows from every mesh/model that casts shadows</td>
 </tr>
 <tr>
+<td><code>shadowStrength</code>, <code>shadowMapSize</code></td>
+<td>3D: how dark shadows are (0-1) and the shadow map size (default from Quality)</td>
+</tr>
+<tr>
+<td><code>groundColor</code></td>
+<td><code>hemispheric</code>: colour from below (sky colour above)</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td>2D: move the light away from the entity centre</td>
+</tr>
+<tr>
 <td><code>flicker</code></td>
-<td>2D: random brightness loss, 0-1</td>
+<td>random brightness loss, 0-1 (2D and 3D)</td>
 </tr>
 <tr>
 <td>sprite <code>lit</code></td>
 <td>2D: untick on a sprite to draw it at full brightness (UI-like, ignores lights)</td>
 </tr>
 </tbody></table>
+<p>Change lights from a script like any component: <code>this.entity.set(&#39;light&#39;, &#39;intensity&#39;, 3)</code>, also <code>color</code>, <code>range</code>, <code>angle</code>, and <code>radius</code> in 2D. A light is off when its entity, any parent, or the component is disabled. In the Scene view a <strong>selected</strong> light shows its shape (range sphere, spot cone, sun arrow in 3D; radius circle in 2D). 2D lights are all point lights; the model&#39;s <code>shadow</code> checkbox off means it does not cast shadows.</p>
 <p><strong>Ambient light</strong> is set per scene (<code>settings</code> in the scene file): <code>&quot;ambient&quot;: &quot;#202040&quot;</code> and <code>&quot;ambientIntensity&quot;: 1</code>. Intensity <code>0</code> turns ambient off (a pitch-dark scene lit only by your lights). 2D scenes without an <code>ambient</code> colour use a soft grey; 3D scenes without one have no ambient light except your own <code>hemispheric</code> lights.</p>
 <p><strong>In the editor</strong> the Scene view shows the scene&#39;s own lights and ambient, 2D and 3D. If the Scene view looks flat or too bright, check <strong>Gizmos ▸ Scene lighting</strong>: when it is off (or the scene has no light) you see neutral editor lighting. A light only changes the picture of objects whose material reacts to light: <code>unlit</code> materials and <code>emissive</code> colours do not change.</p>
 <h3 id="many-lights-and-which-ones-win">Many lights, and which ones win<a class="anchor" href="#many-lights-and-which-ones-win">#</a></h3>
