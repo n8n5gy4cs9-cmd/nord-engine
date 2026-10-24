@@ -27,7 +27,7 @@
 <p>A script can be on many objects; each gets its own copy and its own field values. A <span class="c-term">Singleton</span> must be on <strong>one</strong> object only.</p>
 <h2 id="monobehaviour-the-unity-script">MonoBehaviour: the Unity script<a class="anchor" href="#monobehaviour-the-unity-script">#</a></h2>
 <p><span class="c-ui">Assets ▸ Create ▸ MonoBehaviour script</span> gives you this:</p>
-<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Time, UnityInput as Input } from 'nord';
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Time, WaitForSeconds, UnityInput as Input } from 'nord';
 
 export default class Player extends MonoBehaviour {
   static attributes = SerializeField({ speed: 5, jump: { default: 3, min: 0, max: 10 } });

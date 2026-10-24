@@ -28,7 +28,7 @@ A script can be on many objects; each gets its own copy and its own field values
 @ui[Assets ▸ Create ▸ MonoBehaviour script] gives you this:
 
 ```js
-import { MonoBehaviour, SerializeField, Time, UnityInput as Input } from 'nord';
+import { MonoBehaviour, SerializeField, Time, WaitForSeconds, UnityInput as Input } from 'nord';
 
 export default class Player extends MonoBehaviour {
   static attributes = SerializeField({ speed: 5, jump: { default: 3, min: 0, max: 10 } });

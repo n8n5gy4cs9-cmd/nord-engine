@@ -54,7 +54,7 @@ open() { this.entity.enabled = false; }
 
 ## UnityEvent and EventBus (Unity names)
 ```js
-import { UnityEvent, EventBus } from 'nord';
+import { MonoBehaviour, UnityEvent, EventBus } from 'nord';
 
 export default class Switch extends MonoBehaviour {
   Awake() { this.onToggled = new UnityEvent(); }          // public UnityEvent onToggled

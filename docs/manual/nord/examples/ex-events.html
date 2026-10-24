@@ -66,7 +66,7 @@ const off = this.target.on('hp', ({ hp, max }) =&gt; this.bar.set(hp / max));</c
 <li>Select the <strong>button</strong> ▸ <span class="c-ui">Inspector ▸ Signals ▸ +</span>: event <code>pressed</code>, target <code>Door</code>, method <code>open</code>. Done: when the button emits <code>pressed</code>, <code>Door</code>&#39;s scripts get <code>open(data)</code> called. (Target empty = the button itself.)</li>
 </ol>
 <h2 id="unityevent-and-eventbus-unity-names">UnityEvent and EventBus (Unity names)<a class="anchor" href="#unityevent-and-eventbus-unity-names">#</a></h2>
-<pre class="code" data-lang="js"><code>import { UnityEvent, EventBus } from 'nord';
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, UnityEvent, EventBus } from 'nord';
 
 export default class Switch extends MonoBehaviour {
   Awake() { this.onToggled = new UnityEvent(); }          // public UnityEvent onToggled

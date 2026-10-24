@@ -26,11 +26,12 @@ export default class Dice extends MonoBehaviour {
 <h2 id="keys-buttons-and-axes">Keys, buttons and axes<a class="anchor" href="#keys-buttons-and-axes">#</a></h2>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, UnityInput as Input, KeyCode, Time } from 'nord';
 export default class Mover extends MonoBehaviour {
+  speed = 5;
   Update() {
-    if (Input.GetKeyDown(KeyCode.Space)) this.Jump();
+    if (Input.GetKeyDown(KeyCode.Space)) this.Translate(0, 1, 0);   // a hop (write your own Jump() method for more)
     if (Input.GetKey(KeyCode.LeftShift)) this.speed = 8;
     const x = Input.GetAxisRaw('Horizontal');
-    this.Translate(x * 5 * Time.deltaTime);
+    this.Translate(x * this.speed * Time.deltaTime);
     if (Input.anyKeyDown) this.log('something pressed');
   }
 }</code></pre>

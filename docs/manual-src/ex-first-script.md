@@ -49,6 +49,9 @@ export default class Spin extends NordScript {
 ```
 Pick **one style per script**; do not mix `Update` and `update` in the same class. Both styles can be used in the same project.
 
+## 2D or 3D? Which axis spins
+`Rotate(x, y, z)` adds degrees to each axis. In a **2D** project the object spins around **Z** (what you see on screen). In a **3D** project Z is "roll"; to turn a cube like a turntable use **Y**: `this.Rotate(0, this.speed * Time.deltaTime, 0)`. The script above is otherwise identical in 2D and 3D, and it needs no input actions or physics.
+
 ## Try it
 1. Make a sprite object (@ui[Hierarchy ▸ + Create ▸ Sprite]) and give it a texture.
 2. @ui[Assets ▸ right-click `scripts` ▸ New MonoBehaviour script], name it `spin`, paste the code.
