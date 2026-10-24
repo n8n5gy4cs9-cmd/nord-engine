@@ -18,6 +18,7 @@ pub mod layout;
 pub mod level2d;
 pub mod library;
 pub mod modeler;
+pub mod notes;
 pub mod palette;
 pub mod particles;
 pub mod preview;

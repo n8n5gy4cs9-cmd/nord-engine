@@ -60,3 +60,5 @@ ul.cards{list-style:none;padding:0;display:grid;grid-template-columns:repeat(2,m
 .tmeta .lv-b{color:var(--good);border-color:var(--good)}.tmeta .lv-i{color:var(--warn);border-color:var(--warn)}.tmeta .lv-a{color:var(--purple);border-color:var(--purple)}
 .tempty{color:var(--muted);text-align:center;padding:2rem 0}
 .f{color:#ebcb8b;font-weight:700}.v{color:#a3be8c;font-weight:700}.k{color:#b48ead;font-weight:700}.ui{color:#88c0d0;font-weight:700}
+
+.c-ui{color:var(--accent);font-weight:600}.c-api{color:var(--good);font-weight:600;font-family:var(--mono);font-size:.92em}.c-key{color:var(--warn);font-weight:600;border:1px solid var(--border);border-radius:4px;padding:0 5px;background:var(--panel2);font-size:.92em}.c-term{color:var(--purple);font-weight:600}.c-bad{color:var(--bad);font-weight:600}

@@ -227,6 +227,30 @@ pub enum LogLevel {
 pub struct LogLine {
     pub level: LogLevel,
     pub text: String,
+    /// unix seconds when the line arrived
+    pub time: u64,
+    /// `[Tag]` prefix of the text (Console Pro style), if any
+    pub tag: Option<String>,
+}
+
+impl LogLine {
+    pub fn new(level: LogLevel, text: impl Into<String>) -> Self {
+        let text: String = text.into();
+        let tag = text
+            .strip_prefix('[')
+            .and_then(|r| r.split_once(']'))
+            .map(|(t, _)| t.trim().to_string())
+            .filter(|t| !t.is_empty() && t.len() <= 24 && !t.contains(' '));
+        let time = web_time::SystemTime::now()
+            .duration_since(web_time::UNIX_EPOCH)
+            .map_or(0, |d| d.as_secs());
+        Self {
+            level,
+            text,
+            time,
+            tag,
+        }
+    }
 }
 
 /// The scene object (and prefab) a model is being edited for in the 3D Modeler.
@@ -416,6 +440,7 @@ pub struct EditorState {
     pub modeler_ctx: Option<ModelerCtx>,
     /// The Modeler page must be told a new context (after a prefab / variant was created from its save dialog).
     pub modeler_push: bool,
+    pub notes: crate::panels::notes::NotesUi,
     /// Asset colours / icons / tags / notes of the open project (`.nord/asset-meta.json`)
     pub asset_meta: crate::assetmeta::AssetMeta,
     /// Theme editor: the theme being edited (live preview) and the theme id to go back to on Cancel.
@@ -522,6 +547,7 @@ impl EditorState {
             sprite: Default::default(),
             modeler_ctx: None,
             modeler_push: false,
+            notes: Default::default(),
             asset_meta: Default::default(),
             theme_draft: None,
             particles_ui: Default::default(),
@@ -554,10 +580,7 @@ impl EditorState {
     }
 
     pub fn log(&mut self, level: LogLevel, text: impl Into<String>) {
-        self.console.push(LogLine {
-            level,
-            text: text.into(),
-        });
+        self.console.push(LogLine::new(level, text));
         if self.console.len() > 5000 {
             self.console.drain(..1000);
         }

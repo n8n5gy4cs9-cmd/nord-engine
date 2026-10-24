@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Unity-style scripting — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="debugger.html">Debugger and profiler</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a><a href="ui-designer.html">UI Designer</a><a href="graph.html">Node graphs (visual scripting)</a><a href="unity-workflow.html">Unity-style workflow</a><a href="modeler.html">3D Modeler</a><a href="animator.html">Animator</a><a href="multiplayer.html">Multiplayer</a><a href="appearance.html">Editor appearance</a><a href="ai-mcp.html">AI and MCP</a><a href="unity-scripting.html" class="cur" aria-current="page">Unity-style scripting</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Unity-style scripting</h1>
+<p>If you know Unity, you can write Nord scripts the way you already do. <span class="c-term">MonoBehaviour</span>, <span class="c-term">Singleton</span>, <span class="c-term">GameManager</span> and friends use Unity&#39;s names and rules (<code>Awake</code>, <code>Start</code>, <code>Update</code>, coroutines, <code>Instantiate</code>, <code>PlayerPrefs</code>…), on top of the normal Nord script system. Everything here is optional: a plain <code>NordScript</code> (lower-case <code>start()</code>/<code>update()</code>) works side by side in the same project.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A <strong>script</strong> is a file with instructions for one object. A <strong>MonoBehaviour</strong> is the Unity name for &quot;a script that lives on an object and gets Start/Update calls&quot;. A <strong>Singleton</strong> is a script of which there is only ever one, reachable from everywhere by name (<code>Score.instance</code>). A <strong>GameManager</strong> is a ready-made singleton that keeps score, lives and the game state.</p>
+</aside><h2 id="create-a-script-3-ways">Create a script (3 ways)<a class="anchor" href="#create-a-script-3-ways">#</a></h2>
+<ol>
+<li>In the <span class="c-ui">Assets</span> tab right-click a folder (for example <code>scripts</code>) ▸ <span class="c-ui">New MonoBehaviour script (Unity-style)</span>, <span class="c-ui">New Singleton script</span> or <span class="c-ui">New GameManager script</span>. Type a name and press <span class="c-key">Enter</span>. The file opens in the <span class="c-ui">Code</span> tab.</li>
+<li>Same menu in the <span class="c-ui">Create</span> menu of the Assets tab (the <strong>+</strong> button).</li>
+<li>By hand: make <code>scripts/Player.js</code> and start it with <code>import { MonoBehaviour } from &#39;nord&#39;;</code>.</li>
+</ol>
+<h2 id="attach-it-to-an-object">Attach it to an object<a class="anchor" href="#attach-it-to-an-object">#</a></h2>
+<ol>
+<li>Select the object in the <span class="c-ui">Hierarchy</span>.</li>
+<li>In the <span class="c-ui">Inspector</span> press <span class="c-ui">+ Add script</span> and pick your script, <strong>or</strong> drag the <code>.js</code> file from <span class="c-ui">Assets</span> onto the object (in the Hierarchy or the Scene view).</li>
+<li>The script&#39;s fields (see <code>SerializeField</code> below) appear in the Inspector under the script&#39;s name. Change them there; they are saved in the scene.</li>
+<li>Press <span class="c-ui">Play</span>. Errors show in the <span class="c-ui">Console</span> with a clickable file and line.</li>
+</ol>
+<p>A script can be on many objects; each gets its own copy and its own field values. A <span class="c-term">Singleton</span> must be on <strong>one</strong> object only.</p>
+<h2 id="monobehaviour-the-unity-script">MonoBehaviour: the Unity script<a class="anchor" href="#monobehaviour-the-unity-script">#</a></h2>
+<p><span class="c-ui">Assets ▸ Create ▸ MonoBehaviour script</span> gives you this:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Time, UnityInput as Input } from 'nord';
+
+export default class Player extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 5, jump: { default: 3, min: 0, max: 10 } });
+
+  Awake() {}                       // once, when the object is created
+  Start() {                        // once, before the first Update
+    this.StartCoroutine(this.Blink());
+  }
+  Update() {                       // every frame
+    this.Translate(Input.GetAxis('Horizontal') * this.speed * Time.deltaTime);
+  }
+  OnTriggerEnter(other) {          // a trigger collider was entered
+    if (other.CompareTag('coin')) this.Destroy(other);
+  }
+  *Blink() {                       // a coroutine
+    while (true) { this.SetActive(false); yield new WaitForSeconds(0.1); this.SetActive(true); yield new WaitForSeconds(0.4); }
+  }
+}</code></pre>
+<p><span class="c-ui">Rules:</span> extend <span class="c-api">MonoBehaviour</span>; use the <strong>capitalised</strong> Unity names; never mix them with the lower-case Nord names (<code>start</code>, <code>update</code>) in the same class.</p>
+<h3 id="fields-serializefield">Fields: <code>[SerializeField]</code><a class="anchor" href="#fields-serializefield">#</a></h3>
+<p><code>static attributes = SerializeField({ speed: 5, name: &#39;Bob&#39;, alive: true, color: &#39;#ff0000&#39;, pos: [0, 0, 0] })</code> makes <strong>Inspector fields</strong>. Numbers get drag boxes (add <code>{ default, min, max }</code> for a slider), booleans checkboxes, <code>#rrggbb</code> strings colour pickers, 2/3 numbers vectors. Read them as <code>this.speed</code> anywhere in the script.</p>
+<h3 id="lifecycle-in-order">Lifecycle (in order)<a class="anchor" href="#lifecycle-in-order">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span class="c-api">Awake()</span></td>
+<td>The object and its scripts are created. Set up your own data here.</td>
+</tr>
+<tr>
+<td><span class="c-api">OnEnable()</span></td>
+<td>The object or script becomes active (also after <code>SetActive(true)</code>).</td>
+</tr>
+<tr>
+<td><span class="c-api">Start()</span></td>
+<td>Once, just before the first <code>Update</code>, after every <code>Awake</code> ran. Find other objects here.</td>
+</tr>
+<tr>
+<td><span class="c-api">FixedUpdate()</span></td>
+<td>Fixed 60 times per second. Physics work.</td>
+</tr>
+<tr>
+<td><span class="c-api">Update()</span></td>
+<td>Every frame. Input, movement.</td>
+</tr>
+<tr>
+<td><span class="c-api">LateUpdate()</span></td>
+<td>After all <code>Update</code>s: cameras that follow things.</td>
+</tr>
+<tr>
+<td><span class="c-api">OnCollisionEnter(other)</span> <span class="c-api">OnCollisionExit(other)</span></td>
+<td>Solid colliders touch / separate.</td>
+</tr>
+<tr>
+<td><span class="c-api">OnTriggerEnter(other)</span> <span class="c-api">OnTriggerExit(other)</span></td>
+<td>A trigger volume is entered / left.</td>
+</tr>
+<tr>
+<td><span class="c-api">OnDisable()</span></td>
+<td>Switched off.</td>
+</tr>
+<tr>
+<td><span class="c-api">OnDestroy()</span></td>
+<td>The object is removed or the scene ends. Clean up here.</td>
+</tr>
+</tbody></table>
+<h3 id="what-a-monobehaviour-can-do">What a MonoBehaviour can do<a class="anchor" href="#what-a-monobehaviour-can-do">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gameObject</code>, <code>transform</code></td>
+<td><code>this.gameObject</code>, <code>this.transform</code> (both the entity)</td>
+</tr>
+<tr>
+<td><code>transform.position</code> / <code>localPosition</code></td>
+<td><code>this.position</code>, <code>this.localPosition</code> (a <code>Vector3</code>)</td>
+</tr>
+<tr>
+<td><code>transform.Translate(x,y,z)</code> / <code>Rotate</code></td>
+<td><code>this.Translate(x, y, z)</code>, <code>this.Rotate(x, y, z)</code></td>
+</tr>
+<tr>
+<td><code>name</code>, <code>tag</code>, <code>CompareTag(&quot;x&quot;)</code></td>
+<td><code>this.name</code>, <code>this.tag</code>, <code>this.CompareTag(&#39;x&#39;)</code></td>
+</tr>
+<tr>
+<td><code>GetComponent&lt;T&gt;()</code></td>
+<td><code>this.GetComponent(&#39;sprite&#39;)</code>, <code>this.GetComponent(MyScript)</code>; also <code>GetComponentInChildren</code>, <code>GetComponentInParent</code>, <code>GetComponents</code>, <code>TryGetComponent</code></td>
+</tr>
+<tr>
+<td><code>GameObject.Find(&quot;Name&quot;)</code></td>
+<td><code>this.Find(&#39;Name&#39;)</code></td>
+</tr>
+<tr>
+<td><code>FindWithTag</code>, <code>FindGameObjectsWithTag</code></td>
+<td>same names</td>
+</tr>
+<tr>
+<td><code>FindObjectOfType&lt;T&gt;()</code></td>
+<td><code>this.FindObjectOfType(MyScript)</code>, <code>FindObjectsOfType</code></td>
+</tr>
+<tr>
+<td><code>SetActive(bool)</code></td>
+<td><code>this.SetActive(true/false)</code></td>
+</tr>
+<tr>
+<td><code>Instantiate(prefab, pos)</code></td>
+<td><code>await this.Instantiate(&#39;prefabs/bullet.prefab.json&#39;, { pos: [x, y, 0] })</code> or <code>this.Instantiate(entity)</code> to clone</td>
+</tr>
+<tr>
+<td><code>Destroy(obj, delay)</code></td>
+<td><code>this.Destroy(obj, 2)</code></td>
+</tr>
+<tr>
+<td><code>Invoke(&quot;M&quot;, 2)</code> / <code>InvokeRepeating(&quot;M&quot;, 1, 0.5)</code> / <code>CancelInvoke</code> / <code>IsInvoking</code></td>
+<td>same names</td>
+</tr>
+<tr>
+<td><code>StartCoroutine</code> / <code>StopCoroutine</code> / <code>StopAllCoroutines</code></td>
+<td>same names; <code>yield null</code> waits a frame</td>
+</tr>
+<tr>
+<td><code>SendMessage(&quot;Method&quot;, arg)</code></td>
+<td><code>this.SendMessage(&#39;Method&#39;, arg)</code></td>
+</tr>
+</tbody></table>
+<p>Coroutine yields: <code>null</code> (next frame), <span class="c-api">new WaitForSeconds(s)</span>, <span class="c-api">new WaitUntil(() =&gt; cond)</span>, <span class="c-api">new WaitWhile(() =&gt; cond)</span>, <span class="c-api">new WaitForFixedUpdate()</span>, <span class="c-api">new WaitForEndOfFrame()</span>, or another coroutine (nested).</p>
+<h3 id="static-helpers-import-from-39-nord-39">Static helpers (import from <code>&#39;nord&#39;</code>)<a class="anchor" href="#static-helpers-import-from-39-nord-39">#</a></h3>
+<ul>
+<li><span class="c-api">Time</span>: <code>deltaTime</code>, <code>fixedDeltaTime</code>, <code>time</code>, <code>timeScale</code> (settable: 0 pauses, 0.1 slow motion), <code>frameCount</code>.</li>
+<li><span class="c-api">UnityInput</span> (import as <code>Input</code>): <code>GetKey / GetKeyDown / GetKeyUp(&#39;Space&#39; | &#39;KeyA&#39; | &#39;ArrowLeft&#39; | &#39;Mouse0&#39;)</code>, <code>GetAxis(&#39;Horizontal&#39; | &#39;Vertical&#39;)</code> (WASD + arrows + stick), <code>GetButton / GetButtonDown / GetButtonUp(&#39;jump&#39;)</code> for your project&#39;s input actions, <code>GetMouseButton(n)</code>, <code>mousePosition</code>.</li>
+<li><span class="c-api">Mathf</span>: <code>PI, Abs, Floor, FloorToInt, Clamp, Lerp, LerpUnclamped, InverseLerp, MoveTowards, SmoothStep, Repeat, PingPong, Approximately, DeltaAngle, LerpAngle, Random</code>.</li>
+<li><span class="c-api">Vector2</span> / <span class="c-api">Vector3</span>: <code>zero, one, up, down, left, right, forward, back, Distance, Dot, Cross, Lerp, MoveTowards, magnitude, sqrMagnitude, normalized, Clone, Add, Sub, Mul, Set, Equals, toArray</code>.</li>
+<li><span class="c-api">Debug</span>: <code>Log, LogWarning, LogError, Assert</code> (to the <span class="c-ui">Console</span>).</li>
+<li><span class="c-api">PlayerPrefs</span>: <code>GetInt/GetFloat/GetString(key, default)</code>, <code>SetInt/SetFloat/SetString</code>, <code>HasKey</code>, <code>DeleteAll</code> (saved in the browser / app).</li>
+<li><span class="c-api">SceneManager</span>: <code>LoadScene(&#39;scenes/level2.scene.json&#39;)</code>, <code>ReloadScene()</code>, <code>sceneName</code>. <span class="c-api">Application</span>: <code>Quit()</code>, <code>isPlaying</code>.</li>
+</ul>
+<h2 id="singleton-one-object-reachable-everywhere">Singleton: one object, reachable everywhere<a class="anchor" href="#singleton-one-object-reachable-everywhere">#</a></h2>
+<p><span class="c-ui">Assets ▸ Create ▸ Singleton script</span>:</p>
+<pre class="code" data-lang="js"><code>import { Singleton } from 'nord';
+
+export default class Score extends Singleton {
+  static persistent = false;      // true = survives scene loads
+  Awake() { this.value = 0; }
+  Add(n) { this.value += n; }
+}</code></pre>
+<ol>
+<li>Put <code>Score</code> on <strong>one</strong> object in the scene (an empty object named <code>Score</code> is the usual place).</li>
+<li>Use it from any script: <code>Score.instance.Add(10)</code>. <span class="c-api">Score.require()</span> does the same but throws a clear error when the script is missing from the scene.</li>
+<li>A second copy destroys itself and warns in the Console.</li>
+<li><code>static persistent = true</code> keeps the object when you load another scene (it adds the <span class="c-term">Persist</span> behaviour), ideal for settings, inventory, music.</li>
+</ol>
+<h2 id="gamemanager-score-lives-state">GameManager: score, lives, state<a class="anchor" href="#gamemanager-score-lives-state">#</a></h2>
+<p><span class="c-ui">Assets ▸ Create ▸ GameManager script</span> makes <code>export default class extends GameManager {}</code>, a persistent singleton with batteries included. Put it on one object in your first scene.</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><span class="c-api">GameManager.instance</span></td>
+<td>the one manager</td>
+</tr>
+<tr>
+<td><code>score</code>, <code>lives</code>, <code>state</code>, <code>data</code></td>
+<td>current values (<code>state</code> starts as <code>&#39;playing&#39;</code>)</td>
+</tr>
+<tr>
+<td><span class="c-api">AddScore(n)</span></td>
+<td>adds to <code>score</code>, emits <code>score</code></td>
+</tr>
+<tr>
+<td><span class="c-api">SetLives(n)</span> <span class="c-api">LoseLife()</span></td>
+<td>change lives, emits <code>lives</code>; reaching 0 calls <code>GameOver()</code></td>
+</tr>
+<tr>
+<td><span class="c-api">SetState(name)</span></td>
+<td><code>&#39;playing&#39;</code>, <code>&#39;paused&#39;</code>, <code>&#39;gameover&#39;</code> or your own, emits <code>state</code> <code>{ state, previous }</code></td>
+</tr>
+<tr>
+<td><span class="c-api">GameOver()</span></td>
+<td>state <code>&#39;gameover&#39;</code> and the <code>gameover</code> event with the score</td>
+</tr>
+<tr>
+<td><span class="c-api">Get(key, default)</span> <span class="c-api">Set(key, value)</span></td>
+<td>free data store, emits <code>data</code></td>
+</tr>
+<tr>
+<td><span class="c-api">Pause()</span> <span class="c-api">Resume()</span> <span class="c-api">TogglePause()</span></td>
+<td>freeze / continue the game</td>
+</tr>
+<tr>
+<td><span class="c-api">LoadScene(path)</span> <span class="c-api">Restart()</span></td>
+<td>change scene / restart with score and lives reset</td>
+</tr>
+<tr>
+<td><span class="c-api">SaveHighScore(key)</span></td>
+<td>stores the best score (default key <code>highscore</code>) and returns it</td>
+</tr>
+</tbody></table>
+<p>Fields in the Inspector: <code>startLives</code> (3) and <code>startState</code>. Listen to its events from anywhere:</p>
+<pre class="code" data-lang="js"><code>this.game.events.on('score', ({ score }) =&gt; this.label.set(`Score ${score}`));
+this.game.events.on('gameover', () =&gt; GameManager.instance.LoadScene('scenes/menu.scene.json'));</code></pre>
+<h2 id="audiomanager">AudioManager<a class="anchor" href="#audiomanager">#</a></h2>
+<p>A persistent singleton: add <code>AudioManager</code> (import from <code>&#39;nord&#39;</code> and extend it, or attach a script that is <code>export default class extends AudioManager {}</code>), then <code>AudioManager.instance.PlaySfx(&#39;assets/audio/jump.ogg&#39;)</code>, <code>PlayMusic(path)</code>, <code>StopMusic()</code>, <code>SetVolume(&#39;music&#39;, 0.5)</code>, <code>Mute(&#39;sfx&#39;)</code>.</p>
+<h2 id="events-and-data">Events and data<a class="anchor" href="#events-and-data">#</a></h2>
+<ul>
+<li><span class="c-api">UnityEvent</span>: <code>const onHit = new UnityEvent(); onHit.AddListener(fn); onHit.Invoke(5);</code> (<code>AddListener</code> returns an unsubscribe function).</li>
+<li><span class="c-api">EventBus</span>: <code>EventBus.Subscribe(&#39;hit&#39;, fn)</code> and <code>EventBus.Publish(&#39;hit&#39;, data)</code>, a global message bus (same bus as <code>this.game.events</code>).</li>
+<li><span class="c-api">ScriptableObject</span>: shared JSON data files: <code>const sword = await ScriptableObject.Load(&#39;data/sword.asset.json&#39;)</code>.</li>
+<li><span class="c-api">ObjectPool</span>: reuse bullets instead of creating them: <code>const pool = new ObjectPool(this.scene, &#39;prefabs/bullet.prefab.json&#39;); await pool.Warm(10); const b = await pool.Get({ pos }); pool.Release(b);</code>.</li>
+</ul>
+<h2 id="unity-to-nord-cheat-sheet">Unity to Nord cheat sheet<a class="anchor" href="#unity-to-nord-cheat-sheet">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Assets ▸ Create ▸ C# Script</td>
+<td><span class="c-ui">Assets ▸ Create ▸ MonoBehaviour script</span></td>
+</tr>
+<tr>
+<td>Add Component ▸ script</td>
+<td><span class="c-ui">Inspector ▸ + Add script</span> or drag the file onto the object</td>
+</tr>
+<tr>
+<td><code>[SerializeField] float speed</code></td>
+<td><code>static attributes = SerializeField({ speed: 5 })</code></td>
+</tr>
+<tr>
+<td><code>public static Score Instance</code></td>
+<td><code>class Score extends Singleton</code> → <code>Score.instance</code></td>
+</tr>
+<tr>
+<td><code>DontDestroyOnLoad</code></td>
+<td><code>static persistent = true</code></td>
+</tr>
+<tr>
+<td><code>Debug.Log</code></td>
+<td><code>Debug.Log</code> (shows in the Console)</td>
+</tr>
+<tr>
+<td><code>Time.deltaTime</code></td>
+<td><code>Time.deltaTime</code></td>
+</tr>
+<tr>
+<td><code>Input.GetAxis(&quot;Horizontal&quot;)</code></td>
+<td><code>Input.GetAxis(&#39;Horizontal&#39;)</code> (import <code>UnityInput as Input</code>)</td>
+</tr>
+<tr>
+<td><code>SceneManager.LoadScene</code></td>
+<td><code>SceneManager.LoadScene</code> / <code>GameManager.instance.LoadScene</code></td>
+</tr>
+<tr>
+<td><code>Resources.Load</code> / ScriptableObject</td>
+<td><code>ScriptableObject.Load(path)</code></td>
+</tr>
+<tr>
+<td><code>PlayerPrefs</code></td>
+<td><code>PlayerPrefs</code></td>
+</tr>
+<tr>
+<td><code>Rigidbody</code>, <code>Collider</code></td>
+<td>the <span class="c-term">rigidbody</span> / <span class="c-term">collider</span> components in the Inspector</td>
+</tr>
+<tr>
+<td><code>OnTriggerEnter(Collider)</code></td>
+<td><code>OnTriggerEnter(other)</code> (needs a collider with <em>trigger</em> ticked)</td>
+</tr>
+</tbody></table>
+<h2 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting">#</a></h2>
+<ul>
+<li><span class="c-bad">Nothing happens:</span> the script is not attached, or the object is disabled. Check the Inspector and the Console.</li>
+<li><span class="c-bad">&quot;second X found, destroying the duplicate&quot;:</span> a Singleton is on two objects (or in two scenes). Keep one.</li>
+<li><span class="c-bad"><code>X.instance</code> is null:</span> the Singleton script is not in the current scene, or it runs later than the caller. Use <code>X.require()</code> in <code>Start()</code>, not <code>Awake()</code>, or set <code>persistent = true</code> and put it in the first scene.</li>
+<li><span class="c-bad">Method never runs:</span> you used a lower-case name (<code>update</code>) in a MonoBehaviour class or a typo. Use <code>Update</code>.</li>
+<li>Attributes you added show only after saving the script (the Inspector re-reads it).</li>
+</ul>
+<p>Reference: <a href="scripting.html">Scripting</a>, <a href="unity-workflow.html">Unity-style editor</a>, <a href="../tutorials/tut-t03-first-script.html">T03 First script</a>. Source: <code>runtime/core/unity.js</code>.</p>
+<div class="pager"><a href="ai-mcp.html"><small>← Previous</small>AI and MCP</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#create-a-script-3-ways">Create a script (3 ways) </a><a href="#attach-it-to-an-object">Attach it to an object </a><a href="#monobehaviour-the-unity-script">MonoBehaviour: the Unity script </a><a href="#singleton-one-object-reachable-everywhere">Singleton: one object, reachable everywhere </a><a href="#gamemanager-score-lives-state">GameManager: score, lives, state </a><a href="#audiomanager">AudioManager </a><a href="#events-and-data">Events and data </a><a href="#unity-to-nord-cheat-sheet">Unity to Nord cheat sheet </a><a href="#troubleshooting">Troubleshooting </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

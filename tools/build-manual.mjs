@@ -78,6 +78,8 @@ function renderMd(md, options = {}) {
     if (file.split('/').includes('..')) throw new Error('Unsafe tutorial source path');
     return `<pre class="code" data-lang="${esc(lang)}"><code>${esc(read(file))}</code></pre>`;
   });
+  // coloured words: @ui[Assets ▸ Create] (editor menus/buttons) @api[GameManager] (engine API names) @key[Cmd+S] @term[prefab] @bad[never]
+  md = md.replace(/@(ui|api|key|term|bad)\[([^\]\n]+)\]/g, (_, k, t) => `<span class="c-${k}">${t}</span>`);
   md = md.replace(/^:::\s*(dummies|tip|warn|todo)\s*\n([\s\S]*?)^:::\s*$/gm, (_, k, body) =>
     `\n<aside class="box ${k}"><div class="box-title">${BOX_TITLES[k]}</div>\n\n${body.trim()}\n\n</aside>\n`);
   const r = new marked.Renderer();
