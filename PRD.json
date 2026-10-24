@@ -2463,6 +2463,12 @@
       "milestone": "M13",
       "title": "Examples part 2 (platformer, shooter, 9 topic pages, editor map)",
       "status": "done"
+    },
+    {
+      "id": "M13-27",
+      "milestone": "M13",
+      "title": "Unity conversion playbook + MCP unity tools, Examples pages 30-41, examples smoke test",
+      "status": "done"
     }
   ]
 }
