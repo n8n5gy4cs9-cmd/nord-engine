@@ -10,6 +10,8 @@ The **UI Designer** is where you build every screen the player clicks: main menu
 <figure class="shot"><img src="assets/screenshots/ui-designer-overview.png" alt="UI Designer: node palette and tree on the left, live preview in the middle, Properties on the right" loading="lazy"><figcaption>The UI Designer: <b>Add node</b> palette and <b>Tree</b> (left), the live <b>Preview</b> (middle) and <b>Properties</b> (right). The preview is the real game UI, not a mock-up.</figcaption></figure>
 
 ::: dummies
+@ui[Change the font:] select a label (or button, input) in the tree, open @ui[Properties] and pick **Font** from the drop-down. Pixel fonts come first: Pixelify Sans, VT323, Press Start 2P, Silkscreen, Jersey 10, Tiny5; then Orbitron, Bebas Neue, Oswald, Rajdhani, Exo 2, Bungee, Cinzel and the UI fonts (Inter, Roboto, Open Sans…). In the JSON it is `"font": "Press Start 2P"`. The fonts are bundled and work offline in exports. Empty = the theme's font.
+
 A UI file is a family tree of boxes. A **vbox** stacks its children top to bottom, an **hbox** left to right. A **label** shows text, a **button** can be pressed. You give a button an **Action** name such as `play`; your code says "when `play` happens, do this".
 :::
 
@@ -40,7 +42,7 @@ A UI file is a family tree of boxes. A **vbox** stacks its children top to botto
 | `grid` | Rows and columns. | `cols`, `gap` |
 | `center` `scroll` | Centre one child; a scrolling area. | `h` for scroll |
 | `box` | Plain unstyled element with an HTML `tag` (`main`, `nav`, `h1`…). Page-style UIs. | `tag` |
-| `label` | Text. | `text`, `size`, `color`, `bold`, `italic`, `align`, rich text |
+| `label` | Text. | `text`, `size`, `color`, `font`, `bold`, `italic`, `align`, rich text |
 | `button` | Something to press. | `text`, **`on.pressed` (Action)**, `toggle`, `image` |
 | `image` | A picture. | `src`, `mode` (fit, cover, stretch, tile, slice), `slice`, `scale` |
 | `bar` | Progress/health bar. | `value` 0–1, `color`, `bind.value` |

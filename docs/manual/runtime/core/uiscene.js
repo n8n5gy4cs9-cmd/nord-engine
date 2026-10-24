@@ -3,6 +3,9 @@
 //   const ui = createUI(root);  const menu = await ui.load('ui/menu.ui.json');
 //   menu.on('start', () => …);  menu.get('score').text = '12';  menu.set('score', 12);
 // No dependencies. Standalone (plain HTML projects) or via `game.ui.load(...)`. Spec: docs/UI_SCENES.md
+/** CSS font-family for a font name from the Font drop-down (quoted: names like 'Press Start 2P' are not valid unquoted identifiers); lists with commas pass through. */
+function fontStack(f) { return String(f).includes(',') ? f : `"${f}", sans-serif`; }
+
 export const UI_VERSION = 1;
 export const NODE_TYPES = ['box', 'panel', 'vbox', 'hbox', 'grid', 'center', 'scroll', 'label', 'button', 'image', 'canvas', 'bar', 'slider', 'input', 'checkbox', 'select', 'spacer', 'html', 'instance'];
 export const CONTAINERS = new Set(['box', 'panel', 'vbox', 'hbox', 'grid', 'center', 'scroll']);
@@ -477,8 +480,9 @@ class Screen {
     if (def.justify) s.justifyContent = FLEX[def.justify] ?? def.justify;
     if (def.self) s.alignSelf = FLEX[def.self] ?? def.self;
     if (t === 'grid') s.gridTemplateColumns = `repeat(${def.cols ?? 2},1fr)`;
-    if (t === 'label') { if (def.size) s.fontSize = num(def.size); if (def.bold) s.fontWeight = '700'; if (def.italic) s.fontStyle = 'italic'; if (def.font) s.fontFamily = def.font; if (def.wrap === false) s.whiteSpace = 'pre'; if (def.outline) s.webkitTextStroke = `${def.outline}px #000`; if (def.shadow === false) s.textShadow = 'none'; }
+    if (t === 'label') { if (def.size) s.fontSize = num(def.size); if (def.bold) s.fontWeight = '700'; if (def.italic) s.fontStyle = 'italic'; if (def.font) s.fontFamily = fontStack(def.font); if (def.wrap === false) s.whiteSpace = 'pre'; if (def.outline) s.webkitTextStroke = `${def.outline}px #000`; if (def.shadow === false) s.textShadow = 'none'; }
     if (t === 'button' && def.size) s.fontSize = num(def.size);
+    if ((t === 'button' || t === 'input' || t === 'select') && def.font) s.fontFamily = fontStack(def.font);
     if (t === 'image' && def.opacity !== undefined) s.opacity = def.opacity;
     if (t === 'spacer') { s.flexGrow = def.grow ?? 1; s.pointerEvents = 'none'; }
     if (def.style) for (const [k, v] of Object.entries(def.style)) s[k] = typeof v === 'number' && !/opacity|zIndex|flex|order|fontWeight|lineHeight/.test(k) ? `${v}px` : v;

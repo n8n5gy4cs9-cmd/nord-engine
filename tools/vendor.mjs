@@ -49,6 +49,16 @@ const LIBS = [
   { name: 'fonts', pkg: '@fontsource/source-code-pro@5.3.1', license: 'OFL-1.1', to: 'fonts/source-code-pro', files: [['files/source-code-pro-latin-400-normal.woff2'], ['files/source-code-pro-latin-700-normal.woff2'], ['LICENSE']] },
   { name: 'fonts', pkg: '@fontsource/dm-mono@5.3.0', license: 'OFL-1.1', to: 'fonts/dm-mono', files: [['files/dm-mono-latin-400-normal.woff2'], ['files/dm-mono-latin-500-normal.woff2'], ['LICENSE']] },
   { name: 'fonts', pkg: '@fontsource/red-hat-mono@5.3.0', license: 'OFL-1.1', to: 'fonts/red-hat-mono', files: [['files/red-hat-mono-latin-400-normal.woff2'], ['files/red-hat-mono-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/press-start-2p@5.3.0', license: 'OFL-1.1', to: 'fonts/press-start-2p', files: [['files/press-start-2p-latin-400-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/silkscreen@5.3.0', license: 'OFL-1.1', to: 'fonts/silkscreen', files: [['files/silkscreen-latin-400-normal.woff2'], ['files/silkscreen-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/jersey-10@5.3.0', license: 'OFL-1.1', to: 'fonts/jersey-10', files: [['files/jersey-10-latin-400-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/tiny5@5.3.0', license: 'OFL-1.1', to: 'fonts/tiny5', files: [['files/tiny5-latin-400-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/bebas-neue@5.3.0', license: 'OFL-1.1', to: 'fonts/bebas-neue', files: [['files/bebas-neue-latin-400-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/oswald@5.3.0', license: 'OFL-1.1', to: 'fonts/oswald', files: [['files/oswald-latin-400-normal.woff2'], ['files/oswald-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/rajdhani@5.3.0', license: 'OFL-1.1', to: 'fonts/rajdhani', files: [['files/rajdhani-latin-400-normal.woff2'], ['files/rajdhani-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/exo-2@5.3.0', license: 'OFL-1.1', to: 'fonts/exo-2', files: [['files/exo-2-latin-400-normal.woff2'], ['files/exo-2-latin-700-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/bungee@5.3.0', license: 'OFL-1.1', to: 'fonts/bungee', files: [['files/bungee-latin-400-normal.woff2'], ['LICENSE']] },
+  { name: 'fonts', pkg: '@fontsource/cinzel@5.3.0', license: 'OFL-1.1', to: 'fonts/cinzel', files: [['files/cinzel-latin-400-normal.woff2'], ['files/cinzel-latin-700-normal.woff2'], ['LICENSE']] },
 ];
 // Lucide icons: curated subset → assets/icons/lucide (used by the egui editor + manual)
 const LUCIDE = { pkg: 'lucide-static@1.55.0', license: 'ISC' };

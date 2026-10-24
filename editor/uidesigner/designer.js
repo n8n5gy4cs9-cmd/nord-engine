@@ -23,6 +23,9 @@ const DEFAULTS = {
   checkbox: { type: 'checkbox', text: 'Option', checked: false }, select: { type: 'select', options: ['One', 'Two'] }, spacer: { type: 'spacer' }, html: { type: 'html', html: '<b>Custom HTML</b>' },
   instance: { type: 'instance', ref: 'ui/other.ui.json' },
 };
+// every vendored Google font family (assets/themes/themes.json); pixel fonts first
+import { FONTS } from '/runtime/core/themes.js';
+const FONT_OPTS = ['', ...Object.entries(FONTS).sort(([, a], [, b]) => (b.kind === 'pixel') - (a.kind === 'pixel')).map(([n]) => n)];
 const common = [['name', 'Name', 'text'], ['anchor', 'Anchor', ANCHORS], ['x', 'X', 'num'], ['y', 'Y', 'num'], ['w', 'Width', 'num'], ['h', 'Height', 'num'], ['grow', 'Grow', 'num'], ['margin', 'Margin', 'text'], ['class', 'CSS class', 'text']];
 const FIELDS = {
   box: [['tag', 'HTML tag', 'text'], ['padding', 'Padding', 'text'], ['gap', 'Gap', 'num']], canvas: [],
@@ -30,12 +33,12 @@ const FIELDS = {
   vbox: [['padding', 'Padding', 'text'], ['gap', 'Gap', 'num'], ['align', 'Align items', ALIGN], ['justify', 'Justify', JUSTIFY]],
   hbox: [['padding', 'Padding', 'text'], ['gap', 'Gap', 'num'], ['align', 'Align items', ALIGN], ['justify', 'Justify', JUSTIFY]],
   grid: [['cols', 'Columns', 'num'], ['gap', 'Gap', 'num'], ['padding', 'Padding', 'text']], center: [], scroll: [['gap', 'Gap', 'num']],
-  label: [['tag', 'HTML tag', 'text'], ['text', 'Text', 'area'], ['size', 'Size', 'num'], ['color', 'Color', 'text'], ['align', 'Text align', ['', 'left', 'center', 'right']], ['bold', 'Bold', 'bool'], ['italic', 'Italic', 'bool'], ['wrap', 'Wrap', 'bool'], ['outline', 'Outline', 'num']],
-  button: [['text', 'Text', 'text'], ['on.pressed', 'Action', 'text'], ['payload', 'Payload', 'text'], ['toggle', 'Toggle', 'bool'], ['size', 'Font size', 'num']],
+  label: [['tag', 'HTML tag', 'text'], ['text', 'Text', 'area'], ['size', 'Size', 'num'], ['color', 'Color', 'text'], ['align', 'Text align', ['', 'left', 'center', 'right']], ['font', 'Font', FONT_OPTS], ['bold', 'Bold', 'bool'], ['italic', 'Italic', 'bool'], ['wrap', 'Wrap', 'bool'], ['outline', 'Outline', 'num']],
+  button: [['text', 'Text', 'text'], ['on.pressed', 'Action', 'text'], ['payload', 'Payload', 'text'], ['toggle', 'Toggle', 'bool'], ['font', 'Font', FONT_OPTS], ['size', 'Font size', 'num']],
   image: [['opacity', 'Opacity', 'num']],
   bar: [['value', 'Value 0-1', 'num'], ['color', 'Color', 'text'], ['bind.value', 'Bind value', 'text']],
   slider: [['min', 'Min', 'num'], ['max', 'Max', 'num'], ['step', 'Step', 'num'], ['value', 'Value', 'num'], ['on.changed', 'Action', 'text']],
-  input: [['inputType', 'Input type', ['', 'text', 'number', 'color', 'file', 'checkbox', 'password']], ['multiline', 'Multi-line', 'bool'], ['placeholder', 'Placeholder', 'text'], ['value', 'Value', 'text'], ['on.changed', 'Action', 'text']],
+  input: [['inputType', 'Input type', ['', 'text', 'number', 'color', 'file', 'checkbox', 'password']], ['multiline', 'Multi-line', 'bool'], ['font', 'Font', FONT_OPTS], ['placeholder', 'Placeholder', 'text'], ['value', 'Value', 'text'], ['on.changed', 'Action', 'text']],
   checkbox: [['text', 'Text', 'text'], ['checked', 'Checked', 'bool'], ['on.toggled', 'Action', 'text']],
   select: [['options', 'Options (a,b,c)', 'list'], ['value', 'Value', 'text'], ['on.changed', 'Action', 'text']],
   spacer: [], html: [['html', 'HTML', 'area']], instance: [['ref', 'File', 'text']],

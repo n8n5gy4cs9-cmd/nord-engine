@@ -14,6 +14,7 @@ Exact versions + sha256: `vendor/VENDOR.json` (reinstall/verify with `node tools
 | litegraph.js | 0.7.18 | MIT (Javi Agenjo) | vendor/litegraph | node-graph canvas for the Graph editor (`editor/graph/`); execution is Nord's own `runtime/core/graph/` |
 | three.js (+ OrbitControls, TransformControls, GLTFExporter, GLTFLoader, BufferGeometryUtils) | 0.180.0 | MIT | vendor/three | 3D Modeler tab (`editor/modeler/`); editor only. The mesh-editing core (`mesh-model.js`, parts of `modeler.js`) is ported from the owner's BlockSmith app (`BlockSmith_3d_app`: `shared/mesh-model.js`, `src/mesh-editor.js`) |
 | marked | 18.1.0 | MIT | vendor/marked | manual markdown |
+| Press Start 2P, Silkscreen, Jersey 10, Tiny5, Bebas Neue, Oswald, Rajdhani, Exo 2, Bungee, Cinzel, Roboto, Source Sans 3, DM Sans, Manrope, Open Sans, Roboto Mono, Source Code Pro, DM Mono, Red Hat Mono (fontsource) | 5.3.x | OFL-1.1 | vendor/fonts | UI Designer Font drop-down, editor font pairs |
 | Inter, Plus Jakarta Sans, IBM Plex Sans, JetBrains Mono, Fira Code, IBM Plex Mono (fontsource) | 5.3.0 | OFL-1.1 | vendor/fonts | UI/code fonts for runtime UI, editor, manual (woff2); skins in assets/themes/themes.json |
 | Lucide icons (subset) | 1.55.0 | ISC | assets/icons/lucide | editor + manual icons |
 | macroquad JS loader (`mq_js_bundle.js`) | 0.4.16 | MIT OR Apache-2.0 | vendor/macroquad | Rust/WASM game export |

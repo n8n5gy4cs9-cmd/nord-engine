@@ -84,6 +84,112 @@
         700
       ],
       "kind": "mono"
+    },
+    "Press Start 2P": {
+      "dir": "press-start-2p",
+      "weights": [
+        400
+      ],
+      "kind": "pixel"
+    },
+    "Silkscreen": {
+      "dir": "silkscreen",
+      "weights": [
+        400,
+        700
+      ],
+      "kind": "pixel"
+    },
+    "Jersey 10": {
+      "dir": "jersey-10",
+      "weights": [
+        400
+      ],
+      "kind": "pixel"
+    },
+    "Tiny5": {
+      "dir": "tiny5",
+      "weights": [
+        400
+      ],
+      "kind": "pixel"
+    },
+    "Bebas Neue": {
+      "dir": "bebas-neue",
+      "weights": [
+        400
+      ],
+      "kind": "display"
+    },
+    "Oswald": {
+      "dir": "oswald",
+      "weights": [
+        400,
+        700
+      ],
+      "kind": "display"
+    },
+    "Rajdhani": {
+      "dir": "rajdhani",
+      "weights": [
+        400,
+        700
+      ],
+      "kind": "display"
+    },
+    "Exo 2": {
+      "dir": "exo-2",
+      "weights": [
+        400,
+        700
+      ],
+      "kind": "display"
+    },
+    "Bungee": {
+      "dir": "bungee",
+      "weights": [
+        400
+      ],
+      "kind": "display"
+    },
+    "Cinzel": {
+      "dir": "cinzel",
+      "weights": [
+        400,
+        700
+      ],
+      "kind": "display"
+    },
+    "Pixelify Sans": {
+      "dir": "pixelify-sans",
+      "weights": [
+        400,
+        700
+      ],
+      "kind": "pixel"
+    },
+    "VT323": {
+      "dir": "vt323",
+      "weights": [
+        400
+      ],
+      "kind": "pixel"
+    },
+    "Orbitron": {
+      "dir": "orbitron",
+      "weights": [
+        700,
+        900
+      ],
+      "kind": "display"
+    },
+    "Roboto": {
+      "dir": "roboto",
+      "weights": [
+        400,
+        700
+      ],
+      "kind": "sans"
     }
   },
   "themes": [
