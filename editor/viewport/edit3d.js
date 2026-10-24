@@ -451,7 +451,7 @@ function buildEntity(e, parentNode, token) {
   if (model?.path) {
     getContainer(model.path).then((c) => {
       if (!c || token !== buildToken || !nodes.has(e.id)) return;
-      const inst = c.instantiateModelsToScene((nm) => `${e.id}.${nm}`, false);
+      const inst = c.instantiateModelsToScene((nm) => `${e.id}.${nm}`, false, { doNotInstantiate: true }); // real meshes: lights stay correct (instances keep stale light lists)
       for (const r of inst.rootNodes) { r.parent = node; for (const m of [r, ...r.getChildMeshes()]) if (m.getTotalVertices?.()) tag(m, e.id); }
       for (const g of inst.animationGroups) g.stop();
     });

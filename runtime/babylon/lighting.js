@@ -76,7 +76,7 @@ export function createLightCuller(B, scene, every = 0.25) {
     const meshes = scene.meshes.filter((m) => m.isEnabled() && m.getTotalVertices?.() > 0 && !m.infiniteDistance);
     for (const l of scene.lights) {
       if (!(l instanceof B.PointLight || l instanceof B.SpotLight) || !(l.range > 0 && l.range < 1e6) || !l.isEnabled()) continue;
-      const p = l.getAbsolutePosition(), hit = meshes.filter((m) => { const bs = m.getBoundingInfo().boundingSphere; return B.Vector3.Distance(bs.centerWorld, p) <= bs.radiusWorld + l.range; });
+      const p = l.getAbsolutePosition(), hit = meshes.filter((m) => !m.isAnInstance && (m.instances?.length ?? 0) === 0).filter((m) => { const bs = m.getBoundingInfo().boundingSphere; return B.Vector3.Distance(bs.centerWorld, p) <= bs.radiusWorld + l.range; });
       const key = hit.map((m) => m.uniqueId).join(',');
       if (last.get(l) === key) continue;
       last.set(l, key); l.includedOnlyMeshes = hit.length ? hit : [(none ??= new B.Mesh('__nolight', scene))];

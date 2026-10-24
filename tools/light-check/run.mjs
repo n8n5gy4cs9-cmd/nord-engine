@@ -16,7 +16,7 @@ const tmp = path.join(ROOT, 'target/light-check.png');
 const lum = async () => {
   await sleep(600); await page.shot(tmp);
   const im = decodePng(fs.readFileSync(tmp)), px = (x, y) => { const i = (y * im.w + x) * 4; return (im.data[i] + im.data[i + 1] + im.data[i + 2]) / 3; };
-  return { centre: px(im.w >> 1, im.h >> 1), corner: px(30, 100), side: px(575, 300) }; // side: ground in the box shadow, just past the box edge (800x600 window, camera 9 above)
+  return { centre: px(im.w >> 1, im.h >> 1), corner: px(30, 100), side: px(575, 300), top: px(400, 170) }; // side: ground in the box shadow, just past the box edge (800x600 window, camera 9 above)
 };
 let failed = 0;
 const check = (name, ok, info) => { console.log(`${ok ? '✔' : '✖'} ${name} ${JSON.stringify(info)}`); if (!ok) failed++; };
@@ -41,6 +41,23 @@ try {
   await page.eval(`window.__nord.loadScene('scenes/shadow.scene.json')`);
   const sd = await lum();
   check('castShadows: the box casts a shadow on the ground beside it', sd.side < ns.side * 0.6, { with: sd.side, without: ns.side });
+  // the Modeler model keeps its point light while other lights are switched on and off (regression)
+  await page.eval(`window.__nord.loadScene('scenes/modelrig.scene.json')`);
+  const rig = async (label) => { const r = await lum(); return { label, ...r }; };
+  await page.eval(`window.__nord.scene.find('Moon').enabled = false`);
+  await page.eval(`window.__nord.scene.find('Ambient').enabled = false`);
+  const only = await rig('lamp only');
+  check('model lit by its point light alone', only.top > 20, only);
+  await page.eval(`window.__nord.scene.find('Lamp').enabled = false`);
+  const dark = await rig('everything off');
+  check('model is dark without lights', dark.top < 8, dark);
+  await page.eval(`window.__nord.scene.find('Lamp').enabled = true`);
+  for (const [n, v] of [['Ambient', true], ['Ambient', false], ['Moon', true], ['Moon', false], ['Ambient', true], ['Ambient', false]]) {
+    await page.eval(`window.__nord.scene.find('${n}').enabled = ${v}`);
+    await sleep(300);
+  }
+  const again = await rig('after toggling');
+  check('point light still works after toggling ambient/sun', again.top > only.top * 0.8, { only: only.top, again: again.top });
   // 2D (Phaser Light2D): ambient + a point light
   const s2 = spawn(nord, ['serve', path.join(ROOT, 'tools/light-check/2d'), '-p', '4172'], { stdio: 'ignore' });
   try {

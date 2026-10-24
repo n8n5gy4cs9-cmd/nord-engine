@@ -96,7 +96,7 @@ export function registerBabylonComponents(backend) {
     create(e, d, comp) {
       const container = backend.models.get(d.path);
       if (!container) { backend.game.warn(`[nord] model '${d.path}' not loaded`); return; }
-      const inst = container.instantiateModelsToScene((n) => `${e.name}.${n}`, false, { doNotInstantiate: !!d.unique });
+      const inst = container.instantiateModelsToScene((n) => `${e.name}.${n}`, false, { doNotInstantiate: true } /* real meshes, not GPU instances: Babylon does not keep an instance's light list up to date, so lights toggled or culled would be wrong for it */);
       comp.inst = inst;
       // import settings from <model>.meta.json: uniform `scale`
       backend.game.loader.meta?.(d.path).then((m) => {
