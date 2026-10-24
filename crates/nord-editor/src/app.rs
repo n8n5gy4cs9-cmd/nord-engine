@@ -1477,15 +1477,13 @@ pub fn game_tab(
         {
             web.eval("game", STATS_JS);
         }
-        if ui
-            .button(if st.game_full {
-                "Exit fullscreen (Esc)"
-            } else {
-                "Fullscreen"
-            })
-            .on_hover_text("Maximise the game over the whole window (Esc leaves)")
-            .clicked()
-        {
+        if crate::icons::fullscreen_button(
+            ui,
+            st.game_full,
+            "Fullscreen",
+            "Exit fullscreen (Esc)",
+            "Maximise the game over the whole window (Esc leaves)",
+        ) {
             st.game_full = !st.game_full;
         }
         if st.is_playing()

@@ -272,3 +272,36 @@ pub fn mini_toggle(ui: &mut Ui, name: &'static str, tip: &str, selected: bool) -
     resp.on_hover_cursor(egui::CursorIcon::PointingHand)
         .on_hover_text(tip)
 }
+
+/// Prominent "fill the window" toggle: the theme's accent colour to enter, red with an X icon to leave, text in a readable colour.
+/// Returns true when clicked.
+pub fn fullscreen_button(
+    ui: &mut Ui,
+    active: bool,
+    enter_label: &str,
+    exit_label: &str,
+    tip: &str,
+) -> bool {
+    let fill = if active {
+        Color32::from_rgb(200, 50, 50)
+    } else {
+        ui.visuals().hyperlink_color
+    };
+    let lum = 0.299 * fill.r() as f32 + 0.587 * fill.g() as f32 + 0.114 * fill.b() as f32;
+    let ink = if lum > 150.0 {
+        Color32::from_rgb(20, 22, 28)
+    } else {
+        Color32::WHITE
+    };
+    let (name, label) = if active {
+        ("x", exit_label)
+    } else {
+        ("maximize", enter_label)
+    };
+    let b = egui::Button::image_and_text(
+        icon(name, 14.0, ink),
+        egui::RichText::new(label).strong().color(ink),
+    )
+    .fill(fill);
+    ui.add(b).on_hover_text(tip).clicked()
+}
