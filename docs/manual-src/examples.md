@@ -88,3 +88,8 @@ Never used Unity? These pages still work: each example is a small script plus th
 2. Save the script in `my-game/scripts/`, for example `scripts/spin.js`.
 3. Select an object in the @ui[Hierarchy], @ui[+ Add script], pick the file. Press @ui[Play].
 4. Errors show in the @ui[Console] with the file and line; scripts hot-reload while the game runs.
+
+## More Unity-style
+42. [Unity helpers cookbook](ex-unity-helpers.html): Random, Color, KeyCode, mouse events, free Instantiate/Destroy.
+43. [Input actions and the Input editor](ex-input-editor.html)
+44. [Tutorial: Coin Clicker in pure Unity style](ex-tutorial-clicker.html)

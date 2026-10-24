@@ -40,6 +40,14 @@ An **action** is a job name ("jump") that several buttons can trigger. Your code
 **Codes** are `KeyboardEvent.code` names (`KeyA`, `Space`, `ArrowLeft`, `ShiftLeft`…), `Mouse0/1/2`, `Gamepad0…n` (button index) and
 `GamepadLeft/Right/Up/Down` (left stick past 50 %). Gamepads are polled each frame (first connected pad; dead-zone 0.2).
 
+## Input editor (per project)
+Open the @ui[Project] tab ▸ @ui[Input (actions and keys)]. Every new project starts with the basic map: `left right up down` (WASD + arrows), `jump` (Space/W/Up), `fire` (Space/Mouse0), `interact` (E/Enter). Per project you can:
+* press @ui[＋ key], then the key on your keyboard, to bind it; @ui[＋ mouse/pad] adds `Mouse0-2`, `Gamepad0-3`, Shift/Ctrl/Alt; click a key chip to remove it;
+* @ui[Add action] with a new name (then press its first key); the 🗑 button deletes an action;
+* @ui[Add missing basics] restores only the basic actions you deleted (your own are never touched); @ui[Reset to basics] replaces the whole map.
+
+It saves into `nord.project.json` (`input.actions`). Scripts use the names: `this.input.down('jump')`, Unity-style `Input.GetButtonDown('jump')`; raw keys work without any action: `Input.GetKey(KeyCode.Space)`.
+
 ## Rebinding
 `input.actions` is a plain object — change it at runtime: `this.input.actions.jump = ['KeyZ']` and persist it with `this.save.set('bindings', this.input.actions)`.
 Build a settings screen with `game.ui` (the library's `ui-settings.js` covers volume).

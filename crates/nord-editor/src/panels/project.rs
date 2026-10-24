@@ -24,6 +24,9 @@ pub struct ProjectUi {
     pub preview: Vec<String>,
     pub pending: Pending,
     pub replace_with: String,
+    /// Input editor: the action whose next key press is being captured, and the new-action name box.
+    pub capture: Option<String>,
+    pub new_action: String,
 }
 
 fn web(p: &mut nord_core::Project) -> &mut Value {
@@ -41,6 +44,8 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             properties(st, ui, &root);
             ui.add_space(8.0);
             quality_section(st, ui, &root);
+            ui.add_space(8.0);
+            input_section(st, ui, &root);
             ui.add_space(8.0);
             refs_section(st, ui, &root);
         });
@@ -478,6 +483,125 @@ fn quality_section(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
             ui.weak(
                 "Lights and shadows are set per light (Light component); see Manual: Lighting.",
             );
+        });
+    if save {
+        if let Some(p) = &st.project {
+            if let Err(e) = nord_core::io::save_project(root, p) {
+                st.log(LogLevel::Error, e.to_string());
+            }
+        }
+    }
+}
+
+/// egui key -> browser `KeyboardEvent.code` name used by the runtime (`A` -> `KeyA`, `Num1` -> `Digit1`).
+fn key_code(k: egui::Key) -> String {
+    let n = format!("{k:?}");
+    match n.as_str() {
+        s if s.len() == 1 && s.as_bytes()[0].is_ascii_uppercase() => format!("Key{s}"),
+        s if s.len() == 4 && s.starts_with("Num") => format!("Digit{}", &s[3..]),
+        _ => n,
+    }
+}
+
+const EXTRA_INPUTS: &[&str] = &[
+    "Mouse0",
+    "Mouse1",
+    "Mouse2",
+    "Gamepad0",
+    "Gamepad1",
+    "Gamepad2",
+    "Gamepad3",
+    "ShiftLeft",
+    "ControlLeft",
+    "AltLeft",
+];
+
+/// Input editor: edit the project's action map (`input.actions`). New projects start with the basic map.
+fn input_section(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
+    let mut save = false;
+    egui::CollapsingHeader::new(RichText::new("Input (actions and keys)").strong())
+        .default_open(false)
+        .show(ui, |ui| {
+            let Some(p) = st.project.as_mut() else { return };
+            let pu = &mut st.project_ui;
+            ui.weak("Scripts read these names: Input.GetButton('jump'), input.down('jump'). Raw keys always work too (Input.GetKey(KeyCode.Space)).");
+            // key capture: the next key press goes to the armed action
+            if let Some(name) = pu.capture.clone() {
+                ui.colored_label(egui::Color32::YELLOW, format!("Press a key for '{name}'… (Esc cancels)"));
+                let pressed = ui.input(|i| {
+                    i.events.iter().find_map(|e| match e {
+                        egui::Event::Key { key, pressed: true, .. } => Some(*key),
+                        _ => None,
+                    })
+                });
+                if let Some(k) = pressed {
+                    if k != egui::Key::Escape {
+                        let keys = p.input.actions.entry(name).or_default();
+                        let c = key_code(k);
+                        if !keys.contains(&c) {
+                            keys.push(c);
+                            save = true;
+                        }
+                    }
+                    pu.capture = None;
+                }
+            }
+            let names: Vec<String> = p.input.actions.keys().cloned().collect();
+            let mut remove_action = None;
+            for name in &names {
+                ui.horizontal_wrapped(|ui| {
+                    ui.label(RichText::new(name).strong());
+                    let keys = p.input.actions.get_mut(name).expect("listed above");
+                    let mut drop_key = None;
+                    for (i, k) in keys.iter().enumerate() {
+                        if ui.small_button(format!("{k} ✕")).on_hover_text("Remove this key").clicked() {
+                            drop_key = Some(i);
+                        }
+                    }
+                    if let Some(i) = drop_key {
+                        keys.remove(i);
+                        save = true;
+                    }
+                    if ui.small_button("＋ key").on_hover_text("Then press the key").clicked() {
+                        pu.capture = Some(name.clone());
+                    }
+                    egui::ComboBox::from_id_salt(("in-extra", name))
+                        .selected_text("＋ mouse/pad")
+                        .show_ui(ui, |ui| {
+                            for e in EXTRA_INPUTS {
+                                if ui.selectable_label(false, *e).clicked() && !keys.iter().any(|k| k == e) {
+                                    keys.push((*e).into());
+                                    save = true;
+                                }
+                            }
+                        });
+                    if ui.small_button("🗑").on_hover_text("Delete this action").clicked() {
+                        remove_action = Some(name.clone());
+                    }
+                });
+            }
+            if let Some(n) = remove_action {
+                p.input.actions.remove(&n);
+                save = true;
+            }
+            ui.horizontal(|ui| {
+                ui.add(egui::TextEdit::singleline(&mut pu.new_action).hint_text("new action name").desired_width(140.0));
+                let ok = !pu.new_action.trim().is_empty() && !p.input.actions.contains_key(pu.new_action.trim());
+                if ui.add_enabled(ok, egui::Button::new("Add action")).clicked() {
+                    let n = pu.new_action.trim().to_string();
+                    p.input.actions.insert(n.clone(), vec![]);
+                    pu.capture = Some(n);
+                    pu.new_action.clear();
+                    save = true;
+                }
+                if ui.button("Add missing basics").on_hover_text("left, right, up, down, jump, fire, interact: only the ones that are missing").clicked() {
+                    save |= p.input.add_missing_basics() > 0;
+                }
+                if ui.button("Reset to basics").on_hover_text("Replace the whole map with the default one").clicked() {
+                    p.input = nord_core::project::Input::basic();
+                    save = true;
+                }
+            });
         });
     if save {
         if let Some(p) = &st.project {

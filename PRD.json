@@ -2481,6 +2481,18 @@
       "milestone": "M13",
       "title": "Create ▸ Sprite (default white sprite), Sprite editor linked to sprite components/prefabs, Settings tab",
       "status": "done"
+    },
+    {
+      "id": "M13-30",
+      "milestone": "M13",
+      "title": "More Unity helpers (KeyCode, Random, Color, OnMouse*, free Instantiate/Destroy…) + smoke tests",
+      "status": "done"
+    },
+    {
+      "id": "M13-31",
+      "milestone": "M13",
+      "title": "Per-project Input editor (Project tab) + basic input map for new projects",
+      "status": "done"
     }
   ]
 }

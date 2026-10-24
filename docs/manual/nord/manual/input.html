@@ -61,6 +61,14 @@
 </tbody></table>
 <p><strong>Codes</strong> are <code>KeyboardEvent.code</code> names (<code>KeyA</code>, <code>Space</code>, <code>ArrowLeft</code>, <code>ShiftLeft</code>…), <code>Mouse0/1/2</code>, <code>Gamepad0…n</code> (button index) and
 <code>GamepadLeft/Right/Up/Down</code> (left stick past 50 %). Gamepads are polled each frame (first connected pad; dead-zone 0.2).</p>
+<h2 id="input-editor-per-project">Input editor (per project)<a class="anchor" href="#input-editor-per-project">#</a></h2>
+<p>Open the <span class="c-ui">Project</span> tab ▸ <span class="c-ui">Input (actions and keys)</span>. Every new project starts with the basic map: <code>left right up down</code> (WASD + arrows), <code>jump</code> (Space/W/Up), <code>fire</code> (Space/Mouse0), <code>interact</code> (E/Enter). Per project you can:</p>
+<ul>
+<li>press <span class="c-ui">＋ key</span>, then the key on your keyboard, to bind it; <span class="c-ui">＋ mouse/pad</span> adds <code>Mouse0-2</code>, <code>Gamepad0-3</code>, Shift/Ctrl/Alt; click a key chip to remove it;</li>
+<li><span class="c-ui">Add action</span> with a new name (then press its first key); the 🗑 button deletes an action;</li>
+<li><span class="c-ui">Add missing basics</span> restores only the basic actions you deleted (your own are never touched); <span class="c-ui">Reset to basics</span> replaces the whole map.</li>
+</ul>
+<p>It saves into <code>nord.project.json</code> (<code>input.actions</code>). Scripts use the names: <code>this.input.down(&#39;jump&#39;)</code>, Unity-style <code>Input.GetButtonDown(&#39;jump&#39;)</code>; raw keys work without any action: <code>Input.GetKey(KeyCode.Space)</code>.</p>
 <h2 id="rebinding">Rebinding<a class="anchor" href="#rebinding">#</a></h2>
 <p><code>input.actions</code> is a plain object — change it at runtime: <code>this.input.actions.jump = [&#39;KeyZ&#39;]</code> and persist it with <code>this.save.set(&#39;bindings&#39;, this.input.actions)</code>.
 Build a settings screen with <code>game.ui</code> (the library&#39;s <code>ui-settings.js</code> covers volume).</p>
@@ -69,5 +77,5 @@ Build a settings screen with <code>game.ui</code> (the library&#39;s <code>ui-se
 <aside class="box tip"><div class="box-title">Tip</div><p>Use <code>fixedUpdate</code> for physics-related input (jumping) and <code>update</code> for everything else; <code>pressed</code> is evaluated once per rendered frame, so read it in <code>update</code> if you must not miss a tap.</p>
 </aside><h2 id="mobile-and-on-screen-controls">Mobile and on-screen controls<a class="anchor" href="#mobile-and-on-screen-controls">#</a></h2>
 <p>For a complete code-drawn joystick plus hold buttons, see <strong><a href="../guides/mobile-controls.html">Mobile and on-screen touch controls</a></strong>. It includes the existing virtual joystick, reusable button code, action mapping, pointer cancellation/cleanup, desktop pointer testing, and the Star-Not touch example.</p>
-<div class="pager"><a href="ui.html"><small>← Previous</small>UI &amp; HUD</a><a href="assets.html"><small>Next →</small>Assets</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#rebinding">Rebinding </a><a href="#touch">Touch </a><a href="#mobile-and-on-screen-controls">Mobile and on-screen controls </a></aside></div>
+<div class="pager"><a href="ui.html"><small>← Previous</small>UI &amp; HUD</a><a href="assets.html"><small>Next →</small>Assets</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#input-editor-per-project">Input editor (per project) </a><a href="#rebinding">Rebinding </a><a href="#touch">Touch </a><a href="#mobile-and-on-screen-controls">Mobile and on-screen controls </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

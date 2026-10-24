@@ -74,6 +74,39 @@ pub struct Input {
     pub actions: BTreeMap<String, Vec<String>>,
 }
 
+/// The basic input map every new project starts with (editable per project in the Project tab ▸ Input).
+pub const BASIC_ACTIONS: &[(&str, &[&str])] = &[
+    ("left", &["KeyA", "ArrowLeft"]),
+    ("right", &["KeyD", "ArrowRight"]),
+    ("up", &["KeyW", "ArrowUp"]),
+    ("down", &["KeyS", "ArrowDown"]),
+    ("jump", &["Space", "KeyW", "ArrowUp"]),
+    ("fire", &["Space", "Mouse0"]),
+    ("interact", &["KeyE", "Enter"]),
+];
+
+impl Input {
+    /// The basic map ([`BASIC_ACTIONS`]).
+    pub fn basic() -> Self {
+        let mut i = Self::default();
+        i.add_missing_basics();
+        i
+    }
+
+    /// Add the basic actions that are not defined yet; existing actions are never changed. Returns how many were added.
+    pub fn add_missing_basics(&mut self) -> usize {
+        let mut n = 0;
+        for (name, keys) in BASIC_ACTIONS {
+            if !self.actions.contains_key(*name) {
+                self.actions
+                    .insert((*name).into(), keys.iter().map(|k| (*k).into()).collect());
+                n += 1;
+            }
+        }
+        n
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Project {
@@ -126,7 +159,7 @@ impl Project {
             start_scene: "scenes/main.scene.json".into(),
             display: Display::default(),
             physics: Physics::default(),
-            input: Input::default(),
+            input: Input::basic(),
             ui: Map::new(),
             plugins: vec![],
             addons: vec![],
@@ -275,5 +308,20 @@ mod tests {
         .unwrap();
         assert_eq!(p.kind, ProjectType::TwoD);
         assert_eq!(p.display.width, 1280);
+    }
+}
+
+#[cfg(test)]
+mod input_basics_tests {
+    use super::*;
+
+    #[test]
+    fn new_projects_start_with_basic_input_and_missing_ones_are_added_without_overwriting() {
+        let p = Project::new("A", "a", ProjectType::TwoD);
+        assert_eq!(p.input.actions.len(), BASIC_ACTIONS.len());
+        let mut i = Input::default();
+        i.actions.insert("jump".into(), vec!["KeyZ".into()]);
+        assert_eq!(i.add_missing_basics(), BASIC_ACTIONS.len() - 1);
+        assert_eq!(i.actions["jump"], vec!["KeyZ".to_string()]);
     }
 }

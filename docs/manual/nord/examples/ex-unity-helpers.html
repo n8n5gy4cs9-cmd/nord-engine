@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>42 · Unity helpers cookbook — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html" class="cur" aria-current="page">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-tutorial-clicker.html">44 · Tutorial: Coin Clicker in pure Unity style</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>42 · Unity helpers cookbook</h1>
+<p><strong>Goal:</strong> know which everyday Unity calls exist in Nord, with the C# next to the JavaScript. All of them come from <code>import { … } from &#39;nord&#39;</code>.</p>
+<h2 id="random-and-color">Random and Color<a class="anchor" href="#random-and-color">#</a></h2>
+<pre class="code" data-lang="cs"><code>int die = Random.Range(1, 7);          float f = Random.Range(0.5f, 1.5f);
+Vector2 p = Random.insideUnitCircle;   sprite.color = Color.red;</code></pre>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Random, Color } from 'nord';
+export default class Dice extends MonoBehaviour {
+  Start() {
+    const die = Random.Range(1, 7);          // two integers: int in [1, 7) like C#
+    const f = Random.Range(0.5, 1.5);        // floats: float in [0.5, 1.5]
+    const p = Random.insideUnitCircle;       // Vector2
+    this.GetComponent('sprite').set('tint', Color.Lerp(Color.red, Color.blue, 0.5).toHex());
+  }
+}</code></pre>
+<p><span class="c-bad">Trap:</span> <code>Random.Range(0, 1)</code> is two integers in JavaScript, so it returns <code>0</code>. For a 0..1 float use <code>Random.value</code>.</p>
+<h2 id="keys-buttons-and-axes">Keys, buttons and axes<a class="anchor" href="#keys-buttons-and-axes">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, UnityInput as Input, KeyCode, Time } from 'nord';
+export default class Mover extends MonoBehaviour {
+  Update() {
+    if (Input.GetKeyDown(KeyCode.Space)) this.Jump();
+    if (Input.GetKey(KeyCode.LeftShift)) this.speed = 8;
+    const x = Input.GetAxisRaw('Horizontal');
+    this.Translate(x * 5 * Time.deltaTime);
+    if (Input.anyKeyDown) this.log('something pressed');
+  }
+}</code></pre>
+<p>Use <code>GetButton(&#39;jump&#39;)</code> for the names in your <a href="ex-input-editor.html">Input editor</a> and <code>GetKey(KeyCode.X)</code> for fixed keys.</p>
+<h2 id="mouse-events-on-an-object">Mouse events on an object<a class="anchor" href="#mouse-events-on-an-object">#</a></h2>
+<pre class="code" data-lang="js"><code>export default class Clickable extends MonoBehaviour {
+  OnMouseEnter() { this.localScale = new Vector3(1.1, 1.1, 1); }
+  OnMouseExit()  { this.localScale = Vector3.one; }
+  OnMouseDown()  { Debug.Log('clicked ' + this.name); }
+}</code></pre>
+<p>The pointer is tested against the object&#39;s box. Also <code>OnMouseUp</code>, <code>OnMouseOver</code>, <code>OnMouseDrag</code>, <code>OnMouseUpAsButton</code>.</p>
+<h2 id="create-and-destroy-without-this">Create and destroy without <code>this</code><a class="anchor" href="#create-and-destroy-without-this">#</a></h2>
+<pre class="code" data-lang="js"><code>import { Instantiate, Destroy, GameObject, UnityObject, DontDestroyOnLoad } from 'nord';
+const bullet = await Instantiate('prefabs/bullet.prefab.json', { pos: [0, 0, 0] });
+Destroy(bullet, 2);                         // after 2 s
+const player = GameObject.Find('Player');
+const hud = UnityObject.FindObjectOfType(HudScript);
+DontDestroyOnLoad(player);</code></pre>
+<h2 id="inspector-field-helpers">Inspector field helpers<a class="anchor" href="#inspector-field-helpers">#</a></h2>
+<pre class="code" data-lang="js"><code>import { SerializeField, Range, Enum, EntityRef } from 'nord';
+static attributes = SerializeField({
+  speed: Range(0, 10, 5),                   // [Range(0,10)] slider
+  mode: Enum(['idle', 'chase'], 'idle'),    // enum dropdown
+  target: EntityRef(),                      // an object name: this.Find(this.target)
+});</code></pre>
+<h2 id="smooth-camera-follow">Smooth camera follow<a class="anchor" href="#smooth-camera-follow">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Mathf, GameObject } from 'nord';
+export default class Follow extends MonoBehaviour {
+  Start() { this.t = GameObject.Find('Player'); this.vx = 0; }
+  LateUpdate() {
+    const r = Mathf.SmoothDamp(this.position.x, this.t.pos[0], this.vx, 0.25);
+    this.vx = r.velocity; this.position = this.position.Set(r.value, this.position.y, this.position.z);
+  }
+}</code></pre>
+<p>(<code>SmoothDamp</code> has no <code>ref</code> in JavaScript: it returns <code>{ value, velocity }</code>.)</p>
+<h2 id="vectors-without-operators">Vectors without operators<a class="anchor" href="#vectors-without-operators">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>C#</th>
+<th>Nord</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>a + b</code>, <code>a - b</code>, <code>a * 2f</code></td>
+<td><code>a.Add(b)</code>, <code>a.Sub(b)</code>, <code>a.Mul(2)</code></td>
+</tr>
+<tr>
+<td><code>Vector3.Scale(a, b)</code></td>
+<td><code>Vector3.Scale(a, b)</code></td>
+</tr>
+<tr>
+<td><code>Vector3.ClampMagnitude(v, 5)</code></td>
+<td><code>Vector3.ClampMagnitude(v, 5)</code></td>
+</tr>
+<tr>
+<td><code>Vector2.Perpendicular(v)</code></td>
+<td>same</td>
+</tr>
+<tr>
+<td><code>Quaternion.Euler(0,0,90)</code></td>
+<td>none: rotations are Euler degrees, <code>this.eulerAngles = new Vector3(0, 0, 90)</code></td>
+</tr>
+</tbody></table>
+<p>Next: <a href="ex-input-editor.html">the Input editor</a>, <a href="ex-tutorial-clicker.html">a full tutorial</a>. Reference: <a href="../manual/unity-scripting.html">Unity-style scripting</a>.</p>
+<div class="pager"><a href="ex-unity-conversion.html"><small>← Previous</small>41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-input-editor.html"><small>Next →</small>43 · Input actions and the Input editor</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#random-and-color">Random and Color </a><a href="#keys-buttons-and-axes">Keys, buttons and axes </a><a href="#mouse-events-on-an-object">Mouse events on an object </a><a href="#create-and-destroy-without-this">Create and destroy without this </a><a href="#inspector-field-helpers">Inspector field helpers </a><a href="#smooth-camera-follow">Smooth camera follow </a><a href="#vectors-without-operators">Vectors without operators </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

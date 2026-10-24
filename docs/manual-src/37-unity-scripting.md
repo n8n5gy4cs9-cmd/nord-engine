@@ -97,6 +97,18 @@ Coroutine yields: `null` (next frame), @api[new WaitForSeconds(s)], @api[new Wai
 * @api[PlayerPrefs]: `GetInt/GetFloat/GetString(key, default)`, `SetInt/SetFloat/SetString`, `HasKey`, `DeleteAll` (saved in the browser / app).
 * @api[SceneManager]: `LoadScene('scenes/level2.scene.json')`, `ReloadScene()`, `sceneName`. @api[Application]: `Quit()`, `isPlaying`.
 
+### More Unity helpers (import from `'nord'`)
+* @api[KeyCode]: `Input.GetKey(KeyCode.Space)`, `KeyCode.W`, `Alpha1`, `LeftShift`, `UpArrow`, `Mouse0`, `F1`… Also `Input.GetMouseButtonUp`, `GetAxisRaw`, `anyKey`, `anyKeyDown`.
+* @api[Random]: `Random.Range(0, 10)` (two integers = int in [0, 10) like C#), `Random.Range(0.5, 1.5)` (floats), `value`, `insideUnitCircle`, `onUnitSphere`, `insideUnitSphere`, `Pick(array)`, `InitState(seed)`.
+* @api[Color]: `Color.red`, `new Color(1, .5, 0)`, `Color.FromHex('#ff8800')`, `Color.Lerp`, `c.toHex()` for tints.
+* More @api[Mathf]: `SmoothDamp` (returns `{ value, velocity }`), `Atan, Asin, Acos, Log, Exp`. More @api[Vector2]/@api[Vector3]: `Scale, Div, negative, Normalize, Angle, SignedAngle, ClampMagnitude, Project, Reflect, Perpendicular, Min, Max, LerpUnclamped`.
+* @api[Time]: also `unscaledDeltaTime`, `fixedTime`, `realtimeSinceStartup`; coroutines: `WaitForSecondsRealtime`.
+* Free functions like Unity: `Instantiate(...)`, `Destroy(obj, delay)`, `DontDestroyOnLoad(obj)`, `GameObject.Find / FindWithTag / FindGameObjectsWithTag`, `UnityObject.FindObjectOfType(MyScript)`, `Screen.width/height`, `Physics2D.OverlapBox(center, size)`, `Debug.LogFormat`.
+* Field helpers: `SerializeField({ speed: Range(0, 10, 5), mode: Enum(['idle', 'chase'], 'idle'), target: EntityRef() })`.
+* On a MonoBehaviour: `localScale`, `eulerAngles`, `parent`, `childCount`, `GetChild(i)`, `FindChild(name)`, `AddComponent(type)`, `LookAt(target)` (2D), `isGrounded`, `velocity` / `SetVelocity(x, y)` (2D physics), `print(...)`, and the mouse events @api[OnMouseDown] @api[OnMouseUp] @api[OnMouseEnter] @api[OnMouseExit] @api[OnMouseOver] @api[OnMouseDrag] @api[OnMouseUpAsButton] (pointer over the object's box).
+
+Rotations are Euler degrees (`eulerAngles`), there is no `Quaternion`. Vectors have no `+`/`*` operators in JavaScript: use `a.Add(b)`, `a.Mul(k)`.
+
 ## Singleton: one object, reachable everywhere
 @ui[Assets ▸ Create ▸ Singleton script]:
 

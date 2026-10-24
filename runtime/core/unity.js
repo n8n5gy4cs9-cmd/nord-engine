@@ -4,6 +4,7 @@
 import { NordScript } from './script.js';
 import { Game } from './game.js';
 import { clamp, lerp } from './util.js';
+import { bbox } from './behaviors/util.js';
 
 const game = () => Game.current;
 
@@ -26,6 +27,15 @@ export const Mathf = {
   Approximately: (a, b) => Math.abs(a - b) < Math.max(1e-6 * Math.max(Math.abs(a), Math.abs(b)), 1e-8),
   DeltaAngle: (a, b) => { const d = repeat(b - a, 360); return d > 180 ? d - 360 : d; },
   LerpAngle: (a, b, t) => { const d = repeat(b - a, 360); return a + (d > 180 ? d - 360 : d) * clamp(t, 0, 1); },
+  NegativeInfinity: -Infinity, Atan: Math.atan, Asin: Math.asin, Acos: Math.acos, Log: Math.log, Log10: Math.log10, Exp: Math.exp,
+  /** Unity's SmoothDamp has a `ref` velocity; here pass the current velocity and get `{ value, velocity }` back. */
+  SmoothDamp(cur, target, vel, smoothTime, maxSpeed = Infinity, dt = game()?.time.delta ?? 0.016) {
+    smoothTime = Math.max(1e-4, smoothTime); const w = 2 / smoothTime, x = w * dt, e = 1 / (1 + x + 0.48 * x * x + 0.235 * x * x * x);
+    let ch = cur - target; const lim = maxSpeed * smoothTime; ch = clamp(ch, -lim, lim);
+    const tg = cur - ch, tmp = (vel + w * ch) * dt; vel = (vel - w * tmp) * e;
+    let out = tg + (ch + tmp) * e; if ((target - cur > 0) === (out > target)) { out = target; vel = 0; }
+    return { value: out, velocity: vel };
+  },
   Random: (a = 0, b = 1) => a + (game()?.rng?.next?.() ?? Math.random()) * (b - a),
 };
 
@@ -56,6 +66,19 @@ export class Vector3 {
   Set(x, y, z) { this.x = x; this.y = y; this.z = z; return this; }
   Equals(v) { return this.x === v.x && this.y === v.y && this.z === v.z; }
   toArray() { return [this.x, this.y, this.z]; }
+  Scale(v) { return new Vector3(this.x * v.x, this.y * v.y, this.z * v.z); }
+  Div(k) { return this.Mul(1 / k); }
+  get negative() { return this.Mul(-1); }
+  Normalize() { const n = this.normalized; return this.Set(n.x, n.y, n.z); }
+  static Scale(a, b) { return a.Scale(b); }
+  static Angle(a, b) { const d = a.magnitude * b.magnitude; return d < 1e-9 ? 0 : Math.acos(clamp(Vector3.Dot(a, b) / d, -1, 1)) * 180 / Math.PI; }
+  static ClampMagnitude(v, max) { return v.sqrMagnitude > max * max ? v.normalized.Mul(max) : v.Clone(); }
+  static Project(a, n) { const s = n.sqrMagnitude; return s < 1e-9 ? new Vector3() : n.Mul(Vector3.Dot(a, n) / s); }
+  static Reflect(d, n) { return d.Sub(n.Mul(2 * Vector3.Dot(d, n))); }
+  static Min(a, b) { return new Vector3(Math.min(a.x, b.x), Math.min(a.y, b.y), Math.min(a.z, b.z)); }
+  static Max(a, b) { return new Vector3(Math.max(a.x, b.x), Math.max(a.y, b.y), Math.max(a.z, b.z)); }
+  static LerpUnclamped(a, b, t) { return new Vector3(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t); }
+
   toString() { return `(${this.x}, ${this.y}, ${this.z})`; }
 }
 export class Vector2 {
@@ -81,6 +104,20 @@ export class Vector2 {
   Set(x, y) { this.x = x; this.y = y; return this; }
   Equals(v) { return this.x === v.x && this.y === v.y; }
   toArray() { return [this.x, this.y]; }
+  Scale(v) { return new Vector2(this.x * v.x, this.y * v.y); }
+  Div(k) { return this.Mul(1 / k); }
+  get negative() { return this.Mul(-1); }
+  Normalize() { const n = this.normalized; return this.Set(n.x, n.y); }
+  static Scale(a, b) { return a.Scale(b); }
+  static Angle(a, b) { const d = a.magnitude * b.magnitude; return d < 1e-9 ? 0 : Math.acos(clamp(Vector2.Dot(a, b) / d, -1, 1)) * 180 / Math.PI; }
+  static SignedAngle(a, b) { return (Math.atan2(b.y, b.x) - Math.atan2(a.y, a.x)) * 180 / Math.PI; }
+  static ClampMagnitude(v, max) { return v.sqrMagnitude > max * max ? v.normalized.Mul(max) : v.Clone(); }
+  static Reflect(d, n) { return d.Sub(n.Mul(2 * Vector2.Dot(d, n))); }
+  static Perpendicular(v) { return new Vector2(-v.y, v.x); }
+  static Min(a, b) { return new Vector2(Math.min(a.x, b.x), Math.min(a.y, b.y)); }
+  static Max(a, b) { return new Vector2(Math.max(a.x, b.x), Math.max(a.y, b.y)); }
+  static LerpUnclamped(a, b, t) { return new Vector2(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t); }
+
   toString() { return `(${this.x}, ${this.y})`; }
 }
 
@@ -93,12 +130,17 @@ export const Time = {
   get timeScale() { return game()?.timeScale ?? 1; },
   set timeScale(v) { const g = game(); if (g) g.timeScale = v; },
   get frameCount() { return frames; },
+  get unscaledDeltaTime() { const g = game(); return g ? g.time.delta / (g.timeScale || 1) : 0; },
+  get fixedTime() { return game()?.time.elapsed ?? 0; },
+  get realtimeSinceStartup() { return (globalThis.performance?.now?.() ?? Date.now()) / 1000; },
 };
 export const Debug = {
   Log: (...a) => game()?.log(...a) ?? console.log(...a),
   LogWarning: (...a) => console.warn(...a),
   LogError: (...a) => console.error(...a),
   Assert: (c, m = 'Assertion failed') => { if (!c) console.error(m); },
+  LogFormat: (f, ...a) => Debug.Log(String(f).replace(/\{(\d+)\}/g, (_, i) => a[+i] ?? '')),
+  DrawLine: () => {}, DrawRay: () => {}, Break: () => game()?.pause(),
 };
 const AXES = { Horizontal: ['KeyA', 'ArrowLeft', 'KeyD', 'ArrowRight'], Vertical: ['KeyS', 'ArrowDown', 'KeyW', 'ArrowUp'] };
 /** Unity's Input class (raw key codes: 'Space', 'KeyA', 'Mouse0'…; GetAxis('Horizontal'|'Vertical') or any pair of project actions). */
@@ -111,6 +153,10 @@ export const UnityInput = {
   GetButtonUp: (action) => !!game()?.input.released(action),
   GetMouseButton: (n = 0) => !!game()?.input.key(`Mouse${n}`),
   GetMouseButtonDown: (n = 0) => UnityInput.GetKeyDown(`Mouse${n}`),
+  GetMouseButtonUp: (n = 0) => UnityInput.GetKeyUp(`Mouse${n}`),
+  GetAxisRaw: (name) => UnityInput.GetAxis(name),
+  get anyKey() { return (game()?.input.held?.size ?? 0) > 0; },
+  get anyKeyDown() { const i = game()?.input; return !!i?.heldSnap && [...i.heldSnap].some((k) => !i.heldPrev.has(k)); },
   GetAxis(name) {
     const i = game()?.input;
     if (!i) return 0;
@@ -119,6 +165,48 @@ export const UnityInput = {
     return i.axis(`${name}Negative`, `${name}Positive`);
   },
   get mousePosition() { const p = game()?.input.pointer; return new Vector2(p?.x ?? 0, p?.y ?? 0); },
+};
+
+/** Unity's KeyCode: `Input.GetKey(KeyCode.Space)`. Values are the browser key codes the engine already uses. */
+export const KeyCode = (() => {
+  const k = { Space: 'Space', Return: 'Enter', Escape: 'Escape', Tab: 'Tab', Backspace: 'Backspace', Delete: 'Delete', LeftShift: 'ShiftLeft', RightShift: 'ShiftRight',
+    LeftControl: 'ControlLeft', RightControl: 'ControlRight', LeftAlt: 'AltLeft', RightAlt: 'AltRight', UpArrow: 'ArrowUp', DownArrow: 'ArrowDown', LeftArrow: 'ArrowLeft', RightArrow: 'ArrowRight',
+    Mouse0: 'Mouse0', Mouse1: 'Mouse1', Mouse2: 'Mouse2' };
+  for (const c of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') k[c] = `Key${c}`;
+  for (let i = 0; i < 10; i++) { k[`Alpha${i}`] = `Digit${i}`; k[`Keypad${i}`] = `Numpad${i}`; }
+  for (let i = 1; i <= 12; i++) k[`F${i}`] = `F${i}`;
+  return Object.freeze(k);
+})();
+/** Unity's Random: `Range(0, 10)` with two integers is an int in [0, 10) like C#; use floats (`0.5, 1.5`) for a float in [min, max]. */
+export const Random = {
+  Range(a, b) { const r = Random.value; return Number.isInteger(a) && Number.isInteger(b) ? a + Math.floor(r * (b - a)) : a + r * (b - a); },
+  get value() { return game()?.rng?.next?.() ?? Math.random(); },
+  get insideUnitCircle() { const a = Random.value * Math.PI * 2, r = Math.sqrt(Random.value); return new Vector2(Math.cos(a) * r, Math.sin(a) * r); },
+  get onUnitSphere() { const z = Random.value * 2 - 1, a = Random.value * Math.PI * 2, r = Math.sqrt(1 - z * z); return new Vector3(r * Math.cos(a), r * Math.sin(a), z); },
+  get insideUnitSphere() { return Random.onUnitSphere.Mul(Math.cbrt(Random.value)); },
+  Pick: (arr) => arr[Math.floor(Random.value * arr.length)],
+  InitState: (seed) => { const g = game(); if (g?.rng) g.rng.s = seed >>> 0; },
+};
+/** Unity's Color (0..1 floats). `Color.red`, `new Color(1, 0.5, 0)`, `Color.Lerp(a, b, t)`, `c.toHex()` for sprite tints (`'#rrggbb'`). */
+export class Color {
+  constructor(r = 0, g = 0, b = 0, a = 1) { this.r = r; this.g = g; this.b = b; this.a = a; }
+  static get red() { return new Color(1, 0, 0); } static get green() { return new Color(0, 1, 0); } static get blue() { return new Color(0, 0, 1); }
+  static get white() { return new Color(1, 1, 1); } static get black() { return new Color(0, 0, 0); } static get yellow() { return new Color(1, 0.92, 0.016); }
+  static get cyan() { return new Color(0, 1, 1); } static get magenta() { return new Color(1, 0, 1); } static get gray() { return new Color(0.5, 0.5, 0.5); }
+  static get clear() { return new Color(0, 0, 0, 0); }
+  static FromHex(h) { const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})?$/i.exec(h); return m ? new Color(parseInt(m[1], 16) / 255, parseInt(m[2], 16) / 255, parseInt(m[3], 16) / 255, m[4] ? parseInt(m[4], 16) / 255 : 1) : new Color(); }
+  static Lerp(a, b, t) { t = clamp(t, 0, 1); return new Color(lerp(a.r, b.r, t), lerp(a.g, b.g, t), lerp(a.b, b.b, t), lerp(a.a, b.a, t)); }
+  toHex() { const h = (v) => Math.round(clamp(v, 0, 1) * 255).toString(16).padStart(2, '0'); return `#${h(this.r)}${h(this.g)}${h(this.b)}`; }
+  Clone() { return new Color(this.r, this.g, this.b, this.a); }
+}
+/** `Screen.width/height` of the game canvas (window size when no canvas is known). */
+export const Screen = {
+  get width() { return globalThis.innerWidth ?? 0; },
+  get height() { return globalThis.innerHeight ?? 0; },
+};
+/** 2D physics queries on the active physics backend. `Physics2D.OverlapBox(center, size)` → array of entities. */
+export const Physics2D = {
+  OverlapBox: (c, size) => game()?.physics?.overlapBox?.(c.x, c.y, size.x, size.y) ?? [],
 };
 export const PlayerPrefs = {
   GetInt: (k, d = 0) => game()?.save.get(k, d) ?? d,
@@ -143,6 +231,7 @@ export const Application = {
 
 // ---------- coroutines ----------
 export class WaitForSeconds { constructor(sec) { this.sec = sec; } }
+export class WaitForSecondsRealtime extends WaitForSeconds {}
 export class WaitUntil { constructor(fn) { this.fn = fn; } }
 export class WaitWhile { constructor(fn) { this.fn = () => !fn(); } }
 export class WaitForFixedUpdate {}
@@ -185,6 +274,13 @@ export function SerializeField(fields) {
   return out;
 }
 
+/** `[Range(0, 10)]`: `SerializeField({ speed: Range(0, 10, 5) })` → slider. */
+export const Range = (min, max, def = min) => ({ default: def, min, max });
+/** Dropdown field: `SerializeField({ mode: Enum(['idle', 'chase'], 'idle') })`. */
+export const Enum = (options, def = options[0]) => ({ type: 'enum', options, default: def });
+/** Field that points at another object by name: `SerializeField({ target: EntityRef() })`, read it with `this.Find(this.target)`. */
+export const EntityRef = (def = '') => ({ type: 'entity', default: def });
+
 /**
  * Unity-flavoured script base. Subclass and write Awake/Start/Update/FixedUpdate/LateUpdate/OnEnable/OnDisable/OnDestroy and
  * OnCollisionEnter/Exit, OnTriggerEnter/Exit exactly like a C# MonoBehaviour. Attributes are readable as `this.speed`.
@@ -212,6 +308,29 @@ export class MonoBehaviour extends NordScript {
   set localPosition(v) { this.entity.pos = v.toArray(); }
   Translate(x, y = 0, z = 0) { const p = this.entity.pos; this.entity.pos = [p[0] + x, p[1] + y, p[2] + z]; }
   Rotate(x, y = 0, z = 0) { const r = this.entity.rot; this.entity.rot = [r[0] + x, r[1] + y, r[2] + z]; }
+
+
+  // transform extras
+  get localScale() { return Vector3.From(this.entity.scale); }
+  set localScale(v) { this.entity.scale = v.toArray(); }
+  get eulerAngles() { return Vector3.From(this.entity.rot); }
+  set eulerAngles(v) { this.entity.rot = v.toArray(); }
+  get parent() { return this.entity.parent ?? null; }
+  get childCount() { return this.entity.children?.length ?? 0; }
+  GetChild(i) { return this.entity.children?.[i] ?? null; }
+  /** `transform.Find("Child")`: a descendant by name. */
+  FindChild(name) { return this.entity.find(name); }
+  get isActiveAndEnabled() { return this.entity.enabled; }
+  /** `AddComponent<T>()`: pass a script class or a component type name (`'sprite'`). */
+  AddComponent(type, data = {}) { return typeof type === 'function' ? this.entity.addScript(type, data) : this.entity.addComponent(type, data); }
+  /** Face a point (2D: rotates Z in degrees so +X points at the target). */
+  LookAt(target) { const t = target.worldPos ? Vector3.From(target.worldPos) : target, p = this.position; this.entity.rot = [this.entity.rot[0], this.entity.rot[1], Math.atan2(t.y - p.y, t.x - p.x) * 180 / Math.PI]; }
+  /** Physics velocity (2D backends): `this.velocity = new Vector2(3, 0)`; reads the engine body when available. */
+  get isGrounded() { return !!this.game.physics?.isGrounded?.(this.entity); }
+  SetVelocity(x, y) { this.game.physics?.setVelocity?.(this.entity, x, y); }
+  get velocity() { return Vector2.From(this.game.physics?.velocity?.(this.entity) ?? [0, 0]); }
+  set velocity(v) { this.SetVelocity(v.x, v.y); }
+  print(...a) { Debug.Log(...a); }
 
   // lookup — GetComponent('sprite' | 'Platform' | ScriptClass)
   GetComponent(type, entity = this.entity) {
@@ -261,7 +380,22 @@ export class MonoBehaviour extends NordScript {
   update(dt) {
     frames++;
     this._co = this._co.filter((c) => { c.step(dt); return !c.done; });
+    this.#mouse();
     this.Update?.(dt);
+  }
+  /** OnMouseEnter/Exit/Over/Down/Up/Drag/UpAsButton — pointer vs. the object's bounding box (only polled when defined). */
+  #mouse() {
+    if (!(this.OnMouseEnter || this.OnMouseExit || this.OnMouseOver || this.OnMouseDown || this.OnMouseUp || this.OnMouseDrag || this.OnMouseUpAsButton)) return;
+    const p = this.game.input.pointer, b = bbox(this.entity);
+    const inside = this.entity.enabled && p.worldX >= b.l && p.worldX <= b.r && p.worldY >= b.t && p.worldY <= b.b;
+    const m = (this._m ??= { inside: false, down: false });
+    if (inside && !m.inside) this.OnMouseEnter?.();
+    if (!inside && m.inside) this.OnMouseExit?.();
+    if (inside) this.OnMouseOver?.();
+    if (inside && p.down && !m.down) { m.held = true; this.OnMouseDown?.(); }
+    if (m.held && p.down) this.OnMouseDrag?.();
+    if (m.held && !p.down) { m.held = false; this.OnMouseUp?.(); if (inside) this.OnMouseUpAsButton?.(); }
+    m.inside = inside; m.down = p.down;
   }
   fixedUpdate(dt) { this.FixedUpdate?.(dt); }
   lateUpdate(dt) { this.LateUpdate?.(dt); }
@@ -273,6 +407,34 @@ export class MonoBehaviour extends NordScript {
   onTriggerEnter(o, c) { this.OnTriggerEnter?.(o, c); }
   onTriggerExit(o, c) { this.OnTriggerExit?.(o, c); }
 }
+
+
+// ---------- free functions (Unity lets you call these without `this.`) ----------
+/** `Instantiate('prefabs/bullet.prefab.json', { pos })` → Promise<Entity>; `Instantiate(entity)` clones. */
+export function Instantiate(what, opts = {}) {
+  const sc = game()?.scene;
+  if (typeof what === 'string') return sc.spawn(what, opts);
+  return Promise.resolve(what.clone()).then((e) => { if (opts.pos) e.pos = opts.pos; return e; });
+}
+/** `Destroy(entityOrScript, delay)` */
+export function Destroy(obj, delay = 0) {
+  const e = obj?.entity ?? obj, sc = game()?.scene;
+  if (delay > 0) sc.scheduler.after(delay, () => e.destroy()); else e.destroy();
+}
+/** `DontDestroyOnLoad(entity)`: adds the Persist behavior. */
+export function DontDestroyOnLoad(obj) { const e = obj?.entity ?? obj; if (!e.behavior('Persist')) e.addBehavior('Persist'); }
+export const GameObject = {
+  Find: (name) => game()?.scene.find(name) ?? null,
+  FindWithTag: (tag) => game()?.scene.findByTag(tag)[0] ?? null,
+  FindGameObjectsWithTag: (tag) => game()?.scene.findByTag(tag) ?? [],
+};
+const UnityObject = {
+  FindObjectOfType: (C) => { for (const e of game()?.scene.all() ?? []) { const s = e.getScript(C); if (s) return s; } return null; },
+  FindObjectsOfType: (C) => [...(game()?.scene.all() ?? [])].map((e) => e.getScript(C)).filter(Boolean),
+  Instantiate, Destroy, DontDestroyOnLoad,
+};
+/** Unity's `Object`; exported as `UnityObject` because a binding named `Object` would shadow the JS global. */
+export { UnityObject };
 
 // ---------- Singleton ----------
 /**
@@ -388,4 +550,4 @@ export class ObjectPool {
 }
 
 /** The whole layer as one object (`Unity.Mathf`…), handy for event-sheet expressions and the console. */
-export const Unity = { Mathf, Vector2, Vector3, Time, Debug, Input: UnityInput, PlayerPrefs, SceneManager, Application, EventBus, ScriptableObject };
+export const Unity = { Mathf, Vector2, Vector3, Color, Random, KeyCode, Screen, Physics2D, GameObject, Time, Debug, Input: UnityInput, PlayerPrefs, SceneManager, Application, EventBus, ScriptableObject };

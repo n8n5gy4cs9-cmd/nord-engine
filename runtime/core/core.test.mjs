@@ -349,3 +349,51 @@ test('prefab variants: variantOf + overrides on top of the base root', async () 
   const a = g.scene.find('A') ?? g.scene.find('Base');
   assert.equal(a.components[0].data.tint, '#f00');
 });
+
+// ---------- Unity smoke: the 'Spin' script from the manual + the wider helper set ----------
+import * as U from './index.js';
+
+test('Unity smoke: first script (SerializeField, Start, Update, Rotate, Debug.Log)', async () => {
+  const logs = [];
+  class Spin extends U.MonoBehaviour {
+    static attributes = U.SerializeField({ speed: 90 });
+    Start() { U.Debug.Log('Spin ready'); logs.push('start'); }
+    Update() { this.Rotate(0, 0, this.speed * U.Time.deltaTime); }
+  }
+  files['mod:spin.js'] = Spin;
+  files.us = { name: 'us', entities: [ent('S', { scripts: [{ path: 'spin.js' }] })] };
+  const g = mk({ onError: (e) => { throw e; } }); await g.loadScene('us');
+  g.tick(0.05);
+  assert.deepEqual(logs, ['start']);
+  assert.ok(Math.abs(g.scene.find('S').rot[2] - 4.5) < 1e-6);
+});
+
+test('Unity smoke: helpers (Random, Color, KeyCode, Vector, Mathf, Instantiate/Destroy, Range/Enum, OnMouseDown)', async () => {
+  for (let i = 0; i < 50; i++) { const r = U.Random.Range(0, 3); assert.ok(Number.isInteger(r) && r >= 0 && r < 3); const f = U.Random.Range(0.5, 1.5); assert.ok(f >= 0.5 && f <= 1.5); }
+  assert.equal(U.Color.red.toHex(), '#ff0000');
+  assert.equal(U.Color.FromHex('#00ff00').g, 1);
+  assert.equal(U.KeyCode.Space, 'Space'); assert.equal(U.KeyCode.W, 'KeyW'); assert.equal(U.KeyCode.Alpha1, 'Digit1');
+  assert.equal(U.Vector3.ClampMagnitude(new U.Vector3(3, 4, 0), 1).magnitude.toFixed(3), '1.000');
+  assert.equal(U.Vector2.Perpendicular(U.Vector2.right).y, 1);
+  assert.ok(Math.abs(U.Vector3.Angle(U.Vector3.right, U.Vector3.up) - 90) < 1e-6);
+  const sd = U.Mathf.SmoothDamp(0, 10, 0, 0.3, Infinity, 0.016); assert.ok(sd.value > 0 && sd.value < 10);
+  const a = U.SerializeField({ s: U.Range(0, 10, 5), m: U.Enum(['a', 'b'], 'b') });
+  assert.equal(a.s.max, 10); assert.equal(a.m.type, 'enum');
+
+  const hits = [];
+  class Btn extends U.MonoBehaviour {
+    OnMouseDown() { hits.push('down'); } OnMouseUp() { hits.push('up'); }
+    Start() { this.sz = this.FindChild('Kid'); this.localScale = new U.Vector3(2, 2, 1); }
+  }
+  files['mod:btn.js'] = Btn;
+  files.ub = { name: 'ub', entities: [ent('B', { transform: { pos: [0, 0, 0] }, scripts: [{ path: 'btn.js' }], children: [ent('Kid')] })] };
+  const g = mk({ onError: (e) => { throw e; } }); await g.loadScene('ub');
+  g.tick(0.016);
+  assert.equal(g.scene.find('B').scripts[0].sz.name, 'Kid');
+  assert.deepEqual(g.scene.find('B').scale.slice(0, 2), [2, 2]);
+  const e = await U.Instantiate(g.scene.find('B')); assert.ok(e); U.Destroy(e); g.tick(0.016);
+  assert.equal(U.GameObject.Find('B').name, 'B');
+  g.input.pointer.worldX = 0; g.input.pointer.worldY = 0; g.input.pointer.down = true; g.tick(0.016);
+  g.input.pointer.down = false; g.tick(0.016);
+  assert.deepEqual(hits, ['down', 'up']);
+});
