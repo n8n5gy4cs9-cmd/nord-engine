@@ -43,28 +43,33 @@ export function initLayers(api) {
     if (!base) base = copyCanvas(texCanvas);
     const fit = Math.min(1, (texCanvas.width * 0.6) / src.width, (texCanvas.height * 0.6) / src.height), w = Math.max(1, Math.round(src.width * fit)), h = Math.max(1, Math.round(src.height * fit));
     const l = { id: seq++, name, src, cx: texCanvas.width / 2, cy: texCanvas.height / 2, w, h, rot: 0, fx: false, fy: false, alpha: 1, vis: true, smooth: false, cl: 0, ct: 0, cr: 0, cb: 0 };
-    layers.push(l); sel = l.id; compose(); renderPanel();
-    api.status(`Added "${name}" (${src.width}×${src.height}${src.width !== bmp.width ? `, shrunk from ${bmp.width}×${bmp.height}` : ''}). Drag it, use the corner handles to resize, the round handle to rotate.`);
+    layers.push(l); sel = l.id; api.selectTool(); compose(); renderPanel();
+    api.status(`Added "${name}" (${src.width}×${src.height}${src.width !== bmp.width ? `, shrunk from ${bmp.width}×${bmp.height}` : ''}). Drag it; corner squares resize, the round handle rotates (Ctrl/Cmd = 15° steps). The Pictures tool is selected: pick another tool to paint (pictures merge first).`);
   }
   async function addFiles(files) { for (const f of files) { if (!/^image\//.test(f.type)) continue; if (f.size > 12 * 1024 * 1024) throw Error(`${f.name}: pictures over 12 MB are not accepted.`); await addImage(f, f.name.replace(/\.[^.]+$/, '')); } }
 
   // ---------- geometry ----------
   const toLocal = (l, x, y) => { const a = (-l.rot * Math.PI) / 180, dx = x - l.cx, dy = y - l.cy; let lx = dx * Math.cos(a) - dy * Math.sin(a), ly = dx * Math.sin(a) + dy * Math.cos(a); return [lx, ly]; };
   const hit = (l, x, y) => { const [lx, ly] = toLocal(l, x, y); return Math.abs(lx) <= l.w / 2 && Math.abs(ly) <= l.h / 2; };
-  const handleR = () => Math.max(2.5, texCanvas.width / 64);
+  // handles are ~11 px on screen: convert to texture pixels (the view is about 640 px wide)
+  const scr = () => texCanvas.getBoundingClientRect().width || 640, handleR = () => (11 / scr()) * texCanvas.width, rotOffset = () => (30 / (texCanvas.getBoundingClientRect().height || 400)) * texCanvas.height;
   function handleAt(l, x, y) {
-    const [lx, ly] = toLocal(l, x, y), r = handleR() * 1.6;
-    const rotY = -l.h / 2 - handleR() * 4;
-    if (Math.hypot(lx, ly - rotY) <= r) return 'rot';
-    for (const [sx, sy, n] of [[-1, -1, 'tl'], [1, -1, 'tr'], [1, 1, 'br'], [-1, 1, 'bl']]) if (Math.hypot(lx - (sx * l.w) / 2, ly - (sy * l.h) / 2) <= r) return n;
+    const [lx, ly] = toLocal(l, x, y), rx = handleR() * 1.3, ry = (handleR() * texCanvas.height) / texCanvas.width * 1.3;
+    if (Math.abs(lx) <= rx && Math.abs(ly - (-l.h / 2 - rotOffset())) <= ry * 1.2) return 'rot';
+    for (const [sx, sy, n] of [[-1, -1, 'tl'], [1, -1, 'tr'], [1, 1, 'br'], [-1, 1, 'bl']]) if (Math.abs(lx - (sx * l.w) / 2) <= rx && Math.abs(ly - (sy * l.h) / 2) <= ry) return n;
     return null;
   }
+  // Keep aspect (toolbar checkbox); holding Shift while resizing flips it for that drag
+  const lockOn = (e) => !!root.querySelector('#layerlock')?.checked !== !!e?.shiftKey;
   const pos = (e) => { const r = texCanvas.getBoundingClientRect(); return [((e.clientX - r.left) / r.width) * texCanvas.width, ((e.clientY - r.top) / r.height) * texCanvas.height]; };
 
   // ---------- pointer (called by the texture view when the Layer tool is active) ----------
   function pointerDown(e) {
     const [x, y] = pos(e); let l = cur(), h = l ? handleAt(l, x, y) : null;
-    if (!h) { l = [...layers].reverse().find((q) => q.vis && hit(q, x, y)) ?? null; sel = l?.id ?? null; renderPanel(); drawUi(); if (!l) return false; }
+    if (!h) {
+      // topmost picture under the cursor; Alt+click picks the next one underneath (cycles through overlapping pictures)
+      const under = [...layers].reverse().filter((q) => q.vis && hit(q, x, y)); const at = under.findIndex((q) => q.id === sel);
+      l = (e.altKey && at >= 0 ? under[(at + 1) % under.length] : under[0]) ?? null; sel = l?.id ?? null; renderPanel(); drawUi(); if (!l) return false; }
     api.checkpoint();
     drag = { mode: h ?? 'move', l, x0: x, y0: y, cx: l.cx, cy: l.cy, w: l.w, h: l.h, rot: l.rot, d0: Math.hypot(x - l.cx, y - l.cy) || 1, shift: e.shiftKey };
     return true;
@@ -73,8 +78,12 @@ export function initLayers(api) {
     if (!drag) { const [x, y] = pos(e), l = cur(); texCanvas.style.cursor = l && handleAt(l, x, y) ? 'nwse-resize' : [...layers].some((q) => q.vis && hit(q, x, y)) ? 'move' : 'default'; return; }
     const [x, y] = pos(e), l = drag.l;
     if (drag.mode === 'move') { l.cx = Math.round((drag.cx + x - drag.x0) * 2) / 2; l.cy = Math.round((drag.cy + y - drag.y0) * 2) / 2; }
-    else if (drag.mode === 'rot') { let a = (Math.atan2(y - l.cy, x - l.cx) * 180) / Math.PI + 90; if (e.shiftKey) a = Math.round(a / 15) * 15; l.rot = Math.round(a * 10) / 10; }
-    else if (e.shiftKey) { const [lx, ly] = toLocal(l, x, y); l.w = Math.max(1, Math.round(Math.abs(lx) * 2)); l.h = Math.max(1, Math.round(Math.abs(ly) * 2)); } // Shift = free stretch
+    else if (drag.mode === 'rot') {
+      // angle in the stretched view so it follows the mouse exactly; Ctrl/Cmd = 15° steps, Shift = 45°, Alt = 1°
+      const kx = texCanvas.width, ky = texCanvas.height; let a = (Math.atan2((y - l.cy) / ky, (x - l.cx) / kx) * 180) / Math.PI + 90;
+      const st = e.ctrlKey || e.metaKey ? 15 : e.shiftKey ? 45 : e.altKey ? 1 : 0; if (st) a = Math.round(a / st) * st; l.rot = Math.round(a * 10) / 10;
+    }
+    else if (!lockOn(e)) { const [lx, ly] = toLocal(l, x, y); l.w = Math.max(1, Math.round(Math.abs(lx) * 2)); l.h = Math.max(1, Math.round(Math.abs(ly) * 2)); } // free stretch
     else { const k = Math.max(0.02, Math.hypot(x - l.cx, y - l.cy) / drag.d0); l.w = Math.max(1, Math.round(drag.w * k)); l.h = Math.max(1, Math.round(drag.h * k)); }
     compose(); syncProps();
   }
@@ -87,6 +96,7 @@ export function initLayers(api) {
     const step = e.shiftKey ? 8 : 1;
     if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); remove(); }
     else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') { e.preventDefault(); duplicate(); }
+    else if ((e.ctrlKey || e.metaKey) && (e.key === ']' || e.key === '[' || e.key === '}' || e.key === '{')) { e.preventDefault(); order(e.shiftKey || e.key === '}' || e.key === '{' ? (e.key === ']' || e.key === '}' ? 'front' : 'back') : e.key === ']' ? 1 : -1); api.commit(); }
     else if (e.key.startsWith('Arrow')) { e.preventDefault(); l.cx += { ArrowLeft: -step, ArrowRight: step }[e.key] ?? 0; l.cy += { ArrowUp: -step, ArrowDown: step }[e.key] ?? 0; compose(); syncProps(); api.commit(); }
   });
 
@@ -102,10 +112,11 @@ export function initLayers(api) {
 
   /** Resize the whole texture; base pixels and layers scale with it. */
   function resizeTexture(size) {
-    if (size === texCanvas.width) return; api.checkpoint(); api.ensureTexture(); const k = size / texCanvas.width, old = base ?? copyCanvas(texCanvas);
+    if (size === texCanvas.width && size === texCanvas.height) return; api.checkpoint(); api.ensureTexture();
+    const kx = size / texCanvas.width, ky = size / texCanvas.height, old = base ?? copyCanvas(texCanvas);
     texCanvas.width = size; texCanvas.height = size; tctx.imageSmoothingEnabled = false; tctx.clearRect(0, 0, size, size); tctx.drawImage(old, 0, 0, size, size);
-    if (layers.length) { base = copyCanvas(texCanvas); for (const l of layers) { l.cx *= k; l.cy *= k; l.w *= k; l.h *= k; } compose(); } else base = null;
-    api.commit(); api.status(`Texture is now ${size}×${size}.`);
+    if (layers.length) { base = copyCanvas(texCanvas); for (const l of layers) { l.cx *= kx; l.cy *= ky; l.w *= kx; l.h *= ky; } compose(); } else base = null;
+    api.commit(); renderPanel(); api.status(`Texture is now ${size}×${size}.`);
   }
   /** Reduce colours (fewer bits per channel) so the PNG compresses much better. bits: 8 = off. */
   function quantize(bits) {
@@ -118,12 +129,16 @@ export function initLayers(api) {
   function drawUi() {
     const c = over.getContext('2d'); c.clearRect(0, 0, over.width, over.height);
     const l = cur(); if (!l || !api.texViewVisible()) return;
-    const k = over.width / texCanvas.width, r = handleR() * k;
-    c.save(); c.translate(l.cx * k, l.cy * k); c.rotate((l.rot * Math.PI) / 180);
-    c.strokeStyle = '#e7ff65'; c.lineWidth = 1.5; c.setLineDash([6, 4]); c.strokeRect((-l.w / 2) * k, (-l.h / 2) * k, l.w * k, l.h * k); c.setLineDash([]);
-    c.fillStyle = '#e7ff65'; for (const [sx, sy] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) c.fillRect((sx * l.w * k) / 2 - r / 2, (sy * l.h * k) / 2 - r / 2, r, r);
-    const ry = (-l.h / 2) * k - r * 4; c.beginPath(); c.moveTo(0, (-l.h / 2) * k); c.lineTo(0, ry); c.stroke(); c.beginPath(); c.arc(0, ry, r * 0.7, 0, Math.PI * 2); c.fill();
-    c.restore();
+    // the texture is shown stretched over the square view: texture px -> overlay px with separate x / y scales
+    const kx = over.width / texCanvas.width, ky = over.height / texCanvas.height, a = (l.rot * Math.PI) / 180, ca = Math.cos(a), sa = Math.sin(a);
+    const P = (lx, ly) => [(l.cx + lx * ca - ly * sa) * kx, (l.cy + lx * sa + ly * ca) * ky];
+    const corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([sx, sy]) => P((sx * l.w) / 2, (sy * l.h) / 2));
+    c.strokeStyle = '#e7ff65'; c.lineWidth = 1.5; c.setLineDash([6, 4]); c.beginPath(); corners.forEach(([x, y], i) => c[i ? 'lineTo' : 'moveTo'](x, y)); c.closePath(); c.stroke(); c.setLineDash([]);
+    c.fillStyle = '#e7ff65'; const r = 11;
+    for (const [x, y] of corners) c.fillRect(x - r / 2, y - r / 2, r, r);
+    const top = P(0, -l.h / 2), rot = P(0, -l.h / 2 - rotOffset());
+    c.beginPath(); c.moveTo(...top); c.lineTo(...rot); c.stroke(); c.beginPath(); c.arc(rot[0], rot[1], r * 0.7, 0, Math.PI * 2); c.fill();
+    if (drag?.mode === 'rot') { c.fillStyle = '#000a'; c.fillRect(rot[0] + 12, rot[1] - 10, 46, 18); c.fillStyle = '#e7ff65'; c.font = '12px monospace'; c.fillText(`${Math.round(l.rot)}°`, rot[0] + 17, rot[1] + 4); }
   }
 
   // ---------- panel ----------
@@ -132,10 +147,12 @@ export function initLayers(api) {
     const bar = el('div', { className: 'bar' }, ui);
     const add = el('button', { textContent: '+ Add pictures…', title: 'PNG, JPG or WebP; several at once. You can also drop files on the texture or paste with Ctrl/Cmd+V.' }, bar); add.onclick = () => root.querySelector('#layerfiles').click();
     const proj = el('button', { textContent: '+ From project…', title: 'Pictures of the project (models/ folder)' }, bar); proj.onclick = () => api.pickProjectPng().then((b) => b && addImage(b.blob, b.name)).catch((x) => api.status(x.message));
-    el('button', { textContent: `Merge ${layers.length || ''} layers into texture`, disabled: !layers.length, title: 'Flatten the layers into the one texture (also happens when you paint or save)' }, bar).onclick = () => bake();
+    el('button', { textContent: layers.length ? `Merge ${layers.length} layer${layers.length > 1 ? 's' : ''} into texture` : 'Merge layers', disabled: !layers.length, title: 'Flatten the layers into the one texture (also happens when you paint or save)' }, bar).onclick = () => bake();
     const size = el('select', { id: 'texsize2', title: 'Texture size: all layers are merged into this one square picture' }, bar);
-    for (const s of [16, 32, 64, 128, 256, 512, 1024]) el('option', { value: s, textContent: `${s}×${s}`, selected: s === texCanvas.width }, size);
-    size.onchange = () => resizeTexture(+size.value);
+    const sq = texCanvas.width === texCanvas.height;
+    if (!sq || ![16, 32, 64, 128, 256, 512, 1024].includes(texCanvas.width)) el('option', { value: '', textContent: `${texCanvas.width}×${texCanvas.height}${sq ? '' : ' (not square)'}`, selected: true, disabled: true }, size);
+    for (const s of [16, 32, 64, 128, 256, 512, 1024]) el('option', { value: s, textContent: sq ? `${s}×${s}` : `Make ${s}×${s}`, selected: sq && s === texCanvas.width }, size);
+    size.onchange = () => size.value && resizeTexture(+size.value);
     const comp = el('select', { id: 'texcomp', title: 'Fewer colours = smaller PNG (applied when saving)' }, bar);
     for (const [v, t] of [[8, 'Full colour'], [6, 'Compress: light (6 bit)'], [5, 'Compress: medium (5 bit)'], [4, 'Compress: strong (4 bit)']]) el('option', { value: v, textContent: t, selected: v === api.compression() }, comp);
     comp.onchange = () => api.setCompression(+comp.value);
@@ -146,15 +163,18 @@ export function initLayers(api) {
       const row = el('div', { className: 'layerrow' + (l.id === sel ? ' on' : '') }, list);
       const t = el('canvas', { width: 28, height: 28 }, row); const x = t.getContext('2d'), k = Math.min(28 / l.src.width, 28 / l.src.height); x.drawImage(l.src, 0, 0, l.src.width * k, l.src.height * k);
       el('span', { textContent: l.name }, row);
+      const mv = (t, tip, d) => { const b = el('button', { textContent: t, title: tip }, row); b.onclick = (e) => { e.stopPropagation(); sel = l.id; order(d); api.commit(); }; };
+      mv('▲', 'Bring forward (above the next picture)', 1); mv('▼', 'Send backward (below the next picture)', -1);
       const eye = el('button', { textContent: l.vis ? 'Hide' : 'Show' }, row); eye.onclick = (e) => { e.stopPropagation(); l.vis = !l.vis; compose(); renderPanel(); api.commit(); };
       row.onclick = () => { sel = l.id; renderPanel(); drawUi(); };
     });
     const l = cur(); if (!l) { api.refreshInfo(); return; }
     const p = el('div', { className: 'layerprops' }, ui);
-    const lockLb = el('label', {}, p), lock = el('input', { type: 'checkbox', checked: true }, lockLb); lockLb.append(' keep proportions');
+    const lock = root.querySelector('#layerlock');
     const field = (label, key, min, max, step = 1) => { const lb = el('label', { textContent: label + ' ' }, p); const i = el('input', { type: 'number', value: l[key], step, style: 'width:68px' }, lb); if (min !== undefined) i.min = min; if (max !== undefined) i.max = max; i.dataset.key = key; i.oninput = () => { const v = num(i.value, l[key]); if (key === 'alpha') l.alpha = Math.max(0, Math.min(1, v / 100)); else if (key === 'w' && lock.checked) { const k = Math.max(1, v) / l.w; l.w = Math.max(1, v); l.h = Math.max(1, Math.round(l.h * k)); } else if (key === 'h' && lock.checked) { const k = Math.max(1, v) / l.h; l.h = Math.max(1, v); l.w = Math.max(1, Math.round(l.w * k)); } else l[key] = v; compose(); syncProps(); }; i.onchange = () => api.commit(); return i; };
     field('X', 'cx', undefined, undefined, 0.5); field('Y', 'cy', undefined, undefined, 0.5); field('Width', 'w', 1); field('Height', 'h', 1); field('Rotate °', 'rot', -360, 360, 1); field('Opacity %', 'alpha', 0, 100, 5).value = Math.round(l.alpha * 100);
     for (const [txt, key] of [['Flip horizontal', 'fx'], ['Flip vertical', 'fy'], ['Smooth (off = crisp pixels)', 'smooth']]) { const lb = el('label', {}, p), c = el('input', { type: 'checkbox', checked: l[key] }, lb); lb.append(' ' + txt); c.onchange = () => { l[key] = c.checked; compose(); api.commit(); }; }
+    el('div', { className: 'hint', textContent: 'Stacking: the list shows the top picture first. ▲ ▼ move a picture up/down, To front / To back jump to the ends; Ctrl/Cmd+] and [ do the same; Alt+click on the texture picks the picture underneath.' }, p);
     el('div', { className: 'hint', textContent: 'Cut (crop) the picture, in picture pixels:' }, p);
     for (const [txt, key] of [['Left', 'cl'], ['Top', 'ct'], ['Right', 'cr'], ['Bottom', 'cb']]) field('Cut ' + txt, key, 0, 4096);
     const b = el('div', { className: 'bar' }, p), btn = (t, f, tip = '') => { const e = el('button', { textContent: t, title: tip }, b); e.onclick = () => { try { f(); } catch (x) { api.status(x.message); } }; };

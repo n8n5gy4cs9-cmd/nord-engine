@@ -45,3 +45,5 @@ h3{margin:10px 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06e
 .layerrow span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .layerprops{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:4px 10px;align-items:center;margin-top:6px}
 .layerprops .bar,.layerprops .hint{grid-column:1/-1}
+
+#texpane>.bar:first-child{position:sticky;top:0;z-index:6;background:#22272f;padding:4px 0}

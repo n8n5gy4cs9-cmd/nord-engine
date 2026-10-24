@@ -161,10 +161,11 @@ The model always has **one** texture. @ui[Picture layers] let you put pictures (
 <figure class="shot"><img src="assets/screenshots/mod-10-layers.png" alt="Texture tab with a blue picture layer selected and its handles" loading="lazy"><figcaption>A picture layer on the texture: corner squares resize, the round handle rotates. The layer list and properties are under the texture.</figcaption></figure>
 
 1. Open the @ui[Texture] tab. Press @ui[+ Add pictures…] (select several files at once), or **drop files** on the texture, or **paste** an image with @key[Ctrl/Cmd+V], or @ui[+ From project…] for PNGs in `models/`.
-2. Pick the @ui[Layer] tool (next to Picker). Click a picture to select it (yellow dashed box). **Drag** to move; drag a **corner square** to resize (@key[Shift] = stretch freely); drag the **round handle** to rotate (@key[Shift] = 15° steps). Arrow keys nudge 1 px (@key[Shift] 8 px), @key[Delete] removes, @key[Ctrl/Cmd+D] duplicates.
+2. The @ui[Pictures] tool (next to Picker) is selected automatically when you add a picture; to get back to it later press its button, or **double-click** the texture. Click a picture to select it (yellow dashed box). **Drag** to move; drag a **corner square** to resize; drag the **round handle** to rotate. Resizing keeps the proportions while @ui[Keep aspect] (in the tool bar) is ticked; hold @key[Shift] to flip that for one drag (or untick it to stretch freely). Rotation snaps: @key[Ctrl/Cmd] = 15° steps, @key[Shift] = 45°, @key[Alt] = 1°. Arrow keys nudge 1 px (@key[Shift] 8 px), @key[Delete] removes, @key[Ctrl/Cmd+D] duplicates.
 3. Under the texture: the layer list (thumbnail, name, @ui[Hide]/@ui[Show]) and the properties of the selected layer:
    * @ui[X / Y / Width / Height / Rotate / Opacity %], @ui[keep proportions], @ui[Flip horizontal / vertical], @ui[Smooth] (off = crisp pixels, on = soft edges).
    * **Cut:** @ui[Cut Left / Top / Right / Bottom] crop the picture (in picture pixels). @ui[Trim transparent] removes empty edges.
+   * **Stacking (which picture is on top):** the list shows the top picture first. Use the small @ui[▲] / @ui[▼] on a row to move that picture up or down one step, or the buttons @ui[Forward], @ui[Backward], @ui[To front], @ui[To back]. Keys: @key[Ctrl/Cmd+]] forward, @key[Ctrl/Cmd+[] backward, add @key[Shift] for front / back. **A picture hidden under another?** Click its row in the list, or @key[Alt]+click the texture to pick the picture underneath (repeat to cycle).
    * Buttons: @ui[Duplicate], @ui[Delete], @ui[Forward], @ui[Backward], @ui[To front], @ui[To back], @ui[Center], @ui[Fill texture], @ui[Original size].
    * @ui[Fit to selected faces]: select faces in the 3D or UV tab first, then the picture is placed exactly over their UV area. This is the fastest way to texture a wall with a picture.
    * @ui[Remove painted colour]: makes the colour of the colour box transparent in this picture (with a tolerance), handy for white backgrounds.
@@ -172,7 +173,7 @@ The model always has **one** texture. @ui[Picture layers] let you put pictures (
 
 **Keeping it small:**
 * Big pictures are shrunk to 512 px on import; @ui[Shrink data] resamples a picture to its size on the texture.
-* The size menu next to the buttons resizes the whole texture (16 to 1024) and scales everything with it. The line next to it shows the PNG size, in red when it is over 2 MB.
+* The size menu next to the buttons resizes the whole texture (16 to 1024) and scales everything with it (a non-square texture, for example one loaded from a photo, is shown with its real proportions and can be made square from the same menu). The line next to it shows the PNG size, in red when it is over 2 MB.
 * @ui[Compress: light / medium / strong] reduces colours (6 / 5 / 4 bits per channel) when you save, which makes the PNG much smaller; it suits flat, game-like art.
 * Limits: 64 layers at a time; texture up to 1024×1024.
 
