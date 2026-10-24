@@ -44,6 +44,19 @@ try {
   await page.eval(`window.__nord.loadScene('scenes/sprite.scene.json')`);
   const sp = await lum();
   check('a sprite is drawn in 3D as a plane (default 64 px = 1 unit, scaled 8x)', sp.centre > 120 && sp.corner < sp.centre, sp);
+  await page.eval(`window.__nord.loadScene('scenes/splitlit.scene.json')`);
+  const sl = await lum();
+  check('a lit sprite is lit by a point light: bright under it, dark far away', sl.centre > 60 && sl.corner < sl.centre * 0.5, sl);
+  await page.eval(`window.__nord.scene.find('Sprite').rot = [-90, 0, 0]`);
+  const slBack = await lum();
+  check('a sprite is lit from either side (light behind it)', slBack.centre > 60, slBack);
+  await page.eval(`window.__nord.scene.find('Sprite').rot = [90, 0, 0]`);
+  await page.eval(`window.__nord.scene.find('Lamp').enabled = false`);
+  const slOff = await lum();
+  check('lit sprite is dark when the light is off', slOff.centre < 15, slOff);
+  await page.eval(`window.__nord.loadScene('scenes/spriteunlit.scene.json')`);
+  const su = await lum();
+  check('sprite with lit=false ignores lights', su.centre > 200 && su.corner > 200, su);
   // the Modeler model keeps its point light while other lights are switched on and off (regression)
   await page.eval(`window.__nord.loadScene('scenes/modelrig.scene.json')`);
   const rig = async (label) => { const r = await lum(); return { label, ...r }; };

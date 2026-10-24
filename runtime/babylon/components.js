@@ -100,7 +100,7 @@ export function registerBabylonComponents(backend) {
     comp.mesh?.dispose(); comp.mat?.dispose();
     const m = B.MeshBuilder.CreatePlane(`${e.name}.sprite`, { size: 1 }, scene);
     const mat = new B.StandardMaterial(`${e.name}.spritemat`, scene);
-    mat.backFaceCulling = false; mat.specularColor = B.Color3.Black();
+    mat.backFaceCulling = false; mat.twoSidedLighting = true; mat.specularColor = B.Color3.Black();
     mat.diffuseColor = rgb(B, d.tint, '#ffffff'); mat.alpha = d.alpha ?? 1;
     if (d.lit === false) { mat.disableLighting = true; mat.emissiveColor = mat.diffuseColor; }
     const meta = backend.metaOf?.(d.texture) ?? {};

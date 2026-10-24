@@ -467,7 +467,7 @@ function buildEntity(e, parentNode, token) {
   if (spr) {
     // flat textured plane, image size / ppu (3D default 64: the 64 px default sprite is 1 unit); see runtime/babylon/components.js
     const m = B.MeshBuilder.CreatePlane(e.id + '.sprite', { size: 1 }, scene); m.parent = node; tag(m, e.id);
-    const sm = new B.StandardMaterial(e.id + 'spm', scene); sm.backFaceCulling = false; sm.specularColor = B.Color3.Black();
+    const sm = new B.StandardMaterial(e.id + 'spm', scene); sm.backFaceCulling = false; sm.twoSidedLighting = true; sm.specularColor = B.Color3.Black();
     sm.diffuseColor = hex(spr.tint, '#ffffff'); sm.alpha = spr.alpha ?? 1; m.material = sm;
     if (spr.lit === false) { sm.disableLighting = true; sm.emissiveColor = sm.diffuseColor; }
     if (spr.texture) {
