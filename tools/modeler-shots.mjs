@@ -40,6 +40,10 @@ await stroke([at(.1, .2), at(.5, .3), at(.9, .2)]); await stroke([at(.1, .7), at
 await shot('4-texture');
 await click('[data-view=uv]'); await shot('5-uv');
 await click('[data-view=3d]'); await click('#paint3d'); await shot('6-paint-on-model');
+// picture layers: two generated pictures, selected, with handles
+await click('[data-view=tex]'); await click('[data-tool=layer]');
+await ev(`(async()=>{const mk=(c,w,h,n)=>{const cv=document.createElement('canvas');cv.width=w;cv.height=h;const x=cv.getContext('2d');x.fillStyle=c;x.fillRect(0,0,w,h);x.fillStyle='#fff';x.font='bold '+h/3+'px sans-serif';x.fillText(n,w/8,h/1.7);return new Promise(r=>cv.toBlob(b=>r(new File([b],n+'.png',{type:'image/png'}))));};const dt=new DataTransfer();dt.items.add(await mk('#c33',300,200,'Rust'));dt.items.add(await mk('#36c',400,400,'Blue'));const i=document.querySelector('#layerfiles');i.files=dt.files;i.dispatchEvent(new Event('change'));})()`);
+await sleep(900); await shot('10-layers');
 await go('?file=models/bank.glb'); await shot('7-open-scene-model');
 await go('?file=models/bank.glb&entity=abc&prefab=prefabs/bank.prefab.json'); await click('[data-action=save]'); await shot('8-save-dialog');
 await go('?file=models/bank.glb&entity=abc'); await click('[data-action=save]'); await shot('9-save-dialog-plain');

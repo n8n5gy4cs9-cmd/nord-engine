@@ -34,3 +34,14 @@ h3{margin:10px 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.06e
 .modal{position:fixed;inset:0;background:#0009;display:grid;place-items:center;z-index:50}
 .modal .box{background:var(--panel);border:1px solid var(--border);border-radius:8px;width:min(420px,92vw);max-height:80vh;padding:12px;display:flex;flex-direction:column;gap:8px}
 .modal .list{overflow:auto;display:flex;flex-direction:column;gap:2px}.modal .list button{text-align:left}
+
+#layerui{pointer-events:none}
+#layers{margin-top:8px;width:min(640px,100%)}
+#layers .hint{color:var(--muted,#8b98a9);font-size:12px;margin:4px 0}
+.layerlist{display:flex;flex-direction:column;gap:2px;max-height:170px;overflow:auto;margin:6px 0}
+.layerrow{display:flex;gap:8px;align-items:center;padding:2px 6px;border-radius:4px;cursor:pointer;background:#ffffff0a}
+.layerrow.on{background:#e7ff6522;outline:1px solid #e7ff65}
+.layerrow canvas{width:28px;height:28px;background:repeating-conic-gradient(#555 0 25%,#444 0 50%) 0 0/8px 8px;border-radius:3px}
+.layerrow span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.layerprops{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:4px 10px;align-items:center;margin-top:6px}
+.layerprops .bar,.layerprops .hint{grid-column:1/-1}

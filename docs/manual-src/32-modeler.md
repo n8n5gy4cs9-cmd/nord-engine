@@ -155,6 +155,27 @@ Drag the gizmo, or type **X/Y/Z**, choose **Move / Rotate (degrees) / Scale** an
 
 A pixel painter for the model's texture. **Pencil**, **Eraser**, **Fill** (flood fill), **Picker** (take a colour from the image); colour box + swatches; **Size** (brush); **Mirror X**; **UV overlay** shows where faces are. **Texture** size 16-512 px. **New blank** (fills with the colour), **Fill with colour**, **Load image file** / **Load project PNG…** (replace), **Save PNG to project**, **Remove texture**. A texture of a scene model is shown at its own size (up to 1024 px).
 
+### Picture layers: add PNGs and arrange them
+The model always has **one** texture. @ui[Picture layers] let you put pictures (PNG, JPG, WebP) on it and move them around like stickers; when you are done they are **merged into that one texture**, so ten pictures never mean ten files or a 100 MB model.
+
+<figure class="shot"><img src="assets/screenshots/mod-10-layers.png" alt="Texture tab with a blue picture layer selected and its handles" loading="lazy"><figcaption>A picture layer on the texture: corner squares resize, the round handle rotates. The layer list and properties are under the texture.</figcaption></figure>
+
+1. Open the @ui[Texture] tab. Press @ui[+ Add pictures…] (select several files at once), or **drop files** on the texture, or **paste** an image with @key[Ctrl/Cmd+V], or @ui[+ From project…] for PNGs in `models/`.
+2. Pick the @ui[Layer] tool (next to Picker). Click a picture to select it (yellow dashed box). **Drag** to move; drag a **corner square** to resize (@key[Shift] = stretch freely); drag the **round handle** to rotate (@key[Shift] = 15° steps). Arrow keys nudge 1 px (@key[Shift] 8 px), @key[Delete] removes, @key[Ctrl/Cmd+D] duplicates.
+3. Under the texture: the layer list (thumbnail, name, @ui[Hide]/@ui[Show]) and the properties of the selected layer:
+   * @ui[X / Y / Width / Height / Rotate / Opacity %], @ui[keep proportions], @ui[Flip horizontal / vertical], @ui[Smooth] (off = crisp pixels, on = soft edges).
+   * **Cut:** @ui[Cut Left / Top / Right / Bottom] crop the picture (in picture pixels). @ui[Trim transparent] removes empty edges.
+   * Buttons: @ui[Duplicate], @ui[Delete], @ui[Forward], @ui[Backward], @ui[To front], @ui[To back], @ui[Center], @ui[Fill texture], @ui[Original size].
+   * @ui[Fit to selected faces]: select faces in the 3D or UV tab first, then the picture is placed exactly over their UV area. This is the fastest way to texture a wall with a picture.
+   * @ui[Remove painted colour]: makes the colour of the colour box transparent in this picture (with a tolerance), handy for white backgrounds.
+4. Pictures are **merged into the texture** when you press @ui[Merge … layers into texture], when you paint with any other tool, and automatically when you save or export. After merging they are normal pixels (use Undo to get the layers back, one step).
+
+**Keeping it small:**
+* Big pictures are shrunk to 512 px on import; @ui[Shrink data] resamples a picture to its size on the texture.
+* The size menu next to the buttons resizes the whole texture (16 to 1024) and scales everything with it. The line next to it shows the PNG size, in red when it is over 2 MB.
+* @ui[Compress: light / medium / strong] reduces colours (6 / 5 / 4 bits per channel) when you save, which makes the PNG much smaller; it suits flat, game-like art.
+* Limits: 64 layers at a time; texture up to 1024×1024.
+
 ### Paint on model
 Tick **Paint on model** in the top bar and drag on the model in the 3D view: the pixels under the brush change. Same colour, size and tool as the Texture tab.
 

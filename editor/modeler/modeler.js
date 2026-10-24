@@ -5,6 +5,7 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {TransformControls} from 'three/addons/controls/TransformControls.js';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {initLayers} from './layers.js';
 import {edgeKey,edgesOf,normal,unwrap,pack,triangles,geometry,primitive,validate,weld,obj} from './mesh-model.js';
 
 const root=document.getElementById('app');
@@ -17,9 +18,9 @@ root.innerHTML=`<header id="top"><strong>3D Modeler</strong><input id="mesh-name
 </aside><div class="mesh-center"><div class="mesh-viewbar"><div class="tabs"><button data-view="3d" class="on">3D</button><button data-view="uv">UV editor</button><button data-view="tex">Texture</button></div><label><input id="mesh-wire" type="checkbox"> Wireframe</label><label><input id="mesh-grid" type="checkbox" checked> Grid</label><button data-action="fit">Fit</button><label title="Left-drag paints the texture straight onto the model (Texture tab colour and tool)"><input id="paint3d" type="checkbox"> Paint on model</label><span id="mesh-count"></span></div>
 <div class="mesh-stage"><div class="mesh-viewport"></div>
 <div class="pane" id="uvpane"><div class="bar"><label>Drag <select id="uvmode"><option value="face">faces</option><option value="point">points</option></select></label><label><input id="uvsnap" type="checkbox"> snap to texel</label><button data-action="uvflipu">Flip U</button><button data-action="uvflipv">Flip V</button><button data-action="uvrot90">Rotate 90°</button><button data-action="uvfit">Fit to 0–1</button><button data-action="island">Select island</button><button data-action="unwrap">Auto unwrap</button><button data-action="pack">Pack</button></div><div class="canvasbox"><canvas id="uvbig" width="640" height="640"></canvas></div><p>Click a face to select (Shift extends), drag to move the selection. “points” moves single UV corners. Selection is shared with the 3D view.</p></div>
-<div class="pane" id="texpane"><div class="bar"><button data-tool="pencil" class="on">Pencil</button><button data-tool="eraser">Eraser</button><button data-tool="fill">Fill</button><button data-tool="pick">Picker</button><input id="texcolor" type="color" value="#a8c980"><label>Size <input id="texbrush" type="number" value="1" min="1" max="16" style="width:56px"></label><label><input id="texmirror" type="checkbox"> Mirror X</label><label><input id="texuv" type="checkbox" checked> UV overlay</label></div>
-<div class="bar"><label>Texture <select id="texsize"><option>16</option><option>32</option><option selected>64</option><option>128</option><option>256</option><option>512</option></select></label><button data-action="texnew">New blank</button><button data-action="texfill">Fill with colour</button><button data-action="texpng">Save PNG to project</button><button data-action="texpick">Load project PNG…</button><button data-action="texload">Load image file</button><button data-action="cleartexture">Remove texture</button></div>
-<div class="canvasbox"><canvas id="texview" width="64" height="64"></canvas><canvas id="texoverlay" width="640" height="640" style="pointer-events:none"></canvas></div><div class="swatches" id="swatches"></div></div></div></div>
+<div class="pane" id="texpane"><div class="bar"><button data-tool="pencil" class="on">Pencil</button><button data-tool="eraser">Eraser</button><button data-tool="fill">Fill</button><button data-tool="pick">Picker</button><button data-tool="layer" title="Move, resize, rotate picture layers">Layer</button><input id="texcolor" type="color" value="#a8c980"><label>Size <input id="texbrush" type="number" value="1" min="1" max="16" style="width:56px"></label><label><input id="texmirror" type="checkbox"> Mirror X</label><label><input id="texuv" type="checkbox" checked> UV overlay</label></div>
+<div class="bar"><label>Texture <select id="texsize"><option>16</option><option>32</option><option selected>64</option><option>128</option><option>256</option><option>512</option><option>1024</option></select></label><button data-action="texnew">New blank</button><button data-action="texfill">Fill with colour</button><button data-action="texpng">Save PNG to project</button><button data-action="texpick">Load project PNG…</button><button data-action="texload">Load image file</button><button data-action="cleartexture">Remove texture</button></div>
+<div class="canvasbox"><canvas id="texview" width="64" height="64"></canvas><canvas id="texoverlay" width="640" height="640" style="pointer-events:none"></canvas><canvas id="layerui" width="640" height="640" style="pointer-events:none"></canvas></div><div class="swatches" id="swatches"></div><input type="file" id="layerfiles" accept="image/*" multiple hidden><div id="layers"></div></div></div></div>
 <aside class="mesh-side">
  <h3>Material</h3><label><span>Solid colour</span><input type="color" id="mesh-color" value="#a8c980"></label><button data-action="color">Apply solid colour</button><button data-action="paint">Paint selected vertices</button><label><span>Checker preview</span><input type="checkbox" id="mesh-checker"></label><p>Flat shading is always on. Vertex paint multiplies the solid colour; use white for pure vertex colours.</p>
  <h3>UV mapping</h3><div class="mesh-buttons"><button data-action="seam">Mark seam</button><button data-action="clearseam">Clear seam</button></div><canvas class="mesh-uv" width="256" height="256" aria-label="UV layout; click to select a face island"></canvas><label><span>UV move U</span><input id="mesh-u" type="number" value="0" step="0.05"></label><label><span>UV move V</span><input id="mesh-v" type="number" value="0" step="0.05"></label><label><span>UV rotate °</span><input id="mesh-uv-angle" type="number" value="0" step="15"></label><label><span>UV scale</span><input id="mesh-uv-scale" type="number" value="1" step="0.1"></label><button data-action="uv">Transform selected UVs</button>
@@ -87,13 +88,16 @@ let tool='pencil',strokeLast=null,stroking=false,paintOnModel=false;
 const loadImage=url=>new Promise((ok,bad)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=()=>bad(Error('Could not read the image.'));im.src=url;});
 function makeTexture(){const t=new THREE.CanvasTexture(texCanvas);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.magFilter=THREE.NearestFilter;return t;}
 async function loadTexture(){
- texture?.dispose();texture=null;
+ texture?.dispose();texture=null;layersApi?.reset();
  if(model.texture){const im=await loadImage(model.texture);texCanvas.width=im.width;texCanvas.height=im.height;tctx.clearRect(0,0,im.width,im.height);tctx.drawImage(im,0,0);$('#texsize').value=[16,32,64,128,256,512].includes(im.width)?String(im.width):$('#texsize').value;texture=makeTexture();}
  else tctx.clearRect(0,0,texCanvas.width,texCanvas.height);
  if(!disposed){$('#mesh-color').value=model.color;rebuild();}
 }
 function ensureTexture(){if(model.texture)return;model.texture=texCanvas.toDataURL('image/png');texture=makeTexture();rebuild();}
-function commitTexture(){model.texture=texCanvas.toDataURL('image/png');if(texture)texture.needsUpdate=true;saveLocal();drawUVs();}
+function commitTexture(){model.texture=texCanvas.toDataURL('image/png');if(texture)texture.needsUpdate=true;saveLocal();drawUVs();texInfo();}
+function texInfo(){const i=$('#texinfo');if(!i)return;texCanvas.toBlob(b=>{if(!b||!$('#texinfo'))return;const kb=Math.round(b.size/1024);$('#texinfo').textContent=`${texCanvas.width}×${texCanvas.height} · PNG ≈ ${kb>=1024?(kb/1024).toFixed(1)+' MB':kb+' KB'}${kb>2048?' — large: use a smaller size or Compress':''}`;$('#texinfo').style.color=kb>2048?'#ff7b72':'';},'image/png');}
+let layersApi=null,texCompression=8;
+function finalizeTexture(){if(layersApi?.count())layersApi.bake(true);if(texCompression<8&&model.texture){layersApi.quantize(texCompression);commitTexture();}}
 const hexRgb=hex=>{const c=parseInt(hex.slice(1),16);return [c>>16,(c>>8)&255,c&255];};
 function dab(x,y){
  const n=Math.max(1,Math.min(16,+$('#texbrush').value|0)),h=Math.floor(n/2),spots=[x-h];if($('#texmirror').checked)spots.push(texCanvas.width-1-(x-h)-(n-1));
@@ -107,14 +111,17 @@ function floodFill(x,y){
  tctx.putImageData(img,0,0);
 }
 function pickColor(x,y){if(x<0||y<0||x>=texCanvas.width||y>=texCanvas.height)return;const [r,g,b,a]=tctx.getImageData(x,y,1,1).data;if(a)$('#texcolor').value='#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');}
-function strokeStart(x,y){if(tool==='pick'){pickColor(x,y);return false;}checkpoint();ensureTexture();stroking=true;strokeLast=[x,y];if(tool==='fill')floodFill(x,y);else dab(x,y);if(texture)texture.needsUpdate=true;return true;}
+function strokeStart(x,y){if(tool==='pick'){pickColor(x,y);return false;}if(layersApi?.count()){layersApi.bake(true);status('Picture layers were merged into the texture before painting.');}checkpoint();ensureTexture();stroking=true;strokeLast=[x,y];if(tool==='fill')floodFill(x,y);else dab(x,y);if(texture)texture.needsUpdate=true;return true;}
 function strokeMove(x,y,far){if(!stroking||tool==='fill'||tool==='pick')return;if(far)dab(x,y);else strokeLine(strokeLast,[x,y]);strokeLast=[x,y];if(texture)texture.needsUpdate=true;}
 function strokeEnd(){if(!stroking)return;stroking=false;commitTexture();status('Painted. Save to keep the texture in the mesh; “Save PNG to project” writes a separate file.');}
 const texPos=e=>{const r=texCanvas.getBoundingClientRect();return [Math.floor((e.clientX-r.left)/r.width*texCanvas.width),Math.floor((e.clientY-r.top)/r.height*texCanvas.height)];};
-texCanvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;const [x,y]=texPos(e);if(strokeStart(x,y))texCanvas.setPointerCapture(e.pointerId);});
-texCanvas.addEventListener('pointermove',e=>{const [x,y]=texPos(e);strokeMove(x,y,false);});
-texCanvas.addEventListener('pointerup',strokeEnd);texCanvas.addEventListener('pointercancel',strokeEnd);
+texCanvas.addEventListener('pointerdown',e=>{if(e.button!==0)return;if(tool==='layer'){if(layersApi.pointerDown(e))texCanvas.setPointerCapture(e.pointerId);return;}const [x,y]=texPos(e);if(strokeStart(x,y))texCanvas.setPointerCapture(e.pointerId);});
+texCanvas.addEventListener('pointermove',e=>{if(tool==='layer'){layersApi.pointerMove(e);return;}const [x,y]=texPos(e);strokeMove(x,y,false);});
+texCanvas.addEventListener('pointerup',()=>{if(tool==='layer')layersApi.pointerUp();else strokeEnd();});texCanvas.addEventListener('pointercancel',()=>{if(tool==='layer')layersApi.pointerUp();else strokeEnd();});
 root.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;root.querySelectorAll('[data-tool]').forEach(o=>o.classList.toggle('on',o===b));});
+layersApi=initLayers({texCanvas,tctx,root,touch:()=>{if(texture)texture.needsUpdate=true;},commit:commitTexture,status,checkpoint,ensureTexture,texViewVisible:()=>$('#texpane').classList.contains('show'),color:()=>$('#texcolor').value,compression:()=>texCompression,setCompression:v=>{texCompression=v;status(v<8?'Colours will be reduced when you save (smaller PNG).':'Full colour.');},refreshInfo:texInfo,
+ uvBounds:()=>{const ids=mode==='face'?[...selection]:[];if(!ids.length)return null;let u0=1,v0=1,u1=0,v1=0;for(const i of ids)for(const [u,v] of model.faces[i].uv){u0=Math.min(u0,u);u1=Math.max(u1,u);v0=Math.min(v0,v);v1=Math.max(v1,v);}return {x:u0*texCanvas.width,y:(1-v1)*texCanvas.height,w:Math.max(1,(u1-u0)*texCanvas.width),h:Math.max(1,(v1-v0)*texCanvas.height)};},
+ pickProjectPng:async()=>{const n=await pick('Add picture from models/',await listModels('.png'));if(!n)return null;const r=await fetch('/models/'+encodeURIComponent(n),{cache:'no-store'});if(!r.ok)throw Error('Could not read models/'+n);return {blob:await r.blob(),name:n.replace(/\.png$/,'')};}});
 for(const c of ['#000000','#ffffff','#7f7f7f','#bf616a','#d08770','#ebcb8b','#a3be8c','#88c0d0','#5e81ac','#b48ead','#8b5a2b','#3b4252','#a8c980','#f4a261','#2a9d8f','#e76f51']){const i=document.createElement('i');i.style.background=c;i.onclick=()=>$('#texcolor').value=c;$('#swatches').append(i);}
 // painting straight onto the model: raycast gives the UV under the cursor
 const paintUV3=e=>{const rect=renderer.domElement.getBoundingClientRect();ray.setFromCamera(new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1),camera);const uv=ray.intersectObject(mesh)[0]?.uv;if(!uv)return null;const w=texCanvas.width,h=texCanvas.height,fx=((uv.x%1)+1)%1,fy=((uv.y%1)+1)%1;return [Math.min(w-1,Math.floor(fx*w)),Math.min(h-1,Math.floor((1-fy)*h))];};
@@ -135,6 +142,7 @@ function drawUVs(){
  drawUVCanvas($('.mesh-uv'),'small');
  if($('#uvpane').classList.contains('show'))drawUVCanvas(uvBig,'big');
  if($('#texpane').classList.contains('show')&&$('#texuv').checked)drawUVCanvas(texOverlay,'overlay');else texOverlay.getContext('2d').clearRect(0,0,texOverlay.width,texOverlay.height);
+ layersApi?.drawOverlay();
 }
 const inTri=(a,b,c,p)=>{const cr=(x,y,z)=>(y.x-x.x)*(z.y-x.y)-(y.y-x.y)*(z.x-x.x),v=[cr(a,b,p),cr(b,c,p),cr(c,a,p)];return v.every(n=>n>=0)||v.every(n=>n<=0);};
 function faceAt(p){let found;model.faces.forEach((f,i)=>{if(triangles(model,f).some(t=>inTri(...t.map(j=>new THREE.Vector2(...f.uv[j])),p)))found=i;});return found;}
@@ -192,6 +200,7 @@ async function extra(name){
 }
 
  async function action(name){
+ if(layersApi&&['save','glb','gltf','obj','texpng','texnew','texfill','cleartexture','texload','texpick','undo','redo','open','open-project','importobj','new'].includes(name))finalizeTexture();
  if(await extra(name))return;
  if(name==='new'){checkpoint();model={format:'nord-mesh-1',vertices:[],faces:[],colors:[],seams:[],color:'#ffffff',texture:null};selection.clear();drawIds=[];drawing=false;await loadTexture();saveLocal();status('New empty mesh. The previous draft can be recovered with Undo.');return;}
  if(name==='save'&&(ctx.file||ctx.entity)){await saveForScene();return;}if(name==='save'){await output(base()+'.mesh.json',JSON.stringify(model,null,2),'application/json');return;}if(name==='open'){$('#mesh-file').click();return;}if(name==='texture'){$('#mesh-image').click();return;}if(name==='fit'){fit();return;}
@@ -304,6 +313,7 @@ function saveChoice(){return new Promise(resolve=>{
  for(const o of opts){const b=document.createElement('button'),t=document.createElement('strong'),d=document.createElement('div');t.textContent=o.title;d.textContent=o.text;d.style.fontSize='11px';d.style.opacity='.75';b.append(t,d);b.onclick=()=>done({mode:o.mode,name:o.name?nm.value.trim().replace(/\.(glb|gltf)$/i,'').replace(/[^\w-]+/g,'_')||cur+'-edit':null});list.append(b);}
  back.querySelector('.cancel').onclick=()=>done(null);document.body.append(back);});}
 async function saveForScene(){
+ finalizeTexture();
  if(!model.faces.length)throw Error('Nothing to save: the mesh has no faces.');
  const c=await saveChoice();if(!c)return;
  let file=ctx.file.replace(/^models\//,'');

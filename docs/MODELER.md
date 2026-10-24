@@ -13,6 +13,9 @@ Create: cube, plane, cylinder, sphere, draw polygon, add vertex, fill boundary, 
 ## Scene mesh primitives (Inspector ▸ MESH ▸ Edit as model in 3D Modeler)
 `?mesh=<shape>&size=x,y,z&seg=n&ename=<name>&entity=<id>` builds the primitive as editable geometry (box→cube, sphere, cylinder, capsule→cylinder, plane/ground, torus; sizes as in `runtime/babylon/components.js`). **Save** offers *new model for this object* / *new prefab* (no overwrite: there is no file). The editor's `modeler_saved` replaces the object's `mesh` component by `model {path}` (also for the base entity when a prefab variant is made). Not saving sends no message, so the scene is untouched. Console: lines and the filter buttons now carry Info / Warn / Error / Build icons.
 
+## Picture layers (editor/modeler/layers.js)
+Texture tab ▸ **Layer** tool + panel under the texture: add PNG/JPG/WebP pictures (file picker, drop, paste, project PNGs), move / resize (corner handles, Shift = free) / rotate (Shift = 15°) / flip / opacity / crop (cut) / duplicate / order / trim transparent / remove colour / fit to the UV area of the selected faces. Layers are working objects only: they are **merged into the single texture** (`bake`) when painting with another tool, on Merge, and before save/export (`finalizeTexture`), so the model keeps one PNG. Pictures shrink to 512 px on import; texture size 16–1024; optional colour reduction (6/5/4 bits) at save; PNG size shown (red over 2 MB). Layers are not stored in `.mesh.json`.
+
 ## Limits / not done
 GLB import only through Open in 3D Modeler (no menu to import an arbitrary file yet), no skeleton/animation authoring, no vertex-colour bake. Texture is one image per mesh. Undo keeps whole-mesh snapshots (80 steps / 32 MB). Native-window behaviour (wry) not verified here.
 

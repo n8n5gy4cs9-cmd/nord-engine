@@ -222,6 +222,28 @@
 </ul>
 <h2 id="texture-tab">Texture tab<a class="anchor" href="#texture-tab">#</a></h2>
 <figure class="shot"><img src="../../assets/screenshots/mod-4-texture.png" alt="Texture tab with two painted red lines and the UV overlay" loading="lazy"><figcaption>Pixel painter. The yellow rectangles are the UV overlay: the faces of the mesh on the texture.</figcaption></figure><p>A pixel painter for the model&#39;s texture. <strong>Pencil</strong>, <strong>Eraser</strong>, <strong>Fill</strong> (flood fill), <strong>Picker</strong> (take a colour from the image); colour box + swatches; <strong>Size</strong> (brush); <strong>Mirror X</strong>; <strong>UV overlay</strong> shows where faces are. <strong>Texture</strong> size 16-512 px. <strong>New blank</strong> (fills with the colour), <strong>Fill with colour</strong>, <strong>Load image file</strong> / <strong>Load project PNG…</strong> (replace), <strong>Save PNG to project</strong>, <strong>Remove texture</strong>. A texture of a scene model is shown at its own size (up to 1024 px).</p>
+<h3 id="picture-layers-add-pngs-and-arrange-them">Picture layers: add PNGs and arrange them<a class="anchor" href="#picture-layers-add-pngs-and-arrange-them">#</a></h3>
+<p>The model always has <strong>one</strong> texture. <span class="c-ui">Picture layers</span> let you put pictures (PNG, JPG, WebP) on it and move them around like stickers; when you are done they are <strong>merged into that one texture</strong>, so ten pictures never mean ten files or a 100 MB model.</p>
+<figure class="shot"><img src="../../assets/screenshots/mod-10-layers.png" alt="Texture tab with a blue picture layer selected and its handles" loading="lazy"><figcaption>A picture layer on the texture: corner squares resize, the round handle rotates. The layer list and properties are under the texture.</figcaption></figure><ol>
+<li>Open the <span class="c-ui">Texture</span> tab. Press <span class="c-ui">+ Add pictures…</span> (select several files at once), or <strong>drop files</strong> on the texture, or <strong>paste</strong> an image with <span class="c-key">Ctrl/Cmd+V</span>, or <span class="c-ui">+ From project…</span> for PNGs in <code>models/</code>.</li>
+<li>Pick the <span class="c-ui">Layer</span> tool (next to Picker). Click a picture to select it (yellow dashed box). <strong>Drag</strong> to move; drag a <strong>corner square</strong> to resize (<span class="c-key">Shift</span> = stretch freely); drag the <strong>round handle</strong> to rotate (<span class="c-key">Shift</span> = 15° steps). Arrow keys nudge 1 px (<span class="c-key">Shift</span> 8 px), <span class="c-key">Delete</span> removes, <span class="c-key">Ctrl/Cmd+D</span> duplicates.</li>
+<li>Under the texture: the layer list (thumbnail, name, <span class="c-ui">Hide</span>/<span class="c-ui">Show</span>) and the properties of the selected layer:<ul>
+<li><span class="c-ui">X / Y / Width / Height / Rotate / Opacity %</span>, <span class="c-ui">keep proportions</span>, <span class="c-ui">Flip horizontal / vertical</span>, <span class="c-ui">Smooth</span> (off = crisp pixels, on = soft edges).</li>
+<li><strong>Cut:</strong> <span class="c-ui">Cut Left / Top / Right / Bottom</span> crop the picture (in picture pixels). <span class="c-ui">Trim transparent</span> removes empty edges.</li>
+<li>Buttons: <span class="c-ui">Duplicate</span>, <span class="c-ui">Delete</span>, <span class="c-ui">Forward</span>, <span class="c-ui">Backward</span>, <span class="c-ui">To front</span>, <span class="c-ui">To back</span>, <span class="c-ui">Center</span>, <span class="c-ui">Fill texture</span>, <span class="c-ui">Original size</span>.</li>
+<li><span class="c-ui">Fit to selected faces</span>: select faces in the 3D or UV tab first, then the picture is placed exactly over their UV area. This is the fastest way to texture a wall with a picture.</li>
+<li><span class="c-ui">Remove painted colour</span>: makes the colour of the colour box transparent in this picture (with a tolerance), handy for white backgrounds.</li>
+</ul>
+</li>
+<li>Pictures are <strong>merged into the texture</strong> when you press <span class="c-ui">Merge … layers into texture</span>, when you paint with any other tool, and automatically when you save or export. After merging they are normal pixels (use Undo to get the layers back, one step).</li>
+</ol>
+<p><strong>Keeping it small:</strong></p>
+<ul>
+<li>Big pictures are shrunk to 512 px on import; <span class="c-ui">Shrink data</span> resamples a picture to its size on the texture.</li>
+<li>The size menu next to the buttons resizes the whole texture (16 to 1024) and scales everything with it. The line next to it shows the PNG size, in red when it is over 2 MB.</li>
+<li><span class="c-ui">Compress: light / medium / strong</span> reduces colours (6 / 5 / 4 bits per channel) when you save, which makes the PNG much smaller; it suits flat, game-like art.</li>
+<li>Limits: 64 layers at a time; texture up to 1024×1024.</li>
+</ul>
 <h3 id="paint-on-model">Paint on model<a class="anchor" href="#paint-on-model">#</a></h3>
 <p>Tick <strong>Paint on model</strong> in the top bar and drag on the model in the 3D view: the pixels under the brush change. Same colour, size and tool as the Texture tab.</p>
 <figure class="shot"><img src="../../assets/screenshots/mod-6-paint-on-model.png" alt="3D view with Paint on model enabled" loading="lazy"><figcaption>Paint on model: the brush paints the texture where the model is clicked.</figcaption></figure><h2 id="uv-editor-tab">UV editor tab<a class="anchor" href="#uv-editor-tab">#</a></h2>
