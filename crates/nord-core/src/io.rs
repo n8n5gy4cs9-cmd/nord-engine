@@ -174,6 +174,16 @@ pub fn recent_projects() -> Vec<PathBuf> {
     load_json::<Vec<PathBuf>>(&config_dir().join("recent.json")).unwrap_or_default()
 }
 
+/// Base folder new projects are created in (the user's last choice in the hub), if one was saved.
+pub fn projects_base_dir() -> Option<PathBuf> {
+    load_json::<PathBuf>(&config_dir().join("projects_base.json")).ok()
+}
+
+/// Remember the base folder (not a project folder) for the next new projects.
+pub fn set_projects_base_dir(dir: &Path) -> Result<()> {
+    save_json(&config_dir().join("projects_base.json"), &dir.to_path_buf())
+}
+
 pub fn add_recent(root: &Path) -> Result<()> {
     let root = fs::canonicalize(root).unwrap_or_else(|_| root.to_path_buf());
     let mut list = recent_projects();

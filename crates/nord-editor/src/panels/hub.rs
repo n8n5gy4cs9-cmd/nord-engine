@@ -32,6 +32,8 @@ impl Default for HubUi {
             starter: None,
             parent: if let Some(d) = crate::platform::default_projects_dir() {
                 d
+            } else if let Some(d) = nord_core::io::projects_base_dir() {
+                d
             } else if docs.v_exists() {
                 docs.join("Nord Projects")
             } else {
@@ -233,14 +235,15 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                 ui.horizontal(|ui| {
                                     let mut location = st.hub.parent.to_string_lossy().into_owned();
                                     let field_width = (ui.available_width() - 48.0).max(80.0);
-                                    if ui
-                                        .add(
-                                            egui::TextEdit::singleline(&mut location)
-                                                .desired_width(field_width),
-                                        )
-                                        .changed()
-                                    {
+                                    let r = ui.add(
+                                        egui::TextEdit::singleline(&mut location)
+                                            .desired_width(field_width),
+                                    );
+                                    if r.changed() {
                                         st.hub.parent = location.into();
+                                    }
+                                    if r.lost_focus() {
+                                        let _ = nord_core::io::set_projects_base_dir(&st.hub.parent);
                                     }
                                     if ui
                                         .button("…")
@@ -250,6 +253,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                         if let Some(p) =
                                             crate::platform::pick_folder("Choose project folder")
                                         {
+                                            let _ = nord_core::io::set_projects_base_dir(&p);
                                             st.hub.parent = p;
                                         }
                                     }
@@ -319,6 +323,7 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                     .clicked()
                                 {
                                     let parent = st.hub.parent.clone();
+                                    let _ = nord_core::io::set_projects_base_dir(&parent);
                                     let name = st.hub.name.clone();
                                     let starter =
                                         st.hub.starter.clone().or_else(|| match st.hub.kind {

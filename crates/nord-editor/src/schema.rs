@@ -349,7 +349,16 @@ fn with_key(field: &str, key: &str, value: &str) -> String {
 /// `Tooltip('Text', field)`, `Space(8, field)`, `ReadOnly(field)`, `HideInInspector(field)`, `TextArea(field)`. They may be nested.
 pub fn expand_helpers(src: &str) -> String {
     const HELPERS: [&str; 10] = [
-        "Range", "Enum", "EntityRef", "Button", "Header", "Tooltip", "Space", "ReadOnly", "HideInInspector", "TextArea",
+        "Range",
+        "Enum",
+        "EntityRef",
+        "Button",
+        "Header",
+        "Tooltip",
+        "Space",
+        "ReadOnly",
+        "HideInInspector",
+        "TextArea",
     ];
     let c: Vec<char> = src.chars().collect();
     let mut out = String::new();
@@ -376,7 +385,9 @@ pub fn expand_helpers(src: &str) -> String {
             i += 1;
             continue;
         }
-        if (ch.is_alphabetic() || ch == '_' || ch == '$') && (i == 0 || !(c[i - 1].is_alphanumeric() || c[i - 1] == '_' || c[i - 1] == '.')) {
+        if (ch.is_alphabetic() || ch == '_' || ch == '$')
+            && (i == 0 || !(c[i - 1].is_alphanumeric() || c[i - 1] == '_' || c[i - 1] == '.'))
+        {
             let st = i;
             while i < c.len() && (c[i].is_alphanumeric() || c[i] == '_' || c[i] == '$') {
                 i += 1;
@@ -417,16 +428,34 @@ pub fn expand_helpers(src: &str) -> String {
                 }
                 if let Some(e) = end {
                     let inner: String = c[j + 1..e].iter().collect();
-                    let args: Vec<String> = split_args(&inner).iter().map(|a| expand_helpers(a)).collect();
+                    let args: Vec<String> = split_args(&inner)
+                        .iter()
+                        .map(|a| expand_helpers(a))
+                        .collect();
                     let a = |n: usize| args.get(n).cloned().unwrap_or_else(|| "null".into());
                     let rewritten = match w.as_str() {
                         "Range" => {
                             let def = if args.len() > 2 { a(2) } else { a(0) };
-                            format!("{{\"default\": {def}, \"min\": {}, \"max\": {}}}", a(0), a(1))
+                            format!(
+                                "{{\"default\": {def}, \"min\": {}, \"max\": {}}}",
+                                a(0),
+                                a(1)
+                            )
                         }
-                        "Enum" => format!("{{\"type\": \"enum\", \"options\": {}, \"default\": {}}}", a(0), a(1)),
-                        "EntityRef" => format!("{{\"type\": \"entity\", \"default\": {}}}", if args.is_empty() { "\"\"".into() } else { a(0) }),
-                        "Button" => format!("{{\"type\": \"button\", \"label\": {}, \"method\": {}}}", a(0), a(1)),
+                        "Enum" => format!(
+                            "{{\"type\": \"enum\", \"options\": {}, \"default\": {}}}",
+                            a(0),
+                            a(1)
+                        ),
+                        "EntityRef" => format!(
+                            "{{\"type\": \"entity\", \"default\": {}}}",
+                            if args.is_empty() { "\"\"".into() } else { a(0) }
+                        ),
+                        "Button" => format!(
+                            "{{\"type\": \"button\", \"label\": {}, \"method\": {}}}",
+                            a(0),
+                            a(1)
+                        ),
                         "Header" => with_key(&a(1), "header", &a(0)),
                         "Tooltip" => with_key(&a(1), "tooltip", &a(0)),
                         "Space" => with_key(&a(1), "space", &a(0)),
@@ -692,12 +721,26 @@ mod unity_attribute_tests {
 }"#;
         let f = script_attributes(src);
         let names: Vec<_> = f.iter().map(|f| f.name.as_str()).collect();
-        assert_eq!(names, ["hoursPivot", "speed", "mode", "note", "secret", "shown", "gap", "generate"]);
+        assert_eq!(
+            names,
+            [
+                "hoursPivot",
+                "speed",
+                "mode",
+                "note",
+                "secret",
+                "shown",
+                "gap",
+                "generate"
+            ]
+        );
         assert_eq!(f[0].ty, FieldType::Entity);
         assert_eq!(f[0].default, json!("Hours Arm Pivot"));
         assert_eq!(f[1].header, "Movement");
         assert_eq!(f[1].hint, "Pixels per second");
-        assert!(matches!(f[1].ty, FieldType::Number { min: Some(a), max: Some(b) } if a == 0.0 && b == 10.0));
+        assert!(
+            matches!(f[1].ty, FieldType::Number { min: Some(a), max: Some(b) } if a == 0.0 && b == 10.0)
+        );
         assert_eq!(f[1].default, json!(5));
         assert_eq!(f[2].ty, FieldType::Enum(vec!["a".into(), "b".into()]));
         assert!(f[3].multiline);

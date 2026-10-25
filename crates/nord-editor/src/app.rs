@@ -1810,11 +1810,13 @@ impl App {
             std::sync::atomic::Ordering::Relaxed,
         );
         self.web_events(ctx);
-        if let Some((entity, script, method)) =
-            ctx.data_mut(|d| d.remove_temp::<(String, String, String)>(egui::Id::new("script_call")))
+        if let Some((entity, script, method)) = ctx
+            .data_mut(|d| d.remove_temp::<(String, String, String)>(egui::Id::new("script_call")))
         {
             // an Inspector button: run the script's static method in the Scene view page and take back the edited entity
-            self.st.send_viewport(serde_json::json!({"t":"scriptCall","id":entity,"script":script,"method":method}));
+            self.st.send_viewport(
+                serde_json::json!({"t":"scriptCall","id":entity,"script":script,"method":method}),
+            );
         }
         if let Some(rel) = ctx.data_mut(|d| d.remove_temp::<String>(egui::Id::new("ping_asset"))) {
             let a = &mut self.st.assets_ui;

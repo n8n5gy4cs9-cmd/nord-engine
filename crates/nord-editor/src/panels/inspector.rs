@@ -378,7 +378,11 @@ fn fields_ui(
                     // a button that runs `static <method>(ctx)` of the script on this entity, inside the Scene view page
                     ui.label("");
                     let r = ui.button(&f.label);
-                    let r = if f.hint.is_empty() { r } else { r.on_hover_text(&f.hint) };
+                    let r = if f.hint.is_empty() {
+                        r
+                    } else {
+                        r.on_hover_text(&f.hint)
+                    };
                     if r.clicked() {
                         let ctx: Option<(String, String)> =
                             ui.ctx().data(|d| d.get_temp(egui::Id::new("script_ctx")));

@@ -548,38 +548,70 @@ fn input_section(st: &mut EditorState, ui: &mut Ui, root: &std::path::Path) {
             }
             let names: Vec<String> = p.input.actions.keys().cloned().collect();
             let mut remove_action = None;
-            for name in &names {
-                ui.horizontal_wrapped(|ui| {
-                    ui.label(RichText::new(name).strong());
-                    let keys = p.input.actions.get_mut(name).expect("listed above");
-                    let mut drop_key = None;
-                    for (i, k) in keys.iter().enumerate() {
-                        if ui.small_button(format!("{k} ✕")).on_hover_text("Remove this key").clicked() {
-                            drop_key = Some(i);
-                        }
+            egui::Grid::new("input-map")
+                .num_columns(4)
+                .striped(true)
+                .spacing([14.0, 6.0])
+                .show(ui, |ui| {
+                    for h in ["Action", "Keys / buttons", "Add", ""] {
+                        ui.label(RichText::new(h).small().weak());
                     }
-                    if let Some(i) = drop_key {
-                        keys.remove(i);
-                        save = true;
-                    }
-                    if ui.small_button("＋ key").on_hover_text("Then press the key").clicked() {
-                        pu.capture = Some(name.clone());
-                    }
-                    egui::ComboBox::from_id_salt(("in-extra", name))
-                        .selected_text("＋ mouse/pad")
-                        .show_ui(ui, |ui| {
-                            for e in EXTRA_INPUTS {
-                                if ui.selectable_label(false, *e).clicked() && !keys.iter().any(|k| k == e) {
-                                    keys.push((*e).into());
-                                    save = true;
+                    ui.end_row();
+                    for name in &names {
+                        ui.label(
+                            RichText::new(name)
+                                .strong()
+                                .color(egui::Color32::from_rgb(240, 190, 90)),
+                        );
+                        let keys = p.input.actions.get_mut(name).expect("listed above");
+                        ui.horizontal_wrapped(|ui| {
+                            let mut drop_key = None;
+                            for (i, k) in keys.iter().enumerate() {
+                                let c = if k.starts_with("Mouse") {
+                                    egui::Color32::from_rgb(226, 88, 80)
+                                } else if k.starts_with("Gamepad") {
+                                    egui::Color32::from_rgb(112, 192, 72)
+                                } else {
+                                    egui::Color32::from_rgb(86, 148, 240)
+                                };
+                                ui.label(
+                                    RichText::new(k)
+                                        .color(c)
+                                        .background_color(c.gamma_multiply(0.18)),
+                                );
+                                if crate::icons::mini(ui, "x", "Remove this key").clicked() {
+                                    drop_key = Some(i);
                                 }
                             }
+                            if let Some(i) = drop_key {
+                                keys.remove(i);
+                                save = true;
+                            }
                         });
-                    if ui.small_button("🗑").on_hover_text("Delete this action").clicked() {
-                        remove_action = Some(name.clone());
+                        ui.horizontal(|ui| {
+                            if crate::icons::mini(ui, "plus", "Add a key, then press it").clicked() {
+                                pu.capture = Some(name.clone());
+                            }
+                            egui::ComboBox::from_id_salt(("in-extra", name))
+                                .selected_text("mouse/pad")
+                                .width(90.0)
+                                .show_ui(ui, |ui| {
+                                    for e in EXTRA_INPUTS {
+                                        if ui.selectable_label(false, *e).clicked()
+                                            && !keys.iter().any(|k| k == e)
+                                        {
+                                            keys.push((*e).into());
+                                            save = true;
+                                        }
+                                    }
+                                });
+                        });
+                        if crate::icons::mini(ui, "trash-2", "Delete this action").clicked() {
+                            remove_action = Some(name.clone());
+                        }
+                        ui.end_row();
                     }
                 });
-            }
             if let Some(n) = remove_action {
                 p.input.actions.remove(&n);
                 save = true;

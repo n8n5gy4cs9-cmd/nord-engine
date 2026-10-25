@@ -60,12 +60,11 @@ The empty object has only a *transform*, so you see nothing in the scene, just i
 
 ### 2.2 The face: a flattened cylinder
 
-Nord's quick-create menu has a cube and a sphere. A cylinder is a cube whose **shape** you change:
+Nord's quick-create menu has the Unity primitives: Cube, Sphere, Capsule, Cylinder, Plane and Quad.
 
-1. @ui[Hierarchy ▸ + Create ▸ Cube]. Rename it `Face`.
-2. In the Inspector, find the `mesh` component. Set **shape** to `cylinder` and **size** to `1, 2, 1`. (That is the Unity cylinder: 1 wide, 2 high.)
-3. Set the **Transform**: **Rotation** `90, 0, 0` and **Scale** `10, 0.2, 10`.
-4. Drag `Face` onto `Clock` in the Hierarchy so it becomes a child (or right-click `Clock` ▸ **Create child** and build the object there).
+1. @ui[Hierarchy ▸ + Create ▸ Cylinder]. Rename it `Face`. It already has a `mesh` component with **shape** `cylinder` and **size** `1, 2, 1` (the Unity cylinder: 1 wide, 2 high).
+2. Set the **Transform**: **Rotation** `90, 0, 0` and **Scale** `10, 0.2, 10`.
+3. Drag `Face` onto `Clock` in the Hierarchy so it becomes a child (or right-click `Clock` ▸ **Create child** and build the object there).
 
 Why those numbers: the cylinder is 2 units high, so scale Y `0.2` makes it `0.4` thick, and scale X/Z `10` makes the clock 10 units wide. A cylinder stands up along Y; rotating it 90° around X lays its round side towards us, so the clock face looks along Z. The material stays **white** (the default).
 

@@ -817,6 +817,34 @@ impl EditorState {
                     json!({"type":"material"}),
                 ],
             ),
+            "capsule" => (
+                "Capsule",
+                vec![
+                    json!({"type":"mesh","shape":"capsule","size":[1,2,1]}),
+                    json!({"type":"material"}),
+                ],
+            ),
+            "cylinder" => (
+                "Cylinder",
+                vec![
+                    json!({"type":"mesh","shape":"cylinder","size":[1,2,1]}),
+                    json!({"type":"material"}),
+                ],
+            ),
+            "plane" => (
+                "Plane",
+                vec![
+                    json!({"type":"mesh","shape":"ground","size":[10,0.01,10]}),
+                    json!({"type":"material"}),
+                ],
+            ),
+            "quad" => (
+                "Quad",
+                vec![
+                    json!({"type":"mesh","shape":"plane","size":[1,1,1]}),
+                    json!({"type":"material"}),
+                ],
+            ),
             "ground" => (
                 "Ground",
                 vec![
@@ -1641,9 +1669,16 @@ impl EditorState {
             }
             Some("entityEdited") => {
                 // result of an Inspector script button: the whole entity as the script left it (children added, fields changed)
-                let Some(id) = m["id"].as_str().map(String::from) else { return };
-                let Ok(mut ne) = serde_json::from_value::<nord_core::scene::Entity>(m["entity"].clone()) else {
-                    self.log(LogLevel::Error, "script button: the returned entity is not valid");
+                let Some(id) = m["id"].as_str().map(String::from) else {
+                    return;
+                };
+                let Ok(mut ne) =
+                    serde_json::from_value::<nord_core::scene::Entity>(m["entity"].clone())
+                else {
+                    self.log(
+                        LogLevel::Error,
+                        "script button: the returned entity is not valid",
+                    );
                     return;
                 };
                 let label = m["method"].as_str().unwrap_or("script").to_string();

@@ -132,8 +132,8 @@ pub(crate) fn create_menu(st: &mut EditorState, ui: &mut Ui, three: bool, parent
     let mut item = |ui: &mut Ui, label: &str, kind: &'static str| {
         let icon = match kind {
             "empty" => "component",
-            "cube" | "ground" => "box",
-            "sphere" => "circle",
+            "cube" | "ground" | "plane" | "quad" => "box",
+            "sphere" | "capsule" | "cylinder" => "circle",
             "sun" | "light" => "lightbulb",
             "camera" => "video",
             "text" | "ui-label" => "type",
@@ -156,6 +156,10 @@ pub(crate) fn create_menu(st: &mut EditorState, ui: &mut Ui, three: bool, parent
         ui.separator();
         item(ui, "Cube", "cube");
         item(ui, "Sphere", "sphere");
+        item(ui, "Capsule", "capsule");
+        item(ui, "Cylinder", "cylinder");
+        item(ui, "Plane", "plane");
+        item(ui, "Quad", "quad");
         item(ui, "Ground", "ground");
         item(ui, "Directional light", "sun");
     }

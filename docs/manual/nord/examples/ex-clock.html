@@ -65,10 +65,9 @@
 <p><strong>In the file</strong> <code>scenes/main.scene.json</code>, the object is stored like this (check it in a text editor):</p>
 <pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Clock&quot;, &quot;transform&quot;: { &quot;pos&quot;: [0, 0, 0], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [1, 1, 1] }, &quot;components&quot;: [], &quot;children&quot;: [] }</code></pre>
 <h3 id="2-2-the-face-a-flattened-cylinder">2.2 The face: a flattened cylinder<a class="anchor" href="#2-2-the-face-a-flattened-cylinder">#</a></h3>
-<p>Nord&#39;s quick-create menu has a cube and a sphere. A cylinder is a cube whose <strong>shape</strong> you change:</p>
+<p>Nord&#39;s quick-create menu has the Unity primitives: Cube, Sphere, Capsule, Cylinder, Plane and Quad.</p>
 <ol>
-<li><span class="c-ui">Hierarchy ▸ + Create ▸ Cube</span>. Rename it <code>Face</code>.</li>
-<li>In the Inspector, find the <code>mesh</code> component. Set <strong>shape</strong> to <code>cylinder</code> and <strong>size</strong> to <code>1, 2, 1</code>. (That is the Unity cylinder: 1 wide, 2 high.)</li>
+<li><span class="c-ui">Hierarchy ▸ + Create ▸ Cylinder</span>. Rename it <code>Face</code>. It already has a <code>mesh</code> component with <strong>shape</strong> <code>cylinder</code> and <strong>size</strong> <code>1, 2, 1</code> (the Unity cylinder: 1 wide, 2 high).</li>
 <li>Set the <strong>Transform</strong>: <strong>Rotation</strong> <code>90, 0, 0</code> and <strong>Scale</strong> <code>10, 0.2, 10</code>.</li>
 <li>Drag <code>Face</code> onto <code>Clock</code> in the Hierarchy so it becomes a child (or right-click <code>Clock</code> ▸ <strong>Create child</strong> and build the object there).</li>
 </ol>
