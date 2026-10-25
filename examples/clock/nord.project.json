@@ -1,0 +1,43 @@
+{
+  "format": 1,
+  "name": "Clock",
+  "id": "com.crowelian.clock",
+  "type": "3d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/main.scene.json",
+  "display": {
+    "width": 600,
+    "height": 600,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#31506e"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {
+      "left": [
+        "KeyA",
+        "ArrowLeft"
+      ],
+      "right": [
+        "KeyD",
+        "ArrowRight"
+      ],
+      "up": [
+        "KeyW",
+        "ArrowUp"
+      ],
+      "down": [
+        "KeyS",
+        "ArrowDown"
+      ]
+    }
+  }
+}

@@ -38,6 +38,7 @@ Never used Unity? These pages still work: each example is a small script plus th
 1. [Your first script](ex-first-script.html): lifecycle, Inspector fields, logging.
 2. [Input and movement](ex-input-movement.html): keys, axes, 2D and 3D, physics movement.
 3. [Finding objects and talking to scripts](ex-find-and-talk.html): Find, tags, GetComponent, calling other scripts.
+3.5. [Build a clock: objects, hierarchy, materials and your first script](ex-clock.html): the classic first Unity exercise from primitives, with the same numbers and colours.
 4. [GameManager and Singletons](ex-game-manager.html): score, lives, state; other scripts call and listen.
 5. [Spawning, prefabs and Destroy](ex-spawn-destroy.html)
 6. [Collisions, triggers and raycasts](ex-collisions.html)
