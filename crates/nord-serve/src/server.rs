@@ -337,7 +337,8 @@ async fn desktop_call(
     let params = req["params"].clone();
     match tokio::task::spawn_blocking(move || b.call_json(&method, &params)).await {
         Ok(v) => Json(v).into_response(),
-        Err(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+        // a panicking backend call (e.g. native dialogs off the main thread on macOS) is reported as unsupported, not an empty 500
+        Err(_) => Json(serde_json::json!({"error": {"code": "unsupported", "message": "call failed in this host"}})).into_response(),
     }
 }
 

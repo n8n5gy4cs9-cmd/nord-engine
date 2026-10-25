@@ -115,9 +115,9 @@ suites['edit-viewport-3d'] = async () => {
     await cmd({ t: 'thumbs', items: [{ path: 'assets/models/cube_spin.glb', sha }] });
     const thumb = await waitFor(async () => (await ipc()).find((m) => m.t === 'thumb'), 30000);
     const shot = await page.screenshot({ path: `${ROOT}/target/e2e/edit-3d.png` });
-    return { nodes: await page.evaluate(() => window.__nordEdit.backend.api.nodes.size), selOk: sel.id === withMesh.id, tf, snap, tgt, thumb: thumb.path, thumbFile: fs.existsSync(`${project}/.nord-cache/thumbs/${sha}.png`), shot: shot.length };
+    return { nodes: await page.evaluate(() => window.__nordEdit.backend.api.nodes.size), selOk: sel.id === withMesh.id, tf, snap, tgt, thumb: thumb.path, thumbFile: fs.existsSync(`${project}/.nord-cache/thumbs/${sha}-256.png`), shot: shot.length };
   });
-  fs.rmSync(`${project}/.nord-cache/thumbs/abc123def456.png`, { force: true });
+  fs.rmSync(`${project}/.nord-cache/thumbs/abc123def456-256.png`, { force: true });
   console.log(JSON.stringify(result));
   if (errors.length) throw new Error(errors.join('\n'));
   if (!result.selOk) throw new Error('3D picking failed: ' + JSON.stringify(result));

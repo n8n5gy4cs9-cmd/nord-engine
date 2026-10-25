@@ -2505,6 +2505,12 @@
       "milestone": "M13",
       "title": "Examples pages 46-48: pathfinding/NavMesh, cutscenes/Timeline, 2D lights; smoke pass of all 87 examples + manual check",
       "status": "done"
+    },
+    {
+      "id": "M13-34",
+      "milestone": "M13",
+      "title": "Fix e2e BUG-013/014/015",
+      "status": "done"
     }
   ]
 }

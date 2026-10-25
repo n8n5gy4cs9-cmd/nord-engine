@@ -27,18 +27,18 @@ suites['desktop-app-code-editor'] = async () => {
     assert.equal(await q('.ce .status'), (await q('.ce .status')), 'status renders');
     assert.match(await q('.ce .status'), /JavaScript/);
     // typing → dirty dot → Ctrl+S saves through the desktop API
-    await page.click('.cm-content'); await page.keyboard.press('Control+End'); await page.keyboard.type('\nlet z = 2;');
+    await page.click('.cm-content'); await page.keyboard.press('ControlOrMeta+End'); await page.keyboard.type('\nlet z = 2;');
     assert.ok(await page.evaluate(() => !!document.querySelector('.ce .tab.on .dot')), 'dirty marker');
-    await page.keyboard.press('Control+s'); await page.waitForTimeout(300);
+    await page.keyboard.press('ControlOrMeta+s'); await page.waitForTimeout(300);
     assert.match(await page.evaluate(() => window.nord.desktop.fs.readText('app.js')), /let z = 2;/);
     assert.ok(await page.evaluate(() => !document.querySelector('.ce .tab.on .dot')), 'clean after save');
     // multi-cursor: select word + Ctrl+D selects next occurrence
-    await page.keyboard.press('Control+Home'); await page.keyboard.press('Control+f'); await page.waitForSelector('.cm-search'); await page.keyboard.press('Escape');
+    await page.keyboard.press('ControlOrMeta+Home'); await page.keyboard.press('ControlOrMeta+f'); await page.waitForSelector('.cm-search'); await page.keyboard.press('Escape');
     // go to line
-    await page.keyboard.press('Control+g'); await page.fill('.ce .modal input', '2'); await page.keyboard.press('Enter');
+    await page.keyboard.press('ControlOrMeta+g'); await page.fill('.ce .modal input', '2'); await page.keyboard.press('Enter');
     assert.match(await q('.ce .status'), /Ln 2,/);
     // quick open (fuzzy)
-    await page.keyboard.press('Control+p'); await page.fill('.ce .modal input', 'wlc'); assert.match(await q('.ce .modal .lst'), /welcome\.md/); await page.keyboard.press('Enter');
+    await page.keyboard.press('ControlOrMeta+p'); await page.fill('.ce .modal input', 'wlc'); assert.match(await q('.ce .modal .lst'), /welcome\.md/); await page.keyboard.press('Enter');
     await page.waitForSelector('.ce .tab.on:has-text("welcome.md")');
     // JSON formatting + highlighting + folding gutter
     await page.evaluate(async () => { await window.nord.desktop.fs.writeText('d.json', '{"a":[1,2,{"b":null}],"c":true}'); });
@@ -105,7 +105,7 @@ suites['desktop-apps-notes-markdown'] = async () => {
   const r2 = await withPage(`${ROOT}/examples/app-markdown-editor`, async (page) => {
     await page.waitForSelector('.me .cm-editor'); await page.waitForSelector('.me .pv h1');
     assert.match(await page.textContent('.me .pv h1'), /Hello/);
-    await page.click('.me .cm-content'); await page.keyboard.press('Control+End'); await page.keyboard.type('\n\n<script>window.pwned=1</script><img src=x onerror="window.pwned=2"> **bold**');
+    await page.click('.me .cm-content'); await page.keyboard.press('ControlOrMeta+End'); await page.keyboard.type('\n\n<script>window.pwned=1</script><img src=x onerror="window.pwned=2"> **bold**');
     await page.waitForTimeout(200);
     assert.equal(await page.evaluate(() => window.pwned), undefined, 'preview is sanitised');
     assert.ok(await page.evaluate(() => !!document.querySelector('.me .pv strong')));
