@@ -292,6 +292,12 @@ export function registerBabylonComponents(backend) {
   const phys = (e) => backend.physics?.build(e);
   registerComponent('rigidbody', { create: phys, destroy: (c) => backend.physics?.forget(c.entity) });
   registerComponent('collider', { create: phys, destroy: (c) => backend.physics?.forget(c.entity) });
+  // joint: Unity-style joints between this entity's body and `connectedBody` (hinge, fixed, spring, distance, ball, configurable); see runtime/babylon/joints.js
+  registerComponent('joint', {
+    create: (e, d, comp) => backend.physics?.addJoint(comp),
+    destroy: (c) => backend.physics?.removeJoint(c),
+    set(c, k, v) { c.data[k] = v; backend.physics?.removeJoint(c); backend.physics?.addJoint(c); },
+  });
   registerComponent('trigger', {
     create(e, d) { e.addComponent('collider', { shape: d.shape ?? 'box', size: d.size ?? [2, 2, 2], radius: d.radius, offset: d.offset, trigger: true }); },
   });

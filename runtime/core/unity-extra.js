@@ -268,10 +268,10 @@ const methods = {
   GetComponentsInChildren(type) { return [...this.all()].map((e) => getUnityComponent(e, type)).filter(Boolean); },
   GetComponentInParent(type) { for (let e = this; e; e = e.parent) { const c = getUnityComponent(e, type); if (c) return c; } return null; },
   AddComponent(type, data = {}) {
-    if (typeof type === 'function') return type.nord ? (this.addComponent(type.nord, { ...(type.defaults ?? {}), ...data }), getUnityComponent(this, type)) : this.addScript(type, data);
-    const name = typeof type === 'string' ? type : type?.name;
-    this.addComponent(UNITY_TO_NORD[name] ?? name, { ...(UNITY_DEFAULTS[name] ?? {}), ...data });
-    return getUnityComponent(this, name);
+    if (typeof type === 'function' && !type.nord) return this.addScript(type, data);
+    const name = typeof type === 'string' ? type : type?.name, W = typeof type === 'function' ? type : WRAPPERS[name];
+    const comp = this.addComponent(typeof type === 'function' ? type.nord : (UNITY_TO_NORD[name] ?? name), { ...(typeof type === 'function' ? type.defaults : UNITY_DEFAULTS[name]) ?? {}, ...data });
+    return W?.fromComp ? W.fromComp(this, comp) : (W ? getUnityComponent(this, W) : comp);
   },
   SendMessage(method, arg) { this.callScripts(method, arg); },
   BroadcastMessage(method, arg) { for (const e of this.all()) e.callScripts(method, arg); },
@@ -335,13 +335,16 @@ export class Rigidbody2D extends ComponentBase {
   set position(v) { this.entity.pos = [v.x, v.y, this.entity.pos[2]]; }
   get rotation() { return this.entity.rot[2] ?? 0; }
   set rotation(a) { const r = this.entity.rot; this.entity.rot = [r[0], r[1], a]; }
-  /** Degrees per second (2D) — radians per second in 3D like Unity's Rigidbody. */
+  /** 2D: degrees per second (number). 3D: radians per second about each axis (Vector3), like Unity's Rigidbody. */
   get angularVelocity() {
-    const ph = this.#ph; if (ph?.angularVelocity) return ph.angularVelocity(this.entity);
-    const b = ph?.body?.(this.entity); return b?.angularVelocity ?? 0;
+    const ph = this.#ph, a = ph?.angularVelocity?.(this.entity);
+    if (is3D()) return v3(Array.isArray(a) ? a : [0, 0, 0]);
+    if (typeof a === 'number') return a;
+    return ph?.body?.(this.entity)?.angularVelocity ?? 0;
   }
   set angularVelocity(v) {
-    const ph = this.#ph; if (ph?.setAngularVelocity) { ph.setAngularVelocity(this.entity, v); return; }
+    const ph = this.#ph;
+    if (ph?.setAngularVelocity) { ph.setAngularVelocity(this.entity, is3D() ? [v.x, v.y, v.z] : v); return; }
     const b = ph?.body?.(this.entity); if (b) b.angularVelocity = v;
   }
   /** `AddForce(force)` continuous (call every FixedUpdate) or `AddForce(force, ForceMode2D.Impulse)` for a one-off push. */
@@ -353,7 +356,11 @@ export class Rigidbody2D extends ComponentBase {
     this.#ph?.applyImpulse?.(this.entity, f.x * k, f.y * k, ...(is3D() ? [z * k] : []));
   }
   AddForceAtPosition(f, _pos, mode) { this.AddForce(f, mode); }
-  AddTorque(t) { this.angularVelocity = this.angularVelocity + t * Time.fixedDeltaTime / (this.mass || 1); }
+  AddTorque(t, mode) {
+    const k = Time.fixedDeltaTime / (this.mass || 1);
+    if (is3D()) { const a = this.angularVelocity; this.angularVelocity = new Vector3(a.x + t.x * k, a.y + t.y * k, a.z + t.z * k); } else this.angularVelocity = this.angularVelocity + t * k;
+    void mode;
+  }
   /** Drive a kinematic body to a position: sets the velocity that arrives there in one physics step. */
   MovePosition(target) {
     const p = this.entity.worldPos, dt = Time.fixedDeltaTime || 1 / 60;

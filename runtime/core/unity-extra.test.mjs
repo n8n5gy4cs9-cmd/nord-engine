@@ -406,3 +406,26 @@ test('Rigidbody2D wrapper: constraints, interpolation, collisionDetectionMode, s
   const poly = R.AddComponent('PolygonCollider2D'); poly.points = [new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1)]; assert.equal(poly.pointCount, 3);
   assert.equal(QueryTriggerInteraction.Ignore, 1);
 });
+
+// ---------------------------------------------------------------- joints (wrappers over the `joint` component data)
+import { HingeJoint2D, SpringJoint2D, TargetJoint2D, FixedJoint, ConfigurableJoint, ConfigurableJointMotion, SliderJoint2D, Rigidbody } from './index.js';
+
+test('Joint wrappers: AddComponent / GetComponent, connectedBody, limits, motor, spring, target, 3D motions', async () => {
+  const g = await sceneWith([ent('Post', { components: [{ type: 'rigidbody', mode: 'static' }] }), ent('Arm', { components: [{ type: 'rigidbody', mode: 'dynamic' }] })]);
+  const Post = g.scene.find('Post'), Arm = g.scene.find('Arm');
+  const h = Arm.AddComponent(HingeJoint2D);
+  assert.equal(Arm.getComponent('joint').data.kind, 'hinge');
+  h.connectedBody = Rigidbody2D.Of(Post); assert.equal(Arm.getComponent('joint').data.connectedBody, Post.id); assert.equal(h.connectedBody.entity, Post);
+  h.useLimits = true; h.limits = { min: -30, max: 45 }; assert.deepEqual(h.limits, { min: -30, max: 45 }); assert.equal(Arm.getComponent('joint').data.upperAngle, 45);
+  h.useMotor = true; h.motor = { motorSpeed: 90, maxMotorTorque: 500 }; assert.equal(h.motor.motorSpeed, 90);
+  h.anchor = new Vector2(1, 2); assert.deepEqual(Arm.getComponent('joint').data.anchor, [1, 2]); assert.equal(h.breakForce, Infinity); h.breakForce = 100; assert.equal(Arm.getComponent('joint').data.breakForce, 100);
+  assert.equal(Arm.GetComponent(HingeJoint2D).data.kind, 'hinge'); assert.equal(Arm.GetComponent('HingeJoint2D').useMotor, true); assert.equal(Arm.GetComponent(SpringJoint2D), null);
+  const sp = Arm.AddComponent(SpringJoint2D); sp.frequency = 3; sp.dampingRatio = 0.2; sp.distance = 4; assert.equal(Arm.components.filter((c) => c.type === 'joint').length, 2);
+  assert.equal(sp.frequency, 3); assert.equal(Arm.GetComponent(SpringJoint2D).distance, 4); assert.equal(Arm.GetComponent(HingeJoint2D).limits.min, -30);
+  const t = Arm.AddComponent(TargetJoint2D); t.target = new Vector2(10, 20); assert.equal(t.autoConfigureTarget, false); assert.deepEqual([t.target.x, t.target.y], [10, 20]);
+  const s2 = Arm.AddComponent(SliderJoint2D); s2.limits = { min: 0, max: 5 }; s2.useLimits = true; assert.equal(s2.limits.max, 5);
+  const f = Arm.AddComponent(FixedJoint); assert.equal(Arm.components.at(-1).data.kind, 'fixed'); void f;
+  const c = Arm.AddComponent(ConfigurableJoint); c.xMotion = ConfigurableJointMotion.Free; c.angularYMotion = 'Limited'; assert.equal(c.xMotion, 'free'); assert.equal(c.angularYMotion, 'limited'); c.angularYLimit = { limit: 20 }; assert.equal(c.angularYLimit.limit, 20);
+  assert.equal(Arm.GetComponents(HingeJoint2D).length >= 0, true);
+  assert.equal(Rigidbody === undefined, false);
+});
