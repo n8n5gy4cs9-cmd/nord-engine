@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T57 Nord Dungeon 3: Camera and a bigger level — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a><a href="tut-t38-coastline-sprint.html">T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t39-vector-patrol.html">T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t40-jengatedris.html">T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t41-nord-office.html">T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t42-paper-worlds.html">T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><a href="tut-t43-rss-river.html">T43 RSS River — build a calm reader with a physical paper view</a><a href="tut-t44-ui-designer.html">T44 Menus and HUDs with the UI Designer</a><a href="tut-t45-ui-skins-9slice.html">T45 One style for every button, and 9-slice images</a><a href="tut-t46-node-graph-coins.html">T46 Node graph — build a coin collector with no code</a><a href="tut-t47-unity-workflow.html">T47 The Unity-style workflow</a><a href="tut-t48-neon-harbor.html">T48 Neon Harbor, the full Unity-style showcase</a><a href="tut-t49-3d-modeler.html">T49 Model and paint a crate (3D Modeler)</a><a href="tut-t50-animator.html">T50 A hero that idles, walks and jumps (Animator)</a><a href="tut-t51-hosting-presets.html">T51 Ship it with a hosting preset</a><a href="tut-t52-profiler.html">T52 Find the slow part (Profiler)</a><a href="tut-t53-multiplayer.html">T53 Two players with spawn, sync and RPC</a><a href="tut-t54-change-scene-model.html">T54 Change a model in your scene (and its texture)</a><a href="tut-t55-series-dungeon-1.html">T55 Nord Dungeon 1: A hero that moves</a><a href="tut-t56-series-dungeon-2.html">T56 Nord Dungeon 2: Walls</a><a href="tut-t57-series-dungeon-3.html" class="cur" aria-current="page">T57 Nord Dungeon 3: Camera and a bigger level</a><a href="tut-t58-series-dungeon-4.html">T58 Nord Dungeon 4: Coins and score</a><a href="tut-t59-series-dungeon-5.html">T59 Nord Dungeon 5: Enemies and health</a><a href="tut-t60-series-dungeon-6.html">T60 Nord Dungeon 6: Light and shipping</a><a href="tut-t61-ember-crypt.html">T61 Ember Crypt: a complete game, from art to export</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T57 Nord Dungeon 3: Camera and a bigger level</h1>
+<p>Part 3 of the native-scripting dungeon series. It continues from <a href="tut-t56-series-dungeon-2.html">part 2, walls</a>. Allow 40 minutes.</p>
+<p><strong>What you will build:</strong> a 40 × 22 tile dungeon with six rooms and corridors, much bigger than the screen, and a camera that follows the hero smoothly and never shows the empty space outside the level.</p>
+<p><img src="../../assets/screenshots/series-dungeon-3-follow.png" alt="The camera follows the hero through the dungeon"></p>
+<p><strong>Download:</strong> <a href="../../assets/downloads/series-dungeon-part3-source.zip">Part 3 project</a>, also in <code>examples/series-dungeon/part3</code>.</p>
+<h2 id="1-a-bigger-map">1 A bigger map<a class="anchor" href="#1-a-bigger-map">#</a></h2>
+<p>Replace <code>scripts/map.js</code> with the dungeon of this part (forty columns, twenty-two rows, 1280 × 704 pixels). Rooms are the <code>.</code> areas, corridors join them and <code>P</code> is the start in the top-left room:</p>
+<pre class="code" data-lang="js"><code>export const MAP = [
+  '########################################',
+  '########################################',
+  '##........####..........#####.........##',
+  '##........####..........#####.........##',
+  '##...............................##...##',
+  '##....##..........###.................##',
+  '##........####..........#####.........##',
+  '##........####..........#####.........##',
+  '#####..#######..........#########..#####',
+  '#####..###########..#############..#####',
+  '#####..###########..#############..#####',
+  '#####..###########..#############..#####',
+  '##..........######..##########........##',
+  '##..........####..........####........##',
+  '##..........####..........####........##',
+  '##....##..........................##..##',
+  '##..................##................##',
+  '##..........####..........####........##',
+  '##..........####..........####........##',
+  '##..........####..........####........##',
+  '########################################',
+  '########################################',
+];</code></pre>
+<p>Nothing else in the project changes yet. Play it: the hero walks in a world three times wider than the screen and … the camera stays where it is, so the hero walks off the screen. We need a camera script.</p>
+<h2 id="2-what-a-camera-is">2 What a camera is<a class="anchor" href="#2-what-a-camera-is">#</a></h2>
+<p>The <code>camera</code> component on the <code>Camera</code> entity shows the part of the world around the entity&#39;s <strong>position</strong>. To follow something, move the camera entity. No special engine feature is needed, a script is enough.</p>
+<p>Create <code>scripts/follow.js</code>:</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class Follow extends NordScript {
+  static attributes = {
+    target: { type: 'string', default: 'Hero', label: 'Name of the entity to follow' },
+    stiffness: { type: 'number', default: 8, min: 0, label: 'Follow speed (0 = snap)' },
+    viewport: { type: 'vec2', default: [640, 360] },
+  };
+
+  start() {
+    this.target = this.scene.find(this.attrs.target);
+    this.bounds = null;
+    // the level announces its size once it has built itself
+    this.off = this.events.on('level', (size) =&gt; { this.bounds = size; this.snap = true; });
+  }
+
+  lateUpdate(dt) {                                                  // after every update(): the hero has already moved this frame
+    if (!this.target || !this.bounds) return;
+    const [hw, hh] = [this.attrs.viewport[0] / 2, this.attrs.viewport[1] / 2];
+    const goalX = Math.max(hw, Math.min(this.bounds.width - hw, this.target.pos[0]));
+    const goalY = Math.max(hh, Math.min(this.bounds.height - hh, this.target.pos[1]));
+    const [x, y, z] = this.entity.pos;
+    const k = this.snap || !this.attrs.stiffness ? 1 : 1 - Math.exp(-this.attrs.stiffness * dt);   // frame-rate independent smoothing
+    this.snap = false;
+    this.entity.pos = [x + (goalX - x) * k, y + (goalY - y) * k, z];
+  }
+
+  onDestroy() { this.off?.(); }
+}</code></pre>
+<p>Add it to the <code>Camera</code> entity and leave the target at <code>Hero</code>.</p>
+<ul>
+<li><code>lateUpdate(dt)</code> runs after every <code>update</code> and <code>fixedUpdate</code> of the frame. The camera must read the hero&#39;s position <strong>after</strong> the hero has moved, or it follows the previous frame and the picture shakes.</li>
+<li><strong>Bounds.</strong> The camera centre may only go as far as half a screen from each map edge, otherwise we would see the void outside the level. <code>goalX</code> is the hero&#39;s x clamped to <code>[hw, width − hw]</code>.</li>
+<li><strong>Smoothing.</strong> <code>x + (goalX − x) * k</code> moves a fraction <code>k</code> of the remaining distance each frame: quick when far, slow when near, which looks natural.</li>
+</ul>
+<blockquote>
+<p><strong>Why <code>1 - Math.exp(-stiffness * dt)</code> and not just <code>stiffness * dt</code>?</strong> With <code>k = stiffness * dt</code> the camera follows differently at 30 and 144 frames per second, and above <code>1 / dt</code> it overshoots. The exponential form gives the same result for any frame rate, and <code>k</code> can never exceed 1. This one-liner is worth copying into every game.</p>
+</blockquote>
+<h2 id="3-telling-the-camera-how-big-the-level-is">3 Telling the camera how big the level is<a class="anchor" href="#3-telling-the-camera-how-big-the-level-is">#</a></h2>
+<p>The camera needs the map size, which only <code>Level</code> knows. Do not make the camera import the level: scripts should not be glued to each other. Use the <strong>event bus</strong> instead. At the end of <code>Level.start</code>:</p>
+<pre class="code" data-lang="js"><code>this.events.emit('level', { width, height });</code></pre>
+<p>and the camera listens for it in its own <code>start</code>:</p>
+<pre class="code" data-lang="js"><code>this.off = this.events.on('level', (size) =&gt; { this.bounds = size; this.snap = true; });</code></pre>
+<p><code>this.events</code> is a game-wide message board: anyone can <code>emit</code> a named event with some data, anyone can <code>on</code> it. <code>on</code> returns a function that unsubscribes, which is why <code>onDestroy</code> calls <code>this.off?.()</code>. <code>this.snap = true</code> makes the first frame jump straight to the hero instead of sweeping across the map.</p>
+<blockquote>
+<p><strong>What if the camera script starts after the level has finished?</strong> The level <code>await</code>s many spawns, so it always finishes later. If you ever need a guarantee, let the receiver ask instead: store the data on the sender and read it in <code>start</code>. For this series the order is safe.</p>
+</blockquote>
+<h2 id="4-merging-walls">4 Merging walls<a class="anchor" href="#4-merging-walls">#</a></h2>
+<p>Make the Level script a better citizen. The last version created one entity per <code>#</code>. This map has 449 wall tiles. Our row-by-row loop merges <strong>horizontal runs</strong> of walls into one wide entity:</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+import { MAP } from './map.js';
+
+const sprite = (w, h, tint) =&gt; ({ type: 'sprite', texture: 'assets/sprites/square.png', size: [w, h], tint, alpha: 1 });
+const data = (name, tags, x, y, z, components) =&gt; ({ name, tags, transform: { pos: [x, y, z], rot: [0, 0, 0], scale: [1, 1, 1] }, components, scripts: [], children: [] });
+
+export default class Level extends NordScript {
+  static attributes = { tile: { type: 'number', default: 32, min: 8 } };
+
+  async start() {
+    const t = this.attrs.tile;
+    const width = MAP[0].length * t, height = MAP.length * t;
+    await this.scene.spawnData(data('Floor', [], width / 2, height / 2, -5, [sprite(width, height, '#2e3440')]));
+
+    for (let row = 0; row &lt; MAP.length; row++) {
+      let col = 0;
+      while (col &lt; MAP[row].length) {
+        const ch = MAP[row][col];
+        if (ch === '#') {
+          let end = col;                                           // extend the run while the next tile is a wall too
+          while (MAP[row][end + 1] === '#') end++;
+          const w = (end - col + 1) * t;
+          await this.scene.spawnData(data('Wall', ['solid'], col * t + w / 2, row * t + t / 2, 1, [
+            sprite(w, t, '#4c566a'), { type: 'rigidbody', mode: 'static' }, { type: 'collider', shape: 'box', size: [w, t] },
+          ]));
+          col = end + 1;
+          continue;
+        }
+        if (ch === 'P') this.scene.find('Hero').pos = [col * t + t / 2, row * t + t / 2, 2];
+        col++;
+      }
+    }
+    this.events.emit('level', { width, height });
+  }
+}</code></pre>
+<ul>
+<li><code>let end = col; while (MAP[row][end + 1] === &#39;#&#39;) end++;</code> finds where the run stops. At the end of a row <code>MAP[row][end + 1]</code> is <code>undefined</code>, which is not <code>&#39;#&#39;</code>, so the loop stops by itself.</li>
+<li>A run of <code>n</code> tiles becomes one wall of width <code>n * t</code>, centred at <code>col * t + w / 2</code>.</li>
+<li><code>continue</code> skips the rest of the loop body, and <code>col = end + 1</code> jumps past the run.</li>
+</ul>
+<p>The test script of this series counts the result: <strong>74 wall entities instead of 449 tiles</strong>. Fewer entities means fewer colliders to test every physics step, fewer sprites to draw and a smaller scene. A real engine does the same trick and calls it <em>greedy meshing</em> or <em>tile merging</em>. Merging vertically as well would shrink it further; try it as an exercise (hint: keep a grid of &quot;already used&quot; cells).</p>
+<h2 id="5-check-yourself">5 Check yourself<a class="anchor" href="#5-check-yourself">#</a></h2>
+<ul>
+<li>Walk through the whole dungeon. The camera glides after you.</li>
+<li>Stand in the top-left room: the camera does not show anything left of or above the map.</li>
+<li>Set <code>stiffness</code> to 0 in the Inspector: the camera is rigid. Set it to 2: it lags like a lazy cameraman.</li>
+<li>Count walls in the Hierarchy: far fewer than tiles.</li>
+</ul>
+<p><img src="../../assets/screenshots/series-dungeon-3-start.png" alt="The start of part 3"></p>
+<h2 id="what-you-learned">What you learned<a class="anchor" href="#what-you-learned">#</a></h2>
+<ul>
+<li>A camera is an entity; follow with a script in <code>lateUpdate</code>.</li>
+<li>Frame-rate independent smoothing: <code>1 - exp(-rate * dt)</code>.</li>
+<li>The event bus (<code>events.emit</code> / <code>events.on</code>) decouples scripts.</li>
+<li>Merge neighbouring tiles into one collider and sprite.</li>
+</ul>
+<p>Next: <a href="tut-t58-series-dungeon-4.html">Part 4, coins and score</a>.</p>
+<div class="pager"><a href="tut-t56-series-dungeon-2.html"><small>← Previous</small>T56 Nord Dungeon 2: Walls</a><a href="tut-t58-series-dungeon-4.html"><small>Next →</small>T58 Nord Dungeon 4: Coins and score</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-a-bigger-map">1 A bigger map </a><a href="#2-what-a-camera-is">2 What a camera is </a><a href="#3-telling-the-camera-how-big-the-level-is">3 Telling the camera how big the level is </a><a href="#4-merging-walls">4 Merging walls </a><a href="#5-check-yourself">5 Check yourself </a><a href="#what-you-learned">What you learned </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -1,0 +1,52 @@
+{
+  "format": 1,
+  "name": "Ember Crypt",
+  "id": "com.crowelian.ember-crypt",
+  "type": "2d",
+  "engineVersion": "0.1.0",
+  "startScene": "scenes/title.scene.json",
+  "display": {
+    "width": 640,
+    "height": 360,
+    "scale": "fit",
+    "pixelArt": true,
+    "background": "#07080c"
+  },
+  "physics": {
+    "engine": "arcade",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {
+      "left": [
+        "KeyA",
+        "ArrowLeft"
+      ],
+      "right": [
+        "KeyD",
+        "ArrowRight"
+      ],
+      "up": [
+        "KeyW",
+        "ArrowUp"
+      ],
+      "down": [
+        "KeyS",
+        "ArrowDown"
+      ],
+      "attack": [
+        "Space",
+        "KeyJ",
+        "Mouse0"
+      ],
+      "interact": [
+        "KeyE",
+        "Enter"
+      ]
+    }
+  }
+}

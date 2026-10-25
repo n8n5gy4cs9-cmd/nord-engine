@@ -2511,6 +2511,12 @@
       "milestone": "M13",
       "title": "Fix e2e BUG-013/014/015",
       "status": "done"
+    },
+    {
+      "id": "M13-35",
+      "milestone": "M13",
+      "title": "Tutorial series T55-T61 (native-code dungeon series + Ember Crypt capstone) with screenshots and tests",
+      "status": "done"
     }
   ]
 }

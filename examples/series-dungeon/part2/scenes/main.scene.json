@@ -1,0 +1,135 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "sd00001",
+      "name": "Camera",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          176,
+          10
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "camera",
+          "zoom": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "sd00002",
+      "name": "Level",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/level.js",
+          "attributes": {
+            "tile": 32
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "sd00003",
+      "name": "Hero",
+      "enabled": true,
+      "tags": [
+        "hero"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          48,
+          48,
+          2
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/square.png",
+          "size": [
+            24,
+            24
+          ],
+          "tint": "#88c0d0",
+          "alpha": 1
+        },
+        {
+          "type": "rigidbody",
+          "mode": "dynamic"
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            24,
+            24
+          ]
+        }
+      ],
+      "scripts": [
+        {
+          "path": "scripts/hero.js",
+          "attributes": {
+            "speed": 160
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

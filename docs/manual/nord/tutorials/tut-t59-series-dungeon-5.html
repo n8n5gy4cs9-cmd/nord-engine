@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T59 Nord Dungeon 5: Enemies and health — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a><a href="tut-t38-coastline-sprint.html">T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t39-vector-patrol.html">T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t40-jengatedris.html">T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t41-nord-office.html">T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t42-paper-worlds.html">T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><a href="tut-t43-rss-river.html">T43 RSS River — build a calm reader with a physical paper view</a><a href="tut-t44-ui-designer.html">T44 Menus and HUDs with the UI Designer</a><a href="tut-t45-ui-skins-9slice.html">T45 One style for every button, and 9-slice images</a><a href="tut-t46-node-graph-coins.html">T46 Node graph — build a coin collector with no code</a><a href="tut-t47-unity-workflow.html">T47 The Unity-style workflow</a><a href="tut-t48-neon-harbor.html">T48 Neon Harbor, the full Unity-style showcase</a><a href="tut-t49-3d-modeler.html">T49 Model and paint a crate (3D Modeler)</a><a href="tut-t50-animator.html">T50 A hero that idles, walks and jumps (Animator)</a><a href="tut-t51-hosting-presets.html">T51 Ship it with a hosting preset</a><a href="tut-t52-profiler.html">T52 Find the slow part (Profiler)</a><a href="tut-t53-multiplayer.html">T53 Two players with spawn, sync and RPC</a><a href="tut-t54-change-scene-model.html">T54 Change a model in your scene (and its texture)</a><a href="tut-t55-series-dungeon-1.html">T55 Nord Dungeon 1: A hero that moves</a><a href="tut-t56-series-dungeon-2.html">T56 Nord Dungeon 2: Walls</a><a href="tut-t57-series-dungeon-3.html">T57 Nord Dungeon 3: Camera and a bigger level</a><a href="tut-t58-series-dungeon-4.html">T58 Nord Dungeon 4: Coins and score</a><a href="tut-t59-series-dungeon-5.html" class="cur" aria-current="page">T59 Nord Dungeon 5: Enemies and health</a><a href="tut-t60-series-dungeon-6.html">T60 Nord Dungeon 6: Light and shipping</a><a href="tut-t61-ember-crypt.html">T61 Ember Crypt: a complete game, from art to export</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T59 Nord Dungeon 5: Enemies and health</h1>
+<p>Part 5 of the native-scripting dungeon series, continuing from <a href="tut-t58-series-dungeon-4.html">part 4, coins and score</a>. Allow 50 minutes.</p>
+<p><strong>What you will build:</strong> six red enemies that wander, chase you when you come near, hurt you on contact (with a short protection time and knockback), three hearts on the HUD and a game-over screen.</p>
+<p><img src="../../assets/screenshots/series-dungeon-5-chase.png" alt="An enemy chases the hero"></p>
+<p><strong>Download:</strong> <a href="../../assets/downloads/series-dungeon-part5-source.zip">Part 5 project</a>, also in <code>examples/series-dungeon/part5</code>.</p>
+<h2 id="1-enemies-in-the-map">1 Enemies in the map<a class="anchor" href="#1-enemies-in-the-map">#</a></h2>
+<p>The letter <code>e</code> marks an enemy in <code>map.js</code>. In the <code>Level</code> loop add one branch, like the coin one:</p>
+<pre class="code" data-lang="js"><code>} else if (ch === 'e') {
+  await this.scene.spawnData(data('Enemy', ['enemy'], x, y, 2, [
+    sprite(22, 22, '#bf616a'), { type: 'rigidbody', mode: 'dynamic' }, { type: 'collider', shape: 'box', size: [22, 22] },
+  ], [{ path: 'scripts/enemy.js', attributes: {} }]));
+}</code></pre>
+<p>An enemy is a <strong>dynamic</strong> body: it moves, it collides with walls and with the hero.</p>
+<h2 id="2-the-enemy-brain">2 The enemy brain<a class="anchor" href="#2-the-enemy-brain">#</a></h2>
+<p>An enemy has two moods. If the hero is close, <strong>chase</strong>. If not, <strong>wander</strong>: pick a random direction, walk for a second or two, pick another, and sometimes stand still.</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class Enemy extends NordScript {
+  static attributes = {
+    speed: { type: 'number', default: 80, min: 0 },
+    sight: { type: 'number', default: 170, min: 0, label: 'Sees the hero within (px)' },
+    reach: { type: 'number', default: 24, min: 0, label: 'Touch distance (px)' },
+  };
+
+  start() {
+    this.hero = this.scene.find('Hero');
+    this.dir = [0, 0];
+    this.think = this.rng.range(0, 1);
+  }
+
+  distance() {
+    return Math.hypot(this.hero.pos[0] - this.entity.pos[0], this.hero.pos[1] - this.entity.pos[1]);
+  }
+
+  fixedUpdate(dt) {
+    if (!this.hero || this.hero.destroyed) return;
+    const d = this.distance();
+    if (d &lt; this.attrs.sight) {                                     // chase
+      this.dir = [(this.hero.pos[0] - this.entity.pos[0]) / d, (this.hero.pos[1] - this.entity.pos[1]) / d];
+      this.think = 0.3;
+    } else {                                                        // wander: pick a new direction every second or two
+      this.think -= dt;
+      if (this.think &lt;= 0) {
+        const a = this.rng.range(0, Math.PI * 2);
+        this.dir = this.rng.next() &lt; 0.3 ? [0, 0] : [Math.cos(a), Math.sin(a)];
+        this.think = this.rng.range(1, 2.5);
+      }
+    }
+    const s = this.attrs.speed * (d &lt; this.attrs.sight ? 1 : 0.4);
+    this.physics.setVelocity(this.entity, this.dir[0] * s, this.dir[1] * s);
+  }
+
+  update() {
+    if (this.hero &amp;&amp; !this.hero.destroyed &amp;&amp; this.distance() &lt; this.attrs.reach) this.hero.emit('hit', { from: this.entity });
+  }
+}</code></pre>
+<ul>
+<li>The sight test is the distance between two points, <code>Math.hypot(dx, dy)</code>. Dividing the difference by the distance gives a <strong>unit vector</strong> pointing at the hero, so speed is the same however far away the hero is.</li>
+<li><code>this.think</code> is a countdown. Every fixed step it goes down by <code>dt</code>; at 0 the enemy chooses again. This is the simplest way to make something happen &quot;every now and then&quot; with no timer objects. (<code>this.after(seconds, fn)</code> and <code>this.every(seconds, fn)</code> also exist if you prefer callbacks.)</li>
+<li>The wandering enemy uses 40% of its speed (<code>0.4</code>) so it looks relaxed.</li>
+<li>The enemy moves with <code>setVelocity</code> like the hero, so the same walls stop it.</li>
+<li>In <code>update</code> the enemy checks the distance to the hero. If it is smaller than <code>reach</code>, it sends the hero a <code>hit</code> message: <code>this.hero.emit(&#39;hit&#39;, { from: this.entity })</code>. That is an <strong>entity event</strong>: the message goes to one specific entity only, not to the whole game.</li>
+</ul>
+<blockquote>
+<p><strong>Isn&#39;t it unfair that they see through walls?</strong> Yes, and it is a good thing to notice. In this part we accept it; in part 6 darkness makes it feel like a feature, and the follow-up <a href="tut-t61-ember-crypt.html">T61</a> adds real line-of-sight.</p>
+</blockquote>
+<h2 id="3-health">3 Health<a class="anchor" href="#3-health">#</a></h2>
+<p>Health is a small reusable script. It could sit on an enemy, a crate or a door. Add <code>scripts/health.js</code> to the <code>Hero</code>:</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class Health extends NordScript {
+  static attributes = {
+    max: { type: 'number', default: 3, min: 1 },
+    grace: { type: 'number', default: 1, min: 0, label: 'Invulnerable seconds after a hit' },
+  };
+
+  start() {
+    this.hp = this.attrs.max;
+    this.grace = 0;
+    this.entity.on('hit', (e) =&gt; this.hit(e));
+    this.events.emit('health', { hp: this.hp, max: this.attrs.max });
+  }
+
+  hit({ from }) {
+    if (this.hp &lt;= 0 || this.grace &gt; 0) return;                     // already dead, or still protected
+    this.hp--;
+    this.grace = this.attrs.grace;
+    this.events.emit('health', { hp: this.hp, max: this.attrs.max });
+    this.entity.emit('hurt', { from });                             // the hero script reacts with knockback
+    if (this.hp &lt;= 0) this.events.emit('died');
+  }
+
+  update(dt) {
+    this.grace = Math.max(0, this.grace - dt);
+    const blink = this.grace &gt; 0 &amp;&amp; Math.floor(this.grace * 10) % 2 === 0;
+    this.entity.set('sprite', 'alpha', blink ? 0.35 : 1);
+  }
+}</code></pre>
+<ul>
+<li><code>this.entity.on(&#39;hit&#39;, fn)</code> listens for the hit messages sent to this entity.</li>
+<li><strong>Grace period.</strong> After a hit the hero is protected for <code>grace</code> seconds. Without it an enemy touching the hero would deal 60 damage per second. <code>hit()</code> ignores calls while <code>this.grace &gt; 0</code>.</li>
+<li>Health announces itself with the game-wide event <code>health</code> (for the HUD) and the entity event <code>hurt</code> (for the hero&#39;s own knockback).</li>
+<li>The blink: while protected, <code>Math.floor(this.grace * 10) % 2 === 0</code> flips every tenth of a second, so the sprite alternates between 35% and full opacity. <code>this.entity.set(&#39;sprite&#39;, &#39;alpha&#39;, value)</code> changes a field of the sprite component.</li>
+<li><code>died</code> is announced once when the hit points reach zero.</li>
+</ul>
+<h2 id="4-knockback-and-death">4 Knockback and death<a class="anchor" href="#4-knockback-and-death">#</a></h2>
+<p>The hero reacts to <code>hurt</code> by being pushed away from the attacker for a moment. Extend <code>hero.js</code>:</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class Hero extends NordScript {
+  static attributes = {
+    speed: { type: 'number', default: 160, min: 0, label: 'Speed (px/s)' },
+    knockback: { type: 'number', default: 260, min: 0 },
+  };
+
+  start() {
+    this.kick = [0, 0];
+    this.stun = 0;
+    this.dead = false;
+    this.entity.on('hurt', ({ from }) =&gt; {
+      const dx = this.entity.pos[0] - from.pos[0], dy = this.entity.pos[1] - from.pos[1];
+      const d = Math.hypot(dx, dy) || 1;
+      this.kick = [dx / d * this.attrs.knockback, dy / d * this.attrs.knockback];
+      this.stun = 0.15;                                             // no steering while we fly backwards
+    });
+    this.off = this.events.on('died', () =&gt; { this.dead = true; });
+  }
+
+  fixedUpdate(dt) {
+    if (this.dead) { this.physics.setVelocity(this.entity, 0, 0); return; }
+    if (this.stun &gt; 0) {
+      this.stun -= dt;
+      this.physics.setVelocity(this.entity, this.kick[0], this.kick[1]);
+      return;
+    }
+    const [x, y] = this.input.vec('left', 'right', 'up', 'down');
+    this.physics.setVelocity(this.entity, x * this.attrs.speed, y * this.attrs.speed);
+  }
+
+  onDestroy() { this.off?.(); }
+}</code></pre>
+<ul>
+<li>The direction away from the attacker is <code>hero − attacker</code>, normalised. Multiply by <code>knockback</code> for the speed.</li>
+<li>While <code>this.stun &gt; 0</code> the player cannot steer; the push velocity is applied instead. 0.15 seconds is long enough to feel, short enough not to annoy.</li>
+<li>After <code>died</code> the hero stops (<code>this.dead</code>). The script listens with <code>this.events.on</code> and unsubscribes in <code>onDestroy</code>.</li>
+</ul>
+<h2 id="5-hearts-and-game-over">5 Hearts and game over<a class="anchor" href="#5-hearts-and-game-over">#</a></h2>
+<p>The HUD gets a second label at the top right (<code>anchor: &#39;tr&#39;</code>) and two more subscriptions:</p>
+<pre class="code" data-lang="js"><code>this.hearts = this.ui.label('', { screen: 'hud', anchor: 'tr', x: 12, y: 8, size: 26, color: '#bf616a' });
+// …
+this.events.on('health', ({ hp, max }) =&gt; this.hearts.set('♥'.repeat(hp) + '♡'.repeat(max - hp))),
+this.events.on('died', () =&gt; this.finish('Game over', '#bf616a')),</code></pre>
+<p>The two endings, winning and dying, share one <code>finish(text, color)</code> function, which also prevents showing both. The complete script:</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class Hud extends NordScript {
+  start() {
+    this.count = 0;
+    this.total = 0;
+    this.over = false;
+    this.score = this.ui.label('', { screen: 'hud', x: 12, y: 8, size: 22, color: '#ebcb8b' });
+    this.hearts = this.ui.label('', { screen: 'hud', anchor: 'tr', x: 12, y: 8, size: 26, color: '#bf616a' });
+    this.offs = [
+      this.events.on('level', ({ coins }) =&gt; { this.total = coins; this.refresh(); }),
+      this.events.on('coin', () =&gt; { this.count++; this.refresh(); }),
+      this.events.on('health', ({ hp, max }) =&gt; this.hearts.set('♥'.repeat(hp) + '♡'.repeat(max - hp))),
+      this.events.on('died', () =&gt; this.finish('Game over', '#bf616a')),
+    ];
+    this.refresh();
+  }
+
+  refresh() {
+    this.score.set(`● ${this.count} / ${this.total}`);
+    if (this.total &gt; 0 &amp;&amp; this.count === this.total) this.finish('You found all the coins!', '#a3be8c');
+  }
+
+  finish(text, color) {
+    if (this.over) return;
+    this.over = true;
+    this.ui.label(text, { screen: 'hud', anchor: 'c', size: 34, color });
+    this.ui.label('Press E to play again', { screen: 'hud', anchor: 'c', y: 44, size: 20 });
+  }
+
+  update() {
+    if (this.over &amp;&amp; this.input.pressed('interact')) this.game.restart();
+  }
+
+  onDestroy() { this.score?.remove(); this.hearts?.remove(); this.offs?.forEach((off) =&gt; off()); }
+}</code></pre>
+<p>Press <strong>Play</strong>. Walk near an enemy: it comes for you, a heart disappears, you are pushed back and blink for a second. Lose all three: <em>Game over</em>, and E restarts.</p>
+<p><img src="../../assets/screenshots/series-dungeon-5-over.png" alt="Game over"></p>
+<h2 id="6-check-yourself">6 Check yourself<a class="anchor" href="#6-check-yourself">#</a></h2>
+<ul>
+<li>Stand still next to an enemy: you lose one heart per second, not per frame.</li>
+<li>Collect the last coin and die in the same second: only one message appears.</li>
+<li>Restart three times: the hearts are full each time and no label is doubled.</li>
+</ul>
+<p>If an enemy never hurts you, check that the hero is tagged <code>hero</code> (the enemy finds it by name <code>Hero</code>), and that <code>Health</code> is attached to the hero.</p>
+<h2 id="what-you-learned">What you learned<a class="anchor" href="#what-you-learned">#</a></h2>
+<ul>
+<li>A simple enemy is a state decision every fixed step: chase or wander.</li>
+<li>Unit vectors (difference ÷ distance) give direction without speed.</li>
+<li>Entity events (<code>entity.emit</code> / <code>entity.on</code>) talk to one entity; <code>this.events</code> talks to everyone.</li>
+<li>Grace time prevents damage every frame.</li>
+<li>One script does one job: Health knows hearts, not enemies.</li>
+</ul>
+<p>Next: <a href="tut-t60-series-dungeon-6.html">Part 6, light and shipping</a>.</p>
+<div class="pager"><a href="tut-t58-series-dungeon-4.html"><small>← Previous</small>T58 Nord Dungeon 4: Coins and score</a><a href="tut-t60-series-dungeon-6.html"><small>Next →</small>T60 Nord Dungeon 6: Light and shipping</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-enemies-in-the-map">1 Enemies in the map </a><a href="#2-the-enemy-brain">2 The enemy brain </a><a href="#3-health">3 Health </a><a href="#4-knockback-and-death">4 Knockback and death </a><a href="#5-hearts-and-game-over">5 Hearts and game over </a><a href="#6-check-yourself">6 Check yourself </a><a href="#what-you-learned">What you learned </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>T55 Nord Dungeon 1: A hero that moves — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="tutorials.html" class="active" aria-current="page">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Tutorials</div><a href="tutorials.html">Learn by building</a><a href="tut-t01-hello-nord.html">T01 Hello Nord</a><a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a><a href="tut-t03-first-script.html">T03 Your first script</a><a href="tut-t04-platformer.html">T04 Platformer from template</a><a href="tut-t05-physics.html">T05 Physics &amp; collisions</a><a href="tut-t06-tilemaps.html">T06 Tilemaps</a><a href="tut-t07-animation-juice.html">T07 Animation &amp; juice</a><a href="tut-t08-ui-hud.html">T08 UI &amp; HUD</a><a href="tut-t09-audio.html">T09 Audio</a><a href="tut-t10-3d-scene.html">T10 3D scene &amp; camera</a><a href="tut-t11-3d-physics.html">T11 3D physics (FPS)</a><a href="tut-t12-enemy-ai.html">T12 Enemy AI</a><a href="tut-t13-save-load.html">T13 Save &amp; load</a><a href="tut-t14-export-host.html">T14 Export to web &amp; host it</a><a href="tut-t15-mac-app.html">T15 Mac app</a><a href="tut-t16-rust-game.html">T16 Rust/WASM game</a><a href="tut-t17-rust-egui-app.html">T17 Rust egui app</a><a href="tut-t18-library-snippets.html">T18 Writing library snippets</a><a href="tut-t19-notepaint.html">T19 Build notepaint, from a blank folder</a><a href="tut-t20-star-not.html">T20 Build Star-Not, a complete small space adventure</a><a href="tut-t21-project-design.html">T21 Plan a bigger Nord project</a><a href="tut-t22-shader-terrain.html">T22 Put a terrain shader in a Nord app</a><a href="tut-t23-light-shadows.html">T23 2D lights and real shadows</a><a href="tut-t24-event-sheet-platformer.html">T24 A platformer from events</a><a href="tut-t25-topdown-shooter.html">T25 A top-down shooter from events</a><a href="tut-t26-menus-languages.html">T26 Menus and two languages</a><a href="tut-t27-fps-level.html">T27 Build your first FPS level</a><a href="tut-t28-machine-workshop.html">T28 Machine Workshop — build a gravity puzzle in 2D Level</a><a href="tut-t29-dungeon-two-floors.html">T29 Two Floors — edit a Shattered Pixel Dungeon adaptation</a><a href="tut-t30-tank-patrol.html">T30 Tiny Tank Patrol — build a top-down tank arena</a><a href="tut-t31-full-2d-platformer.html">T31 Full game workshop — Coin Canyon (2D)</a><a href="tut-t32-full-3d-platformer.html">T32 Full game workshop — Sunset Gems (3D)</a><a href="tut-t33-code-coin-rush.html">T33 Code a full 2D game — Coin Rush</a><a href="tut-t34-code-crystal-relay.html">T34 Code a full 3D game — Crystal Relay</a><a href="tut-t35-advanced-prism-shaders.html">T35 Prism Relay — code reactive GLSL game materials</a><a href="tut-t36-advanced-node-vault.html">T36 Circuit Vault — a web game with a real Node server</a><a href="tut-t37-advanced-rust-wasm.html">T37 Orbital Salvage — code Rust gameplay and export real WASM</a><a href="tut-t38-coastline-sprint.html">T38 Coastline Sprint — code an Amiga racer with two-player split-screen</a><a href="tut-t39-vector-patrol.html">T39 Vector Patrol — code a retro 3D rail shooter</a><a href="tut-t40-jengatedris.html">T40 JengaTedris — grid, physics and Node battle</a><a href="tut-t41-nord-office.html">T41 Nord Engine Office — interns, bugs and AI</a><a href="tut-t42-paper-worlds.html">T42 Paper Worlds — draw in 2D, explore your ideas in 3D</a><a href="tut-t43-rss-river.html">T43 RSS River — build a calm reader with a physical paper view</a><a href="tut-t44-ui-designer.html">T44 Menus and HUDs with the UI Designer</a><a href="tut-t45-ui-skins-9slice.html">T45 One style for every button, and 9-slice images</a><a href="tut-t46-node-graph-coins.html">T46 Node graph — build a coin collector with no code</a><a href="tut-t47-unity-workflow.html">T47 The Unity-style workflow</a><a href="tut-t48-neon-harbor.html">T48 Neon Harbor, the full Unity-style showcase</a><a href="tut-t49-3d-modeler.html">T49 Model and paint a crate (3D Modeler)</a><a href="tut-t50-animator.html">T50 A hero that idles, walks and jumps (Animator)</a><a href="tut-t51-hosting-presets.html">T51 Ship it with a hosting preset</a><a href="tut-t52-profiler.html">T52 Find the slow part (Profiler)</a><a href="tut-t53-multiplayer.html">T53 Two players with spawn, sync and RPC</a><a href="tut-t54-change-scene-model.html">T54 Change a model in your scene (and its texture)</a><a href="tut-t55-series-dungeon-1.html" class="cur" aria-current="page">T55 Nord Dungeon 1: A hero that moves</a><a href="tut-t56-series-dungeon-2.html">T56 Nord Dungeon 2: Walls</a><a href="tut-t57-series-dungeon-3.html">T57 Nord Dungeon 3: Camera and a bigger level</a><a href="tut-t58-series-dungeon-4.html">T58 Nord Dungeon 4: Coins and score</a><a href="tut-t59-series-dungeon-5.html">T59 Nord Dungeon 5: Enemies and health</a><a href="tut-t60-series-dungeon-6.html">T60 Nord Dungeon 6: Light and shipping</a><a href="tut-t61-ember-crypt.html">T61 Ember Crypt: a complete game, from art to export</a></nav><main id="content"><div class="crumb">Tutorials / Nord Engine</div><h1>T55 Nord Dungeon 1: A hero that moves</h1>
+<p>This is the first part of a series about making a complete top-down dungeon game in Nord Engine, <strong>without any Unity-style helper classes</strong>: only the native <code>NordScript</code> API that every Nord project has. You write each script yourself and every line is explained. The series has six parts.</p>
+<ol>
+<li><strong>A hero that moves</strong> (this part)</li>
+<li><a href="tut-t56-series-dungeon-2.html">Walls</a></li>
+<li><a href="tut-t57-series-dungeon-3.html">Camera and a bigger level</a></li>
+<li><a href="tut-t58-series-dungeon-4.html">Coins and score</a></li>
+<li><a href="tut-t59-series-dungeon-5.html">Enemies and health</a></li>
+<li><a href="tut-t60-series-dungeon-6.html">Light and shipping</a></li>
+</ol>
+<p>Afterwards, <a href="tut-t61-ember-crypt.html">T61 Ember Crypt</a> takes everything and builds a finished, good-looking game.</p>
+<p>This tutorial assumes you can open the Nord editor and know what a variable and a function are. Nothing else. Allow 20 minutes.</p>
+<p><strong>What you will build:</strong> a blue square that you steer with WASD or the arrow keys, at the same speed on a slow laptop and a fast desktop, and that cannot leave the screen.</p>
+<p><img src="../../assets/screenshots/series-dungeon-1-moved.png" alt="The hero square on the floor, after moving to the right edge"></p>
+<p><strong>Download:</strong> <a href="../../assets/downloads/series-dungeon-part1-source.zip">Part 1 project</a>. Unzip it, open <code>nord.project.json</code> in Nord and press <strong>Play</strong>. Every part&#39;s folder is also in <code>examples/series-dungeon/</code> of the engine.</p>
+<h2 id="1-a-new-project">1 A new project<a class="anchor" href="#1-a-new-project">#</a></h2>
+<p>Start the editor and create a <strong>2D</strong> project called <code>dungeon</code>. From a terminal the same thing is:</p>
+<pre class="code" data-lang="bash"><code>nord new dungeon -t 2d</code></pre>
+<p>Open <code>nord.project.json</code>. It describes the whole project. We want a small, crisp screen that the engine scales to fit any window, and a world with no gravity because we look at the dungeon from above. Make <code>display</code> and <code>physics</code> look like this:</p>
+<pre class="code" data-lang="json"><code>&quot;display&quot;: { &quot;width&quot;: 640, &quot;height&quot;: 360, &quot;scale&quot;: &quot;fit&quot;, &quot;pixelArt&quot;: false, &quot;background&quot;: &quot;#14161c&quot; },
+&quot;physics&quot;: { &quot;engine&quot;: &quot;arcade&quot;, &quot;gravity&quot;: [0, 0, 0] },</code></pre>
+<p>(The editor&#39;s project settings edit the same values with fields instead of text.)</p>
+<p>The same file lists the <strong>input actions</strong>: names that a script uses instead of key codes. The default project already has <code>left</code>, <code>right</code>, <code>up</code> and <code>down</code> mapped to both WASD and the arrow keys:</p>
+<pre class="code" data-lang="json"><code>&quot;input&quot;: { &quot;actions&quot;: { &quot;left&quot;: [&quot;KeyA&quot;, &quot;ArrowLeft&quot;], &quot;right&quot;: [&quot;KeyD&quot;, &quot;ArrowRight&quot;], &quot;up&quot;: [&quot;KeyW&quot;, &quot;ArrowUp&quot;], &quot;down&quot;: [&quot;KeyS&quot;, &quot;ArrowDown&quot;] } }</code></pre>
+<blockquote>
+<p><strong>Why actions and not &quot;is the A key down&quot;?</strong> A player can rebind actions, a gamepad can drive them and a phone joystick can drive them, and your script does not change. You will meet the same pattern in every game engine.</p>
+</blockquote>
+<h2 id="2-scene-floor-camera-and-hero">2 Scene: floor, camera and hero<a class="anchor" href="#2-scene-floor-camera-and-hero">#</a></h2>
+<p>Everything you see lives in a <strong>scene</strong>, <code>scenes/main.scene.json</code>. A scene is a list of <strong>entities</strong>. An entity is only a name, a position and a bag of <strong>components</strong> (a sprite, a collider, a camera…) and <strong>scripts</strong>.</p>
+<p>Create three entities in the <span class="c-ui">Hierarchy</span> with <span class="c-ui">Create ▸ Sprite</span>:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Position (x, y, z)</th>
+<th>Sprite size</th>
+<th>Tint</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Floor</code></td>
+<td>320, 180, <strong>-5</strong></td>
+<td>640 × 360</td>
+<td><code>#2e3440</code></td>
+<td>the background</td>
+</tr>
+<tr>
+<td><code>Hero</code></td>
+<td>320, 180, <strong>2</strong></td>
+<td>24 × 24</td>
+<td><code>#88c0d0</code></td>
+<td>tag it <code>hero</code></td>
+</tr>
+<tr>
+<td><code>Camera</code></td>
+<td>320, 180, 10</td>
+<td></td>
+<td></td>
+<td>a <strong>camera</strong> component, zoom 1</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>What is the z value for?</strong> In a 2D scene <code>z</code> decides what is drawn on top: a larger <code>z</code> is in front. The floor is at -5 so everything else covers it. The camera&#39;s own z does not matter for drawing.</p>
+</blockquote>
+<p>The y axis points <strong>down</strong>, like on a web page. (0, 0) is the top-left corner of the world, so (320, 180) is the middle of a 640 × 360 screen.</p>
+<p>Press <strong>Play</strong>. You see a dark floor and a blue square. Nothing moves yet.</p>
+<h2 id="3-the-first-script">3 The first script<a class="anchor" href="#3-the-first-script">#</a></h2>
+<p>Create <code>scripts/hero.js</code>. A script is a class that extends <code>NordScript</code>. The engine creates one instance for every entity that has the script attached and calls the methods you define:</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class Hero extends NordScript {
+  update(dt) {
+    // runs once per frame; dt is the seconds since the previous frame
+  }
+}</code></pre>
+<p>Select <code>Hero</code>, press <span class="c-ui">+ Add script</span> in the <span class="c-ui">Inspector</span> and choose <code>scripts/hero.js</code>.</p>
+<p>You will use these methods over the series:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>When it runs</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>init()</code></td>
+<td>once, right after the script object is created</td>
+</tr>
+<tr>
+<td><code>start()</code></td>
+<td>once, when the whole scene exists (so other entities can be found)</td>
+</tr>
+<tr>
+<td><code>update(dt)</code></td>
+<td>every rendered frame</td>
+</tr>
+<tr>
+<td><code>fixedUpdate(dt)</code></td>
+<td>at a fixed 60 times per second, for physics</td>
+</tr>
+<tr>
+<td><code>lateUpdate(dt)</code></td>
+<td>every frame, after all <code>update</code> calls</td>
+</tr>
+<tr>
+<td><code>onDestroy()</code></td>
+<td>when the entity is removed</td>
+</tr>
+</tbody></table>
+<h2 id="4-reading-the-keyboard">4 Reading the keyboard<a class="anchor" href="#4-reading-the-keyboard">#</a></h2>
+<p><code>this.input</code> gives you the actions. <code>this.input.vec(&#39;left&#39;, &#39;right&#39;, &#39;up&#39;, &#39;down&#39;)</code> returns <code>[x, y]</code>, each between -1 and 1:</p>
+<pre class="code" data-lang="js"><code>update(dt) {
+  const [x, y] = this.input.vec('left', 'right', 'up', 'down');
+  this.log(x, y);
+}</code></pre>
+<p>Play and look at the <span class="c-ui">Console</span>: <code>[1, 0]</code> while you hold D, <code>[-1, 0]</code> for A, and about <code>[0.71, 0.71]</code> for two keys at once.</p>
+<blockquote>
+<p><strong>Why is the diagonal 0.71 and not 1?</strong> If a diagonal were <code>[1, 1]</code> the hero would move 41% faster diagonally, because the diagonal of a unit square is √2 ≈ 1.41 long. <code>vec</code> divides such vectors by their length, so the result never has a length above 1. Try to remember this one: it is the classic bug of beginner top-down games.</p>
+</blockquote>
+<h2 id="5-moving-speed-times-time">5 Moving: speed times time<a class="anchor" href="#5-moving-speed-times-time">#</a></h2>
+<p>Replace the body of the script with the final version:</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class Hero extends NordScript {
+  static attributes = {
+    speed: { type: 'number', default: 160, min: 0, label: 'Speed (px/s)' },
+  };
+
+  update(dt) {
+    const [x, y] = this.input.vec('left', 'right', 'up', 'down');   // each -1..1, diagonals already normalised
+    const p = this.entity.pos;
+    const s = this.attrs.speed * dt;                                // pixels to move this frame
+    this.entity.pos = [
+      Math.max(12, Math.min(628, p[0] + x * s)),                    // keep the 24 px hero on the 640 x 360 screen
+      Math.max(12, Math.min(348, p[1] + y * s)),
+      p[2],
+    ];
+  }
+}</code></pre>
+<p>Walk through it:</p>
+<ul>
+<li><code>static attributes</code> declares <strong>editable fields</strong>. <code>speed</code> appears in the Inspector under the script with a label, a default and a minimum. Change it while the game runs and the hero reacts. The values are saved in the scene, so you can have a slow hero in one scene and a fast one in another without touching the code. Read them as <code>this.attrs.speed</code>.</li>
+<li><code>this.attrs.speed * dt</code> is the distance this frame. If the game runs at 60 frames per second <code>dt</code> is 0.0167, so the hero moves 160 × 0.0167 ≈ 2.7 pixels per frame, 160 pixels per second. At 144 frames per second <code>dt</code> is smaller and the steps are smaller, so the speed on the screen is the same. <strong>Always multiply a speed by <code>dt</code></strong>; multiplying by nothing makes the game faster on faster computers.</li>
+<li><code>this.entity.pos</code> is the entity&#39;s position <code>[x, y, z]</code>. You cannot change one number of the array in place; assign a whole new array, as the code does.</li>
+<li><code>Math.max(12, Math.min(628, …))</code> clamps the position. The hero is 24 pixels wide, so its centre must stay at least 12 pixels from every edge. This is a temporary fence: in the next part real walls replace it.</li>
+</ul>
+<p>Press <strong>Play</strong>, hold D for three seconds. The square slides to the right edge and stops.</p>
+<p><img src="../../assets/screenshots/series-dungeon-1-start.png" alt="The hero at the start, and after holding the right key"></p>
+<h2 id="6-check-yourself">6 Check yourself<a class="anchor" href="#6-check-yourself">#</a></h2>
+<ul>
+<li>Hold W and D together: the hero moves diagonally at the same speed as straight.</li>
+<li>Change <code>speed</code> to 400 in the Inspector while playing: the hero gets faster at once.</li>
+<li>Open the project folder in a text editor: <code>scenes/main.scene.json</code> contains your three entities as plain JSON. Nord scenes are meant to be read and merged in Git.</li>
+</ul>
+<p>If the hero does not move, click once inside the Game view: the game only receives the keyboard while it has focus.</p>
+<h2 id="what-you-learned">What you learned<a class="anchor" href="#what-you-learned">#</a></h2>
+<ul>
+<li>A project is a folder with <code>nord.project.json</code>, scenes and scripts.</li>
+<li>A scene is a list of entities; an entity holds components and scripts.</li>
+<li>A script is a class with lifecycle methods. <code>update(dt)</code> runs every frame.</li>
+<li>Input actions beat key codes. <code>input.vec</code> already normalises diagonals.</li>
+<li>Movement is speed × <code>dt</code>, always.</li>
+</ul>
+<p>Next: <a href="tut-t56-series-dungeon-2.html">Part 2, walls</a>.</p>
+<div class="pager"><a href="tut-t54-change-scene-model.html"><small>← Previous</small>T54 Change a model in your scene (and its texture)</a><a href="tut-t56-series-dungeon-2.html"><small>Next →</small>T56 Nord Dungeon 2: Walls</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-a-new-project">1 A new project </a><a href="#2-scene-floor-camera-and-hero">2 Scene: floor, camera and hero </a><a href="#3-the-first-script">3 The first script </a><a href="#4-reading-the-keyboard">4 Reading the keyboard </a><a href="#5-moving-speed-times-time">5 Moving: speed times time </a><a href="#6-check-yourself">6 Check yourself </a><a href="#what-you-learned">What you learned </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

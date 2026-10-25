@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 322/336 tasks (96%)** · updated 2026-10-25
+**Overall: 323/337 tasks (96%)** · updated 2026-10-25
 
 | Milestone | Progress |
 |---|---|
@@ -20,7 +20,7 @@
 | M10 Construct-style editor | 36/36 (100%) |
 | M11 Web editor | 14/16 (88%) |
 | M12 FPS Creator addon | 30/31 (97%) |
-| M13 Unity-style editor (Godotize) | 33/34 (97%) |
+| M13 Unity-style editor (Godotize) | 34/35 (97%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -420,6 +420,7 @@ _Unity-like editor workflow on the existing tools: Scene/Game/Hierarchy/Inspecto
 - [x] **M13-32** Game view keyboard focus + Esc unlocks mouse + Application.platform/isEditor + Cursor
 - [x] **M13-33** Examples pages 46-48: pathfinding/NavMesh, cutscenes/Timeline, 2D lights; smoke pass of all 87 examples + manual check
 - [x] **M13-34** Fix e2e BUG-013/014/015
+- [x] **M13-35** Tutorial series T55-T61 (native-code dungeon series + Ember Crypt capstone) with screenshots and tests
 
 ## Features (PRD)
 
