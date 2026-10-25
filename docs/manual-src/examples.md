@@ -110,6 +110,7 @@ You do not need to learn both. If you know Unity, use `MonoBehaviour`. If you ha
 7. [Time: coroutines, Invoke, timers, tweens](ex-time-coroutines.html)
 8. [UI: HUD, buttons, menus](ex-ui-hud.html)
 9. [Audio](ex-audio.html)
+9.5. [A music player and sound effects](ex-music-player.html): a playlist with autoplay, skip, stop and volume buttons, plus a tick and an hour chime for the clock.
 10. [Saving and loading](ex-save-load.html)
 11. [Scenes and persistent objects](ex-scenes.html)
 12. [Events and messages](ex-events.html): UnityEvent, EventBus, entity events, Inspector signals.

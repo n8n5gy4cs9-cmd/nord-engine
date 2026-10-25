@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>9.5 · A music player and sound effects — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-clock.html">3.5 · Build a clock: objects, hierarchy, materials and your first script</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-music-player.html" class="cur" aria-current="page">9.5 · A music player and sound effects</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html">55 · Ember Crypt: a complete game, from art to export</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>9.5 · A music player and sound effects</h1>
+<p><strong>Goal:</strong> two small things you will build in almost every game. First a <strong>music player</strong>: songs that play one after another, with buttons to stop, skip and change the volume. Then <strong>sound effects</strong> for the clock from <a href="ex-clock.html">page 3.5</a>: a tick every second and a chime on the full hour.</p>
+<p>Page <a href="ex-audio.html">9 · Audio</a> lists every audio call. This page uses a few of them in two complete scripts.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Nord has two kinds of sound. <strong>Music</strong> is one long track at a time: starting another track fades the old one out. <strong>Sound effects</strong> are short sounds that play on top, as many as you like. They sit on separate volume knobs (<em>buses</em>), so a player can turn the music down and keep the effects.</p>
+</aside><h2 id="what-you-need">What you need<a class="anchor" href="#what-you-need">#</a></h2>
+<p>Nord ships sample sounds. Copy these files into your project&#39;s <code>assets/audio/</code> folder (keep the sub-folder names), or use your own <code>.mp3</code>, <code>.ogg</code> or <code>.wav</code> files.</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>assets/audio/music/music_menu_chill.mp3</code></td>
+<td>song 1</td>
+</tr>
+<tr>
+<td><code>assets/audio/music/music_ambient_space.mp3</code></td>
+<td>song 2</td>
+</tr>
+<tr>
+<td><code>assets/audio/music/music_adventure.mp3</code></td>
+<td>song 3</td>
+</tr>
+<tr>
+<td><code>assets/audio/sfx/tick.wav</code></td>
+<td>the clock tick</td>
+</tr>
+<tr>
+<td><code>assets/audio/sfx/bell.wav</code></td>
+<td>the hour chime</td>
+</tr>
+</tbody></table>
+<p>Browsers only start audio after the player clicks or presses a key. Nord queues your calls until then, so autoplay &quot;just works&quot;: the music starts on the first click.</p>
+<h2 id="1-unity-the-music-player-idea">1. Unity: the music player idea<a class="anchor" href="#1-unity-the-music-player-idea">#</a></h2>
+<p>In Unity you would hold an array of <code>AudioClip</code>s and one <code>AudioSource</code>, and start the next clip when the current one ends.</p>
+<p><strong>Example</strong> (not a file: the Unity version, for comparison)</p>
+<pre class="code" data-lang="cs"><code>public class MusicPlayer : MonoBehaviour
+{
+    [SerializeField] AudioClip[] songs;
+    AudioSource source; int index;
+
+    void Start() { source = GetComponent&lt;AudioSource&gt;(); Play(0); }
+    void Play(int i) { index = i; source.clip = songs[i]; source.Play(); Invoke(nameof(Next), source.clip.length); }
+    void Next() { Play((index + 1) % songs.Length); }
+}</code></pre>
+<h2 id="2-nord-the-music-player">2. Nord: the music player<a class="anchor" href="#2-nord-the-music-player">#</a></h2>
+<p>The Nord version has the same shape. <code>this.audio.music(path)</code> plays a track (it loops it and crossfades from the old one). A track does not tell you when it ends, so, as in the Unity code above, you read its length and call <code>Invoke</code> for the moment to switch.</p>
+<p><strong>File: <code>scripts/MusicPlayer.js</code></strong> (new file, the whole file; attach it to an empty object called <code>Music Player</code>)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Mathf } from 'nord';
+
+export default class MusicPlayer extends MonoBehaviour {
+  static attributes = SerializeField({
+    autoplay: true,
+    volume: 0.6,
+  });
+
+  songs = [
+    { title: 'Chill', path: 'assets/audio/music/music_menu_chill.mp3' },
+    { title: 'Space', path: 'assets/audio/music/music_ambient_space.mp3' },
+    { title: 'Adventure', path: 'assets/audio/music/music_adventure.mp3' },
+  ];
+  index = 0;
+  playing = false;
+
+  Start() {
+    this.audio.volume('music', this.volume);
+    this.title = this.ui.label('', { anchor: 'tl', x: 16, y: 16, size: 20 });
+    this.ui.button('⏮', () =&gt; this.Previous(), { anchor: 'tl', x: 16, y: 56 });
+    this.ui.button('▶', () =&gt; this.Play(), { anchor: 'tl', x: 72, y: 56 });
+    this.ui.button('⏹', () =&gt; this.Stop(), { anchor: 'tl', x: 128, y: 56 });
+    this.ui.button('⏭', () =&gt; this.Next(), { anchor: 'tl', x: 184, y: 56 });
+    this.ui.button('Vol −', () =&gt; this.ChangeVolume(-0.1), { anchor: 'tl', x: 16, y: 104 });
+    this.ui.button('Vol +', () =&gt; this.ChangeVolume(+0.1), { anchor: 'tl', x: 100, y: 104 });
+    this.Refresh();
+    if (this.autoplay) this.Play();
+  }
+
+  async Play() {
+    this.CancelInvoke('Next');                    // forget the old &quot;switch song&quot; timer
+    const song = this.songs[this.index];
+    this.playing = true;
+    this.audio.music(song.path, { fade: 1.5, volume: 1 });
+    this.Refresh();
+    const buffer = await this.audio.load(song.path);   // the decoded sound: its length is buffer.duration
+    if (buffer &amp;&amp; this.playing) this.Invoke('Next', buffer.duration - 1.5); // start the next song 1.5 s early so they overlap
+  }
+
+  Stop() {
+    this.playing = false;
+    this.CancelInvoke('Next');
+    this.audio.stopMusic({ fade: 0.5 });
+    this.Refresh();
+  }
+
+  Next() { this.index = (this.index + 1) % this.songs.length; this.Play(); }
+  Previous() { this.index = (this.index - 1 + this.songs.length) % this.songs.length; this.Play(); }
+
+  ChangeVolume(delta) {
+    this.volume = Mathf.Clamp(this.volume + delta, 0, 1);
+    this.audio.volume('music', this.volume);       // the &quot;music&quot; bus: effects keep their own volume
+    this.Refresh();
+  }
+
+  Refresh() {
+    const song = this.songs[this.index];
+    this.title.set(`${this.playing ? '▶' : '⏹'} ${song.title}   vol ${Math.round(this.volume * 100)}%`);
+  }
+
+  OnDestroy() { this.Stop(); }
+}</code></pre>
+<h3 id="try-it">Try it<a class="anchor" href="#try-it">#</a></h3>
+<ol>
+<li><span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span>, rename it <code>Music Player</code>.</li>
+<li><span class="c-ui">Assets ▸ right-click <code>scripts</code> ▸ New MonoBehaviour script</span>, name it <code>MusicPlayer</code>, replace the whole file with the code above.</li>
+<li>Select <code>Music Player</code>, <span class="c-ui">Inspector ▸ + Add script ▸ scripts/MusicPlayer.js</span>. The fields <strong>autoplay</strong> and <strong>volume</strong> appear.</li>
+<li>Press <span class="c-ui">Play</span> and click once inside the Game view. The first song fades in. The buttons skip, stop and change the volume.</li>
+</ol>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p><code>Invoke(&#39;Next&#39;, 30)</code> means &quot;call my <code>Next</code> method in 30 seconds&quot;. We ask the sound how long it is (<code>buffer.duration</code>) and use that as the wait, so <code>Next</code> runs when the song is nearly over. <code>CancelInvoke(&#39;Next&#39;)</code> cancels a waiting timer, which we need when you press a button yourself; otherwise the old timer would still fire.</p>
+</aside><p><strong>What you see:</strong> a small panel in the corner with the song name and four buttons, and music. Pressing ⏭ crossfades to the next song; ⏹ fades the music out and keeps the label on the current song; <strong>Vol −/+</strong> moves the music volume in 10 % steps.</p>
+<p><strong>Traps</strong></p>
+<ul>
+<li>No sound at all? You must click in the Game view once (browsers block sound until then).</li>
+<li>The same song requested again is <em>not</em> restarted. That is why <code>Play()</code> after <code>Stop()</code> works: <code>stopMusic</code> clears the current track first.</li>
+<li>The <code>⏮ ▶ ⏹ ⏭</code> characters are plain text. If your font lacks one, write <code>Prev</code>, <code>Play</code>, <code>Stop</code>, <code>Next</code>.</li>
+</ul>
+<h2 id="3-sound-effects-the-clock-tick-and-the-hour-chime">3. Sound effects: the clock tick and the hour chime<a class="anchor" href="#3-sound-effects-the-clock-tick-and-the-hour-chime">#</a></h2>
+<p>Sound effects use <code>this.audio.play(path, options)</code>. Add them to the <code>Clock.js</code> from page 3.5. The clock already computes <code>totalSeconds</code> (seconds since midnight) every frame; a new sound should play only when the <em>whole second</em> changes, not every frame.</p>
+<p><strong>File: <code>scripts/Clock.js</code></strong> (from page 3.5: add the <code>lastSecond</code> field and the <code>PlaySounds</code> method, and call it as the last line of <code>Update()</code>; the <code>import</code> line stays as it is)</p>
+<pre class="code" data-lang="js"><code>// 1. inside the class, next to the static attributes:
+lastSecond = -1;
+
+// 2. a new method:
+PlaySounds(totalSeconds) {
+  const second = Math.floor(totalSeconds);         // 0..86399: changes once per second
+  if (second === this.lastSecond) return;          // same second as last frame: nothing to do
+  this.lastSecond = second;
+
+  const secondOfHour = second % 3600;
+  if (secondOfHour === 0) this.audio.play('assets/audio/sfx/bell.wav', { volume: 1 });   // full hour
+  else this.audio.play('assets/audio/sfx/tick.wav', { volume: 0.4 });                    // every other second
+}
+
+// 3. last line of Update():
+this.PlaySounds(totalSeconds);</code></pre>
+<p><strong>What you see and hear:</strong> a quiet tick each second. At 12:00:00, 13:00:00 and so on a bell rings instead of the tick.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Why remember <code>lastSecond</code>? <code>Update</code> runs about 60 times a second, so without it the tick would play 60 times each second. We play only when the number of whole seconds <em>changed</em>.</p>
+</aside><h3 id="make-the-chime-ring-once-per-hour-like-a-real-clock">Make the chime ring once per hour (like a real clock)<a class="anchor" href="#make-the-chime-ring-once-per-hour-like-a-real-clock">#</a></h3>
+<p>A coroutine can wait between bells. Replace the bell line with a call to <code>Chime</code>.</p>
+<p><strong>File: <code>scripts/Clock.js</code></strong> (replace the <code>if (secondOfHour === 0) ...</code> line in <code>PlaySounds</code> with the call below, and add the <code>Chime</code> method)</p>
+<pre class="code" data-lang="js"><code>if (secondOfHour === 0) this.StartCoroutine(this.Chime(Math.floor(second / 3600) % 12 || 12));
+// …
+*Chime(times) {
+  for (let i = 0; i &lt; times; i++) {
+    this.audio.play('assets/audio/sfx/bell.wav', { volume: 0.9, rate: 1 - i * 0.01 }); // a hair lower each bell
+    yield new WaitForSeconds(1.2);
+  }
+}</code></pre>
+<p>Add <code>WaitForSeconds</code> to the <code>import</code> line of <code>Clock.js</code>: <code>import { MonoBehaviour, SerializeField, EntityRef, Quaternion, WaitForSeconds } from &#39;nord&#39;;</code>. At 3:00 you now hear three bells, at 12:00 twelve.</p>
+<h3 id="quiet-at-night-and-a-sound-that-follows-the-music-volume">Quiet at night, and a sound that follows the music volume<a class="anchor" href="#quiet-at-night-and-a-sound-that-follows-the-music-volume">#</a></h3>
+<ul>
+<li>Effects use the <code>sfx</code> bus and music the <code>music</code> bus: <code>this.audio.volume(&#39;sfx&#39;, 0.5)</code> lowers every effect at once, and <code>this.audio.mute(&#39;sfx&#39;, true)</code> silences them.</li>
+<li><code>{ pan: -1 }</code> plays a sound in the left speaker, <code>{ pan: 1 }</code> in the right; <code>{ rate: 1.2 }</code> plays it 20 % faster (and higher).</li>
+<li>To avoid hard-coding file names in gameplay code, see <em>Sounds from events</em> on page <a href="ex-audio.html">9 · Audio</a>.</li>
+</ul>
+<p><strong>Check yourself:</strong></p>
+<ol>
+<li>Press <span class="c-ui">Play</span> and click in the Game view. Music starts and the label shows the first song.</li>
+<li>Press ⏭ and the music crossfades; press ⏹ and it fades out.</li>
+<li>With the clock scene running you hear one tick per second. Change your computer clock, or temporarily change <code>secondOfHour === 0</code> to <code>secondOfHour % 10 === 0</code>, and the bell sounds every ten seconds, which is an easy way to test the chime.</li>
+</ol>
+<p><strong>Next:</strong> <a href="ex-save-load.html">10 · Saving and loading</a>: remember the music volume between sessions.</p>
+<div class="pager"><a href="ex-audio.html"><small>← Previous</small>9 · Audio</a><a href="ex-save-load.html"><small>Next →</small>10 · Saving and loading</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#what-you-need">What you need </a><a href="#1-unity-the-music-player-idea">1. Unity: the music player idea </a><a href="#2-nord-the-music-player">2. Nord: the music player </a><a href="#3-sound-effects-the-clock-tick-and-the-hour-chime">3. Sound effects: the clock tick and the hour chime </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>
