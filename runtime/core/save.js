@@ -20,6 +20,8 @@ export class Save {
   }
   get(k, def) { const d = this.#read().data; return k in d ? d[k] : def; }
   set(k, v) { const o = this.#read(); o.data[k] = v; o.v = this.version; o.t = Date.now(); this.storage.setItem(this.#key(), JSON.stringify(o)); }
+  /** Remove one key from the current slot. */
+  remove(k) { const o = this.#read(); if (k in o.data) { delete o.data[k]; o.t = Date.now(); this.storage.setItem(this.#key(), JSON.stringify(o)); } }
   all() { return this.#read().data; }
   has(n = this.slotId) { return this.storage.getItem(this.#key(n)) != null; }
   delete(n = this.slotId) { this.storage.removeItem(this.#key(n)); }

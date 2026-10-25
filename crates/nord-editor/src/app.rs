@@ -284,12 +284,23 @@ fn load_dock() -> DockState<Tab> {
         .unwrap_or_else(default_dock)
 }
 
+/// The tab that is currently shown in the panel that holds `needle` (None when `needle` is not open).
+fn active_tab_with(dock: &DockState<Tab>, needle: &Tab) -> Option<Tab> {
+    let (surface, node, _) = dock.find_tab(needle)?;
+    match &dock.get_surface(surface)?.node_tree()?[node] {
+        egui_dock::Node::Leaf { tabs, active, .. } => tabs.get(active.0).cloned(),
+        _ => None,
+    }
+}
+
 pub struct App {
     pub st: EditorState,
     pub dock: DockState<Tab>,
     pub web: WebPanes,
     /// last asset-drag position over the Scene view (path, x, y relative to the view)
     drop_last: Option<(String, f32, f32)>,
+    /// The tab that was active in the Game tab's panel when Play was pressed; Stop switches back to it (Scene stays Scene, Game stays Game).
+    play_return_tab: Option<Tab>,
     splash_start: Option<Instant>,
     sent_rev: u64,
     sent_sel: Vec<String>,
@@ -331,6 +342,7 @@ impl App {
             dock: load_dock(),
             web: WebPanes::default(),
             drop_last: None,
+            play_return_tab: None,
             splash_start: splash.then(Instant::now),
             sent_rev: 0,
             sent_sel: vec![],
@@ -593,6 +605,7 @@ impl App {
         }
         st.log(LogLevel::Build, "Play");
         st.fun_ui.played = true;
+        self.play_return_tab = active_tab_with(&self.dock, &Tab::Game).filter(|t| *t != Tab::Game);
         self.show_tab(Tab::Game);
         if self.st.maximize_on_play {
             self.st.game_full = true;
@@ -792,6 +805,9 @@ impl App {
                 st.stop();
                 self.web.drop_pane("game");
                 st.log(LogLevel::Build, "■ Stop");
+                if let Some(t) = self.play_return_tab.take() {
+                    self.show_tab(t); // back to the view that was open when Play was pressed
+                }
             }
             Action::Reload => {
                 st.game_nonce += 1;

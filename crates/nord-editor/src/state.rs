@@ -1669,6 +1669,13 @@ impl EditorState {
                 };
                 let (pos, rot, scale) = (v3("pos"), v3("rot"), v3("scale"));
                 let id = id.to_string();
+                if self.is_playing() {
+                    // Play mode: the gizmo moves the live entity in the running game; the saved scene is not touched
+                    self.remote
+                        .cmds
+                        .push(crate::panels::remote::transform_js(&id, pos, rot, scale));
+                    return;
+                }
                 self.skip_viewport_sync = true;
                 self.edit("Transform", Some(&format!("xf:{id}")), |l| {
                     if let Some(e) = scene_ops::find_mut(l, &id) {
@@ -1711,6 +1718,14 @@ impl EditorState {
                     })
                     .unwrap_or_default();
                 if items.is_empty() {
+                    return;
+                }
+                if self.is_playing() {
+                    for (id, pos, rot, scale) in &items {
+                        self.remote
+                            .cmds
+                            .push(crate::panels::remote::transform_js(id, *pos, *rot, *scale));
+                    }
                     return;
                 }
                 let key = format!(

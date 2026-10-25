@@ -32,5 +32,8 @@ export { compile as compileExpression } from './eventsheet/expr.js';
 export { Behavior, registerBehavior, behaviors } from './behaviors/index.js';
 export * from './unity.js';
 export * from './unity-extra.js';
+export * from './unity-math.js';
+export * from './unity-input.js';
+export { Awaitable } from './unity-extra.js';
 import './behaviors/builtin.js';
 import './behaviors/builtin2.js';

@@ -5,6 +5,7 @@
 //
 //   import { Transform, Quaternion, SpriteRenderer, Rigidbody2D, Physics2D, Camera, JsonUtility, Resources } from 'nord';
 import { Entity } from './entity.js';
+import { sceneHooks } from './unity-lifecycle.js';
 import { Game } from './game.js';
 import { clamp, lerp } from './util.js';
 import { Vector2, Vector3, Color, Mathf, Time, Debug, UnityInput, SceneManager, Application, Physics2D, unityHooks } from './unity.js';
@@ -193,9 +194,10 @@ export class Transform {
     return Transform.Of(cur);
   }
   IsChildOf(t) { for (let e = this.entity.parent; e; e = e.parent) if (e === (t.entity ?? t)) return true; return false; }
-  /** Not supported: the scene tree is built at creation. Use `Instantiate(prefab, { parent })` or create the object as a child in the Hierarchy. */
-  SetParent() { warnOnce('Transform.SetParent is not supported at runtime; use Instantiate(path, { parent }) or build the hierarchy in the editor.'); }
-  DetachChildren() { warnOnce('Transform.DetachChildren is not supported at runtime.'); }
+  /** `SetParent(parent, worldPositionStays = true)`: move under another object (Transform, GameObject or null for the scene root) while the game runs. */
+  SetParent(p, worldPositionStays = true) { this.entity.setParent(p ? (p.entity ?? p) : null, worldPositionStays); }
+  /** Make every child a root object again, keeping where it is in the world. */
+  DetachChildren() { for (const c of [...this.entity.children]) c.setParent(null, true); }
   GetSiblingIndex() { const l = this.entity.parent ? this.entity.parent.children : this.entity.scene.roots; return l.indexOf(this.entity); }
   SetSiblingIndex(i) {
     const l = this.entity.parent ? this.entity.parent.children : this.entity.scene.roots, k = l.indexOf(this.entity);
@@ -546,6 +548,13 @@ export function getUnityComponent(entity, type) {
   return entity.getComponent(type) ?? entity.behavior(type) ?? entity.scripts.find((s) => s.constructor?.name === type) ?? null;
 }
 unityHooks.getComponent = getUnityComponent;
+/** [RequireComponent]: `static RequireComponent = [Rigidbody2D, 'collider', OtherScript]` on a script class adds what the object is missing. */
+sceneHooks.ensureRequired = (entity, need) => {
+  if (typeof need === 'string') { const t = UNITY_TO_NORD[need] ?? need; if (!entity.getComponent(t)) entity.addComponent(t, t === 'rigidbody' ? { mode: 'dynamic' } : {}); return; }
+  if (typeof need !== 'function') return;
+  if (need.nord) { if (!entity.getComponent(need.nord)) entity.addComponent(need.nord, need.nord === 'rigidbody' ? { mode: 'dynamic' } : {}); return; }
+  if (!entity.getScript(need)) entity.addScript(need);
+};
 unityHooks.transform = (e) => Transform.Of(e);
 
 // ---------------------------------------------------------------- physics queries
@@ -790,4 +799,18 @@ export const LayerMask = {
   GetMask: (...layers) => layers.reduce((m, l) => (typeof l === 'number' ? m | (1 << l) : m), 0),
   NameToLayer: () => -1,
   LayerToName: (i) => `Layer ${i}`,
+};
+
+// ---------------------------------------------------------------- Awaitable
+const waitGame = (sec) => new Promise((res) => { const g = game(); if (g?.scene?.scheduler) g.scene.scheduler.after(sec, res); else setTimeout(res, sec * 1000); });
+/** Unity's Awaitable: `await Awaitable.NextFrameAsync()` in an `async` method of a script. Uses game time, so it pauses with the game. */
+export const Awaitable = {
+  NextFrameAsync: () => waitGame(0),
+  EndOfFrameAsync: () => waitGame(0),
+  FixedUpdateAsync: () => waitGame(1 / 60),
+  WaitForSecondsAsync: (sec) => waitGame(sec),
+  MainThreadAsync: () => Promise.resolve(),
+  BackgroundThreadAsync: () => Promise.resolve(),
+  /** Resolves with the operation when a SceneManager.LoadSceneAsync / Resources.LoadAsync operation is done. */
+  FromAsyncOperation: (op) => new Promise((res) => { const t = () => (op.isDone ? res(op) : waitGame(0).then(t)); t(); }),
 };

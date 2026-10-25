@@ -123,6 +123,19 @@ export class Backend {
     n.scaling.set(t.scale[0], t.scale[1], t.scale[2]);
   }
   syncTransform(e, what) { if (e.native) { this.#apply(e); e.native.computeWorldMatrix(true); this.physics?.teleported(e, what === 'rot'); } } // rotating a body from a script keeps its linear velocity (FPS yaw, vehicle steering); moving it zeroes velocity (teleport)
+  /** Re-parenting (Scene.reparent): Babylon's setParent keeps the world transform, then the local numbers are read back into the entity. */
+  beforeReparent() { return null; }
+  afterReparent(e, _token, keepWorld) {
+    const n = e.native; if (!n) return;
+    const pn = e.parent?.native ?? null;
+    if (!keepWorld) { n.parent = pn; this.#apply(e); n.computeWorldMatrix(true); return; }
+    n.computeWorldMatrix(true); n.setParent(pn); n.computeWorldMatrix(true);
+    const r = (n.rotationQuaternion ?? this.B.Quaternion.Identity()).toEulerAngles();
+    e.t.pos = [n.position.x, n.position.y, n.position.z];
+    e.t.rot = [r.x / D2R, r.y / D2R, r.z / D2R];
+    e.t.scale = [n.scaling.x, n.scaling.y, n.scaling.z];
+    this.physics?.teleported(e, true);
+  }
   setEnabled(e, on) { for (const x of e.all()) { x.native?.setEnabled(x.enabled); this.physics?.enable(x, x.enabled); } }
   destroyNative(e) { this.physics?.forget(e); e.native?.dispose(false, false); e.native = null; }
   step(dt) { this.physics?.step(dt); }

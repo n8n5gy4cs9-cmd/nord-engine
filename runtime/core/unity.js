@@ -5,6 +5,7 @@ import { NordScript } from './script.js';
 import { Game } from './game.js';
 import { clamp, lerp, withLoc } from './util.js';
 import { bbox } from './behaviors/util.js';
+import { fireApplicationQuit } from './unity-lifecycle.js';
 import { runtimePlatform, RuntimePlatform, isEditor, isDesktopApp, isMobile, operatingSystem } from './platform.js';
 export { RuntimePlatform };
 
@@ -175,7 +176,15 @@ export const UnityInput = {
 export const KeyCode = (() => {
   const k = { Space: 'Space', Return: 'Enter', Escape: 'Escape', Tab: 'Tab', Backspace: 'Backspace', Delete: 'Delete', LeftShift: 'ShiftLeft', RightShift: 'ShiftRight',
     LeftControl: 'ControlLeft', RightControl: 'ControlRight', LeftAlt: 'AltLeft', RightAlt: 'AltRight', UpArrow: 'ArrowUp', DownArrow: 'ArrowDown', LeftArrow: 'ArrowLeft', RightArrow: 'ArrowRight',
-    Mouse0: 'Mouse0', Mouse1: 'Mouse1', Mouse2: 'Mouse2' };
+    Mouse0: 'Mouse0', Mouse1: 'Mouse1', Mouse2: 'Mouse2', Mouse3: 'Mouse3', Mouse4: 'Mouse4', Mouse5: 'Mouse5', Mouse6: 'Mouse6',
+    None: '', Insert: 'Insert', Home: 'Home', End: 'End', PageUp: 'PageUp', PageDown: 'PageDown', CapsLock: 'CapsLock', Numlock: 'NumLock', ScrollLock: 'ScrollLock', Pause: 'Pause', Print: 'PrintScreen',
+    LeftCommand: 'MetaLeft', RightCommand: 'MetaRight', LeftWindows: 'MetaLeft', RightWindows: 'MetaRight', LeftApple: 'MetaLeft', RightApple: 'MetaRight', Menu: 'ContextMenu',
+    Comma: 'Comma', Period: 'Period', Minus: 'Minus', Equals: 'Equal', Slash: 'Slash', Backslash: 'Backslash', BackQuote: 'Backquote', Quote: 'Quote', Semicolon: 'Semicolon',
+    LeftBracket: 'BracketLeft', RightBracket: 'BracketRight', KeypadEnter: 'NumpadEnter', KeypadPlus: 'NumpadAdd', KeypadMinus: 'NumpadSubtract', KeypadMultiply: 'NumpadMultiply',
+    KeypadDivide: 'NumpadDivide', KeypadPeriod: 'NumpadDecimal', Clear: 'Clear', Escape_: 'Escape' };
+  delete k.Escape_;
+  for (let i = 0; i < 20; i++) { k[`JoystickButton${i}`] = `Gamepad${i}`; for (let j = 1; j <= 8; j++) k[`Joystick${j}Button${i}`] = `Gamepad${i}`; }
+  for (let i = 13; i <= 15; i++) k[`F${i}`] = `F${i}`;
   for (const c of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') k[c] = `Key${c}`;
   for (let i = 0; i < 10; i++) { k[`Alpha${i}`] = `Digit${i}`; k[`Keypad${i}`] = `Numpad${i}`; }
   for (let i = 1; i <= 12; i++) k[`F${i}`] = `F${i}`;
@@ -225,15 +234,18 @@ export const Cursor = {
 export const Physics2D = {
   OverlapBox: (c, size) => game()?.physics?.overlapBox?.(c.x, c.y, size.x, size.y) ?? [],
 };
+/** PlayerPrefs on the game's save slot: every write is stored at once, so `Save()` only exists for old scripts. */
 export const PlayerPrefs = {
-  GetInt: (k, d = 0) => game()?.save.get(k, d) ?? d,
-  GetFloat: (k, d = 0) => game()?.save.get(k, d) ?? d,
-  GetString: (k, d = '') => game()?.save.get(k, d) ?? d,
-  SetInt: (k, v) => game()?.save.set(k, v),
-  SetFloat: (k, v) => game()?.save.set(k, v),
-  SetString: (k, v) => game()?.save.set(k, v),
+  GetInt: (k, d = 0) => Math.trunc(Number(game()?.save.get(k, d) ?? d)) || 0,
+  GetFloat: (k, d = 0) => Number(game()?.save.get(k, d) ?? d) || 0,
+  GetString: (k, d = '') => String(game()?.save.get(k, d) ?? d),
+  SetInt: (k, v) => game()?.save.set(k, Math.trunc(Number(v)) || 0),
+  SetFloat: (k, v) => game()?.save.set(k, Number(v) || 0),
+  SetString: (k, v) => game()?.save.set(k, String(v)),
   HasKey: (k) => !!game() && k in game().save.all(),
+  DeleteKey: (k) => game()?.save.remove(k),
   DeleteAll: () => game()?.save.delete(),
+  Save: () => {},
 };
 export const SceneManager = {
   LoadScene: (path) => game()?.loadScene(path),
@@ -253,7 +265,7 @@ export const Application = {
   get isWebPlayer() { return runtimePlatform() === 'WebGLPlayer' || isEditor; },
   /** The machine's OS regardless of the shell: 'mac' | 'win' | 'linux' | 'ios' | 'android'. */
   get os() { return operatingSystem(); },
-  Quit: () => game()?.pause(),
+  Quit: () => { fireApplicationQuit(game()); game()?.pause(); },
   get isPlaying() { return !!game()?.scene?.running; },
 };
 

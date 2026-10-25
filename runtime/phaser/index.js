@@ -1,7 +1,7 @@
 // Phaser 2D backend. `boot(project, opts)` creates the Phaser game, wires core services, loads the start scene.
 // Requires the global `Phaser` (vendor/phaser/phaser.min.js loaded before this module).
 import { createGame, devSceneOverride, errorOverlay, registerCoreComponents, registerComponent } from '../core/index.js';
-import { toWorld } from './transform.js';
+import { toWorld, toLocal } from './transform.js';
 import { createEffect } from './effects.js';
 import { registerPhaserComponents } from './components.js';
 import { ArcadeAdapter, MatterAdapter } from './physics.js';
@@ -196,6 +196,17 @@ class Backend {
     const b = this.physics?.bodies.get(e);
     if (b && this.physics.kind === 'matter') this.physics.teleport(e, e.native.x, e.native.y);
     this.syncChildren(e);
+  }
+  /** Re-parenting (Scene.reparent): remember the world transform before the move, recompute the local one under the new parent after it. */
+  beforeReparent(e, keepWorld) { return keepWorld ? this.world(e) : null; }
+  afterReparent(e, w, keepWorld) {
+    if (keepWorld && w) {
+      const pw = e.parent ? this.world(e.parent) : null, [lx, ly] = toLocal(w.x, w.y, pw);
+      e.t.pos = [lx, ly, w.z - (pw?.z ?? 0)];
+      e.t.rot = [e.t.rot[0], e.t.rot[1], w.angle - (pw?.angle ?? 0)];
+      e.t.scale = [w.sx / (pw?.sx || 1), w.sy / (pw?.sy || 1), e.t.scale[2]];
+    }
+    this.syncTransform(e);
   }
   syncChildren(e) { for (const c of e.children) { if (c.native) { this.#apply(c); const b = this.physics?.bodies.get(c); if (b && this.physics.kind === 'matter') this.physics.teleport(c, c.native.x, c.native.y); this.syncChildren(c); } } }
   setEnabled(e, on) {

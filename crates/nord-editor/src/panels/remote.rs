@@ -63,6 +63,22 @@ fn with_entity(id: &str, body: &str) -> String {
     )
 }
 
+/// JS that moves a live entity in the running game (Scene-view gizmo drags while playing). Nothing is saved: Stop discards it.
+pub fn transform_js(
+    id: &str,
+    pos: Option<[f64; 3]>,
+    rot: Option<[f64; 3]>,
+    scale: Option<[f64; 3]>,
+) -> String {
+    let mut body = String::new();
+    for (k, v) in [("pos", pos), ("rot", rot), ("scale", scale)] {
+        if let Some(v) = v {
+            body.push_str(&format!("e.{k}={};", json!(v)));
+        }
+    }
+    with_entity(id, &body)
+}
+
 impl Remote {
     /// Snippets to run now (queued edits, then the periodic poll).
     pub fn take_js(&mut self, playing: bool) -> Vec<String> {
