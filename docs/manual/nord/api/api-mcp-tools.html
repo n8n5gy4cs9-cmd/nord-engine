@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>MCP tools reference — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">API</div><details open><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-unity.html">Unity-style scripting API</a><a href="api-game.html">Game</a><a href="api-mcp-tools.html" class="cur" aria-current="page">MCP tools reference</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../components/component-sprite.html">sprite</a><a href="../components/component-animatedSprite.html">animatedSprite</a><a href="../components/component-text.html">text</a><a href="../components/component-tilemap.html">tilemap</a><a href="../components/component-parallax.html">parallax</a><a href="../components/component-particles.html">particles</a><a href="../components/component-camera.html">camera</a><a href="../components/component-light.html">light</a><a href="../components/component-mesh.html">mesh</a><a href="../components/component-model.html">model</a><a href="../components/component-material.html">material</a><a href="../components/component-skybox.html">skybox</a><a href="../components/component-postProcess.html">postProcess</a><a href="../components/component-rigidbody.html">rigidbody</a><a href="../components/component-collider.html">collider</a><a href="../components/component-trigger.html">trigger</a><a href="../components/component-audioSource.html">audioSource</a><a href="../components/component-audioListener.html">audioListener</a><a href="../components/component-uiPanel.html">uiPanel</a><a href="../components/component-uiLabel.html">uiLabel</a><a href="../components/component-uiImage.html">uiImage</a><a href="../components/component-uiBar.html">uiBar</a><a href="../components/component-uiButton.html">uiButton</a><a href="../components/component-path.html">path</a><a href="../components/component-spawner.html">spawner</a><a href="../components/component-graph.html">graph</a><a href="../components/component-animator.html">animator</a><a href="../components/component-netSync.html">netSync</a></details><details><summary>Reference</summary><a href="../reference/project-format.html">Project format</a><a href="../reference/event-reference.html">Event sheet reference</a><a href="../reference/components.html">Component index</a><a href="../reference/cli.html">Command line (nord)</a><a href="../reference/library-catalog.html">Library catalog</a><a href="../reference/templates-examples.html">Templates &amp; examples</a><a href="../reference/rust-tier-spec.html">Rust tier spec</a><a href="../reference/export-targets-spec.html">Export targets spec</a><a href="../reference/hosting-spec.html">Hosting notes</a><a href="../reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../reference/packaging.html">Packaging</a><a href="../reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../engines/babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../engines/phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../engines/babylon/guides/index.html">Babylon documentation library</a><a href="../../engines/phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">API / Nord Engine</div><h1>MCP tools reference</h1>
+<!-- GENERATED by `node mcp/nord-mcp.mjs --docs`. Edit mcp/lib/*.mjs, never this file. -->
+<p>This page lists the 50 tools your AI agent can call. A star (*) marks a required parameter. How to install, enable and disable the servers: <a href="../manual/ai-mcp.html">AI and MCP</a>. Full text of each tool description: <code>docs/MCP.md</code>.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A <strong>tool</strong> is one thing the AI is allowed to do, like &quot;add an object to the scene&quot; or &quot;draw a rectangle on a sprite&quot;. The AI picks tools itself while it works. You never call them by hand; you just tell the AI what you want.</p>
+</aside><h2 id="project-scenes-and-building">Project, scenes and building<a class="anchor" href="#project-scenes-and-building">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it does</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>nord_guide</code></td>
+<td>READ THIS FIRST.</td>
+<td><code>topic</code>, <code>offset</code></td>
+</tr>
+<tr>
+<td><code>project_open</code></td>
+<td>Point the tools at a Nord project folder (it must contain nord.project.json).</td>
+<td><code>path</code>*</td>
+</tr>
+<tr>
+<td><code>project_new</code></td>
+<td>Create a new project with the nord CLI from a template (html, 2d, 3d, or a starter id like platformer, endless-runner, fps-arena, card-game — see templates/) and open it.</td>
+<td><code>dir</code>*, <code>template</code></td>
+</tr>
+<tr>
+<td><code>project_templates</code></td>
+<td>List the starter templates available for project_new.</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>project_info</code></td>
+<td>Summary of the open project: manifest, scenes, scripts, prefabs, models, asset counts.</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>library_list</code></td>
+<td>Search the engine&#39;s ready-made library (scripts, prefabs, shaders, snippets): AI, camera, UI, inventory, dialogue, a Dev Console prefab and more.</td>
+<td><code>query</code>, <code>limit</code></td>
+</tr>
+<tr>
+<td><code>library_add</code></td>
+<td>Copy a library item into the open project: scripts go to scripts/, prefabs to prefabs/ (with the scripts they need).</td>
+<td><code>id</code>*</td>
+</tr>
+<tr>
+<td><code>list_files</code></td>
+<td>List files in a project folder (recursive, max 300).</td>
+<td><code>dir</code>, <code>pattern</code></td>
+</tr>
+<tr>
+<td><code>read_file</code></td>
+<td>Read a text file of the project (max 200 KB; use offset for more).</td>
+<td><code>path</code>*, <code>offset</code></td>
+</tr>
+<tr>
+<td><code>write_file</code></td>
+<td>Create/overwrite a project file (scripts, scenes, prefabs, json, css…).</td>
+<td><code>path</code><em>, <code>content</code></em>, <code>encoding</code></td>
+</tr>
+<tr>
+<td><code>component_schema</code></td>
+<td>Fields of the scene component types (sprite, model, camera, light, rigidbody, collider, audioSource, uiButton, spawner, netSync, …) taken from the editor&#39;s schema.</td>
+<td><code>kind</code></td>
+</tr>
+<tr>
+<td><code>scene_create</code></td>
+<td>Create an empty scene file (format 1).</td>
+<td><code>path</code>*</td>
+</tr>
+<tr>
+<td><code>project_set_start_scene</code></td>
+<td>Set the scene the game starts with.</td>
+<td><code>scene</code>*</td>
+</tr>
+<tr>
+<td><code>scene_get</code></td>
+<td>Show a scene as a compact outline (entity id, name, components, scripts, children) or one entity as full JSON (id given).</td>
+<td><code>scene</code>, <code>id</code></td>
+</tr>
+<tr>
+<td><code>scene_add_entity</code></td>
+<td>Add an entity to a scene.</td>
+<td><code>scene</code>, <code>name</code>*, <code>pos</code>, <code>rot</code>, <code>scale</code>, <code>components</code>, <code>scripts</code>, <code>tags</code>, <code>layer</code>, <code>parent</code>, <code>prefab</code></td>
+</tr>
+<tr>
+<td><code>scene_update_entity</code></td>
+<td>Change an entity: name, enabled, tags, layer, pos/rot/scale, set_components (add or replace by type), remove_components (types), scripts (replaces the list).</td>
+<td><code>scene</code>, <code>id</code>*, <code>name</code>, <code>enabled</code>, <code>tags</code>, <code>layer</code>, <code>pos</code>, <code>rot</code>, <code>scale</code>, <code>set_components</code>, <code>remove_components</code>, <code>scripts</code></td>
+</tr>
+<tr>
+<td><code>scene_remove_entity</code></td>
+<td>Remove an entity (and its children) from a scene.</td>
+<td><code>scene</code>, <code>id</code>*</td>
+</tr>
+<tr>
+<td><code>check_project</code></td>
+<td>Validate the project and all scenes (ids, missing files, bad references) with <code>nord check</code>.</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>build_project</code></td>
+<td>Build a static offline web export with <code>nord build</code> (target auto | html | web-2d | web-3d …).</td>
+<td><code>target</code>, <code>out</code>, <code>single_file</code>, <code>minify</code>, <code>zip</code>, <code>pwa</code>, <code>host</code></td>
+</tr>
+<tr>
+<td><code>serve_start</code></td>
+<td>Start the dev server (live reload, editor API) for the open project in the background.</td>
+<td><code>port</code></td>
+</tr>
+<tr>
+<td><code>serve_stop</code></td>
+<td>Stop the dev server started by serve_start.</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>unity_scan</code></td>
+<td>Read-only inventory of a Unity project folder (the one with Assets/ and ProjectSettings/): Unity version, packages, scenes in build order, prefabs, every C# script with classes/base types/serialized fields/lifecycle/Unity APIs used, assets by type, tags, layers, input axes, physics gravity.</td>
+<td><code>path</code>*</td>
+</tr>
+<tr>
+<td><code>unity_cs_outline</code></td>
+<td>Outline of one C# file (or pasted C# source): classes, base types, [SerializeField]/public fields with defaults, lifecycle methods, coroutines and which Unity systems it touches.</td>
+<td><code>path</code>, <code>source</code></td>
+</tr>
+<tr>
+<td><code>unity_scene_to_nord</code></td>
+<td>Convert a Unity .unity scene or .prefab (text YAML) into a Nord scene/prefab skeleton: GameObjects become entities with the hierarchy, position/rotation/scale, tag, layer, active flag, sprite/camera/collider/rigidbody components, and scripts whose GUID resolves to a .cs file become script references with the serialized values.</td>
+<td><code>unityProject</code><em>, <code>file</code></em>, <code>pixelsPerUnit</code>, <code>out</code></td>
+</tr>
+</tbody></table>
+<h2 id="3d-modeler">3D Modeler<a class="anchor" href="#3d-modeler">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it does</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>modeler_list</code></td>
+<td>List models in the project&#39;s models/ folder and the open modeler sessions.</td>
+<td>none</td>
+</tr>
+<tr>
+<td><code>modeler_new</code></td>
+<td>Start an empty model session.</td>
+<td><code>name</code>*, <code>color</code></td>
+</tr>
+<tr>
+<td><code>modeler_open</code></td>
+<td>Open an existing model for editing: models/x.mesh.json (editable mesh) or any .glb/.gltf of the project (e.g.</td>
+<td><code>file</code>*, <code>name</code></td>
+</tr>
+<tr>
+<td><code>modeler_describe</code></td>
+<td>Describe a model: counts, bounds, and a face table (index, direction, centre, vertex count) so you can address faces by index or direction.</td>
+<td><code>name</code>*, <code>limit</code></td>
+</tr>
+<tr>
+<td><code>modeler_primitive</code></td>
+<td>Add a primitive (cube, plane, cylinder, sphere) with UVs.</td>
+<td><code>name</code><em>, <code>kind</code></em>, <code>size</code>, <code>position</code>, <code>rotation</code>, <code>segments</code></td>
+</tr>
+<tr>
+<td><code>modeler_add_mesh</code></td>
+<td>Add raw geometry: vertices [[x,y,z]…] and faces as arrays of vertex indices (3+ per face, counter-clockwise seen from outside, planar).</td>
+<td><code>name</code><em>, <code>vertices</code></em>, <code>faces</code>*, <code>uvs</code></td>
+</tr>
+<tr>
+<td><code>modeler_transform</code></td>
+<td>Move / rotate / scale vertices of the selected faces (or all).</td>
+<td><code>name</code><em>, <code>op</code></em>, <code>value</code>*, <code>faces</code>, <code>vertices</code>, <code>pivot</code></td>
+</tr>
+<tr>
+<td><code>modeler_extrude</code></td>
+<td>Extrude faces along their normals by distance (negative = inward), adding side walls.</td>
+<td><code>name</code><em>, <code>faces</code></em>, <code>distance</code>*, <code>inset</code></td>
+</tr>
+<tr>
+<td><code>modeler_delete_faces</code></td>
+<td>Delete faces (unused vertices are removed).</td>
+<td><code>name</code><em>, <code>faces</code></em></td>
+</tr>
+<tr>
+<td><code>modeler_mirror</code></td>
+<td>Duplicate the model mirrored across the origin plane (x, y or z) and weld the seam.</td>
+<td><code>name</code><em>, <code>axis</code></em></td>
+</tr>
+<tr>
+<td><code>modeler_center_ground</code></td>
+<td>Centre the model on x/z and put its lowest point on y = 0.</td>
+<td><code>name</code>*</td>
+</tr>
+<tr>
+<td><code>modeler_unwrap</code></td>
+<td>Recompute UVs: every face is projected along its dominant axis and all faces are packed into a grid on the texture.</td>
+<td><code>name</code>*</td>
+</tr>
+<tr>
+<td><code>modeler_set_color</code></td>
+<td>Colours: base colour of the whole model, or vertex colours of selected faces (multiplies with base colour and texture).</td>
+<td><code>name</code><em>, <code>color</code></em>, <code>faces</code></td>
+</tr>
+<tr>
+<td><code>modeler_texture_new</code></td>
+<td>Create (or reset) the texture: size×size pixels filled with a colour.</td>
+<td><code>name</code>*, <code>size</code>, <code>color</code></td>
+</tr>
+<tr>
+<td><code>modeler_texture_uv</code></td>
+<td>Where faces sit on the texture, in the same normalised coordinates modeler_texture_paint uses (x right, y DOWN, 0..1).</td>
+<td><code>name</code>*, <code>faces</code></td>
+</tr>
+<tr>
+<td><code>modeler_texture_paint</code></td>
+<td>Paint on the texture.</td>
+<td><code>name</code><em>, <code>ops</code></em></td>
+</tr>
+<tr>
+<td><code>modeler_preview</code></td>
+<td>Render the model with a built-in software renderer and return PNG image(s).</td>
+<td><code>name</code>*, <code>views</code>, <code>yaw</code>, <code>pitch</code>, <code>size</code>, <code>zoom</code></td>
+</tr>
+<tr>
+<td><code>modeler_save</code></td>
+<td>Write models/<name>.mesh.json (editable) and, by default, models/<name>.glb (use it in a scene: model component path &quot;models/<name>.glb&quot;).</td>
+<td><code>name</code>*, <code>as</code>, <code>glb</code></td>
+</tr>
+</tbody></table>
+<h2 id="2d-sprite-editor">2D Sprite editor<a class="anchor" href="#2d-sprite-editor">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it does</th>
+<th>Parameters</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>sprite_new</code></td>
+<td>Create a new PNG sprite (default fully transparent).</td>
+<td><code>path</code><em>, <code>width</code></em>, <code>height</code>*, <code>color</code></td>
+</tr>
+<tr>
+<td><code>sprite_list</code></td>
+<td>List the PNG files of the project (assets/ and everywhere else) with their sizes.</td>
+<td><code>dir</code></td>
+</tr>
+<tr>
+<td><code>sprite_describe</code></td>
+<td>Describe a sprite: size, number of colours, the most used colours (palette letters) and, for images up to 64x64, the pixel grid as text (.</td>
+<td><code>path</code>*</td>
+</tr>
+<tr>
+<td><code>sprite_draw</code></td>
+<td>Draw on a PNG with the editor&#39;s tools.</td>
+<td><code>path</code><em>, <code>ops</code></em></td>
+</tr>
+<tr>
+<td><code>sprite_from_ascii</code></td>
+<td>Paint pixel art from text: rows is an array of strings, one character per pixel, palette maps a character to a colour (&quot;.&quot; and &quot; &quot; are transparent unless listed).</td>
+<td><code>path</code><em>, <code>rows</code></em>, <code>palette</code>*, <code>x</code>, <code>y</code></td>
+</tr>
+<tr>
+<td><code>sprite_transform</code></td>
+<td>Whole-image edits: flip_h, flip_v, rotate_cw, rotate_ccw, crop (box x,y..x1,y1 inclusive; outside = transparent, so it can also grow the canvas), scale (integer factor, nearest neighbour: keeps pixels sharp), stamp (paste another PNG &quot;source&quot; at x,y; transparent pixels are skipped).</td>
+<td><code>path</code><em>, <code>op</code></em>, <code>x</code>, <code>y</code>, <code>x1</code>, <code>y1</code>, <code>factor</code>, <code>source</code></td>
+</tr>
+<tr>
+<td><code>sprite_meta</code></td>
+<td>Import settings of a texture (written next to it as <path>.meta.json, read by the engine and the editor): frameWidth/frameHeight (cut a sprite sheet into frames, used by animatedSprite), filter (&quot;nearest&quot; keeps pixel art sharp, &quot;linear&quot; smooths), ppu (pixels per world unit in 3D), wrap (&quot;clamp&quot;|&quot;repeat&quot;).</td>
+<td><code>path</code>*, <code>frameWidth</code>, <code>frameHeight</code>, <code>filter</code>, <code>ppu</code>, <code>wrap</code></td>
+</tr>
+<tr>
+<td><code>sprite_preview</code></td>
+<td>Render the sprite as an enlarged PNG (nearest neighbour, checkerboard behind transparent pixels) so you can look at it.</td>
+<td><code>path</code>*, <code>scale</code>, <code>grid</code></td>
+</tr>
+</tbody></table>
+<aside class="box tip"><div class="box-title">Tip</div><p>Tools that change files (<code>scene_*</code>, <code>write_file</code>, <code>sprite_*</code>, <code>modeler_save</code>) write straight to your project folder. If the Nord editor has the scene open, it notices the change within a second and reloads it (or asks, when you have unsaved edits).</p>
+</aside>
+<div class="pager"><a href="api-game.html"><small>← Previous</small>Game</a><a href="api-input.html"><small>Next →</small>Input</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#project-scenes-and-building">Project, scenes and building </a><a href="#3d-modeler">3D Modeler </a><a href="#2d-sprite-editor">2D Sprite editor </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

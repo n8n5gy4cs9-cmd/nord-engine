@@ -403,6 +403,12 @@ pub struct EditorState {
     pub game_full: bool,
     pub lock: Option<nord_core::io::ProjectLock>,
     pub last_autosave: Instant,
+    /// External-change watch: modification time of the open scene / project file as the editor last read or wrote it.
+    pub disk_mtime: Option<std::time::SystemTime>,
+    pub project_mtime: Option<std::time::SystemTime>,
+    pub disk_check: Instant,
+    /// The scene changed on disk while the editor holds unsaved edits: ask what to do.
+    pub disk_conflict: bool,
     pub recover: Option<String>,
     pub script_cache: HashMap<String, (web_time::SystemTime, Vec<crate::schema::Field>)>,
     /// read-only Hierarchy rows parsed from FPS level files (virt.rs)
@@ -529,6 +535,10 @@ impl EditorState {
             game_full: false,
             lock: None,
             last_autosave: Instant::now(),
+            disk_mtime: None,
+            project_mtime: None,
+            disk_check: Instant::now(),
+            disk_conflict: false,
             recover: None,
             script_cache: HashMap::new(),
             virt_cache: Default::default(),
@@ -1125,6 +1135,7 @@ impl EditorState {
         self.undo.clear();
         self.dirty = false;
         self.rev += 1;
+        self.stamp_disk();
         self.recover = self
             .autosave_path()
             .filter(|a| {
@@ -1133,6 +1144,81 @@ impl EditorState {
             })
             .map(|a| a.to_string_lossy().into_owned());
         Ok(())
+    }
+
+    fn disk_mtimes(&self) -> (Option<std::time::SystemTime>, Option<std::time::SystemTime>) {
+        let m = |p: PathBuf| nord_core::vfs::metadata(&p).and_then(|m| m.modified()).ok();
+        let Some(root) = &self.root else {
+            return (None, None);
+        };
+        (
+            self.scene_file.as_ref().and_then(|f| m(root.join(f))),
+            m(root.join("nord.project.json")),
+        )
+    }
+
+    /// Remember the on-disk state we just read or wrote, so our own saves are not mistaken for outside edits.
+    pub fn stamp_disk(&mut self) {
+        (self.disk_mtime, self.project_mtime) = self.disk_mtimes();
+        self.disk_conflict = false;
+    }
+
+    /// Cheap (two `stat` calls, once a second): notice when something else (an AI agent over MCP, git, a text editor)
+    /// changed the open scene or `nord.project.json`. Unchanged editor => reload quietly; unsaved edits => ask.
+    pub fn check_disk(&mut self) {
+        if self.root.is_none()
+            || self.scene.is_none()
+            || self.prefab_mode.is_some()
+            || self.disk_conflict
+            || self.disk_check.elapsed() < Duration::from_secs(1)
+        {
+            return;
+        }
+        self.disk_check = Instant::now();
+        let (scene_m, project_m) = self.disk_mtimes();
+        if project_m != self.project_mtime {
+            self.project_mtime = project_m;
+            if let (Some(root), Some(cur)) = (self.root.clone(), self.project.as_ref()) {
+                if let Ok(p) = nord_core::io::load_project(&root) {
+                    if serde_json::to_value(&p).ok() != serde_json::to_value(cur).ok() {
+                        self.project = Some(p);
+                        self.rev += 1;
+                        self.toast("Project settings reloaded: changed outside the editor");
+                    }
+                }
+            }
+        }
+        if scene_m.is_some() && scene_m != self.disk_mtime {
+            if self.dirty {
+                self.disk_conflict = true;
+            } else {
+                self.reload_scene_from_disk();
+                self.toast("Scene reloaded: it was changed outside the editor");
+            }
+        }
+    }
+
+    /// Replace the open scene by the file on disk (drops undo history and any autosave of the old state).
+    pub fn reload_scene_from_disk(&mut self) {
+        let (Some(root), Some(f)) = (self.root.clone(), self.scene_file.clone()) else {
+            return;
+        };
+        match nord_core::io::load_json::<Scene>(&root.join(&f)) {
+            Ok(s) => {
+                self.selection
+                    .retain(|id| scene_ops::find(&s.entities, id).is_some());
+                self.scene = Some(s);
+                self.undo.clear();
+                self.dirty = false;
+                if let Some(a) = self.autosave_path() {
+                    let _ = nord_core::vfs::remove_file(a);
+                }
+                self.refresh_assets();
+                self.rev += 1;
+                self.stamp_disk();
+            }
+            Err(e) => self.log(LogLevel::Error, format!("Could not reload {f}: {e}")),
+        }
     }
 
     fn autosave_path(&self) -> Option<PathBuf> {
@@ -1168,6 +1254,7 @@ impl EditorState {
         self.dirty = false;
         self.refresh_assets();
         self.rev += 1;
+        self.stamp_disk();
     }
 
     pub fn recover_autosave(&mut self) {
@@ -1199,6 +1286,7 @@ impl EditorState {
                     let _ = nord_core::vfs::remove_file(a);
                 }
                 self.toast(format!("Saved {f}"));
+                self.stamp_disk();
             }
             Err(e) => self.log(LogLevel::Error, format!("Save failed: {e}")),
         }

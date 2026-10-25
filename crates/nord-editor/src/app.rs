@@ -1880,6 +1880,7 @@ impl App {
         self.run_actions(ctx);
         self.poll_rust_build(ctx);
         self.st.autosave_tick();
+        self.st.check_disk();
         if self.st.stopping.is_some() {
             ctx.request_repaint_after(Duration::from_millis(100)); // let the "stopping" tint expire
         }
@@ -2002,6 +2003,24 @@ impl App {
                     }
                 });
             });
+        }
+        if self.st.disk_conflict {
+            egui::Window::new("Scene changed on disk")
+                .collapsible(false)
+                .resizable(false)
+                .anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0])
+                .show(ctx, |ui| {
+                    ui.label("This scene was changed outside the editor (for example by an AI agent, git or a text editor), and you also have unsaved changes here.");
+                    ui.weak("Reload takes the file from disk and drops your unsaved changes. Keep mine ignores the file; saving then overwrites it.");
+                    ui.horizontal(|ui| {
+                        if ui.button("Reload from disk").clicked() {
+                            self.st.reload_scene_from_disk();
+                        }
+                        if ui.button("Keep my changes").clicked() {
+                            self.st.stamp_disk();
+                        }
+                    });
+                });
         }
         if self.quit_confirm {
             egui::Window::new("Unsaved changes")

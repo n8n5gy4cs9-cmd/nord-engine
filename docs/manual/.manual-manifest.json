@@ -9294,6 +9294,7 @@
   "nord/api/api-input.html",
   "nord/api/api-loader.html",
   "nord/api/api-matteradapter.html",
+  "nord/api/api-mcp-tools.html",
   "nord/api/api-memorystorage.html",
   "nord/api/api-namespaces.html",
   "nord/api/api-nordscript.html",

@@ -1988,7 +1988,10 @@ fn hierarchy_shift_range_select_and_multi_drag() {
     h.run();
     let rect = |h: &Harness<'_, EditorState>, l: &str| {
         let r = h.get_by_label(l).bounding_box().unwrap();
-        egui::Rect::from_min_max(egui::pos2(r.x0 as f32, r.y0 as f32), egui::pos2(r.x1 as f32, r.y1 as f32))
+        egui::Rect::from_min_max(
+            egui::pos2(r.x0 as f32, r.y0 as f32),
+            egui::pos2(r.x1 as f32, r.y1 as f32),
+        )
     };
     let btn = egui::PointerButton::Primary;
     let click = |h: &mut Harness<'_, EditorState>, l: &str, mods: egui::Modifiers| {
@@ -1996,23 +1999,54 @@ fn hierarchy_shift_range_select_and_multi_drag() {
         h.input_mut().events.push(egui::Event::PointerMoved(p));
         h.run_steps(1);
         h.input_mut().modifiers = mods;
-        h.input_mut().events.push(egui::Event::PointerButton { pos: p, button: btn, pressed: true, modifiers: mods });
+        h.input_mut().events.push(egui::Event::PointerButton {
+            pos: p,
+            button: btn,
+            pressed: true,
+            modifiers: mods,
+        });
         h.run_steps(1);
-        h.input_mut().events.push(egui::Event::PointerButton { pos: p, button: btn, pressed: false, modifiers: mods });
+        h.input_mut().events.push(egui::Event::PointerButton {
+            pos: p,
+            button: btn,
+            pressed: false,
+            modifiers: mods,
+        });
         h.run_steps(2);
         h.input_mut().modifiers = egui::Modifiers::NONE;
     };
     let names = |h: &Harness<'_, EditorState>| -> Vec<String> {
         let sc = h.state().scene.as_ref().unwrap();
-        h.state().selection.iter().map(|id| nord_editor::scene_ops::find(&sc.entities, id).unwrap().name.clone()).collect()
+        h.state()
+            .selection
+            .iter()
+            .map(|id| {
+                nord_editor::scene_ops::find(&sc.entities, id)
+                    .unwrap()
+                    .name
+                    .clone()
+            })
+            .collect()
     };
     click(&mut h, "A", egui::Modifiers::NONE);
     click(&mut h, "C", egui::Modifiers::SHIFT);
-    assert_eq!(names(&h), vec!["A", "B", "C"], "Shift+click selects the whole range, not just the clicked row");
+    assert_eq!(
+        names(&h),
+        vec!["A", "B", "C"],
+        "Shift+click selects the whole range, not just the clicked row"
+    );
     click(&mut h, "D", egui::Modifiers::COMMAND);
-    assert_eq!(names(&h), vec!["A", "B", "C", "D"], "Ctrl/Cmd+click adds one row");
+    assert_eq!(
+        names(&h),
+        vec!["A", "B", "C", "D"],
+        "Ctrl/Cmd+click adds one row"
+    );
     click(&mut h, "B", egui::Modifiers::COMMAND);
-    assert_eq!(names(&h), vec!["A", "C", "D"], "Ctrl/Cmd+click on a selected row removes it");
+    assert_eq!(
+        names(&h),
+        vec!["A", "C", "D"],
+        "Ctrl/Cmd+click on a selected row removes it"
+    );
     // drag the selection (A, C, D) is not the point: select A..C and drag them onto D
     click(&mut h, "A", egui::Modifiers::NONE);
     click(&mut h, "C", egui::Modifiers::SHIFT);
@@ -2022,19 +2056,83 @@ fn hierarchy_shift_range_select_and_multi_drag() {
     let mods = egui::Modifiers::NONE;
     h.input_mut().events.push(egui::Event::PointerMoved(a));
     h.run_steps(1);
-    h.input_mut().events.push(egui::Event::PointerButton { pos: a, button: btn, pressed: true, modifiers: mods });
+    h.input_mut().events.push(egui::Event::PointerButton {
+        pos: a,
+        button: btn,
+        pressed: true,
+        modifiers: mods,
+    });
     h.run_steps(1);
     for i in 1..=4 {
-        h.input_mut().events.push(egui::Event::PointerMoved(a + (b - a) * (i as f32 / 4.0)));
+        h.input_mut()
+            .events
+            .push(egui::Event::PointerMoved(a + (b - a) * (i as f32 / 4.0)));
         h.run_steps(1);
     }
-    h.input_mut().events.push(egui::Event::PointerButton { pos: b, button: btn, pressed: false, modifiers: mods });
+    h.input_mut().events.push(egui::Event::PointerButton {
+        pos: b,
+        button: btn,
+        pressed: false,
+        modifiers: mods,
+    });
     h.run_steps(3);
     let sc = h.state().scene.as_ref().unwrap();
     let shape: Vec<(String, Vec<String>)> = sc
         .entities
         .iter()
-        .map(|e| (e.name.clone(), e.children.iter().map(|c| c.name.clone()).collect()))
+        .map(|e| {
+            (
+                e.name.clone(),
+                e.children.iter().map(|c| c.name.clone()).collect(),
+            )
+        })
         .collect();
-    assert_eq!(shape, vec![("D".to_string(), vec!["A".to_string(), "B".to_string(), "C".to_string()])], "all selected rows move, in order");
+    assert_eq!(
+        shape,
+        vec![(
+            "D".to_string(),
+            vec!["A".to_string(), "B".to_string(), "C".to_string()]
+        )],
+        "all selected rows move, in order"
+    );
+}
+
+#[test]
+fn outside_scene_change_reloads_quietly_or_asks_when_dirty() {
+    let mut st = state_with_scene("disk-watch");
+    st.add_entity(None);
+    st.save();
+    let root = st.root.clone().unwrap();
+    let rel = st.scene_file.clone().unwrap();
+    let write_external = |name: &str| {
+        let mut sc: nord_core::Scene = nord_core::io::load_json(&root.join(&rel)).unwrap();
+        let mut e = nord_core::scene::Entity::new(name);
+        e.id = format!("ext-{name}");
+        sc.entities.push(e);
+        std::thread::sleep(std::time::Duration::from_millis(1100)); // file times may only have 1 s resolution
+        nord_core::io::save_json(&root.join(&rel), &sc).unwrap();
+    };
+    let tick = |st: &mut EditorState| {
+        st.disk_check = std::time::Instant::now() - std::time::Duration::from_secs(2);
+        st.check_disk();
+    };
+    // our own save is not an outside change
+    tick(&mut st);
+    assert!(!st.disk_conflict && st.scene.as_ref().unwrap().entities.len() == 1);
+    // clean editor: the outside change is loaded without asking
+    write_external("A");
+    tick(&mut st);
+    assert!(!st.disk_conflict);
+    assert_eq!(st.scene.as_ref().unwrap().entities.len(), 2, "scene reloaded from disk");
+    // unsaved edits: ask first, change nothing
+    st.add_entity(None);
+    assert!(st.dirty);
+    write_external("B");
+    tick(&mut st);
+    assert!(st.disk_conflict, "dirty editor + outside change = prompt");
+    assert_eq!(st.scene.as_ref().unwrap().entities.len(), 3, "my version is untouched until I choose");
+    st.reload_scene_from_disk();
+    assert!(!st.disk_conflict && !st.dirty);
+    assert_eq!(st.scene.as_ref().unwrap().entities.len(), 3, "disk had 2 + B");
+    assert!(st.scene.as_ref().unwrap().entities.iter().any(|e| e.id == "ext-B"));
 }
