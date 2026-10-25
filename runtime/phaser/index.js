@@ -85,6 +85,8 @@ class Backend {
   frameSize(path) { const m = this.metaOf(path); if (m?.frameWidth) return [m.frameWidth, m.frameHeight ?? m.frameWidth]; const s = this.scene.textures.exists(path) ? this.scene.textures.get(path).getSourceImage() : null; return s ? [s.width, s.height] : [1, 1]; }
   init() { /* hook for subclasses/tests */ }
   createEffect(target, type, params) { return createEffect(this, target, type, params); }
+  /** Run `fn` after Phaser has drawn a frame (the canvas still holds the picture, so it can be read as a texture). Returns an unsubscribe function. */
+  onAfterRender(fn) { this.phaser.events.on('postrender', fn); return () => this.phaser.events.off('postrender', fn); }
   texKey(path) { return path; }
   mapKey(path) { return `map:${path}`; }
 

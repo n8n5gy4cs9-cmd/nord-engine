@@ -1,5 +1,6 @@
 // Babylon 3D components. Each entity's native is a TransformNode; visuals are parented to it.
 import { registerLineComponents } from './components-lines.js';
+import { registerShaderComponents3D } from './components-shader.js';
 import { registerComponent } from '../core/index.js';
 import { rgb } from './index.js';
 import { createTextMesh } from './text3d.js';
@@ -304,4 +305,5 @@ export function registerBabylonComponents(backend) {
   });
   registerComponent('audioListener', {});
   registerLineComponents(backend);
+  registerShaderComponents3D(backend);
 }

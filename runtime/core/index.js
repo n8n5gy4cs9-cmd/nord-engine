@@ -37,6 +37,7 @@ export * from './unity-input.js';
 export * from './unity-physics.js';
 export * from './unity-joints.js';
 export * from './unity-render.js';
+export { Shadertoy, createShadertoy, splitTabs } from './shadertoy.js';
 export { Awaitable } from './unity-extra.js';
 import './behaviors/builtin.js';
 import './behaviors/builtin2.js';

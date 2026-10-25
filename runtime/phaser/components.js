@@ -3,6 +3,7 @@
 import { registerComponent } from '../core/index.js';
 import { registerExtraComponents } from './components-extra.js';
 import { registerRenderComponents } from './components-render.js';
+import { registerShaderComponents } from './components-shader.js';
 
 const hex = (c, d = 0xffffff) => (typeof c === 'string' && /^#[0-9a-f]{6}/i.test(c) ? parseInt(c.slice(1, 7), 16) : d);
 const PIVOTS = { center: [0.5, 0.5], topLeft: [0, 0], top: [0.5, 0], topRight: [1, 0], left: [0, 0.5], right: [1, 0.5], bottomLeft: [0, 1], bottom: [0.5, 1], bottomRight: [1, 1] };
@@ -248,6 +249,7 @@ export function registerPhaserComponents(backend) {
 
   registerExtraComponents(backend, track);
   registerRenderComponents(backend, track);
+  registerShaderComponents(backend, track);
 
   // physics components create/refresh the body on the entity container
   const phys = (e) => { if (backend.physics) backend.physics.build(e); };

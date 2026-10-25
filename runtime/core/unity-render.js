@@ -190,3 +190,26 @@ registerUnityComponent('TrailRenderer', TrailRenderer, 'trailRenderer');
 registerUnityComponent('SpriteMask', SpriteMask, 'spriteMask');
 registerUnityComponent('SpriteShapeController', SpriteShapeController, 'spriteShape');
 registerUnityComponent('SpriteShapeRenderer', SpriteShapeController, 'spriteShape');
+
+// ---------------------------------------------------------------- Shadertoy component wrapper
+/** Wrapper for the `shadertoy` component (a Shadertoy shader as a picture in the scene): `SetFloat('uSpeed', 2)` for uniforms the shader declares, `speed`, `paused`, `Restart()`. */
+export class ShadertoyComponent extends ComponentBase {
+  static nord = 'shadertoy';
+  static Of(e) { return e.getComponent('shadertoy') ? new this(e) : null; }
+  /** The underlying Shadertoy renderer once the shader has compiled (await `ready` first). */
+  get renderer() { return this.comp?.st ?? null; }
+  get ready() { return this.comp?.ready ?? Promise.resolve(); }
+  get speed() { return this.comp?.speed ?? this.data.speed ?? 1; }
+  set speed(v) { this.set_('speed', v); }
+  get paused() { return !!this.comp?.paused; }
+  set paused(v) { this.set_('paused', !!v); }
+  get time() { return this.renderer?.time ?? 0; }
+  get frame() { return this.renderer?.frame ?? 0; }
+  Restart() { this.renderer?.restart(); }
+  SetFloat(name, v) { this.renderer?.setUniform(name, v); (this.comp.data.uniforms ??= {})[name] = v; }
+  SetInt(name, v) { this.SetFloat(name, v); }
+  SetVector(name, v) { const a = v.z === undefined ? [v.x, v.y] : v.w === undefined ? [v.x, v.y, v.z] : [v.x, v.y, v.z, v.w]; this.renderer?.setUniform(name, a); (this.comp.data.uniforms ??= {})[name] = a; }
+  SetColor(name, c) { this.SetVector(name, { x: c.r, y: c.g, z: c.b, w: c.a }); }
+}
+registerUnityComponent('ShadertoyComponent', ShadertoyComponent, 'shadertoy');
+registerUnityComponent('ShadertoyRenderer', ShadertoyComponent, 'shadertoy');
