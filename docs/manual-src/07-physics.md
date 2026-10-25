@@ -11,7 +11,9 @@ Physics makes objects fall, collide and react to pushes. Choose the system for y
 The body controls motion. The collider describes the shape that touches other things. A trigger detects an overlap without blocking movement. Start with a falling object and a floor.
 :::
 
-Physics is selected in `nord.project.json`:
+**In the editor:** @ui[Project] tab ▸ **Project properties** ▸ **Physics** (pick `arcade`, `matter` or, for 3D, `havok`) and **gravity Y**, then **Apply project properties**.
+
+**In the file** `nord.project.json`:
 ```json
 "physics": { "engine": "arcade", "gravity": [0, 900, 0] }
 ```
@@ -24,6 +26,10 @@ Static bodies (floors, walls) never move. Dynamic bodies move. Kinematic bodies 
 :::
 
 ## Setting up a body
+
+**In the editor:** select the object, @ui[Inspector ▸ + Add component ▸ rigidbody] (choose **mode** static, dynamic or kinematic, set **mass** and **drag**), then @ui[Inspector ▸ + Add component ▸ collider] (pick the **shape**, set the **size**).
+
+**In the file** the entity's `components` list in the scene (the Inspector writes it):
 ```json
 { "type": "rigidbody", "mode": "dynamic", "mass": 1, "drag": 0.1 },
 { "type": "collider", "shape": "box", "size": [16, 24] }
@@ -31,6 +37,8 @@ Static bodies (floors, walls) never move. Dynamic bodies move. Kinematic bodies 
 No collider size → taken from the sprite/mesh bounds. A body without a rigidbody is static. Details: [rigidbody](component-rigidbody.html), [collider](component-collider.html), [trigger](component-trigger.html).
 
 ## Moving things
+
+**File: your script, for example `scripts/Player.js`** (the `fixedUpdate()` method of the class)
 ```js
 fixedUpdate() {
   const dir = this.input.axis('left', 'right');

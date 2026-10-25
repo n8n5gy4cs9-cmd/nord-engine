@@ -28,6 +28,7 @@ Optional: `wasm-opt` (from binaryen) makes release builds smaller when you use `
 
 Check your setup with the command-line tool:
 
+**Terminal** (in the folder that contains your project folder):
 ```bash
 nord doctor
 ```

@@ -10,6 +10,7 @@ summary: Make any 2D scene dark, add torches and a flashlight that cast real sha
 1. Copy these three files from `library/scripts/` into your project's `scripts/` folder (or insert them from the editor **Library** panel: *2D lighting & shadows*, *2D light source*, *2D shadow caster*).
 2. Add this entity to your scene (one per scene; any name, any position). It makes the scene dark:
 
+**In the file** `scenes/main.scene.json` (the entity list; add it, or build it with the editor: @ui[Hierarchy ▸ + Create ▸ Empty] and @ui[Inspector ▸ + Add script ▸ scripts/light2d.js]):
 ```json
 { "name": "Light2D", "transform": { "pos": [0, 0, 0] },
   "scripts": [{ "path": "scripts/light2d.js", "attributes": { "ambient": "#14172b", "force": 1, "shadowStrength": 1, "softness": 1 } }] }
@@ -17,12 +18,14 @@ summary: Make any 2D scene dark, add torches and a flashlight that cast real sha
 
 3. Add a light to anything: put the script on a torch, the player, a lamp…
 
+**In the file** a torch entity's `scripts` list in `scenes/main.scene.json` (editor: @ui[Inspector ▸ + Add script ▸ scripts/light2d-source.js]):
 ```json
 { "path": "scripts/light2d-source.js", "attributes": { "color": "#ffb25a", "radius": 200, "intensity": 1, "flicker": 0.25, "softness": 4 } }
 ```
 
 4. Make walls, crates and pillars cast shadows (size comes from the sprite or collider):
 
+**In the file** a wall entity's `scripts` list in `scenes/main.scene.json` (editor: @ui[Inspector ▸ + Add script ▸ scripts/light2d-occluder.js]):
 ```json
 { "path": "scripts/light2d-occluder.js", "attributes": {} }
 ```
@@ -51,6 +54,7 @@ Per light (`light2d-source.js`): `color`, `intensity`, `radius`, `falloff` (1 li
 
 Change them from a script:
 
+**File: your script, for example `scripts/Dials.js`** (inside `update(dt)`)
 ```js
 const sys = [...this.scene.all()].flatMap((e) => e.scripts).find((s) => s.setLook);
 sys.setLook({ force: 1.6, shadowStrength: 0.7, softness: 2, ambient: '#2b2f52' }); // darker/lighter scene at will

@@ -100,6 +100,9 @@ The full numbered inventory and every sound path are in `examples/star-not/asset
 
 A sprite uses the PNG and its metadata together:
 
+**In the editor:** select the object; in its `sprite` component pick the **texture** `assets/sprites/space.png` and the **frame** @ui[Inspector].
+
+**In the file** the entity in `scenes/main.scene.json` (the Inspector writes it):
 ```json
 { "type": "sprite", "texture": "assets/sprites/space.png", "frame": 0, "size": [64, 64] }
 ```
@@ -192,6 +195,7 @@ The object pools are small, fixed lists of reusable Nord entities. Disabled bull
 ## 14. Connect sounds and music
 The three music tracks are `cruise.wav`, `combat.wav` and `victory.wav`. The Audio manager loops music and crossfades between tracks. The eight effects play once for shots, damage, travel, dialogue, confirmation and encounter results.
 
+**File: `scripts/Audio.js`** (inside the method that fires a shot)
 ```javascript
 this.audio.play('assets/audio/sfx/laser.wav', { volume: 0.5 });
 this.audio.music('assets/audio/music/cruise.wav', { fade: 0.45, volume: 0.32 });
@@ -212,6 +216,7 @@ Victory needs all three cores and both new accords at Earth. Defeat happens afte
 
 ## 16. Open and play your copy
 
+**Terminal** (in the folder that contains your project folder):
 ```bash
 nord serve my-star-not
 ```

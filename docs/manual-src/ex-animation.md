@@ -19,6 +19,8 @@ summary: Play sprite-sheet animations from code, flip by direction, drive an Ani
 animator.Play("Run");  spriteRenderer.flipX = dir < 0;
 ```
 ### Nord
+
+**File: your script, for example `scripts/Player.js`** (inside `update(dt)`; the object has an `animatedSprite` component)
 ```js
 const a = this.entity.getComponent('animatedSprite');
 a.play('run');                                         // switch the clip (does nothing visible if it is already playing that one)
@@ -27,6 +29,8 @@ this.entity.set('animatedSprite', 'flipX', dir < 0);  // face left / right
 this.entity.set('animatedSprite', 'speed', 1.5);      // playback speed
 ```
 A tidy pattern: choose the clip once per frame from the state, and only call `play` when it changes:
+
+**File: `scripts/PlayerAnimation.js`** (new file, the whole file)
 ```js
 import { NordScript } from 'nord';
 export default class HeroAnim extends NordScript {
@@ -41,6 +45,8 @@ export default class HeroAnim extends NordScript {
 
 ## Frame events (footsteps, hit frames)
 In the sprite editor, mode **Origin, points, collision ▸ Frame properties**, give frame 3 of `run` an *event* name, e.g. `step`. At runtime:
+
+**File: your script, for example `scripts/Player.js`** (inside `start()`; the event name is the one you typed in the sprite editor)
 ```js
 start() { this.entity.on('step', () => this.audio.play('assets/audio/step.wav', { volume: 0.4 })); }   // entity event
 // or on the global bus:  this.game.events.on('step', ...)
@@ -64,6 +70,8 @@ export default class HeroAnim extends NordScript {
 API: `setBool / setInt / setFloat(name, value)`, `setTrigger(name)`, `resetTrigger(name)`, `get(name)`, `play(stateName)` (force a state), `state` (current). Unity names match one to one. No blending between clips (sprites are not blended anyway). See [Animator](animator.html).
 
 ## 3D clips (glTF models)
+
+**File: your script, for example `scripts/Hero3D.js`** (inside a method; the object has a `model` component)
 ```js
 this.entity.getComponent('model').play('Walk', { loop: true, speed: 1 });       // clip names come from the .glb
 this.entity.getComponent('model').animations;                                   // list of the clips in the file
@@ -71,6 +79,8 @@ this.entity.getComponent('model').animations;                                   
 The same Animator controller can drive a model: the state's `anim` is the glTF clip name.
 
 ## Tweened "animation" without art
+
+**File: your script, for example `scripts/Pulse.js`** (inside a method such as `OnHit()`)
 ```js
 this.tween(this.entity.scale, { 0: 1.2, 1: 0.85 }, { duration: 0.12, yoyo: true, onUpdate: () => this.entity.touch() });   // squash and stretch on landing
 ```

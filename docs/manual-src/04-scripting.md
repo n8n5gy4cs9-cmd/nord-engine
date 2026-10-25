@@ -13,6 +13,7 @@ Attach the Spinner example below to an entity with a visible picture, press Play
 
 Scripts are ES modules whose default export extends `NordScript`. The one import is `nord`:
 
+**File: `scripts/Hero.js`** (new file, the whole file; any name works, the file must `export default` a class that extends `NordScript`)
 ```js
 import { NordScript } from 'nord';
 
@@ -88,6 +89,8 @@ for (let i = 0; i < 70; i++) s.update(1 / 60);   // the engine does this for you
 ```
 
 ## Spawning and finding
+
+**File: your script, for example `scripts/Gun.js`** (inside an `async` method of the class)
 ```js
 const bullet = await this.scene.spawn('prefabs/bullet.prefab.json', { pos: this.entity.worldPos });
 const boss = this.scene.find('Boss');            // by name
@@ -142,6 +145,7 @@ The Rust tiers use a `Script` trait instead — see [Rust / WASM](rust-wasm.html
 
 `this.game.restart()` returns a promise for a fresh current scene, like loading the level again. It destroys old entities/scripts and scheduled callbacks, rebuilds from saved JSON, resets the clock and time scale, clears held/virtual input and resumes even from Pause. Persist entities reset by default; use `restart({ preservePersistent: true })` only when you want to migrate them. Normal `loadScene(path)` transitions keep Persist state.
 
+**File: your script, for example `scripts/Menu.js`** (inside `start()`)
 ```js
 this.ui.button('Restart', () => { this.game.restart(); return; });
 ```

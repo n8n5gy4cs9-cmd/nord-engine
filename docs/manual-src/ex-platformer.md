@@ -16,6 +16,8 @@ summary: Jumping that feels good (coyote time, jump buffer, variable height), ha
 * **Spikes, coins, goal**: prefabs with a `trigger`. **Camera**: script `camera-follow.js`.
 
 ## The jump feel (Unity: the same three tricks)
+
+**File: `scripts/Player.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour, SerializeField, WaitForSeconds, GameManager } from 'nord';
 
@@ -54,6 +56,8 @@ export default class Player extends MonoBehaviour {
 `physics.velocity(entity)` returns `[vx, vy]`; `setVelocity(e, vx, vy)` with `null` keeps that axis; `isGrounded(e)` is true when standing on something. Input reading is in `Update` (edge events live one frame) and physics in `FixedUpdate`, exactly like Unity.
 
 ## Hazards, pits and respawn
+
+**File: `scripts/spikes.js`** (new file; attach it to the spikes prefab, which has a trigger collider)
 ```js
 // spikes.js: the prefab's trigger touches the player
 import { MonoBehaviour } from 'nord';
@@ -62,6 +66,8 @@ export default class Spikes extends MonoBehaviour {
   OnTriggerEnter(other) { other.getScript(Player)?.Hurt(); }   // only the player object has a Player script
 }
 ```
+
+**File: `scripts/Player.js`** (add this method to the class above)
 ```js
 // player.js (continued)
 LateUpdate() { if (this.entity.pos[1] > 700) this.Hurt(true); }            // fell into a pit
@@ -88,6 +94,8 @@ Hurt(fell = false) {
 :::
 
 ## The camera
+
+**File: `scripts/camera-follow.js`** (new file; attach it to the `Camera` object)
 ```js
 // camera-follow.js on the Camera object
 lateUpdate(dt) {                                  // lateUpdate: the player has already moved this frame
@@ -98,6 +106,8 @@ lateUpdate(dt) {                                  // lateUpdate: the player has 
 `minX` / `maxX` keep the view inside the level (half a screen from each end). The library script `camera-follow.js` adds a dead zone, look-ahead and bounds in both axes.
 
 ## The goal
+
+**File: `scripts/goal.js`** (new file; attach it to the flag object, which has a trigger collider)
 ```js
 // goal.js
 OnTriggerEnter(other) {

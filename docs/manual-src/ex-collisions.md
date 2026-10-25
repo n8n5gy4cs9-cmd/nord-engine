@@ -24,6 +24,8 @@ void OnTriggerEnter2D(Collider2D other) { if (other.CompareTag("Player")) Pickup
 void OnCollisionEnter2D(Collision2D c)  { if (c.gameObject.CompareTag("Enemy")) Hurt(); }
 ```
 ### Nord
+
+**File: your script, for example `scripts/Item.js`** (add these methods to the class, next to `Start()`)
 ```js
 onTriggerEnter(other)   { if (other.hasTag('player')) this.pickup(); }   // other = the other entity
 onTriggerExit(other)    {}
@@ -34,6 +36,8 @@ onCollisionExit(other)  {}
 `other` is the **entity** (not a collider). In 3D, `contact` is `{ point, normal, impulse }`. The entity also emits `triggerEnter`, `collisionEnter`… on its own bus if you prefer listening: `this.entity.on('triggerEnter', (other) => …)`.
 
 ## Pick-up
+
+**File: `scripts/Pickup.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour, GameManager } from 'nord';
 export default class Coin extends MonoBehaviour {
@@ -46,6 +50,8 @@ export default class Coin extends MonoBehaviour {
 ```
 
 ## Damage zone with a cooldown
+
+**File: `scripts/Hazard.js`** (new file, the whole file; native style)
 ```js
 import { NordScript } from 'nord';
 export default class Spikes extends NordScript {
@@ -63,6 +69,8 @@ export default class Spikes extends NordScript {
 (`trigger` events fire when entering; for "while standing inside" remember who is inside, like above.)
 
 ## Hit things in an area (2D): Physics2D.OverlapBox
+
+**File: `scripts/Melee.js`** (add this method to the attacker's script)
 ```js
 attack() {
   const p = this.entity.pos, dir = this.facing;               // 1 or -1
@@ -73,6 +81,8 @@ attack() {
 Entries may also be `{ tile: true }` markers for solid tilemap tiles, hence the `hasTag?.`.
 
 ## Raycast (3D)
+
+**File: your script, for example `scripts/Sensor3D.js`** (inside a 3D script method)
 ```js
 const from = this.entity.worldPos, to = [from[0], from[1], from[2] - 20];
 const hit = this.physics.raycast(from, to, { ignore: this.entity });

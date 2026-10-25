@@ -111,6 +111,8 @@ Every entity already has the right scripts (an enemy has a brain, a pickup gives
 * write your own: **Assets ▸ New script**, or open a built-in script in the Scripts tab and **Make an editable copy**.
 
 A script is a small JavaScript file:
+
+**File: `scripts/door.js`** (new file; scripts of the FPS level editor are plain objects with lifecycle functions)
 ```js
 export default {
   id: 'hello', title: 'Hello', cat: 'Custom', desc: 'Says hello when used.',

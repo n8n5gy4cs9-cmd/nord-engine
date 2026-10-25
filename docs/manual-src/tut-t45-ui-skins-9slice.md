@@ -44,6 +44,8 @@ Press **Apply**, then **Save skin**. Choose *Project ui/skin.json* in the **Skin
 Give the Quit button the class `danger` (Properties ▸ CSS class) and the title label the class `title`.
 
 ## 3. Use it in the game
+
+**File: your script, for example `scripts/Menu.js`** (inside `start()`)
 ```js
 const ui = createUI(root);              // or this.ui in a scene script
 await ui.useSkin('ui/skin.json');       // once, for every screen
@@ -54,6 +56,9 @@ Or put `"skin": "ui/skin.json"` at the top of the `.ui.json` file. Calling `useS
 ## 4. Give buttons a picture (9-slice)
 Copy the sample art from `assets/ui/skin/` (`panel.png`, `button.png`, `button-hover.png`, `button-down.png`) into your project, or start from the **Pixel (sample)** skin in the Designer's Skin box. A sliced rule looks like this:
 
+**In the editor:** @ui[UI Designer] tab ▸ **Styles** tab ▸ select the `button` rule ▸ **Image**: pick `button.png`, drag the four slice guides to 5 pixels, set the scale to 3 and tick **pixelated**; do the same for the **hover** and **pressed** states with `button-hover.png` and `button-down.png`.
+
+**In the file** `ui/skin.skin.json` (the Styles tab writes it; this is the `button` rule):
 ```json
 "button": {
   "image": { "src": "assets/ui/skin/button.png", "slice": [5, 5, 5, 5], "scale": 3, "pixelated": true },

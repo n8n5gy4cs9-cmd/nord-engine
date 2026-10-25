@@ -37,7 +37,7 @@ for (const [id, guide, main] of workshops) {
     const body = fs.readFileSync(path.join(project, file), 'utf8').trimEnd();
     const collapsed = index !== 0 || Boolean(lessonPlans[id]);
     appendix += collapsed ? `<details>\n<summary>Complete ${file}</summary>\n\n` : `### ${file}\n\n`;
-    appendix += '```' + lang + '\n' + body + '\n```\n\n';
+    appendix += `**File: \`${file}\`** (the complete file, for comparison)\n` + '```' + lang + '\n' + body + '\n```\n\n';
     if (collapsed) appendix += '</details>\n\n';
   }
   const source = path.join(ROOT, 'docs/manual-src', guide);

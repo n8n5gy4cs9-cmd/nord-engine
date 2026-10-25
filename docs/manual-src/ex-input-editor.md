@@ -20,6 +20,8 @@ New projects start with: `left right up down` (WASD + arrows), `jump` (Space / W
 It is saved in `nord.project.json` under `input.actions`, so each project has its own map.
 
 ## Use them
+
+**File: `scripts/Player.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour, UnityInput as Input, Time } from 'nord';
 export default class Dasher extends MonoBehaviour {

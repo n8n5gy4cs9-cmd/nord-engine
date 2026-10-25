@@ -6,6 +6,7 @@ summary: Persistent data, slots, high scores.
 ---
 **Project:** `examples/idle-clicker` (autosave + offline earnings).
 
+**Example** (not a file; the idea of the idle-clicker's scripts):
 ```js
 // settings & scores
 this.save.set('best', 120);

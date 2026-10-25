@@ -21,6 +21,8 @@ summary: Keep items, enemy stats and levels as JSON files that scripts load: the
 }
 ```
 Load it:
+
+**File: `scripts/Shop.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour, ScriptableObject } from 'nord';
 
@@ -34,6 +36,8 @@ export default class Shop extends MonoBehaviour {
 Native: `const data = await this.game.loadJSON('data/items.json');` (each call loads again; cache it yourself or use `ScriptableObject.Load`). `ScriptableObject.Clear()` empties the cache (useful while editing in Play mode).
 
 ## Using the data
+
+**File: `scripts/Shop.js`** (add this method to the class above)
 ```js
 buy(id) {
   const item = this.items[id];
@@ -45,6 +49,8 @@ buy(id) {
 ```
 
 ## Share one data object between scripts
+
+**File: `data/enemies.json`** (new file) and the script that reads it:
 ```js
 // data/enemies.json: { "slime": { "hp": 10, "speed": 40 }, "bat": { "hp": 4, "speed": 90 } }
 async Start() {
@@ -56,6 +62,8 @@ async Start() {
 A designer edits a number in the JSON, no code change. Add an Inspector attribute `kind` (enum or string) to choose which row an enemy uses.
 
 ## Level data as JSON
+
+**File: your script, for example `scripts/Level.js`** (inside `Start()`; the comment shows the file it reads)
 ```js
 const level = await ScriptableObject.Load('data/level1.json');   // { "enemies": [["slime", 100, 40], ...] }
 for (const [kind, x, y] of level.enemies)
@@ -64,6 +72,8 @@ for (const [kind, x, y] of level.enemies)
 
 ## Data inside the Inspector instead
 For small things, an `array` / `curve` attribute is enough:
+
+**File: your script, for example `scripts/Spawner.js`** (inside the class, above `Start()`)
 ```js
 static attributes = { waves: { type: 'array', default: [3, 5, 8] }, damageCurve: { type: 'curve' } };
 ```

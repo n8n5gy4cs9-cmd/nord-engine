@@ -24,6 +24,14 @@ Owner: Crowelian. Credit: **Crowelian 2026 + Sonnet**. Keep it **pragmatic, not 
 
 - **MCP stays true**: `mcp/` is the Nord MCP server for AI agents (project, scene, script and 3D Modeler tools + `mcp/GUIDE.md`). When you add or change a component, command, template, file format, Modeler tool or workflow, update the matching tool in `mcp/lib/`, `mcp/GUIDE.md` if the workflow changes, then run `node mcp/nord-mcp.mjs --docs` (writes `docs/MCP.md`) and `node --test mcp/mcp.test.mjs` (fails when docs/MCP.md is stale). `nord_guide` reads `docs/*.md` live, so keep those current too.
 
+## Writing docs (tutorials, examples, manual): ALWAYS follow `docs/DOC_STYLE.md`
+Pages are written like the Unity manual: exact, in doing-order, editor first, with a check at the end. The rules that are never skipped:
+- **Every code block names its file** on the line directly above it (`**File: `scripts/hero.js`** (new file, the whole file)`, `**Terminal** (in the project folder):`, `**In the file** `nord.project.json``, `**Example** (not a file …)`). Say where a snippet goes relative to code that already exists or comes next ("add after `Start()` and before `OnDestroy()`", "replace the whole file from part 2"). Never a bare snippet.
+- **Editor first, then the file.** Anything the editor can do is described as editor steps with exact names (`@ui[Inspector ▸ + Add script]`, `@ui[Project] tab ▸ Project properties`), then shown as JSON/code under **In the file** so the reader can check it. Never only JSON for something the editor does; never only clicks for something the reader must type. If the editor has no panel for it, say so and give the file and code way.
+- Say what the reader sees after each step; end with **Check yourself** and **Next**. Run every snippet before documenting it; screenshots come from real runs (`docs/screenshots/<prefix>-*.png`, prefixes allowed in `tools/build-manual.mjs`).
+- Do not invent menu paths, fields or API names: look them up in `crates/nord-editor`, `runtime/`, the manual.
+- Check with `node tools/lint-docs-style.mjs` (a page must not add warnings) and `node tools/build-manual.mjs --check`. Generated pages (`tools/make_*.py`, `tools/build-code-workshops.mjs`) must emit the labels in their generators, not by editing the output.
+
 ## Environment notes (cloud sandbox)
 Linux only; Rust 1.9x, Node 22, Python3+PIL/numpy, ffmpeg, Chromium via Playwright. `git clone` of GitHub works; npm + crates.io work.
 macOS-only things (egui window + wry child webview, codesign, dmg) cannot be run here → must be verified by CI `macos-14` or the owner.

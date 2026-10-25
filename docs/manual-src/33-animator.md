@@ -20,6 +20,7 @@ On the entity add an **Animated Sprite** (2D) or a **Model** (3D, then *Animatio
 
 ## From a script
 
+**File: your script, for example `scripts/Player.js`** (inside `update(dt)`)
 ```js
 const anim = this.entity.getComponent('animator');
 anim.setFloat('speed', Math.abs(this.vx));

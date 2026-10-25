@@ -13,6 +13,8 @@ summary: Load scenes, restart, keep objects alive between scenes and pass data a
 SceneManager.LoadScene("Level2");  SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 ```
 ### Nord
+
+**File: your script, for example `scripts/Door.js`** (inside an `async` method, for example `async Enter()`)
 ```js
 await this.game.loadScene('scenes/level2.scene.json');   // returns a Promise: await it if you do something afterwards
 await this.game.restart();                              // reload the current scene from its saved data
@@ -30,6 +32,7 @@ Two ways:
 1. A **Singleton** with `static persistent = true` (GameManager, AudioManager and your own). Put the object in the **first** scene only.
 2. Any object: @ui[Inspector ▸ + Add behavior ▸ Persist]. When a scene loads, the surviving object replaces the copy of the same name that the new scene contains, so you can safely put the same *Music* object in every scene.
 
+**File: `scripts/Inventory.js`** (new file, the whole file; put it on an object in the first scene)
 ```js
 import { Singleton } from 'nord';
 export default class PlayerData extends Singleton {
@@ -49,12 +52,16 @@ The object comes back in the next scene and every script gets its **field values
 `game.restart()` rebuilds the *current* scene, resets time scale / pause / input, and **drops** persistent objects (fresh game). `restart({ preservePersistent: true })` keeps them.
 
 ## Events around loading
+
+**File: your script, for example `scripts/Loader.js`** (inside `Start()`)
 ```js
 this.game.events.on('sceneLoad', (name) => this.log('loaded', name));
 this.game.events.on('sceneUnload', (name) => {});
 ```
 
 ## Fade between scenes
+
+**File: `scripts/Transition.js`** (add this method to the script on a persistent object; call `this.goTo(path)` instead of `loadScene`)
 ```js
 async goTo(path) {
   this.game.camera.fade(400);                      // fade to black (ms)

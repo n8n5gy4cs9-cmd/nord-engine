@@ -12,6 +12,8 @@ One player **hosts** a room, the others **join** it by name. After that every sc
 :::
 
 ## Connect
+
+**File: your script, for example `scripts/Lobby.js`** (inside an `async` method)
 ```js
 await game.net.host('room1');   // player 1
 await game.net.join('room1');   // players 2..n (rejects after 10 s if nobody answers)
@@ -21,6 +23,8 @@ game.net.on('leave', ({ id }) => {});
 `net.peers`, `net.isHost`, `net.id`, `net.hostId`. The host relays guest messages, so everybody sees everything. Event sheets have a **Multiplayer** plugin (Host, Join, Send, On message…).
 
 ## Messages and RPC
+
+**File: your script, for example `scripts/Chat.js`** (inside any method after you are connected)
 ```js
 net.send('chat', { text: 'hi' });                 // everybody else
 net.send('whisper', 1, { to: peerId });           // one player
@@ -34,6 +38,8 @@ net.rpc('startRound', fn, { from: 'host' });      // only the host may call this
 
 ## Spawn and sync
 The **host** creates entities for everyone:
+
+**File: your script, for example `scripts/Match.js`** (inside an `async` method on the host)
 ```js
 const ship = await net.spawn('prefabs/ship.prefab.json', { pos: [100, 100, 0], owner: playerId });
 ```

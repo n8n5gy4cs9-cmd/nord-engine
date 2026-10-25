@@ -13,6 +13,9 @@ down means a button is held. pressed means it just became held this frame. Use d
 
 Scripts never read raw keys. You declare **actions** in the project and ask about the action:
 
+**In the editor:** @ui[Project] tab ▸ **Input Manager (actions and keys)**: **＋ key** next to an action, then press the key ([the steps](ex-input-editor.html)).
+
+**In the file** `nord.project.json` (check it in a text editor):
 ```json
 "input": { "actions": {
   "jump":  ["Space", "ArrowUp", "Gamepad0"],
@@ -68,6 +71,8 @@ While you play in the editor, the **Game view** owns the keyboard once it has fo
 **Esc releases the mouse.** If your game locked the cursor (first-person look), Esc in the Game view unlocks it, even when your code never does. Turn it off in @ui[Settings ▸ Game view mouse ▸ Esc releases a locked mouse]. This exists only in the editor: an exported web game or desktop app does not add it (the browser's own Esc still unlocks a locked mouse; your game decides the rest).
 
 ## Which platform am I on?
+
+**File: your script, for example `scripts/Boot.js`** (the `import` line at the top, the checks inside `start()`)
 ```js
 import { Application, RuntimePlatform } from 'nord';
 if (Application.isEditor) Debug.Log('testing inside the Nord editor');

@@ -38,6 +38,7 @@ Open `app.js` in Nord's code editor. It implements `mount(root)` and wires the v
 
 A board has an ID, a title and a `shapes` array. Shapes store their kind, position, colour and geometry. A pen stroke is an array of points; a rectangle stores X/Y/width/height; text and stickies store a string. The supplied ten-board initializer includes one note, one door and a graph to make the first exploration useful.
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const sticky = {
   kind: 'sticky', x: 110, y: 190, w: 230, h: 160,
@@ -57,6 +58,7 @@ A renderer is replaceable because it reads these records. Do not save native Pha
 
 On pointer down, convert screen coordinates through `camera.getWorldPoint()`. Create a draft shape. Pointer movement appends pen points or adjusts rectangle/circle dimensions. Pointer up commits the draft to the active board and increments the save revision. Negative rectangle dimensions are normalized so dragging up-left still produces a valid rectangle.
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const worldPoint = scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
 ```
@@ -119,6 +121,7 @@ These features reuse saved geometry while changing its interpretation. Keep the 
 
 The app uses Nord's Save class, the same service exposed as `game.save` in scene scripts. The HTML host creates an explicit instance:
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const save = new Save('paper-worlds');
 save.set('boards', boards);
@@ -174,6 +177,7 @@ Build the entire serializable document and common painter before adding either v
 
 <!-- taught-source: paper-worlds/model.js:1-37 -->
 
+**File: `model.js`** (step 1.1, initialize ten independent boards: the beginning of the file)
 ```js
 export const WIDTH = 1200,
   HEIGHT = 850;
@@ -224,6 +228,7 @@ export function newBoards() {
 
 <!-- taught-source: paper-worlds/model.js:38-62 -->
 
+**File: `model.js`** (step 1.2, seed a door and a graph as ordinary document records: the next part of this file; it goes **below** the code of the previous step)
 ```js
               kind: 'rect',
               x: 650,
@@ -262,6 +267,7 @@ export function newBoards() {
 
 <!-- taught-source: paper-worlds/model.js:63-89 -->
 
+**File: `model.js`** (step 1.3, paint the page and the first shape types: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function paint(ctx, board, { background = true } = {}) {
   ctx.clearRect(0, 0, WIDTH, HEIGHT);
@@ -302,6 +308,7 @@ export function paint(ctx, board, { background = true } = {}) {
 
 <!-- taught-source: paper-worlds/model.js:90-114 -->
 
+**File: `model.js`** (step 1.4, finish circles, sticky shadows and text: the next part of this file; it goes **below** the code of the previous step)
 ```js
     if (s.kind === 'circle') {
       ctx.beginPath();
@@ -340,6 +347,7 @@ export function paint(ctx, board, { background = true } = {}) {
 
 <!-- taught-source: paper-worlds/model.js:115-142 -->
 
+**File: `model.js`** (step 1.5, treat imported data as a document boundary: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function validateBoards(data) {
   const num = (v) => Number.isFinite(v) && Math.abs(v) <= 40000;
@@ -381,6 +389,7 @@ export function validateBoards(data) {
 
 <!-- taught-source: paper-worlds/model.js:143-146 -->
 
+**File: `model.js`** (step 1.6, embed text as inert JSON without changing it: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function portfolioHTML(template, boards) {
   const data = JSON.stringify(boards).replaceAll('<', '\\u003c');
@@ -403,6 +412,7 @@ Build the complete Phaser drawing interaction and both Arcade minigames.
 
 <!-- taught-source: paper-worlds/flat.js:1-26 -->
 
+**File: `flat.js`** (step 2.1, own view-local state and a Phaser game: the beginning of the file)
 ```js
 import { WIDTH, HEIGHT, paint } from './model.js';
 import { loadScript } from './desk.js';
@@ -442,6 +452,7 @@ export async function createFlat(parent, getBoard, change) {
 
 <!-- taught-source: paper-worlds/flat.js:27-64 -->
 
+**File: `flat.js`** (step 2.2, create a texture and begin an input transaction: the next part of this file; it goes **below** the code of the previous step)
 ```js
       create() {
         scene = this;
@@ -493,6 +504,7 @@ export async function createFlat(parent, getBoard, change) {
 
 <!-- taught-source: paper-worlds/flat.js:65-85 -->
 
+**File: `flat.js`** (step 2.3, keep drag geometry separate from committed shapes: the next part of this file; it goes **below** the code of the previous step)
 ```js
         this.input.on('pointermove', (p) => {
           if (!drag) return;
@@ -527,6 +539,7 @@ export async function createFlat(parent, getBoard, change) {
 
 <!-- taught-source: paper-worlds/flat.js:86-112 -->
 
+**File: `flat.js`** (step 2.4, commit once and normalize rectangle directions: the next part of this file; it goes **below** the code of the previous step)
 ```js
         const end = () => {
           if (drag && drag.kind !== 'hand') {
@@ -567,6 +580,7 @@ export async function createFlat(parent, getBoard, change) {
 
 <!-- taught-source: paper-worlds/flat.js:113-145 -->
 
+**File: `flat.js`** (step 2.5, move a tiny player and translate coordinates correctly: the next part of this file; it goes **below** the code of the previous step)
 ```js
       update() {
         if (player) {
@@ -613,6 +627,7 @@ export async function createFlat(parent, getBoard, change) {
 
 <!-- taught-source: paper-worlds/flat.js:146-160 -->
 
+**File: `flat.js`** (step 2.6, destroy temporary objects before changing modes: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function stopPlay() {
     player?.destroy();
@@ -641,6 +656,7 @@ export async function createFlat(parent, getBoard, change) {
 
 <!-- taught-source: paper-worlds/flat.js:161-182 -->
 
+**File: `flat.js`** (step 2.7, turn each circle into a controlled Arcade toy: the next part of this file; it goes **below** the code of the previous step)
 ```js
     if (mode === 'balls') {
       scene.physics.world.setBounds(0, 0, WIDTH, HEIGHT);
@@ -676,6 +692,7 @@ export async function createFlat(parent, getBoard, change) {
 
 <!-- taught-source: paper-worlds/flat.js:183-204 -->
 
+**File: `flat.js`** (step 2.8, turn rectangles into static walls and add a goal: the next part of this file; it goes **below** the code of the previous step)
 ```js
     if (mode === 'maze') {
       for (const s of getBoard().shapes.filter(
@@ -711,6 +728,7 @@ export async function createFlat(parent, getBoard, change) {
 
 <!-- taught-source: paper-worlds/flat.js:205-233 -->
 
+**File: `flat.js`** (step 2.9, expose a small view interface after readiness: the next part of this file; it goes **below** the code of the previous step)
 ```js
   await new Promise((resolve) => {
     const wait = () => (scene ? resolve() : requestAnimationFrame(wait));
@@ -758,6 +776,7 @@ Build every 3D representation and interaction from the same saved boards.
 
 <!-- taught-source: paper-worlds/world.js:1-20 -->
 
+**File: `world.js`** (step 3.1, lay out ten textured papers: the beginning of the file)
 ```js
 import { createDesk } from './desk.js';
 import { WIDTH, HEIGHT, paint } from './model.js';
@@ -791,6 +810,7 @@ export async function createWorld(canvas, boards, select) {
 
 <!-- taught-source: paper-worlds/world.js:21-51 -->
 
+**File: `world.js`** (step 3.2, translate sticky positions and construct a door: the next part of this file; it goes **below** the code of the previous step)
 ```js
     for (const s of board.shapes.filter((s) => s.kind === 'sticky')) {
       const pos = [
@@ -835,6 +855,7 @@ export async function createWorld(canvas, boards, select) {
 
 <!-- taught-source: paper-worlds/world.js:52-73 -->
 
+**File: `world.js`** (step 3.3, dispatch picks by metadata: the next part of this file; it goes **below** the code of the previous step)
 ```js
   scene.onPointerObservable.add((info) => {
     if (info.type !== B.PointerEventTypes.POINTERPICK) return;
@@ -870,6 +891,7 @@ export async function createWorld(canvas, boards, select) {
 
 <!-- taught-source: paper-worlds/world.js:74-100 -->
 
+**File: `world.js`** (step 3.4, animate camera ownership in seconds: the next part of this file; it goes **below** the code of the previous step)
 ```js
   d.update.add((dt) => {
     if (flying) {
@@ -910,6 +932,7 @@ export async function createWorld(canvas, boards, select) {
 
 <!-- taught-source: paper-worlds/world.js:101-122 -->
 
+**File: `world.js`** (step 3.5, refresh textures and scatter owned toys: the next part of this file; it goes **below** the code of the previous step)
 ```js
   return {
     ...d,
@@ -945,6 +968,7 @@ export async function createWorld(canvas, boards, select) {
 
 <!-- taught-source: paper-worlds/world.js:123-157 -->
 
+**File: `world.js`** (step 3.6, convert one stroke into a camera track: the next part of this file; it goes **below** the code of the previous step)
 ```js
     ride(board) {
       if (ride) return;
@@ -998,6 +1022,7 @@ Build the entire document host: controls, document selection, async mode changes
 
 <!-- taught-source: paper-worlds/app.js:1-10 -->
 
+**File: `app.js`** (step 4.1, imports, load the UI file and name the handles: the beginning of the file)
 ```js
 import { Save } from './save.js';
 import { newBoards, validateBoards, portfolioHTML } from './model.js';
@@ -1021,6 +1046,7 @@ export async function mount(root) {
 
 <!-- taught-source: paper-worlds/app.js:11-35 -->
 
+**File: `app.js`** (step 4.2, choose document data before starting Phaser: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const $ = (id) => menu.$(id).el;
   const save = new Save('paper-worlds');
@@ -1059,6 +1085,7 @@ export async function mount(root) {
 
 <!-- taught-source: paper-worlds/app.js:36-94 -->
 
+**File: `app.js`** (step 4.3, wire selections and serialize 3D transitions: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const options = () => {
     $('boards').replaceChildren(
@@ -1131,6 +1158,7 @@ export async function mount(root) {
 
 <!-- taught-source: paper-worlds/app.js:95-139 -->
 
+**File: `app.js`** (step 4.4, separate document edits, camera changes and toy actions: the next part of this file; it goes **below** the code of the previous step)
 ```js
   $('mode').onclick = () => mode(!in3d);
   $('boards').onchange = () => {
@@ -1189,6 +1217,7 @@ export async function mount(root) {
 
 <!-- taught-source: paper-worlds/app.js:140-158 -->
 
+**File: `app.js`** (step 4.5, save revisions and export simple formats: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function persist() {
     try {
@@ -1221,6 +1250,7 @@ export async function mount(root) {
 
 <!-- taught-source: paper-worlds/app.js:159-194 -->
 
+**File: `app.js`** (step 4.6, validate imported files and export a portfolio template: the next part of this file; it goes **below** the code of the previous step)
 ```js
   $('import').onchange = async () => {
     const file = $('import').files[0];
@@ -1270,6 +1300,7 @@ export async function mount(root) {
 
 <!-- taught-source: paper-worlds/app.js:195-239 -->
 
+**File: `app.js`** (step 4.7, offer touch navigation and release the mounted app: the next part of this file; it goes **below** the code of the previous step)
 ```js
   let pinch = 0;
   const pinchStart = (e) => {
@@ -1333,6 +1364,7 @@ Describe the drawing studio as data: brand header with actions, tool sidebar, th
 
 <!-- taught-source: paper-worlds/ui/desk.ui.json:1-26 -->
 
+**File: `ui/desk.ui.json`** (step 5.1, page settings, brand header and document actions: the beginning of the file)
 ```json
 {
   "version": 1,
@@ -1372,6 +1404,7 @@ Describe the drawing studio as data: brand header with actions, tool sidebar, th
 
 <!-- taught-source: paper-worlds/ui/desk.ui.json:27-63 -->
 
+**File: `ui/desk.ui.json`** (step 5.2, sidebar: boards, tools and play controls: the next part of this file; it goes **below** the code of the previous step)
 ```json
     { "class": "workbench", "type": "box", "tag": "section", "children": [
       { "type": "box", "tag": "aside", "children": [
@@ -1422,6 +1455,7 @@ Describe the drawing studio as data: brand header with actions, tool sidebar, th
 
 <!-- taught-source: paper-worlds/ui/desk.ui.json:64-72 -->
 
+**File: `ui/desk.ui.json`** (step 5.3, title bar and the two drawing surfaces: the next part of this file; it goes **below** the code of the previous step)
 ```json
         { "class": "titlebar", "type": "box", "children": [
           { "name": "title", "type": "label", "tag": "b" },
@@ -1444,6 +1478,7 @@ Describe the drawing studio as data: brand header with actions, tool sidebar, th
 
 <!-- taught-source: paper-worlds/ui/desk.ui.json:73-77 -->
 
+**File: `ui/desk.ui.json`** (step 5.4, footer: the next part of this file; it goes **below** the code of the previous step)
 ```json
     { "type": "box", "tag": "footer", "children": [
       { "type": "label", "tag": "span", "text": "10 boards · local-first · Crowelian 2026 + Sonnet" }
@@ -1467,6 +1502,7 @@ Build the complete reusable Babylon/Havok desk and browser-download helper.
 
 <!-- taught-source: paper-worlds/desk.js:1-20 -->
 
+**File: `desk.js`** (step 6.1, share pending local script loads: the beginning of the file)
 ```js
 // Cache the pending promise too: rapid view changes must wait for the same script.
 const scriptLoads = new Map();
@@ -1500,6 +1536,7 @@ export function loadScript(src) {
 
 <!-- taught-source: paper-worlds/desk.js:21-42 -->
 
+**File: `desk.js`** (step 6.2, create one engine, scene and controllable camera: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export async function createDesk(canvas, { physics = true } = {}) {
   await loadScript('vendor/babylonjs/babylon.js');
@@ -1535,6 +1572,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 <!-- taught-source: paper-worlds/desk.js:43-62 -->
 
+**File: `desk.js`** (step 6.3, light a surface and prepare shadow ownership: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const fill = new B.HemisphericLight('Sky', new B.Vector3(0, 1, 0), scene);
   fill.intensity = 0.65;
@@ -1568,6 +1606,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 <!-- taught-source: paper-worlds/desk.js:63-77 -->
 
+**File: `desk.js`** (step 6.4, load the packaged physics binary: the next part of this file; it goes **below** the code of the previous step)
 ```js
   if (physics) {
     await loadScript('vendor/havok/HavokPhysics_umd.js');
@@ -1596,6 +1635,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 <!-- taught-source: paper-worlds/desk.js:78-104 -->
 
+**File: `desk.js`** (step 6.5, create a writable texture rather than a screenshot file: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const paper = (name, width, height, paint) => {
     const mesh = B.MeshBuilder.CreatePlane(
@@ -1636,6 +1676,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 <!-- taught-source: paper-worlds/desk.js:105-126 -->
 
+**File: `desk.js`** (step 6.6, create a visible rigid sticky toy: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const box = (name, pos, color = '#f6d675', mass = 0.2) => {
     const mesh = B.MeshBuilder.CreateBox(
@@ -1671,6 +1712,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 <!-- taught-source: paper-worlds/desk.js:127-156 -->
 
+**File: `desk.js`** (step 6.7, own the render loop and resize lifecycle: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const update = new Set(),
     render = () => {
@@ -1714,6 +1756,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 <!-- taught-source: paper-worlds/desk.js:157-165 -->
 
+**File: `desk.js`** (step 6.8, hand a browser a real downloadable object: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function download(name, content, type = 'application/json') {
   const blob = content instanceof Blob ? content : new Blob([content], { type }),
@@ -1741,6 +1784,7 @@ Understand the complete existing Nord Save helper bundled with this app.
 
 <!-- taught-source: paper-worlds/save.js:1-20 -->
 
+**File: `save.js`** (step 7.1, namespace slots and read versioned data: the beginning of the file)
 ```js
 // Versioned save slots on top of localStorage (or any Storage-like object).
 export class Save {
@@ -1774,6 +1818,7 @@ export class Save {
 
 <!-- taught-source: paper-worlds/save.js:21-32 -->
 
+**File: `save.js`** (step 7.2, read and write values, then define memory storage: the next part of this file; it goes **below** the code of the previous step)
 ```js
   get(k, def) { const d = this.#read().data; return k in d ? d[k] : def; }
   set(k, v) { const o = this.#read(); o.data[k] = v; o.v = this.version; o.t = Date.now(); this.storage.setItem(this.#key(), JSON.stringify(o)); }
@@ -1916,6 +1961,7 @@ Read every project field that tells Nord which host, display and services to use
 
 <!-- taught-source: paper-worlds/nord.project.json:1-22 -->
 
+**File: `nord.project.json`** (step 10.1, identify the project and choose its presentation: the beginning of the file)
 ```json
 {
   "format": 1,
@@ -1951,6 +1997,7 @@ Read every project field that tells Nord which host, display and services to use
 
 <!-- taught-source: paper-worlds/nord.project.json:23-64 -->
 
+**File: `nord.project.json`** (step 10.2, distinguish scene actions from HTML event handling: the next part of this file; it goes **below** the code of the previous step)
 ```json
   "input": {
     "actions": {
@@ -2226,6 +2273,7 @@ All authored files follow in the manual's offline CodeMirror viewers. The comple
 <details>
 <summary>Complete app.js</summary>
 
+**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
 ```js
 import { Save } from './save.js';
 import { newBoards, validateBoards, portfolioHTML } from './model.js';
@@ -2473,6 +2521,7 @@ export async function mount(root) {
 <details>
 <summary>Complete desk.js</summary>
 
+**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Cache the pending promise too: rapid view changes must wait for the same script.
 const scriptLoads = new Map();
@@ -2646,6 +2695,7 @@ export function download(name, content, type = 'application/json') {
 <details>
 <summary>Complete flat.js</summary>
 
+**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
 ```js
 import { WIDTH, HEIGHT, paint } from './model.js';
 import { loadScript } from './desk.js';
@@ -2903,6 +2953,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete model.js</summary>
 
+**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export const WIDTH = 1200,
   HEIGHT = 850;
@@ -3057,6 +3108,7 @@ export function portfolioHTML(template, boards) {
 <details>
 <summary>Complete nord.project.json</summary>
 
+**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "format": 1,
@@ -3192,6 +3244,7 @@ export function portfolioHTML(template, boards) {
 <details>
 <summary>Complete save.js</summary>
 
+**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Versioned save slots on top of localStorage (or any Storage-like object).
 export class Save {
@@ -3398,6 +3451,7 @@ footer {
 <details>
 <summary>Complete ui/desk.ui.json</summary>
 
+**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "version": 1,
@@ -3483,6 +3537,7 @@ footer {
 <details>
 <summary>Complete world.js</summary>
 
+**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
 ```js
 import { createDesk } from './desk.js';
 import { WIDTH, HEIGHT, paint } from './model.js';

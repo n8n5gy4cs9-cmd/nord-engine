@@ -17,6 +17,8 @@ if (Application.isMobilePlatform) ShowTouchControls();
 ```
 
 ## Nord
+
+**File: `scripts/Platform.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour, Application, RuntimePlatform, Debug } from 'nord';
 
@@ -44,6 +46,8 @@ export default class PlatformSetup extends MonoBehaviour {
 `switch (Application.platform) { case RuntimePlatform.OSXPlayer: … }` works like in C#.
 
 ## Mouse lock (FPS look)
+
+**File: `scripts/MouseLook.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour, Cursor, CursorLockMode, UnityInput as Input, KeyCode } from 'nord';
 export default class LookLock extends MonoBehaviour {

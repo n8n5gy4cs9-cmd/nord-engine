@@ -30,6 +30,7 @@ That relative path is correct inside the engine's examples/rust-salvage folder. 
 
 Install the target if it is absent:
 
+**Terminal** (anywhere):
 ```sh
 rustup target add wasm32-unknown-unknown
 ```
@@ -104,6 +105,7 @@ A core pickup advances score, adds two seconds and chooses the next deterministi
 
 From your project folder:
 
+**Terminal** (in your project folder):
 ```sh
 rustc --test src/sim.rs -o /tmp/salvage-tests
 /tmp/salvage-tests
@@ -140,6 +142,7 @@ The overlay reads paused/over/won to choose its message. There is no second copy
 
 Save both Rust files. Use **Build Rust** and inspect compiler output in Console; Play builds the Rust project before running its dev page. From an engine checkout, the explicit commands are:
 
+**Terminal** (in the Nord Engine folder, or give the full path):
 ```sh
 nord build-rust examples/rust-salvage
 nord serve examples/rust-salvage
@@ -153,6 +156,7 @@ If the page cannot find target/web/game.wasm, run Build Rust first. If Cargo can
 
 From the project parent directory:
 
+**Terminal** (in the folder that contains the project folder):
 ```sh
 nord build rust-salvage --target web-wasm-game --out salvage-web --zip
 python3 -m http.server 8003 --directory salvage-web
@@ -2626,6 +2630,7 @@ panic = "abort"
 <details>
 <summary>Complete nord.project.json</summary>
 
+**File: `nord.project.json`** (the complete file, for comparison)
 ```json
 {
   "format": 1,

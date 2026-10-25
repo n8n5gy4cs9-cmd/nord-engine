@@ -33,8 +33,9 @@ Choose <span class="ui">3D game</span> ("Babylon.js 3D + Havok physics"). Not HT
 
 ### Step 2 — Project settings (nord.project.json)
 
-Open <span class="f">nord.project.json</span> and make these fields match (leave the others):
+**In the editor:** open the @ui[Project] tab ▸ **Project properties**. Set **Game size** `960` × `540`, **Scaling** `fit`, **Pixel art** on, **Background** `#163d57`, and **Physics** `none` if the list offers it (the game does its own collisions; leaving `arcade` is harmless). Press **Apply project properties**. Then unfold **Input Manager (actions and keys)** and make sure these actions exist, each with its keys (**Add action**, **＋ key**): `left`, `right`, `up`, `down`, `fire` (Space, J), `roll` (Left Shift, Right Shift), `retro` (C).
 
+**In the file** <span class="f">nord.project.json</span> (open it in a text editor to check; the fields should match, leave the others):
 ```json
 "display": { "width": 960, "height": 540, "scale": "fit", "pixelArt": true, "background": "#163d57" },
 "physics": { "engine": "none", "gravity": [0, 0, 0] },
@@ -145,6 +146,7 @@ The main files divide concrete responsibilities:
 
 `newFlight()` returns a fresh state object. It owns hull, score, elapsed time, ship coordinates, cooldowns, bullets, enemies, pickups and boss state. `tick(state, input, dt)` advances that object and returns named sound events. It does not know about Babylon, DOM labels or audio buffers.
 
+**Excerpt** (from `scripts/sim.js`):
 ```js
 const state = newFlight();
 const events = tick(state, { x: 1, y: 0, fire: true, roll: false }, 1 / 60);
@@ -168,6 +170,7 @@ At 65 seconds the simulation enables a carrier with 48 hit points. It approaches
 
 The controller extends `NordScript` and creates its state and view in `start()`:
 
+**Excerpt** (from `scripts/flight.js`):
 ```js
 import { NordScript } from 'nord';
 import { newFlight, tick } from './sim.js';
@@ -255,6 +258,7 @@ The helper decodes each path once, creates bounded sound voices, loops music and
 
 The button calls `this.game.restart()`. Nord reloads the current saved scene, constructs fresh entities and script instances, cancels the old scene's scheduled work, clears held/virtual input, resets the game clock and time scale, and resumes even if you were paused. The promise resolves after the new scene starts.
 
+**Excerpt** (from `scripts/flight.js`, the restart button handler):
 ```js
 await this.game.restart();
 // This old controller has been destroyed. Do not continue changing its state here.
@@ -299,6 +303,7 @@ Read the complete rail-shooter simulation, including every timer, collision, spa
 
 <!-- taught-source: vector-patrol/scripts/sim.js:1-29 -->
 
+**File: `scripts/sim.js`** (step 1.1, give a run one state object: the beginning of the file)
 ```js
 export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export function newFlight() {
@@ -341,6 +346,7 @@ export function newFlight() {
 
 <!-- taught-source: vector-patrol/scripts/sim.js:30-53 -->
 
+**File: `scripts/sim.js`** (step 1.2, read one intent and advance clocks: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function tick(s, input, dt) {
   if (s.won || s.lost) return [];
@@ -378,6 +384,7 @@ export function tick(s, input, dt) {
 
 <!-- taught-source: vector-patrol/scripts/sim.js:54-73 -->
 
+**File: `scripts/sim.js`** (step 1.3, spawn waves and rewards on separate schedules: the next part of this file; it goes **below** the code of the previous step)
 ```js
   if (s.time < 63 && s.spawn <= 0) {
     s.spawn = Math.max(0.7, 2 - s.time / 70);
@@ -411,6 +418,7 @@ export function tick(s, input, dt) {
 
 <!-- taught-source: vector-patrol/scripts/sim.js:74-98 -->
 
+**File: `scripts/sim.js`** (step 1.4, centralize hull loss and grace: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const damage = (n) => {
     if (s.shield > 0 || s.won || s.lost) return;
@@ -449,6 +457,7 @@ export function tick(s, input, dt) {
 
 <!-- taught-source: vector-patrol/scripts/sim.js:99-114 -->
 
+**File: `scripts/sim.js`** (step 1.5, introduce the carrier and its fan pattern: the next part of this file; it goes **below** the code of the previous step)
 ```js
   if (s.time >= 65) {
     s.boss = true;
@@ -478,6 +487,7 @@ export function tick(s, input, dt) {
 
 <!-- taught-source: vector-patrol/scripts/sim.js:115-141 -->
 
+**File: `scripts/sim.js`** (step 1.6, resolve a player shot against one target: the next part of this file; it goes **below** the code of the previous step)
 ```js
   for (const shot of s.shots) {
     shot.z += 110 * dt;
@@ -518,6 +528,7 @@ export function tick(s, input, dt) {
 
 <!-- taught-source: vector-patrol/scripts/sim.js:142-168 -->
 
+**File: `scripts/sim.js`** (step 1.7, make the result exclusive and process hazards: the next part of this file; it goes **below** the code of the previous step)
 ```js
       if (s.bossHP <= 0) {
         s.won = true;
@@ -558,6 +569,7 @@ export function tick(s, input, dt) {
 
 <!-- taught-source: vector-patrol/scripts/sim.js:169-185 -->
 
+**File: `scripts/sim.js`** (step 1.8, consume pickups, prune arrays and enforce the deadline: the next part of this file; it goes **below** the code of the previous step)
 ```js
   for (const cell of s.cells) {
     cell.z -= 22 * dt;
@@ -593,6 +605,7 @@ Connect all simulation decisions to Nord lifecycle, actions, UI, save data and r
 
 <!-- taught-source: vector-patrol/scripts/flight.js:1-22 -->
 
+**File: `scripts/flight.js`** (step 2.1, create state and name UI screens: the beginning of the file)
 ```js
 import { NordScript } from 'nord';
 import { newFlight, tick } from './sim.js';
@@ -628,6 +641,7 @@ export default class Flight extends NordScript {
 
 <!-- taught-source: vector-patrol/scripts/flight.js:23-52 -->
 
+**File: `scripts/flight.js`** (step 2.2, build launch controls and explain actions: the next part of this file; it goes **below** the code of the previous step)
 ```js
     this.ui.menu(
       'flight-menu',
@@ -671,6 +685,7 @@ export default class Flight extends NordScript {
 
 <!-- taught-source: vector-patrol/scripts/flight.js:53-74 -->
 
+**File: `scripts/flight.js`** (step 2.3, handle input that must work while paused: the next part of this file; it goes **below** the code of the previous step)
 ```js
     this.key = (e) => {
       if (e.code === 'KeyP' && !e.repeat) this.togglePause();
@@ -706,6 +721,7 @@ export default class Flight extends NordScript {
 
 <!-- taught-source: vector-patrol/scripts/flight.js:75-93 -->
 
+**File: `scripts/flight.js`** (step 2.4, keep pause UI and the engine in agreement: the next part of this file; it goes **below** the code of the previous step)
 ```js
   togglePause() {
     if (!this.started || this.state.won || this.state.lost) return;
@@ -738,6 +754,7 @@ export default class Flight extends NordScript {
 
 <!-- taught-source: vector-patrol/scripts/flight.js:94-124 -->
 
+**File: `scripts/flight.js`** (step 2.5, route actions, sound events and the one-time result: the next part of this file; it goes **below** the code of the previous step)
 ```js
   update(dt) {
     if (this.input.pressed('retro')) this.view.setRetro(!this.view.retro);
@@ -782,6 +799,7 @@ export default class Flight extends NordScript {
 
 <!-- taught-source: vector-patrol/scripts/flight.js:125-143 -->
 
+**File: `scripts/flight.js`** (step 2.6, format state without changing it, then release resources: the next part of this file; it goes **below** the code of the previous step)
 ```js
   draw() {
     const s = this.state;
@@ -819,6 +837,7 @@ Follow every conversion from rule records to Nord entities, native pools and ret
 
 <!-- taught-source: vector-patrol/scripts/view.js:1-22 -->
 
+**File: `scripts/view.js`** (step 3.1, keep the backend and imported palette: the beginning of the file)
 ```js
 import { vertexSource, fragmentSource } from './retro-shader.js';
 export class FlightView {
@@ -854,6 +873,7 @@ export class FlightView {
 
 <!-- taught-source: vector-patrol/scripts/view.js:23-37 -->
 
+**File: `scripts/view.js`** (step 3.2, bind shader attributes and uniforms explicitly: the next part of this file; it goes **below** the code of the previous step)
 ```js
           mat = new this.B.ShaderMaterial(
             'retro-' + key,
@@ -882,6 +902,7 @@ export class FlightView {
 
 <!-- taught-source: vector-patrol/scripts/view.js:38-51 -->
 
+**File: `scripts/view.js`** (step 3.3, find reusable entities and make simple effect materials: the next part of this file; it goes **below** the code of the previous step)
 ```js
     this.player = script.scene.find('Fighter');
     this.carrier = script.scene.find('Carrier');
@@ -909,6 +930,7 @@ export class FlightView {
 
 <!-- taught-source: vector-patrol/scripts/view.js:52-77 -->
 
+**File: `scripts/view.js`** (step 3.4, allocate bounded native pools once: the next part of this file; it goes **below** the code of the previous step)
 ```js
     const pool = (count, kind, mat, size) =>
       Array.from({ length: count }, (_, i) => {
@@ -948,6 +970,7 @@ export class FlightView {
 
 <!-- taught-source: vector-patrol/scripts/view.js:78-101 -->
 
+**File: `scripts/view.js`** (step 3.5, add cheap canyon landmarks and a view target: the next part of this file; it goes **below** the code of the previous step)
 ```js
     this.mountains = Array.from({ length: 18 }, (_, i) => {
       const m = this.B.MeshBuilder.CreateCylinder(
@@ -985,6 +1008,7 @@ export class FlightView {
 
 <!-- taught-source: vector-patrol/scripts/view.js:102-118 -->
 
+**File: `scripts/view.js`** (step 3.6, synchronize framebuffer and shader quality: the next part of this file; it goes **below** the code of the previous step)
 ```js
   setRetro(on) {
     this.retro = on;
@@ -1015,6 +1039,7 @@ export class FlightView {
 
 <!-- taught-source: vector-patrol/scripts/view.js:119-139 -->
 
+**File: `scripts/view.js`** (step 3.7, place Nord entities from arrays: the next part of this file; it goes **below** the code of the previous step)
 ```js
   draw(s) {
     this.player.pos = [s.x, s.y, 0];
@@ -1049,6 +1074,7 @@ export class FlightView {
 
 <!-- taught-source: vector-patrol/scripts/view.js:140-162 -->
 
+**File: `scripts/view.js`** (step 3.8, place primitive pools and wrap ground motion: the next part of this file; it goes **below** the code of the previous step)
 ```js
     const native = (pool, items) =>
       pool.forEach((m, i) => {
@@ -1085,6 +1111,7 @@ export class FlightView {
 
 <!-- taught-source: vector-patrol/scripts/view.js:163-172 -->
 
+**File: `scripts/view.js`** (step 3.9, restore borrowed resources, destroy owned ones: the next part of this file; it goes **below** the code of the previous step)
 ```js
   dispose() {
     for (const [mesh, mat] of this.originals) if (!mesh.isDisposed()) mesh.material = mat;
@@ -1113,6 +1140,7 @@ Read both complete GLSL programs; matrix conversion and quantization are small e
 
 <!-- taught-source: vector-patrol/scripts/retro-shader.js:1-22 -->
 
+**File: `scripts/retro-shader.js`** (step 4.1, move from object vertices to a screen grid: the beginning of the file)
 ```js
 // Snap in projected space so the grid follows the screen, rather than world units.
 export const vertexSource = `
@@ -1148,6 +1176,7 @@ void main() {
 
 <!-- taught-source: vector-patrol/scripts/retro-shader.js:23-40 -->
 
+**File: `scripts/retro-shader.js`** (step 4.2, light, dither and quantize colour: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export const fragmentSource = `
 precision highp float;
@@ -1184,6 +1213,7 @@ Build the complete local-audio helper: activation, cached decoding, voices, cros
 
 <!-- taught-source: vector-patrol/scripts/retro-audio.js:1-18 -->
 
+**File: `scripts/retro-audio.js`** (step 5.1, own resources for one run: the beginning of the file)
 ```js
 // Local MP3/WAV/OGG files, decoded on first user activation. No external service.
 export class RetroAudio {
@@ -1215,6 +1245,7 @@ export class RetroAudio {
 
 <!-- taught-source: vector-patrol/scripts/retro-audio.js:19-30 -->
 
+**File: `scripts/retro-audio.js`** (step 5.2, decode each path once: the next part of this file; it goes **below** the code of the previous step)
 ```js
   async load(path) {
     if (!this.cache.has(path))
@@ -1240,6 +1271,7 @@ export class RetroAudio {
 
 <!-- taught-source: vector-patrol/scripts/retro-audio.js:31-58 -->
 
+**File: `scripts/retro-audio.js`** (step 5.3, turn a buffer into a voice: the next part of this file; it goes **below** the code of the previous step)
 ```js
   async voice(path, { volume = 0.5, loop = false, rate = 1 } = {}) {
     if (!this.ctx) return null;
@@ -1281,6 +1313,7 @@ export class RetroAudio {
 
 <!-- taught-source: vector-patrol/scripts/retro-audio.js:59-76 -->
 
+**File: `scripts/retro-audio.js`** (step 5.4, keep game events independent of file paths: the next part of this file; it goes **below** the code of the previous step)
 ```js
   play(name, options = {}) {
     const path = this.config.sfx[name];
@@ -1312,6 +1345,7 @@ export class RetroAudio {
 
 <!-- taught-source: vector-patrol/scripts/retro-audio.js:77-92 -->
 
+**File: `scripts/retro-audio.js`** (step 5.5, pause and dispose the right owner: the next part of this file; it goes **below** the code of the previous step)
 ```js
   mute() {
     this.muted = !this.muted;
@@ -1346,6 +1380,7 @@ Keep flight music, boss music and every combat event mapped to supplied local re
 
 <!-- taught-source: vector-patrol/scripts/audio-config.js:1-11 -->
 
+**File: `scripts/audio-config.js`** (step 6.1, map event names to recordings: the beginning of the file)
 ```js
 export const AUDIO = {
   music: ['assets/audio/vector-flight.mp3', 'assets/audio/vector-boss.mp3'],
@@ -1410,6 +1445,7 @@ Read every project field that tells Nord which host, display and services to use
 
 <!-- taught-source: vector-patrol/nord.project.json:1-22 -->
 
+**File: `nord.project.json`** (step 8.1, identify the project and choose its presentation: the beginning of the file)
 ```json
 {
   "format": 1,
@@ -1445,6 +1481,7 @@ Read every project field that tells Nord which host, display and services to use
 
 <!-- taught-source: vector-patrol/nord.project.json:23-62 -->
 
+**File: `nord.project.json`** (step 8.2, distinguish scene actions from HTML event handling: the next part of this file; it goes **below** the code of the previous step)
 ```json
   "input": {
     "actions": {
@@ -1503,6 +1540,7 @@ Read the complete generic spawn helper included by Nord’s scene-example genera
 
 <!-- taught-source: vector-patrol/scripts/mk.js:1-9 -->
 
+**File: `scripts/mk.js`** (step 9.1, understand the optional entity-data helpers: the beginning of the file)
 ```js
 // Tiny helpers to spawn coloured rectangles / circles / text at runtime (placeholder art). Generated by tools/gen_examples.mjs.
 const base = (name, x, y, z, tags, comps) => ({ name, tags: tags ?? [], transform: { pos: [x, y, z ?? 0], rot: [0, 0, 0], scale: [1, 1, 1] }, components: comps, scripts: [], children: [] });
@@ -1530,6 +1568,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:1-42 -->
 
+**File: `scenes/main.scene.json`** (step 10.1, declare Camera: the beginning of the file)
 ```json
 {
   "format": 1,
@@ -1585,6 +1624,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:43-76 -->
 
+**File: `scenes/main.scene.json`** (step 10.2, declare Fighter: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Fighter",
       "enabled": true,
@@ -1632,6 +1672,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:77-110 -->
 
+**File: `scenes/main.scene.json`** (step 10.3, declare Drone0: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone0",
       "enabled": true,
@@ -1679,6 +1720,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:111-144 -->
 
+**File: `scenes/main.scene.json`** (step 10.4, declare Drone1: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone1",
       "enabled": true,
@@ -1726,6 +1768,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:145-178 -->
 
+**File: `scenes/main.scene.json`** (step 10.5, declare Drone2: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone2",
       "enabled": true,
@@ -1773,6 +1816,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:179-212 -->
 
+**File: `scenes/main.scene.json`** (step 10.6, declare Drone3: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone3",
       "enabled": true,
@@ -1820,6 +1864,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:213-246 -->
 
+**File: `scenes/main.scene.json`** (step 10.7, declare Drone4: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone4",
       "enabled": true,
@@ -1867,6 +1912,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:247-280 -->
 
+**File: `scenes/main.scene.json`** (step 10.8, declare Drone5: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone5",
       "enabled": true,
@@ -1914,6 +1960,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:281-314 -->
 
+**File: `scenes/main.scene.json`** (step 10.9, declare Drone6: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone6",
       "enabled": true,
@@ -1961,6 +2008,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:315-348 -->
 
+**File: `scenes/main.scene.json`** (step 10.10, declare Drone7: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone7",
       "enabled": true,
@@ -2008,6 +2056,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:349-382 -->
 
+**File: `scenes/main.scene.json`** (step 10.11, declare Drone8: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone8",
       "enabled": true,
@@ -2055,6 +2104,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:383-416 -->
 
+**File: `scenes/main.scene.json`** (step 10.12, declare Drone9: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone9",
       "enabled": true,
@@ -2102,6 +2152,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:417-450 -->
 
+**File: `scenes/main.scene.json`** (step 10.13, declare Drone10: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone10",
       "enabled": true,
@@ -2149,6 +2200,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:451-484 -->
 
+**File: `scenes/main.scene.json`** (step 10.14, declare Drone11: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone11",
       "enabled": true,
@@ -2196,6 +2248,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:485-518 -->
 
+**File: `scenes/main.scene.json`** (step 10.15, declare Drone12: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone12",
       "enabled": true,
@@ -2243,6 +2296,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:519-552 -->
 
+**File: `scenes/main.scene.json`** (step 10.16, declare Drone13: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Drone13",
       "enabled": true,
@@ -2290,6 +2344,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:553-586 -->
 
+**File: `scenes/main.scene.json`** (step 10.17, declare Carrier: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Carrier",
       "enabled": true,
@@ -2337,6 +2392,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:587-620 -->
 
+**File: `scenes/main.scene.json`** (step 10.18, declare Gate0: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Gate0",
       "enabled": true,
@@ -2384,6 +2440,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:621-654 -->
 
+**File: `scenes/main.scene.json`** (step 10.19, declare Gate1: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Gate1",
       "enabled": true,
@@ -2431,6 +2488,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:655-688 -->
 
+**File: `scenes/main.scene.json`** (step 10.20, declare Gate2: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "Gate2",
       "enabled": true,
@@ -2478,6 +2536,7 @@ Read the whole saved scene: camera, every pooled model slot and the controller a
 
 <!-- taught-source: vector-patrol/scenes/main.scene.json:689-721 -->
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```json
       "name": "FlightGame",
       "enabled": true,
@@ -2529,6 +2588,7 @@ The download contains all binary assets and licences as well as the following co
 <details>
 <summary>Complete scripts/flight.js</summary>
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```js
 import { NordScript } from 'nord';
 import { newFlight, tick } from './sim.js';
@@ -2680,6 +2740,7 @@ export default class Flight extends NordScript {
 <details>
 <summary>Complete assets/models/carrier.blocksmith.json</summary>
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "version": 2,
@@ -2885,6 +2946,7 @@ export default class Flight extends NordScript {
 <details>
 <summary>Complete assets/models/drone.blocksmith.json</summary>
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "version": 2,
@@ -3009,6 +3071,7 @@ export default class Flight extends NordScript {
 <details>
 <summary>Complete assets/models/fighter.blocksmith.json</summary>
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "version": 2,
@@ -3241,6 +3304,7 @@ export default class Flight extends NordScript {
 <details>
 <summary>Complete assets/models/gate.blocksmith.json</summary>
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "version": 2,
@@ -3444,6 +3508,7 @@ try {
 <details>
 <summary>Complete nord.project.json</summary>
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "format": 1,
@@ -3514,6 +3579,7 @@ try {
 <details>
 <summary>Complete scenes/main.scene.json</summary>
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "format": 1,
@@ -4243,6 +4309,7 @@ try {
 <details>
 <summary>Complete scripts/audio-config.js</summary>
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export const AUDIO = {
   music: ['assets/audio/vector-flight.mp3', 'assets/audio/vector-boss.mp3'],
@@ -4262,6 +4329,7 @@ export const AUDIO = {
 <details>
 <summary>Complete scripts/mk.js</summary>
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Tiny helpers to spawn coloured rectangles / circles / text at runtime (placeholder art). Generated by tools/gen_examples.mjs.
 const base = (name, x, y, z, tags, comps) => ({ name, tags: tags ?? [], transform: { pos: [x, y, z ?? 0], rot: [0, 0, 0], scale: [1, 1, 1] }, components: comps, scripts: [], children: [] });
@@ -4279,6 +4347,7 @@ export const aabb = (a, b) => Math.abs(a.pos[0] - b.pos[0]) * 2 < a.w + b.w && M
 <details>
 <summary>Complete scripts/retro-audio.js</summary>
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Local MP3/WAV/OGG files, decoded on first user activation. No external service.
 export class RetroAudio {
@@ -4379,6 +4448,7 @@ export class RetroAudio {
 <details>
 <summary>Complete scripts/retro-shader.js</summary>
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Snap in projected space so the grid follows the screen, rather than world units.
 export const vertexSource = `
@@ -4427,6 +4497,7 @@ void main() {
 <details>
 <summary>Complete scripts/sim.js</summary>
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export function newFlight() {
@@ -4620,6 +4691,7 @@ export function tick(s, input, dt) {
 <details>
 <summary>Complete scripts/view.js</summary>
 
+**File: `scenes/main.scene.json`** (step 10.21, declare FlightGame: the next part of this file; it goes **below** the code of the previous step)
 ```js
 import { vertexSource, fragmentSource } from './retro-shader.js';
 export class FlightView {

@@ -42,6 +42,7 @@ export async function mount(root) {
 ```
 In a normal 2D/3D scene script, `game.ui` already is the manager:
 
+**File: your script, for example `scripts/Menu.js`** (the `start()` method of a scene script)
 ```js
 async start() {
   this.menu = await this.ui.load('ui/menu.ui.json');
@@ -55,6 +56,8 @@ Type the action into the button's **Action** field. Under it the Designer shows 
 <figure class="shot"><img src="assets/screenshots/ui-designer-action-missing.png" alt="No code listens to the action two yet" loading="lazy"><figcaption>A new button with action <code>two</code>: not handled yet.</figcaption></figure>
 
 ## 4. Talk to the UI from code (and back)
+
+**File: your script, for example `scripts/Menu.js`** (inside `start()`, after `menu` was loaded)
 ```js
 menu.set('score', 120);              // every label containing {score} updates
 menu.$('score').color = '#a3be8c';   // style one node

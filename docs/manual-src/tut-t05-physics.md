@@ -8,6 +8,8 @@ summary: Rigidbodies, colliders, triggers, bounce pads, pickups.
 
 1. A floor: entity with `collider` (box) and **no** rigidbody = static. A crate: `rigidbody` (`dynamic`) + `collider`.
 2. A coin: add a [`trigger`](component-trigger.html) and a script:
+
+**File: `scripts/coin.js`** (new file, the whole file; attach it to the coin)
 ```js
 import { NordScript } from 'nord';
 export default class Coin extends NordScript {

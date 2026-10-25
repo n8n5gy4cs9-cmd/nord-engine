@@ -15,6 +15,8 @@ Saves go to the browser's `localStorage` (the packaged app uses the same API); d
 PlayerPrefs.SetInt("best", 120); int best = PlayerPrefs.GetInt("best", 0); PlayerPrefs.Save();
 ```
 ### Nord
+
+**File: your script, for example `scripts/Score.js`** (calls inside any method)
 ```js
 this.save.set('best', 120);                   // anything JSON-able: numbers, strings, arrays, objects
 const best = this.save.get('best', 0);        // second argument = default
@@ -26,12 +28,16 @@ There is no `Save()` call: writes happen immediately.
 
 ## High score the easy way
 `GameManager.instance.SaveHighScore()` stores the score only if it beats the old one and returns the best:
+
+**File: your script, for example `scripts/GameOver.js`** (inside the method that ends the run)
 ```js
 const best = GameManager.instance.SaveHighScore('highscore');
 this.ui.label(`Best ${best}`, { anchor: 'c', y: 40 });
 ```
 
 ## Whole game state in a slot
+
+**File: `scripts/SaveSlots.js`** (add these methods to the class; `save` writes a slot, `load` reads it)
 ```js
 // save
 saveGame() {
@@ -58,6 +64,8 @@ Remember: loading a scene creates **new** objects. Restore values *after* `await
 :::
 
 ## Settings (volume, language, controls)
+
+**File: your script, for example `scripts/Options.js`** (inside `Start()` to read, in the slider callbacks to write)
 ```js
 const vol = this.save.get('settings.volume', 0.8);
 this.audio.volume('master', vol);

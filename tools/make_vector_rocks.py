@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generates examples/vector-rocks (the Unity-style Asteroids of the Examples section): project, scene, prefabs, scripts, assets.
 Scripts: tools/vector-rocks/*.js. Art: python3 tools/gen_vector_rocks_art.py. Run: python3 tools/make_vector_rocks.py"""
-import json, shutil, pathlib, re
+import re, json, shutil, pathlib, re
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / 'tools/vector-rocks'
 OUT = ROOT / 'examples/vector-rocks'
@@ -20,6 +20,22 @@ def particles(**k):
     base.update(k); return base
 
 KEEP = set()
+
+def code_block(base, spec):
+    """@@code path | note@@ -> a labelled fence: **File: `scripts/<file>`** (note) + the file content."""
+    path, _, note = [x.strip() for x in spec.partition('|')]
+    f = base / path if (base / path).exists() else None
+    if f is None: f = OUT / 'scripts' / pathlib.Path(path).name
+    name = 'scripts/' + pathlib.Path(path).name
+    body = f.read_text().rstrip()
+    out = f'**File: `{name}`** ({note or "new file, the whole file"})\n```js\n' + body + '\n```'
+    m = re.search(r'attach it to (.+)$', note)
+    if m and 'nothing' not in m.group(1):
+        target = m.group(1)
+        make = ' If the object does not exist yet, create it first with @ui[Hierarchy ▸ + Create ▸ Empty] and rename it.' if re.search(r'`(Game|Hud|Level|Run|GameManager|Title)`', target) else ''
+        prefab = ' Prefabs: first @ui[Assets ▸ right-click the prefab ▸ Open prefab].' if 'prefab' in target else ''
+        out += f'\n\n**In the editor:** select {target}, then @ui[Inspector ▸ + Add script ▸ {name}].{make}{prefab} The scene or prefab file then lists the script under `"scripts"`.\n'
+    return out
 
 def build():
     for sub in ('scenes', 'scripts', 'prefabs', 'assets/particles', 'assets/audio/sfx'): (OUT / sub).mkdir(parents=True, exist_ok=True)
@@ -57,7 +73,7 @@ def build():
 def docs():
     import zipfile
     text = (SRC / 'docs/page.md').read_text()
-    text = re.sub(r'@@code (\S+)@@', lambda m: '```js\n' + (SRC / m.group(1)).read_text().rstrip() + '\n```', text)
+    text = re.sub(r'@@code ([^@]+)@@', lambda m: code_block(SRC, m.group(1)), text)
     (ROOT / 'docs/manual-src/ex-vector-rocks.md').write_text(text)
     (ROOT / 'docs/tutorial-downloads').mkdir(exist_ok=True)
     with zipfile.ZipFile(ROOT / 'docs/tutorial-downloads/vector-rocks-source.zip', 'w', zipfile.ZIP_DEFLATED) as zf:

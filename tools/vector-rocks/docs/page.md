@@ -64,13 +64,37 @@ A real XY monitor has no pixels: an electron beam draws lines, and the phosphor 
 2. **Bloom.** Bright things bleed light over their surroundings. The HUD adds a layer that blurs and brightens what is behind it and puts it back on top with the `screen` blend mode: a one-line CSS `backdropFilter: 'blur(6px) brightness(2.3) saturate(1.5)'`.
 3. **Scanlines, curved glass and the bezel.** The scene effect `{ "type": "crt", "intensity": 0.35 }` adds scanlines. The bezel is one 800 × 600 image with a transparent screen opening, rounded corners, an inner shadow, a glass reflection, screws, a nameplate and an LED. It lies on top of the whole game.
 
-The project settings for the look:
+### Set up the project look
 
+**In the editor.** Open the @ui[Project] tab and unfold **Project properties**:
+
+1. **Game size**: type `800` × `600` (the preset buttons Tablet, HD and Full HD are for other shapes).
+2. **Scaling**: `fit` (the game is scaled to fit any window).
+3. **Pixel art**: off (the lines are smooth, not pixels).
+4. **Background**: `#010a03`, a green-black.
+5. **Physics**: `arcade`, **gravity Y**: `0` (we look at space, nothing falls).
+6. Press **Apply project properties**.
+
+**In the file** `nord.project.json` (open it in any text editor to check): the editor wrote these two blocks.
 ```json
 "display": { "width": 800, "height": 600, "scale": "fit", "pixelArt": false, "background": "#010a03" },
 "physics": { "engine": "arcade", "gravity": [0, 0, 0] }
 ```
-and in the scene `"settings": { "effects": [ { "type": "crt", "intensity": 0.35 } ] }`.
+
+### Add the scanlines (scene effect)
+
+The editor has no panel for scene effects yet, so this one is done in the scene file, or in code.
+
+**Option 1, in the file** `scenes/main.scene.json`: the scene has a `settings` object. Add (or extend) its `effects` list:
+```json
+"settings": { "effects": [ { "type": "crt", "intensity": 0.35 } ] }
+```
+
+**Option 2, in code**, inside `Start()` of any script that lives in the scene (for example `Hud.js`), after the labels are created:
+```js
+this.game.effects.add(this.scene, 'crt', { intensity: 0.35 });
+```
+The finished project uses option 1. The effect list of the whole engine, with parameters, is in [Effects, particles and timelines](effects-particles-timelines.html).
 
 > **Why a 4:3 game?** The monitors this imitates were 4:3. The game stays 800 × 600 and is scaled to fit any window; the black bars are the table the monitor stands on.
 
@@ -78,7 +102,7 @@ and in the scene `"settings": { "effects": [ { "type": "crt", "intensity": 0.35 
 
 `Playfield.js` knows where the visible screen is (inside the bezel) and wraps objects around it:
 
-@@code Playfield.js@@
+@@code Playfield.js | new file, the whole file; a helper the other scripts import, attach it to nothing@@
 
 Unity has no equivalent of `static` helper *classes* because C# has them built in; in JavaScript a class with only `static` members does the same. Anything can call `Playfield.Wrap(this.entity)`.
 
@@ -86,7 +110,7 @@ Unity has no equivalent of `static` helper *classes* because C# has them built i
 
 The scene has an entity `Ship` (tag `Player`) with a sprite, a **rigidbody** (dynamic), a **circle collider** that is a **trigger**, and two disabled children `Flame` and `Shield`. The script:
 
-@@code Ship.js@@
+@@code Ship.js | new file, the whole file; attach it to the `Ship` object@@
 
 The Unity ideas, in order:
 
@@ -106,7 +130,7 @@ The Unity ideas, in order:
 
 `Rock.js`:
 
-@@code Rock.js@@
+@@code Rock.js | new file, the whole file; attach it to the nine `rock-*` prefabs@@
 
 * One script, three sizes: each prefab sets `size` (0 small, 1 medium, 2 large) and has a different picture and collider. Three shapes per size make the sky look varied: `Random.Range(0, 3)` picks one.
 * `Hit()` is the whole life of a rock after birth: score, sound, explosion, **split into two smaller rocks** that inherit half of the parent's speed plus a random push, sometimes a power-up (small rocks drop them most often), and finally `Destroy(this.entity)`.
@@ -115,9 +139,9 @@ The Unity ideas, in order:
 
 `Bullet.js` and `PowerUp.js` are tiny:
 
-@@code Bullet.js@@
+@@code Bullet.js | new file, the whole file; attach it to the `bullet` prefab@@
 
-@@code PowerUp.js@@
+@@code PowerUp.js | new file, the whole file; attach it to the five `pu-*` prefabs@@
 
 A bullet remembers it is `spent` so that one shot hits one rock, even if it touches two in the same frame. `Destroy(obj, seconds)` removes the bullet after its lifetime. The power-up throbs with a sine and fades during its last two seconds. There is **one prefab per kind** (`pu-shield`, `pu-rapid`, …) with the same script and a different `type`: an easy way to get an icon per kind without any code that picks pictures.
 
@@ -125,7 +149,7 @@ A bullet remembers it is `spent` so that one shot hits one rock, even if it touc
 
 `Game.js` is a `Singleton`: `Game.instance` works from anywhere (`Game.instance.AddScore(50)`).
 
-@@code Game.js@@
+@@code Game.js | new file, the whole file; attach it to the `Game` object@@
 
 * `Waves()` is a coroutine: wait, spawn `count` rocks on the screen edge **away from the ship**, wait until they have all arrived, wait until the sky is empty, wait a moment, next wave. `WaitForSeconds` and `WaitUntil` are the Unity yield instructions.
 * **Trap: `Instantiate` is asynchronous.** If the coroutine only waited for `RockCount() === 0`, it would see an empty sky for a few frames while the rocks are still loading, and start the next wave at once. `pending` counts the rocks that really exist. This was a real bug while building the game.
@@ -137,7 +161,7 @@ A bullet remembers it is `spent` so that one shot hits one rock, even if it touc
 
 `Hud.js`:
 
-@@code Hud.js@@
+@@code Hud.js | new file, the whole file; attach it to the `Hud` object@@
 
 * The UI layer is measured in **screen pixels**, but the game is scaled to fit the window. The `frame` is one 800 × 600 box that `LateUpdate` scales and moves to sit exactly on the game canvas. That is what a Canvas Scaler does in Unity. Every label, the bloom and the bezel are children of it, so they stay glued to the picture in any window.
 * The labels use a monospace font with a green `textShadow`, the cheapest phosphor glow there is.

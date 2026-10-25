@@ -13,6 +13,7 @@ Make **Sunset Gems**, a compact 3D jumping game. The player climbs a winding cha
 
 In the welcome screen choose **New project → 3D platformer** and create `sunset-gems`. This copies the working starter into your folder. The bundled example is named `platformer3d`; the template ID used by the CLI is `platformer-3d`.
 
+**Terminal** (in the folder that contains your project folder):
 ```sh
 nord new sunset-gems -t platformer-3d
 nord serve sunset-gems
@@ -129,6 +130,7 @@ Before release, check:
 
 Save all project files. Use **Project → Export…** and choose the normal web folder target. From the parent directory of your project, the terminal equivalent is:
 
+**Terminal** (in the folder that contains your project folder):
 ```sh
 nord check sunset-gems
 nord build sunset-gems --out sunset-gems-web --zip

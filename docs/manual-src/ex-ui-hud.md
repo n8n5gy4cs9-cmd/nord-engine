@@ -10,6 +10,8 @@ summary: Labels, bars, buttons and screens from code, or declarative .ui.json fr
 Nord's game UI is a layer of HTML elements on top of the game (not world objects), so it is always sharp and works on phones. Two ways: from code (quick) or a `.ui.json` file made in the UI Designer (best for menus).
 
 ## From code (like creating a Canvas in a script)
+
+**File: `scripts/Hud.js`** (new file, the whole file; attach it to an empty `Hud` object)
 ```js
 import { MonoBehaviour, GameManager } from 'nord';
 
@@ -30,6 +32,8 @@ export default class Hud extends MonoBehaviour {
 * The UI is **not** destroyed when the scene changes: remove what you made in `OnDestroy`.
 
 ## A pause menu
+
+**File: `scripts/Pause.js`** (new file, the whole file; attach it to an empty `Pause` object)
 ```js
 import { MonoBehaviour, GameManager } from 'nord';
 
@@ -51,6 +55,8 @@ export default class PauseMenu extends MonoBehaviour {
 Unity: `Time.timeScale = 0` + a Canvas panel. (Setting `Time.timeScale = 0` also works; `game.pause()` freezes the whole scene tick.)
 
 ## Menus of buttons
+
+**File: your script, for example `scripts/Menu.js`** (inside `Start()` of the script on the title scene)
 ```js
 this.ui.menu('title', [
   { text: 'Play',    onClick: () => this.game.loadScene('scenes/level1.scene.json') },
@@ -75,6 +81,8 @@ async Start() {
 
 ## Health bar above an enemy (world UI)
 Easiest: make a child entity with a `sprite` (a small coloured rectangle) and scale its x by `hp / max`:
+
+**File: your script, for example `scripts/Enemy.js`** (inside `Update()` or the damage method; the enemy has a child named `HpBar`)
 ```js
 const bar = this.entity.find('HpBar');
 bar.scale = [Math.max(0, hp / max), 1, 1];

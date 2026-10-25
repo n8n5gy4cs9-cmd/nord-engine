@@ -11,6 +11,8 @@ summary: Make hits feel good with particle bursts, screen shake, flashes, hit-st
 A `particles` component on an object (a prefab you spawn) with fields: `texture`, `lifespan` (ms), `speed`, `angle`, `gravityY`, `scale`, `alpha`, `tint`, `frequency`, `quantity`, `burst`, `emitting`, `blend` (normal / add / multiply / screen).
 * **Continuous** (fire, smoke): `emitting` on, `burst` off, `frequency` 50 ms.
 * **Burst** (explosion, hit spark): `burst` on, `quantity` 20, then destroy the object a moment later.
+
+**File: your script, for example `scripts/Gun.js`** (inside the method that handles a hit; it spawns a particle prefab at the hit point)
 ```js
 // a spark at the hit position
 hit(pos) { this.Instantiate('prefabs/spark.prefab.json', { pos: [pos[0], pos[1], 6] }); }
@@ -19,6 +21,8 @@ hit(pos) { this.Instantiate('prefabs/spark.prefab.json', { pos: [pos[0], pos[1],
 Unity: Particle System + `Instantiate` + `Destroy(go, 1)`. Tune in play mode and copy the numbers. The library script `fx-particle-presets.js` has ready-made presets (sparks, dust, smoke, confetti).
 
 ## Screen shake, flash, fade (2D)
+
+**File: your script, for example `scripts/Player.js`** (inside the method that handles damage)
 ```js
 this.game.camera.shake(150, 0.008);        // ms, intensity
 this.game.camera.flash(80, '#ffffff');     // white flash
@@ -26,6 +30,8 @@ this.game.camera.fade(400, '#000000');     // fade out;  this.game.camera.fadeIn
 ```
 
 ## Hit-stop (freeze for a moment)
+
+**File: your script, for example `scripts/Combat.js`** (add this method to the class)
 ```js
 async hitStop(ms = 60) {
   this.game.timeScale = 0.02;
@@ -36,6 +42,8 @@ async hitStop(ms = 60) {
 or the library `fx-hitstop.js` (`this.events.emit('hitstop')`).
 
 ## Squash and stretch
+
+**File: your script, for example `scripts/Combat.js`** (add this method to the same class)
 ```js
 punch() {
   this.tween(this.entity.scale, { 0: 1.35, 1: 0.7 }, { duration: 0.07, yoyo: true, onUpdate: () => this.entity.touch() });
@@ -43,12 +51,16 @@ punch() {
 ```
 
 ## Flash the sprite white
+
+**File: your script, for example `scripts/Combat.js`** (add this method to the same class)
 ```js
 flash() { this.entity.set('sprite', 'tint', '#ff8888'); this.after(0.08, () => this.entity.set('sprite', 'tint', '#ffffff')); }
 ```
 
 ## Floating damage numbers
 UI labels live on screen, so convert the world position first (2D with the default camera: world x/y equal screen x/y minus the camera offset; the simplest is a small world-space text entity):
+
+**File: your script, for example `scripts/Combat.js`** (add this method to the same class)
 ```js
 async floatText(text, pos, color = '#ffe066') {
   const e = await this.scene.spawnData({ name: 'Float', transform: { pos: [pos[0], pos[1], 20], rot: [0, 0, 0], scale: [1, 1, 1] },
@@ -62,6 +74,8 @@ async floatText(text, pos, color = '#ffe066') {
 Library `fx-trail.js`. Parallax backgrounds: `fx-parallax.js`. Pixel/CRT look: `fx-pixelate-crt.js`, and scene **effects** (bloom, vignette, colour grading) in the scene settings ([Effects, particles and timelines](effects-particles-timelines.html)); in 3D the `postProcess` component.
 
 ## Putting it together
+
+**File: your script, for example `scripts/Combat.js`** (add this method; it calls the helpers above)
 ```js
 OnHit(target, point) {
   target.emit('damage', { amount: 1, from: this.entity });

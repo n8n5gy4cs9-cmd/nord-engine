@@ -44,6 +44,7 @@ Quotes group words: `get-object-info "Dev Console"`. @key[Tab] completes command
 ## Add your own commands
 In any script of your game:
 
+**File: your script, for example `scripts/Player.js`** (the `import` at the top, the calls inside `Start()`)
 ```js
 import { command, bindVar } from './dev-console.js';
 

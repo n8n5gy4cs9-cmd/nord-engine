@@ -11,6 +11,7 @@ The complete reusable example is **`examples/star-not/scripts/sn/touch.js`**. St
 ## 1. Use named actions in your player code
 Read actions such as `left`, `right`, `up`, `down`, `fire` and `jump` through `this.input`. The project can map them to physical keys; virtual controls set those same actions.
 
+**File: your script, for example `scripts/Player.js`** (inside `update(dt)`)
 ```javascript
 const direction = this.input.vec('left', 'right', 'up', 'down');
 if (this.input.down('fire')) {
@@ -28,6 +29,7 @@ An action is a name for what the player wants to do. A keyboard key and an on-sc
 ## 2. Add a joystick
 From a NordScript, create it under the game's UI root:
 
+**File: `scripts/Controls.js`** (inside `start()` of a script on any object)
 ```javascript
 import { NordScript, virtualJoystick } from 'nord';
 
@@ -58,6 +60,7 @@ The second button is labelled SHIELD in this game's module; change that label to
 
 ## 4. Mount it from your game
 
+**File: `scripts/Controls.js`** (new file, the whole file)
 ```javascript
 import { NordScript } from 'nord';
 import { mountTouchControls } from './touch.js';
@@ -77,6 +80,7 @@ Attach this script to one entity. Keep it enabled only while the game is playing
 
 ## 5. Show controls automatically, or with a switch
 
+**File: `scripts/Controls.js`** (inside `start()`, after the joystick exists)
 ```javascript
 const touchDevice = matchMedia('(pointer: coarse)').matches;
 ```

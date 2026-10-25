@@ -12,6 +12,8 @@ summary: Random, Color, KeyCode, mouse events, free Instantiate/Destroy, field h
 int die = Random.Range(1, 7);          float f = Random.Range(0.5f, 1.5f);
 Vector2 p = Random.insideUnitCircle;   sprite.color = Color.red;
 ```
+
+**File: `scripts/Loot.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour, Random, Color } from 'nord';
 export default class Dice extends MonoBehaviour {
@@ -26,6 +28,8 @@ export default class Dice extends MonoBehaviour {
 @bad[Trap:] `Random.Range(0, 1)` is two integers in JavaScript, so it returns `0`. For a 0..1 float use `Random.value`.
 
 ## Keys, buttons and axes
+
+**File: `scripts/Inputs.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour, UnityInput as Input, KeyCode, Time } from 'nord';
 export default class Mover extends MonoBehaviour {
@@ -42,6 +46,8 @@ export default class Mover extends MonoBehaviour {
 Use `GetButton('jump')` for the names in your [Input editor](ex-input-editor.html) and `GetKey(KeyCode.X)` for fixed keys.
 
 ## Mouse events on an object
+
+**File: `scripts/Clickable.js`** (new file, the whole file; attach it to the object you want to click)
 ```js
 export default class Clickable extends MonoBehaviour {
   OnMouseEnter() { this.localScale = new Vector3(1.1, 1.1, 1); }
@@ -52,6 +58,8 @@ export default class Clickable extends MonoBehaviour {
 The pointer is tested against the object's box. Also `OnMouseUp`, `OnMouseOver`, `OnMouseDrag`, `OnMouseUpAsButton`.
 
 ## Create and destroy without `this`
+
+**File: your script, for example `scripts/Spawner.js`** (the `import` goes at the top; the calls go inside methods)
 ```js
 import { Instantiate, Destroy, GameObject, UnityObject, DontDestroyOnLoad } from 'nord';
 const bullet = await Instantiate('prefabs/bullet.prefab.json', { pos: [0, 0, 0] });
@@ -62,6 +70,8 @@ DontDestroyOnLoad(player);
 ```
 
 ## Inspector field helpers
+
+**File: your script, for example `scripts/Enemy.js`** (the `import` goes at the top, above the class; the `static attributes` line goes inside the class)
 ```js
 import { SerializeField, Range, Enum, EntityRef } from 'nord';
 static attributes = SerializeField({
@@ -72,6 +82,8 @@ static attributes = SerializeField({
 ```
 
 ## Smooth camera follow
+
+**File: `scripts/CameraFollow.js`** (new file; attach it to the `Camera` object)
 ```js
 import { MonoBehaviour, Mathf, GameObject } from 'nord';
 export default class Follow extends MonoBehaviour {

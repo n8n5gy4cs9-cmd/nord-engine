@@ -42,7 +42,8 @@ export function renderLessons(root, project, plans) {
           path.extname(plan.file).slice(1)
         ] ?? 'text';
       markdown += `#### ${number}.${index + 1} — ${part.title}\n\n**Read:** \`${plan.file}\`, lines ${start + 1}–${end}.${part.before ? ' ' + part.before : ''}\n\n`;
-      markdown += `<!-- taught-source: ${project}/${plan.file}:${start + 1}-${end} -->\n\n\`\`\`${language}\n${lines.slice(start, end).join('\n')}\n\`\`\`\n\n`;
+      const where = index === 0 ? 'the beginning of the file' : 'the next part of this file; it goes **below** the code of the previous step';
+      markdown += `<!-- taught-source: ${project}/${plan.file}:${start + 1}-${end} -->\n\n**File: \`${plan.file}\`** (step ${number}.${index + 1}, ${part.title.charAt(0).toLowerCase() + part.title.slice(1)}: ${where})\n\`\`\`${language}\n${lines.slice(start, end).join('\n')}\n\`\`\`\n\n`;
       markdown += `**What and why:** ${part.why}\n\n**Try it / expected result:** ${part.try}\n\n`;
       coverage.push({ file: plan.file, start: start + 1, end });
     });

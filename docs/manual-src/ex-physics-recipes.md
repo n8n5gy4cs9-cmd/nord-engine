@@ -15,6 +15,8 @@ summary: Gravity, forces and impulses, bounce and friction, moving platforms, on
 | Physics Material (bounce, friction) | rigidbody `bounce` (0..1) and `drag`; bouncy things: library `physics-bounce-pad.js` |
 
 ## Move, push and stop
+
+**File: your script, for example `scripts/Player.js`** (inside `fixedUpdate()`)
 ```js
 this.physics.setVelocity(this.entity, vx, vy);        // null = keep that axis
 const [vx, vy] = this.physics.velocity(this.entity);  // read the speed
@@ -28,6 +30,8 @@ Unity: `rb.velocity`, `rb.AddForce(v, ForceMode2D.Impulse)`, `rb.position = p`. 
 With gravity `g` (px/s²) and a jump speed `v`, the jump is `v² / (2g)` high. For a 120 px jump at g = 1500: `v = Math.sqrt(2 * 1500 * 120)` ≈ 600. ([Jump Dash](ex-platformer.html) uses this.)
 
 ## Knockback and explosions
+
+**File: your script, for example `scripts/Bomb.js`** (add this method to the class, for the moment it explodes)
 ```js
 // push everything near a point away from it
 explode(x, y, radius, power) {
@@ -42,6 +46,8 @@ explode(x, y, radius, power) {
 
 ## Moving platform
 A **kinematic** rigidbody moved with velocity; the player standing on it must be carried:
+
+**File: `scripts/Platform.js`** (add `fixedUpdate()` to the platform's script; the player's script reads `this.carry`)
 ```js
 fixedUpdate() {
   const t = this.game.time.elapsed;
@@ -68,6 +74,8 @@ Dynamic crates with a collider simply get pushed by a moving player body. For pi
 Library: `physics-conveyor.js`, `physics-bounce-pad.js`, `physics-magnet.js`, `physics-drag.js` (mouse dragging), `physics-door.js`, `physics-projectile.js`, `physics-crate.js`, `physics-explosion.js`, `physics-knockback.js`. Open them to see how short they are.
 
 ## Raycasts and queries
+
+**File: your script, for example `scripts/Sensor.js`** (inside a method)
 ```js
 const hits = this.physics.overlapBox(x, y, w, h);                      // 2D area query (entities, plus { tile: true } for solid tiles)
 const hit = this.physics.raycast(fromXYZ, toXYZ, { ignore: this.entity });   // 3D: { entity, point, normal, distance }

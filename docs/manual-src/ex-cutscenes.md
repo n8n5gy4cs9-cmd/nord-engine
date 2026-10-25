@@ -20,7 +20,17 @@ public PlayableDirector director;
 void Start() { director.Play(); director.stopped += _ => ShowMenu(); }
 ```
 
-## Nord
+The @ui[Timeline] tab writes all of this into the scene for you. **In the file** `scenes/main.scene.json` (open it in a text editor to check): the scene's `settings` now has a `timelines` entry:
+```json
+"settings": { "timelines": { "intro": { "duration": 3, "loop": false,
+  "tracks": [ { "target": "Title", "property": "y", "keys": [ { "t": 0, "v": -50 }, { "t": 1, "v": 100, "ease": "backOut" } ] } ],
+  "events": [ { "t": 2.5, "name": "show-menu" } ] } } }
+```
+
+## Play it from a script
+Create an empty object `Intro` (@ui[Hierarchy ▸ + Create ▸ Empty]), write the script, then @ui[Inspector ▸ + Add script ▸ scripts/Intro.js].
+
+**File: `scripts/Intro.js`** (new file, the whole file; attach it to the `Intro` object)
 ```js
 import { MonoBehaviour } from 'nord';
 
@@ -39,6 +49,8 @@ Control it while it runs: `scene.timelines.pause(name)`, `resume(name)`, `stop(n
 Without code: an event sheet has the **Timeline** plugin with *Play, Pause, Resume, Stop, Set time*, the triggers *On finished* and *On event*, and the expressions `Timeline.Time(name)` and `Timeline.Progress(name)`.
 
 ## Skippable cutscene
+
+**File: `scripts/Intro.js`** (add this `Update()` method to the class above, after `Start()`)
 ```js
 Update() {
   if (Input.GetKeyDown('Escape') && this.scene.timelines.isPlaying('intro')) {

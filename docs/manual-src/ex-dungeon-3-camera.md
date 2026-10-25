@@ -16,6 +16,7 @@ Part 3 of the Unity-style dungeon series, continuing from [part 2, walls](ex-dun
 
 Replace `map.js` with the dungeon of this part (forty columns, twenty-two rows, 1280 × 704 pixels):
 
+**File: `scripts/map.js`** (replace the whole file from part 2)
 ```js
 export const MAP = [
   '########################################',
@@ -49,6 +50,7 @@ Play it: the hero walks in a world three times wider than the screen and… walk
 
 The `camera` component shows the part of the world around the entity's position. To follow something, **move the camera entity**: no special feature is needed. Create `scripts/follow.js` and put it on `Camera`:
 
+**File: `scripts/follow.js`** (new file, the whole file; attach it to `Camera`)
 ```js
 import { MonoBehaviour, SerializeField, EventBus, Mathf, Time, Vector3 } from 'nord';
 
@@ -76,6 +78,9 @@ export default class Follow extends MonoBehaviour {
 }
 ```
 
+**In the editor:** select `Camera`, then @ui[Inspector ▸ + Add script ▸ scripts/follow.js]. The scene or prefab file then lists the script under `"scripts"`.
+
+
 * `LateUpdate` runs after every `Update` and `FixedUpdate` of the frame. The camera must read the hero's position after the hero has moved, otherwise it follows the previous frame and the picture shakes. This is why Unity camera scripts live in `LateUpdate`.
 * **Bounds.** The camera centre may go at most half a screen away from each map edge: `Mathf.Clamp(hero.x, hw, width − hw)`. Otherwise we would see the empty space outside the level.
 * **Smoothing.** `Mathf.Lerp(current, goal, k)` moves a fraction `k` of the remaining distance each frame.
@@ -86,12 +91,14 @@ export default class Follow extends MonoBehaviour {
 
 The camera needs the map size, which only the `Level` knows. Do not make the camera import the level: scripts should not be glued together. Use the global **EventBus** (a publish/subscribe board). At the end of `Level.Start`:
 
+**File: `scripts/level.js`** (add this line at the **end** of `Start()`, after the loops, as the last line)
 ```js
 EventBus.Publish('level', { width, height });
 ```
 
 and the camera subscribes in its `Start`:
 
+**File: `scripts/follow.js`** (this line is already in `Start()` of the script above; shown here on its own)
 ```js
 this.off = EventBus.Subscribe('level', (size) => { this.bounds = size; this.snap = true; });
 ```
@@ -102,6 +109,7 @@ this.off = EventBus.Subscribe('level', (size) => { this.bounds = size; this.snap
 
 The level of part 2 made one wall object per `#`. This map has 449 wall tiles. Our loader now merges **horizontal runs** into one wide wall:
 
+**File: `scripts/level.js`** (replace the whole file from part 2; `hero.js` stays as it was)
 ```js
 import { MonoBehaviour, SerializeField, Instantiate, EventBus } from 'nord';
 import { MAP } from './map.js';

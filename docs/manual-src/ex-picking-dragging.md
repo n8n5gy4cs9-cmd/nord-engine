@@ -12,6 +12,8 @@ summary: Select things with the mouse or a finger, hover highlights, drag and dr
 
 ## Which object is under the pointer? (Unity: `Physics2D.OverlapPoint` / `RaycastHit2D`)
 For 2D, the easy way is a small helper that tests the object's size:
+
+**File: `scripts/pick.js`** (new file; it exports a helper that other scripts import)
 ```js
 // scripts/pick.js : export a function you can import everywhere
 export function hit(entity, x, y) {
@@ -26,6 +28,8 @@ export function pickAt(scene, x, y, tag) {                     // the top-most t
 Sprites are centred on their position (origin 0.5); rotated objects need a rotated test. The physics alternative: `this.physics.overlapBox(p.worldX, p.worldY, 2, 2)` returns every body at the point (only objects with colliders).
 
 ## Click to select
+
+**File: `scripts/Selectable.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour } from 'nord';
 import { pickAt } from './pick.js';
@@ -44,6 +48,8 @@ export default class Selector extends MonoBehaviour {
 Right-click to command: bind `"command": ["Mouse2"]` and `if (this.input.pressed('command') && this.selected) this.selected.callScripts('moveTo', p.worldX, p.worldY)`. (Library `click-move.js` does click-to-move; `click-move3d.js` in 3D.)
 
 ## Hover
+
+**File: your script, for example `scripts/Hover.js`** (the `Update()` method, with `this.hovered = false` set in `Start()`)
 ```js
 Update() {
   const p = this.input.pointer, over = pickAt(this.scene, p.worldX, p.worldY, 'button');
@@ -53,6 +59,8 @@ Update() {
 Fine for a mouse; touch has no hover.
 
 ## Drag and drop
+
+**File: your script, for example `scripts/Draggable.js`** (the `Update()` method; set `this.drag = null` in `Start()`)
 ```js
 Update() {
   const p = this.input.pointer;
@@ -71,6 +79,8 @@ Update() {
 The library `physics-drag.js` drags *physics* bodies with a spring. A complete card game: template `card-game`.
 
 ## Drag-select rectangle
+
+**File: your script, for example `scripts/SelectBox.js`** (inside `Update()`, after reading the pointer into `p`)
 ```js
 if (this.input.pressed('fire')) this.start = [p.worldX, p.worldY];
 if (this.input.released('fire') && this.start) {
@@ -84,6 +94,8 @@ if (this.input.released('fire') && this.start) {
 UI elements (buttons, labels) are HTML on top of the game: a click on a button never reaches the game's pointer state through the canvas, but the key `Mouse0` is also set by `pointerdown` on the canvas only, so a button click does **not** count as a world click. If you make an area that must block clicks (an inventory panel), put it in a UI screen: it is above the canvas.
 
 ## 3D picking
+
+**File: your script, for example `scripts/Picker3D.js`** (inside `Update()` of a 3D project script)
 ```js
 const hit = this.physics.raycast(camPos, targetPos, { ignore: this.entity });   // ray between two world points
 if (hit) hit.entity.emit('clicked');

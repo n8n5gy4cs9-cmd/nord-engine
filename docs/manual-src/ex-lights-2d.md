@@ -34,6 +34,8 @@ The finished example is `examples/light2d` (Crypt of Embers): braziers, a flashl
 | `on`, `offset` | switched on/off, position relative to the object |
 
 ## Switch a light from a script
+
+**File: `scripts/Lantern.js`** (new file, the whole file; attach it to the object that has `light2d-source.js`)
 ```js
 import { MonoBehaviour, UnityInput as Input } from 'nord';
 import LightSource2D from './light2d-source.js';
@@ -50,6 +52,8 @@ export default class Lantern extends MonoBehaviour {
 Runtime fields: `on`, `intensity`, `radius`, `angle`, `color`, `setColor('#rrggbb')`.
 
 ## Stealth: is the player in the dark?
+
+**File: `scripts/Stealth.js`** (the `import` line goes at the top of the file; the body goes inside `Update()` of the script on the player)
 ```js
 import { light2d } from './light2d.js';
 

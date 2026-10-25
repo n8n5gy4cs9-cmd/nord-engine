@@ -4,6 +4,8 @@ section: Guides
 order: 2
 summary: One page of everything a script can do.
 ---
+
+**Example** (not a file; the one import line every script starts with):
 ```js
 import { NordScript, clamp, lerp, remap, vec, ease, Rng, Pool, Events } from 'nord';
 

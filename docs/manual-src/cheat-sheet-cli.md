@@ -21,6 +21,7 @@ The program is installed **next to the editor**, but it is **not on your PATH**.
 
 **macOS or Linux:** create a symbolic link once.
 
+**Terminal** (macOS or Linux, once):
 ```bash
 sudo ln -s "/Applications/Nord Engine.app/Contents/MacOS/nord" /usr/local/bin/nord
 ```
@@ -31,6 +32,7 @@ On Linux point the link at your extracted `nord-engine/nord` (for example into `
 
 Check it works:
 
+**Terminal** (any folder):
 ```bash
 nord --version
 nord doctor

@@ -8,7 +8,11 @@ summary: Keyboard, axes and actions; move by position or by physics; 2D and 3D.
 **Goal:** move an object with WASD / arrows, in 2D and in 3D.
 
 ## Actions (the recommended way)
-Input *actions* are named buttons you define once in `nord.project.json` and rebind in one place:
+Input *actions* are named buttons you define once and rebind in one place (Unity's Input Manager).
+
+**In the editor:** @ui[Project] tab ▸ unfold **Input Manager (actions and keys)**. Click **＋ key** next to an action and press the key you want; type a name and press **Add action** to make a new one ([the full steps](ex-input-editor.html)). A new project already has `left`, `right`, `up`, `down`, `jump` and `fire`.
+
+**In the file** `nord.project.json`, the editor stores them under `input.actions` (check it or edit it as text):
 ```json
 "input": { "actions": {
   "left":  ["KeyA", "ArrowLeft"],  "right": ["KeyD", "ArrowRight"],
@@ -24,6 +28,8 @@ float h = Input.GetAxisRaw("Horizontal");
 if (Input.GetButtonDown("Jump")) Jump();
 ```
 ### Nord
+
+**File: your script, for example `scripts/Mover.js`** (the `update(dt)` method)
 ```js
 update(dt) {
   const h = this.input.axis('left', 'right');        // -1, 0 or 1
@@ -35,6 +41,8 @@ update(dt) {
 ```
 
 ## Unity names, if you prefer them
+
+**File: `scripts/Mover.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour, SerializeField, UnityInput as Input, Time } from 'nord';
 
@@ -53,6 +61,8 @@ export default class Mover extends MonoBehaviour {
 @bad[Trap:] `Jump()` and `Shoot()` are not built in; calling a method you did not write throws `this.Jump is not a function`. Also pick speeds for the project type: 3D units are metres (`5`), 2D units are pixels (`200`). A 2D speed in a 3D scene flies off screen.
 
 ## 2D: move by position
+
+**File: `scripts/Mover.js`** (new file, the whole file, for the native style)
 ```js
 import { NordScript } from 'nord';
 export default class Walker extends NordScript {
@@ -68,6 +78,8 @@ Position is `[x, y, z]`; in **2D** units are pixels and **y grows downward**, `z
 
 ## 2D: move with physics (collides with walls)
 The object needs a **rigidbody** and a **collider** (Inspector ▸ + Add component).
+
+**File: `scripts/Mover.js`** (replace `update` with this `fixedUpdate` method; the object needs the rigidbody and collider)
 ```js
 fixedUpdate() {
   const x = this.input.axis('left', 'right');
@@ -80,6 +92,8 @@ Unity: `rb.velocity = new Vector2(x * speed, rb.velocity.y);`. Gravity is in `no
 
 ## 3D: move on the ground
 3D worlds use **y up**. Project type `3d`, a `model` or `mesh` component, a `rigidbody` + `collider`:
+
+**File: `scripts/Walker3D.js`** (the `fixedUpdate` method of a 3D script)
 ```js
 fixedUpdate() {
   const [x, z] = this.input.vec('left', 'right', 'up', 'down'); // up key => z = -1 (forward)
@@ -88,6 +102,8 @@ fixedUpdate() {
 ```
 
 ## Pointer / mouse
+
+**File: your script, for example `scripts/Cursor.js`** (the `update` method)
 ```js
 update() {
   const p = this.input.pointer;         // { x, y (screen), worldX, worldY, down }

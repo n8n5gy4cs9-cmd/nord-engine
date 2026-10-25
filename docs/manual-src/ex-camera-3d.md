@@ -22,6 +22,8 @@ export default class FollowCam extends NordScript {
 Put it on the Camera entity and set `target` to `Player`.
 
 ## Screen effects (juice)
+
+**File: your script, for example `scripts/Player3D.js`** (inside the method that handles damage or an explosion)
 ```js
 this.game.camera.shake(200, 0.01);            // duration ms, intensity
 this.game.camera.flash(120, '#ffffff');
@@ -47,6 +49,8 @@ Hit-stop: library `fx-hitstop.js`. Slow motion: `Time.timeScale = 0.2` for a mom
 | Animator (3D clips) | `model.play('Walk')` or the Animator editor |
 
 ## Move and turn a character in 3D
+
+**File: `scripts/Walker.js`** (new file, the whole file)
 ```js
 import { NordScript } from 'nord';
 export default class Character extends NordScript {
@@ -70,6 +74,8 @@ Rotation values are **degrees**. Use the `model` component's `animation` field i
 The library has `third-person3d.js`, `orbit-cam.js`, `fps3d.js`, `fly-cam.js`, `rts-cam.js`: insert one on the camera entity and set `target`. Or a child camera: make the Camera a **child** of the character at `[0, 2, 5]`; it follows automatically.
 
 ## Light, shadows and mood
+
+**File: `scripts/Daylight.js`** (inside `Start()` of a script on any object; `Sun` is the name of your directional light)
 ```js
 const sun = this.scene.find('Sun');
 sun.set('light', 'intensity', 0.4);                 // change a component field at runtime
@@ -77,6 +83,8 @@ this.tween({ i: 1 }, { i: 0.2 }, { duration: 4, onUpdate: (o) => sun.set('light'
 ```
 
 ## Raycast from the camera / click picking
+
+**File: your script, for example `scripts/Picker.js`** (inside `Update()` on the camera object)
 ```js
 const hit = this.physics.raycast(this.entity.worldPos, [fx, fy, fz]);   // from, to
 if (hit) hit.entity.emit('clicked');

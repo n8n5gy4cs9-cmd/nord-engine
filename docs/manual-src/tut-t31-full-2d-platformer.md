@@ -15,6 +15,7 @@ In the welcome screen choose **New project**, select **Platformer**, and create 
 
 The terminal equivalent, from a folder where you keep projects:
 
+**Terminal** (in the folder that contains your project folder):
 ```sh
 nord new coin-canyon -t platformer
 nord serve coin-canyon
@@ -75,6 +76,7 @@ The main walking surface is row `18`. The first gap occupies columns `22`, `23` 
 
 A safer way to make that exact edit, if you use the terminal, is to run this **from inside your new project folder**:
 
+**Terminal** (inside your new project folder):
 ```sh
 node --input-type=module <<'JS'
 import fs from 'node:fs';
@@ -119,6 +121,7 @@ Ask a friend to play without explaining every jump. If they repeatedly fail at t
 
 Save all files. In **Project → Export…**, choose the normal web folder export and an output folder. The terminal equivalent is:
 
+**Terminal** (in the folder that contains your project folder):
 ```sh
 nord check coin-canyon
 nord build coin-canyon --out coin-canyon-web --zip

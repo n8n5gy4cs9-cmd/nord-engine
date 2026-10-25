@@ -12,6 +12,8 @@ A game must finish each frame in about 16 milliseconds. If one script takes 12 o
 
 ## 1. Make something slow
 Add to any entity's script:
+
+**File: any script of the scene, for example `scripts/Hero.js`** (replace or add the `update()` method; remove it when you are done)
 ```js
 update() { let x = 0; for (let i = 0; i < 400000; i++) x += Math.sqrt(i); }
 ```

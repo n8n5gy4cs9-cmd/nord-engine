@@ -61,6 +61,8 @@ export default class Bullet extends MonoBehaviour {
 Native style: `const e = await this.scene.spawn('prefabs/bullet.prefab.json', { pos: [x, y, 0], rot, scale, name, parent, overrides })`. It returns a **Promise** (loading a prefab can touch the network), so use `await` or `.then`.
 
 ## Overrides: change a prefab's values when spawning
+
+**File: your script, for example `scripts/Spawner.js`** (a call inside any method, in an `async` function)
 ```js
 await this.scene.spawn('prefabs/enemy.prefab.json', {
   pos: [100, 100, 2],
@@ -70,6 +72,8 @@ await this.scene.spawn('prefabs/enemy.prefab.json', {
 `scripts.0` / `components.0` mean "the first script / component"; only the fields you list change.
 
 ## Destroy
+
+**File: your script, for example `scripts/Bullet.js`** (calls inside any method)
 ```js
 this.Destroy();                 // this object (MonoBehaviour)
 this.Destroy(other, 2);         // other object after 2 seconds
@@ -78,12 +82,16 @@ entity.destroy();               // native
 Destroying is **deferred to the end of the frame**: the object still exists until then, `entity.destroyed` becomes `true` immediately. `onDestroy()` runs; children go with their parent. Before using a stored reference, check `if (!target || target.destroyed) return;`.
 
 ## Clone an object in the scene
+
+**File: your script, for example `scripts/Cloner.js`** (inside an `async` method)
 ```js
 const copy = await this.entity.clone();    // a copy with fresh ids
 copy.pos = [copy.pos[0] + 40, copy.pos[1], copy.pos[2]];
 ```
 
 ## Pooling (avoid creating and destroying all the time)
+
+**File: `scripts/Gun.js`** (new file, the whole file; the `bullet` prefab must exist)
 ```js
 import { MonoBehaviour, ObjectPool } from 'nord';
 
@@ -101,6 +109,8 @@ export default class Gun extends MonoBehaviour {
 Pooled objects are only *disabled*, so reset their state in `OnEnable()`.
 
 ## Children and parenting
+
+**File: your script, for example `scripts/Soldier.js`** (inside an `async` method)
 ```js
 const gun = await this.scene.spawn('prefabs/gun.prefab.json', { parent: this.entity, pos: [10, 0, 1] }); // child of this object
 ```

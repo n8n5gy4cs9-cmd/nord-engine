@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
 1. @ui[Assets ▸ right-click `scripts` ▸ New GameManager script]. It creates `export default class extends GameManager {}`.
 2. Create an empty object called *GameManager* in the **first** scene and add that script. (It survives scene loads by itself.)
 3. Use it anywhere:
+
+**File: your script, for example `scripts/Coin.js`** (the `import` line goes at the top, the calls inside methods)
 ```js
 import { GameManager } from 'nord';
 
@@ -41,6 +43,8 @@ Full member list: [Unity-style scripting](unity-scripting.html). Its Inspector f
 
 ## Listening: a HUD that redraws itself
 The manager does not know the HUD exists. It emits events on the global bus (`this.game.events`); the HUD subscribes.
+
+**File: `scripts/Hud.js`** (new file, the whole file; attach it to an empty `Hud` object)
 ```js
 import { MonoBehaviour, GameManager } from 'nord';
 
@@ -59,6 +63,8 @@ export default class Hud extends MonoBehaviour {
 Unity's `OnScore += handler; … OnScore -= handler;` is `const off = events.on(...)` and `off()`.
 
 ## Writing your own manager (any Singleton)
+
+**File: `scripts/Inventory.js`** (new file, the whole file)
 ```js
 import { Singleton } from 'nord';
 
@@ -81,6 +87,8 @@ export default class Inventory extends Singleton {
 :::
 
 ## A simple state machine on top
+
+**File: `scripts/GameManager.js`** (add this to the class that extends `GameManager`; the comment lists the states)
 ```js
 // states: 'menu' | 'playing' | 'paused' | 'gameover'
 GameManager.instance.SetState('playing');

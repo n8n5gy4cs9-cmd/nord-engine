@@ -18,17 +18,23 @@ Library ▸ *gameplay* ▸ **Health & damage** (`health.js`). Add it to any obje
 | `deathEvent` | name of the *global* event on death (default `died`) |
 
 Talk to it with events (Unity: `SendMessage("TakeDamage")` or an interface):
+
+**File: your script, for example `scripts/Bullet.js`** (inside `OnTriggerEnter`, on the attacker)
 ```js
 target.emit('damage', { amount: 2, from: this.entity });     // hurt it
 target.emit('heal',   { amount: 1 });                         // heal it
 ```
 It answers on the same object: `health` `{ hp, max }` after every change, `death` once; and `hit` on the global bus. Listen:
+
+**File: your script, for example `scripts/Enemy.js`** (inside `Start()`; keep the returned function and call it in `OnDestroy()`)
 ```js
 const off = enemy.on('death', () => GameManager.instance.AddScore(10));
 const off2 = player.on('health', ({ hp, max }) => this.bar.set(hp / max));
 ```
 
 ## A health script from scratch (Unity-style)
+
+**File: `scripts/Health.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour, SerializeField, UnityEvent } from 'nord';
 
@@ -54,6 +60,8 @@ export default class Health extends MonoBehaviour {
 **Calls or events?** Calls (`getScript(Health).TakeDamage`) are easy to follow; events (`emit('damage')`) work on anything that has a Health script and need no import. Pick one convention per project.
 
 ## Knockback and hit reaction
+
+**File: your script, for example `scripts/Bullet.js`** (inside `OnTriggerEnter`, after the damage call)
 ```js
 // in the attacker: push the target away from us
 const dx = target.pos[0] - this.entity.pos[0], dy = target.pos[1] - this.entity.pos[1], d = Math.hypot(dx, dy) || 1;
@@ -71,6 +79,8 @@ target.set('sprite', 'tint', '#ff6666');  this.after(0.1, () => target.set('spri
 The library script blinks the sprite while invulnerable. By hand: a coroutine toggling `alpha` ([Jump Dash](ex-platformer.html) uses `Blink()`).
 
 ## Death
+
+**File: `scripts/Enemy.js`** (inside `Start()`)
 ```js
 this.entity.on('death', () => {
   this.Instantiate('prefabs/explosion.prefab.json', { pos: [...this.entity.pos] });   // effects

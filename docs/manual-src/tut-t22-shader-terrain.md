@@ -65,6 +65,7 @@ The scene freezes both shader time and the audio-texture snapshot after a drop s
 ## 6. Make the contact agree with the picture
 The original terrain surface is:
 
+**Excerpt** (from the shader in `terrain-shader.js` of the finished project):
 ```glsl
 float height = 2.0 * trinoise(worldXZ).x;
 ```
@@ -78,6 +79,7 @@ This is deliberately a small **height-probe demonstration**. It is not a complet
 ## 7. Export it
 Use the editor's **Export… → HTML**, or:
 
+**Terminal** (in the folder that contains your project folder):
 ```bash
 nord export my-shader-app --target html
 ```

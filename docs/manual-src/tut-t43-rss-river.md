@@ -62,8 +62,9 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 </script></body></html>
 ```
 
-Open <span class="f">nord.project.json</span> and add this block next to the other top-level fields (it allows the three feed hosts):
+**In the editor:** @ui[Project ▸ Desktop app permissions…], open the network permission and add the three hosts `hnrss.org`, `simonwillison.net` and `github.blog`.
 
+**In the file** <span class="f">nord.project.json</span>: the window adds this block next to the other top-level fields (it allows the three feed hosts):
 ```json
 "desktop": { "permissions": { "net": { "hosts": ["hnrss.org", "simonwillison.net", "github.blog"] } } }
 ```
@@ -128,6 +129,7 @@ This project is inspired by reader workflows in FreshRSS and NetNewsWire. Their 
 
 RSS uses `item`, `title`, `link`, `description` and often `guid`. Atom uses `entry`, link attributes, `summary`/`content` and `id`. `parseFeed()` accepts both and converts each entry into the same shape:
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 {
   id: 'source:stable-entry-id', feed: 'source', source: 'Source name',
@@ -146,6 +148,7 @@ The parser rejects malformed XML and accepts only HTTP/HTTPS article links. It c
 
 `mergeArticles(old, incoming)` indexes existing entries by stable ID. Incoming content updates a record while preserving its old `read` and `star` flags. Refreshing should not turn every article unread again or remove a star.
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const previous = map.get(article.id);
 map.set(article.id, { ...article,
@@ -188,6 +191,7 @@ The supplied original sprite sheet includes paper, three sticky colours, a ghost
 
 `createRiver()` receives up to eighteen filtered articles. For each it creates a plane and a DynamicTexture. A canvas painter wraps the title and summary, prints the source and reading status, and fills an ivory page. The material is unlit/emissive for stable text legibility; the mesh casts a shadow onto the illuminated desk.
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const paper = desk.paper('Article', width, height, context => {
   context.fillStyle = '#f7f4e9';
@@ -204,6 +208,7 @@ A render-loop callback moves floating papers slowly along Z and wraps them to th
 
 A floating paper initially follows its authored river animation. Clicking Flick creates an invisible thin box collider of the same dimensions and parents the visual plane to it. A dynamic Babylon PhysicsAggregate takes over and receives an impulse. That paper stops participating in the river movement loop.
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 aggregate.body.applyImpulse(
   new BABYLON.Vector3(1.6, 2.8, -1.2), body.position);
@@ -264,6 +269,7 @@ Build all feed configuration, parsing, safe-link and cache-merge logic.
 
 <!-- taught-source: rss-river/feeds.js:1-21 -->
 
+**File: `feeds.js`** (step 1.1, give subscriptions stable identities: the beginning of the file)
 ```js
 // Feed URLs are user data, not CDN dependencies. Nothing is requested until Refresh.
 export const DEFAULT_FEEDS = [
@@ -298,6 +304,7 @@ export const DEFAULT_FEEDS = [
 
 <!-- taught-source: rss-river/feeds.js:22-35 -->
 
+**File: `feeds.js`** (step 1.2, normalize links before creating anchors: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function safeLink(value, base = 'https://example.org/') {
   try {
@@ -325,6 +332,7 @@ export function parseFeed(xml, feed) {
 
 <!-- taught-source: rss-river/feeds.js:36-48 -->
 
+**File: `feeds.js`** (step 1.3, extract inert text and choose a usable link: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const plain = (html) => {
     const d = new DOMParser().parseFromString(html, 'text/html');
@@ -351,6 +359,7 @@ export function parseFeed(xml, feed) {
 
 <!-- taught-source: rss-river/feeds.js:49-67 -->
 
+**File: `feeds.js`** (step 1.4, choose stable keys and a single article schema: the next part of this file; it goes **below** the code of the previous step)
 ```js
     const raw = linkNode?.getAttribute('href') || linkNode?.textContent || '',
       link = safeLink(raw, feed.url),
@@ -383,6 +392,7 @@ export function parseFeed(xml, feed) {
 
 <!-- taught-source: rss-river/feeds.js:68-75 -->
 
+**File: `feeds.js`** (step 1.5, preserve reading choices while refreshing content: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function mergeArticles(old, items) {
   const map = new Map(old.map((a) => [a.id, a]));
@@ -409,6 +419,7 @@ Build the complete reader host, filters, both fetch paths, river lifetime and im
 
 <!-- taught-source: rss-river/app.js:1-19 -->
 
+**File: `app.js`** (step 2.1, imports, load the UI file and name the handles: the beginning of the file)
 ```js
 import { Save } from './save.js';
 import { DEFAULT_FEEDS, parseFeed, mergeArticles, safeLink } from './feeds.js';
@@ -441,6 +452,7 @@ export async function mount(root) {
 
 <!-- taught-source: rss-river/app.js:20-54 -->
 
+**File: `app.js`** (step 2.2, persist carefully and create filter options: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const say = (t) => ($('status').textContent = t);
   const persist = () => {
@@ -489,6 +501,7 @@ export async function mount(root) {
 
 <!-- taught-source: rss-river/app.js:55-95 -->
 
+**File: `app.js`** (step 2.3, open one article without trusting its markup: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function read(id) {
     selected = id;
@@ -543,6 +556,7 @@ export async function mount(root) {
 
 <!-- taught-source: rss-river/app.js:96-120 -->
 
+**File: `app.js`** (step 2.4, rebuild an understandable list from filtered records: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function renderList() {
     const list = $('list');
@@ -581,6 +595,7 @@ export async function mount(root) {
 
 <!-- taught-source: rss-river/app.js:121-159 -->
 
+**File: `app.js`** (step 2.5, discard superseded asynchronous scenes: the next part of this file; it goes **below** the code of the previous step)
 ```js
   let riverVersion = 0;
   async function showRiver() {
@@ -633,6 +648,7 @@ export async function mount(root) {
 
 <!-- taught-source: rss-river/app.js:160-199 -->
 
+**File: `app.js`** (step 2.6, fetch intentionally through browser or Nord host: the next part of this file; it goes **below** the code of the previous step)
 ```js
   async function refresh(native = false) {
     $('refresh').disabled = true;
@@ -686,6 +702,7 @@ export async function mount(root) {
 
 <!-- taught-source: rss-river/app.js:200-223 -->
 
+**File: `app.js`** (step 2.7, wire batch actions and add subscriptions as data: the next part of this file; it goes **below** the code of the previous step)
 ```js
   $('refresh').onclick = () => refresh();
   $('native').onclick = () => refresh(true);
@@ -723,6 +740,7 @@ export async function mount(root) {
 
 <!-- taught-source: rss-river/app.js:224-278 -->
 
+**File: `app.js`** (step 2.8, use a real local feed fixture and restore backups: the next part of this file; it goes **below** the code of the previous step)
 ```js
   async function demo() {
     const r = await fetch('demo.xml');
@@ -791,6 +809,7 @@ export async function mount(root) {
 
 <!-- taught-source: rss-river/app.js:279-300 -->
 
+**File: `app.js`** (step 2.9, finish startup and release a replaced view: the next part of this file; it goes **below** the code of the previous step)
 ```js
   $('backup').onclick = () =>
     download('rss-river-library.json', JSON.stringify({ feeds, articles }, null, 2));
@@ -831,6 +850,7 @@ Describe the reader as data: header with actions, source controls, the list and 
 
 <!-- taught-source: rss-river/ui/reader.ui.json:1-27 -->
 
+**File: `ui/reader.ui.json`** (step 3.1, page settings and the header: the beginning of the file)
 ```json
 {
   "version": 1,
@@ -871,6 +891,7 @@ Describe the reader as data: header with actions, source controls, the list and 
 
 <!-- taught-source: rss-river/ui/reader.ui.json:28-53 -->
 
+**File: `ui/reader.ui.json`** (step 3.2, source controls on the left: the next part of this file; it goes **below** the code of the previous step)
 ```json
     { "class": "layout", "type": "box", "tag": "section", "children": [
       { "type": "box", "tag": "aside", "children": [
@@ -910,6 +931,7 @@ Describe the reader as data: header with actions, source controls, the list and 
 
 <!-- taught-source: rss-river/ui/reader.ui.json:54-61 -->
 
+**File: `ui/reader.ui.json`** (step 3.3, list, river canvas and status bar: the next part of this file; it goes **below** the code of the previous step)
 ```json
       { "class": "content", "type": "box", "children": [
         { "class": "viewbar", "type": "box", "children": [
@@ -931,6 +953,7 @@ Describe the reader as data: header with actions, source controls, the list and 
 
 <!-- taught-source: rss-river/ui/reader.ui.json:62-72 -->
 
+**File: `ui/reader.ui.json`** (step 3.4, reader pane and footer: the next part of this file; it goes **below** the code of the previous step)
 ```json
       { "name": "reader", "type": "box", "tag": "article", "children": [
         { "class": "eyebrow", "type": "label", "tag": "p", "text": "SELECT A PAPER" },
@@ -960,6 +983,7 @@ Follow every texture, pick, movement, physics and cleanup operation in the 3D re
 
 <!-- taught-source: rss-river/river.js:1-20 -->
 
+**File: `river.js`** (step 4.1, wrap text into bounded canvas lines: the beginning of the file)
 ```js
 import { createDesk } from './desk.js';
 export async function createRiver(canvas, articles, open) {
@@ -993,6 +1017,7 @@ export async function createRiver(canvas, articles, open) {
 
 <!-- taught-source: rss-river/river.js:21-48 -->
 
+**File: `river.js`** (step 4.2, paint each article and encode importance spatially: the next part of this file; it goes **below** the code of the previous step)
 ```js
   articles.slice(0, 18).forEach((a, i) => {
     const width = a.star ? 4.5 : 3.6,
@@ -1034,6 +1059,7 @@ export async function createRiver(canvas, articles, open) {
 
 <!-- taught-source: rss-river/river.js:49-65 -->
 
+**File: `river.js`** (step 4.3, route picks and animate only floating papers: the next part of this file; it goes **below** the code of the previous step)
 ```js
   scene.onPointerObservable.add((info) => {
     if (info.type === B.PointerEventTypes.POINTERPICK) {
@@ -1064,6 +1090,7 @@ export async function createRiver(canvas, articles, open) {
 
 <!-- taught-source: rss-river/river.js:66-96 -->
 
+**File: `river.js`** (step 4.4, hand one paper over to a rigid body: the next part of this file; it goes **below** the code of the previous step)
 ```js
   return {
     ...d,
@@ -1113,6 +1140,7 @@ Build the complete reusable Babylon/Havok desk and browser-download helper.
 
 <!-- taught-source: rss-river/desk.js:1-20 -->
 
+**File: `desk.js`** (step 5.1, share pending local script loads: the beginning of the file)
 ```js
 // Cache the pending promise too: rapid view changes must wait for the same script.
 const scriptLoads = new Map();
@@ -1146,6 +1174,7 @@ export function loadScript(src) {
 
 <!-- taught-source: rss-river/desk.js:21-42 -->
 
+**File: `desk.js`** (step 5.2, create one engine, scene and controllable camera: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export async function createDesk(canvas, { physics = true } = {}) {
   await loadScript('vendor/babylonjs/babylon.js');
@@ -1181,6 +1210,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 <!-- taught-source: rss-river/desk.js:43-62 -->
 
+**File: `desk.js`** (step 5.3, light a surface and prepare shadow ownership: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const fill = new B.HemisphericLight('Sky', new B.Vector3(0, 1, 0), scene);
   fill.intensity = 0.65;
@@ -1214,6 +1244,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 <!-- taught-source: rss-river/desk.js:63-77 -->
 
+**File: `desk.js`** (step 5.4, load the packaged physics binary: the next part of this file; it goes **below** the code of the previous step)
 ```js
   if (physics) {
     await loadScript('vendor/havok/HavokPhysics_umd.js');
@@ -1242,6 +1273,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 <!-- taught-source: rss-river/desk.js:78-104 -->
 
+**File: `desk.js`** (step 5.5, create a writable texture rather than a screenshot file: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const paper = (name, width, height, paint) => {
     const mesh = B.MeshBuilder.CreatePlane(
@@ -1282,6 +1314,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 <!-- taught-source: rss-river/desk.js:105-126 -->
 
+**File: `desk.js`** (step 5.6, create a visible rigid sticky toy: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const box = (name, pos, color = '#f6d675', mass = 0.2) => {
     const mesh = B.MeshBuilder.CreateBox(
@@ -1317,6 +1350,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 <!-- taught-source: rss-river/desk.js:127-156 -->
 
+**File: `desk.js`** (step 5.7, own the render loop and resize lifecycle: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const update = new Set(),
     render = () => {
@@ -1360,6 +1394,7 @@ export async function createDesk(canvas, { physics = true } = {}) {
 
 <!-- taught-source: rss-river/desk.js:157-165 -->
 
+**File: `desk.js`** (step 5.8, hand a browser a real downloadable object: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function download(name, content, type = 'application/json') {
   const blob = content instanceof Blob ? content : new Blob([content], { type }),
@@ -1387,6 +1422,7 @@ Understand the complete existing Nord Save helper bundled with this app.
 
 <!-- taught-source: rss-river/save.js:1-20 -->
 
+**File: `save.js`** (step 6.1, namespace slots and read versioned data: the beginning of the file)
 ```js
 // Versioned save slots on top of localStorage (or any Storage-like object).
 export class Save {
@@ -1420,6 +1456,7 @@ export class Save {
 
 <!-- taught-source: rss-river/save.js:21-32 -->
 
+**File: `save.js`** (step 6.2, read and write values, then define memory storage: the next part of this file; it goes **below** the code of the previous step)
 ```js
   get(k, def) { const d = this.#read().data; return k in d ? d[k] : def; }
   set(k, v) { const o = this.#read(); o.data[k] = v; o.v = this.version; o.t = Date.now(); this.storage.setItem(this.#key(), JSON.stringify(o)); }
@@ -1525,6 +1562,7 @@ Read every project field that tells Nord which host, display and services to use
 
 <!-- taught-source: rss-river/nord.project.json:1-22 -->
 
+**File: `nord.project.json`** (step 10.1, identify the project and choose its presentation: the beginning of the file)
 ```json
 {
   "format": 1,
@@ -1560,6 +1598,7 @@ Read every project field that tells Nord which host, display and services to use
 
 <!-- taught-source: rss-river/nord.project.json:23-75 -->
 
+**File: `nord.project.json`** (step 10.2, distinguish scene actions from HTML event handling: the next part of this file; it goes **below** the code of the previous step)
 ```json
   "input": {
     "actions": {
@@ -1933,6 +1972,7 @@ Read the complete bundled Nord bridge used by the optional host-fetch button.
 
 <!-- taught-source: rss-river/nord-desktop.js:1-34 -->
 
+**File: `nord-desktop.js`** (step 12.1, normalize errors and choose request transports: the beginning of the file)
 ```js
 // Nord desktop API (M9, ADR-020): window.nord.desktop.* — files, dialogs, notifications, clipboard, storage, windows, menus, tray.
 // One API, three transports, picked automatically:
@@ -1980,6 +2020,7 @@ function httpTransport() {
 
 <!-- taught-source: rss-river/nord-desktop.js:35-49 -->
 
+**File: `nord-desktop.js`** (step 12.2, build bounded browser fallbacks: the next part of this file; it goes **below** the code of the previous step)
 ```js
 function webTransport(appId) {
   const ls = (() => { try { return window.localStorage; } catch { return null; } })();
@@ -2008,6 +2049,7 @@ function webTransport(appId) {
 
 <!-- taught-source: rss-river/nord-desktop.js:50-85 -->
 
+**File: `nord-desktop.js`** (step 12.3, map supported browser operations explicitly: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const m = {
     'app.info': () => ({ name: document.title, version: '', id: appId, os: 'web', arch: '', shell: 'web' }),
@@ -2057,6 +2099,7 @@ function webTransport(appId) {
 
 <!-- taught-source: rss-river/nord-desktop.js:86-111 -->
 
+**File: `nord-desktop.js`** (step 12.4, deliver events and await transport readiness: the next part of this file; it goes **below** the code of the previous step)
 ```js
 const handlers = new Map();
 function emit(name, payload) { for (const f of handlers.get(name) ?? []) { try { f(payload); } catch (e) { console.error(e); } } }
@@ -2096,6 +2139,7 @@ export function create(appId = 'web-app', force) {
 
 <!-- taught-source: rss-river/nord-desktop.js:112-157 -->
 
+**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
 ```js
     fs: {
       readText: (path) => c('fs.readText', { path }), writeText: (path, text) => c('fs.writeText', { path, text }), append: (path, text) => c('fs.append', { path, text }),
@@ -2160,6 +2204,7 @@ All authored text files follow in offline CodeMirror viewers. The archive includ
 <details>
 <summary>Complete app.js</summary>
 
+**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
 ```js
 import { Save } from './save.js';
 import { DEFAULT_FEEDS, parseFeed, mergeArticles, safeLink } from './feeds.js';
@@ -2497,6 +2542,7 @@ github.blog
 <details>
 <summary>Complete desk.js</summary>
 
+**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Cache the pending promise too: rapid view changes must wait for the same script.
 const scriptLoads = new Map();
@@ -2670,6 +2716,7 @@ export function download(name, content, type = 'application/json') {
 <details>
 <summary>Complete feeds.js</summary>
 
+**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Feed URLs are user data, not CDN dependencies. Nothing is requested until Refresh.
 export const DEFAULT_FEEDS = [
@@ -2769,6 +2816,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete nord-desktop.js</summary>
 
+**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Nord desktop API (M9, ADR-020): window.nord.desktop.* — files, dialogs, notifications, clipboard, storage, windows, menus, tray.
 // One API, three transports, picked automatically:
@@ -2934,6 +2982,7 @@ export default desktop;
 <details>
 <summary>Complete nord.project.json</summary>
 
+**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "format": 1,
@@ -3017,6 +3066,7 @@ export default desktop;
 <details>
 <summary>Complete river.js</summary>
 
+**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
 ```js
 import { createDesk } from './desk.js';
 export async function createRiver(canvas, articles, open) {
@@ -3121,6 +3171,7 @@ export async function createRiver(canvas, articles, open) {
 <details>
 <summary>Complete save.js</summary>
 
+**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Versioned save slots on top of localStorage (or any Storage-like object).
 export class Save {
@@ -3401,6 +3452,7 @@ footer {
 <details>
 <summary>Complete ui/reader.ui.json</summary>
 
+**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "version": 1,

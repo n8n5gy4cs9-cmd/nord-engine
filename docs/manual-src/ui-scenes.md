@@ -15,6 +15,10 @@ Menus, HUDs and dialogs are **data**: a `ui/<name>.ui.json` file edited in the *
 > **Tint:** an image node or a node's `image` may carry `tint: '#rrggbb'`; the sprite pixels are multiplied by it (Unity `Image.color`), alpha kept. See `tintImage()` in `runtime/core/uiscene.js`.
 
 ## File format (version 1)
+
+**In the editor:** @ui[Assets ▸ right-click `ui` ▸ New UI scene] opens the @ui[UI Designer] tab; add nodes from its palette and set their fields in its inspector. Saving writes the file below.
+
+**In the file** `ui/menu.ui.json` (this shows the shape; the designer writes it):
 ```json
 { "version": 1, "name": "menu", "theme": { "accent": "#f7d89b" },
   "root": { "type": "panel", "name": "root", "anchor": "fill", "children": [ …nodes… ] } }
@@ -48,6 +52,8 @@ Type specifics: **label** `text size color bold italic wrap outline font rich` �
 * Rich text (labels): `[b] [i] [u] [color=#f7d89b] [size=28] [br]`. Parsed into spans — never `innerHTML`.
 
 ## Script API
+
+**Example** (not a file; calls inside a script):
 ```js
 const ui = createUI(rootElement);                  // standalone; in a game: game.ui (same methods)
 const menu = await ui.load('ui/menu.ui.json');     // fetch + build + show. ui.build(obj) for sync
@@ -63,6 +69,10 @@ UI → code: `on.pressed` names + `menu.on(action, fn)`; every action is also em
 
 ## Styles (skins): one rule set for every node {#styles}
 Do not copy styles node by node. A **skin** is a JSON file of shared rules, applied to every UI scene:
+
+**In the editor:** @ui[UI Designer] tab ▸ the **Styles** tab edits the rules and saves the skin file; the **Skin** box in the toolbar picks which skin the preview uses.
+
+**In the file** `ui/skin.skin.json` (a skin file):
 ```json
 { "tokens": { "accent": "#7fb0e8", "fg": "#e8f0ff" },
   "styles": {
@@ -82,6 +92,10 @@ Do not copy styles node by node. A **skin** is a JSON file of shared rules, appl
 
 ## Images and 9-slice (Unity "Sliced", Godot NinePatchRect)
 Any node can have an image, either as a plain picture or sliced so it scales without distorting its corners:
+
+**In the editor:** @ui[UI Designer] tab ▸ select the node ▸ **Image**: pick the picture, choose the mode (`fit` or `slice`) and drag the four slice guides.
+
+**In the file** `ui/menu.ui.json` (nodes with an image):
 ```json
 { "type": "panel", "image": { "src": "assets/ui/skin/panel.png", "slice": [8, 8, 8, 8], "scale": 2, "pixelated": true } }
 { "type": "image", "src": "assets/sprites/logo.png", "mode": "fit", "w": 240, "h": 80 }

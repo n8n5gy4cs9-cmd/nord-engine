@@ -76,8 +76,18 @@ They talk the way Unity scripts do: **singletons** (`Run.instance`, `GameManager
 
 ## 2 The project
 
-`nord.project.json` differs from a default project in these places:
+Open the @ui[Project] tab. In **Project properties** set:
 
+1. **Start scene**: `scenes/title.scene.json`.
+2. **Game size**: `640` × `360`, **Scaling** `fit`.
+3. **Pixel art**: **on** (it turns off smoothing).
+4. **Background**: `#07080c`.
+5. **Physics**: `arcade`, **gravity Y** `0`.
+6. Press **Apply project properties**.
+
+Then unfold **Input Manager (actions and keys)** just below: add the action `attack` (type the name, press **Add action**, then **＋ key** and press Space; again for `J`; **＋ mouse/pad** for `Mouse0`) and give the existing `interact` action the keys `E` and `Enter`.
+
+**In the file** `nord.project.json` (open it in a text editor to check what the editor wrote), these keys differ from a default project:
 ```json
 "startScene": "scenes/title.scene.json",
 "display": { "width": 640, "height": 360, "scale": "fit", "pixelArt": true, "background": "#07080c" },
@@ -93,11 +103,11 @@ The art is the pixel art bundled with Nord: `hero.png` (a sheet of 32 × 32 fram
 
 `scripts/map.js`: `#` wall, `.` floor, `P` the hero's start, `o` coin, `k` key, `D` a gate tile (a gate is two tiles wide), `+` potion, `B` brazier, `c` crate or barrel, `^` spikes, `C` chest, `s` slime, `b` bat, `X` the exit rune.
 
-@@code map.js@@
+@@code map.js | new file, the whole file@@
 
 `scripts/World.js` asks the map questions (a static helper class, like a Unity utility):
 
-@@code World.js@@
+@@code World.js | new file, the whole file@@
 
 * `TileAt` converts a world position to a tile by dividing by 32. Outside the map everything is `#`, so nothing can see or walk beyond the edge.
 * `LineClear` is **line of sight**: it walks the straight line between two points in 8 pixel steps (finer than a tile, so no corner slips through) and answers false at the first wall. It is a map lookup, not a physics raycast, so it is cheap enough for every enemy every step.
@@ -129,7 +139,7 @@ Notice the **wall is two prefabs**: `wall-tile` is only a picture (hundreds of t
 
 `scripts/Level.js` is part 3's loader with a table from letter to prefab:
 
-@@code Level.js@@
+@@code Level.js | new file, the whole file; attach it to the `Level` object@@
 
 * `PREFAB` maps a letter to a prefab name. Adding a new kind of object is one line here and one prefab file.
 * `overrides: { components: { 1: { size: [w, t] } } }` makes the long wall strips: component 1 of `wall-body` is its collider.
@@ -157,7 +167,7 @@ The hero's collider (14 × 16) is smaller than its 32 × 32 picture: it fits cor
 
 `scripts/Hero.js` steers, animates and swings the sword:
 
-@@code Hero.js@@
+@@code Hero.js | new file, the whole file; attach it to `Hero`@@
 
 * `this.GetComponent('animatedSprite')` is the Animator. `animator.play('walk')` starts a clip and `animator.current` names the playing one. **Only call `play` when the wanted clip changes**, or the animation restarts every frame and freezes on its first frame. That one comparison is the most common animation fix.
 * `animator.setFlip(true)` mirrors the picture. The art faces forward, so we mirror it when going left.
@@ -169,7 +179,7 @@ The hero's collider (14 × 16) is smaller than its 32 × 32 picture: it fits cor
 
 `scripts/Health.js` wraps the GameManager's lives with what a finished game needs:
 
-@@code Health.js@@
+@@code Health.js | new file, the whole file; attach it to `Hero`, next to `Hero.js`@@
 
 * **Grace period**: after a hit the hero is protected for `grace` seconds; `Math.floor(protectedFor * 12) % 2` blinks it about six times a second.
 * `this.game.camera.shake(160, 0.01)` shakes the camera for 160 ms (Unity: a Cinemachine impulse).
@@ -181,7 +191,7 @@ The hero's collider (14 × 16) is smaller than its 32 × 32 picture: it fits cor
 
 `scripts/Enemy.js` runs both slimes and bats:
 
-@@code Enemy.js@@
+@@code Enemy.js | new file, the whole file; attach it to the `slime` and `bat` prefabs@@
 
 * **Seeing**: `sees` is true only when the hero is closer than `sight` **and** `World.LineClear` finds no wall in between. Behind a wall you vanish from their eyes. In [part 5](ex-dungeon-5-enemies.html) enemies saw through walls; this is the fix, one extra condition.
 * **Chasing and wandering**: they run at you when they see you; otherwise the `Wander` coroutine picks a random direction every second or two, at 45% speed.
@@ -193,18 +203,18 @@ The hero's collider (14 × 16) is smaller than its 32 × 32 picture: it fits cor
 
 Hitting something should feel good ([Juice](ex-juice-effects.html)). `scripts/Fx.js` collects three tricks as static functions:
 
-@@code Fx.js@@
+@@code Fx.js | new file, the whole file@@
 
 * `FloatText` instantiates the `floattext` prefab on **layer 1** (above the darkness, so it stays readable) with the text and colour as **overrides**. The prefab's own script moves it:
 
-@@code FloatText.js@@
+@@code FloatText.js | new file, the whole file; attach it to the `floattext` prefab@@
 
 * `Burst` instantiates the `burst` prefab (a particles component that explodes once) with overrides for colour and count, and destroys it after the particles' lifetime. `Destroy(object, seconds)` is the delayed destroy you know.
 * `HitStop` slows the game to 5% for a few milliseconds with `Time.timeScale`. It resets with the browser's `setTimeout`, **not** a game timer: the game clock is exactly what we slowed, so a 55 ms game timer would take 1.1 s of real time. A classic trap.
 
 The sword's crescent is another self-removing prefab:
 
-@@code Slash.js@@
+@@code Slash.js | new file, the whole file; attach it to the `slash` prefab@@
 
 A sound, a number, a spark, a freeze, a shake: that is what makes a swing feel heavy.
 
@@ -212,11 +222,11 @@ A sound, a number, a spark, a freeze, a shake: that is what makes a swing feel h
 
 Four pickups share `scripts/Pickup.js` with a `kind` field:
 
-@@code Pickup.js@@
+@@code Pickup.js | new file, the whole file; attach it to the `coin`, `key`, `potion` and `chest` prefabs@@
 
 It does what is common (bob, detect the hero, text, sound) and tells the **Run** what happened. `scripts/Run.js` is a `Singleton` with the rules and the clock:
 
-@@code Run.js@@
+@@code Run.js | new file, the whole file; attach it to the `Run` object@@
 
 * `Run.instance.AddCoin()` and friends: **singleton calls**, the way Unity GameManagers work. `UseKey()` returns whether a key was spent: when code needs an answer, a method call beats an event.
 * `onChanged` and `onEnded` are `UnityEvent`s: `AddListener(fn)` (it returns a function that removes the listener) and `Invoke(data)`. The HUD listens; the Run does not know it exists.
@@ -227,15 +237,15 @@ It does what is common (bob, detect the hero, text, sound) and tells the **Run**
 
 Gates are `scripts/Door.js`:
 
-@@code Door.js@@
+@@code Door.js | new file, the whole file; attach it to the `door` prefab@@
 
 Each gate tile checks whether the hero is within 30 pixels. If the Run spent a key, `Open()` destroys this tile **and its neighbours within 40 pixels**, so one key opens both tiles of a two-wide corridor. The `opened` flag matters: both tiles run `Update` in the same frame, and without it the second tile would spend a second key. Without a key the gate shows "Locked" (at most every 1.5 s) and plays an error sound.
 
 The last two behaviours are tiny:
 
-@@code Spikes.js@@
+@@code Spikes.js | new file, the whole file; attach it to the `spikes` prefab@@
 
-@@code Exit.js@@
+@@code Exit.js | new file, the whole file; attach it to the `exit` prefab@@
 
 ## 12 Light
 
@@ -250,7 +260,7 @@ The lights are part 6 again: `Light2D` with the system script, `Lantern` as a ch
 
 ## 13 The HUD, pause and end screens
 
-@@code Hud.js@@
+@@code Hud.js | new file, the whole file; attach it to the `Hud` object@@
 
 * **Hearts** are images redrawn on every `lives` event: full and empty hearts, `image-rendering: pixelated` to stay crisp.
 * **The clock** formats `Run.instance.elapsed`.
@@ -265,7 +275,7 @@ The lights are part 6 again: `Light2D` with the system script, `Lantern` as a ch
 
 `scenes/title.scene.json` holds a camera, a dark floor, an `Embers` entity (a particles component that keeps emitting), the hero, a brazier, a slime and an entity `Title` running:
 
-@@code Title.js@@
+@@code Title.js | new file, the whole file; attach it to the `Title` object of the title scene@@
 
 `PlayerPrefs.GetInt('ember.best', 0)` reads the saved score. `SceneManager.LoadScene` is Unity's. Every widget is kept in `this.widgets` and removed in `OnDestroy`, because **UI outlives a scene change**: forget it and the title text stays on top of your game.
 
@@ -284,6 +294,7 @@ The project has an automated test, `node tools/ember-crypt-test.mjs`, that does 
 
 ## 16 Ship it
 
+**Terminal** (in the folder that contains the `ember-crypt` project folder):
 ```bash
 nord check ember-crypt
 nord build ember-crypt --minify --zip -o ember-crypt-web

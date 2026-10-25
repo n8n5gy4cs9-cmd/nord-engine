@@ -47,6 +47,8 @@ summary: The Unity to Nord API table and the traps C# developers meet in JavaScr
 
 ## The traps (C# to JavaScript)
 **1. `this` and callbacks.** Inside a normal `function () {}` callback `this` is not your script. Use arrow functions:
+
+**File: your script, for example `scripts/Bomb.js`** (inside `Start()`; compare the wrong version with the arrow version)
 ```js
 this.after(1, () => this.explode());        // arrow: this = the script
 this.after(1, function () { this.explode(); });   // WRONG: this is not the script

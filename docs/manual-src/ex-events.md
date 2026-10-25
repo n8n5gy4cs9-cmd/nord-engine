@@ -23,6 +23,8 @@ public static event Action<int> OnScore;   // GameManager
 OnScore?.Invoke(5);   OnScore += Handler;   OnScore -= Handler;
 ```
 ### Nord
+
+**File: your script, for example `scripts/Coin.js`** (inside a method, the sender)
 ```js
 this.game.events.emit('score', { score: 5 });
 const off = this.game.events.on('score', ({ score }) => this.refresh(score));
@@ -33,6 +35,8 @@ this.game.events.on('*', ({ name, data }) => console.log(name, data));   // wild
 Built-in events: `score`, `lives`, `state`, `gameover` (GameManager), `sceneLoad`, `sceneUnload`, `pause`, `resume`, `error`, `language`.
 
 ## Events on an object
+
+**File: `scripts/health.js`** (add `entity.emit` in the method that changes hp; the listener goes in another script's `start()`)
 ```js
 // health.js
 this.entity.emit('hp', { hp: this.hp, max: this.max });
@@ -43,16 +47,22 @@ The enemy does not know a health bar exists; the bar needs a reference to the en
 
 ## A door and a button: signals without code
 1. Button object: script emits when pressed:
+
+**File: `scripts/button.js`** (new file; attach it to the button object, which has a trigger collider)
 ```js
 onTriggerEnter(o) { if (o.hasTag('player')) this.entity.emit('pressed'); }
 ```
 2. Door object: script has `open()`:
+
+**File: `scripts/door.js`** (new file; attach it to the door object)
 ```js
 open() { this.entity.enabled = false; }
 ```
 3. Select the **button** ▸ @ui[Inspector ▸ Signals ▸ +]: event `pressed`, target `Door`, method `open`. Done: when the button emits `pressed`, `Door`'s scripts get `open(data)` called. (Target empty = the button itself.)
 
 ## UnityEvent and EventBus (Unity names)
+
+**File: `scripts/Alarm.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour, UnityEvent, EventBus } from 'nord';
 

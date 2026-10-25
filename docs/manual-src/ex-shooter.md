@@ -21,6 +21,8 @@ summary: Aim with the mouse, shoot pooled bullets, waves of enemies, particles o
 Project: gravity `[0,0,0]`, actions `left right up down fire (Mouse0, Space) restart`.
 
 ## Aim at the mouse
+
+**File: `scripts/Ship.js`** (replace the `Update()` method of the script on the player ship)
 ```js
 Update() {
   const p = this.input.pointer, e = this.entity.pos;                 // pointer.worldX / worldY are in world units
@@ -32,6 +34,8 @@ Update() {
 Unity: `Camera.main.ScreenToWorldPoint(Input.mousePosition)` + `Mathf.Atan2`. Here the engine already gives you world coordinates.
 
 ## Bullets from an object pool
+
+**File: `scripts/Ship.js`** (replace `Start()` and add the `Fire()` method below it)
 ```js
 async Start() {
   this.pool = new ObjectPool(this.scene, 'prefabs/bullet.prefab.json');
@@ -43,6 +47,8 @@ async Shoot(angle) {
   b.getScript(Bullet).Launch(this.pool, r);
 }
 ```
+
+**File: `scripts/bullet.js`** (new file, the whole file; attach it to the `bullet` prefab)
 ```js
 // bullet.js
 Launch(pool, radians) { this.pool = pool; this.age = 0; this.alive = true; this.physics.setVelocity(this.entity, Math.cos(radians) * this.speed, Math.sin(radians) * this.speed); }
@@ -58,6 +64,8 @@ The library `health.js` (copied into `scripts/`) handles hit points on **any** o
 other.emit('damage', { amount: 1, from: this.entity });   // "please take 1 damage"
 // health.js emits on the same object:   'health' { hp, max }   and   'death'
 ```
+
+**File: `scripts/ship.js`** (inside `Start()`, after the Health script is on the ship)
 ```js
 this.entity.on('death', () => this.Die());                 // ship.js: game over
 player.on('health', ({ hp, max }) => this.bar.set(hp / max));   // hud.js: the health bar
@@ -65,6 +73,8 @@ player.on('health', ({ hp, max }) => this.bar.set(hp / max));   // hud.js: the h
 Set `max`, `invulnTime` (blink time after a hit) and `destroyOnDeath` per object in the Inspector: the player has 5 hp and survives, enemies have 2 hp and `destroyOnDeath` on. More patterns: [Health and damage](ex-health-damage.html).
 
 ## Enemies: chase, ram, explode
+
+**File: `scripts/enemy.js`** (new file, the whole file; attach it to the `enemy` prefab)
 ```js
 // enemy.js
 Start() { this.player = this.FindWithTag('player'); this.entity.on('death', () => this.Explode()); }
@@ -78,6 +88,8 @@ Explode() {
 The explosion prefab is a `particles` component with **burst** ticked (`quantity` 22, `lifespan` 550 ms, `speed` 240, small `scale`) and a script that destroys the object after 0.9 s.
 
 ## Waves with a coroutine
+
+**File: `scripts/Waves.js`** (add this coroutine to the script on an empty `Waves` object and start it with `this.StartCoroutine(this.Waves())` in `Start()`)
 ```js
 *Waves() {
   for (let wave = 1; ; wave++) {

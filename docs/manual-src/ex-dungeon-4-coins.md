@@ -16,6 +16,7 @@ Part 4 of the Unity-style dungeon series, continuing from [part 3, camera and a 
 
 Add the letter `o` to `map.js` wherever a coin should lie (the download has twelve):
 
+**File: `scripts/map.js`** (replace the whole file from part 3)
 ```js
 export const MAP = [
   '########################################',
@@ -45,8 +46,27 @@ export const MAP = [
 
 ## 2 Triggers and the Coin prefab
 
-A **trigger** is a collider that does not block anything but tells you when something enters. The coin prefab (`prefabs/coin.prefab.json`) is a sprite (the round `circle.png`, tinted gold, 14 × 14), a **static rigidbody**, a **box collider with `trigger: true`** (16 × 16), the tag `Coin` and the script:
+A **trigger** is a collider that does not block anything but tells you when something enters. Make the coin prefab in the editor:
 
+1. @ui[Hierarchy ▸ + Create ▸ Sprite], rename it `Coin`. In the sprite set **texture** `assets/sprites/circle.png` (pick it from the list), **size** `14, 14`, **tint** `#ebcb8b`. Add the tag `Coin`.
+2. @ui[Inspector ▸ + Add component ▸ rigidbody], **mode** `static`.
+3. @ui[Inspector ▸ + Add component ▸ collider], **shape** `box`, **size** `16, 16`, and tick **trigger**.
+4. Write the script below, then @ui[Inspector ▸ + Add script ▸ scripts/coin.js].
+5. @ui[right-click `Coin` ▸ Create prefab], then delete `Coin` from the scene.
+
+**In the file** `prefabs/coin.prefab.json`:
+```json
+{ "format": 1, "root": { "name": "Coin", "tags": ["Coin"],
+  "components": [
+    { "type": "sprite", "texture": "assets/sprites/circle.png", "size": [14, 14], "tint": "#ebcb8b", "alpha": 1 },
+    { "type": "rigidbody", "mode": "static" },
+    { "type": "collider", "shape": "box", "size": [16, 16], "trigger": true } ],
+  "scripts": [ { "path": "scripts/coin.js", "attributes": {} } ] } }
+```
+
+The script:
+
+**File: `scripts/coin.js`** (new file, the whole file; attach it to the `coin` prefab)
 ```js
 import { MonoBehaviour, GameManager, Destroy, Random, Time, Vector3 } from 'nord';
 
@@ -72,6 +92,9 @@ export default class Coin extends MonoBehaviour {
 }
 ```
 
+**In the editor:** select the `coin` prefab, then @ui[Inspector ▸ + Add script ▸ scripts/coin.js]. Prefabs: first @ui[Assets ▸ right-click the prefab ▸ Open prefab]. The scene or prefab file then lists the script under `"scripts"`.
+
+
 * `OnTriggerEnter(other)` is `OnTriggerEnter2D(Collider2D other)`. `other` is the entity that came in; `other.hasTag('Hero')` is `other.CompareTag("Hero")`.
 * `GameManager.instance.AddScore(1)`: see next section.
 * `Destroy(this.entity)` removes the coin **at the end of the frame**; `taken` stops a second overlap in the same frame from counting twice.
@@ -81,12 +104,16 @@ export default class Coin extends MonoBehaviour {
 
 Nord has the Unity singleton you always write by hand. Create `scripts/GameManager.js`:
 
+**File: `scripts/GameManager.js`** (new file, the whole file; attach it to the `GameManager` object)
 ```js
 import { GameManager } from 'nord';
 
 // The engine's GameManager (score, lives, state, Restart) as a script you can attach to an object.
 export default class Manager extends GameManager {}
 ```
+
+**In the editor:** select the `GameManager` object, then @ui[Inspector ▸ + Add script ▸ scripts/GameManager.js]. If the object does not exist yet, create it first with @ui[Hierarchy ▸ + Create ▸ Empty] and rename it. The scene or prefab file then lists the script under `"scripts"`.
+
 
 Add an empty entity `GameManager` with that script. It keeps `score`, `lives` and `state`, offers `AddScore`, `LoseLife`, `SetState`, `Restart`, and announces changes on the global bus: `score`, `lives`, `state`, `gameover`. Anywhere in your code: `GameManager.instance.AddScore(1)`. (More in [GameManager and Singletons](ex-game-manager.html).)
 
@@ -106,6 +133,7 @@ and the announcement carries the total: `EventBus.Publish('level', { width, heig
 
 A HUD is a screen layer of HTML elements. `this.ui.label(text, options)` makes a label; `screen: 'hud'` puts it on the always-visible layer; `x`/`y` are pixels from the top-left; `anchor: 'c'` centres a label and `x`/`y` become offsets from the centre. Create an empty entity `Hud` with:
 
+**File: `scripts/hud.js`** (new file, the whole file; attach it to the `Hud` object)
 ```js
 import { MonoBehaviour, GameManager, EventBus, UnityInput as Input, KeyCode } from 'nord';
 
@@ -139,6 +167,9 @@ export default class Hud extends MonoBehaviour {
   OnDestroy() { this.score?.remove(); this.offs?.forEach((off) => off()); }
 }
 ```
+
+**In the editor:** select the `Hud` object, then @ui[Inspector ▸ + Add script ▸ scripts/hud.js]. If the object does not exist yet, create it first with @ui[Hierarchy ▸ + Create ▸ Empty] and rename it. The scene or prefab file then lists the script under `"scripts"`.
+
 
 * The HUD subscribes to `level` (the total) and `score`. `EventBus.Subscribe` returns an unsubscribe function; `OnDestroy` calls them all and removes the label. When you restart, scripts are destroyed and recreated; a script that forgets this leaves a ghost label and a ghost listener.
 * `Win()` sets the manager's state to `won` and shows two labels.

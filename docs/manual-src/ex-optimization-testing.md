@@ -6,6 +6,8 @@ summary: Find slow scripts with the profiler, pool objects, cache lookups, keep 
 ---
 
 ## Find the problem first (Unity: Profiler)
+
+**File: your script, for example `scripts/Game.js`** (inside `Start()`; the same numbers are in the editor's **Profiler** tab)
 ```js
 const dbg = this.game.enableDebug();         // or the editor's Profiler tab
 ```
@@ -32,16 +34,22 @@ Scene objects and their scripts are garbage collected after `destroy()` and scen
 
 ## Test your logic: plain Node tests
 Put game rules in plain modules with no engine dependency, and test them with Node's built-in runner:
+
+**File: `scripts/util/score.js`** (new file; plain JavaScript with no engine imports so Node can test it)
 ```js
 // scripts/util/score.js
 export const bonus = (combo) => Math.min(5, 1 + Math.floor(combo / 3));
 ```
+
+**File: `scripts/util/score.test.mjs`** (new file next to `score.js`)
 ```js
 // scripts/util/score.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import { bonus } from './score.js';
 test('combo bonus', () => { assert.equal(bonus(0), 1); assert.equal(bonus(9), 4); assert.equal(bonus(99), 5); });
 ```
+
+**Terminal** (in the project folder):
 ```bash
 node --test scripts/util/
 ```

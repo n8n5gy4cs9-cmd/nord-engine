@@ -25,6 +25,8 @@ const call = async (area) => { if (!granted[area]) { const e = new Error(`permis
 console.log(await call('store'));
 console.log(await call('notifications').catch((e) => e.code));
 ```
+
+**File: your script, for example `scripts/Notes.js`** (the `import` at the top of the file, the calls inside methods)
 ```js
 import desktop from './nord-desktop.js';          // also window.nord.desktop
 await desktop.ready;
@@ -44,6 +46,10 @@ Develop with `nord serve .` (same API, same permission checks over HTTP), run na
 
 ## Permissions (`desktop.permissions`)
 Default = least privilege. Review/edit them in the editor: **Project ▸ Desktop app permissions…**.
+
+**In the editor:** @ui[Project ▸ Desktop app permissions…], then tick what the app may do.
+
+**In the file** `nord.project.json`, the window writes this block:
 ```json
 "desktop": {
   "permissions": {

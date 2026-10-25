@@ -18,6 +18,7 @@ Missing or blocked audio never throws into game code.
 Think of buses as volume knobs: one knob for music, one for effects, one for menus, and a big master knob over all of them.
 :::
 
+**File: your script, for example `scripts/Player.js`** (calls inside any method)
 ```js
 this.audio.play('assets/audio/sfx/jump.wav');                       // one-shot
 const h = this.audio.play('assets/audio/sfx/engine.wav', { loop: true, volume: 0.4, rate: 1.2, pan: -0.5 });
@@ -55,6 +56,7 @@ It is the "Press any key" screen you know from old games. The game is already dr
 2. **Build your title screen and queue the title music first**, then install the gate as the last step of setup.
 3. **Destroy** it in `onDestroy()`, and keep a reference so your own input code can ignore input while `startGate.active` is true.
 
+**File: `scripts/Boot.js`** (new file; this is the start-gate script, put it on an object of the first scene)
 ```js
 import { NordScript, touchToStart } from 'nord';
 

@@ -14,6 +14,8 @@ In a multiplayer game each player runs the game on their own computer. **Host** 
 Make `prefabs/ship.prefab.json` (sprite + your movement script). Add a **netSync** component: `rate` 15, `interpolate` on. Only the player who owns a ship moves it; everybody else just watches it glide.
 
 ## 2. A script that spawns one ship per player
+
+**File: `scripts/Spawner.js`** (new file, the whole file; attach it to an empty object)
 ```js
 import { NordScript } from 'nord';
 export default class Lobby extends NordScript {

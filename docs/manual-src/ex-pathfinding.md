@@ -72,6 +72,8 @@ Call `SetDestination` from anywhere: `this.entity.getScript(Agent).SetDestinatio
 
 ## Chasing a moving target
 Do not recompute every frame. Recompute twice a second, or when the target changed cell:
+
+**File: `scripts/agent.js`** (replace `Start()` of the script above with this line, or add it at the end of `Start()`)
 ```js
 Start() { this.every(0.5, () => { const p = this.scene.find('Player'); if (p) this.SetDestination(p.pos[0], p.pos[1]); }); }
 ```

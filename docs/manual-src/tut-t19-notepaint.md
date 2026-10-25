@@ -100,6 +100,7 @@ A **transaction** is one database operation that either finishes or fails. Savin
 ## 9. Understand the drawing canvas
 The drawing has a fixed **960×640** working area. CSS can display it smaller. Pointer coordinates therefore need converting from screen pixels into canvas pixels:
 
+**Excerpt** (from `notepaint/app.js` of the finished project, shown to explain the idea):
 ```javascript
 const x = (event.clientX - rect.left) * canvas.width / rect.width;
 const y = (event.clientY - rect.top) * canvas.height / rect.height;
@@ -156,6 +157,7 @@ An export is a real portable backup. “Saved on this device” is a local brows
 ## 14. Open your app
 From the directory containing your project:
 
+**Terminal** (in the folder that contains your project folder):
 ```bash
 nord serve my-notepaint
 ```
@@ -167,6 +169,7 @@ You should see a notebook list, a note page, drawing tools and a white drawing p
 ## 15. Export the finished app
 When you choose to share it, use the editor's Export or:
 
+**Terminal** (in the folder that contains your project folder):
 ```bash
 nord export my-notepaint --target html
 ```

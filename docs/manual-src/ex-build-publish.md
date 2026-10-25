@@ -12,6 +12,8 @@ summary: Run, build for the web, single-file and PWA, itch.io / GitHub Pages / N
 * From a terminal: `nord serve my-game` starts the dev server with live reload (`http://localhost:4173`); `nord serve my-game --lan` also gives phones on your Wi-Fi a link with a secret token.
 
 ## Check before you build
+
+**Terminal** (in the folder that contains your project folder):
 ```bash
 nord check my-game             # validates scenes and prefabs: unique ids, missing files, bad references
 nord check-offline my-game     # fails if anything loads from an external web address (the game must work offline)
@@ -19,6 +21,8 @@ nord check-offline my-game     # fails if anything loads from an external web ad
 The editor's Console has **Validate project**, and the same checks run when you export.
 
 ## Build for the web (Unity: WebGL build)
+
+**Terminal** (in the folder that contains your project folder):
 ```bash
 nord build my-game                         # auto target, output in my-game/dist
 nord build my-game -t web-2d -o out        # or html | web-2d | web-3d | web-3d-pc | web-wasm-game | web-wasm-app
@@ -30,6 +34,8 @@ nord build my-game --pwa                   # installable offline web app: manife
 The output folder is static files: upload it anywhere. **File ▸ Build Settings** in the editor offers the same options with buttons.
 
 ## Hosting presets
+
+**Terminal** (in the folder that contains your project folder):
 ```bash
 nord build my-game --zip --host itch              # itch.io: a zip you upload as an HTML5 game
 nord build my-game --host github-pages            # adds the files GitHub Pages needs
@@ -38,6 +44,8 @@ nord build my-game --host netlify                 # or vercel | docker  (adds th
 The presets only write files; the upload itself is yours (drag the folder / zip to the site, or `git push`).
 
 ## Desktop apps (Unity: Windows / macOS / Linux builds)
+
+**Terminal** (in the folder that contains your project folder):
 ```bash
 nord bundle-mac my-game --name "My Game" --icon icon.png --dmg          # macOS .app (and a .dmg), builds the project first
 nord bundle-portable my-game --os windows --name "My Game"             # a folder + zip for Windows
@@ -46,7 +54,9 @@ nord bundle-portable my-game --os linux  --name "My Game"              # a folde
 They wrap your web build in the small prebuilt `nord-player` shell (a native window with a web view); no compiler needed. Details and signing notes: [Desktop apps](desktop-apps.html), [Export](export.html).
 
 ## Project settings that matter for a release
-In `nord.project.json`:
+**In the editor:** @ui[Project] tab ▸ **Project properties**: set **Name**, **Version** and **Icon**, then press **Apply project properties**. The export options (single file, minify, which scenes to include) are in @ui[File ▸ Build Settings]. The bundle id and the exact `id` are in the file.
+
+**In the file** `nord.project.json`:
 ```json
 "name": "My Game", "id": "com.you.mygame",
 "display": { "width": 960, "height": 540, "scale": "fit", "pixelArt": false, "background": "#101418" },

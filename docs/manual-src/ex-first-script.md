@@ -34,6 +34,8 @@ export default class Spin extends MonoBehaviour {
 ```
 
 ## Nord: the native style (lower-case)
+
+**File: `scripts/spin.js`** (new file, the whole file; the same script written in the native style)
 ```js
 import { NordScript } from 'nord';
 
@@ -69,6 +71,8 @@ Pick **one style per script**; do not mix `Update` and `update` in the same clas
 | `OnDisable` / `OnDestroy` | same | `onDisable()` / `onDestroy()` | switched off / removed |
 
 ## Inspector fields (attributes)
+
+**File: `scripts/Spin.js`** (the `static attributes` block goes inside the class, above `Start()`)
 ```js
 static attributes = {
   speed:   { type: 'number', default: 5, min: 0, max: 20 },   // slider

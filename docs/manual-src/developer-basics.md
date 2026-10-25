@@ -35,6 +35,7 @@ Press Play. The entity rotates 90 degrees per second around its Z axis. In a 2D 
 ## Values, names and functions
 A **value** is data: `90` is a number, `'Player'` is text, and `true` is yes. A **variable** gives a value a name:
 
+**Example** (not a file; try these lines inside `start()` of any script):
 ```js
 const speed = 90;
 const message = 'Hello Nord';
@@ -48,12 +49,16 @@ A **property** stores a value on an object: `this.entity.name`. A **method** is 
 ## Arrays and objects
 An **array** is an ordered list. Nord positions use `[x, y, z]`:
 
+**Example** (not a file; inside `start()` of any script):
 ```js
 this.entity.pos = [100, 80, 0];
 ```
 
 An **object** names its values. Scene component settings use objects:
 
+**In the editor:** select the object, @ui[Inspector ▸ + Add component ▸ text], then type the text and the size.
+
+**In the file** the entity's `components` list in the scene (a text component is stored as an object like this):
 ```json
 { "type": "text", "text": "Hello Nord", "size": 32 }
 ```
@@ -63,6 +68,7 @@ JSON is a file format for data. It uses double quotes and does not allow JavaScr
 ## When to use start and update
 Use `start()` for something that should happen once. Use `update(dt)` for something that changes while the game runs.
 
+**File: `scripts/Title.js`** (new file, the whole file)
 ```js
 import { NordScript } from 'nord';
 

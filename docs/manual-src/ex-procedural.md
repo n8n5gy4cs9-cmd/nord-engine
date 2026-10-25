@@ -6,6 +6,8 @@ summary: Seeded random numbers, random levels and dungeons, loot tables, noise, 
 ---
 
 ## The random generator (Unity: `Random`)
+
+**File: your script, for example `scripts/Generator.js`** (inside `Start()`)
 ```js
 const r = this.game.rng;            // one seedable generator per game
 r.range(10, 20);                    // float in [10, 20)         Random.Range(10f, 20f)
@@ -17,6 +19,8 @@ r.shuffle(deck);                    // shuffles in place (Fisher-Yates), returns
 Same seed, same sequence: `import { Rng } from 'nord'; const level = new Rng(12345);` gives a **repeatable level** (daily challenge, shareable seeds, bug repros). Create one `Rng` per purpose (level layout, loot) so unrelated events do not change each other.
 
 ## Weighted choice
+
+**File: your script, for example `scripts/Generator.js`** (a function at the top level of the file, above the class)
 ```js
 function weighted(rng, table) {                       // table: [['common', 70], ['rare', 25], ['epic', 5]]
   let roll = rng.range(0, table.reduce((t, [, w]) => t + w, 0));
@@ -28,6 +32,8 @@ weighted(this.game.rng, [['coin', 70], ['gem', 25], ['key', 5]]);
 Library `loot-table.js` does this from the Inspector (drop tables with weights).
 
 ## A random room layout
+
+**File: `scripts/Generator.js`** (add this method to the class; call `await this.build(seed)` from `Start()`)
 ```js
 async build(seed) {
   const rng = new Rng(seed), rooms = [];
@@ -59,6 +65,8 @@ Quick "organic" motion without noise: `Math.sin(t * 1.3) + Math.sin(t * 2.7) * 0
 * Seeds in saves: store the level seed with the save so loading recreates the same level (`this.save.set('seed', seed)`).
 
 ## Spawning at random edges (as in Star Shooter)
+
+**File: `scripts/Spawner.js`** (inside the method that spawns an enemy; `rng` is `this.game.rng`)
 ```js
 const pos = [[x, -20], [x, 560], [-20, y], [980, y]][rng.int(0, 3)];                    // top, bottom, left, right
 ```

@@ -10,6 +10,8 @@ Nord ships an **MCP server** (`mcp/nord-mcp.mjs`, Node 18+, no installs) so an A
 ## Install (once)
 1. Build the CLI: `cargo build -p nord-cli` in the engine folder.
 2. Print the configuration for your agent, then paste it where it says:
+
+**Terminal** (in the Nord Engine folder):
 ```bash
 node mcp/nord-mcp.mjs --config claude --project /path/to/my-game
 ```

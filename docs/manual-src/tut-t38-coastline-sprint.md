@@ -124,6 +124,7 @@ Same method: open <span class="f">render.js</span> and paste parts [2.1 to 2.6](
 
 This tiny file only lists sound file names. Paste it all:
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 export const AUDIO = {
   music: ['assets/audio/coast-drive.mp3', 'assets/audio/coast-night.mp3'],
@@ -160,6 +161,7 @@ Extract the zip into a writable folder and open its nord.project.json in Nord. P
 
 For a browser preview from the project parent folder:
 
+**Terminal** (in the project folder, or the folder named in the text above):
 ```sh
 nord serve coastline-sprint
 ```
@@ -192,6 +194,7 @@ For a coding-from-starter path, create an HTML project, add the listed files and
 
 The central course settings are deliberately small:
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 export const COURSE = {
   length: 180000,
@@ -214,12 +217,14 @@ The two drivers start slightly apart. They share traffic and the road but do not
 
 updateDriver takes one driver, one input object, dt and the traffic list. A representative input is:
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 { steer: -0.5, accel: 1, brake: 0, boost: false }
 ```
 
 The rules do not care whether that came from a keyboard or pad. steer is minus one to one; accel/brake are zero to one. dt is seconds. Acceleration, braking and coasting alter speed, then speed times dt advances distance.
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 p.speed = clamp(p.speed +
   (input.accel * 2400 - input.brake * 4200 - 500) * dt,
@@ -237,6 +242,7 @@ Return **events** such as crash, skid, checkpoint and win instead of playing sou
 
 The road is a sequence of projected strips, not a 3D engine scene. For a strip ahead of the player:
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const scale = 0.85 / distanceAhead;
 const screenX = width / 2 + relativeWorldX * scale * width / 2;
@@ -250,6 +256,7 @@ Draw distant strips first, near strips last. Then sort scenery/traffic by distan
 
 The player car stays near the screen centre while road/camera offset reflects its lane. The renderer crops 64×40 cells from racing-cars.png: red left/back/right/front in the first row, white poses in the second. Steering chooses a discrete rear pose; it does not cycle all frames as a walk animation.
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 g.drawImage(sheet, frame % 4 * 64, Math.floor(frame / 4) * 40,
   64, 40, destinationX, destinationY, width, height);
@@ -275,6 +282,7 @@ In split-screen one player can finish while the other continues. Each view displ
 
 padInput reads axis zero and standard buttons, applies a dead zone, then produces the same input shape as the keyboard:
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const axis = pad?.axes?.[0] ?? 0;
 const steer = Math.abs(axis) > 0.14 ? axis : 0;
@@ -286,6 +294,7 @@ Optional chaining handles missing devices; nullish coalescing supplies zero. A d
 
 The app updates all driver states, then renders each into a clipped region:
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const viewHeight = canvas.height / mode;
 g.save();
@@ -306,6 +315,7 @@ The archive contains two original tracks, coast-drive.mp3 and coast-night.mp3, p
 
 Audio starts from the start-button gesture because browsers may block autoplay. The helper creates an AudioContext, fetches each file, decodes it and caches its Promise. A decoded buffer can be reused for many sound voices without refetching every collision.
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const response = await fetch(path);
 if (!response.ok) throw Error(`${path}: HTTP ${response.status}`);
@@ -326,6 +336,7 @@ coastline-sprint/
 
 Open audio-config.js and change only the intended paths:
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 export const AUDIO = {
   music: ['assets/audio/my-summer-drive.mp3', 'assets/audio/coast-night.mp3'],
@@ -353,6 +364,7 @@ Test solo and split separately. Check steering, throttle release, nitro recharge
 
 From the project parent folder:
 
+**Terminal** (in the project folder, or the folder named in the text above):
 ```sh
 nord check coastline-sprint
 nord build coastline-sprint --target html --out coast-web --zip
@@ -394,6 +406,7 @@ Build every rule before connecting it to graphics: course, fresh drivers, traffi
 
 <!-- taught-source: coastline-sprint/track.js:1-13 -->
 
+**File: `track.js`** (step 1.1, course units and a reusable clamp: the beginning of the file)
 ```js
 export const COURSE = {
   length: 180000,
@@ -420,6 +433,7 @@ export const hill = (z) => Math.sin(z / 12000) * 450 + Math.sin(z / 4700) * 90;
 
 <!-- taught-source: coastline-sprint/track.js:14-30 -->
 
+**File: `track.js`** (step 1.2, create independent drivers: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function driver(index = 0) {
   return {
@@ -450,6 +464,7 @@ export function driver(index = 0) {
 
 <!-- taught-source: coastline-sprint/track.js:31-45 -->
 
+**File: `track.js`** (step 1.3, seed opponents without updating them twice: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export const traffic = () =>
   Array.from({ length: 24 }, (_, i) => ({
@@ -478,6 +493,7 @@ export function updateDriver(p, input, dt, cars) {
 
 <!-- taught-source: coastline-sprint/track.js:46-59 -->
 
+**File: `track.js`** (step 1.4, integrate speed and steering in seconds: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const boost = input.boost && p.nitro > 0 && input.accel > 0;
   p.nitro = clamp(p.nitro + (boost ? -0.4 : 0.14) * dt, 0, 1);
@@ -505,6 +521,7 @@ export function updateDriver(p, input, dt, cars) {
 
 <!-- taught-source: coastline-sprint/track.js:60-77 -->
 
+**File: `track.js`** (step 1.5, throttle repeated sound and collision responses: the next part of this file; it goes **below** the code of the previous step)
 ```js
     p.skid === 0 &&
     p.speed > 1800 &&
@@ -536,6 +553,7 @@ export function updateDriver(p, input, dt, cars) {
 
 <!-- taught-source: coastline-sprint/track.js:78-94 -->
 
+**File: `track.js`** (step 1.6, consume checkpoints and finish once: the next part of this file; it goes **below** the code of the previous step)
 ```js
     p.checkpoint < COURSE.checkpoints.length &&
     p.z >= COURSE.checkpoints[p.checkpoint]
@@ -566,6 +584,7 @@ export function updateDriver(p, input, dt, cars) {
 
 <!-- taught-source: coastline-sprint/track.js:95-104 -->
 
+**File: `track.js`** (step 1.7, translate hardware into game intent: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function padInput(pad) {
   const button = (i) => pad?.buttons?.[i]?.value ?? 0;
@@ -594,6 +613,7 @@ Turn the simulation into a pseudo-3D picture, including every projection, sprite
 
 <!-- taught-source: coastline-sprint/render.js:1-18 -->
 
+**File: `render.js`** (step 2.1, paint a background in viewport coordinates: the beginning of the file)
 ```js
 // Extended from Nord's own Amiga Showcase road/sprite presentation.
 import { curve, hill, COURSE } from './track.js';
@@ -625,6 +645,7 @@ export function drawView(g, p, cars, others, images, w, h) {
 
 <!-- taught-source: coastline-sprint/render.js:19-36 -->
 
+**File: `render.js`** (step 2.2, project many road samples: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const SEG = 200,
     road = 2000,
@@ -656,6 +677,7 @@ export function drawView(g, p, cars, others, images, w, h) {
 
 <!-- taught-source: coastline-sprint/render.js:37-61 -->
 
+**File: `render.js`** (step 2.3, join neighbouring samples into strips: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const quad = (a, b, ratio, color) => {
     g.fillStyle = color;
@@ -694,6 +716,7 @@ export function drawView(g, p, cars, others, images, w, h) {
 
 <!-- taught-source: coastline-sprint/render.js:62-75 -->
 
+**File: `render.js`** (step 2.4, crop one sprite cell and anchor its feet: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const sprite = (image, frame, fw, fh, cols, cx, cy, sw, sh) => {
     g.imageSmoothingEnabled = false;
@@ -721,6 +744,7 @@ export function drawView(g, p, cars, others, images, w, h) {
 
 <!-- taught-source: coastline-sprint/render.js:76-96 -->
 
+**File: `render.js`** (step 2.5, depth-sort scenery and traffic: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const objects = [];
   for (let i = 0; i < 32; i++) {
@@ -755,6 +779,7 @@ export function drawView(g, p, cars, others, images, w, h) {
 
 <!-- taught-source: coastline-sprint/render.js:97-125 -->
 
+**File: `render.js`** (step 2.6, finish with a local car and a data-driven HUD: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const carW = Math.min(w * 0.25, h * 0.6),
     frame = (p.index ? 4 : 0) + (p.steer < -0.15 ? 0 : p.steer > 0.15 ? 2 : 1);
@@ -802,6 +827,7 @@ Wire the whole racer together: a tiny page frame, the UI file, resources, intent
 
 <!-- taught-source: coastline-sprint/app.js:1-19 -->
 
+**File: `app.js`** (step 3.1, imports and a minimal page frame: the beginning of the file)
 ```js
 import { COURSE, driver, traffic, updateDriver, padInput } from './track.js';
 import { drawView } from './render.js';
@@ -834,6 +860,7 @@ export async function mount(root) {
 
 <!-- taught-source: coastline-sprint/app.js:20-23 -->
 
+**File: `app.js`** (step 3.2, load the UI file and keep handles: the next part of this file; it goes **below** the code of the previous step)
 ```js
   // All menus and text live in ui/menu.ui.json (edit it in the UI Designer). The code only reacts to it.
   const menu = await createUI(shell).load('ui/menu.ui.json');
@@ -851,6 +878,7 @@ export async function mount(root) {
 
 <!-- taught-source: coastline-sprint/app.js:24-54 -->
 
+**File: `app.js`** (step 3.3, canvas context, images and shared state: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const g = canvas.getContext('2d'),
     sound = new RetroAudio(AUDIO),
@@ -895,6 +923,7 @@ export async function mount(root) {
 
 <!-- taught-source: coastline-sprint/app.js:55-83 -->
 
+**File: `app.js`** (step 3.4, reset one complete race from a button: the next part of this file; it goes **below** the code of the previous step)
 ```js
   async function start(count) {
     if (starting) return;
@@ -937,6 +966,7 @@ export async function mount(root) {
 
 <!-- taught-source: coastline-sprint/app.js:84-93 -->
 
+**File: `app.js`** (step 3.5, pause logic and wire controls: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function togglePause() {
     if (state !== 'playing') return;
@@ -960,6 +990,7 @@ export async function mount(root) {
 
 <!-- taught-source: coastline-sprint/app.js:94-103 -->
 
+**File: `app.js`** (step 3.6, react to named UI actions: the next part of this file; it goes **below** the code of the previous step)
 ```js
   menu.on('one', () => start(1));
   menu.on('two', () => start(2));
@@ -983,6 +1014,7 @@ export async function mount(root) {
 
 <!-- taught-source: coastline-sprint/app.js:104-117 -->
 
+**File: `app.js`** (step 3.7, maintain held keys instead of moving in key events: the next part of this file; it goes **below** the code of the previous step)
 ```js
   window.addEventListener('keydown', (e) => {
     if (
@@ -1010,6 +1042,7 @@ export async function mount(root) {
 
 <!-- taught-source: coastline-sprint/app.js:118-133 -->
 
+**File: `app.js`** (step 3.8, advance the world once, then report results: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function frame(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
@@ -1039,6 +1072,7 @@ export async function mount(root) {
 
 <!-- taught-source: coastline-sprint/app.js:134-186 -->
 
+**File: `app.js`** (step 3.9, render two cameras without duplicating simulation: the next part of this file; it goes **below** the code of the previous step)
 ```js
         if (engine) {
           engine.source.stop();
@@ -1110,6 +1144,7 @@ Describe the whole menu as data: layout containers, buttons, a select, text with
 
 <!-- taught-source: coastline-sprint/ui/menu.ui.json:1-23 -->
 
+**File: `ui/menu.ui.json`** (step 4.1, theme variables and the transparent root: the beginning of the file)
 ```json
 {
   "version": 1,
@@ -1146,6 +1181,7 @@ Describe the whole menu as data: layout containers, buttons, a select, text with
 
 <!-- taught-source: coastline-sprint/ui/menu.ui.json:24-84 -->
 
+**File: `ui/menu.ui.json`** (step 4.2, a row of buttons with action names: the next part of this file; it goes **below** the code of the previous step)
 ```json
         "type": "hbox",
         "name": "bar",
@@ -1220,6 +1256,7 @@ Describe the whole menu as data: layout containers, buttons, a select, text with
 
 <!-- taught-source: coastline-sprint/ui/menu.ui.json:85-128 -->
 
+**File: `ui/menu.ui.json`** (step 4.3, notice line and the intro card: the next part of this file; it goes **below** the code of the previous step)
 ```json
         "type": "label",
         "name": "notice",
@@ -1282,6 +1319,7 @@ Build the complete local-audio helper: activation, cached decoding, voices, cros
 
 <!-- taught-source: coastline-sprint/audio.js:1-18 -->
 
+**File: `audio.js`** (step 5.1, own resources for one run: the beginning of the file)
 ```js
 // Local MP3/WAV/OGG files, decoded on first user activation. No external service.
 export class RetroAudio {
@@ -1313,6 +1351,7 @@ export class RetroAudio {
 
 <!-- taught-source: coastline-sprint/audio.js:19-30 -->
 
+**File: `audio.js`** (step 5.2, decode each path once: the next part of this file; it goes **below** the code of the previous step)
 ```js
   async load(path) {
     if (!this.cache.has(path))
@@ -1338,6 +1377,7 @@ export class RetroAudio {
 
 <!-- taught-source: coastline-sprint/audio.js:31-58 -->
 
+**File: `audio.js`** (step 5.3, turn a buffer into a voice: the next part of this file; it goes **below** the code of the previous step)
 ```js
   async voice(path, { volume = 0.5, loop = false, rate = 1 } = {}) {
     if (!this.ctx) return null;
@@ -1379,6 +1419,7 @@ export class RetroAudio {
 
 <!-- taught-source: coastline-sprint/audio.js:59-76 -->
 
+**File: `audio.js`** (step 5.4, keep game events independent of file paths: the next part of this file; it goes **below** the code of the previous step)
 ```js
   play(name, options = {}) {
     const path = this.config.sfx[name];
@@ -1410,6 +1451,7 @@ export class RetroAudio {
 
 <!-- taught-source: coastline-sprint/audio.js:77-92 -->
 
+**File: `audio.js`** (step 5.5, pause and dispose the right owner: the next part of this file; it goes **below** the code of the previous step)
 ```js
   mute() {
     this.muted = !this.muted;
@@ -1444,6 +1486,7 @@ Choose recordings through data rather than hardcoded paths in gameplay.
 
 <!-- taught-source: coastline-sprint/audio-config.js:1-11 -->
 
+**File: `audio-config.js`** (step 6.1, keep symbolic sound names stable: the beginning of the file)
 ```js
 // Put your replacement MP3/WAV/OGG files in assets/audio and change these paths.
 export const AUDIO = {
@@ -1499,6 +1542,7 @@ Read every project field that tells Nord which host, display and services to use
 
 <!-- taught-source: coastline-sprint/nord.project.json:1-22 -->
 
+**File: `nord.project.json`** (step 8.1, identify the project and choose its presentation: the beginning of the file)
 ```json
 {
   "format": 1,
@@ -1534,6 +1578,7 @@ Read every project field that tells Nord which host, display and services to use
 
 <!-- taught-source: coastline-sprint/nord.project.json:23-64 -->
 
+**File: `nord.project.json`** (step 8.2, distinguish scene actions from HTML event handling: the next part of this file; it goes **below** the code of the previous step)
 ```json
   "input": {
     "actions": {
@@ -1594,6 +1639,7 @@ Read the supplied sprite sidecar used by Nord’s asset tools.
 
 <!-- taught-source: coastline-sprint/assets/sprites/racing-cars.png.meta.json:1-12 -->
 
+**File: `assets/sprites/racing-cars.png.meta.json`** (step 9.1, describe cell geometry and asset identity: the beginning of the file)
 ```json
 {
   "type": "spritesheet",
@@ -1624,6 +1670,7 @@ Read the supplied sprite sidecar used by Nord’s asset tools.
 
 <!-- taught-source: coastline-sprint/assets/sprites/roadside.png.meta.json:1-12 -->
 
+**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the beginning of the file)
 ```json
 {
   "type": "spritesheet",
@@ -1654,6 +1701,7 @@ Every JavaScript file, generated HTML, project metadata and sprite metadata is l
 <details>
 <summary>Complete app.js</summary>
 
+**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
 ```js
 import { COURSE, driver, traffic, updateDriver, padInput } from './track.js';
 import { drawView } from './render.js';
@@ -1848,6 +1896,7 @@ export async function mount(root) {
 <details>
 <summary>Complete assets/sprites/racing-cars.png.meta.json</summary>
 
+**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "type": "spritesheet",
@@ -1868,6 +1917,7 @@ export async function mount(root) {
 <details>
 <summary>Complete assets/sprites/roadside.png.meta.json</summary>
 
+**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "type": "spritesheet",
@@ -1888,6 +1938,7 @@ export async function mount(root) {
 <details>
 <summary>Complete audio-config.js</summary>
 
+**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Put your replacement MP3/WAV/OGG files in assets/audio and change these paths.
 export const AUDIO = {
@@ -1907,6 +1958,7 @@ export const AUDIO = {
 <details>
 <summary>Complete audio.js</summary>
 
+**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Local MP3/WAV/OGG files, decoded on first user activation. No external service.
 export class RetroAudio {
@@ -2023,6 +2075,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete nord.project.json</summary>
 
+**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "format": 1,
@@ -2095,6 +2148,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete render.js</summary>
 
+**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Extended from Nord's own Amiga Showcase road/sprite presentation.
 import { curve, hill, COURSE } from './track.js';
@@ -2228,6 +2282,7 @@ export function drawView(g, p, cars, others, images, w, h) {
 <details>
 <summary>Complete track.js</summary>
 
+**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export const COURSE = {
   length: 180000,
@@ -2340,6 +2395,7 @@ export function padInput(pad) {
 <details>
 <summary>Complete ui/menu.ui.json</summary>
 
+**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "version": 1,

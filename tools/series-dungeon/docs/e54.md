@@ -26,15 +26,38 @@ Sprites on **layer 1 and above**, and the HUD, are drawn after the darkness and 
 
 ## 2 Add the lights
 
-1. Copy the three scripts into `scripts/`.
-2. Create an empty `Light2D` entity with `light2d.js`: **ambient** `#0a0c12` (the colour of no light), `scale` 7.5 (the lightmap is 1/7.5 of the screen: blurry and fast), `shadows` on.
-3. Make a child `Lantern` of the hero (drag it onto `Hero`) and attach `light2d-source.js`: `color` `#ffb86b`, `radius` 190, `intensity` 0.9, `falloff` 1.4, `softness` 5, `flicker` 0.08.
+1. **Copy the scripts.** In your file manager copy `light2d.js`, `light2d-source.js` and `light2d-occluder.js` into the project's `scripts/` folder (or insert them from the @ui[Library] tab, category *fx*).
+2. **The darkness.** @ui[Hierarchy ▸ + Create ▸ Empty], rename it `Light2D`. @ui[Inspector ▸ + Add script ▸ scripts/light2d.js]. Fill in its fields:
 
-A child moves with its parent: nothing to write. Play: the world is black except for a warm circle.
+   | Field | Value | Meaning |
+   |---|---|---|
+   | `ambient` | `#0a0c12` | the colour of "no light" |
+   | `scale` | `7.5` | the lightmap is 1/7.5 of the screen: blurry and fast |
+   | `shadows` | on | walls block light |
+   | `softShadows` | `40` | softness of shadow edges |
+3. **The lantern.** In the Hierarchy drag a new empty object onto `Hero` so it becomes its child, rename it `Lantern`, @ui[Inspector ▸ + Add script ▸ scripts/light2d-source.js]:
+
+   | Field | Value |
+   |---|---|
+   | `color` | `#ffb86b` |
+   | `radius` | `190` |
+   | `intensity` | `0.9` |
+   | `falloff` | `1.4` |
+   | `softness` | `5` |
+   | `flicker` | `0.08` |
+4. Save the scene.
+
+**In the file** `scenes/main.scene.json`, the `Lantern` is a child of `Hero`:
+```json
+"children": [ { "name": "Lantern", "scripts": [ { "path": "scripts/light2d-source.js",
+  "attributes": { "color": "#ffb86b", "radius": 190, "intensity": 0.9, "falloff": 1.4, "softness": 5, "flicker": 0.08 } } ] } ]
+```
+
+A child moves with its parent: nothing to write. Press @ui[Play]: the world is black except for a warm circle.
 
 ## 3 Walls that cast shadows
 
-Add `light2d-occluder.js` (attribute `static: true`) to the **wall prefab**. Every wall in the level now blocks light. Nothing in `level.js` changes, which is the point of prefabs: one edit, every wall.
+Open the **wall prefab** (@ui[Assets ▸ prefabs ▸ right-click `wall` ▸ Open prefab]) and @ui[Inspector ▸ + Add script ▸ scripts/light2d-occluder.js]; tick `static`. Every wall in the level now blocks light. Nothing in `level.js` changes, which is the point of prefabs: one edit, every wall.
 
 Play: stand in a room, then walk to a corridor mouth. The lantern lights the room and the wall casts a shadow: you cannot see what is behind it. Enemies in the dark are invisible until they step into the light; the see-through chase of part 5 now feels like a horror game.
 
@@ -44,6 +67,7 @@ Play: stand in a room, then walk to a corridor mouth. The lantern lights the roo
 
 The system exposes itself as `game.light2d`, so gameplay can ask **how bright is it here**:
 
+**Example** (not a file: use it inside `Update()` of any script, for example a future `scripts/Stealth.js`)
 ```js
 const p = this.position;
 const level = this.game.light2d.lightAt(p.x, p.y);   // 0 = dark, about 1 = fully lit, shadows included
@@ -55,6 +79,7 @@ Stealth games, vampires, plants that grow in the light all start from this numbe
 
 ## 5 Shipping
 
+**Terminal** (in the folder that contains the `dungeon` project folder):
 ```bash
 nord check dungeon
 nord build dungeon --minify -o dungeon-web            # a folder of static files: upload it anywhere

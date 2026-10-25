@@ -2,7 +2,7 @@
 """Generates the six project snapshots of the "Nord Dungeon" tutorial series into examples/series-dungeon/part1..6.
 Scripts live in tools/series-dungeon/partN/*.js (what the tutorial prints); this tool only writes project.json, scenes and assets.
 Re-run after editing a script:  python3 tools/make_series_dungeon.py"""
-import json, os, shutil, pathlib
+import re, json, os, shutil, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / 'tools/series-dungeon'
 OUT = ROOT / 'examples/series-dungeon'
@@ -22,6 +22,20 @@ def project(name, part, w=640, h=360):
             "physics": {"engine": "arcade", "gravity": [0, 0, 0]},
             "input": {"actions": {"left": ["KeyA", "ArrowLeft"], "right": ["KeyD", "ArrowRight"], "up": ["KeyW", "ArrowUp"],
                                   "down": ["KeyS", "ArrowDown"], "interact": ["KeyE", "Enter"]}}}
+
+def code_block(base, spec):
+    """@@code path | note@@ -> a labelled fence: **File: `scripts/<file>`** (note) + the file content."""
+    path, _, note = [x.strip() for x in spec.partition('|')]
+    name = 'scripts/' + pathlib.Path(path).name
+    body = (base / path).read_text().rstrip()
+    out = f'**File: `{name}`** ({note or "new file, the whole file"})\n```js\n' + body + '\n```'
+    m = re.search(r'attach it to (.+)$', note)
+    if m and 'nothing' not in m.group(1):
+        target = m.group(1)
+        make = ' If the object does not exist yet, create it first with @ui[Hierarchy ▸ + Create ▸ Empty] and rename it.' if re.search(r'`(Game|Hud|Level|Run|GameManager|Title)`', target) else ''
+        prefab = ' Prefabs: first @ui[Assets ▸ right-click the prefab ▸ Open prefab].' if 'prefab' in target else ''
+        out += f'\n\n**In the editor:** select {target}, then @ui[Inspector ▸ + Add script ▸ {name}].{make}{prefab} The scene or prefab file then lists the script under `"scripts"`.\n'
+    return out
 
 def write_part(n, name, entities, prefabs=None):
     d = OUT / f'part{n}'
@@ -105,7 +119,7 @@ if __name__ == '__main__':
     for t, stem in names.items():
         if not (SRC / f'docs/e{t}.md').exists(): continue
         text = (SRC / f'docs/e{t}.md').read_text()
-        text = re.sub(r'@@code (\S+)@@', lambda m: '```js\n' + (SRC / m.group(1)).read_text().rstrip() + '\n```', text)
+        text = re.sub(r'@@code ([^@]+)@@', lambda m: code_block(SRC, m.group(1)), text)
         (ROOT / f'docs/manual-src/{stem}.md').write_text(text)
     (ROOT / 'docs/tutorial-downloads').mkdir(exist_ok=True)
     for n in range(1, 7):

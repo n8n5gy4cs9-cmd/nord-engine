@@ -26,6 +26,8 @@ export default class NetPlayer extends MonoBehaviour {
 ```
 
 ## 2. A lobby: host or join
+
+**File: `scripts/Lobby.js`** (new file, the whole file; attach it to an empty `Lobby` object)
 ```js
 import { MonoBehaviour } from 'nord';
 
@@ -55,6 +57,8 @@ export default class Lobby extends MonoBehaviour {
 @ui[Project ▸ Play multiplayer (browser windows)] opens 2–3 windows (the first hosts, the others join) and can add **100 ms lag and 2 % packet loss**. Or run `nord serve` and open `http://localhost:4173/?net=host:room1` and `?net=join:room1` in two windows.
 
 ## Messages and RPC
+
+**File: your script, for example `scripts/Player.js`** (inside `Start()`, after `this.game.net` is connected)
 ```js
 const net = this.game.net;
 net.send('chat', { text: 'hello' });                                   // to everybody else

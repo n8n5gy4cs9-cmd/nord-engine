@@ -27,6 +27,7 @@ A script can be on many objects; each gets its own copy and its own field values
 ## MonoBehaviour: the Unity script
 @ui[Assets ▸ Create ▸ MonoBehaviour script] gives you this:
 
+**File: `scripts/Player.js`** (this is what @ui[Assets ▸ Create ▸ MonoBehaviour script] creates)
 ```js
 import { MonoBehaviour, SerializeField, Time, WaitForSeconds, UnityInput as Input } from 'nord';
 
@@ -113,6 +114,7 @@ Rotations are Euler degrees (`eulerAngles`), there is no `Quaternion`. Vectors h
 ## Singleton: one object, reachable everywhere
 @ui[Assets ▸ Create ▸ Singleton script]:
 
+**File: `scripts/Score.js`** (this is what @ui[Assets ▸ Create ▸ Singleton script] creates)
 ```js
 import { Singleton } from 'nord';
 
@@ -144,6 +146,8 @@ export default class Score extends Singleton {
 | @api[SaveHighScore(key)] | stores the best score (default key `highscore`) and returns it |
 
 Fields in the Inspector: `startLives` (3) and `startState`. Listen to its events from anywhere:
+
+**File: your script, for example `scripts/Hud.js`** (inside `Start()`)
 ```js
 this.game.events.on('score', ({ score }) => this.label.set(`Score ${score}`));
 this.game.events.on('gameover', () => GameManager.instance.LoadScene('scenes/menu.scene.json'));

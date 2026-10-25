@@ -25,6 +25,8 @@ Put `inventory.js` and `ui-inventory.js` on the Player, add an `inventory` actio
   "sword":  { "id": "sword",  "name": "Iron sword", "slot": "weapon", "damage": 3 } }
 ```
 A pick-up that gives an item:
+
+**File: `scripts/Chest.js`** (new file, the whole file; it goes on the pick-up prefab)
 ```js
 import { MonoBehaviour, ScriptableObject } from 'nord';
 import Inventory from './inventory.js';          // the library script (copied into scripts/)
@@ -40,6 +42,8 @@ export default class ItemPickup extends MonoBehaviour {
 }
 ```
 Use / count / equip:
+
+**File: your script, for example `scripts/Shop.js`** (inside a method, after `Start()` has found the player)
 ```js
 const inv = player.getScript(Inventory);
 inv.has('key');               // true when at least 1 key (has(id, n = 1))
@@ -52,6 +56,8 @@ this.entity.on('equip', (item) => {});                                          
 `items` is an array of slots (`null` or `{ id, name, n, … }`).
 
 ## Your own tiny inventory (Singleton)
+
+**File: `scripts/Inventory.js`** (new file, the whole file; put the script on the player or on an empty `Inventory` object)
 ```js
 import { Singleton } from 'nord';
 export default class Bag extends Singleton {
@@ -65,6 +71,8 @@ export default class Bag extends Singleton {
 ```
 
 ## A hotbar HUD from code
+
+**File: `scripts/HotbarHud.js`** (inside `Start()` of a HUD script; create the labels before this call)
 ```js
 this.game.events.on('bag', (items) => {
   this.ui.clear('bag');
@@ -75,17 +83,23 @@ this.game.events.on('bag', (items) => {
 ```
 
 ## Quests
+
+**In the Inspector** of the object that has `quests.js`, the `quests` field (an array of events to count). As text it is stored like this:
 ```js
 // the `quests` attribute of quests.js (Inspector, an array): events to count
 [{ "id": "coins", "title": "Collect 5 coins", "goal": { "event": "coin", "count": 5 } }]
 ```
 Any script advances it by emitting that global event (`this.game.events.emit('coin')`). React when it completes:
+
+**File: `scripts/Gate.js`** (inside `Start()`, subscribing once; keep the returned function and call it in `OnDestroy()`)
 ```js
 this.game.events.on('quest:done', ({ id }) => { if (id === 'coins') this.scene.find('Gate').enabled = false; });
 ```
 Quest progress is saved in the current save slot.
 
 ## Equipment changes stats
+
+**File: your script, for example `scripts/Player.js`** (inside the method that computes damage, after `inv` is the player's `Inventory`)
 ```js
 const weapon = inv.equipped.weapon;                       // { id: 'sword', damage: 3, ... } or undefined
 const damage = 1 + (weapon?.damage ?? 0);

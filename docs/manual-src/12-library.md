@@ -35,6 +35,8 @@ The [Platformer example](templates-examples.html#examples) is built almost entir
 
 ## Writing your own entry
 A library script starts with a header comment that the index builder reads:
+
+**File: `scripts/spinner.js`** (new file; the first line of the file is the header comment, the class follows)
 ```js
 // @nord {"id":"mygame.spinner","title":"Spinner","category":"fx","tier":["2d","3d"],"tags":["rotate"],"description":"Rotates its entity."}
 ```

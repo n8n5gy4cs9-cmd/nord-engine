@@ -16,6 +16,8 @@ public class Enemy : Character {
     public override void Hit(int n) { base.Hit(n); hp -= n; }
 }
 ```
+
+**Example** (C# on the left in the text above, JavaScript here; not a file, just the shape of the language):
 ```js
 class Enemy extends Character {
   hp = 10;                                   // a field (public by default)
@@ -35,6 +37,8 @@ There are no interfaces. Use **duck typing**: if it has the method, call it.
 interface IDamageable { void TakeDamage(int n); }
 if (other.TryGetComponent<IDamageable>(out var d)) d.TakeDamage(5);
 ```
+
+**Example** (not a file, JavaScript patterns that replace C# interfaces):
 ```js
 const target = other.getScript(Health);          // a concrete class, or:
 other.callScripts('takeDamage', 5);              // calls it on every script that has that method (SendMessage style)
@@ -47,6 +51,8 @@ Abstract base: a base class whose methods `throw new Error('override me')`.
 public int Hp { get; private set; }
 public bool Alive => Hp > 0;
 ```
+
+**Example** (not a file, inside a class body):
 ```js
 get alive() { return this.hp > 0; }              // getter (no parentheses when you read it: this.alive)
 set hp(v) { this._hp = Math.max(0, v); }         // setter
@@ -56,6 +62,8 @@ set hp(v) { this._hp = Math.max(0, v); }         // setter
 ```cs
 enum State { Idle, Run, Jump }   var s = State.Run;
 ```
+
+**Example** (not a file, at the top of any script):
 ```js
 const State = Object.freeze({ Idle: 'idle', Run: 'run', Jump: 'jump' });   // string "enum": easy to log
 let s = State.Run;  if (s === State.Run) { /* … */ }
@@ -66,6 +74,8 @@ Inspector dropdown: `{ type: 'enum', options: ['idle', 'run', 'jump'], default: 
 ```cs
 int a = 5; float f = 1.5f; string s = "x"; bool b = true; var list = new List<int>();
 ```
+
+**Example** (not a file, inside any method):
 ```js
 let a = 5, f = 1.5, s = 'x', b = true;     // let = changeable, const = fixed reference (the object's insides can still change)
 const list = [];
@@ -99,6 +109,8 @@ There is one number type. Integer division: `Math.trunc(7 / 2)` → 3. `null` an
 ```cs
 public event Action<int> OnHit;   OnHit += Handler;   OnHit?.Invoke(5);   Action a = () => Debug.Log("x");
 ```
+
+**Example** (not a file, inside a method of a script):
 ```js
 this.entity.emit('hit', 5);   const off = this.entity.on('hit', (n) => this.log(n));   off();   const a = () => this.log('x');
 ```
@@ -114,6 +126,8 @@ There are none: one function works with any value. `GetComponent<Health>()` beco
 ```cs
 async Task Load() { var t = await Download(); }
 ```
+
+**Example** (not a file, a method of a script class):
 ```js
 async load() { const data = await this.game.loadJSON('data/items.json'); }
 ```

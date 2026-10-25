@@ -31,6 +31,7 @@ Browsers keep some shortcuts (`Cmd/Ctrl+P` print, `+K` search, `+1…4` tabs, `+
 ## On your own server
 `nord-editor-server` serves the web editor and keeps projects in plain folders: `<workspace>/<user>/<project>`.
 
+**Terminal** (in the folder that contains your project folder):
 ```bash
 cargo build --release -p nord-editor-server -p nord-cli
 tools/build-web-editor.sh
@@ -40,6 +41,8 @@ It listens on `127.0.0.1:8787` and prints a random **login token**. Open the add
 
 ### Several people and passwords
 Use a users file instead of the token: one line per person, `name:hash`.
+
+**Terminal** (on the server):
 ```bash
 printf '%s' 'a long password' | nord-editor-server hash-password      # prints the hash
 nord-editor-server --users ./users ...

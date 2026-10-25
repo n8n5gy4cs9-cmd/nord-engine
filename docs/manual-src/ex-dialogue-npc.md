@@ -54,6 +54,8 @@ Add the library script **Dialogue** (`dialogue.js`) to any object (a "Dialogue" 
 
 ## Reacting to the conversation
 The dialogue emits global events you can listen to anywhere:
+
+**File: your script, for example `scripts/Quest.js`** (inside `Start()`; keep the returned functions and call them in `OnDestroy()`)
 ```js
 this.game.events.on('dialogue:choice', (choice) => { if (choice.flag) GameManager.instance.Set(choice.flag, true); });   // remember answers
 this.game.events.on('dialogue:end', () => this.OpenGateIfAllowed());
@@ -61,6 +63,8 @@ this.game.events.on('dialogue:end', () => this.OpenGateIfAllowed());
 OpenGateIfAllowed() { if (GameManager.instance.Get('guardOk', false)) this.scene.find('Gate').enabled = false; }
 ```
 Freeze the player while talking:
+
+**File: your script, for example `scripts/Player.js`** (inside `Start()`)
 ```js
 this.game.events.on('dialogue:start', () => GameManager.instance.SetState('talking'));
 this.game.events.on('dialogue:end',   () => GameManager.instance.SetState('playing'));
@@ -68,6 +72,8 @@ this.game.events.on('dialogue:end',   () => GameManager.instance.SetState('playi
 ```
 
 ## Your own simple version (no library)
+
+**File: `scripts/Npc.js`** (add this method to the NPC script; `lines` is an array of strings)
 ```js
 async Talk(lines) {
   const box = this.ui.label('', { screen: 'say', anchor: 'bl', x: 40, y: 30, size: 22 });

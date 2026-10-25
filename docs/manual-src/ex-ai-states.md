@@ -18,6 +18,8 @@ State state = State.Patrol;
 void Update() { switch (state) { case State.Patrol: Patrol(); break; /* … */ } }
 ```
 ### Nord
+
+**File: `scripts/Enemy.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour, SerializeField } from 'nord';
 import Health from './health.js';
@@ -67,6 +69,8 @@ Other scripts can listen: `enemy.on('state', ({ state }) => this.exclamationMark
 Each state is one small function, and the "decide" part is the only place that changes states. Add states (`flee`, `stunned`) by adding a constant, a branch in the decision, and a case in the `switch`.
 
 ## Patrol along waypoints
+
+**File: `scripts/Patrol.js`** (`Start()` collects the points; add the movement to `FixedUpdate()`)
 ```js
 Start() { this.points = this.scene.findByTag('waypoint').map((e) => [...e.pos]); this.i = 0; }
 FixedUpdate() {
@@ -78,6 +82,8 @@ FixedUpdate() {
 Mark waypoints with a `waypoint` tag (empty objects with a marker sprite).
 
 ## Line of sight (3D) and vision cones
+
+**File: your script, for example `scripts/Guard3D.js`** (inside a method, called every frame while checking for the player)
 ```js
 const hit = this.physics.raycast(this.entity.worldPos, this.player.worldPos, { ignore: this.entity });
 const canSee = hit && hit.entity === this.player;

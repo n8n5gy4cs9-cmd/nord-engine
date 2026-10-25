@@ -22,6 +22,8 @@ Folders inside `scripts/` are free; the Inspector lists scripts by path. Import 
 One script, one job (movement, health, weapon, animation). They communicate with **events** instead of references ([Events](ex-events.html)): the weapon emits `fired`, the animator script plays a clip, the audio script plays a sound, the HUD updates ammo. Add a feature = add a listener; nothing else changes.
 
 ## "Scriptable event channels" (Unity SO events) = the global bus
+
+**File: `scripts/constants.js`** (new file; other scripts import the names, listeners and senders in other files)
 ```js
 // constants.js
 export const EVT = Object.freeze({ SCORE: 'score', PLAYER_DIED: 'player-died', WAVE: 'wave' });
@@ -36,12 +38,16 @@ Constants avoid typos in event names.
 
 ## Dependency injection, the Nord way
 Attributes of type `entity` give a script the *name* of another object to use, set in the Inspector instead of hard-coded:
+
+**File: your script, for example `scripts/Spawner.js`** (the `static attributes` line goes inside the class)
 ```js
 static attributes = { target: { type: 'entity' }, prefab: { type: 'asset', assetType: 'prefab' } };
 start() { this.t = this.scene.find(this.attrs.target); }          // [SerializeField] Transform target
 ```
 
 ## State pattern (classes instead of a switch)
+
+**File: `scripts/states.js`** (new file; the classes are used by the script that owns the state)
 ```js
 class Idle { enter(o) {} update(o, dt) { if (o.wantsRun()) return new Run(); } exit(o) {} }
 class Run  { enter(o) { o.play('run'); } update(o, dt) { o.move(dt); if (!o.wantsRun()) return new Idle(); } }
@@ -57,6 +63,8 @@ export default class Hero extends MonoBehaviour {
 For animation-driven logic use the Animator controller; for enemies see [AI](ex-ai-states.html).
 
 ## Command pattern with undo
+
+**File: `scripts/commands.js`** (new file; a command knows how to do and undo itself)
 ```js
 class MoveCmd { constructor(unit, to) { this.unit = unit; this.to = to; this.from = [...unit.pos]; } do() { this.unit.pos = this.to; } undo() { this.unit.pos = this.from; } }
 const history = [];

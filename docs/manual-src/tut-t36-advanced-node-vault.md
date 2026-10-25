@@ -17,6 +17,7 @@ Allow two hours. You need Node 22 or later and Nord. [Download the full source p
 
 From the extracted project folder:
 
+**Terminal** (in the extracted project folder):
 ```sh
 node --version
 node server.mjs
@@ -28,6 +29,7 @@ You can also press Play in Nord while Node stays running. Nord serves the client
 
 If you change PORT when starting Node, change the API field too:
 
+**Terminal** (in the extracted project folder; start the server on another port):
 ```sh
 PORT=4382 node server.mjs
 ```
@@ -56,6 +58,7 @@ The client sends an input, **not a claimed score**. The server looks up the run 
 
 Open rules.mjs. Start with the run factory:
 
+**Excerpt** (from `rules.mjs`):
 ```js
 export function newRun(random = Math.random, now = Date.now()) {
   return {
@@ -70,6 +73,7 @@ A factory returns fresh state rather than sharing a global run between players. 
 
 The `step` function takes a run and one input. It returns immediately for a finished run. A wrong or expired input spends a life, resets the cursor and gives another fifteen-second input deadline. Three mistakes finish a loss. Correct input advances cursor; finishing a stage awards points and grows the stage, or wins after stage six.
 
+**Excerpt** (from `rules.mjs`):
 ```js
 if (run.done) return publicRun(run);
 if (now > run.deadline || tile !== run.sequence[run.cursor]) {
@@ -91,6 +95,7 @@ The deadline is checked **when an input arrives**. This server does not run a ba
 
 Open server.mjs. The server factory owns two collections:
 
+**Excerpt** (from `server.mjs`):
 ```js
 const runs = new Map(), board = [];
 ```
@@ -99,6 +104,7 @@ A Map associates an opaque run id with its state. `randomUUID()` makes the id; t
 
 Node's request is a readable stream. The server reads it with `for await`, limits it to 2 KB and parses JSON inside a try/catch. It rejects invalid JSON, non-object bodies, missing runs and out-of-range tile indices. These checks happen before calling the game rules.
 
+**Excerpt** (from `server.mjs`):
 ```js
 if (!Number.isInteger(body.tile) || body.tile < 0 || body.tile > 3) {
   return reply(400, { error: 'Tile must be 0–3' });
@@ -117,6 +123,7 @@ The HTML-tier entry point exports `mount(root)`. Nord's generated index.html imp
 
 The API helper uses fetch:
 
+**Excerpt** (from `app.js`):
 ```js
 const response = await fetch(new URL(route, base), {
   method: body ? 'POST' : 'GET',
@@ -138,6 +145,7 @@ The timeout prevents a dead server from leaving buttons disabled forever. Errors
 
 The client keeps busy and replaying flags. controls disables input while a request or sequence animation is in progress. Each handler also checks those flags, so rapidly clicking cannot enqueue multiple inputs before the previous response is applied.
 
+**Excerpt** (from `app.js`):
 ```js
 if (busy || replaying || !run || run.done) return;
 busy = true;
@@ -166,6 +174,7 @@ For public hosting, configure one real HTTPS origin, deploy the backend, and cha
 
 From the project parent folder:
 
+**Terminal** (in the folder that contains the project folder):
 ```sh
 nord check circuit-vault
 nord build circuit-vault --target html --out vault-web --zip
@@ -267,6 +276,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete nord.project.json</summary>
 
+**File: `nord.project.json`** (the complete file, for comparison)
 ```json
 {
   "format": 1,
@@ -339,6 +349,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete rules.mjs</summary>
 
+**File: `rules.mjs`** (the complete file, for comparison)
 ```js
 // Pure server rules. The browser never submits an arbitrary score.
 export function newRun(random = Math.random, now = Date.now()) {
@@ -370,6 +381,7 @@ export function step(run, tile, now = Date.now()) {
 <details>
 <summary>Complete server.mjs</summary>
 
+**File: `server.mjs`** (the complete file, for comparison)
 ```js
 import http from 'node:http';
 import fs from 'node:fs/promises';
@@ -446,6 +458,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 <details>
 <summary>Complete ui/vault.ui.json</summary>
 
+**File: `ui/vault.ui.json`** (the complete file, for comparison)
 ```json
 {
   "version": 1,

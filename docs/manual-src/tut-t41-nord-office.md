@@ -50,6 +50,7 @@ Change the opening description in `ui/office.ui.json` (or the UI Designer), then
 
 `MAP` is an array of equal-length strings. Each character is one tile: `#` is wall, `D` is desk, dots are floor, and letters identify work areas. The canvas uses 32 pixels per tile, but simulation positions are measured in tiles. Keeping these units separate prevents movement from changing when you resize the canvas.
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const screenX = player.x * 32;
 const screenY = player.y * 32;
@@ -65,6 +66,7 @@ Stations are data entries with a name, position, kind, broken flag and owner. Th
 
 `newOffice()` creates jobs, players, score, morale, timers and a short office log. `startShift()` resets the run, positions players and marks the first three stations broken. It preserves the connected player roster so a multiplayer rematch does not require everyone to reconnect.
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const state = newOffice();
 addPlayer(state, 'solo', 'You');
@@ -80,6 +82,7 @@ The phase is one of lobby, playing, won or lost. The UI derives its message from
 
 `beginJob()` checks the phase, distance, broken flag and owner. A player can hold only one task, and a station can belong to only one player. This avoids two interns scoring the same repair simultaneously.
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 if (!job.broken || job.owner || !nearby(player, job)) return false;
 job.owner = player.id;
@@ -105,6 +108,7 @@ Try changing `goal` from 12 to 8 for a shorter test shift. Keep the 150-second d
 
 Ada chooses an unclaimed broken station, finds a path and walks there at the same movement speed as humans. The pathfinder is a breadth-first search over walkable tile centres. It records the preceding tile and reconstructs a route when it reaches the target.
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const route = pathTo(ai, targetJob);
 const waypoint = route[0];
@@ -119,6 +123,7 @@ Toggle AI off while a task is claimed and verify the station is released. Add an
 
 Open a terminal inside the extracted project and run:
 
+**Terminal** (in the project folder, or the folder named in the text above):
 ```sh
 node server.mjs
 ```
@@ -129,6 +134,7 @@ The default port is 4383. Override it with `PORT=4483 node server.mjs` and enter
 
 To invite trusted LAN friends:
 
+**Terminal** (in the project folder, or the folder named in the text above):
 ```sh
 HOST=0.0.0.0 node server.mjs
 ```
@@ -141,6 +147,7 @@ Share the host's LAN address and port, and have everyone use that address in Ser
 
 The browser sends input axes about ten times per second:
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 await fetch(server + '/api/input', {
   method: 'POST', headers: { 'content-type': 'application/json' },
@@ -199,6 +206,7 @@ Build all office rules: map, players, movement, tasks, pranks, pathfinding and s
 
 <!-- taught-source: nord-office/rules.js:1-43 -->
 
+**File: `rules.js`** (step 1.1, use readable map and station data: the beginning of the file)
 ```js
 // Shared simulation: Node advances online rooms; the browser advances solo practice.
 export const MAP = [
@@ -255,6 +263,7 @@ export const PUZZLES = [
 
 <!-- taught-source: nord-office/rules.js:44-81 -->
 
+**File: `rules.js`** (step 1.2, create fresh jobs and players: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function newOffice() {
   return {
@@ -306,6 +315,7 @@ export function addPlayer(s, id, name, bot = false) {
 
 <!-- taught-source: nord-office/rules.js:82-104 -->
 
+**File: `rules.js`** (step 1.3, reset a run without disconnecting the roster: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function startShift(s) {
   s.phase = 'playing';
@@ -342,6 +352,7 @@ export function startShift(s) {
 
 <!-- taught-source: nord-office/rules.js:105-118 -->
 
+**File: `rules.js`** (step 1.4, move a small body through a tile grid: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function walkable(x, y) {
   const cell = MAP[Math.floor(y)]?.[Math.floor(x)];
@@ -369,6 +380,7 @@ export const nearby = (p, j) => Math.hypot(p.x - (j.x + 0.5), p.y - (j.y + 0.5))
 
 <!-- taught-source: nord-office/rules.js:119-151 -->
 
+**File: `rules.js`** (step 1.5, claim and cancel work without duplicate owners: the next part of this file; it goes **below** the code of the previous step)
 ```js
 function note(s, text) {
   s.log.unshift(text);
@@ -415,6 +427,7 @@ export function cancelJob(s, p) {
 
 <!-- taught-source: nord-office/rules.js:152-181 -->
 
+**File: `rules.js`** (step 1.6, complete exactly one job and validate the next step: the next part of this file; it goes **below** the code of the previous step)
 ```js
 function complete(s, p) {
   const j = s.jobs[p.job.id];
@@ -458,6 +471,7 @@ export function jobStep(s, p, value) {
 
 <!-- taught-source: nord-office/rules.js:182-202 -->
 
+**File: `rules.js`** (step 1.7, resolve failure and deliberately introduce faults: the next part of this file; it goes **below** the code of the previous step)
 ```js
   if (ok) {
     complete(s, p);
@@ -492,6 +506,7 @@ export function prank(s, p) {
 
 <!-- taught-source: nord-office/rules.js:203-233 -->
 
+**File: `rules.js`** (step 1.8, search breadth-first through tile centres: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function pathTo(p, j) {
   const start = [Math.floor(p.x), Math.floor(p.y)],
@@ -536,6 +551,7 @@ export function pathTo(p, j) {
 
 <!-- taught-source: nord-office/rules.js:234-264 -->
 
+**File: `rules.js`** (step 1.9, give the AI the same movement and ownership rules: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function tickOffice(s, dt) {
   if (s.phase !== 'playing') return;
@@ -580,6 +596,7 @@ export function tickOffice(s, dt) {
 
 <!-- taught-source: nord-office/rules.js:265-289 -->
 
+**File: `rules.js`** (step 1.10, create pressure, end the shift and serialize a view: the next part of this file; it goes **below** the code of the previous step)
 ```js
   if (s.time >= s.nextFault) {
     s.nextFault += 9;
@@ -623,6 +640,7 @@ Connect every HTML control, puzzle panel, canvas layer and polling path to the s
 
 <!-- taught-source: nord-office/app.js:1-36 -->
 
+**File: `app.js`** (step 2.1, imports, load the UI file and name the handles: the beginning of the file)
 ```js
 import {
   MAP,
@@ -672,6 +690,7 @@ export async function mount(root) {
 
 <!-- taught-source: nord-office/app.js:37-75 -->
 
+**File: `app.js`** (step 2.2, use one command interface for local and online rules: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const player = () => s.players.find((p) => p.id === you);
   const say = (t) => {
@@ -724,6 +743,7 @@ export async function mount(root) {
 
 <!-- taught-source: nord-office/app.js:76-112 -->
 
+**File: `app.js`** (step 2.3, create sessions and keep shared pause honest: the next part of this file; it goes **below** the code of the previous step)
 ```js
   $('solo').onclick = () => {
     online = false;
@@ -774,6 +794,7 @@ export async function mount(root) {
 
 <!-- taught-source: nord-office/app.js:113-138 -->
 
+**File: `app.js`** (step 2.4, find an eligible station and handle keyboard intent: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function work() {
     const p = player();
@@ -813,6 +834,7 @@ export async function mount(root) {
 
 <!-- taught-source: nord-office/app.js:139-178 -->
 
+**File: `app.js`** (step 2.5, rebuild only when the task changes: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function drawTask() {
     const p = player(),
@@ -866,6 +888,7 @@ export async function mount(root) {
 
 <!-- taught-source: nord-office/app.js:179-212 -->
 
+**File: `app.js`** (step 2.6, paint tiles and station status: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function draw() {
     ctx.fillStyle = '#152238';
@@ -913,6 +936,7 @@ export async function mount(root) {
 
 <!-- taught-source: nord-office/app.js:213-240 -->
 
+**File: `app.js`** (step 2.7, paint people and derive the HUD: the next part of this file; it goes **below** the code of the previous step)
 ```js
     for (const p of s.players) {
       const x = p.x * 32,
@@ -954,6 +978,7 @@ export async function mount(root) {
 
 <!-- taught-source: nord-office/app.js:241-261 -->
 
+**File: `app.js`** (step 2.8, update text only when needed and animate coffee from time: the next part of this file; it goes **below** the code of the previous step)
 ```js
     const nextStatus =
       s.jobs
@@ -988,6 +1013,7 @@ export async function mount(root) {
 
 <!-- taught-source: nord-office/app.js:262-315 -->
 
+**File: `app.js`** (step 2.9, choose local simulation or online snapshots, then dispose: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function frame(now) {
     if (!alive) return;
@@ -1060,6 +1086,7 @@ Describe the office page as data: title, four controls, map canvas, task panel, 
 
 <!-- taught-source: nord-office/ui/office.ui.json:1-22 -->
 
+**File: `ui/office.ui.json`** (step 3.1, page settings, header and controls: the beginning of the file)
 ```json
 {
   "version": 1,
@@ -1095,6 +1122,7 @@ Describe the office page as data: title, four controls, map canvas, task panel, 
 
 <!-- taught-source: nord-office/ui/office.ui.json:23-30 -->
 
+**File: `ui/office.ui.json`** (step 3.2, map canvas, HUD and task panel: the next part of this file; it goes **below** the code of the previous step)
 ```json
     { "class": "layout", "type": "box", "tag": "section", "children": [
       { "type": "box", "children": [
@@ -1116,6 +1144,7 @@ Describe the office page as data: title, four controls, map canvas, task panel, 
 
 <!-- taught-source: nord-office/ui/office.ui.json:31-54 -->
 
+**File: `ui/office.ui.json`** (step 3.3, online form, tickets and log: the next part of this file; it goes **below** the code of the previous step)
 ```json
       { "type": "box", "tag": "aside", "children": [
         { "type": "label", "tag": "h2", "text": "Invite interns" },
@@ -1153,6 +1182,7 @@ Describe the office page as data: title, four controls, map canvas, task panel, 
 
 <!-- taught-source: nord-office/ui/office.ui.json:55-59 -->
 
+**File: `ui/office.ui.json`** (step 3.4, footer: the next part of this file; it goes **below** the code of the previous step)
 ```json
     { "type": "box", "tag": "footer", "children": [
       { "type": "label", "tag": "span", "text": "Crowelian 2026 + Sonnet · Original code and canvas graphics" }
@@ -1176,6 +1206,7 @@ Implement the complete room API, host controls and stale-input safety.
 
 <!-- taught-source: nord-office/server.mjs:1-41 -->
 
+**File: `server.mjs`** (step 4.1, create a room and add its host: the beginning of the file)
 ```js
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
@@ -1230,6 +1261,7 @@ export function createOfficeServer({
 
 <!-- taught-source: nord-office/server.mjs:42-56 -->
 
+**File: `server.mjs`** (step 4.2, resolve identity and accept only finite axes: the next part of this file; it goes **below** the code of the previous step)
 ```js
     const id = method === 'GET' ? url.searchParams.get('id') : b.id,
       session = sessions.get(id);
@@ -1258,6 +1290,7 @@ export function createOfficeServer({
 
 <!-- taught-source: nord-office/server.mjs:57-80 -->
 
+**File: `server.mjs`** (step 4.3, authorize shared controls and route task intentions: the next part of this file; it goes **below** the code of the previous step)
 ```js
     if (url.pathname === '/api/start') {
       if (s.host !== id) return failure(403, 'Only the room host starts shifts');
@@ -1295,6 +1328,7 @@ export function createOfficeServer({
 
 <!-- taught-source: nord-office/server.mjs:81-118 -->
 
+**File: `server.mjs`** (step 4.4, stop abandoned movement and release abandoned work: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const tick = (dt) => {
     const now = clock();
@@ -1351,6 +1385,7 @@ Read the entire package-free HTTP adapter shared by the game servers.
 
 <!-- taught-source: nord-office/server-kit.mjs:1-39 -->
 
+**File: `server-kit.mjs`** (step 5.1, create an HTTP response boundary: the beginning of the file)
 ```js
 // Small HTTP transport shared by the teaching servers. No npm packages.
 import http from 'node:http';
@@ -1403,6 +1438,7 @@ export function serve({
 
 <!-- taught-source: nord-office/server-kit.mjs:40-68 -->
 
+**File: `server-kit.mjs`** (step 5.2, parse a bounded API message: the next part of this file; it goes **below** the code of the previous step)
 ```js
     if (req.method === 'OPTIONS') {
       res.writeHead(204);
@@ -1445,6 +1481,7 @@ export function serve({
 
 <!-- taught-source: nord-office/server-kit.mjs:69-103 -->
 
+**File: `server-kit.mjs`** (step 5.3, serve only named public files and own the tick: the next part of this file; it goes **below** the code of the previous step)
 ```js
       const name = files[url.pathname];
       if (req.method !== 'GET' || !name) return json(404, { error: 'Not found' });
@@ -1524,6 +1561,7 @@ Read every project field that tells Nord which host, display and services to use
 
 <!-- taught-source: nord-office/nord.project.json:1-22 -->
 
+**File: `nord.project.json`** (step 7.1, identify the project and choose its presentation: the beginning of the file)
 ```json
 {
   "format": 1,
@@ -1559,6 +1597,7 @@ Read every project field that tells Nord which host, display and services to use
 
 <!-- taught-source: nord-office/nord.project.json:23-64 -->
 
+**File: `nord.project.json`** (step 7.2, distinguish scene actions from HTML event handling: the next part of this file; it goes **below** the code of the previous step)
 ```json
   "input": {
     "actions": {
@@ -1775,6 +1814,7 @@ The full download contains the entire runnable game and Node server. Every autho
 <details>
 <summary>Complete app.js</summary>
 
+**File: `style.css`** (step 8.3, style task feedback and a readable coffee target: the next part of this file; it goes **below** the code of the previous step)
 ```js
 import {
   MAP,
@@ -2114,6 +2154,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete nord.project.json</summary>
 
+**File: `style.css`** (step 8.3, style task feedback and a readable coffee target: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "format": 1,
@@ -2186,6 +2227,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete rules.js</summary>
 
+**File: `style.css`** (step 8.3, style task feedback and a readable coffee target: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Shared simulation: Node advances online rooms; the browser advances solo practice.
 export const MAP = [
@@ -2483,6 +2525,7 @@ export function publicOffice(s, id) {
 <details>
 <summary>Complete server-kit.mjs</summary>
 
+**File: `style.css`** (step 8.3, style task feedback and a readable coffee target: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Small HTTP transport shared by the teaching servers. No npm packages.
 import http from 'node:http';
@@ -2594,6 +2637,7 @@ export const roomCode = (value) =>
 <details>
 <summary>Complete server.mjs</summary>
 
+**File: `style.css`** (step 8.3, style task feedback and a readable coffee target: the next part of this file; it goes **below** the code of the previous step)
 ```js
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
@@ -2840,6 +2884,7 @@ footer {
 <details>
 <summary>Complete ui/office.ui.json</summary>
 
+**File: `style.css`** (step 8.3, style task feedback and a readable coffee target: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "version": 1,

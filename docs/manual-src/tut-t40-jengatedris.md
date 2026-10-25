@@ -44,6 +44,7 @@ Start by changing `JengaTedris` in `ui/menu.ui.json` (or in the UI Designer) and
 
 The board is a 20-row array; each row contains ten colour indices. Zero means empty. Seven shapes each contain four integer offsets. The active piece stores type, grid X/Y and rotation. Its four occupied cells are derived by `cells(piece)`.
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const board = Array.from({ length: 20 }, () => Array(10).fill(0));
 ```
@@ -77,6 +78,7 @@ Gravity accumulates elapsed seconds. When the delay passes, try one downward cel
 
 After writing the four cells, keep only rows that still contain an empty cell. The number removed is the clear count. Prepend that many **new** empty rows to restore the height:
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 const kept = state.board.filter(row => row.some(value => !value));
 const cleared = H - kept.length;
@@ -115,6 +117,7 @@ The survival rules inspect stack height and active speed, not array rows. Fricti
 
 Open a terminal in the extracted project folder:
 
+**Terminal** (in the project folder, or the folder named in the text above):
 ```sh
 node server.mjs
 ```
@@ -123,6 +126,7 @@ Node 22 or newer is recommended. Open the printed address in two browser tabs. E
 
 The default port is 4382. If busy:
 
+**Terminal** (in the project folder, or the folder named in the text above):
 ```sh
 PORT=4482 node server.mjs
 ```
@@ -131,6 +135,7 @@ Set the page's Server field to that server address. In Nord Play, the game page 
 
 For friends on your trusted local network:
 
+**Terminal** (in the project folder, or the folder named in the text above):
 ```sh
 HOST=0.0.0.0 node server.mjs
 ```
@@ -141,6 +146,7 @@ Find the host computer's LAN address and have friends open that address with por
 
 The browser sends an action name rather than a score or new board:
 
+**Excerpt** (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):
 ```js
 await fetch(server + '/api/action', {
   method: 'POST',
@@ -199,6 +205,7 @@ Build every grid rule, from literal shape cells through rotation, hold, gravity 
 
 <!-- taught-source: jengatedris/rules.js:1-47 -->
 
+**File: `rules.js`** (step 1.1, define seven pieces as four local cells: the beginning of the file)
 ```js
 // Grid mode has no physics bodies. Board values are colour indices, zero means empty.
 export const W = 10,
@@ -259,6 +266,7 @@ export const SHAPES = [
 
 <!-- taught-source: jengatedris/rules.js:48-72 -->
 
+**File: `rules.js`** (step 1.2, generate reproducible bags: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export const COLORS = [
   '#122130',
@@ -297,6 +305,7 @@ function next(s) {
 
 <!-- taught-source: jengatedris/rules.js:73-88 -->
 
+**File: `rules.js`** (step 1.3, convert local cells and test a candidate: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function cells(p) {
   let pts = SHAPES[p.type].map((v) => [...v]);
@@ -326,6 +335,7 @@ function spawn(s, type = s.next, advance = true) {
 
 <!-- taught-source: jengatedris/rules.js:89-115 -->
 
+**File: `rules.js`** (step 1.4, initialize independent rows and test movement transactionally: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function newGrid(seed = 12345) {
   const s = {
@@ -366,6 +376,7 @@ export function move(s, dx, dy) {
 
 <!-- taught-source: jengatedris/rules.js:116-146 -->
 
+**File: `rules.js`** (step 1.5, try kicks and lock four cells: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function rotate(s) {
   if (s.active.type === 1) return;
@@ -410,6 +421,7 @@ function lock(s) {
 
 <!-- taught-source: jengatedris/rules.js:147-175 -->
 
+**File: `rules.js`** (step 1.6, dispatch player intentions and implement hold: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function action(s, name) {
   if (s.over) return;
@@ -452,6 +464,7 @@ export function action(s, name) {
 
 <!-- taught-source: jengatedris/rules.js:176-203 -->
 
+**File: `rules.js`** (step 1.7, separate gravity, garbage and ghost prediction: the next part of this file; it goes **below** the code of the previous step)
 ```js
 export function tickGrid(s, dt) {
   s.lastClear = 0;
@@ -498,6 +511,7 @@ Build every piece of the separate real-physics survival mode.
 
 <!-- taught-source: jengatedris/chaos.js:1-20 -->
 
+**File: `chaos.js`** (step 2.1, load local physics and make a static container: the beginning of the file)
 ```js
 // Matter is already bundled with Nord's pinned Phaser. No CDN and no extra npm install.
 import { SHAPES, COLORS } from './rules.js';
@@ -531,6 +545,7 @@ export async function createChaos() {
 
 <!-- taught-source: jengatedris/chaos.js:21-51 -->
 
+**File: `chaos.js`** (step 2.2, spawn one compound instead of four loose blocks: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const s = {
     engine,
@@ -575,6 +590,7 @@ export async function createChaos() {
 
 <!-- taught-source: jengatedris/chaos.js:52-79 -->
 
+**File: `chaos.js`** (step 2.3, apply controls, step the solver and detect settling: the next part of this file; it goes **below** the code of the previous step)
 ```js
   s.tick = (dt, keys) => {
     if (s.over) return;
@@ -616,6 +632,7 @@ export async function createChaos() {
 
 <!-- taught-source: jengatedris/chaos.js:80-97 -->
 
+**File: `chaos.js`** (step 2.4, draw actual solver vertices and release the world: the next part of this file; it goes **below** the code of the previous step)
 ```js
   s.draw = (ctx) => {
     for (const b of [...walls, ...s.blocks])
@@ -652,6 +669,7 @@ Read the entire host page and client loop for all three modes.
 
 <!-- taught-source: jengatedris/app.js:1-23 -->
 
+**File: `app.js`** (step 3.1, imports, load the UI file and name the handles: the beginning of the file)
 ```js
 import { newGrid, cells, ghost, COLORS, action, tickGrid, SHAPES } from './rules.js';
 import { createChaos } from './chaos.js';
@@ -688,6 +706,7 @@ export async function mount(root) {
 
 <!-- taught-source: jengatedris/app.js:24-48 -->
 
+**File: `app.js`** (step 3.2, load the local best and reset owned modes: the next part of this file; it goes **below** the code of the previous step)
 ```js
   let best = 0;
   try {
@@ -726,6 +745,7 @@ export async function mount(root) {
 
 <!-- taught-source: jengatedris/app.js:49-69 -->
 
+**File: `app.js`** (step 3.3, implement a request and accept a snapshot: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const message = (t) => ($('network').textContent = t);
   const base = () => $('server').value.replace(/\/$/, '');
@@ -760,6 +780,7 @@ export async function mount(root) {
 
 <!-- taught-source: jengatedris/app.js:70-96 -->
 
+**File: `app.js`** (step 3.4, preserve action order and wire local mode controls: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function send(name) {
     queue = queue
@@ -800,6 +821,7 @@ export async function mount(root) {
 
 <!-- taught-source: jengatedris/app.js:97-125 -->
 
+**File: `app.js`** (step 3.5, join, ready and leave deliberately: the next part of this file; it goes **below** the code of the previous step)
 ```js
   $('join').onclick = async () => {
     try {
@@ -842,6 +864,7 @@ export async function mount(root) {
 
 <!-- taught-source: jengatedris/app.js:126-156 -->
 
+**File: `app.js`** (step 3.6, convert keys into actions without hijacking text fields: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const map = {
     ArrowLeft: 'left',
@@ -886,6 +909,7 @@ export async function mount(root) {
 
 <!-- taught-source: jengatedris/app.js:157-177 -->
 
+**File: `app.js`** (step 3.7, paint locked cells, prediction and active cells in order: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function board(context, s, scale = 30) {
     context.fillStyle = COLORS[0];
@@ -920,6 +944,7 @@ export async function mount(root) {
 
 <!-- taught-source: jengatedris/app.js:178-221 -->
 
+**File: `app.js`** (step 3.8, derive status and previews from existing state: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function draw() {
     ctx.fillStyle = '#122130';
@@ -977,6 +1002,7 @@ export async function mount(root) {
 
 <!-- taught-source: jengatedris/app.js:222-275 -->
 
+**File: `app.js`** (step 3.9, choose one clock owner and stop cleanly: the next part of this file; it goes **below** the code of the previous step)
 ```js
   function frame(now) {
     if (!alive) return;
@@ -1049,6 +1075,7 @@ Describe the whole page as data: header, mode buttons, board canvas, side panel 
 
 <!-- taught-source: jengatedris/ui/menu.ui.json:1-22 -->
 
+**File: `ui/menu.ui.json`** (step 4.1, page settings, header and mode buttons: the beginning of the file)
 ```json
 {
   "version": 1,
@@ -1084,6 +1111,7 @@ Describe the whole page as data: header, mode buttons, board canvas, side panel 
 
 <!-- taught-source: jengatedris/ui/menu.ui.json:23-51 -->
 
+**File: `ui/menu.ui.json`** (step 4.2, board canvas and the side panel: the next part of this file; it goes **below** the code of the previous step)
 ```json
     { "class": "layout", "type": "box", "tag": "section", "children": [
       { "type": "canvas", "w": 300, "h": 600, "attrs": {"aria-label": "Game board"}, "name": "board" },
@@ -1126,6 +1154,7 @@ Describe the whole page as data: header, mode buttons, board canvas, side panel 
 
 <!-- taught-source: jengatedris/ui/menu.ui.json:52-57 -->
 
+**File: `ui/menu.ui.json`** (step 4.3, footer and the best-score label: the next part of this file; it goes **below** the code of the previous step)
 ```json
     { "type": "box", "tag": "footer", "children": [
       { "type": "label", "tag": "span", "text": "Original game · Crowelian 2026 + Sonnet · Best grid score:" },
@@ -1150,6 +1179,7 @@ Build the complete authoritative two-player room lifecycle.
 
 <!-- taught-source: jengatedris/server.mjs:1-46 -->
 
+**File: `server.mjs`** (step 5.1, separate sessions, rooms and public snapshots: the beginning of the file)
 ```js
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
@@ -1209,6 +1239,7 @@ export function createBattleServer({
 
 <!-- taught-source: jengatedris/server.mjs:47-70 -->
 
+**File: `server.mjs`** (step 5.2, create rooms without exceeding capacity: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const api = (method, url, b) => {
     if (method === 'POST' && url.pathname === '/api/join') {
@@ -1246,6 +1277,7 @@ export function createBattleServer({
 
 <!-- taught-source: jengatedris/server.mjs:71-100 -->
 
+**File: `server.mjs`** (step 5.3, validate Ready and execute bounded intentions: the next part of this file; it goes **below** the code of the previous step)
 ```js
     const p = sessions.get(method === 'GET' ? url.searchParams.get('id') : b.id);
     if (!p) return failure(404, 'Session expired; join again');
@@ -1289,6 +1321,7 @@ export function createBattleServer({
 
 <!-- taught-source: jengatedris/server.mjs:101-142 -->
 
+**File: `server.mjs`** (step 5.4, expire sessions and advance both boards on one server clock: the next part of this file; it goes **below** the code of the previous step)
 ```js
   const tick = (dt) => {
     now = clock();
@@ -1349,6 +1382,7 @@ Read the entire package-free HTTP adapter shared by the game servers.
 
 <!-- taught-source: jengatedris/server-kit.mjs:1-39 -->
 
+**File: `server-kit.mjs`** (step 6.1, create an HTTP response boundary: the beginning of the file)
 ```js
 // Small HTTP transport shared by the teaching servers. No npm packages.
 import http from 'node:http';
@@ -1401,6 +1435,7 @@ export function serve({
 
 <!-- taught-source: jengatedris/server-kit.mjs:40-68 -->
 
+**File: `server-kit.mjs`** (step 6.2, parse a bounded API message: the next part of this file; it goes **below** the code of the previous step)
 ```js
     if (req.method === 'OPTIONS') {
       res.writeHead(204);
@@ -1443,6 +1478,7 @@ export function serve({
 
 <!-- taught-source: jengatedris/server-kit.mjs:69-103 -->
 
+**File: `server-kit.mjs`** (step 6.3, serve only named public files and own the tick: the next part of this file; it goes **below** the code of the previous step)
 ```js
       const name = files[url.pathname];
       if (req.method !== 'GET' || !name) return json(404, { error: 'Not found' });
@@ -1522,6 +1558,7 @@ Read every project field that tells Nord which host, display and services to use
 
 <!-- taught-source: jengatedris/nord.project.json:1-22 -->
 
+**File: `nord.project.json`** (step 8.1, identify the project and choose its presentation: the beginning of the file)
 ```json
 {
   "format": 1,
@@ -1557,6 +1594,7 @@ Read every project field that tells Nord which host, display and services to use
 
 <!-- taught-source: jengatedris/nord.project.json:23-64 -->
 
+**File: `nord.project.json`** (step 8.2, distinguish scene actions from HTML event handling: the next part of this file; it goes **below** the code of the previous step)
 ```json
   "input": {
     "actions": {
@@ -1755,6 +1793,7 @@ The archive contains every file needed for the complete local game and Node batt
 <details>
 <summary>Complete app.js</summary>
 
+**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
 ```js
 import { newGrid, cells, ghost, COLORS, action, tickGrid, SHAPES } from './rules.js';
 import { createChaos } from './chaos.js';
@@ -2038,6 +2077,7 @@ export async function mount(root) {
 <details>
 <summary>Complete chaos.js</summary>
 
+**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Matter is already bundled with Nord's pinned Phaser. No CDN and no extra npm install.
 import { SHAPES, COLORS } from './rules.js';
@@ -2159,6 +2199,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete nord.project.json</summary>
 
+**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "format": 1,
@@ -2231,6 +2272,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete rules.js</summary>
 
+**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Grid mode has no physics bodies. Board values are colour indices, zero means empty.
 export const W = 10,
@@ -2442,6 +2484,7 @@ export function ghost(s) {
 <details>
 <summary>Complete server-kit.mjs</summary>
 
+**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
 ```js
 // Small HTTP transport shared by the teaching servers. No npm packages.
 import http from 'node:http';
@@ -2553,6 +2596,7 @@ export const roomCode = (value) =>
 <details>
 <summary>Complete server.mjs</summary>
 
+**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
 ```js
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
@@ -2805,6 +2849,7 @@ footer {
 <details>
 <summary>Complete ui/menu.ui.json</summary>
 
+**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
 ```json
 {
   "version": 1,

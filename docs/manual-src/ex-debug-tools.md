@@ -11,6 +11,8 @@ summary: Logging with tags, the Console, errors, hot reload, the profiler and th
 Debug.Log("hit"); Debug.LogWarning("low"); Debug.LogError("boom");
 ```
 ### Nord
+
+**File: your script, for example `scripts/Player.js`** (inside any method)
 ```js
 this.log('hit', damage);                  // [ScriptName] hit 5      (also this.warn, this.error)
 console.log('[Combat] hit', damage);      // any console.* works; "[Tag]" at the start becomes a filterable tag

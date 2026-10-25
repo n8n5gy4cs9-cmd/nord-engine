@@ -112,6 +112,9 @@ Like Unity's `Image.color`: the **Tint (multiplies sprite)** field multiplies ev
 
 Text fields, drop-downs and checkboxes accept images exactly like buttons do. Because you usually want *every* field to look the same, put the image in a **skin rule** instead of on each node:
 
+**In the editor:** @ui[UI Designer] tab ▸ select the text field ▸ **Image**, pick the picture and set the slice (or edit the skin rule as described above).
+
+**In the file** the skin's `input` style block:
 ```json
 "input":  { "image": { "src": "assets/ui/skin/field.png", "slice": [4,4,4,4], "scale": 3, "pixelated": true },
             "color": "$fg", "background": "none", "padding": "2px 6px",
@@ -128,6 +131,7 @@ A **skin** is one JSON file of rules that style *all* nodes. A rule named `butto
 ## Connecting buttons to code {#actions}
 A button does nothing by itself. It announces an **Action** name, and your code listens:
 
+**File: your script, for example `scripts/Menu.js`** (inside `start()` of a scene script)
 ```js
 const menu = await createUI(root).load('ui/menu.ui.json');   // in a scene script: this.ui.load(...)
 menu.on('play', () => startGame());                            // runs when a node's Action is "play"

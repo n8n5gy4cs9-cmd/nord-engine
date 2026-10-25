@@ -14,7 +14,9 @@ Instead of writing "if the key is down, add speed; if there is a wall, stop; add
 :::
 
 ## Attach one
-In the scene JSON:
+**In the editor:** select the object, @ui[Inspector ▸ + Add behavior ▸ Platform], then set **maxSpeed**, **jumpStrength** and tick **doubleJump**. The object needs a collider: @ui[Inspector ▸ + Add component ▸ collider].
+
+**In the file** the entity in the scene (the Inspector writes it):
 ```json
 { "name": "Hero", "components": [ { "type": "collider", "shape": "box", "size": [14, 28] } ],
   "behaviors": [ { "type": "Platform", "properties": { "maxSpeed": 220, "doubleJump": true } } ] }
@@ -34,19 +36,25 @@ Collisions use the entity's **collider** box (size × scale, centred on its posi
 Properties, conditions, actions and expressions of each are listed in the generated **[Event sheet reference](event-reference.html#behaviors-ref)**.
 
 ## In an event sheet
-Behavior nodes carry `"behavior": "Platform"`:
+**In the editor:** @ui[Event sheets] tab ▸ add an action, pick the object `Hero`, then the behavior **Platform** and the action **Simulate control** (parameter `jump`).
+
+**In the file** the event sheet (`events/<name>.events.json`): behavior nodes carry `"behavior": "Platform"`:
 ```json
 { "object": "Hero", "behavior": "Platform", "id": "simulate-control", "params": { "control": "jump" } }
 ```
 Read behavior values with `Hero.Platform.VectorY`; use triggers like `Platform → on-jump`, `Turret → on-shoot`, `Timer → on-timer`, `Tween → on-tween-finished`, `Pathfinding → on-arrived`.
 
-The sample game shoots bullets from its turret with just two actions:
+The sample game shoots bullets from its turret with just two actions. **In the editor:** @ui[Event sheets] tab ▸ action **System ▸ Create object** (object `Bullet`, layer 0, x `Turret.X`, y `Turret.Y`), then **Bullet ▸ Set angle of motion** (`Turret.Angle`).
+
+**In the file** the event sheet (`events/<name>.events.json`):
 ```json
 { "object": "System", "id": "create-object", "params": { "object": "Bullet", "layer": "0", "x": "Turret.X", "y": "Turret.Y" } },
 { "object": "Bullet", "behavior": "Bullet", "id": "set-angle-of-motion", "params": { "angle": "Turret.Angle" } }
 ```
 
 ## Write your own
+
+**File: `scripts/behaviors/Wobble.js`** (new file, the whole file)
 ```js
 import { Behavior, registerBehavior } from 'nord';
 class Spin extends Behavior {

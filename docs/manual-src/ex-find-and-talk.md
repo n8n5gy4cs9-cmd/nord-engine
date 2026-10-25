@@ -19,6 +19,7 @@ summary: Find, tags, GetComponent, calling methods on other scripts, parents and
 
 `scene.find()` returns `null` when nothing matches: check before using. Names are the object names in the Hierarchy; **tags** are the fast, safe way to find groups (Inspector ▸ Tag).
 
+**File: your script, for example `scripts/Hud.js`** (the `start()` method; the other objects exist by then)
 ```js
 start() {
   this.player = this.scene.find('Player');          // do it once in start(), not every frame
@@ -37,6 +38,8 @@ var health = target.GetComponent<Health>();
 health.TakeDamage(10);
 var sr = GetComponent<SpriteRenderer>(); sr.color = Color.red;
 ```
+
+**File: your script, for example `scripts/Door.js`** (inside `start()`; compare the Unity code above)
 ```js
 // Nord
 import Health from './health.js';                      // the other script's class (default export)
@@ -82,12 +85,16 @@ export default class Turret extends NordScript {
 ```
 
 ## Calling a method by name (SendMessage)
+
+**File: your script, for example `scripts/Attack.js`** (inside a method; `other` is any entity)
 ```js
 other.callScripts('takeDamage', 10);     // calls takeDamage(10) on every script of `other` that has it
 ```
 Unity's `SendMessage`. Handy, but a typed `getScript(Class)` call is easier to refactor.
 
 ## Parent and children
+
+**File: your script, for example `scripts/Tree.js`** (inside a method; read-only lookups)
 ```js
 this.entity.parent;                       // null for a root object
 this.entity.children;                     // array of child entities
@@ -97,6 +104,8 @@ for (const e of this.entity.all()) {}     // this object and all descendants
 Child positions are relative to the parent, like `localPosition`; `entity.worldPos` gives the absolute position.
 
 ## Enable / disable
+
+**File: your script, for example `scripts/Switch.js`** (inside a method)
 ```js
 other.enabled = false;        // SetActive(false): hidden, scripts stop, onDisable is called
 other.tags.includes('boss');  // tags are a plain array

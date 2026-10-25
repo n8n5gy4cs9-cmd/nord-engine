@@ -12,11 +12,15 @@ Each recipe is plain Nord API — no Phaser/Babylon calls.
 **Smooth camera** — `camera` component with `follow` and `lerp: 0.1`; add `deadzone: [60, 40]`.
 
 **Screen shake on hit**
+
+**File: your script, for example `scripts/Player.js`** (inside `Start()`)
 ```js
 this.entity.on('damage', () => this.game.camera.shake(150, 0.01));
 ```
 
 **Slow motion**
+
+**File: your script, for example `scripts/Game.js`** (a line inside any method)
 ```js
 this.game.timeScale = 0.3;
 this.after(0.5, () => (this.game.timeScale = 1));   // timers run on scaled time: 0.5 game-seconds ≈ 1.7 s real
@@ -27,6 +31,8 @@ this.after(0.5, () => (this.game.timeScale = 1));   // timers run on scaled time
 
 ## Spawning
 **Bullets with a lifetime**
+
+**File: your script, for example `scripts/Gun.js`** (inside an `async` method)
 ```js
 const b = await this.scene.spawn('prefabs/bullet.prefab.json', { pos: this.entity.worldPos });
 this.physics.setVelocity(b, this.facing * 400, 0);
@@ -35,6 +41,8 @@ this.after(2, () => b.destroy());
 **Random spawn points** — `this.rng.pick(this.scene.findByTag('spawn')).worldPos`. `rng` is seedable (`new Rng(seed)`) for replays.
 
 ## Timers & tweens
+
+**File: your script, for example `scripts/Spawner.js`** (inside `Start()`; keep `stop` to cancel it later)
 ```js
 const stop = this.every(1, () => this.spawnCoin());   // later: stop()
 this.tween(this.entity.pos, [400, 100, 0], { duration: 1.2, ease: 'backOut' });

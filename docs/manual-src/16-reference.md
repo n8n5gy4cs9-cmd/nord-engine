@@ -19,6 +19,8 @@ Everything below is generated from the source or kept next to it, so it matches 
 | Editor keys | [Shortcuts](shortcuts.html) |
 
 ## The one import
+
+**Example** (not a file; the one import line every script starts with):
 ```js
 import { NordScript, clamp, lerp, remap, vec, ease, Rng, Pool, Events } from 'nord';
 ```
