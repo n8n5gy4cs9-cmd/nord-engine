@@ -1292,9 +1292,17 @@ impl EditorState {
         }
     }
 
+    /// Forget the autosave of the open scene (the user chose to throw the unsaved edits away).
+    pub fn discard_autosave(&mut self) {
+        if let Some(a) = self.autosave_path() {
+            let _ = nord_core::vfs::remove_file(a);
+        }
+    }
+
     /// Crash-safe autosave: atomic write to `.nord-cache/autosave/`, never touches the real file.
     pub fn autosave_tick(&mut self) {
         if !self.dirty
+            || self.disk_conflict
             || self.last_autosave.elapsed()
                 < Duration::from_secs(self.settings.autosave_secs.max(5))
         {

@@ -13,6 +13,11 @@ Owner: Crowelian. Credit: **Crowelian 2026 + Sonnet**. Keep it **pragmatic, not 
 5. `docs/UPSTREAM.md` + `THIRD_PARTY.md` before copying any external code
 6. `ASSETS.md` before touching art/audio; `docs/KNOWN_ISSUES.md` for open bugs
 
+## Releases, commits and big files (every change, no exceptions)
+- **Version = SemVer in the workspace `Cargo.toml` (`[workspace.package] version`)**, shown in Settings as "Editor vX.Y.Z" and used by the CLI, exports and the MCP server (`VERSION` in `mcp/nord-mcp.mjs`: keep both equal). Before 1.0: **minor** (0.2.0 -> 0.3.0) = a new feature, tool, component, editor panel, example or docs chapter; **patch** (0.2.0 -> 0.2.1) = a bug fix, balance/polish, docs-only or test-only change; **major** only for an incompatible project/scene format (1.0.0 is the first stable release). Reset lower numbers to 0.
+- **Every change set ends the same way:** bump the version, run `cargo check` (updates `Cargo.lock`, never by hand), put the version in the one-line commit message and the top of the `docs/CHANGELOG.md` entry (`## 0.2.0 - date`), **commit**, `git tag vX.Y.Z` for a minor bump, and push to `main`. Do not leave work uncommitted at the end of a task.
+- **Big files:** never commit a single file over **100 MB** (GitHub rejects it; history never shrinks) and say so out loud before committing anything over **50 MB**. `tools/check-big-files.mjs` is the guard (`--install` makes it the pre-commit hook, `--all` lists tracked offenders). Generated bundles, videos, model/audio packs and build output belong in `.gitignore` or a release asset, not in git.
+
 ## Rules
 - **Always update tracking**: `node tools/tasks.mjs done <ID> [<ID>…]` (updates `PRD.json` + regenerates `task.md`), add a line to `docs/CHANGELOG.md`. New work not in the list → `node tools/tasks.mjs add <milestone> "<title>"`.
 - Update the relevant `docs/*.md` when behaviour/specs change; record big choices as a new ADR in `docs/DECISIONS.md`.

@@ -295,6 +295,8 @@ pub struct App {
     sent_sel: Vec<String>,
     sent_settings: String,
     quit_confirm: bool,
+    /// Close/New project with unsaved changes: ask first (Save / Don't save / Cancel), like Unity.
+    close_confirm: bool,
     /// a top menu (File, Window…) is open this frame
     menu_open: bool,
     allow_close: bool,
@@ -334,6 +336,7 @@ impl App {
             sent_sel: vec![],
             sent_settings: String::new(),
             quit_confirm: false,
+            close_confirm: false,
             menu_open: false,
             allow_close: false,
             last_window_save: Instant::now(),
@@ -692,9 +695,13 @@ impl App {
                 }
             }
             Action::NewProject | Action::CloseProject => {
-                st.close_project();
-                st.hub.show_docs = false;
-                self.web = WebPanes::default();
+                if st.project.is_some() && (st.dirty || st.code.any_dirty()) {
+                    self.close_confirm = true;
+                } else {
+                    st.close_project();
+                    st.hub.show_docs = false;
+                    self.web = WebPanes::default();
+                }
             }
             Action::OpenProject => {
                 if let Some(d) = crate::platform::pick_folder("Open Nord project folder") {
@@ -1798,6 +1805,7 @@ impl App {
             || (self.st.recover.is_some() && self.st.project.is_some())
             || self.st.code.goto.is_some()
             || self.quit_confirm
+            || self.close_confirm
             || self.st.assets_ui.confirm_delete.is_some()
             || self.st.code.confirm_close.is_some()
     }
@@ -1993,7 +2001,8 @@ impl App {
         panels::desktop::window(&mut self.st, ctx);
         if self.st.recover.is_some() && self.st.project.is_some() {
             egui::Window::new("Recover unsaved work?").collapsible(false).resizable(false).anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0]).show(ctx, |ui| {
-                ui.label("An autosave newer than the saved scene was found (the editor may have crashed).");
+                ui.label("Unsaved changes from your last session were found: the editor closed or crashed before you saved.");
+                ui.weak("Recover loads them into the open scene. Discard keeps the saved scene file as it is.");
                 ui.horizontal(|ui| {
                     if ui.button("Recover").clicked() {
                         self.st.recover_autosave();
@@ -2021,6 +2030,39 @@ impl App {
                         }
                     });
                 });
+        }
+        if self.close_confirm {
+            let mut choice = None;
+            egui::Window::new("Unsaved changes")
+                .id(egui::Id::new("close-confirm"))
+                .collapsible(false)
+                .resizable(false)
+                .anchor(egui::Align2::CENTER_CENTER, [0.0, 0.0])
+                .show(ctx, |ui| {
+                    ui.label("Save your changes before closing the project?");
+                    ui.horizontal(|ui| {
+                        if ui.button("Save").clicked() {
+                            choice = Some(true);
+                        }
+                        if ui.button("Don't save").clicked() {
+                            choice = Some(false);
+                        }
+                        if ui.button("Cancel").clicked() {
+                            self.close_confirm = false;
+                        }
+                    });
+                });
+            if let Some(save) = choice {
+                self.close_confirm = false;
+                if save {
+                    self.run(Action::SaveAll, ctx);
+                } else {
+                    self.st.discard_autosave(); // otherwise the next open asks to "recover" what you just threw away
+                }
+                self.st.close_project();
+                self.st.hub.show_docs = false;
+                self.web = WebPanes::default();
+            }
         }
         if self.quit_confirm {
             egui::Window::new("Unsaved changes")

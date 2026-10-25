@@ -2123,16 +2123,34 @@ fn outside_scene_change_reloads_quietly_or_asks_when_dirty() {
     write_external("A");
     tick(&mut st);
     assert!(!st.disk_conflict);
-    assert_eq!(st.scene.as_ref().unwrap().entities.len(), 2, "scene reloaded from disk");
+    assert_eq!(
+        st.scene.as_ref().unwrap().entities.len(),
+        2,
+        "scene reloaded from disk"
+    );
     // unsaved edits: ask first, change nothing
     st.add_entity(None);
     assert!(st.dirty);
     write_external("B");
     tick(&mut st);
     assert!(st.disk_conflict, "dirty editor + outside change = prompt");
-    assert_eq!(st.scene.as_ref().unwrap().entities.len(), 3, "my version is untouched until I choose");
+    assert_eq!(
+        st.scene.as_ref().unwrap().entities.len(),
+        3,
+        "my version is untouched until I choose"
+    );
     st.reload_scene_from_disk();
     assert!(!st.disk_conflict && !st.dirty);
-    assert_eq!(st.scene.as_ref().unwrap().entities.len(), 3, "disk had 2 + B");
-    assert!(st.scene.as_ref().unwrap().entities.iter().any(|e| e.id == "ext-B"));
+    assert_eq!(
+        st.scene.as_ref().unwrap().entities.len(),
+        3,
+        "disk had 2 + B"
+    );
+    assert!(st
+        .scene
+        .as_ref()
+        .unwrap()
+        .entities
+        .iter()
+        .any(|e| e.id == "ext-B"));
 }

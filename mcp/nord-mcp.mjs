@@ -17,7 +17,7 @@ const engineRoot = path.resolve(here, '..');
 const argv = process.argv.slice(2);
 const arg = (n) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : undefined; };
 const only = arg('--only');
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 let project = path.resolve(arg('--project') ?? process.env.NORD_PROJECT ?? process.cwd());
 const ctx = { engineRoot, projectRoot: () => project, setProject: (p) => { project = p; }, server: null, call: (n, a) => tools.get(n).handler(a, ctx) };
