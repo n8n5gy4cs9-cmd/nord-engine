@@ -1969,3 +1969,72 @@ fn hierarchy_drag_reparents_and_reorders() {
         "B dropped on A's upper edge goes before A"
     );
 }
+
+#[test]
+fn hierarchy_shift_range_select_and_multi_drag() {
+    let mut st = state_with_scene("hier-multi");
+    for n in ["A", "B", "C", "D"] {
+        st.add_entity(None);
+        let id = st.selection[0].clone();
+        st.edit("n", None, |l| {
+            if let Some(e) = nord_editor::scene_ops::find_mut(l, &id) {
+                e.name = n.into();
+            }
+        });
+    }
+    st.selection.clear();
+    let mut h = Harness::new_ui_state(|ui, st: &mut EditorState| panels::hierarchy::ui(st, ui), st);
+    loaders(&h);
+    h.run();
+    let rect = |h: &Harness<'_, EditorState>, l: &str| {
+        let r = h.get_by_label(l).bounding_box().unwrap();
+        egui::Rect::from_min_max(egui::pos2(r.x0 as f32, r.y0 as f32), egui::pos2(r.x1 as f32, r.y1 as f32))
+    };
+    let btn = egui::PointerButton::Primary;
+    let click = |h: &mut Harness<'_, EditorState>, l: &str, mods: egui::Modifiers| {
+        let p = rect(h, l).center();
+        h.input_mut().events.push(egui::Event::PointerMoved(p));
+        h.run_steps(1);
+        h.input_mut().modifiers = mods;
+        h.input_mut().events.push(egui::Event::PointerButton { pos: p, button: btn, pressed: true, modifiers: mods });
+        h.run_steps(1);
+        h.input_mut().events.push(egui::Event::PointerButton { pos: p, button: btn, pressed: false, modifiers: mods });
+        h.run_steps(2);
+        h.input_mut().modifiers = egui::Modifiers::NONE;
+    };
+    let names = |h: &Harness<'_, EditorState>| -> Vec<String> {
+        let sc = h.state().scene.as_ref().unwrap();
+        h.state().selection.iter().map(|id| nord_editor::scene_ops::find(&sc.entities, id).unwrap().name.clone()).collect()
+    };
+    click(&mut h, "A", egui::Modifiers::NONE);
+    click(&mut h, "C", egui::Modifiers::SHIFT);
+    assert_eq!(names(&h), vec!["A", "B", "C"], "Shift+click selects the whole range, not just the clicked row");
+    click(&mut h, "D", egui::Modifiers::COMMAND);
+    assert_eq!(names(&h), vec!["A", "B", "C", "D"], "Ctrl/Cmd+click adds one row");
+    click(&mut h, "B", egui::Modifiers::COMMAND);
+    assert_eq!(names(&h), vec!["A", "C", "D"], "Ctrl/Cmd+click on a selected row removes it");
+    // drag the selection (A, C, D) is not the point: select A..C and drag them onto D
+    click(&mut h, "A", egui::Modifiers::NONE);
+    click(&mut h, "C", egui::Modifiers::SHIFT);
+    let a = rect(&h, "B").center();
+    let d = rect(&h, "D");
+    let b = egui::pos2(a.x, d.top() + d.height() * 0.6);
+    let mods = egui::Modifiers::NONE;
+    h.input_mut().events.push(egui::Event::PointerMoved(a));
+    h.run_steps(1);
+    h.input_mut().events.push(egui::Event::PointerButton { pos: a, button: btn, pressed: true, modifiers: mods });
+    h.run_steps(1);
+    for i in 1..=4 {
+        h.input_mut().events.push(egui::Event::PointerMoved(a + (b - a) * (i as f32 / 4.0)));
+        h.run_steps(1);
+    }
+    h.input_mut().events.push(egui::Event::PointerButton { pos: b, button: btn, pressed: false, modifiers: mods });
+    h.run_steps(3);
+    let sc = h.state().scene.as_ref().unwrap();
+    let shape: Vec<(String, Vec<String>)> = sc
+        .entities
+        .iter()
+        .map(|e| (e.name.clone(), e.children.iter().map(|c| c.name.clone()).collect()))
+        .collect();
+    assert_eq!(shape, vec![("D".to_string(), vec!["A".to_string(), "B".to_string(), "C".to_string()])], "all selected rows move, in order");
+}

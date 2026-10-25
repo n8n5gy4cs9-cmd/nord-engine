@@ -41,6 +41,19 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
         .as_ref()
         .map(|s| s.entities.clone())
         .unwrap_or_default();
+    // rows in the order they are drawn: the base of Shift range select and of multi-drag ordering
+    let order: Vec<String> = if filter.is_empty() {
+        visible_ids(&entities, &st.collapsed)
+    } else {
+        scene_ops::flatten(&entities)
+            .into_iter()
+            .filter(|(_, e)| {
+                e.name.to_lowercase().contains(&filter)
+                    || e.tags.iter().any(|t| t.to_lowercase().contains(&filter))
+            })
+            .map(|(_, e)| e.id.clone())
+            .collect()
+    };
     let mut pending: Option<(String, Drop)> = None;
     let mut clicked: Option<(String, bool)> = None;
     let mut ctx_action: Option<(String, u8)> = None;
@@ -96,35 +109,67 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
     if let Some(p) = asset_drop {
         st.add_asset_entity(&p);
     }
-    if let Some((id, multi)) = clicked {
-        if multi {
+    if let Some((id, _)) = clicked {
+        let mods = ui.input(|i| i.modifiers);
+        if mods.shift {
+            // Shift: everything between the anchor and this row (Unity, Godot, Unreal)
+            let anchor = st
+                .hier_anchor
+                .clone()
+                .or_else(|| st.selection.first().cloned())
+                .unwrap_or_else(|| id.clone());
+            let (a, b) = (
+                order.iter().position(|x| *x == anchor),
+                order.iter().position(|x| *x == id),
+            );
+            match (a, b) {
+                (Some(a), Some(b)) => {
+                    st.selection = order[a.min(b)..=a.max(b)].to_vec();
+                }
+                _ => st.select(Some(id.clone())),
+            }
+        } else if mods.command {
+            // Ctrl/Cmd: toggle this row
             if let Some(i) = st.selection.iter().position(|x| *x == id) {
                 st.selection.remove(i);
             } else {
-                st.selection.push(id);
+                st.selection.push(id.clone());
             }
+            st.hier_anchor = Some(id.clone());
         } else {
-            st.select(Some(id));
+            st.select(Some(id.clone()));
+            st.hier_anchor = Some(id.clone());
         }
         st.send_viewport(serde_json::json!({"t":"select","ids":st.selection}));
     }
     if let Some((id, d)) = pending {
-        st.edit("Reparent", None, |l| match d {
-            Drop::Into(p) => {
-                scene_ops::reparent(l, &id, Some(&p), usize::MAX);
-            }
-            Drop::Before(sib) => {
-                if sib.is_empty() {
-                    scene_ops::reparent(l, &id, None, usize::MAX);
-                } else {
-                    let parent = scene_ops::parent_of(l, &sib);
-                    let idx = match &parent {
-                        None => l.iter().position(|e| e.id == sib),
-                        Some(p) => scene_ops::find(l, p)
-                            .and_then(|p| p.children.iter().position(|e| e.id == sib)),
+        let selection = st.selection.clone();
+        st.edit("Reparent", None, |l| {
+            // dragging a selected row moves the whole selection (top-most rows only, in hierarchy order)
+            let ids = moving_ids(l, &selection, &id, &order);
+            match d {
+                Drop::Into(p) => {
+                    for id in ids.iter().filter(|x| **x != p) {
+                        scene_ops::reparent(l, id, Some(&p), usize::MAX);
                     }
-                    .unwrap_or(0);
-                    scene_ops::reparent(l, &id, parent.as_deref(), idx);
+                }
+                Drop::Before(sib) if sib.is_empty() => {
+                    for id in &ids {
+                        scene_ops::reparent(l, id, None, usize::MAX);
+                    }
+                }
+                Drop::Before(sib) => {
+                    for id in ids.iter().filter(|x| **x != sib) {
+                        // recomputed every time: each moved row lands just before `sib`, after the one moved before it
+                        let parent = scene_ops::parent_of(l, &sib);
+                        let idx = match &parent {
+                            None => l.iter().position(|e| e.id == sib),
+                            Some(p) => scene_ops::find(l, p)
+                                .and_then(|p| p.children.iter().position(|e| e.id == sib)),
+                        }
+                        .unwrap_or(0);
+                        scene_ops::reparent(l, id, parent.as_deref(), idx);
+                    }
                 }
             }
         });
@@ -553,6 +598,9 @@ fn row(
             ui.input(|i| i.modifiers.command || i.modifiers.shift),
         ));
     }
+    if resp.drag_started() && !selected {
+        *clicked = Some((e.id.clone(), false));
+    }
     resp.dnd_set_drag_payload(e.id.clone());
     // an asset dropped on a row sets that entity's sprite / model / audio / material or attaches the script
     // NOTE: egui's `dnd_release_payload::<T>` removes the payload even when it is not a `T`, so only ask for the
@@ -732,4 +780,40 @@ fn style_menu(st: &mut EditorState, ui: &mut Ui, e: &Entity) {
             }
         });
     }
+}
+
+/// Ids of the rows that are drawn, top to bottom (children of collapsed rows are not).
+fn visible_ids(list: &[Entity], collapsed: &std::collections::HashSet<String>) -> Vec<String> {
+    let mut out = vec![];
+    for e in list {
+        out.push(e.id.clone());
+        if !collapsed.contains(&e.id) {
+            out.extend(visible_ids(&e.children, collapsed));
+        }
+    }
+    out
+}
+
+/// What a drag of `dragged` moves: the whole selection when `dragged` is part of it, else just `dragged`.
+/// Rows whose ancestor is also moving are left out (they travel with it), the rest keep the drawn order.
+fn moving_ids(
+    list: &[Entity],
+    selection: &[String],
+    dragged: &str,
+    order: &[String],
+) -> Vec<String> {
+    let mut ids: Vec<String> = if selection.iter().any(|s| s == dragged) {
+        selection.to_vec()
+    } else {
+        vec![dragged.to_string()]
+    };
+    ids.sort_by_key(|i| order.iter().position(|x| x == i).unwrap_or(usize::MAX));
+    let all = ids.clone();
+    ids.retain(|id| {
+        !all.iter().any(|other| {
+            other != id
+                && scene_ops::find(list, other).is_some_and(|o| scene_ops::is_descendant(o, id))
+        })
+    });
+    ids
 }

@@ -16,7 +16,7 @@ You are connected to the **Nord MCP server**. It works on one Nord *project fold
    }
    ```
    Attach it with `scene_add_entity {scripts:[{path:"scripts/player.js", attributes:{…}}]}`. Input actions (`jump`, `left`…) are declared in `nord.project.json` (`input`).
-5. **Art and models.** Images/audio go under `assets/` (`write_file` with `encoding: "base64"`; placeholders are fine). 3D props: use the **modeler_*** tools (below), then a `model` component with the saved `.glb`.
+5. **Art and models.** Images/audio go under `assets/` (`write_file` with `encoding: "base64"`; placeholders are fine). 3D props: use the **modeler_*** tools (below), then a `model` component with the saved `.glb`. 2D pixel art: use the **sprite_*** tools (below), then a `sprite` component with the PNG.
 6. **Check.** `check_project` after every batch. Fix every reported error before going on.
 7. **Play and look.** `serve_start` returns a URL (live reload). Tell the user to open it, or keep iterating. `build_project` makes a static export (`dist/`, `single_file`, `zip`, `host: itch`…).
 
@@ -43,3 +43,12 @@ Limits: one texture per model, flat shading, no skeleton/animation, faces must b
 
 ## Keeping this guide true
 This guide and `docs/MCP.md` ship with the engine. When engine features change, the engine's AGENTS.md rule requires updating `mcp/GUIDE.md`, the tools and `docs/MCP.md` (`node mcp/nord-mcp.mjs --docs`), and `node --test mcp/mcp.test.mjs` fails when `docs/MCP.md` is stale.
+
+## 2D sprites with the Sprite tools (`sprite_*`)
+The same PNG files the editor's Sprite tab edits, so the AI and the user can take turns on one file. Every call reads the PNG, edits it and writes it back (nothing to save). Pixels are replaced, never blended; coordinates are pixels, origin top-left.
+1. `sprite_new {path, width, height, color?}` (transparent by default; keep pixel art small: 16, 32 or 64) or `sprite_list` to find existing PNGs.
+2. Draw a whole sprite from text with `sprite_from_ascii {path, rows:["..##..", ...], palette:{"#":"#222222"}}`, or draw shapes with `sprite_draw {path, ops:[{shape:"rect", x, y, x1, y1, color}, {shape:"line"|"ellipse"|"pixel"|"fill"|"clear", ...}]}`.
+3. `sprite_transform {path, op}`: `flip_h`, `flip_v`, `rotate_cw`, `rotate_ccw`, `crop` (also grows the canvas), `scale` (integer, nearest), `stamp` (paste another PNG).
+4. **Look at it**: `sprite_preview {path}` returns an enlarged image (`grid:true` shows pixel boundaries); `sprite_describe {path}` prints the exact pixels as text for sheets up to 64x64. Check, fix, repeat.
+5. Sprite sheets and sharpness: `sprite_meta {path, frameWidth, frameHeight, filter:"nearest"}` writes `<path>.meta.json` (frame size for `animatedSprite`, `nearest` keeps pixel art crisp, `ppu` for 3D).
+6. Use it: `scene_add_entity {components:[{"type":"sprite","texture":"assets/sprites/hero.png"}]}`.

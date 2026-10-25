@@ -114,3 +114,22 @@ test('docs/MCP.md is generated from the tools and up to date', () => {
   assert.equal(after, before, 'docs/MCP.md was stale: run `node mcp/nord-mcp.mjs --docs` and commit it');
   for (const m of after.matchAll(/### `(\w+)`/g)) assert.ok(m[1]);
 });
+
+test('sprite: new, ascii, draw, transform, describe, preview, meta', async () => {
+  const c = await client();
+  assert.ok(!(await c.call('sprite_new', { path: 'assets/sprites/blob.png', width: 8, height: 8 })).isError);
+  assert.ok(!(await c.call('sprite_from_ascii', { path: 'assets/sprites/blob.png', rows: ['..####..', '.######.', '##.##.##', '########'], palette: { '#': '#33aa55', '.': '#00000000' } })).isError);
+  assert.ok(!(await c.call('sprite_draw', { path: 'assets/sprites/blob.png', ops: [{ shape: 'rect', x: 0, y: 5, x1: 7, y1: 7, color: '#224422' }, { shape: 'ellipse', x: 1, y: 1, x1: 6, y1: 6, color: '#ffffff', filled: false }, { shape: 'fill', x: 0, y: 0, color: '#112233', tolerance: 0 }, { shape: 'pixel', x: 3, y: 2, color: '#ff0000' }] })).isError);
+  const d = await c.call('sprite_describe', { path: 'assets/sprites/blob.png' });
+  assert.match(d.text, /8x8/); assert.match(d.text, /#ff0000/);
+  assert.ok(!(await c.call('sprite_transform', { path: 'assets/sprites/blob.png', op: 'scale', factor: 2 })).isError);
+  assert.match((await c.call('sprite_describe', { path: 'assets/sprites/blob.png' })).text, /16x16/);
+  assert.ok(!(await c.call('sprite_transform', { path: 'assets/sprites/blob.png', op: 'rotate_cw' })).isError);
+  const pv = await c.call('sprite_preview', { path: 'assets/sprites/blob.png', scale: 4 });
+  assert.equal(pv.content.filter((x) => x.type === 'image').length, 1);
+  assert.ok(!(await c.call('sprite_meta', { path: 'assets/sprites/blob.png', frameWidth: 8, frameHeight: 16, filter: 'nearest' })).isError);
+  assert.ok((await c.call('sprite_meta', { path: 'assets/sprites/blob.png', frameWidth: 5 })).isError, 'a frame size that does not divide the width is refused');
+  assert.ok((await c.call('sprite_new', { path: '../escape.png', width: 4, height: 4 })).isError, 'paths are jailed to the project');
+  assert.ok((await c.call('sprite_draw', { path: 'assets/sprites/blob.png', ops: [{ shape: 'blob' }] })).isError);
+  c.close();
+});

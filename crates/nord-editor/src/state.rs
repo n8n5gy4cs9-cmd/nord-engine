@@ -419,6 +419,8 @@ pub struct EditorState {
     pub designer_file: Option<String>,
     /// (entity id, text) while an entity is being renamed in the Hierarchy
     pub hierarchy_rename: Option<(String, String)>,
+    /// Hierarchy range-select anchor (the row last clicked without Shift), like Unity's.
+    pub hier_anchor: Option<String>,
     pub graph_file: Option<String>,
     pub animator_file: Option<String>,
     pub engine_root: Option<PathBuf>,
@@ -537,6 +539,7 @@ impl EditorState {
             collapsed: Default::default(),
             designer_file: None,
             hierarchy_rename: None,
+            hier_anchor: None,
             graph_file: None,
             animator_file: None,
             engine_root: crate::platform::engine_root(),
