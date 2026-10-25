@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>3.5 · Build a clock: objects, hierarchy, materials and your first script — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-clock.html" class="cur" aria-current="page">3.5 · Build a clock: objects, hierarchy, materials and your first script</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html">55 · Ember Crypt: a complete game, from art to export</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>3.5 · Build a clock: objects, hierarchy, materials and your first script</h1>
+<p><strong>Goal:</strong> a wall clock made only from <strong>primitives</strong> (one cylinder and fifteen cubes) whose three arms show the current time and glide smoothly. You practise the things every Unity project starts with: creating objects, the object <strong>hierarchy</strong>, <strong>transforms</strong> (position, rotation, scale), <strong>materials</strong>, a <strong>pivot</strong> to rotate around, and a script on a <strong>component</strong>.</p>
+<p><img src="../../assets/screenshots/ex-clock-result.png" alt="The finished clock showing 10:09:36"></p>
+<p>This is the Nord version of the first exercise of Catlike Coding&#39;s Unity <em>Basics</em> series (<em>Game Objects and Scripts</em> by Jasper Flick, catlikecoding.com). The exercise and all its numbers are the same (scales, positions, rotations, hexadecimal colours); the words, the editor steps and the code are written for Nord, so you can follow both side by side.</p>
+<p><strong>Download:</strong> <a href="../../assets/downloads/clock-source.zip">the finished project</a>, also in <code>examples/clock</code>. Open <code>nord.project.json</code> in Nord and press <span class="c-ui">Play</span>. Allow 45 minutes to build it yourself.</p>
+<p><strong>Unity names in this page:</strong> a Unity <em>GameObject</em> is a Nord <strong>entity</strong>; <em>Hierarchy</em>, <em>Inspector</em>, <em>Scene view</em>, <em>Game view</em>, <em>Project window</em> (Nord: the <span class="c-ui">Assets</span> panel) and <em>Console</em> are the same panels. If you know Unity, you already know where everything is.</p>
+<h2 id="1-create-the-project">1 Create the project<a class="anchor" href="#1-create-the-project">#</a></h2>
+<p><strong>In the editor:</strong> start Nord, choose <span class="c-ui">New project</span>, name it <code>clock</code>, pick <strong>3D</strong> and press <strong>Create</strong>. The project opens with an empty scene.</p>
+<p><strong>Terminal</strong> (in the folder where the project should be created), as an alternative to the editor:</p>
+<pre class="code" data-lang="bash"><code>nord new clock -t 3d</code></pre>
+<p>A 3D project is Babylon.js plus (optionally) Havok physics. The clock has no physics, so open the <span class="c-ui">Project</span> tab ▸ <strong>Project properties</strong> and set <strong>Physics</strong> to <code>none</code> if the list offers it (leaving the default is harmless), <strong>Game size</strong> <code>600</code> × <code>600</code> (a square picture suits a round clock) and <strong>Background</strong> <code>#31506e</code>, then press <strong>Apply project properties</strong>.</p>
+<p><strong>In the file</strong> <code>nord.project.json</code> (open it in a text editor to check what the editor wrote):</p>
+<pre class="code" data-lang="json"><code>&quot;display&quot;: { &quot;width&quot;: 600, &quot;height&quot;: 600, &quot;scale&quot;: &quot;fit&quot;, &quot;pixelArt&quot;: false, &quot;background&quot;: &quot;#31506e&quot; },
+&quot;physics&quot;: { &quot;engine&quot;: &quot;none&quot;, &quot;gravity&quot;: [0, 0, 0] }</code></pre>
+<h3 id="differences-from-a-new-unity-project-and-what-you-can-ignore">Differences from a new Unity project (and what you can ignore)<a class="anchor" href="#differences-from-a-new-unity-project-and-what-you-can-ignore">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Packages: the template ships several, the exercise removes them</td>
+<td>Nord has no package manager; nothing to remove</td>
+</tr>
+<tr>
+<td>Color space: set to <em>Linear</em></td>
+<td>Nothing to set. Colours are written as <code>#rrggbb</code> and look the same as in the Unity exercise</td>
+</tr>
+<tr>
+<td>Render pipeline choice (built-in, URP, HDR)</td>
+<td>One 3D renderer (Babylon.js). Materials are physically based, like Unity&#39;s <em>Standard</em> shader</td>
+</tr>
+<tr>
+<td>The sample scene has a <em>Main Camera</em> and a <em>Directional Light</em></td>
+<td>You create both yourself in section 4</td>
+</tr>
+<tr>
+<td>Scene view navigation: Alt + drag orbits, scroll zooms, <strong>F</strong> frames the selection</td>
+<td>Identical: Alt + left-drag orbits, wheel zooms, <strong>F</strong> frames. Details: <a href="../manual/unity-workflow.html">Unity-style workflow</a></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Axes.</strong> Nord&#39;s 3D world is the same as Unity&#39;s: <strong>X points right, Y up, Z forward</strong> (into the screen). Rotations are in degrees. We design the clock so its front is seen looking along Z.</p>
+</blockquote>
+<h2 id="2-build-the-clock">2 Build the clock<a class="anchor" href="#2-build-the-clock">#</a></h2>
+<h3 id="2-1-the-empty-object">2.1 The empty object<a class="anchor" href="#2-1-the-empty-object">#</a></h3>
+<ol>
+<li><span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span>. The new object is selected.</li>
+<li>Rename it <code>Clock</code> (select it and press <strong>F2</strong>, or edit <strong>Name</strong> at the top of the <span class="c-ui">Inspector</span>).</li>
+<li>Check its <strong>Transform</strong>: <strong>Position</strong> <code>0, 0, 0</code>, <strong>Rotation</strong> <code>0, 0, 0</code>, <strong>Scale</strong> <code>1, 1, 1</code>.</li>
+</ol>
+<p>The empty object has only a <em>transform</em>, so you see nothing in the scene, just its move gizmo. It will hold the whole clock: everything we add becomes its <strong>child</strong>, and a child follows the position, rotation and scale of its parent (the same as Unity). Move or scale <code>Clock</code> later and the clock moves or scales as one thing.</p>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, the object is stored like this (check it in a text editor):</p>
+<pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Clock&quot;, &quot;transform&quot;: { &quot;pos&quot;: [0, 0, 0], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [1, 1, 1] }, &quot;components&quot;: [], &quot;children&quot;: [] }</code></pre>
+<h3 id="2-2-the-face-a-flattened-cylinder">2.2 The face: a flattened cylinder<a class="anchor" href="#2-2-the-face-a-flattened-cylinder">#</a></h3>
+<p>Nord&#39;s quick-create menu has a cube and a sphere. A cylinder is a cube whose <strong>shape</strong> you change:</p>
+<ol>
+<li><span class="c-ui">Hierarchy ▸ + Create ▸ Cube</span>. Rename it <code>Face</code>.</li>
+<li>In the Inspector, find the <code>mesh</code> component. Set <strong>shape</strong> to <code>cylinder</code> and <strong>size</strong> to <code>1, 2, 1</code>. (That is the Unity cylinder: 1 wide, 2 high.)</li>
+<li>Set the <strong>Transform</strong>: <strong>Rotation</strong> <code>90, 0, 0</code> and <strong>Scale</strong> <code>10, 0.2, 10</code>.</li>
+<li>Drag <code>Face</code> onto <code>Clock</code> in the Hierarchy so it becomes a child (or right-click <code>Clock</code> ▸ <strong>Create child</strong> and build the object there).</li>
+</ol>
+<p>Why those numbers: the cylinder is 2 units high, so scale Y <code>0.2</code> makes it <code>0.4</code> thick, and scale X/Z <code>10</code> makes the clock 10 units wide. A cylinder stands up along Y; rotating it 90° around X lays its round side towards us, so the clock face looks along Z. The material stays <strong>white</strong> (the default).</p>
+<p><img src="../../assets/screenshots/ex-clock-parts.png" alt="The clock parts: face and twelve hour indicators"></p>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, inside the <code>children</code> of <code>Clock</code>:</p>
+<pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Face&quot;, &quot;transform&quot;: { &quot;pos&quot;: [0, 0, 0], &quot;rot&quot;: [90, 0, 0], &quot;scale&quot;: [10, 0.2, 10] },
+  &quot;components&quot;: [ { &quot;type&quot;: &quot;mesh&quot;, &quot;shape&quot;: &quot;cylinder&quot;, &quot;size&quot;: [1, 2, 1], &quot;castShadow&quot;: true },
+                  { &quot;type&quot;: &quot;material&quot;, &quot;color&quot;: &quot;#ffffff&quot; } ] }</code></pre>
+<blockquote>
+<p><strong>No collider to remove.</strong> Unity adds a physics collider to every primitive, and the exercise deletes it. Nord&#39;s <code>mesh</code> is only a picture: there is nothing to remove.</p>
+</blockquote>
+<h3 id="2-3-the-hour-indicators-cubes">2.3 The hour indicators: cubes<a class="anchor" href="#2-3-the-hour-indicators-cubes">#</a></h3>
+<ol>
+<li><span class="c-ui">Hierarchy ▸ + Create ▸ Cube</span>, rename it <code>Hour Indicator 12</code>, drag it onto <code>Clock</code>.</li>
+<li><strong>Scale</strong> <code>0.5, 1, 0.1</code> (a narrow, flat, long block). <strong>Position</strong> <code>0, 4, −0.25</code>: 4 units above the centre (towards the top of the face) and a quarter unit in front of it (−Z is towards the viewer).</li>
+<li>We need twelve. Select it and press <span class="c-ui">Hierarchy ▸ Duplicate</span> (the copy icon, or <strong>Cmd/Ctrl+D</strong>) eleven times, rename and set each as in the table. The first two are quick checks:<ul>
+<li>hour 6 is hour 12 with the <strong>Y</strong> position negated;</li>
+<li>hours 3 and 9 sit at X <code>4</code> / <code>−4</code>, Y <code>0</code>, and are turned a quarter circle (Z rotation <code>90</code>).</li>
+</ul>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Hour</th>
+<th>X</th>
+<th>Y</th>
+<th>Z</th>
+<th>Rotation Z</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>2</td>
+<td>3.464</td>
+<td>−0.25</td>
+<td>−30</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3.464</td>
+<td>2</td>
+<td>−0.25</td>
+<td>−60</td>
+</tr>
+<tr>
+<td>3</td>
+<td>4</td>
+<td>0</td>
+<td>−0.25</td>
+<td>90</td>
+</tr>
+<tr>
+<td>4</td>
+<td>3.464</td>
+<td>−2</td>
+<td>−0.25</td>
+<td>60</td>
+</tr>
+<tr>
+<td>5</td>
+<td>2</td>
+<td>−3.464</td>
+<td>−0.25</td>
+<td>30</td>
+</tr>
+<tr>
+<td>6</td>
+<td>0</td>
+<td>−4</td>
+<td>−0.25</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7</td>
+<td>−2</td>
+<td>−3.464</td>
+<td>−0.25</td>
+<td>−30</td>
+</tr>
+<tr>
+<td>8</td>
+<td>−3.464</td>
+<td>−2</td>
+<td>−0.25</td>
+<td>−60</td>
+</tr>
+<tr>
+<td>9</td>
+<td>−4</td>
+<td>0</td>
+<td>−0.25</td>
+<td>90</td>
+</tr>
+<tr>
+<td>10</td>
+<td>−3.464</td>
+<td>2</td>
+<td>−0.25</td>
+<td>60</td>
+</tr>
+<tr>
+<td>11</td>
+<td>−2</td>
+<td>3.464</td>
+<td>−0.25</td>
+<td>30</td>
+</tr>
+<tr>
+<td>12</td>
+<td>0</td>
+<td>4</td>
+<td>−0.25</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>How to get the numbers yourself: an hour is <strong>30°</strong> clockwise starting at the top. A block at distance 4 from the centre sits at <code>X = 4·sin(30°·h)</code>, <code>Y = 4·cos(30°·h)</code>: for hour 1, <code>X = 2</code> and <code>Y = 3.464</code>. Each block must also turn so it points at the centre: clockwise by <code>30°·h</code>. Unity&#39;s positive rotation around Z is <strong>counterclockwise</strong> as seen from the front. Nord&#39;s 3D world is built the same way (same axes, same degrees), so clockwise is negative: hour 1 is −30, hour 2 is −60. If an arm or block turns the other way on your screen, flip the sign. A block looks the same after a half turn, so hours 4 and 5 can use +60 and +30 instead of −120 and −150. Hours 7, 8, 10 and 11 follow by mirroring: <strong>negate X and the rotation</strong> of hours 5, 4, 2 and 1.</p>
+<blockquote>
+<p><strong>Trap: the grid of numbers does not have to be typed by hand.</strong> Duplicate hour 1 and edit it; the mirror trick above (negate Y and rotation, or X and rotation) gives you four hours from each of the first two.</p>
+</blockquote>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, one hour indicator inside the <code>children</code> of <code>Clock</code> (hour 1):</p>
+<pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Hour Indicator 1&quot;, &quot;transform&quot;: { &quot;pos&quot;: [2, 3.464, -0.25], &quot;rot&quot;: [0, 0, -30], &quot;scale&quot;: [0.5, 1, 0.1] },
+  &quot;components&quot;: [ { &quot;type&quot;: &quot;mesh&quot;, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: [1, 1, 1], &quot;castShadow&quot;: true },
+                  { &quot;type&quot;: &quot;material&quot;, &quot;color&quot;: &quot;#ffffff&quot; } ] }</code></pre>
+<h3 id="2-4-materials-dark-indicators-black-arms-a-red-seconds-arm">2.4 Materials: dark indicators, black arms, a red seconds arm<a class="anchor" href="#2-4-materials-dark-indicators-black-arms-a-red-seconds-arm">#</a></h3>
+<p>A <strong>material</strong> decides how a surface looks. In Unity you create a Material asset; Nord does the same with a material file.</p>
+<ol>
+<li><span class="c-ui">Assets ▸ right-click ▸ New folder</span> named <code>materials</code>. (Keeping assets tidy is a Unity habit worth keeping.)</li>
+<li>Inside it, <span class="c-ui">Assets ▸ Create ▸ Material</span> three times and name the files <code>hour-indicator</code>, <code>clock-arm</code> and <code>seconds-arm</code>. Select each and set its <strong>colour</strong> in the Inspector:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Material</th>
+<th>Colour (hex)</th>
+<th>Used on</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>hour-indicator</code></td>
+<td><code>#494949</code> (dark grey, 73 in RGB 0–255)</td>
+<td>the twelve hour indicators</td>
+</tr>
+<tr>
+<td><code>clock-arm</code></td>
+<td><code>#000000</code> (black)</td>
+<td>hours arm and minutes arm</td>
+</tr>
+<tr>
+<td><code>seconds-arm</code></td>
+<td><code>#B30000</code> (dark red)</td>
+<td>seconds arm</td>
+</tr>
+</tbody></table>
+<p>The other material fields (metallic <code>0</code>, roughness <code>0.5</code>) stay as they are: that is Unity&#39;s default smoothness of 0.5. <em>Albedo</em>, a word you will see in Unity&#39;s colour field, is the colour of a surface in white light; Nord calls it <strong>colour</strong>.</p>
+<ol start="3">
+<li>Give every indicator its material: select all twelve (click the first, Shift-click the last) and in the <code>material</code> component set <strong>asset</strong> to <code>assets/materials/hour-indicator.mat.json</code>. (Dragging the material file from <span class="c-ui">Assets</span> onto an object in the Hierarchy does the same.)</li>
+</ol>
+<p>The indicators are dark grey against the white face now.</p>
+<p><strong>In the file</strong> <code>assets/materials/hour-indicator.mat.json</code>:</p>
+<pre class="code" data-lang="json"><code>{ &quot;color&quot;: &quot;#494949&quot;, &quot;metallic&quot;: 0, &quot;roughness&quot;: 0.5 }</code></pre>
+<p>and an indicator entity uses it by pointing at the file, in <code>scenes/main.scene.json</code>:</p>
+<pre class="code" data-lang="json"><code>{ &quot;type&quot;: &quot;material&quot;, &quot;asset&quot;: &quot;assets/materials/hour-indicator.mat.json&quot; }</code></pre>
+<h3 id="2-5-the-arms-and-their-pivots">2.5 The arms and their pivots<a class="anchor" href="#2-5-the-arms-and-their-pivots">#</a></h3>
+<p>Make the hours arm by duplicating <code>Hour Indicator 12</code>, renaming it <code>Hours Arm</code> and giving it the <code>clock-arm</code> material: <strong>Scale</strong> <code>0.3, 2.5, 0.1</code>, <strong>Position</strong> <code>0, 0.75, −0.25</code>. The arm reaches from 0.75 − 1.25 = −0.5 (a short tail behind the centre, like a counterweight) up to 2.</p>
+<p>If you rotate this arm now, it turns around <strong>its own centre</strong>, not around the clock&#39;s centre. (Select it, press <strong>E</strong> for the Rotate tool and drag the Z ring to see.) That is why clocks need a <strong>pivot</strong>: an empty object at the clock&#39;s centre whose child is the arm. Rotate the pivot and the arm swings around the centre.</p>
+<ol>
+<li>Right-click <code>Clock</code> ▸ <strong>Create child</strong>, choose <strong>Empty</strong>, name it <code>Hours Arm Pivot</code>. Position, rotation <code>0, 0, 0</code>, scale <code>1, 1, 1</code>.</li>
+<li>Drag <code>Hours Arm</code> onto <code>Hours Arm Pivot</code>.</li>
+<li>Select the pivot and rotate it: the arm circles the centre. In the Scene view make sure the tool handle mode is <strong>Pivot</strong>, not <strong>Center</strong> (the toolbar toggle), or the gizmo sits in the middle of the arm.</li>
+<li>Duplicate the pivot (with its arm) twice for the other arms and rename the pivots and their children <code>Minutes Arm Pivot</code>/<code>Minutes Arm</code> and <code>Seconds Arm Pivot</code>/<code>Seconds Arm</code>.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Object</th>
+<th>Scale (x, y, z)</th>
+<th>Position (x, y, z)</th>
+<th>Material</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Hours Arm</code></td>
+<td>0.3, 2.5, 0.1</td>
+<td>0, 0.75, −0.25</td>
+<td><code>clock-arm</code></td>
+</tr>
+<tr>
+<td><code>Minutes Arm</code></td>
+<td>0.2, 4, 0.1</td>
+<td>0, 1, <strong>−0.35</strong></td>
+<td><code>clock-arm</code></td>
+</tr>
+<tr>
+<td><code>Seconds Arm</code></td>
+<td>0.1, 5, 0.1</td>
+<td>0, 1.25, <strong>−0.45</strong></td>
+<td><code>seconds-arm</code></td>
+</tr>
+<tr>
+<td>the three pivots</td>
+<td>1, 1, 1</td>
+<td>0, 0, 0</td>
+<td>none (empty)</td>
+</tr>
+</tbody></table>
+<p>The Z positions differ by 0.1 each so the arms sit in front of one another (the seconds arm on top) and never overlap in the same plane. Set the positions on the <strong>arms</strong>, not on the pivots.</p>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, a pivot with its arm (the hours arm), inside the <code>children</code> of <code>Clock</code>:</p>
+<pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Hours Arm Pivot&quot;, &quot;transform&quot;: { &quot;pos&quot;: [0, 0, 0], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [1, 1, 1] }, &quot;components&quot;: [],
+  &quot;children&quot;: [
+    { &quot;name&quot;: &quot;Hours Arm&quot;, &quot;transform&quot;: { &quot;pos&quot;: [0, 0.75, -0.25], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [0.3, 2.5, 0.1] },
+      &quot;components&quot;: [ { &quot;type&quot;: &quot;mesh&quot;, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: [1, 1, 1], &quot;castShadow&quot;: true },
+                      { &quot;type&quot;: &quot;material&quot;, &quot;asset&quot;: &quot;assets/materials/clock-arm.mat.json&quot; } ] } ] }</code></pre>
+<p>Save the scene with <span class="c-ui">File ▸ Save all</span> (Cmd+S).</p>
+<h2 id="3-a-camera-and-a-light">3 A camera and a light<a class="anchor" href="#3-a-camera-and-a-light">#</a></h2>
+<p>The scene needs something to look through and something to light it.</p>
+<ol>
+<li><span class="c-ui">Hierarchy ▸ + Create ▸ Camera</span>, rename it <code>Main Camera</code>. <strong>Position</strong> <code>0, 0, −14</code>, <strong>Rotation</strong> <code>0, 0, 0</code> (it looks along +Z, straight at the clock). In its <code>camera</code> component keep <strong>fov</strong> <code>60</code>.</li>
+<li><span class="c-ui">Hierarchy ▸ + Create ▸ Directional light</span>, keep <strong>intensity</strong> <code>1</code>. Point it like Unity&#39;s default light (rotation 50, −30, 0). In Nord a directional light has a <strong>direction</strong> vector instead: set it to <code>−0.321, −0.766, 0.557</code>.</li>
+<li><span class="c-ui">Project</span> tab ▸ <strong>Quality and lighting</strong>: the same panel edits the open scene&#39;s <strong>ambient colour</strong> and intensity. Set the colour <code>#8a93a3</code> and the intensity <code>0.6</code> so the face is not too dark on the shaded side.</li>
+</ol>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>:</p>
+<pre class="code" data-lang="json"><code>&quot;settings&quot;: { &quot;ambient&quot;: &quot;#8a93a3&quot;, &quot;ambientIntensity&quot;: 0.6 },
+&quot;entities&quot;: [
+  { &quot;name&quot;: &quot;Main Camera&quot;, &quot;transform&quot;: { &quot;pos&quot;: [0, 0, -14], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [1, 1, 1] }, &quot;components&quot;: [ { &quot;type&quot;: &quot;camera&quot;, &quot;fov&quot;: 60 } ] },
+  { &quot;name&quot;: &quot;Directional Light&quot;, &quot;transform&quot;: { &quot;pos&quot;: [0, 3, 0], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [1, 1, 1] },
+    &quot;components&quot;: [ { &quot;type&quot;: &quot;light&quot;, &quot;kind&quot;: &quot;directional&quot;, &quot;intensity&quot;: 1, &quot;color&quot;: &quot;#ffffff&quot;, &quot;direction&quot;: [-0.321, -0.766, 0.557] } ] }
+]</code></pre>
+<p>Press <span class="c-ui">Play</span>: you see a white clock with dark indicators and three arms, all at twelve o&#39;clock. The clock is built; it just does not know the time yet.</p>
+<h2 id="4-make-it-tell-the-time-your-first-script">4 Make it tell the time: your first script<a class="anchor" href="#4-make-it-tell-the-time-your-first-script">#</a></h2>
+<h3 id="4-1-create-the-script">4.1 Create the script<a class="anchor" href="#4-1-create-the-script">#</a></h3>
+<p>Unity has <em>C# scripts</em>; Nord has <strong>JavaScript</strong> files that follow the same pattern.</p>
+<ol>
+<li><span class="c-ui">Assets ▸ New folder</span> <code>scripts</code> (it exists in a new project; use it).</li>
+<li><span class="c-ui">Assets ▸ right-click ▸ New MonoBehaviour script (Unity-style)</span>, name it <code>Clock</code>. The editor creates <code>scripts/Clock.js</code>. Double-click it to open it in the <span class="c-ui">Code</span> tab (or in your own editor).</li>
+<li>Replace the whole file with the smallest possible component:</li>
+</ol>
+<p><strong>File: <code>scripts/Clock.js</code></strong> (new file, the whole file: replace everything the editor generated)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour } from 'nord';
+
+export default class Clock extends MonoBehaviour {
+}</code></pre>
+<table>
+<thead>
+<tr>
+<th>Unity (C#)</th>
+<th>Nord (JavaScript)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>using UnityEngine;</code></td>
+<td><code>import { MonoBehaviour } from &#39;nord&#39;;</code></td>
+</tr>
+<tr>
+<td><code>public class Clock : MonoBehaviour {}</code></td>
+<td><code>export default class Clock extends MonoBehaviour {}</code></td>
+</tr>
+<tr>
+<td>a file ending in <code>.cs</code></td>
+<td>a file ending in <code>.js</code></td>
+</tr>
+</tbody></table>
+<p><code>MonoBehaviour</code> is the base type of every script that can be added to an object as a component. You inherit its data and functions and add your own. <code>export default</code> makes the class the one thing this file offers to the engine.</p>
+<ol start="4">
+<li>Select <code>Clock</code> in the Hierarchy and <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Clock.js</span> (or drag the file onto the object).</li>
+</ol>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, the <code>Clock</code> entity now lists the script:</p>
+<pre class="code" data-lang="json"><code>&quot;scripts&quot;: [ { &quot;path&quot;: &quot;scripts/Clock.js&quot;, &quot;attributes&quot;: {} } ]</code></pre>
+<h3 id="4-2-fields-that-connect-to-other-objects">4.2 Fields that connect to other objects<a class="anchor" href="#4-2-fields-that-connect-to-other-objects">#</a></h3>
+<p>The script must know the three pivots. In C# you write <code>[SerializeField] Transform hoursPivot;</code>, and Unity shows a slot in the Inspector where you drag the pivot. In Nord an Inspector field of type <strong>entity</strong> holds the <strong>name</strong> of an object (you type or pick the name):</p>
+<p><strong>File: <code>scripts/Clock.js</code></strong> (replace the whole file from the last step)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, EntityRef } from 'nord';
+
+export default class Clock extends MonoBehaviour {
+  // Inspector fields. Each one holds the NAME of an object in the scene; the Inspector shows a picker for it.
+  static attributes = SerializeField({
+    hoursPivot: EntityRef('Hours Arm Pivot'),
+    minutesPivot: EntityRef('Minutes Arm Pivot'),
+    secondsPivot: EntityRef('Seconds Arm Pivot'),
+  });
+}</code></pre>
+<ul>
+<li><code>static attributes = SerializeField({ … })</code> is the list of Inspector fields (the <code>[SerializeField]</code> attribute).</li>
+<li><code>EntityRef(&#39;Hours Arm Pivot&#39;)</code> declares a field of type <em>entity</em> with a default name. It is how you give a script access to <strong>another object</strong>: this field is the equivalent of the <code>Transform hoursPivot</code> slot.</li>
+<li>Separate fields keep the code readable; the C# shortcut of declaring three with one type has no JavaScript counterpart.</li>
+</ul>
+<p>Save the file. Select <code>Clock</code> in the Hierarchy: the Inspector now shows the fields <code>hoursPivot</code>, <code>minutesPivot</code> and <code>secondsPivot</code>, already filled with the default names. If you named your pivots differently, put the right names in the fields.</p>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, the script entry now carries the values you picked:</p>
+<pre class="code" data-lang="json"><code>&quot;scripts&quot;: [ { &quot;path&quot;: &quot;scripts/Clock.js&quot;, &quot;attributes&quot;: {
+  &quot;hoursPivot&quot;: &quot;Hours Arm Pivot&quot;, &quot;minutesPivot&quot;: &quot;Minutes Arm Pivot&quot;, &quot;secondsPivot&quot;: &quot;Seconds Arm Pivot&quot; } } ]</code></pre>
+<blockquote>
+<p><strong>Why a name and not a direct link?</strong> Unity serialises a reference to the object itself. Nord saves the object&#39;s name and your script looks it up with <code>Find</code> when the game starts. Keep the names unique.</p>
+</blockquote>
+<h3 id="4-3-wake-up-and-rotate-once">4.3 Wake up and rotate once<a class="anchor" href="#4-3-wake-up-and-rotate-once">#</a></h3>
+<p>Unity runs <code>Awake</code> when a component wakes, and <code>Start</code> just before the first frame. In Nord the same two exist, with one rule that matters here: <strong><code>Awake</code> runs while the scene is still being created, so other objects may not exist yet. Look things up in <code>Start</code>.</strong></p>
+<p><strong>File: <code>scripts/Clock.js</code></strong> (replace the whole file from the last step)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, EntityRef, Quaternion } from 'nord';
+
+export default class Clock extends MonoBehaviour {
+  static attributes = SerializeField({
+    hoursPivot: EntityRef('Hours Arm Pivot'),
+    minutesPivot: EntityRef('Minutes Arm Pivot'),
+    secondsPivot: EntityRef('Seconds Arm Pivot'),
+  });
+
+  Start() {
+    this.hours = this.Find(this.hoursPivot);                  // the field is a name, Find turns it into the object
+    this.hours.transform.localRotation = Quaternion.Euler(0, 0, -30);     // always one o'clock for now
+  }
+}</code></pre>
+<ul>
+<li><code>this.Find(&#39;Name&#39;)</code> is <code>GameObject.Find(&quot;Name&quot;)</code>: it returns the object (an <em>entity</em>).</li>
+<li><code>.transform</code> is the object&#39;s <strong>Transform</strong>, the thing the Unity code calls <code>hoursPivot</code>. <code>.localRotation</code> is its rotation relative to its parent.</li>
+<li><code>Quaternion.Euler(0, 0, -30)</code> makes a rotation from angles in degrees: 0 around X, 0 around Y and <strong>−30 around Z</strong>, which is <strong>30° clockwise</strong> seen from the front. Hour 1 is 30° clockwise from twelve.</li>
+</ul>
+<p>Press <span class="c-ui">Play</span>: the hours arm points to one o&#39;clock. Exit play mode before continuing: the Scene returns to its saved state, so changes you make <em>in play mode</em> do not stay (assets do).</p>
+<blockquote>
+<p><strong>Why <code>Quaternion</code>, not three numbers?</strong> Unity code sets rotations with quaternions; you can think of one as a rotation that avoids a problem called <em>gimbal lock</em>. <code>Quaternion.Euler(x, y, z)</code> converts friendly angles to one. In Nord, <code>transform.eulerAngles = new Vector3(0, 0, -30)</code> works too.</p>
+</blockquote>
+<blockquote>
+<p><strong>Trap: wrong direction?</strong> If your arm turns anticlockwise, you set +30. In the Inspector a rotation of Z <code>−30</code> is clockwise as seen from the camera.</p>
+</blockquote>
+<h3 id="4-4-read-the-time-set-all-three-arms">4.4 Read the time, set all three arms<a class="anchor" href="#4-4-read-the-time-set-all-three-arms">#</a></h3>
+<p>Unity reads <code>DateTime.Now</code>; JavaScript has <code>new Date()</code>. Hours, minutes and seconds come from <code>getHours()</code>, <code>getMinutes()</code>, <code>getSeconds()</code>. The conversion factors are always the same, so they become constants (C# <code>const</code>; in JavaScript a module-level <code>const</code>): an hour is <strong>−30°</strong>, a minute and a second are <strong>−6°</strong> (360° / 60).</p>
+<p><strong>File: <code>scripts/Clock.js</code></strong> (replace the whole file from the last step)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, EntityRef, Quaternion } from 'nord';
+
+const hoursToDegrees = -30, minutesToDegrees = -6, secondsToDegrees = -6;     // C# const: values that never change
+
+export default class Clock extends MonoBehaviour {
+  static attributes = SerializeField({
+    hoursPivot: EntityRef('Hours Arm Pivot'),
+    minutesPivot: EntityRef('Minutes Arm Pivot'),
+    secondsPivot: EntityRef('Seconds Arm Pivot'),
+  });
+
+  Start() {
+    this.hours = this.Find(this.hoursPivot);
+    this.minutes = this.Find(this.minutesPivot);
+    this.seconds = this.Find(this.secondsPivot);
+
+    const time = new Date();                                  // read the clock once: C# DateTime.Now
+    this.hours.transform.localRotation = Quaternion.Euler(0, 0, hoursToDegrees * time.getHours());
+    this.minutes.transform.localRotation = Quaternion.Euler(0, 0, minutesToDegrees * time.getMinutes());
+    this.seconds.transform.localRotation = Quaternion.Euler(0, 0, secondsToDegrees * time.getSeconds());
+  }
+}</code></pre>
+<p>Read the clock <strong>once</strong> into <code>time</code> (the C# <code>var time = DateTime.Now</code>) and use it three times; reading it again for every arm could give three slightly different times.</p>
+<p>Press <span class="c-ui">Play</span>: the arms show the time of the moment you pressed Play, and then stay still.</p>
+<h3 id="4-5-animate-with-update">4.5 Animate with Update<a class="anchor" href="#4-5-animate-with-update">#</a></h3>
+<p>Rename the rotating part to <code>Update</code>. Unity calls <code>Update</code> once for every <strong>frame</strong>: it updates everything, renders the scene, shows the result, and starts again. Finding the pivots only once stays in <code>Start</code>:</p>
+<p><strong>File: <code>scripts/Clock.js</code></strong> (replace the whole file from the last step)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, EntityRef, Quaternion } from 'nord';
+
+const hoursToDegrees = -30, minutesToDegrees = -6, secondsToDegrees = -6;
+
+export default class Clock extends MonoBehaviour {
+  static attributes = SerializeField({
+    hoursPivot: EntityRef('Hours Arm Pivot'),
+    minutesPivot: EntityRef('Minutes Arm Pivot'),
+    secondsPivot: EntityRef('Seconds Arm Pivot'),
+  });
+
+  Start() {
+    this.hours = this.Find(this.hoursPivot);
+    this.minutes = this.Find(this.minutesPivot);
+    this.seconds = this.Find(this.secondsPivot);
+  }
+
+  Update() {                                                  // every frame, so the arms follow the time
+    const time = new Date();
+    this.hours.transform.localRotation = Quaternion.Euler(0, 0, hoursToDegrees * time.getHours());
+    this.minutes.transform.localRotation = Quaternion.Euler(0, 0, minutesToDegrees * time.getMinutes());
+    this.seconds.transform.localRotation = Quaternion.Euler(0, 0, secondsToDegrees * time.getSeconds());
+  }
+}</code></pre>
+<p>Press <span class="c-ui">Play</span>: the seconds arm now jumps once per second and the others follow. Select <code>Clock</code> in the Hierarchy while playing: the little checkbox in front of the script&#39;s name in the Inspector disables it (the arms freeze), the way a Unity component&#39;s toggle stops its <code>Update</code>.</p>
+<h3 id="4-6-smooth-analog-motion">4.6 Smooth, analog motion<a class="anchor" href="#4-6-smooth-analog-motion">#</a></h3>
+<p>Right now the clock behaves like a digital clock with arms: each arm sits exactly on a whole hour, minute or second. A real analog clock moves all the time. We need the <strong>fractional</strong> time: seconds since midnight including the milliseconds (C# gets it from <code>TimeOfDay.TotalSeconds</code>). From it, hours = seconds / 3600 and minutes = seconds / 60:</p>
+<p><strong>File: <code>scripts/Clock.js</code></strong> (the final file: replace the whole file from the last step)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, EntityRef, Quaternion } from 'nord';
+
+const hoursToDegrees = -30, minutesToDegrees = -6, secondsToDegrees = -6;
+
+export default class Clock extends MonoBehaviour {
+  static attributes = SerializeField({
+    hoursPivot: EntityRef('Hours Arm Pivot'),
+    minutesPivot: EntityRef('Minutes Arm Pivot'),
+    secondsPivot: EntityRef('Seconds Arm Pivot'),
+  });
+
+  Start() {
+    this.hours = this.Find(this.hoursPivot);
+    this.minutes = this.Find(this.minutesPivot);
+    this.seconds = this.Find(this.secondsPivot);
+  }
+
+  Update() {
+    const now = new Date();
+    // like TimeOfDay.TotalSeconds: seconds since midnight, with the fraction, so the arms glide instead of ticking
+    const totalSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds() + now.getMilliseconds() / 1000;
+    this.hours.transform.localRotation = Quaternion.Euler(0, 0, hoursToDegrees * (totalSeconds / 3600));
+    this.minutes.transform.localRotation = Quaternion.Euler(0, 0, minutesToDegrees * (totalSeconds / 60));
+    this.seconds.transform.localRotation = Quaternion.Euler(0, 0, secondsToDegrees * totalSeconds);
+  }
+}</code></pre>
+<p>Press <span class="c-ui">Play</span>: a real analog clock. The hours arm creeps, the minutes arm glides, the seconds arm sweeps.</p>
+<blockquote>
+<p><strong>No casting needed.</strong> The C# exercise has to convert <code>double</code> to <code>float</code>. JavaScript has one number type, so there is no cast and no <code>f</code> suffix.</p>
+</blockquote>
+<h2 id="5-what-you-learned-and-the-traps">5 What you learned (and the traps)<a class="anchor" href="#5-what-you-learned-and-the-traps">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity idea</th>
+<th>Where you used it in Nord</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GameObject, empty object</td>
+<td><code>Clock</code>, the three pivots</td>
+</tr>
+<tr>
+<td>Primitives (Cylinder, Cube)</td>
+<td><code>Face</code> (mesh shape <code>cylinder</code>), indicators and arms (<code>box</code>)</td>
+</tr>
+<tr>
+<td>Transform: position, rotation, scale</td>
+<td>the tables above; a child follows its parent</td>
+</tr>
+<tr>
+<td>Hierarchy: parent and child</td>
+<td>everything under <code>Clock</code>; arms under pivots</td>
+</tr>
+<tr>
+<td>Material and colour (albedo)</td>
+<td>three <code>.mat.json</code> files, hex <code>#494949</code>, <code>#000000</code>, <code>#B30000</code></td>
+</tr>
+<tr>
+<td>Pivot object</td>
+<td>rotating around the clock&#39;s centre instead of the arm&#39;s own centre</td>
+</tr>
+<tr>
+<td>Component and script</td>
+<td><code>Clock.js</code> added with <span class="c-ui">+ Add script</span></td>
+</tr>
+<tr>
+<td><code>[SerializeField]</code></td>
+<td><code>static attributes = SerializeField({ … })</code></td>
+</tr>
+<tr>
+<td><code>Awake</code> / <code>Start</code> / <code>Update</code></td>
+<td>look up objects in <code>Start</code>, move the arms in <code>Update</code></td>
+</tr>
+<tr>
+<td><code>Quaternion.Euler</code>, <code>localRotation</code></td>
+<td>the arm rotations</td>
+</tr>
+<tr>
+<td><code>DateTime.Now</code>, <code>TimeOfDay</code></td>
+<td><code>new Date()</code> and total seconds</td>
+</tr>
+</tbody></table>
+<p><strong>Check yourself</strong></p>
+<ul>
+<li>In play mode the arms show the time of your computer&#39;s clock and the seconds arm moves smoothly.</li>
+<li>The seconds arm is red and in front; the hours arm is the shortest; each arm has a short tail behind the centre.</li>
+<li>Rotating <code>Hours Arm Pivot</code> by hand in the Scene view swings the arm around the centre.</li>
+<li>If you get a red error in the <span class="c-ui">Console</span> that says <code>Cannot read properties of null</code> or similar, a pivot name in the script fields does not match an object. Check the spelling in the Inspector.</li>
+<li>If the clock face looks black, check the camera is at <code>0, 0, −14</code> and the directional light exists.</li>
+</ul>
+<p>Next: <a href="ex-find-and-talk.html">Finding objects and talking to scripts</a> (page 3) goes deeper into <code>Find</code> and <code>GetComponent</code>, and <a href="ex-game-manager.html">GameManager and Singletons</a> (page 4) is the next building block. Back to <a href="examples.html">Examples</a>.</p>
+<div class="pager"><a href="ex-find-and-talk.html"><small>← Previous</small>3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html"><small>Next →</small>4 · GameManager and Singletons</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-create-the-project">1 Create the project </a><a href="#2-build-the-clock">2 Build the clock </a><a href="#3-a-camera-and-a-light">3 A camera and a light </a><a href="#4-make-it-tell-the-time-your-first-script">4 Make it tell the time: your first script </a><a href="#5-what-you-learned-and-the-traps">5 What you learned (and the traps) </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

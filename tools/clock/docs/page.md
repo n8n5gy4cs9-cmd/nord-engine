@@ -8,7 +8,7 @@ summary: The classic first Unity exercise in Nord Engine: build a clock from a c
 
 ![The finished clock showing 10:09:36](assets/screenshots/ex-clock-result.png)
 
-This is the Nord version of the first exercise of Catlike Coding's Unity *Basics* series ([Game Objects and Scripts](https://catlikecoding.com/unity/tutorials/basics/game-objects-and-scripts/) by Jasper Flick). The exercise and all its numbers are the same (scales, positions, rotations, hexadecimal colours); the words, the editor steps and the code are written for Nord, so you can follow both side by side.
+This is the Nord version of the first exercise of Catlike Coding's Unity *Basics* series (*Game Objects and Scripts* by Jasper Flick, catlikecoding.com). The exercise and all its numbers are the same (scales, positions, rotations, hexadecimal colours); the words, the editor steps and the code are written for Nord, so you can follow both side by side.
 
 **Download:** [the finished project](assets/downloads/clock-source.zip), also in `examples/clock`. Open `nord.project.json` in Nord and press @ui[Play]. Allow 45 minutes to build it yourself.
 
