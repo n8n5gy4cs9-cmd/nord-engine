@@ -12,12 +12,14 @@
 <p>Nord games can be played by several people at once. Players connect <strong>directly</strong> to each other (WebRTC data channels), with a tiny signalling relay built into <code>nord serve</code>. No cloud, no account. It works between devices on the same network (<code>nord serve --lan</code> lets a phone join a PC).</p>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>One player <strong>hosts</strong> a room, the others <strong>join</strong> it by name. After that every screen has to agree on what exists and where it is. Nord gives you four tools for that: <strong>messages</strong> (shout something), <strong>RPC</strong> (run a function on the other players), the <strong>spawner</strong> (create an object on everybody&#39;s screen) and <strong>netSync</strong> (keep an object&#39;s position the same everywhere).</p>
 </aside><h2 id="connect">Connect<a class="anchor" href="#connect">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Lobby.js</code></strong> (inside an <code>async</code> method)</p>
 <pre class="code" data-lang="js"><code>await game.net.host('room1');   // player 1
 await game.net.join('room1');   // players 2..n (rejects after 10 s if nobody answers)
 game.net.on('join', ({ id }) =&gt; {});    // host: someone joined
 game.net.on('leave', ({ id }) =&gt; {});</code></pre>
 <p><code>net.peers</code>, <code>net.isHost</code>, <code>net.id</code>, <code>net.hostId</code>. The host relays guest messages, so everybody sees everything. Event sheets have a <strong>Multiplayer</strong> plugin (Host, Join, Send, On message…).</p>
 <h2 id="messages-and-rpc">Messages and RPC<a class="anchor" href="#messages-and-rpc">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Chat.js</code></strong> (inside any method after you are connected)</p>
 <pre class="code" data-lang="js"><code>net.send('chat', { text: 'hi' });                 // everybody else
 net.send('whisper', 1, { to: peerId });           // one player
 net.on('message', ({ from, name, data }) =&gt; {});
@@ -28,6 +30,7 @@ net.callHost('requestScore');                     // run on the host only
 net.rpc('startRound', fn, { from: 'host' });      // only the host may call this one</code></pre>
 <h2 id="spawn-and-sync">Spawn and sync<a class="anchor" href="#spawn-and-sync">#</a></h2>
 <p>The <strong>host</strong> creates entities for everyone:</p>
+<p><strong>File: your script, for example <code>scripts/Match.js</code></strong> (inside an <code>async</code> method on the host)</p>
 <pre class="code" data-lang="js"><code>const ship = await net.spawn('prefabs/ship.prefab.json', { pos: [100, 100, 0], owner: playerId });</code></pre>
 <p>Guests receive the entity automatically (also guests who join later). When a player leaves, the entities they own are removed everywhere. Put a <strong>netSync</strong> component on the prefab: the owner sends position (optionally rotation, scale and chosen <code>vars</code>) about 15 times a second, only while it changes; everyone else sees it glide. Move an entity only when <code>netSync.isMine</code> (or <code>net.isAuthority(entity)</code>) is true.</p>
 <h2 id="test-it">Test it<a class="anchor" href="#test-it">#</a></h2>

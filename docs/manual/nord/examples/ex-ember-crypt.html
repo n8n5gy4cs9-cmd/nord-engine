@@ -169,7 +169,17 @@
 </tbody></table>
 <p>They talk the way Unity scripts do: <strong>singletons</strong> (<code>Run.instance</code>, <code>GameManager.instance</code>), <strong>method calls</strong> through <code>GetComponent</code>, a <strong><code>UnityEvent</code></strong> (<code>Run.instance.onChanged</code>) and the global <strong><code>EventBus</code></strong> (<code>level</code>, <code>lives</code>, <code>gameover</code>).</p>
 <h2 id="2-the-project">2 The project<a class="anchor" href="#2-the-project">#</a></h2>
-<p><code>nord.project.json</code> differs from a default project in these places:</p>
+<p>Open the <span class="c-ui">Project</span> tab. In <strong>Project properties</strong> set:</p>
+<ol>
+<li><strong>Start scene</strong>: <code>scenes/title.scene.json</code>.</li>
+<li><strong>Game size</strong>: <code>640</code> × <code>360</code>, <strong>Scaling</strong> <code>fit</code>.</li>
+<li><strong>Pixel art</strong>: <strong>on</strong> (it turns off smoothing).</li>
+<li><strong>Background</strong>: <code>#07080c</code>.</li>
+<li><strong>Physics</strong>: <code>arcade</code>, <strong>gravity Y</strong> <code>0</code>.</li>
+<li>Press <strong>Apply project properties</strong>.</li>
+</ol>
+<p>Then unfold <strong>Input Manager (actions and keys)</strong> just below: add the action <code>attack</code> (type the name, press <strong>Add action</strong>, then <strong>＋ key</strong> and press Space; again for <code>J</code>; <strong>＋ mouse/pad</strong> for <code>Mouse0</code>) and give the existing <code>interact</code> action the keys <code>E</code> and <code>Enter</code>.</p>
+<p><strong>In the file</strong> <code>nord.project.json</code> (open it in a text editor to check what the editor wrote), these keys differ from a default project:</p>
 <pre class="code" data-lang="json"><code>&quot;startScene&quot;: &quot;scenes/title.scene.json&quot;,
 &quot;display&quot;: { &quot;width&quot;: 640, &quot;height&quot;: 360, &quot;scale&quot;: &quot;fit&quot;, &quot;pixelArt&quot;: true, &quot;background&quot;: &quot;#07080c&quot; },
 &quot;physics&quot;: { &quot;engine&quot;: &quot;arcade&quot;, &quot;gravity&quot;: [0, 0, 0] },
@@ -178,6 +188,7 @@
 <p>The art is the pixel art bundled with Nord: <code>hero.png</code> (a sheet of 32 × 32 frames with the clips <code>idle</code>, <code>walk</code>, <code>jump</code>, <code>hurt</code>), the slime and bat sheets, wall and floor textures, an iron gate, a brazier, a rune, items (key, potion, chest, crate, barrel, spikes, hearts), sound effects and music. Copy <code>assets/</code> from the download. Each sheet has a <code>.png.meta.json</code> next to it with its frame size and clip names, written by the <strong>Sprite editor</strong> (<a href="ex-animation.html">Animation</a>): <code>&quot;walk&quot;: { &quot;frames&quot;: [2, 3, 4, 5], &quot;fps&quot;: 10, &quot;loop&quot;: true }</code>.</p>
 <h2 id="3-the-dungeon-as-text">3 The dungeon as text<a class="anchor" href="#3-the-dungeon-as-text">#</a></h2>
 <p><code>scripts/map.js</code>: <code>#</code> wall, <code>.</code> floor, <code>P</code> the hero&#39;s start, <code>o</code> coin, <code>k</code> key, <code>D</code> a gate tile (a gate is two tiles wide), <code>+</code> potion, <code>B</code> brazier, <code>c</code> crate or barrel, <code>^</code> spikes, <code>C</code> chest, <code>s</code> slime, <code>b</code> bat, <code>X</code> the exit rune.</p>
+<p><strong>File: <code>scripts/map.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>/** The dungeon. # wall, . floor, P hero start, o coin, k key, D door (2 tiles), + potion, B brazier, c crate or barrel,
  *  ^ spikes, C chest, s slime, b bat, X exit. 40 x 22 tiles of 32 px. */
 export const MAP = [
@@ -205,6 +216,7 @@ export const MAP = [
   '########################################',
 ];</code></pre>
 <p><code>scripts/World.js</code> asks the map questions (a static helper class, like a Unity utility):</p>
+<p><strong>File: <code>scripts/World.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { MAP } from './map.js';
 
 /** Questions about the dungeon map. A static helper class: no entity, no state. */
@@ -297,6 +309,7 @@ export default class World {
 <p>Notice the <strong>wall is two prefabs</strong>: <code>wall-tile</code> is only a picture (hundreds of them) and <code>wall-body</code> is only a collider and shadow caster (a few dozen long strips). Looks and physics have different needs. And notice <strong>slime and bat are the same script</strong> with different numbers: in Unity that is a <em>prefab variant</em>. Pickups are one script with a <code>kind</code> field. One script, many prefabs.</p>
 <h2 id="5-building-the-level">5 Building the level<a class="anchor" href="#5-building-the-level">#</a></h2>
 <p><code>scripts/Level.js</code> is part 3&#39;s loader with a table from letter to prefab:</p>
+<p><strong>File: <code>scripts/Level.js</code></strong> (new file, the whole file; attach it to the <code>Level</code> object)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Instantiate, EventBus } from 'nord';
 import { MAP } from './map.js';
 
@@ -337,6 +350,7 @@ export default class Level extends MonoBehaviour {
     EventBus.Publish('level', { width, height, coins });
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>Level</code> object, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Level.js</span>. If the object does not exist yet, create it first with <span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span> and rename it. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li><code>PREFAB</code> maps a letter to a prefab name. Adding a new kind of object is one line here and one prefab file.</li>
 <li><code>overrides: { components: { 1: { size: [w, t] } } }</code> makes the long wall strips: component 1 of <code>wall-body</code> is its collider.</li>
@@ -397,6 +411,7 @@ export default class Level extends MonoBehaviour {
 <p>The hero&#39;s collider (14 × 16) is smaller than its 32 × 32 picture: it fits corridors easily and its head can overlap a wall&#39;s top edge, which looks natural from above. <code>Follow.js</code> is part 3&#39;s camera script.</p>
 <h2 id="7-the-hero">7 The hero<a class="anchor" href="#7-the-hero">#</a></h2>
 <p><code>scripts/Hero.js</code> steers, animates and swings the sword:</p>
+<p><strong>File: <code>scripts/Hero.js</code></strong> (new file, the whole file; attach it to <code>Hero</code>)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Instantiate, Destroy, UnityInput as Input, KeyCode, GameManager, EventBus, Time, Vector2, Vector3 } from 'nord';
 import Enemy from './Enemy.js';
 
@@ -455,6 +470,7 @@ export default class Hero extends MonoBehaviour {
 
   OnDestroy() { this.off?.(); }
 }</code></pre>
+<p><strong>In the editor:</strong> select <code>Hero</code>, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Hero.js</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li><code>this.GetComponent(&#39;animatedSprite&#39;)</code> is the Animator. <code>animator.play(&#39;walk&#39;)</code> starts a clip and <code>animator.current</code> names the playing one. <strong>Only call <code>play</code> when the wanted clip changes</strong>, or the animation restarts every frame and freezes on its first frame. That one comparison is the most common animation fix.</li>
 <li><code>animator.setFlip(true)</code> mirrors the picture. The art faces forward, so we mirror it when going left.</li>
@@ -464,6 +480,7 @@ export default class Hero extends MonoBehaviour {
 </ul>
 <h2 id="8-health">8 Health<a class="anchor" href="#8-health">#</a></h2>
 <p><code>scripts/Health.js</code> wraps the GameManager&#39;s lives with what a finished game needs:</p>
+<p><strong>File: <code>scripts/Health.js</code></strong> (new file, the whole file; attach it to <code>Hero</code>, next to <code>Hero.js</code>)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, GameManager, Time } from 'nord';
 import Hero from './Hero.js';
 
@@ -488,6 +505,7 @@ export default class Health extends MonoBehaviour {
     this.entity.native?.setAlpha(blink ? 0.3 : 1);                   // the engine's own game object: an escape hatch
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select <code>Hero</code>, next to <code>Hero.js</code>, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Health.js</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li><strong>Grace period</strong>: after a hit the hero is protected for <code>grace</code> seconds; <code>Math.floor(protectedFor * 12) % 2</code> blinks it about six times a second.</li>
 <li><code>this.game.camera.shake(160, 0.01)</code> shakes the camera for 160 ms (Unity: a Cinemachine impulse).</li>
@@ -497,6 +515,7 @@ export default class Health extends MonoBehaviour {
 </ul>
 <h2 id="9-enemies-that-see-you">9 Enemies that see you<a class="anchor" href="#9-enemies-that-see-you">#</a></h2>
 <p><code>scripts/Enemy.js</code> runs both slimes and bats:</p>
+<p><strong>File: <code>scripts/Enemy.js</code></strong> (new file, the whole file; attach it to the <code>slime</code> and <code>bat</code> prefabs)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Instantiate, Destroy, Random, Time, Vector2, Vector3, WaitForSeconds } from 'nord';
 import World from './World.js';
 import Fx from './Fx.js';
@@ -565,6 +584,7 @@ export default class Enemy extends MonoBehaviour {
     Destroy(this.entity);
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>slime</code> and <code>bat</code> prefabs, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Enemy.js</span>. Prefabs: first <span class="c-ui">Assets ▸ right-click the prefab ▸ Open prefab</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li><strong>Seeing</strong>: <code>sees</code> is true only when the hero is closer than <code>sight</code> <strong>and</strong> <code>World.LineClear</code> finds no wall in between. Behind a wall you vanish from their eyes. In <a href="ex-dungeon-5-enemies.html">part 5</a> enemies saw through walls; this is the fix, one extra condition.</li>
 <li><strong>Chasing and wandering</strong>: they run at you when they see you; otherwise the <code>Wander</code> coroutine picks a random direction every second or two, at 45% speed.</li>
@@ -574,6 +594,7 @@ export default class Enemy extends MonoBehaviour {
 </ul>
 <h2 id="10-juice">10 Juice<a class="anchor" href="#10-juice">#</a></h2>
 <p>Hitting something should feel good (<a href="ex-juice-effects.html">Juice</a>). <code>scripts/Fx.js</code> collects three tricks as static functions:</p>
+<p><strong>File: <code>scripts/Fx.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { Instantiate, Destroy, Time } from 'nord';
 
 /** Small visual effects, all made from prefabs. A static helper class like Unity's &quot;effects manager&quot;. */
@@ -598,6 +619,7 @@ export default class Fx {
 <ul>
 <li><code>FloatText</code> instantiates the <code>floattext</code> prefab on <strong>layer 1</strong> (above the darkness, so it stays readable) with the text and colour as <strong>overrides</strong>. The prefab&#39;s own script moves it:</li>
 </ul>
+<p><strong>File: <code>scripts/FloatText.js</code></strong> (new file, the whole file; attach it to the <code>floattext</code> prefab)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, Destroy, Time, Mathf, Vector3 } from 'nord';
 
 /** Lives on the floattext prefab: rises 22 pixels while fading out, then removes itself. */
@@ -612,11 +634,13 @@ export default class FloatText extends MonoBehaviour {
     if (k &gt;= 1) Destroy(this.entity);
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>floattext</code> prefab, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/FloatText.js</span>. Prefabs: first <span class="c-ui">Assets ▸ right-click the prefab ▸ Open prefab</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li><code>Burst</code> instantiates the <code>burst</code> prefab (a particles component that explodes once) with overrides for colour and count, and destroys it after the particles&#39; lifetime. <code>Destroy(object, seconds)</code> is the delayed destroy you know.</li>
 <li><code>HitStop</code> slows the game to 5% for a few milliseconds with <code>Time.timeScale</code>. It resets with the browser&#39;s <code>setTimeout</code>, <strong>not</strong> a game timer: the game clock is exactly what we slowed, so a 55 ms game timer would take 1.1 s of real time. A classic trap.</li>
 </ul>
 <p>The sword&#39;s crescent is another self-removing prefab:</p>
+<p><strong>File: <code>scripts/Slash.js</code></strong> (new file, the whole file; attach it to the <code>slash</code> prefab)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, Destroy, Time, Mathf } from 'nord';
 
 /** The sword's white crescent: a translucent circle that grows and fades in 0.18 seconds. */
@@ -632,9 +656,11 @@ export default class Slash extends MonoBehaviour {
     if (k &gt;= 1) Destroy(this.entity);
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>slash</code> prefab, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Slash.js</span>. Prefabs: first <span class="c-ui">Assets ▸ right-click the prefab ▸ Open prefab</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <p>A sound, a number, a spark, a freeze, a shake: that is what makes a swing feel heavy.</p>
 <h2 id="11-pickups-gates-and-the-rules">11 Pickups, gates and the rules<a class="anchor" href="#11-pickups-gates-and-the-rules">#</a></h2>
 <p>Four pickups share <code>scripts/Pickup.js</code> with a <code>kind</code> field:</p>
+<p><strong>File: <code>scripts/Pickup.js</code></strong> (new file, the whole file; attach it to the <code>coin</code>, <code>key</code>, <code>potion</code> and <code>chest</code> prefabs)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Destroy, Random, Time, Vector3 } from 'nord';
 import Run from './Run.js';
 import Fx from './Fx.js';
@@ -666,7 +692,9 @@ export default class Pickup extends MonoBehaviour {
     Destroy(this.entity);
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>coin</code>, <code>key</code>, <code>potion</code> and <code>chest</code> prefabs, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Pickup.js</span>. Prefabs: first <span class="c-ui">Assets ▸ right-click the prefab ▸ Open prefab</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <p>It does what is common (bob, detect the hero, text, sound) and tells the <strong>Run</strong> what happened. <code>scripts/Run.js</code> is a <code>Singleton</code> with the rules and the clock:</p>
+<p><strong>File: <code>scripts/Run.js</code></strong> (new file, the whole file; attach it to the <code>Run</code> object)</p>
 <pre class="code" data-lang="js"><code>import { Singleton, GameManager, UnityEvent, EventBus, PlayerPrefs, Time } from 'nord';
 
 /** The rules of one run: what the hero carries, the clock, and how it ends. Lives live in the GameManager. */
@@ -721,6 +749,7 @@ export default class Run extends Singleton {
 
   OnDestroy() { this.off?.(); }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>Run</code> object, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Run.js</span>. If the object does not exist yet, create it first with <span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span> and rename it. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li><code>Run.instance.AddCoin()</code> and friends: <strong>singleton calls</strong>, the way Unity GameManagers work. <code>UseKey()</code> returns whether a key was spent: when code needs an answer, a method call beats an event.</li>
 <li><code>onChanged</code> and <code>onEnded</code> are <code>UnityEvent</code>s: <code>AddListener(fn)</code> (it returns a function that removes the listener) and <code>Invoke(data)</code>. The HUD listens; the Run does not know it exists.</li>
@@ -731,6 +760,7 @@ export default class Run extends Singleton {
 <p><strong>Why <code>this.elapsed</code> and not <code>this.time</code>?</strong> Scripts already have a <code>this.time</code>. Assigning to it throws <em>Cannot set property time … which has only a getter</em>. Do not name fields <code>entity</code>, <code>scene</code>, <code>game</code>, <code>attrs</code>, <code>input</code>, <code>audio</code>, <code>time</code>, <code>events</code>, <code>ui</code>, <code>physics</code>, <code>save</code> or <code>rng</code>.</p>
 </blockquote>
 <p>Gates are <code>scripts/Door.js</code>:</p>
+<p><strong>File: <code>scripts/Door.js</code></strong> (new file, the whole file; attach it to the <code>door</code> prefab)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, Destroy, Time, Vector3 } from 'nord';
 import Run from './Run.js';
 import Fx from './Fx.js';
@@ -762,8 +792,10 @@ export default class Door extends MonoBehaviour {
     }
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>door</code> prefab, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Door.js</span>. Prefabs: first <span class="c-ui">Assets ▸ right-click the prefab ▸ Open prefab</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <p>Each gate tile checks whether the hero is within 30 pixels. If the Run spent a key, <code>Open()</code> destroys this tile <strong>and its neighbours within 40 pixels</strong>, so one key opens both tiles of a two-wide corridor. The <code>opened</code> flag matters: both tiles run <code>Update</code> in the same frame, and without it the second tile would spend a second key. Without a key the gate shows &quot;Locked&quot; (at most every 1.5 s) and plays an error sound.</p>
 <p>The last two behaviours are tiny:</p>
+<p><strong>File: <code>scripts/Spikes.js</code></strong> (new file, the whole file; attach it to the <code>spikes</code> prefab)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, Vector3 } from 'nord';
 import Health from './Health.js';
 
@@ -773,6 +805,8 @@ export default class Spikes extends MonoBehaviour {
     if (Vector3.Distance(this.position, Vector3.From(this.hero.pos)) &lt; 14) this.hero.getScript(Health).TakeDamage(this.entity);
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>spikes</code> prefab, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Spikes.js</span>. Prefabs: first <span class="c-ui">Assets ▸ right-click the prefab ▸ Open prefab</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
+<p><strong>File: <code>scripts/Exit.js</code></strong> (new file, the whole file; attach it to the <code>exit</code> prefab)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, Time, Vector3 } from 'nord';
 import Run from './Run.js';
 
@@ -784,6 +818,7 @@ export default class Exit extends MonoBehaviour {
     if (!this.done &amp;&amp; Vector3.Distance(this.position, Vector3.From(this.hero.pos)) &lt; 16) { this.done = true; Run.instance.End(true); }
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>exit</code> prefab, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Exit.js</span>. Prefabs: first <span class="c-ui">Assets ▸ right-click the prefab ▸ Open prefab</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <h2 id="12-light">12 Light<a class="anchor" href="#12-light">#</a></h2>
 <p>The lights are part 6 again: <code>Light2D</code> with the system script, <code>Lantern</code> as a child of the hero, <strong>braziers</strong> with <code>light2d-source</code> and walls, crates and gates with the occluder (all in their prefabs). Details that make it look good:</p>
 <ul>
@@ -794,6 +829,7 @@ export default class Exit extends MonoBehaviour {
 </ul>
 <p><img src="../../assets/screenshots/ember-crypt-gate.png" alt="Gates, spikes and shadows"></p>
 <h2 id="13-the-hud-pause-and-end-screens">13 The HUD, pause and end screens<a class="anchor" href="#13-the-hud-pause-and-end-screens">#</a></h2>
+<p><strong>File: <code>scripts/Hud.js</code></strong> (new file, the whole file; attach it to the <code>Hud</code> object)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager, EventBus, SceneManager } from 'nord';
 import Run from './Run.js';
 
@@ -855,6 +891,7 @@ export default class Hud extends MonoBehaviour {
     this.offs?.forEach((off) =&gt; off?.());
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>Hud</code> object, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Hud.js</span>. If the object does not exist yet, create it first with <span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span> and rename it. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li><strong>Hearts</strong> are images redrawn on every <code>lives</code> event: full and empty hearts, <code>image-rendering: pixelated</code> to stay crisp.</li>
 <li><strong>The clock</strong> formats <code>Run.instance.elapsed</code>.</li>
@@ -865,6 +902,7 @@ export default class Hud extends MonoBehaviour {
 <p><img src="../../assets/screenshots/ember-crypt-over.png" alt="Game over"></p>
 <h2 id="14-the-title-scene">14 The title scene<a class="anchor" href="#14-the-title-scene">#</a></h2>
 <p><code>scenes/title.scene.json</code> holds a camera, a dark floor, an <code>Embers</code> entity (a particles component that keeps emitting), the hero, a brazier, a slime and an entity <code>Title</code> running:</p>
+<p><strong>File: <code>scripts/Title.js</code></strong> (new file, the whole file; attach it to the <code>Title</code> object of the title scene)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, PlayerPrefs, SceneManager } from 'nord';
 
 export default class Title extends MonoBehaviour {
@@ -882,6 +920,7 @@ export default class Title extends MonoBehaviour {
 
   OnDestroy() { this.widgets?.forEach((w) =&gt; w.remove()); }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>Title</code> object of the title scene, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Title.js</span>. If the object does not exist yet, create it first with <span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span> and rename it. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <p><code>PlayerPrefs.GetInt(&#39;ember.best&#39;, 0)</code> reads the saved score. <code>SceneManager.LoadScene</code> is Unity&#39;s. Every widget is kept in <code>this.widgets</code> and removed in <code>OnDestroy</code>, because <strong>UI outlives a scene change</strong>: forget it and the title text stays on top of your game.</p>
 <h2 id="15-check-yourself">15 Check yourself<a class="anchor" href="#15-check-yourself">#</a></h2>
 <ul>
@@ -896,6 +935,7 @@ export default class Title extends MonoBehaviour {
 </ul>
 <p>The project has an automated test, <code>node tools/ember-crypt-test.mjs</code>, that does all of this in a headless browser and made the screenshots on this page.</p>
 <h2 id="16-ship-it">16 Ship it<a class="anchor" href="#16-ship-it">#</a></h2>
+<p><strong>Terminal</strong> (in the folder that contains the <code>ember-crypt</code> project folder):</p>
 <pre class="code" data-lang="bash"><code>nord check ember-crypt
 nord build ember-crypt --minify --zip -o ember-crypt-web
 nord build ember-crypt --single-file -o ember-crypt-one</code></pre>

@@ -198,12 +198,14 @@ export async function mount(root) {
 <p>The scene freezes both shader time and the audio-texture snapshot after a drop so the terrain remains still while the cube falls. The music can keep playing; its new samples reach the terrain when you resume. Click another point to drop again. <strong>Resume terrain</strong> returns to the original moving shader and clears the old cube.</p>
 <h2 id="6-make-the-contact-agree-with-the-picture">6. Make the contact agree with the picture<a class="anchor" href="#6-make-the-contact-agree-with-the-picture">#</a></h2>
 <p>The original terrain surface is:</p>
+<p><strong>Excerpt</strong> (from the shader in <code>terrain-shader.js</code> of the finished project):</p>
 <pre class="code" data-lang="glsl"><code>float height = 2.0 * trinoise(worldXZ).x;</code></pre>
 <p>The host evaluates that <strong>same GLSL function on the GPU</strong> instead of approximating its noise with a different CPU function. It encodes one height in two colour channels and reads it back. The encoded height range is −0.25 to 2.25, so audio displacement below zero is preserved. Five probes—centre plus four corners—give a conservative contact height under the cube&#39;s footprint.</p>
 <p>Gravity changes the cube&#39;s height. When its bottom reaches the sampled ground height, the demo stops it there and displays both values. The cube is projected as a solid box onto a transparent canvas over the shader.</p>
 <p>This is deliberately a small <strong>height-probe demonstration</strong>. It is not a complete terrain physics mesh or full depth-occlusion renderer. For large objects, steep terrain, rolling contact or a character walking everywhere, create a matching mesh/collider or a more complete collision model. A shader image by itself cannot supply a Havok/Matter collider automatically.</p>
 <h2 id="7-export-it">7. Export it<a class="anchor" href="#7-export-it">#</a></h2>
 <p>Use the editor&#39;s <strong>Export… → HTML</strong>, or:</p>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="bash"><code>nord export my-shader-app --target html</code></pre>
 <p>Serve/share the whole output folder, including the GLSL and WAV. The example requires WebGL2. If you change the shader&#39;s camera speed from its active audio-mode value of 5, update the host&#39;s <code>cameraZ()</code> to match, since that function projects the cube and reconstructs clicked positions.</p>
 <p>The provided source did not name an author/licence; the example retains it without inventing an ownership claim. Host code and generated audio are original engine example work, credited Crowelian 2026 + Sonnet.</p>

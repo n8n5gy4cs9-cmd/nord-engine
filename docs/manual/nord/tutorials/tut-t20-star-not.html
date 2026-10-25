@@ -303,6 +303,8 @@ try {
 <figure class="shot"><img src="../../assets/tutorials/star-not-space.png" alt="Star-Not atlas: three ships, the Sun and eight planets, satellite, asteroid, pulse and explosion" loading="lazy"><figcaption>Game sprites: examples/star-not/assets/sprites/space.png. Index 0 is the Earth ship; indices 4–12 are the Sun and eight planets.</figcaption></figure>
 <figure class="shot"><img src="../../assets/tutorials/star-not-ui.png" alt="Star-Not atlas with the three race portraits and fuel, crew, treaty, relay and other interface icons" loading="lazy"><figcaption>UI sprites: examples/star-not/assets/ui/portraits.png. Three portraits and thirteen reusable interface symbols.</figcaption></figure><p>The full numbered inventory and every sound path are in <code>examples/star-not/assets.md</code>. The exact built-in ImageGen prompts are in <code>ART_DIRECTION.md</code>. The artwork and audio are original; none came from UQM.</p>
 <p>A sprite uses the PNG and its metadata together:</p>
+<p><strong>In the editor:</strong> select the object; in its <code>sprite</code> component pick the <strong>texture</strong> <code>assets/sprites/space.png</code> and the <strong>frame</strong> <span class="c-ui">Inspector</span>.</p>
+<p><strong>In the file</strong> the entity in <code>scenes/main.scene.json</code> (the Inspector writes it):</p>
 <pre class="code" data-lang="json"><code>{ &quot;type&quot;: &quot;sprite&quot;, &quot;texture&quot;: &quot;assets/sprites/space.png&quot;, &quot;frame&quot;: 0, &quot;size&quot;: [64, 64] }</code></pre>
 <p><code>frame</code> selects one picture in the atlas. <code>size</code> controls its displayed dimensions. Metadata records the source frame dimensions.</p>
 <h2 id="7-add-the-little-dom-helper">7. Add the little DOM helper<a class="anchor" href="#7-add-the-little-dom-helper">#</a></h2>
@@ -630,6 +632,7 @@ export default class StarNot extends NordScript {
 <p>The object pools are small, fixed lists of reusable Nord entities. Disabled bullet/explosion entities are reused when needed, rather than creating unlimited visual objects during a fight.</p>
 <h2 id="14-connect-sounds-and-music">14. Connect sounds and music<a class="anchor" href="#14-connect-sounds-and-music">#</a></h2>
 <p>The three music tracks are <code>cruise.wav</code>, <code>combat.wav</code> and <code>victory.wav</code>. The Audio manager loops music and crossfades between tracks. The eight effects play once for shots, damage, travel, dialogue, confirmation and encounter results.</p>
+<p><strong>File: <code>scripts/Audio.js</code></strong> (inside the method that fires a shot)</p>
 <pre class="code" data-lang="javascript"><code>this.audio.play('assets/audio/sfx/laser.wav', { volume: 0.5 });
 this.audio.music('assets/audio/music/cruise.wav', { fade: 0.45, volume: 0.32 });</code></pre>
 <p>The New/Continue click calls <code>audio.unlock()</code>. Browsers require that player gesture. Keep audio files local and include them when exporting.</p>
@@ -687,6 +690,7 @@ console.log('Generated Star-Not: 8 SFX and 3 original looping music tracks.');
 <p>The checkpoint is a <strong>planet checkpoint</strong>, not every bullet in the arena. Loading during combat returns to orbit so the encounter can restart. This is a deliberate small-game rule, explained in the menu.</p>
 <p>Victory needs all three cores and both new accords at Earth. Defeat happens after day 40. These rules belong to the campaign; a separate screen merely explains the result.</p>
 <h2 id="16-open-and-play-your-copy">16. Open and play your copy<a class="anchor" href="#16-open-and-play-your-copy">#</a></h2>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="bash"><code>nord serve my-star-not</code></pre>
 <p>Follow the guide route: Mercury → Mars → Jupiter → Venus → Saturn → Uranus if supplies are needed → Neptune → Earth. Mars accepts the Mercury scrap; Venus accepts the Jupiter ice. Dock after earning accords. Both outer patrols must be defeated for their cores.</p>
 <p>Choose co-op before the next encounter. P2 helps in combat; P1 handles travel and dialogue. If using a shared keyboard, its hardware may limit how many keys it can report at once. A standard gamepad avoids that overlap.</p>

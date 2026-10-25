@@ -28,6 +28,7 @@ export default class CoinRush extends NordScript {
 <p><code>import</code> loads an exported value from another module. <code>&#39;nord&#39;</code> is Nord&#39;s supplied module name. <code>class</code> groups state and functions; <code>extends NordScript</code> gives access to <code>this.scene</code>, <code>this.ui</code>, <code>this.events</code>, <code>this.save</code> and the other engine services. <code>this</code> means this particular script instance. Nord calls <code>start()</code> when the scene is ready.</p>
 <h2 id="2-declare-settings-the-inspector-can-edit">2. Declare settings the Inspector can edit<a class="anchor" href="#2-declare-settings-the-inspector-can-edit">#</a></h2>
 <p>Add this inside the class, above <code>start()</code>:</p>
+<p><strong>File: <code>scripts/course.js</code></strong> (add this inside the class, above <code>start()</code>)</p>
 <pre class="code" data-lang="js"><code>static attributes = {
   seconds: { type: 'number', default: 150, min: 10 },
   lives: { type: 'int', default: 3, min: 1 },
@@ -39,6 +40,7 @@ export default class CoinRush extends NordScript {
 <p><strong>Checkpoint:</strong> the settings appear and you can save an override without changing the script.</p>
 <h2 id="3-store-run-state-and-show-it">3. Store run state and show it<a class="anchor" href="#3-store-run-state-and-show-it">#</a></h2>
 <p>Replace the temporary <code>start()</code> with this smaller teaching version. Add the other two methods beside it, inside the same class:</p>
+<p><strong>File: <code>scripts/course.js</code></strong> (replace the temporary <code>start()</code> with this one and add the two other methods beside it, inside the class)</p>
 <pre class="code" data-lang="js"><code>start() {
   this.remaining = this.attrs.seconds;
   this.lives = this.attrs.lives;
@@ -65,6 +67,7 @@ draw() {
 <p><strong>Checkpoint:</strong> Play for a few seconds. The countdown decreases about once a second and never creates overlapping copies. At this intermediate stage zero does not end the run yet.</p>
 <h2 id="4-give-events-a-job">4. Give events a job<a class="anchor" href="#4-give-events-a-job">#</a></h2>
 <p>Add listeners in <code>start()</code> after initializing state:</p>
+<p><strong>File: <code>scripts/course.js</code></strong> (inside <code>start()</code>, after the state is initialised)</p>
 <pre class="code" data-lang="js"><code>this.offs = [
   this.events.on('score', n =&gt; this.addScore(n)),
   this.events.on('pickup', p =&gt; this.pickup(p)),
@@ -72,6 +75,7 @@ draw() {
 <p><code>on</code> subscribes to an event and returns an unsubscribe function. <code>n =&gt; this.addScore(n)</code> is an <strong>arrow function</strong>: when a score arrives, call this instance&#39;s method with the supplied number. Storing unsubscribe functions in an array lets you clean them up together.</p>
 <p>The existing pickup script emits a numeric <code>score</code> event and then <code>pickup</code> with <code>{ kind, value }</code>. Use score for points and pickup for the number of collected coins. Boss and enemy rewards also emit score, so counting every score event as a coin would make the objective wrong.</p>
 <p>Start with these simple methods:</p>
+<p><strong>File: <code>scripts/course.js</code></strong> (add these methods inside the class, beside <code>start()</code>)</p>
 <pre class="code" data-lang="js"><code>addScore(n) {
   if (typeof n !== 'number' || n &lt;= 0) return;
   this.score += n;
@@ -86,6 +90,7 @@ pickup(p) {
 <p><strong>Checkpoint:</strong> a coin disappears, increases the coin count by one and adds two seconds. A stomp awards points but does not increase the coin count.</p>
 <h2 id="5-build-the-combo-deliberately">5. Build the combo deliberately<a class="anchor" href="#5-build-the-combo-deliberately">#</a></h2>
 <p>The complete version replaces the simple addScore with:</p>
+<p><strong>File: <code>scripts/course.js</code></strong> (replace the simple <code>addScore</code> with this one)</p>
 <pre class="code" data-lang="js"><code>addScore(n) {
   if (this.ended || typeof n !== 'number' || n &lt;= 0) return;
   this.combo = this.comboLeft &gt; 0 ? Math.min(5, this.combo + 1) : 1;
@@ -98,6 +103,7 @@ pickup(p) {
 <h2 id="6-lives-checkpoint-ownership-and-a-fair-goal">6. Lives, checkpoint ownership and a fair goal<a class="anchor" href="#6-lives-checkpoint-ownership-and-a-fair-goal">#</a></h2>
 <p>Subscribe to <code>died</code>, <code>checkpoint</code> and <code>game:win</code> as shown in the final controller. <code>loseLife()</code> spends one life and resets the combo. The existing checkpoint scripts already listen for death, heal the hero and return to the last flag after a delay; your controller should not schedule a second competing teleport.</p>
 <p>The final checkWin deliberately has two conditions: <code>bossCleared</code> and enough collected coins. Defeating the boss first displays how many more coins you need. A later pickup rechecks victory, so the run is not stuck after the boss is gone.</p>
+<p><strong>File: <code>scripts/course.js</code></strong> (add this method inside the class)</p>
 <pre class="code" data-lang="js"><code>checkWin() {
   if (!this.bossCleared) return;
   if (this.coins &lt; this.attrs.requiredCoins) {
@@ -110,6 +116,7 @@ pickup(p) {
 <p><strong>Checkpoint:</strong> at zero lives you get a retry menu; at zero time you get a different loss message. A living player with eight coins still needs the boss. Boss-first completion remains recoverable.</p>
 <h2 id="7-pause-without-locking-the-player-out">7. Pause without locking the player out<a class="anchor" href="#7-pause-without-locking-the-player-out">#</a></h2>
 <p>A pause function can stop updates with <code>this.game.pause()</code>. A keyboard check inside update would then stop too, so it could never detect the key that resumes the game. Use DOM menu buttons: their click callbacks still run while simulation is paused.</p>
+<p><strong>File: <code>scripts/course.js</code></strong> (inside <code>start()</code>, after the HUD exists)</p>
 <pre class="code" data-lang="js"><code>this.ui.menu('course-menu', [
   { text: 'Resume', onClick: () =&gt; {
     this.ui.clear('course-menu');
@@ -122,10 +129,12 @@ this.ui.show('course-menu');</code></pre>
 <p><strong>Checkpoint:</strong> pause for five seconds. The remaining time stays still. Resume moves it again. Restart restores the coins and lives.</p>
 <h2 id="8-save-the-result-and-clean-up">8. Save the result and clean up<a class="anchor" href="#8-save-the-result-and-clean-up">#</a></h2>
 <p>A win adds <code>ceil(remaining) * 5 + lives * 100</code> to score, then stores the larger of the old record and current score:</p>
+<p><strong>File: <code>scripts/course.js</code></strong> (inside the method that ends the run)</p>
 <pre class="code" data-lang="js"><code>this.best = Math.max(this.best, this.score);
 this.save.set('coin-rush.best', this.best);</code></pre>
 <p>Load the record in start with <code>this.save.get(&#39;coin-rush.best&#39;, 0)</code>. This is a local best score, not a mid-run save. The key is specific to this game; sharing the generic name <code>highscore</code> with another prototype would mix records.</p>
 <p>Cleanup is part of game code:</p>
+<p><strong>File: <code>scripts/course.js</code></strong> (add this method inside the class)</p>
 <pre class="code" data-lang="js"><code>onDestroy() {
   this.offs.forEach(off =&gt; off());
   this.ui.clear('course');
@@ -138,6 +147,7 @@ this.save.set('coin-rush.best', this.best);</code></pre>
 <p>Use Console while learning. Temporarily add <code>console.log(&#39;pickup&#39;, p)</code> inside pickup to inspect payloads, then remove it. A red syntax error usually points to a missing brace, quote or comma. An undefined field often means you pasted a method but did not initialize its state in start. A missing HUD usually means the custom screen was not shown. Default changes that appear ineffective may have scene overrides.</p>
 <p>Test a full loop: coin → combo → flag → damage/death → respawn → boss → victory → retry. Also test boss-first, no lives and timeout. Finish a win, reload the page and check that Best persists while the run resets.</p>
 <p>From the parent folder of your personal project:</p>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="sh"><code>nord check my-coin-rush
 nord build my-coin-rush --out coin-rush-web --zip
 python3 -m http.server 8000 --directory coin-rush-web</code></pre>
@@ -146,6 +156,7 @@ python3 -m http.server 8000 --directory coin-rush-web</code></pre>
 <h2 id="complete-game-source">Complete game source<a class="anchor" href="#complete-game-source">#</a></h2>
 <p>The first file below is every line of the custom game controller. The remaining disclosures contain <strong>all other text source files</strong> in the finished project, including inherited JavaScript, project/scene JSON, map data, HTML and asset metadata. Art/audio binaries are included in the <a href="../../assets/downloads/coin-rush-source.zip">complete source download</a>. Copying course.js alone still requires the Platformer foundation and the two attachment removals described in step 1.</p>
 <!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="scripts-course-js">scripts/course.js<a class="anchor" href="#scripts-course-js">#</a></h3>
+<p><strong>File: <code>scripts/course.js</code></strong> (the complete file, for comparison)</p>
 <pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
 
 export default class CoinRush extends NordScript {
@@ -275,7 +286,8 @@ export default class CoinRush extends NordScript {
   }
 }</code></pre>
 <details>
-<summary>Complete assets/maps/level.tilemap.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete assets/maps/level.tilemap.json</summary><p><strong>File: <code>assets/maps/level.tilemap.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;tileset&quot;: &quot;assets/sprites/tileset_platformer.png&quot;,
   &quot;tileWidth&quot;: 16,
   &quot;tileHeight&quot;: 16,
@@ -2638,7 +2650,8 @@ export default class CoinRush extends NordScript {
   ]
 }</code></pre>
 </details><details>
-<summary>Complete assets/sprites/coin.png.meta.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete assets/sprites/coin.png.meta.json</summary><p><strong>File: <code>assets/sprites/coin.png.meta.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;type&quot;: &quot;spritesheet&quot;,
   &quot;frameWidth&quot;: 16,
   &quot;frameHeight&quot;: 16,
@@ -2659,7 +2672,8 @@ export default class CoinRush extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete assets/sprites/enemy_slime.png.meta.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete assets/sprites/enemy_slime.png.meta.json</summary><p><strong>File: <code>assets/sprites/enemy_slime.png.meta.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;type&quot;: &quot;spritesheet&quot;,
   &quot;frameWidth&quot;: 32,
   &quot;frameHeight&quot;: 32,
@@ -2678,7 +2692,8 @@ export default class CoinRush extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete assets/sprites/flag.png.meta.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete assets/sprites/flag.png.meta.json</summary><p><strong>File: <code>assets/sprites/flag.png.meta.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;type&quot;: &quot;spritesheet&quot;,
   &quot;frameWidth&quot;: 16,
   &quot;frameHeight&quot;: 32,
@@ -2697,7 +2712,8 @@ export default class CoinRush extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete assets/sprites/hero.png.meta.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete assets/sprites/hero.png.meta.json</summary><p><strong>File: <code>assets/sprites/hero.png.meta.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;type&quot;: &quot;spritesheet&quot;,
   &quot;frameWidth&quot;: 32,
   &quot;frameHeight&quot;: 32,
@@ -2738,7 +2754,8 @@ export default class CoinRush extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete assets/sprites/tileset_platformer.png.meta.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete assets/sprites/tileset_platformer.png.meta.json</summary><p><strong>File: <code>assets/sprites/tileset_platformer.png.meta.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;type&quot;: &quot;tileset&quot;,
   &quot;tileWidth&quot;: 16,
   &quot;tileHeight&quot;: 16,
@@ -2747,7 +2764,8 @@ export default class CoinRush extends NordScript {
   &quot;layout&quot;: &quot;cols: top, top-left, top-right, mid, left, right, bottom, platform; rows: grass, stone, sand, snow&quot;
 }</code></pre>
 </details><details>
-<summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+<summary>Complete index.html</summary><p><strong>File: <code>index.html</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Coin Rush — code workshop&lt;/title&gt;
 &lt;style&gt;html,body{margin:0;height:100%;background:#101418;overflow:hidden}#stage{position:relative;width:100vw;height:100vh}&lt;/style&gt;
 &lt;script type=&quot;importmap&quot;&gt;{&quot;imports&quot;:{&quot;nord&quot;:&quot;/runtime/core/index.js&quot;}}&lt;/script&gt;&lt;/head&gt;
@@ -2762,7 +2780,8 @@ try {
 } catch (e) { console.error(e); window.__nord_error = String(e); }
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
 </details><details>
-<summary>Complete nord.project.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete nord.project.json</summary><p><strong>File: <code>nord.project.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;format&quot;: 1,
   &quot;name&quot;: &quot;Coin Rush — code workshop&quot;,
   &quot;id&quot;: &quot;com.crowelian.coinrush&quot;,
@@ -2831,7 +2850,8 @@ try {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scenes/main.scene.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete scenes/main.scene.json</summary><p><strong>File: <code>scenes/main.scene.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;format&quot;: 1,
   &quot;name&quot;: &quot;main&quot;,
   &quot;settings&quot;: {
@@ -4505,7 +4525,8 @@ try {
   ]
 }</code></pre>
 </details><details>
-<summary>Complete scripts/ai-patrol.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;ai.patrol&quot;,&quot;title&quot;:&quot;Enemy AI: patrol&quot;,&quot;category&quot;:&quot;ai&quot;,&quot;tier&quot;:[&quot;2d&quot;],&quot;tags&quot;:[&quot;enemy&quot;,&quot;patrol&quot;,&quot;platformer&quot;],&quot;requires&quot;:[&quot;rigidbody&quot;],&quot;description&quot;:&quot;Walks back and forth over a distance, turning at walls/ledge ends (checks ground ahead with overlapBox) and pauses at the ends.&quot;}
+<summary>Complete scripts/ai-patrol.js</summary><p><strong>File: <code>scripts/ai-patrol.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;ai.patrol&quot;,&quot;title&quot;:&quot;Enemy AI: patrol&quot;,&quot;category&quot;:&quot;ai&quot;,&quot;tier&quot;:[&quot;2d&quot;],&quot;tags&quot;:[&quot;enemy&quot;,&quot;patrol&quot;,&quot;platformer&quot;],&quot;requires&quot;:[&quot;rigidbody&quot;],&quot;description&quot;:&quot;Walks back and forth over a distance, turning at walls/ledge ends (checks ground ahead with overlapBox) and pauses at the ends.&quot;}
 import { NordScript } from 'nord';
 
 export default class Patrol extends NordScript {
@@ -4523,7 +4544,8 @@ export default class Patrol extends NordScript {
   onCollisionEnter(o) { if (!o.hasTag('player') &amp;&amp; Math.abs(o.pos[1] - this.entity.pos[1]) &lt; 12) this.dir = -this.dir; }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/boss.js</summary><pre class="code" data-lang="js"><code>import Enemy from './enemy.js';
+<summary>Complete scripts/boss.js</summary><p><strong>File: <code>scripts/boss.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>import Enemy from './enemy.js';
 
 export default class Boss extends Enemy {
   static attributes = { ...Enemy.attributes, hp: { type: 'int', default: 5 }, damage: { type: 'number', default: 2 } };
@@ -4534,7 +4556,8 @@ export default class Boss extends Enemy {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/camera-follow.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;camera.follow&quot;,&quot;title&quot;:&quot;Camera follow (lerp + deadzone + look-ahead)&quot;,&quot;category&quot;:&quot;camera&quot;,&quot;tier&quot;:[&quot;2d&quot;],&quot;tags&quot;:[&quot;camera&quot;,&quot;follow&quot;,&quot;deadzone&quot;],&quot;description&quot;:&quot;Put on the camera entity (its position is the view centre; remove the camera's own 'follow'): smoothly follows a target (by name or tag) with a deadzone and optional look-ahead in the movement direction, clamped to world bounds.&quot;}
+<summary>Complete scripts/camera-follow.js</summary><p><strong>File: <code>scripts/camera-follow.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;camera.follow&quot;,&quot;title&quot;:&quot;Camera follow (lerp + deadzone + look-ahead)&quot;,&quot;category&quot;:&quot;camera&quot;,&quot;tier&quot;:[&quot;2d&quot;],&quot;tags&quot;:[&quot;camera&quot;,&quot;follow&quot;,&quot;deadzone&quot;],&quot;description&quot;:&quot;Put on the camera entity (its position is the view centre; remove the camera's own 'follow'): smoothly follows a target (by name or tag) with a deadzone and optional look-ahead in the movement direction, clamped to world bounds.&quot;}
 import { NordScript } from 'nord';
 
 export default class CameraFollow extends NordScript {
@@ -4571,7 +4594,8 @@ export default class CameraFollow extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/checkpoint.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.checkpoint&quot;,&quot;title&quot;:&quot;Checkpoints &amp; respawn&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;checkpoint&quot;,&quot;respawn&quot;],&quot;requires&quot;:[&quot;trigger&quot;],&quot;description&quot;:&quot;Put on every checkpoint trigger entity: touching one sets the respawn point; when the global 'died' event fires (or y passes killY) the player is moved back and healed after a delay. Emits 'checkpoint' and 'respawned'.&quot;}
+<summary>Complete scripts/checkpoint.js</summary><p><strong>File: <code>scripts/checkpoint.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.checkpoint&quot;,&quot;title&quot;:&quot;Checkpoints &amp; respawn&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;checkpoint&quot;,&quot;respawn&quot;],&quot;requires&quot;:[&quot;trigger&quot;],&quot;description&quot;:&quot;Put on every checkpoint trigger entity: touching one sets the respawn point; when the global 'died' event fires (or y passes killY) the player is moved back and healed after a delay. Emits 'checkpoint' and 'respawned'.&quot;}
 import { NordScript } from 'nord';
 
 export default class Checkpoint extends NordScript {
@@ -4589,7 +4613,8 @@ export default class Checkpoint extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/enemy.js</summary><pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+<summary>Complete scripts/enemy.js</summary><p><strong>File: <code>scripts/enemy.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
 
 // Contact rules: land on top of it (falling) → it dies and you bounce; touch it from the side → you take damage.
 export default class Enemy extends NordScript {
@@ -4607,7 +4632,8 @@ export default class Enemy extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/fx-hitstop.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;fx.hitstop-slowmo&quot;,&quot;title&quot;:&quot;Hit-stop, slow-mo, flash&quot;,&quot;category&quot;:&quot;fx&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;juice&quot;,&quot;hitstop&quot;,&quot;slowmo&quot;,&quot;flash&quot;],&quot;description&quot;:&quot;Game-feel events: 'hitstop' (ms) freezes time briefly, 'slowmo' ({scale,time}) eases timeScale, 'flash' flashes the screen. Also reacts to the global 'hit' event with a tiny hit-stop.&quot;}
+<summary>Complete scripts/fx-hitstop.js</summary><p><strong>File: <code>scripts/fx-hitstop.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;fx.hitstop-slowmo&quot;,&quot;title&quot;:&quot;Hit-stop, slow-mo, flash&quot;,&quot;category&quot;:&quot;fx&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;juice&quot;,&quot;hitstop&quot;,&quot;slowmo&quot;,&quot;flash&quot;],&quot;description&quot;:&quot;Game-feel events: 'hitstop' (ms) freezes time briefly, 'slowmo' ({scale,time}) eases timeScale, 'flash' flashes the screen. Also reacts to the global 'hit' event with a tiny hit-stop.&quot;}
 import { NordScript } from 'nord';
 
 export default class Juice extends NordScript {
@@ -4621,7 +4647,8 @@ export default class Juice extends NordScript {
   stop(ms) { const prev = this.game.timeScale || 1; if (this.frozen) return; this.frozen = true; this.game.timeScale = 0.0001; setTimeout(() =&gt; { this.game.timeScale = prev; this.frozen = false; }, ms); }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/health.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.health&quot;,&quot;title&quot;:&quot;Health &amp; damage&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;health&quot;,&quot;damage&quot;,&quot;invulnerable&quot;,&quot;game-ready&quot;],&quot;description&quot;:&quot;Hit points with damage/heal, invulnerability frames with blink, death handling. Listens for the entity 'damage' event {amount}; emits 'health' {hp,max} on the entity and global 'died' when it hits 0.&quot;}
+<summary>Complete scripts/health.js</summary><p><strong>File: <code>scripts/health.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.health&quot;,&quot;title&quot;:&quot;Health &amp; damage&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;health&quot;,&quot;damage&quot;,&quot;invulnerable&quot;,&quot;game-ready&quot;],&quot;description&quot;:&quot;Hit points with damage/heal, invulnerability frames with blink, death handling. Listens for the entity 'damage' event {amount}; emits 'health' {hp,max} on the entity and global 'died' when it hits 0.&quot;}
 import { NordScript } from 'nord';
 
 export default class Health extends NordScript {
@@ -4653,7 +4680,8 @@ export default class Health extends NordScript {
   #sync() { this.entity.emit('health', { hp: this.hp, max: this.attrs.max }); this.bar?.set('uiBar', 'value', this.hp / this.attrs.max); }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/hero-fx.js</summary><pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+<summary>Complete scripts/hero-fx.js</summary><p><strong>File: <code>scripts/hero-fx.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
 
 // Hero animation + sound glue (kept separate from the movement controller on purpose).
 export default class HeroFx extends NordScript {
@@ -4665,7 +4693,8 @@ export default class HeroFx extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/mk.js</summary><pre class="code" data-lang="js"><code>// Tiny helpers to spawn coloured rectangles / circles / text at runtime (placeholder art). Generated by tools/gen_examples.mjs.
+<summary>Complete scripts/mk.js</summary><p><strong>File: <code>scripts/mk.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// Tiny helpers to spawn coloured rectangles / circles / text at runtime (placeholder art). Generated by tools/gen_examples.mjs.
 const base = (name, x, y, z, tags, comps) =&gt; ({ name, tags: tags ?? [], transform: { pos: [x, y, z ?? 0], rot: [0, 0, 0], scale: [1, 1, 1] }, components: comps, scripts: [], children: [] });
 export const rectData = (name, x, y, w, h, color, o = {}) =&gt; base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/square.png', size: [w, h], tint: color, alpha: o.alpha ?? 1 }]);
 export const circleData = (name, x, y, d, color, o = {}) =&gt; base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/circle.png', size: [d, d], tint: color, alpha: o.alpha ?? 1 }]);
@@ -4675,7 +4704,8 @@ export const circle = (scene, ...a) =&gt; scene.spawnData(circleData(...a));
 export const label = (scene, ...a) =&gt; scene.spawnData(textData(...a));
 export const aabb = (a, b) =&gt; Math.abs(a.pos[0] - b.pos[0]) * 2 &lt; a.w + b.w &amp;&amp; Math.abs(a.pos[1] - b.pos[1]) * 2 &lt; a.h + b.h;</code></pre>
 </details><details>
-<summary>Complete scripts/pickup.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.pickup&quot;,&quot;title&quot;:&quot;Pickups &amp; power-ups&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;coin&quot;,&quot;pickup&quot;,&quot;powerup&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;trigger&quot;],&quot;description&quot;:&quot;Put on collectible entities: when the player touches it, emits a global event (default 'score' + value), or applies a power-up (heal / speed / shield via entity events), plays a sound and disappears with a pop tween. Magnetises toward the player when close.&quot;}
+<summary>Complete scripts/pickup.js</summary><p><strong>File: <code>scripts/pickup.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.pickup&quot;,&quot;title&quot;:&quot;Pickups &amp; power-ups&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;coin&quot;,&quot;pickup&quot;,&quot;powerup&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;trigger&quot;],&quot;description&quot;:&quot;Put on collectible entities: when the player touches it, emits a global event (default 'score' + value), or applies a power-up (heal / speed / shield via entity events), plays a sound and disappears with a pop tween. Magnetises toward the player when close.&quot;}
 import { NordScript } from 'nord';
 
 export default class Pickup extends NordScript {
@@ -4697,7 +4727,8 @@ export default class Pickup extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/platformer2d.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;controller.platformer2d&quot;,&quot;title&quot;:&quot;Platformer 2D&quot;,&quot;category&quot;:&quot;controllers&quot;,&quot;tier&quot;:[&quot;2d&quot;],&quot;tags&quot;:[&quot;platformer&quot;,&quot;jump&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;rigidbody&quot;,&quot;collider&quot;],&quot;description&quot;:&quot;Side-scroller controller: run, coyote time, jump buffer, variable jump height, wall slide/jump and dash. Needs actions left/right/jump (+ optional dash).&quot;}
+<summary>Complete scripts/platformer2d.js</summary><p><strong>File: <code>scripts/platformer2d.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;controller.platformer2d&quot;,&quot;title&quot;:&quot;Platformer 2D&quot;,&quot;category&quot;:&quot;controllers&quot;,&quot;tier&quot;:[&quot;2d&quot;],&quot;tags&quot;:[&quot;platformer&quot;,&quot;jump&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;rigidbody&quot;,&quot;collider&quot;],&quot;description&quot;:&quot;Side-scroller controller: run, coyote time, jump buffer, variable jump height, wall slide/jump and dash. Needs actions left/right/jump (+ optional dash).&quot;}
 import { NordScript } from 'nord';
 
 export default class Platformer2D extends NordScript {
@@ -4748,7 +4779,8 @@ export default class Platformer2D extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/score.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.score&quot;,&quot;title&quot;:&quot;Score, combo &amp; high score&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;score&quot;,&quot;combo&quot;,&quot;highscore&quot;,&quot;hud&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;ui&quot;],&quot;description&quot;:&quot;Score counter with a combo multiplier that decays, persistent high score and a HUD label. Add points via the global event 'score' (number) or addScore(n).&quot;}
+<summary>Complete scripts/score.js</summary><p><strong>File: <code>scripts/score.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.score&quot;,&quot;title&quot;:&quot;Score, combo &amp; high score&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;score&quot;,&quot;combo&quot;,&quot;highscore&quot;,&quot;hud&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;ui&quot;],&quot;description&quot;:&quot;Score counter with a combo multiplier that decays, persistent high score and a HUD label. Add points via the global event 'score' (number) or addScore(n).&quot;}
 import { NordScript } from 'nord';
 
 export default class Score extends NordScript {
@@ -4768,7 +4800,8 @@ export default class Score extends NordScript {
   #draw() { this.label?.set(`Score ${this.score}${this.combo &gt; 1 ? `  x${this.combo}` : ''}   Best ${this.high}`); }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/ui-gameover.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;ui.game-over&quot;,&quot;title&quot;:&quot;Game over / win screen&quot;,&quot;category&quot;:&quot;ui&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;game-over&quot;,&quot;win&quot;,&quot;restart&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;ui&quot;],&quot;description&quot;:&quot;Shows a Game Over screen on the global 'game:over' (or the configured death event) and a You Win screen on 'game:win' (also 'wave:all-done'), with Restart. Shows the score if gameplay.score is present.&quot;}
+<summary>Complete scripts/ui-gameover.js</summary><p><strong>File: <code>scripts/ui-gameover.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;ui.game-over&quot;,&quot;title&quot;:&quot;Game over / win screen&quot;,&quot;category&quot;:&quot;ui&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;game-over&quot;,&quot;win&quot;,&quot;restart&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;ui&quot;],&quot;description&quot;:&quot;Shows a Game Over screen on the global 'game:over' (or the configured death event) and a You Win screen on 'game:win' (also 'wave:all-done'), with Restart. Shows the score if gameplay.score is present.&quot;}
 import { NordScript } from 'nord';
 
 export default class GameOver extends NordScript {
@@ -4785,7 +4818,8 @@ export default class GameOver extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/ui-hud.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;ui.hud&quot;,&quot;title&quot;:&quot;HUD: hearts, bars, score&quot;,&quot;category&quot;:&quot;ui&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;hud&quot;,&quot;hearts&quot;,&quot;health-bar&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;ui&quot;,&quot;gameplay.health&quot;],&quot;description&quot;:&quot;Heads-up display bound to events: hearts or a health bar from the target's 'health' entity event, optional mana bar from the global 'mana' event, and a coin counter from 'pickup'. Put anywhere in the scene.&quot;}
+<summary>Complete scripts/ui-hud.js</summary><p><strong>File: <code>scripts/ui-hud.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;ui.hud&quot;,&quot;title&quot;:&quot;HUD: hearts, bars, score&quot;,&quot;category&quot;:&quot;ui&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;hud&quot;,&quot;hearts&quot;,&quot;health-bar&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;ui&quot;,&quot;gameplay.health&quot;],&quot;description&quot;:&quot;Heads-up display bound to events: hearts or a health bar from the target's 'health' entity event, optional mana bar from the global 'mana' event, and a coin counter from 'pickup'. Put anywhere in the scene.&quot;}
 import { NordScript } from 'nord';
 
 export default class Hud extends NordScript {
@@ -4799,7 +4833,8 @@ export default class Hud extends NordScript {
   onDestroy() { this.hearts?.remove(); this.bar?.remove(); this.coin?.remove(); this.off?.(); }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/util-sfx.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;util.sfx-synth&quot;,&quot;title&quot;:&quot;Procedural sfx (jsfxr-style)&quot;,&quot;category&quot;:&quot;utilities&quot;,&quot;tier&quot;:[&quot;any&quot;],&quot;tags&quot;:[&quot;audio&quot;,&quot;sfx&quot;,&quot;synth&quot;,&quot;retro&quot;],&quot;description&quot;:&quot;Generates retro sound effects with WebAudio, no files needed: sfx(game,'coin'|'jump'|'hit'|'laser'|'explosion'|'powerup'). Listens to global events 'sfx' (name). import { sfx } from './util-sfx.js' for direct use.&quot;}
+<summary>Complete scripts/util-sfx.js</summary><p><strong>File: <code>scripts/util-sfx.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;util.sfx-synth&quot;,&quot;title&quot;:&quot;Procedural sfx (jsfxr-style)&quot;,&quot;category&quot;:&quot;utilities&quot;,&quot;tier&quot;:[&quot;any&quot;],&quot;tags&quot;:[&quot;audio&quot;,&quot;sfx&quot;,&quot;synth&quot;,&quot;retro&quot;],&quot;description&quot;:&quot;Generates retro sound effects with WebAudio, no files needed: sfx(game,'coin'|'jump'|'hit'|'laser'|'explosion'|'powerup'). Listens to global events 'sfx' (name). import { sfx } from './util-sfx.js' for direct use.&quot;}
 import { NordScript } from 'nord';
 
 const P = { coin: { w: 'square', f: [880, 1760], d: 0.18, v: 0.25 }, jump: { w: 'square', f: [260, 620], d: 0.2, v: 0.25 }, hit: { w: 'sawtooth', f: [220, 60], d: 0.18, v: 0.3 }, laser: { w: 'sawtooth', f: [1400, 200], d: 0.25, v: 0.2 }, powerup: { w: 'triangle', f: [300, 1200], d: 0.4, v: 0.3 }, explosion: { w: 'noise', f: [800, 40], d: 0.6, v: 0.4 } };

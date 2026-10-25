@@ -95,6 +95,7 @@
 <p>Quotes group words: <code>get-object-info &quot;Dev Console&quot;</code>. <span class="c-key">Tab</span> completes command names, enum values and object names. <span class="c-key">↑</span> <span class="c-key">↓</span> browse your history.</p>
 <h2 id="add-your-own-commands">Add your own commands<a class="anchor" href="#add-your-own-commands">#</a></h2>
 <p>In any script of your game:</p>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (the <code>import</code> at the top, the calls inside <code>Start()</code>)</p>
 <pre class="code" data-lang="js"><code>import { command, bindVar } from './dev-console.js';
 
 // a simple cheat

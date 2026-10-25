@@ -17,6 +17,7 @@
 <li>Point the scene at it: <code>&quot;settings&quot;: { &quot;eventSheet&quot;: &quot;events/main.events.json&quot; }</code> in the <code>.scene.json</code>.</li>
 <li>Press play. Nothing else is needed — scenes without that setting are unchanged.</li>
 </ol>
+<p><strong>In the file</strong> <code>events/main.events.json</code> (the <span class="c-ui">Event sheets</span> tab writes it; this one sheet adds 1 to <code>coins</code> and destroys the coin when the hero touches it):</p>
 <pre class="code" data-lang="json"><code>{ &quot;format&quot;: 1, &quot;name&quot;: &quot;main&quot;, &quot;events&quot;: [
   { &quot;type&quot;: &quot;variable&quot;, &quot;name&quot;: &quot;coins&quot;, &quot;valueType&quot;: &quot;number&quot;, &quot;value&quot;: 0 },
   { &quot;type&quot;: &quot;event&quot;,
@@ -87,6 +88,8 @@
 <h2 id="variables">Variables<a class="anchor" href="#variables">#</a></h2>
 <p><code>{ &quot;type&quot;: &quot;variable&quot;, … }</code> at the top = <strong>global</strong>. Inside an event&#39;s <code>children</code> = <strong>local</strong> (a fresh copy each run, or <code>isStatic</code> to keep it). <code>isConstant</code> makes it read-only. Entities have <strong>instance variables</strong>: <code>&quot;vars&quot;: { &quot;hp&quot;: 3 }</code> in the scene JSON, read as <code>Enemy.hp</code>.</p>
 <h2 id="functions-and-includes">Functions and includes<a class="anchor" href="#functions-and-includes">#</a></h2>
+<p><strong>In the editor:</strong> <span class="c-ui">Event sheets</span> tab ▸ add a <strong>function block</strong> to the sheet, give it a name and parameters, and fill its actions.</p>
+<p><strong>In the file</strong> <code>events/main.events.json</code> (a function block inside the sheet):</p>
 <pre class="code" data-lang="json"><code>{ &quot;type&quot;: &quot;function-block&quot;, &quot;name&quot;: &quot;AddScore&quot;, &quot;params&quot;: [{ &quot;name&quot;: &quot;n&quot;, &quot;initialValue&quot;: 1 }], &quot;returnType&quot;: &quot;number&quot;,
   &quot;actions&quot;: [ { &quot;object&quot;: &quot;Functions&quot;, &quot;id&quot;: &quot;set-return-value&quot;, &quot;params&quot;: { &quot;value&quot;: &quot;Function.Param(0) * 10&quot; } } ] }</code></pre>
 <p>Call with the <code>Functions → call</code> action or in an expression: <code>Functions.AddScore(5)</code>. <code>{ &quot;type&quot;: &quot;include&quot;, &quot;path&quot;: &quot;events/common.events.json&quot; }</code> splices another sheet in.</p>

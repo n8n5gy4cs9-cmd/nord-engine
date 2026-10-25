@@ -14,19 +14,23 @@
 <p><strong>Coyote time + jump buffer</strong> — use <code>platformer2d.js</code> (<code>coyoteTime</code>, <code>jumpBuffer</code>), or in your own script: remember <code>this.lastGrounded = time.elapsed</code> while grounded and allow a jump if <code>elapsed - lastGrounded &lt; 0.1</code>.</p>
 <p><strong>Smooth camera</strong> — <code>camera</code> component with <code>follow</code> and <code>lerp: 0.1</code>; add <code>deadzone: [60, 40]</code>.</p>
 <p><strong>Screen shake on hit</strong></p>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (inside <code>Start()</code>)</p>
 <pre class="code" data-lang="js"><code>this.entity.on('damage', () =&gt; this.game.camera.shake(150, 0.01));</code></pre>
 <p><strong>Slow motion</strong></p>
+<p><strong>File: your script, for example <code>scripts/Game.js</code></strong> (a line inside any method)</p>
 <pre class="code" data-lang="js"><code>this.game.timeScale = 0.3;
 this.after(0.5, () =&gt; (this.game.timeScale = 1));   // timers run on scaled time: 0.5 game-seconds ≈ 1.7 s real</code></pre>
 <h2 id="audio-on-first-touch">Audio on first touch<a class="anchor" href="#audio-on-first-touch">#</a></h2>
 <p><strong>Silent title screen / first click hits a button</strong> — install the opt-in <a href="../manual/audio.html#touch-to-start">touch-to-start gate</a>: <code>this.startGate = touchToStart(this.game, { title: &#39;MY GAME&#39; });</code> after building the title, and <code>this.startGate?.destroy()</code> in <code>onDestroy()</code>.</p>
 <h2 id="spawning">Spawning<a class="anchor" href="#spawning">#</a></h2>
 <p><strong>Bullets with a lifetime</strong></p>
+<p><strong>File: your script, for example <code>scripts/Gun.js</code></strong> (inside an <code>async</code> method)</p>
 <pre class="code" data-lang="js"><code>const b = await this.scene.spawn('prefabs/bullet.prefab.json', { pos: this.entity.worldPos });
 this.physics.setVelocity(b, this.facing * 400, 0);
 this.after(2, () =&gt; b.destroy());</code></pre>
 <p><strong>Random spawn points</strong> — <code>this.rng.pick(this.scene.findByTag(&#39;spawn&#39;)).worldPos</code>. <code>rng</code> is seedable (<code>new Rng(seed)</code>) for replays.</p>
 <h2 id="timers-amp-tweens">Timers &amp; tweens<a class="anchor" href="#timers-amp-tweens">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Spawner.js</code></strong> (inside <code>Start()</code>; keep <code>stop</code> to cancel it later)</p>
 <pre class="code" data-lang="js"><code>const stop = this.every(1, () =&gt; this.spawnCoin());   // later: stop()
 this.tween(this.entity.pos, [400, 100, 0], { duration: 1.2, ease: 'backOut' });</code></pre>
 <h2 id="data">Data<a class="anchor" href="#data">#</a></h2>

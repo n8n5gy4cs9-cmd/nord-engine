@@ -12,7 +12,8 @@
 <p>A <strong>behavior</strong> is a small bundle of ready-made logic you attach to an entity, like Construct&#39;s behaviors. They work from the scene file, from JavaScript, and from event sheets.</p>
 <figure class="shot"><img src="../../assets/screenshots/es-3-ledge.png" alt="The hero jumping onto a ledge, driven by the Platform behavior" loading="lazy"><figcaption>The hero is one entity with the <b>Platform</b> behavior. Slimes patrol with <b>Sine</b>, the star spins with <b>Rotate</b> and can be moved with <b>DragDrop</b>, the corner robot is a <b>Turret</b>.</figcaption></figure><aside class="box dummies"><div class="box-title">For dummy developers</div><p>Instead of writing &quot;if the key is down, add speed; if there is a wall, stop; add gravity…&quot;, you attach <strong>Platform</strong> and set <code>maxSpeed</code> and <code>jumpStrength</code>. The behavior does the rest every frame.</p>
 </aside><h2 id="attach-one">Attach one<a class="anchor" href="#attach-one">#</a></h2>
-<p>In the scene JSON:</p>
+<p><strong>In the editor:</strong> select the object, <span class="c-ui">Inspector ▸ + Add behavior ▸ Platform</span>, then set <strong>maxSpeed</strong>, <strong>jumpStrength</strong> and tick <strong>doubleJump</strong>. The object needs a collider: <span class="c-ui">Inspector ▸ + Add component ▸ collider</span>.</p>
+<p><strong>In the file</strong> the entity in the scene (the Inspector writes it):</p>
 <pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Hero&quot;, &quot;components&quot;: [ { &quot;type&quot;: &quot;collider&quot;, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: [14, 28] } ],
   &quot;behaviors&quot;: [ { &quot;type&quot;: &quot;Platform&quot;, &quot;properties&quot;: { &quot;maxSpeed&quot;: 220, &quot;doubleJump&quot;: true } } ] }</code></pre>
 <p>From JavaScript: <code>entity.addBehavior(&#39;Sine&#39;, { period: 2 })</code> and <code>entity.behavior(&#39;Platform&#39;).vx</code>.</p>
@@ -44,13 +45,16 @@
 </tbody></table>
 <p>Properties, conditions, actions and expressions of each are listed in the generated <strong><a href="../reference/event-reference.html#behaviors-ref">Event sheet reference</a></strong>.</p>
 <h2 id="in-an-event-sheet">In an event sheet<a class="anchor" href="#in-an-event-sheet">#</a></h2>
-<p>Behavior nodes carry <code>&quot;behavior&quot;: &quot;Platform&quot;</code>:</p>
+<p><strong>In the editor:</strong> <span class="c-ui">Event sheets</span> tab ▸ add an action, pick the object <code>Hero</code>, then the behavior <strong>Platform</strong> and the action <strong>Simulate control</strong> (parameter <code>jump</code>).</p>
+<p><strong>In the file</strong> the event sheet (<code>events/&lt;name&gt;.events.json</code>): behavior nodes carry <code>&quot;behavior&quot;: &quot;Platform&quot;</code>:</p>
 <pre class="code" data-lang="json"><code>{ &quot;object&quot;: &quot;Hero&quot;, &quot;behavior&quot;: &quot;Platform&quot;, &quot;id&quot;: &quot;simulate-control&quot;, &quot;params&quot;: { &quot;control&quot;: &quot;jump&quot; } }</code></pre>
 <p>Read behavior values with <code>Hero.Platform.VectorY</code>; use triggers like <code>Platform → on-jump</code>, <code>Turret → on-shoot</code>, <code>Timer → on-timer</code>, <code>Tween → on-tween-finished</code>, <code>Pathfinding → on-arrived</code>.</p>
-<p>The sample game shoots bullets from its turret with just two actions:</p>
+<p>The sample game shoots bullets from its turret with just two actions. <strong>In the editor:</strong> <span class="c-ui">Event sheets</span> tab ▸ action <strong>System ▸ Create object</strong> (object <code>Bullet</code>, layer 0, x <code>Turret.X</code>, y <code>Turret.Y</code>), then <strong>Bullet ▸ Set angle of motion</strong> (<code>Turret.Angle</code>).</p>
+<p><strong>In the file</strong> the event sheet (<code>events/&lt;name&gt;.events.json</code>):</p>
 <pre class="code" data-lang="json"><code>{ &quot;object&quot;: &quot;System&quot;, &quot;id&quot;: &quot;create-object&quot;, &quot;params&quot;: { &quot;object&quot;: &quot;Bullet&quot;, &quot;layer&quot;: &quot;0&quot;, &quot;x&quot;: &quot;Turret.X&quot;, &quot;y&quot;: &quot;Turret.Y&quot; } },
 { &quot;object&quot;: &quot;Bullet&quot;, &quot;behavior&quot;: &quot;Bullet&quot;, &quot;id&quot;: &quot;set-angle-of-motion&quot;, &quot;params&quot;: { &quot;angle&quot;: &quot;Turret.Angle&quot; } }</code></pre>
 <h2 id="write-your-own">Write your own<a class="anchor" href="#write-your-own">#</a></h2>
+<p><strong>File: <code>scripts/behaviors/Wobble.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { Behavior, registerBehavior } from 'nord';
 class Spin extends Behavior {
   static attributes = { speed: { type: 'number', default: 90 } };

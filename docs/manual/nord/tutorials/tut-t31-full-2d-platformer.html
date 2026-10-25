@@ -14,6 +14,7 @@
 <h2 id="1-make-your-own-project">1. Make your own project<a class="anchor" href="#1-make-your-own-project">#</a></h2>
 <p>In the welcome screen choose <strong>New project</strong>, select <strong>Platformer</strong>, and create a folder named <code>coin-canyon</code>. Open that project. Use a new project so your changes belong to you and the bundled example stays available as a reference.</p>
 <p>The terminal equivalent, from a folder where you keep projects:</p>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="sh"><code>nord new coin-canyon -t platformer
 nord serve coin-canyon</code></pre>
 <p>Open the local address printed by <code>serve</code>. Keep that process running during browser testing; Ctrl+C stops it. Editor users can use the editor&#39;s Play button instead.</p>
@@ -70,6 +71,7 @@ nord serve coin-canyon</code></pre>
 <p>The original Platformer uses a <strong>tilemap</strong>, not a <code>.level2d.json</code> authoring file. Open <code>assets/maps/level.tilemap.json</code> in the code editor. Its first layer has a <code>data</code> array with 23 rows and 100 columns. Tiles are 16×16 pixels. <code>-1</code> means empty; tile <code>0</code> and tile <code>3</code> are solid.</p>
 <p>The main walking surface is row <code>18</code>. The first gap occupies columns <code>22</code>, <code>23</code> and <code>24</code>. For an easier introductory jump, replace the <code>-1</code> at row 18, column 22 with <code>0</code>, leaving columns 23 and 24 empty. Array indices start at zero: row 18 is the nineteenth row, column 22 the twenty-third entry. Keep the array rectangular and preserve commas and brackets.</p>
 <p>A safer way to make that exact edit, if you use the terminal, is to run this <strong>from inside your new project folder</strong>:</p>
+<p><strong>Terminal</strong> (inside your new project folder):</p>
 <pre class="code" data-lang="sh"><code>node --input-type=module &lt;&lt;'JS'
 import fs from 'node:fs';
 const file = 'assets/maps/level.tilemap.json';
@@ -98,6 +100,7 @@ JS</code></pre>
 <p>Ask a friend to play without explaining every jump. If they repeatedly fail at the same landing, widen it or move the preceding coin trail. Add difficulty through combinations of learned actions rather than hidden collision surprises.</p>
 <h2 id="8-export-and-test-the-delivered-game">8. Export and test the delivered game<a class="anchor" href="#8-export-and-test-the-delivered-game">#</a></h2>
 <p>Save all files. In <strong>Project → Export…</strong>, choose the normal web folder export and an output folder. The terminal equivalent is:</p>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="sh"><code>nord check coin-canyon
 nord build coin-canyon --out coin-canyon-web --zip
 python3 -m http.server 8000 --directory coin-canyon-web</code></pre>

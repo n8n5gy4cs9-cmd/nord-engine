@@ -59,6 +59,7 @@ export default class Spinner extends NordScript {
 </tbody></table>
 <h2 id="values-names-and-functions">Values, names and functions<a class="anchor" href="#values-names-and-functions">#</a></h2>
 <p>A <strong>value</strong> is data: <code>90</code> is a number, <code>&#39;Player&#39;</code> is text, and <code>true</code> is yes. A <strong>variable</strong> gives a value a name:</p>
+<p><strong>Example</strong> (not a file; try these lines inside <code>start()</code> of any script):</p>
 <pre class="code" data-lang="js"><code>const speed = 90;
 const message = 'Hello Nord';
 console.log(message);</code></pre>
@@ -66,12 +67,16 @@ console.log(message);</code></pre>
 <p>A <strong>property</strong> stores a value on an object: <code>this.entity.name</code>. A <strong>method</strong> is a function on an object: <code>this.entity.touch()</code>. The parentheses are the useful clue.</p>
 <h2 id="arrays-and-objects">Arrays and objects<a class="anchor" href="#arrays-and-objects">#</a></h2>
 <p>An <strong>array</strong> is an ordered list. Nord positions use <code>[x, y, z]</code>:</p>
+<p><strong>Example</strong> (not a file; inside <code>start()</code> of any script):</p>
 <pre class="code" data-lang="js"><code>this.entity.pos = [100, 80, 0];</code></pre>
 <p>An <strong>object</strong> names its values. Scene component settings use objects:</p>
+<p><strong>In the editor:</strong> select the object, <span class="c-ui">Inspector ▸ + Add component ▸ text</span>, then type the text and the size.</p>
+<p><strong>In the file</strong> the entity&#39;s <code>components</code> list in the scene (a text component is stored as an object like this):</p>
 <pre class="code" data-lang="json"><code>{ &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Hello Nord&quot;, &quot;size&quot;: 32 }</code></pre>
 <p>JSON is a file format for data. It uses double quotes and does not allow JavaScript comments or functions. JavaScript is the language that runs your behavior.</p>
 <h2 id="when-to-use-start-and-update">When to use start and update<a class="anchor" href="#when-to-use-start-and-update">#</a></h2>
 <p>Use <code>start()</code> for something that should happen once. Use <code>update(dt)</code> for something that changes while the game runs.</p>
+<p><strong>File: <code>scripts/Title.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
 
 export default class Greeting extends NordScript {

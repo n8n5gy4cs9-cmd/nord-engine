@@ -17,6 +17,7 @@
     public Enemy(float s) { speed = s; }
     public override void Hit(int n) { base.Hit(n); hp -= n; }
 }</code></pre>
+<p><strong>Example</strong> (C# on the left in the text above, JavaScript here; not a file, just the shape of the language):</p>
 <pre class="code" data-lang="js"><code>class Enemy extends Character {
   hp = 10;                                   // a field (public by default)
   #speed;                                    // # makes it private (really private)
@@ -30,6 +31,7 @@
 <p>There are no interfaces. Use <strong>duck typing</strong>: if it has the method, call it.</p>
 <pre class="code" data-lang="cs"><code>interface IDamageable { void TakeDamage(int n); }
 if (other.TryGetComponent&lt;IDamageable&gt;(out var d)) d.TakeDamage(5);</code></pre>
+<p><strong>Example</strong> (not a file, JavaScript patterns that replace C# interfaces):</p>
 <pre class="code" data-lang="js"><code>const target = other.getScript(Health);          // a concrete class, or:
 other.callScripts('takeDamage', 5);              // calls it on every script that has that method (SendMessage style)
 other.emit('damage', { amount: 5 });             // or an event: anything that listens reacts</code></pre>
@@ -37,15 +39,18 @@ other.emit('damage', { amount: 5 });             // or an event: anything that l
 <h2 id="properties">Properties<a class="anchor" href="#properties">#</a></h2>
 <pre class="code" data-lang="cs"><code>public int Hp { get; private set; }
 public bool Alive =&gt; Hp &gt; 0;</code></pre>
+<p><strong>Example</strong> (not a file, inside a class body):</p>
 <pre class="code" data-lang="js"><code>get alive() { return this.hp &gt; 0; }              // getter (no parentheses when you read it: this.alive)
 set hp(v) { this._hp = Math.max(0, v); }         // setter</code></pre>
 <h2 id="enums">Enums<a class="anchor" href="#enums">#</a></h2>
 <pre class="code" data-lang="cs"><code>enum State { Idle, Run, Jump }   var s = State.Run;</code></pre>
+<p><strong>Example</strong> (not a file, at the top of any script):</p>
 <pre class="code" data-lang="js"><code>const State = Object.freeze({ Idle: 'idle', Run: 'run', Jump: 'jump' });   // string &quot;enum&quot;: easy to log
 let s = State.Run;  if (s === State.Run) { /* … */ }</code></pre>
 <p>Inspector dropdown: <code>{ type: &#39;enum&#39;, options: [&#39;idle&#39;, &#39;run&#39;, &#39;jump&#39;], default: &#39;idle&#39; }</code>.</p>
 <h2 id="variables-types-null">Variables, types, null<a class="anchor" href="#variables-types-null">#</a></h2>
 <pre class="code" data-lang="cs"><code>int a = 5; float f = 1.5f; string s = &quot;x&quot;; bool b = true; var list = new List&lt;int&gt;();</code></pre>
+<p><strong>Example</strong> (not a file, inside any method):</p>
 <pre class="code" data-lang="js"><code>let a = 5, f = 1.5, s = 'x', b = true;     // let = changeable, const = fixed reference (the object's insides can still change)
 const list = [];</code></pre>
 <p>There is one number type. Integer division: <code>Math.trunc(7 / 2)</code> → 3. <code>null</code> and <code>undefined</code> both mean &quot;nothing&quot;: <code>x ?? 5</code> (default when null/undefined), <code>x?.y</code> (safe access), <code>x ||= 5</code> (assign default).</p>
@@ -126,6 +131,7 @@ const list = [];</code></pre>
 <p><code>$&quot;HP {hp}/{max}&quot;</code> → <code>`HP ${hp}/${max}`</code> (backticks). <code>s.Length</code> → <code>s.length</code>; <code>s.Substring(1, 3)</code> → <code>s.slice(1, 4)</code>; <code>s.Split(&#39;,&#39;)</code> → <code>s.split(&#39;,&#39;)</code>; <code>s.ToUpper()</code> → <code>s.toUpperCase()</code>; <code>float.ToString(&quot;F1&quot;)</code> → <code>n.toFixed(1)</code>; <code>int.Parse(&quot;5&quot;)</code> → <code>Number(&#39;5&#39;)</code> or <code>parseInt(&#39;5&#39;, 10)</code>.</p>
 <h2 id="delegates-events-lambdas">Delegates, events, lambdas<a class="anchor" href="#delegates-events-lambdas">#</a></h2>
 <pre class="code" data-lang="cs"><code>public event Action&lt;int&gt; OnHit;   OnHit += Handler;   OnHit?.Invoke(5);   Action a = () =&gt; Debug.Log(&quot;x&quot;);</code></pre>
+<p><strong>Example</strong> (not a file, inside a method of a script):</p>
 <pre class="code" data-lang="js"><code>this.entity.emit('hit', 5);   const off = this.entity.on('hit', (n) =&gt; this.log(n));   off();   const a = () =&gt; this.log('x');</code></pre>
 <p>Arrow functions (<code>(x) =&gt; x + 1</code>) are lambdas. Always use them for callbacks inside scripts so <code>this</code> stays your script (<a href="ex-migration.html">Migration</a>).</p>
 <h2 id="generics-and-types">Generics and types<a class="anchor" href="#generics-and-types">#</a></h2>
@@ -134,6 +140,7 @@ const list = [];</code></pre>
 <p><code>try { ... } catch (e) { this.error(e.message); } finally { ... }</code> works like C#. <code>throw new Error(&#39;message&#39;)</code>. A script that throws in <code>update</code> is caught by the engine and shown in the Console; the game continues.</p>
 <h2 id="async-await-instead-of-task">async / await instead of Task<a class="anchor" href="#async-await-instead-of-task">#</a></h2>
 <pre class="code" data-lang="cs"><code>async Task Load() { var t = await Download(); }</code></pre>
+<p><strong>Example</strong> (not a file, a method of a script class):</p>
 <pre class="code" data-lang="js"><code>async load() { const data = await this.game.loadJSON('data/items.json'); }</code></pre>
 <p><code>await</code> pauses <em>this function</em> until the Promise is done. It is for loading, not for game timing (use coroutines). Run several in parallel: <code>await Promise.all([a(), b()])</code>.</p>
 <h2 id="equality-copying-comparing">Equality, copying, comparing<a class="anchor" href="#equality-copying-comparing">#</a></h2>

@@ -31,6 +31,7 @@ export default class Spin extends MonoBehaviour {
   Update() { this.Rotate(0, 0, this.speed * Time.deltaTime); }
 }</code></pre>
 <h2 id="nord-the-native-style-lower-case">Nord: the native style (lower-case)<a class="anchor" href="#nord-the-native-style-lower-case">#</a></h2>
+<p><strong>File: <code>scripts/spin.js</code></strong> (new file, the whole file; the same script written in the native style)</p>
 <pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
 
 export default class Spin extends NordScript {
@@ -105,6 +106,7 @@ export default class Spin extends NordScript {
 </tr>
 </tbody></table>
 <h2 id="inspector-fields-attributes">Inspector fields (attributes)<a class="anchor" href="#inspector-fields-attributes">#</a></h2>
+<p><strong>File: <code>scripts/Spin.js</code></strong> (the <code>static attributes</code> block goes inside the class, above <code>Start()</code>)</p>
 <pre class="code" data-lang="js"><code>static attributes = {
   speed:   { type: 'number', default: 5, min: 0, max: 20 },   // slider
   name:    { type: 'string', default: 'Bob' },

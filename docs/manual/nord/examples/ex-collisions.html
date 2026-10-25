@@ -41,6 +41,7 @@
 <pre class="code" data-lang="cs"><code>void OnTriggerEnter2D(Collider2D other) { if (other.CompareTag(&quot;Player&quot;)) Pickup(); }
 void OnCollisionEnter2D(Collision2D c)  { if (c.gameObject.CompareTag(&quot;Enemy&quot;)) Hurt(); }</code></pre>
 <h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<p><strong>File: your script, for example <code>scripts/Item.js</code></strong> (add these methods to the class, next to <code>Start()</code>)</p>
 <pre class="code" data-lang="js"><code>onTriggerEnter(other)   { if (other.hasTag('player')) this.pickup(); }   // other = the other entity
 onTriggerExit(other)    {}
 onCollisionEnter(other, contact) { if (other.hasTag('enemy')) this.hurt(); }
@@ -48,6 +49,7 @@ onCollisionExit(other)  {}
 // MonoBehaviour: OnTriggerEnter(other), OnTriggerExit, OnCollisionEnter, OnCollisionExit</code></pre>
 <p><code>other</code> is the <strong>entity</strong> (not a collider). In 3D, <code>contact</code> is <code>{ point, normal, impulse }</code>. The entity also emits <code>triggerEnter</code>, <code>collisionEnter</code>… on its own bus if you prefer listening: <code>this.entity.on(&#39;triggerEnter&#39;, (other) =&gt; …)</code>.</p>
 <h2 id="pick-up">Pick-up<a class="anchor" href="#pick-up">#</a></h2>
+<p><strong>File: <code>scripts/Pickup.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager } from 'nord';
 export default class Coin extends MonoBehaviour {
   OnTriggerEnter(other) {
@@ -57,6 +59,7 @@ export default class Coin extends MonoBehaviour {
   }
 }</code></pre>
 <h2 id="damage-zone-with-a-cooldown">Damage zone with a cooldown<a class="anchor" href="#damage-zone-with-a-cooldown">#</a></h2>
+<p><strong>File: <code>scripts/Hazard.js</code></strong> (new file, the whole file; native style)</p>
 <pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
 export default class Spikes extends NordScript {
   static attributes = { damage: { type: 'number', default: 1 }, every: { type: 'number', default: 0.8 } };
@@ -71,6 +74,7 @@ export default class Spikes extends NordScript {
 }</code></pre>
 <p>(<code>trigger</code> events fire when entering; for &quot;while standing inside&quot; remember who is inside, like above.)</p>
 <h2 id="hit-things-in-an-area-2d-physics2d-overlapbox">Hit things in an area (2D): Physics2D.OverlapBox<a class="anchor" href="#hit-things-in-an-area-2d-physics2d-overlapbox">#</a></h2>
+<p><strong>File: <code>scripts/Melee.js</code></strong> (add this method to the attacker&#39;s script)</p>
 <pre class="code" data-lang="js"><code>attack() {
   const p = this.entity.pos, dir = this.facing;               // 1 or -1
   const hits = this.physics.overlapBox(p[0] + dir * 30, p[1], 40, 30);   // centre x, y, width, height
@@ -78,6 +82,7 @@ export default class Spikes extends NordScript {
 }</code></pre>
 <p>Entries may also be <code>{ tile: true }</code> markers for solid tilemap tiles, hence the <code>hasTag?.</code>.</p>
 <h2 id="raycast-3d">Raycast (3D)<a class="anchor" href="#raycast-3d">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Sensor3D.js</code></strong> (inside a 3D script method)</p>
 <pre class="code" data-lang="js"><code>const from = this.entity.worldPos, to = [from[0], from[1], from[2] - 20];
 const hit = this.physics.raycast(from, to, { ignore: this.entity });
 if (hit) console.log(hit.entity.name, hit.point, hit.normal, hit.distance);</code></pre>

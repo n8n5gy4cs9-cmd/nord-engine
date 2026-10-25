@@ -19,12 +19,14 @@
 <h3 id="unity">Unity<a class="anchor" href="#unity">#</a></h3>
 <pre class="code" data-lang="cs"><code>animator.Play(&quot;Run&quot;);  spriteRenderer.flipX = dir &lt; 0;</code></pre>
 <h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (inside <code>update(dt)</code>; the object has an <code>animatedSprite</code> component)</p>
 <pre class="code" data-lang="js"><code>const a = this.entity.getComponent('animatedSprite');
 a.play('run');                                         // switch the clip (does nothing visible if it is already playing that one)
 this.entity.set('animatedSprite', 'anim', 'run');     // same thing through the generic setter
 this.entity.set('animatedSprite', 'flipX', dir &lt; 0);  // face left / right
 this.entity.set('animatedSprite', 'speed', 1.5);      // playback speed</code></pre>
 <p>A tidy pattern: choose the clip once per frame from the state, and only call <code>play</code> when it changes:</p>
+<p><strong>File: <code>scripts/PlayerAnimation.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
 export default class HeroAnim extends NordScript {
   update() {
@@ -36,6 +38,7 @@ export default class HeroAnim extends NordScript {
 }</code></pre>
 <h2 id="frame-events-footsteps-hit-frames">Frame events (footsteps, hit frames)<a class="anchor" href="#frame-events-footsteps-hit-frames">#</a></h2>
 <p>In the sprite editor, mode <strong>Origin, points, collision ▸ Frame properties</strong>, give frame 3 of <code>run</code> an <em>event</em> name, e.g. <code>step</code>. At runtime:</p>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (inside <code>start()</code>; the event name is the one you typed in the sprite editor)</p>
 <pre class="code" data-lang="js"><code>start() { this.entity.on('step', () =&gt; this.audio.play('assets/audio/step.wav', { volume: 0.4 })); }   // entity event
 // or on the global bus:  this.game.events.on('step', ...)</code></pre>
 <p>Unity: Animation Events calling a method on a frame.</p>
@@ -53,10 +56,12 @@ export default class HeroAnim extends NordScript {
 }</code></pre>
 <p>API: <code>setBool / setInt / setFloat(name, value)</code>, <code>setTrigger(name)</code>, <code>resetTrigger(name)</code>, <code>get(name)</code>, <code>play(stateName)</code> (force a state), <code>state</code> (current). Unity names match one to one. No blending between clips (sprites are not blended anyway). See <a href="../manual/animator.html">Animator</a>.</p>
 <h2 id="3d-clips-gltf-models">3D clips (glTF models)<a class="anchor" href="#3d-clips-gltf-models">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Hero3D.js</code></strong> (inside a method; the object has a <code>model</code> component)</p>
 <pre class="code" data-lang="js"><code>this.entity.getComponent('model').play('Walk', { loop: true, speed: 1 });       // clip names come from the .glb
 this.entity.getComponent('model').animations;                                   // list of the clips in the file</code></pre>
 <p>The same Animator controller can drive a model: the state&#39;s <code>anim</code> is the glTF clip name.</p>
 <h2 id="tweened-quot-animation-quot-without-art">Tweened &quot;animation&quot; without art<a class="anchor" href="#tweened-quot-animation-quot-without-art">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Pulse.js</code></strong> (inside a method such as <code>OnHit()</code>)</p>
 <pre class="code" data-lang="js"><code>this.tween(this.entity.scale, { 0: 1.2, 1: 0.85 }, { duration: 0.12, yoyo: true, onUpdate: () =&gt; this.entity.touch() });   // squash and stretch on landing</code></pre>
 <h2 id="tips">Tips<a class="anchor" href="#tips">#</a></h2>
 <ul>

@@ -67,6 +67,7 @@
 <p><strong>First edit:</strong> change the subtitle in <code>ui/desk.ui.json</code> (or the UI Designer), stop Play and start again. Use the Console for syntax errors. The complete source listings at the end match the downloadable project.</p>
 <h2 id="2-make-drawing-data-independent-of-the-renderer">2. Make drawing data independent of the renderer<a class="anchor" href="#2-make-drawing-data-independent-of-the-renderer">#</a></h2>
 <p>A board has an ID, a title and a <code>shapes</code> array. Shapes store their kind, position, colour and geometry. A pen stroke is an array of points; a rectangle stores X/Y/width/height; text and stickies store a string. The supplied ten-board initializer includes one note, one door and a graph to make the first exploration useful.</p>
+<p><strong>Excerpt</strong> (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):</p>
 <pre class="code" data-lang="js"><code>const sticky = {
   kind: 'sticky', x: 110, y: 190, w: 230, h: 160,
   text: 'Draw. Zoom out. Play.', color: '#f5d889'
@@ -77,6 +78,7 @@
 <h2 id="3-build-the-phaser-pen-and-shape-tools">3. Build the Phaser pen and shape tools<a class="anchor" href="#3-build-the-phaser-pen-and-shape-tools">#</a></h2>
 <p><code>createFlat()</code> creates a local Phaser game with Arcade available for the minigames. Its drawing surface is a Phaser CanvasTexture shown by one Image. This keeps many strokes inexpensive while Phaser owns input, camera and the game loop.</p>
 <p>On pointer down, convert screen coordinates through <code>camera.getWorldPoint()</code>. Create a draft shape. Pointer movement appends pen points or adjusts rectangle/circle dimensions. Pointer up commits the draft to the active board and increments the save revision. Negative rectangle dimensions are normalized so dragging up-left still produces a valid rectangle.</p>
+<p><strong>Excerpt</strong> (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):</p>
 <pre class="code" data-lang="js"><code>const worldPoint = scene.cameras.main.getWorldPoint(pointer.x, pointer.y);</code></pre>
 <p>Use this conversion before storing points; raw browser pixels would drift when zoomed. The Pan tool changes camera scroll instead of creating shapes. Wheel input changes camera zoom. <strong>Fit page</strong> returns to a useful framing. Text and Sticky place a record using the text field; Rectangle uses the field value <code>door</code> as a special label. Undo removes the last committed shape.</p>
 <p>Try pen, rectangle, circle, text and sticky once before moving on. The app intentionally keeps selection/editing simple: use Undo and redraw rather than expecting a full vector editor with handles and layers.</p>
@@ -107,6 +109,7 @@ paper.texture.update();</code></pre>
 <p>These features reuse saved geometry while changing its interpretation. Keep the play objects separate so running a minigame cannot silently move the original drawing.</p>
 <h2 id="8-save-back-up-and-handle-storage-limits">8. Save, back up and handle storage limits<a class="anchor" href="#8-save-back-up-and-handle-storage-limits">#</a></h2>
 <p>The app uses Nord&#39;s Save class, the same service exposed as <code>game.save</code> in scene scripts. The HTML host creates an explicit instance:</p>
+<p><strong>Excerpt</strong> (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):</p>
 <pre class="code" data-lang="js"><code>const save = new Save('paper-worlds');
 save.set('boards', boards);</code></pre>
 <p>A revision counter triggers autosave after edits. Save writes immediately. JSON backup downloads the editable data, and Import checks for ten supported boards before replacing your workspace. Browser localStorage is per origin: changing the dev-server port or clearing site data can make the old save unavailable. Export JSON before moving machines or clearing storage.</p>
@@ -177,7 +180,8 @@ save.set('boards', boards);</code></pre>
 <p>Build the entire serializable document and common painter before adding either view.</p>
 <h4 id="1-1-initialize-ten-independent-boards">1.1 — Initialize ten independent boards<a class="anchor" href="#1-1-initialize-ten-independent-boards">#</a></h4>
 <p><strong>Read:</strong> <code>model.js</code>, lines 1–37.</p>
-<!-- taught-source: paper-worlds/model.js:1-37 --><pre class="code" data-lang="js"><code>export const WIDTH = 1200,
+<!-- taught-source: paper-worlds/model.js:1-37 --><p><strong>File: <code>model.js</code></strong> (step 1.1, initialize ten independent boards: the beginning of the file)</p>
+<pre class="code" data-lang="js"><code>export const WIDTH = 1200,
   HEIGHT = 850;
 export function newBoards() {
   return Array.from({ length: 10 }, (_, i) =&gt; ({
@@ -218,7 +222,8 @@ export function newBoards() {
 <p><strong>Try it / expected result:</strong> On a fresh save, change one title in this initializer. Existing saved data should still take precedence until you intentionally import/reset it.</p>
 <h4 id="1-2-seed-a-door-and-a-graph-as-ordinary-document-records">1.2 — Seed a door and a graph as ordinary document records<a class="anchor" href="#1-2-seed-a-door-and-a-graph-as-ordinary-document-records">#</a></h4>
 <p><strong>Read:</strong> <code>model.js</code>, lines 38–62.</p>
-<!-- taught-source: paper-worlds/model.js:38-62 --><pre class="code" data-lang="js"><code>              kind: 'rect',
+<!-- taught-source: paper-worlds/model.js:38-62 --><p><strong>File: <code>model.js</code></strong> (step 1.2, seed a door and a graph as ordinary document records: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>              kind: 'rect',
               x: 650,
               y: 230,
               w: 240,
@@ -247,7 +252,8 @@ export function newBoards() {
 <p><strong>Try it / expected result:</strong> Add a pen point to the seed on a fresh copy and observe the same change in the drawing and graph path.</p>
 <h4 id="1-3-paint-the-page-and-the-first-shape-types">1.3 — Paint the page and the first shape types<a class="anchor" href="#1-3-paint-the-page-and-the-first-shape-types">#</a></h4>
 <p><strong>Read:</strong> <code>model.js</code>, lines 63–89.</p>
-<!-- taught-source: paper-worlds/model.js:63-89 --><pre class="code" data-lang="js"><code>export function paint(ctx, board, { background = true } = {}) {
+<!-- taught-source: paper-worlds/model.js:63-89 --><p><strong>File: <code>model.js</code></strong> (step 1.3, paint the page and the first shape types: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>export function paint(ctx, board, { background = true } = {}) {
   ctx.clearRect(0, 0, WIDTH, HEIGHT);
   if (background) {
     ctx.fillStyle = '#faf7ed';
@@ -278,7 +284,8 @@ export function newBoards() {
 <p><strong>Try it / expected result:</strong> Disable background only in a temporary painter call and inspect transparency. The stored shapes must remain unchanged.</p>
 <h4 id="1-4-finish-circles-sticky-shadows-and-text">1.4 — Finish circles, sticky shadows and text<a class="anchor" href="#1-4-finish-circles-sticky-shadows-and-text">#</a></h4>
 <p><strong>Read:</strong> <code>model.js</code>, lines 90–114.</p>
-<!-- taught-source: paper-worlds/model.js:90-114 --><pre class="code" data-lang="js"><code>    if (s.kind === 'circle') {
+<!-- taught-source: paper-worlds/model.js:90-114 --><p><strong>File: <code>model.js</code></strong> (step 1.4, finish circles, sticky shadows and text: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>    if (s.kind === 'circle') {
       ctx.beginPath();
       ctx.arc(s.x, s.y, Math.max(4, Math.abs(s.w)), 0, 7);
       ctx.stroke();
@@ -307,7 +314,8 @@ export function newBoards() {
 <p><strong>Try it / expected result:</strong> Place text after a sticky. Its letters should be crisp instead of inheriting the sticky’s shadow.</p>
 <h4 id="1-5-treat-imported-data-as-a-document-boundary">1.5 — Treat imported data as a document boundary<a class="anchor" href="#1-5-treat-imported-data-as-a-document-boundary">#</a></h4>
 <p><strong>Read:</strong> <code>model.js</code>, lines 115–142.</p>
-<!-- taught-source: paper-worlds/model.js:115-142 --><pre class="code" data-lang="js"><code>export function validateBoards(data) {
+<!-- taught-source: paper-worlds/model.js:115-142 --><p><strong>File: <code>model.js</code></strong> (step 1.5, treat imported data as a document boundary: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>export function validateBoards(data) {
   const num = (v) =&gt; Number.isFinite(v) &amp;&amp; Math.abs(v) &lt;= 40000;
   const valid = (s) =&gt;
     s &amp;&amp;
@@ -339,7 +347,8 @@ export function newBoards() {
 <p><strong>Try it / expected result:</strong> Import a copy with a string where a coordinate should be. It should produce an error and leave the previous document usable.</p>
 <h4 id="1-6-embed-text-as-inert-json-without-changing-it">1.6 — Embed text as inert JSON without changing it<a class="anchor" href="#1-6-embed-text-as-inert-json-without-changing-it">#</a></h4>
 <p><strong>Read:</strong> <code>model.js</code>, lines 143–146.</p>
-<!-- taught-source: paper-worlds/model.js:143-146 --><pre class="code" data-lang="js"><code>export function portfolioHTML(template, boards) {
+<!-- taught-source: paper-worlds/model.js:143-146 --><p><strong>File: <code>model.js</code></strong> (step 1.6, embed text as inert JSON without changing it: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>export function portfolioHTML(template, boards) {
   const data = JSON.stringify(boards).replaceAll('&lt;', '\\u003c');
   return template.replace('/*BOARD_DATA*/', () =&gt; data);
 }</code></pre>
@@ -349,7 +358,8 @@ export function newBoards() {
 <p>Build the complete Phaser drawing interaction and both Arcade minigames.</p>
 <h4 id="2-1-own-view-local-state-and-a-phaser-game">2.1 — Own view-local state and a Phaser game<a class="anchor" href="#2-1-own-view-local-state-and-a-phaser-game">#</a></h4>
 <p><strong>Read:</strong> <code>flat.js</code>, lines 1–26.</p>
-<!-- taught-source: paper-worlds/flat.js:1-26 --><pre class="code" data-lang="js"><code>import { WIDTH, HEIGHT, paint } from './model.js';
+<!-- taught-source: paper-worlds/flat.js:1-26 --><p><strong>File: <code>flat.js</code></strong> (step 2.1, own view-local state and a Phaser game: the beginning of the file)</p>
+<pre class="code" data-lang="js"><code>import { WIDTH, HEIGHT, paint } from './model.js';
 import { loadScript } from './desk.js';
 export async function createFlat(parent, getBoard, change) {
   await loadScript('vendor/phaser/phaser.min.js');
@@ -379,7 +389,8 @@ export async function createFlat(parent, getBoard, change) {
 <p><strong>Try it / expected result:</strong> Switch board selection and verify the next stroke edits the new board, not the board that was selected when the view was created.</p>
 <h4 id="2-2-create-a-texture-and-begin-an-input-transaction">2.2 — Create a texture and begin an input transaction<a class="anchor" href="#2-2-create-a-texture-and-begin-an-input-transaction">#</a></h4>
 <p><strong>Read:</strong> <code>flat.js</code>, lines 27–64.</p>
-<!-- taught-source: paper-worlds/flat.js:27-64 --><pre class="code" data-lang="js"><code>      create() {
+<!-- taught-source: paper-worlds/flat.js:27-64 --><p><strong>File: <code>flat.js</code></strong> (step 2.2, create a texture and begin an input transaction: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>      create() {
         scene = this;
         texture = this.textures.createCanvas('paper', WIDTH, HEIGHT);
         image = this.add.image(0, 0, 'paper').setOrigin(0);
@@ -421,7 +432,8 @@ export async function createFlat(parent, getBoard, change) {
 <p><strong>Try it / expected result:</strong> Zoom, place a sticky and compare its position after Fit page. It should stay at its document coordinates.</p>
 <h4 id="2-3-keep-drag-geometry-separate-from-committed-shapes">2.3 — Keep drag geometry separate from committed shapes<a class="anchor" href="#2-3-keep-drag-geometry-separate-from-committed-shapes">#</a></h4>
 <p><strong>Read:</strong> <code>flat.js</code>, lines 65–85.</p>
-<!-- taught-source: paper-worlds/flat.js:65-85 --><pre class="code" data-lang="js"><code>        this.input.on('pointermove', (p) =&gt; {
+<!-- taught-source: paper-worlds/flat.js:65-85 --><p><strong>File: <code>flat.js</code></strong> (step 2.3, keep drag geometry separate from committed shapes: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>        this.input.on('pointermove', (p) =&gt; {
           if (!drag) return;
           if (drag.kind === 'hand') {
             pan.x = drag.px - (p.x - drag.sx) / zoom;
@@ -446,7 +458,8 @@ export async function createFlat(parent, getBoard, change) {
 <p><strong>Try it / expected result:</strong> Drag slowly and inspect shape count before releasing. A long stroke should become one shape, not one saved shape per movement event.</p>
 <h4 id="2-4-commit-once-and-normalize-rectangle-directions">2.4 — Commit once and normalize rectangle directions<a class="anchor" href="#2-4-commit-once-and-normalize-rectangle-directions">#</a></h4>
 <p><strong>Read:</strong> <code>flat.js</code>, lines 86–112.</p>
-<!-- taught-source: paper-worlds/flat.js:86-112 --><pre class="code" data-lang="js"><code>        const end = () =&gt; {
+<!-- taught-source: paper-worlds/flat.js:86-112 --><p><strong>File: <code>flat.js</code></strong> (step 2.4, commit once and normalize rectangle directions: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>        const end = () =&gt; {
           if (drag &amp;&amp; drag.kind !== 'hand') {
             if (drag.kind === 'rect') {
               if (drag.w &lt; 0) {
@@ -477,7 +490,8 @@ export async function createFlat(parent, getBoard, change) {
 <p><strong>Try it / expected result:</strong> Draw the same rectangle down-right and up-left. Both should later create usable maze walls.</p>
 <h4 id="2-5-move-a-tiny-player-and-translate-coordinates-correctly">2.5 — Move a tiny player and translate coordinates correctly<a class="anchor" href="#2-5-move-a-tiny-player-and-translate-coordinates-correctly">#</a></h4>
 <p><strong>Read:</strong> <code>flat.js</code>, lines 113–145.</p>
-<!-- taught-source: paper-worlds/flat.js:113-145 --><pre class="code" data-lang="js"><code>      update() {
+<!-- taught-source: paper-worlds/flat.js:113-145 --><p><strong>File: <code>flat.js</code></strong> (step 2.5, move a tiny player and translate coordinates correctly: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>      update() {
         if (player) {
           const x = Number(keys.right.isDown) - Number(keys.left.isDown),
             y = Number(keys.down.isDown) - Number(keys.up.isDown);
@@ -514,7 +528,8 @@ export async function createFlat(parent, getBoard, change) {
 <p><strong>Try it / expected result:</strong> Pan away from the page, use Fit, then play a maze. Drawing and movement should still agree about page coordinates.</p>
 <h4 id="2-6-destroy-temporary-objects-before-changing-modes">2.6 — Destroy temporary objects before changing modes<a class="anchor" href="#2-6-destroy-temporary-objects-before-changing-modes">#</a></h4>
 <p><strong>Read:</strong> <code>flat.js</code>, lines 146–160.</p>
-<!-- taught-source: paper-worlds/flat.js:146-160 --><pre class="code" data-lang="js"><code>  function stopPlay() {
+<!-- taught-source: paper-worlds/flat.js:146-160 --><p><strong>File: <code>flat.js</code></strong> (step 2.6, destroy temporary objects before changing modes: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  function stopPlay() {
     player?.destroy();
     player = null;
     balls.forEach((v) =&gt; v.destroy());
@@ -533,7 +548,8 @@ export async function createFlat(parent, getBoard, change) {
 <p><strong>Try it / expected result:</strong> Start balls, then maze, then Stop. The saved circles/rectangles should remain while moving toys disappear.</p>
 <h4 id="2-7-turn-each-circle-into-a-controlled-arcade-toy">2.7 — Turn each circle into a controlled Arcade toy<a class="anchor" href="#2-7-turn-each-circle-into-a-controlled-arcade-toy">#</a></h4>
 <p><strong>Read:</strong> <code>flat.js</code>, lines 161–182.</p>
-<!-- taught-source: paper-worlds/flat.js:161-182 --><pre class="code" data-lang="js"><code>    if (mode === 'balls') {
+<!-- taught-source: paper-worlds/flat.js:161-182 --><p><strong>File: <code>flat.js</code></strong> (step 2.7, turn each circle into a controlled Arcade toy: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>    if (mode === 'balls') {
       scene.physics.world.setBounds(0, 0, WIDTH, HEIGHT);
       for (const s of getBoard().shapes.filter((s) =&gt; s.kind === 'circle')) {
         const r = Math.max(10, Math.min(90, s.w)),
@@ -559,7 +575,8 @@ export async function createFlat(parent, getBoard, change) {
 <p><strong>Try it / expected result:</strong> Draw two circles close together and press Bounce circles. They should collide and move while your original saved circles stay unchanged.</p>
 <h4 id="2-8-turn-rectangles-into-static-walls-and-add-a-goal">2.8 — Turn rectangles into static walls and add a goal<a class="anchor" href="#2-8-turn-rectangles-into-static-walls-and-add-a-goal">#</a></h4>
 <p><strong>Read:</strong> <code>flat.js</code>, lines 183–204.</p>
-<!-- taught-source: paper-worlds/flat.js:183-204 --><pre class="code" data-lang="js"><code>    if (mode === 'maze') {
+<!-- taught-source: paper-worlds/flat.js:183-204 --><p><strong>File: <code>flat.js</code></strong> (step 2.8, turn rectangles into static walls and add a goal: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>    if (mode === 'maze') {
       for (const s of getBoard().shapes.filter(
         (s) =&gt; s.kind === 'rect' &amp;&amp; s.text !== 'door',
       )) {
@@ -585,7 +602,8 @@ export async function createFlat(parent, getBoard, change) {
 <p><strong>Try it / expected result:</strong> Draw walls with an open path to the lower-right; then temporarily close that path. The player should be blocked by actual colliders, not merely dark paint.</p>
 <h4 id="2-9-expose-a-small-view-interface-after-readiness">2.9 — Expose a small view interface after readiness<a class="anchor" href="#2-9-expose-a-small-view-interface-after-readiness">#</a></h4>
 <p><strong>Read:</strong> <code>flat.js</code>, lines 205–233.</p>
-<!-- taught-source: paper-worlds/flat.js:205-233 --><pre class="code" data-lang="js"><code>  await new Promise((resolve) =&gt; {
+<!-- taught-source: paper-worlds/flat.js:205-233 --><p><strong>File: <code>flat.js</code></strong> (step 2.9, expose a small view interface after readiness: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  await new Promise((resolve) =&gt; {
     const wait = () =&gt; (scene ? resolve() : requestAnimationFrame(wait));
     wait();
   });
@@ -620,7 +638,8 @@ export async function createFlat(parent, getBoard, change) {
 <p>Build every 3D representation and interaction from the same saved boards.</p>
 <h4 id="3-1-lay-out-ten-textured-papers">3.1 — Lay out ten textured papers<a class="anchor" href="#3-1-lay-out-ten-textured-papers">#</a></h4>
 <p><strong>Read:</strong> <code>world.js</code>, lines 1–20.</p>
-<!-- taught-source: paper-worlds/world.js:1-20 --><pre class="code" data-lang="js"><code>import { createDesk } from './desk.js';
+<!-- taught-source: paper-worlds/world.js:1-20 --><p><strong>File: <code>world.js</code></strong> (step 3.1, lay out ten textured papers: the beginning of the file)</p>
+<pre class="code" data-lang="js"><code>import { createDesk } from './desk.js';
 import { WIDTH, HEIGHT, paint } from './model.js';
 export async function createWorld(canvas, boards, select) {
   const d = await createDesk(canvas),
@@ -644,7 +663,8 @@ export async function createWorld(canvas, boards, select) {
 <p><strong>Try it / expected result:</strong> Edit board zero, enter 3D and click its paper. The editor should return to the same board ID.</p>
 <h4 id="3-2-translate-sticky-positions-and-construct-a-door">3.2 — Translate sticky positions and construct a door<a class="anchor" href="#3-2-translate-sticky-positions-and-construct-a-door">#</a></h4>
 <p><strong>Read:</strong> <code>world.js</code>, lines 21–51.</p>
-<!-- taught-source: paper-worlds/world.js:21-51 --><pre class="code" data-lang="js"><code>    for (const s of board.shapes.filter((s) =&gt; s.kind === 'sticky')) {
+<!-- taught-source: paper-worlds/world.js:21-51 --><p><strong>File: <code>world.js</code></strong> (step 3.2, translate sticky positions and construct a door: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>    for (const s of board.shapes.filter((s) =&gt; s.kind === 'sticky')) {
       const pos = [
         p.mesh.position.x + (s.x / WIDTH - 0.5) * 6,
         0.5,
@@ -679,7 +699,8 @@ export async function createWorld(canvas, boards, select) {
 <p><strong>Try it / expected result:</strong> Draw a normal rectangle and one labelled door. Only the labelled one should create a clickable 3D frame.</p>
 <h4 id="3-3-dispatch-picks-by-metadata">3.3 — Dispatch picks by metadata<a class="anchor" href="#3-3-dispatch-picks-by-metadata">#</a></h4>
 <p><strong>Read:</strong> <code>world.js</code>, lines 52–73.</p>
-<!-- taught-source: paper-worlds/world.js:52-73 --><pre class="code" data-lang="js"><code>  scene.onPointerObservable.add((info) =&gt; {
+<!-- taught-source: paper-worlds/world.js:52-73 --><p><strong>File: <code>world.js</code></strong> (step 3.3, dispatch picks by metadata: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  scene.onPointerObservable.add((info) =&gt; {
     if (info.type !== B.PointerEventTypes.POINTERPICK) return;
     const pick = info.pickInfo,
       meta = pick?.pickedMesh?.metadata;
@@ -705,7 +726,8 @@ export async function createWorld(canvas, boards, select) {
 <p><strong>Try it / expected result:</strong> Click a sticky and then an empty paper. The first should flick; the second should edit, without treating the desk itself as a board.</p>
 <h4 id="3-4-animate-camera-ownership-in-seconds">3.4 — Animate camera ownership in seconds<a class="anchor" href="#3-4-animate-camera-ownership-in-seconds">#</a></h4>
 <p><strong>Read:</strong> <code>world.js</code>, lines 74–100.</p>
-<!-- taught-source: paper-worlds/world.js:74-100 --><pre class="code" data-lang="js"><code>  d.update.add((dt) =&gt; {
+<!-- taught-source: paper-worlds/world.js:74-100 --><p><strong>File: <code>world.js</code></strong> (step 3.4, animate camera ownership in seconds: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  d.update.add((dt) =&gt; {
     if (flying) {
       flying.t += dt;
       camera.setTarget(B.Vector3.Lerp(flying.from, flying.to, Math.min(1, flying.t)));
@@ -736,7 +758,8 @@ export async function createWorld(canvas, boards, select) {
 <p><strong>Try it / expected result:</strong> Ride the initial graph to its end. Orbit controls should be available again rather than leaving a hidden FreeCamera active.</p>
 <h4 id="3-5-refresh-textures-and-scatter-owned-toys">3.5 — Refresh textures and scatter owned toys<a class="anchor" href="#3-5-refresh-textures-and-scatter-owned-toys">#</a></h4>
 <p><strong>Read:</strong> <code>world.js</code>, lines 101–122.</p>
-<!-- taught-source: paper-worlds/world.js:101-122 --><pre class="code" data-lang="js"><code>  return {
+<!-- taught-source: paper-worlds/world.js:101-122 --><p><strong>File: <code>world.js</code></strong> (step 3.5, refresh textures and scatter owned toys: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  return {
     ...d,
     papers,
     stickies,
@@ -762,7 +785,8 @@ export async function createWorld(canvas, boards, select) {
 <p><strong>Try it / expected result:</strong> Shake notes, return to 2D and compare text/positions. The original document should be intact even though physical poses were chaotic.</p>
 <h4 id="3-6-convert-one-stroke-into-a-camera-track">3.6 — Convert one stroke into a camera track<a class="anchor" href="#3-6-convert-one-stroke-into-a-camera-track">#</a></h4>
 <p><strong>Read:</strong> <code>world.js</code>, lines 123–157.</p>
-<!-- taught-source: paper-worlds/world.js:123-157 --><pre class="code" data-lang="js"><code>    ride(board) {
+<!-- taught-source: paper-worlds/world.js:123-157 --><p><strong>File: <code>world.js</code></strong> (step 3.6, convert one stroke into a camera track: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>    ride(board) {
       if (ride) return;
       const line = board.shapes
         .filter((s) =&gt; s.kind === 'pen' &amp;&amp; s.points.length &gt; 3)
@@ -803,7 +827,8 @@ export async function createWorld(canvas, boards, select) {
 <p>Build the entire document host: controls, document selection, async mode changes, persistence, exports and teardown.</p>
 <h4 id="4-1-imports-load-the-ui-file-and-name-the-handles">4.1 — Imports, load the UI file and name the handles<a class="anchor" href="#4-1-imports-load-the-ui-file-and-name-the-handles">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 1–10.</p>
-<!-- taught-source: paper-worlds/app.js:1-10 --><pre class="code" data-lang="js"><code>import { Save } from './save.js';
+<!-- taught-source: paper-worlds/app.js:1-10 --><p><strong>File: <code>app.js</code></strong> (step 4.1, imports, load the UI file and name the handles: the beginning of the file)</p>
+<pre class="code" data-lang="js"><code>import { Save } from './save.js';
 import { newBoards, validateBoards, portfolioHTML } from './model.js';
 import { createFlat } from './flat.js';
 import { createWorld } from './world.js';
@@ -817,7 +842,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Open the UI file in the UI Designer, rename a node and reload Play. The Console should name the missing node on the first lookup instead of silently doing nothing; rename it back afterwards.</p>
 <h4 id="4-2-choose-document-data-before-starting-phaser">4.2 — Choose document data before starting Phaser<a class="anchor" href="#4-2-choose-document-data-before-starting-phaser">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 11–35.</p>
-<!-- taught-source: paper-worlds/app.js:11-35 --><pre class="code" data-lang="js"><code>  const $ = (id) =&gt; menu.$(id).el;
+<!-- taught-source: paper-worlds/app.js:11-35 --><p><strong>File: <code>app.js</code></strong> (step 4.2, choose document data before starting Phaser: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  const $ = (id) =&gt; menu.$(id).el;
   const save = new Save('paper-worlds');
   let boards = save.get('boards', null),
     active = 0,
@@ -846,7 +872,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Import a valid JSON backup after editing another board. New strokes should use the imported board array.</p>
 <h4 id="4-3-wire-selections-and-serialize-3d-transitions">4.3 — Wire selections and serialize 3D transitions<a class="anchor" href="#4-3-wire-selections-and-serialize-3d-transitions">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 36–94.</p>
-<!-- taught-source: paper-worlds/app.js:36-94 --><pre class="code" data-lang="js"><code>  const options = () =&gt; {
+<!-- taught-source: paper-worlds/app.js:36-94 --><p><strong>File: <code>app.js</code></strong> (step 4.3, wire selections and serialize 3D transitions: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  const options = () =&gt; {
     $('boards').replaceChildren(
       ...boards.map((b, i) =&gt; {
         const o = document.createElement('option');
@@ -909,7 +936,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Double-click Explore 3D quickly. You should end with one active desk, not multiple render loops.</p>
 <h4 id="4-4-separate-document-edits-camera-changes-and-toy-actions">4.4 — Separate document edits, camera changes and toy actions<a class="anchor" href="#4-4-separate-document-edits-camera-changes-and-toy-actions">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 95–139.</p>
-<!-- taught-source: paper-worlds/app.js:95-139 --><pre class="code" data-lang="js"><code>  $('mode').onclick = () =&gt; mode(!in3d);
+<!-- taught-source: paper-worlds/app.js:95-139 --><p><strong>File: <code>app.js</code></strong> (step 4.4, separate document edits, camera changes and toy actions: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  $('mode').onclick = () =&gt; mode(!in3d);
   $('boards').onchange = () =&gt; {
     active = Number($('boards').value);
     flat.stopPlay();
@@ -958,7 +986,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Undo once after drawing, then use Fit. Only Undo should change shape count.</p>
 <h4 id="4-5-save-revisions-and-export-simple-formats">4.5 — Save revisions and export simple formats<a class="anchor" href="#4-5-save-revisions-and-export-simple-formats">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 140–158.</p>
-<!-- taught-source: paper-worlds/app.js:140-158 --><pre class="code" data-lang="js"><code>  function persist() {
+<!-- taught-source: paper-worlds/app.js:140-158 --><p><strong>File: <code>app.js</code></strong> (step 4.5, save revisions and export simple formats: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  function persist() {
     try {
       save.set('boards', boards);
       saved = revision;
@@ -981,7 +1010,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Draw, wait for autosave and reload. Then compare a downloaded PNG with a JSON backup: only the JSON contains shape kinds and coordinates.</p>
 <h4 id="4-6-validate-imported-files-and-export-a-portfolio-template">4.6 — Validate imported files and export a portfolio template<a class="anchor" href="#4-6-validate-imported-files-and-export-a-portfolio-template">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 159–194.</p>
-<!-- taught-source: paper-worlds/app.js:159-194 --><pre class="code" data-lang="js"><code>  $('import').onchange = async () =&gt; {
+<!-- taught-source: paper-worlds/app.js:159-194 --><p><strong>File: <code>app.js</code></strong> (step 4.6, validate imported files and export a portfolio template: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  $('import').onchange = async () =&gt; {
     const file = $('import').files[0];
     if (!file) return;
     if (file.size &gt; 5000000) {
@@ -1021,7 +1051,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Import malformed JSON and confirm the old document remains. Export a valid desk and inspect that it contains all ten boards, not just the active PNG.</p>
 <h4 id="4-7-offer-touch-navigation-and-release-the-mounted-app">4.7 — Offer touch navigation and release the mounted app<a class="anchor" href="#4-7-offer-touch-navigation-and-release-the-mounted-app">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 195–239.</p>
-<!-- taught-source: paper-worlds/app.js:195-239 --><pre class="code" data-lang="js"><code>  let pinch = 0;
+<!-- taught-source: paper-worlds/app.js:195-239 --><p><strong>File: <code>app.js</code></strong> (step 4.7, offer touch navigation and release the mounted app: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  let pinch = 0;
   const pinchStart = (e) =&gt; {
       if (e.touches.length === 2)
         pinch = Math.hypot(
@@ -1072,7 +1103,8 @@ export async function mount(root) {
 <p>Describe the drawing studio as data: brand header with actions, tool sidebar, the two drawing surfaces with title bar, and the footer.</p>
 <h4 id="5-1-page-settings-brand-header-and-document-actions">5.1 — Page settings, brand header and document actions<a class="anchor" href="#5-1-page-settings-brand-header-and-document-actions">#</a></h4>
 <p><strong>Read:</strong> <code>ui/desk.ui.json</code>, lines 1–26.</p>
-<!-- taught-source: paper-worlds/ui/desk.ui.json:1-26 --><pre class="code" data-lang="json"><code>{
+<!-- taught-source: paper-worlds/ui/desk.ui.json:1-26 --><p><strong>File: <code>ui/desk.ui.json</code></strong> (step 5.1, page settings, brand header and document actions: the beginning of the file)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;version&quot;: 1,
   &quot;name&quot;: &quot;desk&quot;,
   &quot;page&quot;: true,
@@ -1102,7 +1134,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Change the tagline text in the Designer and reload Play. The studio updates without code.</p>
 <h4 id="5-2-sidebar-boards-tools-and-play-controls">5.2 — Sidebar: boards, tools and play controls<a class="anchor" href="#5-2-sidebar-boards-tools-and-play-controls">#</a></h4>
 <p><strong>Read:</strong> <code>ui/desk.ui.json</code>, lines 27–63.</p>
-<!-- taught-source: paper-worlds/ui/desk.ui.json:27-63 --><pre class="code" data-lang="json"><code>    { &quot;class&quot;: &quot;workbench&quot;, &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;section&quot;, &quot;children&quot;: [
+<!-- taught-source: paper-worlds/ui/desk.ui.json:27-63 --><p><strong>File: <code>ui/desk.ui.json</code></strong> (step 5.2, sidebar: boards, tools and play controls: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="json"><code>    { &quot;class&quot;: &quot;workbench&quot;, &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;section&quot;, &quot;children&quot;: [
       { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;aside&quot;, &quot;children&quot;: [
         { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;label&quot;, &quot;children&quot;: [
           { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;YOUR BOARDS&quot; },
@@ -1143,7 +1176,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Add an option to the tool select in the JSON tab, for example [&quot;star&quot;, &quot;Star&quot;], and note it appears in the sidebar; nothing draws a star until flat.js supports it, so remove it again.</p>
 <h4 id="5-3-title-bar-and-the-two-drawing-surfaces">5.3 — Title bar and the two drawing surfaces<a class="anchor" href="#5-3-title-bar-and-the-two-drawing-surfaces">#</a></h4>
 <p><strong>Read:</strong> <code>ui/desk.ui.json</code>, lines 64–72.</p>
-<!-- taught-source: paper-worlds/ui/desk.ui.json:64-72 --><pre class="code" data-lang="json"><code>        { &quot;class&quot;: &quot;titlebar&quot;, &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
+<!-- taught-source: paper-worlds/ui/desk.ui.json:64-72 --><p><strong>File: <code>ui/desk.ui.json</code></strong> (step 5.3, title bar and the two drawing surfaces: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="json"><code>        { &quot;class&quot;: &quot;titlebar&quot;, &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
           { &quot;name&quot;: &quot;title&quot;, &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;b&quot; },
           { &quot;name&quot;: &quot;badge&quot;, &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;2D STUDIO&quot; }
         ] },
@@ -1156,7 +1190,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Make the badge text read 2D PAPER and reload Play; mode switches still replace it because the node name is the same.</p>
 <h4 id="5-4-footer">5.4 — Footer<a class="anchor" href="#5-4-footer">#</a></h4>
 <p><strong>Read:</strong> <code>ui/desk.ui.json</code>, lines 73–77.</p>
-<!-- taught-source: paper-worlds/ui/desk.ui.json:73-77 --><pre class="code" data-lang="json"><code>    { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;footer&quot;, &quot;children&quot;: [
+<!-- taught-source: paper-worlds/ui/desk.ui.json:73-77 --><p><strong>File: <code>ui/desk.ui.json</code></strong> (step 5.4, footer: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="json"><code>    { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;footer&quot;, &quot;children&quot;: [
       { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;10 boards · local-first · Crowelian 2026 + Sonnet&quot; }
     ] }
   ] }
@@ -1167,7 +1202,8 @@ export async function mount(root) {
 <p>Build the complete reusable Babylon/Havok desk and browser-download helper.</p>
 <h4 id="6-1-share-pending-local-script-loads">6.1 — Share pending local script loads<a class="anchor" href="#6-1-share-pending-local-script-loads">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 1–20.</p>
-<!-- taught-source: paper-worlds/desk.js:1-20 --><pre class="code" data-lang="js"><code>// Cache the pending promise too: rapid view changes must wait for the same script.
+<!-- taught-source: paper-worlds/desk.js:1-20 --><p><strong>File: <code>desk.js</code></strong> (step 6.1, share pending local script loads: the beginning of the file)</p>
+<pre class="code" data-lang="js"><code>// Cache the pending promise too: rapid view changes must wait for the same script.
 const scriptLoads = new Map();
 export function loadScript(src) {
   if (!scriptLoads.has(src)) {
@@ -1191,7 +1227,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Click the 3D mode button twice rapidly. There should be one ready view, not an undefined BABYLON error.</p>
 <h4 id="6-2-create-one-engine-scene-and-controllable-camera">6.2 — Create one engine, scene and controllable camera<a class="anchor" href="#6-2-create-one-engine-scene-and-controllable-camera">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 21–42.</p>
-<!-- taught-source: paper-worlds/desk.js:21-42 --><pre class="code" data-lang="js"><code>export async function createDesk(canvas, { physics = true } = {}) {
+<!-- taught-source: paper-worlds/desk.js:21-42 --><p><strong>File: <code>desk.js</code></strong> (step 6.2, create one engine, scene and controllable camera: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>export async function createDesk(canvas, { physics = true } = {}) {
   await loadScript('vendor/babylonjs/babylon.js');
   const B = window.BABYLON;
   const engine = new B.Engine(canvas, true, {
@@ -1217,7 +1254,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Compare orbit dragging with moving a paper: the camera changes the view without altering saved document coordinates.</p>
 <h4 id="6-3-light-a-surface-and-prepare-shadow-ownership">6.3 — Light a surface and prepare shadow ownership<a class="anchor" href="#6-3-light-a-surface-and-prepare-shadow-ownership">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 43–62.</p>
-<!-- taught-source: paper-worlds/desk.js:43-62 --><pre class="code" data-lang="js"><code>  const fill = new B.HemisphericLight('Sky', new B.Vector3(0, 1, 0), scene);
+<!-- taught-source: paper-worlds/desk.js:43-62 --><p><strong>File: <code>desk.js</code></strong> (step 6.3, light a surface and prepare shadow ownership: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  const fill = new B.HemisphericLight('Sky', new B.Vector3(0, 1, 0), scene);
   fill.intensity = 0.65;
   const light = new B.DirectionalLight('Sun', new B.Vector3(-0.4, -1, 0.5), scene);
   light.position.set(8, 18, -8);
@@ -1241,7 +1279,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Change the directional light direction temporarily and observe where shadows fall, while paper text remains readable.</p>
 <h4 id="6-4-load-the-packaged-physics-binary">6.4 — Load the packaged physics binary<a class="anchor" href="#6-4-load-the-packaged-physics-binary">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 63–77.</p>
-<!-- taught-source: paper-worlds/desk.js:63-77 --><pre class="code" data-lang="js"><code>  if (physics) {
+<!-- taught-source: paper-worlds/desk.js:63-77 --><p><strong>File: <code>desk.js</code></strong> (step 6.4, load the packaged physics binary: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  if (physics) {
     await loadScript('vendor/havok/HavokPhysics_umd.js');
     const havok = await window.HavokPhysics({
       locateFile: (name) =&gt; 'vendor/havok/' + name,
@@ -1260,7 +1299,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Temporarily set physics false at the helper call. Static papers should still render, but there will be no physical sticky/flick response.</p>
 <h4 id="6-5-create-a-writable-texture-rather-than-a-screenshot-file">6.5 — Create a writable texture rather than a screenshot file<a class="anchor" href="#6-5-create-a-writable-texture-rather-than-a-screenshot-file">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 78–104.</p>
-<!-- taught-source: paper-worlds/desk.js:78-104 --><pre class="code" data-lang="js"><code>  const paper = (name, width, height, paint) =&gt; {
+<!-- taught-source: paper-worlds/desk.js:78-104 --><p><strong>File: <code>desk.js</code></strong> (step 6.5, create a writable texture rather than a screenshot file: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  const paper = (name, width, height, paint) =&gt; {
     const mesh = B.MeshBuilder.CreatePlane(
       name,
       { width, height, sideOrientation: B.Mesh.DOUBLESIDE },
@@ -1291,7 +1331,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Draw a bold line in 2D and switch views. It should appear as actual texture content on the corresponding paper.</p>
 <h4 id="6-6-create-a-visible-rigid-sticky-toy">6.6 — Create a visible rigid sticky toy<a class="anchor" href="#6-6-create-a-visible-rigid-sticky-toy">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 105–126.</p>
-<!-- taught-source: paper-worlds/desk.js:105-126 --><pre class="code" data-lang="js"><code>  const box = (name, pos, color = '#f6d675', mass = 0.2) =&gt; {
+<!-- taught-source: paper-worlds/desk.js:105-126 --><p><strong>File: <code>desk.js</code></strong> (step 6.6, create a visible rigid sticky toy: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  const box = (name, pos, color = '#f6d675', mass = 0.2) =&gt; {
     const mesh = B.MeshBuilder.CreateBox(
       name,
       { width: 1.1, height: 0.13, depth: 0.9 },
@@ -1317,7 +1358,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Increase restitution slightly and flick a sticky. It should bounce more without changing the original 2D note shape.</p>
 <h4 id="6-7-own-the-render-loop-and-resize-lifecycle">6.7 — Own the render loop and resize lifecycle<a class="anchor" href="#6-7-own-the-render-loop-and-resize-lifecycle">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 127–156.</p>
-<!-- taught-source: paper-worlds/desk.js:127-156 --><pre class="code" data-lang="js"><code>  const update = new Set(),
+<!-- taught-source: paper-worlds/desk.js:127-156 --><p><strong>File: <code>desk.js</code></strong> (step 6.7, own the render loop and resize lifecycle: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  const update = new Set(),
     render = () =&gt; {
       for (const fn of update) fn(Math.min(0.05, engine.getDeltaTime() / 1000));
       scene.render();
@@ -1351,7 +1393,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Switch back to 2D and observe that the old desk stops animating. Reopening 3D creates one fresh owner.</p>
 <h4 id="6-8-hand-a-browser-a-real-downloadable-object">6.8 — Hand a browser a real downloadable object<a class="anchor" href="#6-8-hand-a-browser-a-real-downloadable-object">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 157–165.</p>
-<!-- taught-source: paper-worlds/desk.js:157-165 --><pre class="code" data-lang="js"><code>export function download(name, content, type = 'application/json') {
+<!-- taught-source: paper-worlds/desk.js:157-165 --><p><strong>File: <code>desk.js</code></strong> (step 6.8, hand a browser a real downloadable object: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>export function download(name, content, type = 'application/json') {
   const blob = content instanceof Blob ? content : new Blob([content], { type }),
     url = URL.createObjectURL(blob),
     a = document.createElement('a');
@@ -1366,7 +1409,8 @@ export function loadScript(src) {
 <p>Understand the complete existing Nord Save helper bundled with this app.</p>
 <h4 id="7-1-namespace-slots-and-read-versioned-data">7.1 — Namespace slots and read versioned data<a class="anchor" href="#7-1-namespace-slots-and-read-versioned-data">#</a></h4>
 <p><strong>Read:</strong> <code>save.js</code>, lines 1–20.</p>
-<!-- taught-source: paper-worlds/save.js:1-20 --><pre class="code" data-lang="js"><code>// Versioned save slots on top of localStorage (or any Storage-like object).
+<!-- taught-source: paper-worlds/save.js:1-20 --><p><strong>File: <code>save.js</code></strong> (step 7.1, namespace slots and read versioned data: the beginning of the file)</p>
+<pre class="code" data-lang="js"><code>// Versioned save slots on top of localStorage (or any Storage-like object).
 export class Save {
   constructor(gameId, { version = 1, storage = globalThis.localStorage, migrate = null } = {}) {
     this.prefix = `nord:${gameId}:`;
@@ -1390,7 +1434,8 @@ export class Save {
 <p><strong>Try it / expected result:</strong> Compare the Paper Worlds and RSS River storage prefixes in browser tools. Their saves should not overwrite each other.</p>
 <h4 id="7-2-read-and-write-values-then-define-memory-storage">7.2 — Read and write values, then define memory storage<a class="anchor" href="#7-2-read-and-write-values-then-define-memory-storage">#</a></h4>
 <p><strong>Read:</strong> <code>save.js</code>, lines 21–32.</p>
-<!-- taught-source: paper-worlds/save.js:21-32 --><pre class="code" data-lang="js"><code>  get(k, def) { const d = this.#read().data; return k in d ? d[k] : def; }
+<!-- taught-source: paper-worlds/save.js:21-32 --><p><strong>File: <code>save.js</code></strong> (step 7.2, read and write values, then define memory storage: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  get(k, def) { const d = this.#read().data; return k in d ? d[k] : def; }
   set(k, v) { const o = this.#read(); o.data[k] = v; o.v = this.version; o.t = Date.now(); this.storage.setItem(this.#key(), JSON.stringify(o)); }
   all() { return this.#read().data; }
   has(n = this.slotId) { return this.storage.getItem(this.#key(n)) != null; }
@@ -1408,7 +1453,8 @@ export class MemoryStorage {
 <p>Read the entire exported desk template that embeds your documents and opens directly in 3D.</p>
 <h4 id="8-1-style-a-standalone-viewing-surface">8.1 — Style a standalone viewing surface<a class="anchor" href="#8-1-style-a-standalone-viewing-surface">#</a></h4>
 <p><strong>Read:</strong> <code>portfolio.html</code>, lines 1–34.</p>
-<!-- taught-source: paper-worlds/portfolio.html:1-34 --><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+<!-- taught-source: paper-worlds/portfolio.html:1-34 --><p><strong>File: <code>portfolio.html</code></strong> (step 8.1, style a standalone viewing surface: the beginning of the file)</p>
+<pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
   &lt;meta charset=&quot;utf-8&quot; /&gt;
   &lt;title&gt;My Paper Worlds desk&lt;/title&gt;
@@ -1446,7 +1492,8 @@ export class MemoryStorage {
 <p><strong>Try it / expected result:</strong> Open an exported desk from the served project folder and resize it. The canvas should fill the window and the header should remain reachable.</p>
 <h4 id="8-2-read-embedded-data-and-handle-module-failures">8.2 — Read embedded data and handle module failures<a class="anchor" href="#8-2-read-embedded-data-and-handle-module-failures">#</a></h4>
 <p><strong>Read:</strong> <code>portfolio.html</code>, lines 35–55.</p>
-<!-- taught-source: paper-worlds/portfolio.html:35-55 --><pre class="code" data-lang="html"><code>  &lt;script id=&quot;desk-data&quot; type=&quot;application/json&quot;&gt;
+<!-- taught-source: paper-worlds/portfolio.html:35-55 --><p><strong>File: <code>portfolio.html</code></strong> (step 8.2, read embedded data and handle module failures: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="html"><code>  &lt;script id=&quot;desk-data&quot; type=&quot;application/json&quot;&gt;
     /*BOARD_DATA*/
   &lt;/script&gt;
   &lt;script type=&quot;module&quot;&gt;
@@ -1473,7 +1520,8 @@ export class MemoryStorage {
 <p>Read the complete Nord page entry point and its failure path.</p>
 <h4 id="9-1-load-the-local-runtime-and-start-the-app">9.1 — Load the local runtime and start the app<a class="anchor" href="#9-1-load-the-local-runtime-and-start-the-app">#</a></h4>
 <p><strong>Read:</strong> <code>index.html</code>, lines 1–8.</p>
-<!-- taught-source: paper-worlds/index.html:1-8 --><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+<!-- taught-source: paper-worlds/index.html:1-8 --><p><strong>File: <code>index.html</code></strong> (step 9.1, load the local runtime and start the app: the beginning of the file)</p>
+<pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.paperworlds&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Paper Worlds — a playful 2D/3D drawing desk&lt;/title&gt;
 &lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
@@ -1487,7 +1535,8 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <p>Read every project field that tells Nord which host, display and services to use.</p>
 <h4 id="10-1-identify-the-project-and-choose-its-presentation">10.1 — Identify the project and choose its presentation<a class="anchor" href="#10-1-identify-the-project-and-choose-its-presentation">#</a></h4>
 <p><strong>Read:</strong> <code>nord.project.json</code>, lines 1–22.</p>
-<!-- taught-source: paper-worlds/nord.project.json:1-22 --><pre class="code" data-lang="json"><code>{
+<!-- taught-source: paper-worlds/nord.project.json:1-22 --><p><strong>File: <code>nord.project.json</code></strong> (step 10.1, identify the project and choose its presentation: the beginning of the file)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;format&quot;: 1,
   &quot;name&quot;: &quot;Paper Worlds&quot;,
   &quot;id&quot;: &quot;com.crowelian.paperworlds&quot;,
@@ -1513,7 +1562,8 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <p><strong>Try it / expected result:</strong> Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.</p>
 <h4 id="10-2-distinguish-scene-actions-from-html-event-handling">10.2 — Distinguish scene actions from HTML event handling<a class="anchor" href="#10-2-distinguish-scene-actions-from-html-event-handling">#</a></h4>
 <p><strong>Read:</strong> <code>nord.project.json</code>, lines 23–64.</p>
-<!-- taught-source: paper-worlds/nord.project.json:23-64 --><pre class="code" data-lang="json"><code>  &quot;input&quot;: {
+<!-- taught-source: paper-worlds/nord.project.json:23-64 --><p><strong>File: <code>nord.project.json</code></strong> (step 10.2, distinguish scene actions from HTML event handling: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="json"><code>  &quot;input&quot;: {
     &quot;actions&quot;: {
       &quot;left&quot;: [
         &quot;KeyA&quot;,
@@ -1561,7 +1611,8 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <p>Read every stylesheet rule, grouped by the UI responsibility it controls.</p>
 <h4 id="11-1-set-the-app-foundation-and-reusable-visual-language">11.1 — Set the app foundation and reusable visual language<a class="anchor" href="#11-1-set-the-app-foundation-and-reusable-visual-language">#</a></h4>
 <p><strong>Read:</strong> <code>style.css</code>, lines 1–36.</p>
-<!-- taught-source: paper-worlds/style.css:1-36 --><pre class="code" data-lang="css"><code>:host {
+<!-- taught-source: paper-worlds/style.css:1-36 --><p><strong>File: <code>style.css</code></strong> (step 11.1, set the app foundation and reusable visual language: the beginning of the file)</p>
+<pre class="code" data-lang="css"><code>:host {
   display: block;
   min-height: 100vh;
   color: #dbe9ee;
@@ -1601,7 +1652,8 @@ header p {
 <p><strong>Try it / expected result:</strong> Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change.</p>
 <h4 id="11-2-use-the-supplied-sheet-and-style-controls">11.2 — Use the supplied sheet and style controls<a class="anchor" href="#11-2-use-the-supplied-sheet-and-style-controls">#</a></h4>
 <p><strong>Read:</strong> <code>style.css</code>, lines 37–83.</p>
-<!-- taught-source: paper-worlds/style.css:37-83 --><pre class="code" data-lang="css"><code>.mascot {
+<!-- taught-source: paper-worlds/style.css:37-83 --><p><strong>File: <code>style.css</code></strong> (step 11.2, use the supplied sheet and style controls: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="css"><code>.mascot {
   width: 62px;
   height: 62px;
   display: inline-block;
@@ -1652,7 +1704,8 @@ aside button {
 <p><strong>Try it / expected result:</strong> Temporarily change the sprite background position to another cell, then restore the ghost.</p>
 <h4 id="11-3-create-a-studio-layout-without-changing-document-coordinates">11.3 — Create a studio layout without changing document coordinates<a class="anchor" href="#11-3-create-a-studio-layout-without-changing-document-coordinates">#</a></h4>
 <p><strong>Read:</strong> <code>style.css</code>, lines 84–120.</p>
-<!-- taught-source: paper-worlds/style.css:84-120 --><pre class="code" data-lang="css"><code>.workbench {
+<!-- taught-source: paper-worlds/style.css:84-120 --><p><strong>File: <code>style.css</code></strong> (step 11.3, create a studio layout without changing document coordinates: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="css"><code>.workbench {
   display: grid;
   grid-template-columns: 210px minmax(0, 1fr);
   gap: 20px;
@@ -1693,7 +1746,8 @@ h3 {
 <p><strong>Try it / expected result:</strong> Change sidebar width slightly and verify a saved stroke stays at its document position.</p>
 <h4 id="11-4-size-surfaces-honor-hidden-state-and-adapt">11.4 — Size surfaces, honor hidden state and adapt<a class="anchor" href="#11-4-size-surfaces-honor-hidden-state-and-adapt">#</a></h4>
 <p><strong>Read:</strong> <code>style.css</code>, lines 121–158.</p>
-<!-- taught-source: paper-worlds/style.css:121-158 --><pre class="code" data-lang="css"><code>#flat,
+<!-- taught-source: paper-worlds/style.css:121-158 --><p><strong>File: <code>style.css</code></strong> (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="css"><code>#flat,
 #world {
   width: 100%;
   height: 640px;
@@ -1736,7 +1790,8 @@ footer {
 <!-- END GENERATED FILE WALKTHROUGH --><h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
 <p>All authored files follow in the manual&#39;s offline CodeMirror viewers. The complete archive also includes the original sprite sheet and pinned Phaser, Babylon and Havok libraries with licences. Minified dependencies are supplied in the archive rather than expanded as teaching code.</p>
 <!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><details>
-<summary>Complete app.js</summary><pre class="code" data-lang="js"><code>import { Save } from './save.js';
+<summary>Complete app.js</summary><p><strong>File: <code>app.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>import { Save } from './save.js';
 import { newBoards, validateBoards, portfolioHTML } from './model.js';
 import { createFlat } from './flat.js';
 import { createWorld } from './world.js';
@@ -1976,7 +2031,8 @@ export async function mount(root) {
   };
 }</code></pre>
 </details><details>
-<summary>Complete desk.js</summary><pre class="code" data-lang="js"><code>// Cache the pending promise too: rapid view changes must wait for the same script.
+<summary>Complete desk.js</summary><p><strong>File: <code>desk.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// Cache the pending promise too: rapid view changes must wait for the same script.
 const scriptLoads = new Map();
 export function loadScript(src) {
   if (!scriptLoads.has(src)) {
@@ -2142,7 +2198,8 @@ export function download(name, content, type = 'application/json') {
   setTimeout(() =&gt; URL.revokeObjectURL(url), 1000);
 }</code></pre>
 </details><details>
-<summary>Complete flat.js</summary><pre class="code" data-lang="js"><code>import { WIDTH, HEIGHT, paint } from './model.js';
+<summary>Complete flat.js</summary><p><strong>File: <code>flat.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>import { WIDTH, HEIGHT, paint } from './model.js';
 import { loadScript } from './desk.js';
 export async function createFlat(parent, getBoard, change) {
   await loadScript('vendor/phaser/phaser.min.js');
@@ -2376,7 +2433,8 @@ export async function createFlat(parent, getBoard, change) {
   };
 }</code></pre>
 </details><details>
-<summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+<summary>Complete index.html</summary><p><strong>File: <code>index.html</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.paperworlds&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Paper Worlds — a playful 2D/3D drawing desk&lt;/title&gt;
 &lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
@@ -2385,7 +2443,8 @@ import { mount } from './app.js';
 try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
 </details><details>
-<summary>Complete model.js</summary><pre class="code" data-lang="js"><code>export const WIDTH = 1200,
+<summary>Complete model.js</summary><p><strong>File: <code>model.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>export const WIDTH = 1200,
   HEIGHT = 850;
 export function newBoards() {
   return Array.from({ length: 10 }, (_, i) =&gt; ({
@@ -2532,7 +2591,8 @@ export function portfolioHTML(template, boards) {
   return template.replace('/*BOARD_DATA*/', () =&gt; data);
 }</code></pre>
 </details><details>
-<summary>Complete nord.project.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete nord.project.json</summary><p><strong>File: <code>nord.project.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;format&quot;: 1,
   &quot;name&quot;: &quot;Paper Worlds&quot;,
   &quot;id&quot;: &quot;com.crowelian.paperworlds&quot;,
@@ -2597,7 +2657,8 @@ export function portfolioHTML(template, boards) {
   }
 }</code></pre>
 </details><details>
-<summary>Complete portfolio.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+<summary>Complete portfolio.html</summary><p><strong>File: <code>portfolio.html</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
   &lt;meta charset=&quot;utf-8&quot; /&gt;
   &lt;title&gt;My Paper Worlds desk&lt;/title&gt;
@@ -2653,7 +2714,8 @@ export function portfolioHTML(template, boards) {
   &lt;/script&gt;
 &lt;/html&gt;</code></pre>
 </details><details>
-<summary>Complete save.js</summary><pre class="code" data-lang="js"><code>// Versioned save slots on top of localStorage (or any Storage-like object).
+<summary>Complete save.js</summary><p><strong>File: <code>save.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// Versioned save slots on top of localStorage (or any Storage-like object).
 export class Save {
   constructor(gameId, { version = 1, storage = globalThis.localStorage, migrate = null } = {}) {
     this.prefix = `nord:${gameId}:`;
@@ -2686,7 +2748,8 @@ export class MemoryStorage {
   removeItem(k) { this.#m.delete(k); }
 }</code></pre>
 </details><details>
-<summary>Complete style.css</summary><pre class="code" data-lang="css"><code>:host {
+<summary>Complete style.css</summary><p><strong>File: <code>style.css</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="css"><code>:host {
   display: block;
   min-height: 100vh;
   color: #dbe9ee;
@@ -2845,7 +2908,8 @@ footer {
   }
 }</code></pre>
 </details><details>
-<summary>Complete ui/desk.ui.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete ui/desk.ui.json</summary><p><strong>File: <code>ui/desk.ui.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;version&quot;: 1,
   &quot;name&quot;: &quot;desk&quot;,
   &quot;page&quot;: true,
@@ -2923,7 +2987,8 @@ footer {
   ] }
 }</code></pre>
 </details><details>
-<summary>Complete world.js</summary><pre class="code" data-lang="js"><code>import { createDesk } from './desk.js';
+<summary>Complete world.js</summary><p><strong>File: <code>world.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>import { createDesk } from './desk.js';
 import { WIDTH, HEIGHT, paint } from './model.js';
 export async function createWorld(canvas, boards, select) {
   const d = await createDesk(canvas),

@@ -45,6 +45,7 @@
 <p><code>X</code> must equal the <code>wasm-bindgen</code> version in your project&#39;s <code>Cargo.lock</code>. Open a new terminal after installing Rust so it is on your PATH.</p>
 <p>Optional: <code>wasm-opt</code> (from binaryen) makes release builds smaller when you use <code>--optimize</code>.</p>
 <p>Check your setup with the command-line tool:</p>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="bash"><code>nord doctor</code></pre>
 <p>It prints whether <code>cargo</code> and the <code>wasm32</code> target are present (the editor finds <code>cargo</code> in <code>~/.cargo/bin</code> on macOS or <code>%USERPROFILE%\.cargo\bin</code> on Windows even when it was started by double-clicking, not from a terminal). If <code>wasm32</code> says <em>missing</em>, run the <code>rustup target add</code> line above.</p>
 <aside class="box tip"><div class="box-title">Tip</div><p>The <strong>first build is slow</strong> (it compiles macroquad, rapier or egui from scratch, often several minutes). Later builds only recompile your own code and take seconds. The Bevy starter template is the slowest.</p>

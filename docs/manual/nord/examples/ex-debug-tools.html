@@ -13,6 +13,7 @@
 <h3 id="unity">Unity<a class="anchor" href="#unity">#</a></h3>
 <pre class="code" data-lang="cs"><code>Debug.Log(&quot;hit&quot;); Debug.LogWarning(&quot;low&quot;); Debug.LogError(&quot;boom&quot;);</code></pre>
 <h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (inside any method)</p>
 <pre class="code" data-lang="js"><code>this.log('hit', damage);                  // [ScriptName] hit 5      (also this.warn, this.error)
 console.log('[Combat] hit', damage);      // any console.* works; &quot;[Tag]&quot; at the start becomes a filterable tag
 import { Debug } from 'nord'; Debug.Log('x'); Debug.LogWarning('y'); Debug.LogError('z'); Debug.Assert(hp &gt;= 0, 'negative hp');</code></pre>

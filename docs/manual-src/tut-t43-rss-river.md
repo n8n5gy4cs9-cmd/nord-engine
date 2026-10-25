@@ -1487,6 +1487,7 @@ Read the complete original local RSS fixture; it is also an example of the input
 
 <!-- taught-source: rss-river/demo.xml:1-10 -->
 
+**File: `demo.xml`** (step 7.1, recognize an RSS channel and stable item IDs: the beginning of the file)
 ```xml
 <?xml version="1.0"?><rss version="2.0"><channel><title>Original tutorial demo — not live news</title><link>https://example.org/</link><description>Fictional local content for learning RSS River.</description>
 <item><guid>demo-1</guid><title>A small app can be a place you want to visit</title><link>https://example.org/demo/1</link><description>This is original tutorial demo content, not a published news report. Try starring this paper, switching to the 3D river and flicking it onto the desk.</description></item>
@@ -1515,6 +1516,7 @@ Read the entire explicit feed-host allowlist.
 
 <!-- taught-source: rss-river/.offline-allow:1-3 -->
 
+**File: `.offline-allow`** (step 8.1, distinguish intentional news endpoints from library dependencies: the beginning of the file)
 ```text
 hnrss.org
 simonwillison.net
@@ -1536,6 +1538,7 @@ Read the complete Nord page entry point and its failure path.
 
 <!-- taught-source: rss-river/index.html:1-8 -->
 
+**File: `index.html`** (step 9.1, load the local runtime and start the app: the beginning of the file)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="com.crowelian.rssriver"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RSS River — a calm reading desk</title>
@@ -1670,6 +1673,7 @@ Read every stylesheet rule, grouped by the UI responsibility it controls.
 
 <!-- taught-source: rss-river/style.css:1-64 -->
 
+**File: `style.css`** (step 11.1, set the app foundation and reusable visual language: the beginning of the file)
 ```css
 :host {
   display: block;
@@ -1747,6 +1751,7 @@ nav button {
 
 <!-- taught-source: rss-river/style.css:65-121 -->
 
+**File: `style.css`** (step 11.2, arrange source, list and reading columns: the next part of this file; it goes **below** the code of the previous step)
 ```css
 .layout {
   display: grid;
@@ -1817,6 +1822,7 @@ hr {
 
 <!-- taught-source: rss-river/style.css:122-163 -->
 
+**File: `style.css`** (step 11.3, give list entries useful reading states: the next part of this file; it goes **below** the code of the previous step)
 ```css
 #list {
   height: 680px;
@@ -1872,6 +1878,7 @@ hr {
 
 <!-- taught-source: rss-river/style.css:164-207 -->
 
+**File: `style.css`** (step 11.4, make article text calm and readable: the next part of this file; it goes **below** the code of the previous step)
 ```css
 #reader {
   background: #f7f4e9;
@@ -1929,6 +1936,7 @@ footer {
 
 <!-- taught-source: rss-river/style.css:208-232 -->
 
+**File: `style.css`** (step 11.5, adapt columns at two viewport widths: the next part of this file; it goes **below** the code of the previous step)
 ```css
 @media (max-width: 1050px) {
   .layout {
@@ -2204,7 +2212,7 @@ All authored text files follow in offline CodeMirror viewers. The archive includ
 <details>
 <summary>Complete app.js</summary>
 
-**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
+**File: `app.js`** (the complete file, for comparison)
 ```js
 import { Save } from './save.js';
 import { DEFAULT_FEEDS, parseFeed, mergeArticles, safeLink } from './feeds.js';
@@ -2513,6 +2521,7 @@ export async function mount(root) {
 <details>
 <summary>Complete .offline-allow</summary>
 
+**File: `.offline-allow`** (the complete file, for comparison)
 ```text
 hnrss.org
 simonwillison.net
@@ -2524,6 +2533,7 @@ github.blog
 <details>
 <summary>Complete demo.xml</summary>
 
+**File: `demo.xml`** (the complete file, for comparison)
 ```xml
 <?xml version="1.0"?><rss version="2.0"><channel><title>Original tutorial demo — not live news</title><link>https://example.org/</link><description>Fictional local content for learning RSS River.</description>
 <item><guid>demo-1</guid><title>A small app can be a place you want to visit</title><link>https://example.org/demo/1</link><description>This is original tutorial demo content, not a published news report. Try starring this paper, switching to the 3D river and flicking it onto the desk.</description></item>
@@ -2542,7 +2552,7 @@ github.blog
 <details>
 <summary>Complete desk.js</summary>
 
-**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
+**File: `desk.js`** (the complete file, for comparison)
 ```js
 // Cache the pending promise too: rapid view changes must wait for the same script.
 const scriptLoads = new Map();
@@ -2716,7 +2726,7 @@ export function download(name, content, type = 'application/json') {
 <details>
 <summary>Complete feeds.js</summary>
 
-**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
+**File: `feeds.js`** (the complete file, for comparison)
 ```js
 // Feed URLs are user data, not CDN dependencies. Nothing is requested until Refresh.
 export const DEFAULT_FEEDS = [
@@ -2800,6 +2810,7 @@ export function mergeArticles(old, items) {
 <details>
 <summary>Complete index.html</summary>
 
+**File: `index.html`** (the complete file, for comparison)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="com.crowelian.rssriver"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RSS River — a calm reading desk</title>
@@ -2816,7 +2827,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete nord-desktop.js</summary>
 
-**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
+**File: `nord-desktop.js`** (the complete file, for comparison)
 ```js
 // Nord desktop API (M9, ADR-020): window.nord.desktop.* — files, dialogs, notifications, clipboard, storage, windows, menus, tray.
 // One API, three transports, picked automatically:
@@ -2982,7 +2993,7 @@ export default desktop;
 <details>
 <summary>Complete nord.project.json</summary>
 
-**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
+**File: `nord.project.json`** (the complete file, for comparison)
 ```json
 {
   "format": 1,
@@ -3066,7 +3077,7 @@ export default desktop;
 <details>
 <summary>Complete river.js</summary>
 
-**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
+**File: `river.js`** (the complete file, for comparison)
 ```js
 import { createDesk } from './desk.js';
 export async function createRiver(canvas, articles, open) {
@@ -3171,7 +3182,7 @@ export async function createRiver(canvas, articles, open) {
 <details>
 <summary>Complete save.js</summary>
 
-**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
+**File: `save.js`** (the complete file, for comparison)
 ```js
 // Versioned save slots on top of localStorage (or any Storage-like object).
 export class Save {
@@ -3212,6 +3223,7 @@ export class MemoryStorage {
 <details>
 <summary>Complete style.css</summary>
 
+**File: `style.css`** (the complete file, for comparison)
 ```css
 :host {
   display: block;
@@ -3452,7 +3464,7 @@ footer {
 <details>
 <summary>Complete ui/reader.ui.json</summary>
 
-**File: `nord-desktop.js`** (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes **below** the code of the previous step)
+**File: `ui/reader.ui.json`** (the complete file, for comparison)
 ```json
 {
   "version": 1,

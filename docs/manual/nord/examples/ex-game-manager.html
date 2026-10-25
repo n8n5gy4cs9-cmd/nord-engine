@@ -25,6 +25,7 @@
 <li>Create an empty object called <em>GameManager</em> in the <strong>first</strong> scene and add that script. (It survives scene loads by itself.)</li>
 <li>Use it anywhere:</li>
 </ol>
+<p><strong>File: your script, for example <code>scripts/Coin.js</code></strong> (the <code>import</code> line goes at the top, the calls inside methods)</p>
 <pre class="code" data-lang="js"><code>import { GameManager } from 'nord';
 
 GameManager.instance.AddScore(1);          // score += 1, emits 'score' { score }
@@ -37,6 +38,7 @@ GameManager.instance.Restart();            // score and lives reset, scene reloa
 <aside class="box tip"><div class="box-title">Tip</div><p><code>GameManager.instance</code> is <code>null</code> until the manager&#39;s object exists in the <strong>current scene</strong> and has run <code>Awake</code>. Use it from <code>Start()</code> or later, not in a script&#39;s <code>Awake()</code>.</p>
 </aside><h2 id="listening-a-hud-that-redraws-itself">Listening: a HUD that redraws itself<a class="anchor" href="#listening-a-hud-that-redraws-itself">#</a></h2>
 <p>The manager does not know the HUD exists. It emits events on the global bus (<code>this.game.events</code>); the HUD subscribes.</p>
+<p><strong>File: <code>scripts/Hud.js</code></strong> (new file, the whole file; attach it to an empty <code>Hud</code> object)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager } from 'nord';
 
 export default class Hud extends MonoBehaviour {
@@ -52,6 +54,7 @@ export default class Hud extends MonoBehaviour {
 }</code></pre>
 <p>Unity&#39;s <code>OnScore += handler; … OnScore -= handler;</code> is <code>const off = events.on(...)</code> and <code>off()</code>.</p>
 <h2 id="writing-your-own-manager-any-singleton">Writing your own manager (any Singleton)<a class="anchor" href="#writing-your-own-manager-any-singleton">#</a></h2>
+<p><strong>File: <code>scripts/Inventory.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { Singleton } from 'nord';
 
 export default class Inventory extends Singleton {
@@ -70,6 +73,7 @@ export default class Inventory extends Singleton {
 </ul>
 <aside class="box warn"><div class="box-title">Careful</div><p><strong>Subclasses:</strong> <code>class CoinManager extends GameManager {}</code> is reachable as <code>CoinManager.instance</code> <strong>and</strong> as <code>GameManager.instance</code>. If you write your own base class between <code>Singleton</code> and your manager, the same applies up the chain.</p>
 </aside><h2 id="a-simple-state-machine-on-top">A simple state machine on top<a class="anchor" href="#a-simple-state-machine-on-top">#</a></h2>
+<p><strong>File: <code>scripts/GameManager.js</code></strong> (add this to the class that extends <code>GameManager</code>; the comment lists the states)</p>
 <pre class="code" data-lang="js"><code>// states: 'menu' | 'playing' | 'paused' | 'gameover'
 GameManager.instance.SetState('playing');
 this.game.events.on('state', ({ state, previous }) =&gt; {

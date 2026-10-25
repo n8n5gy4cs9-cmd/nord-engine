@@ -41,6 +41,7 @@ Select Systems → **Add script** → `scripts/course.js`. Save the scene. Play 
 
 Add this inside the class, above `start()`:
 
+**File: `scripts/course.js`** (add this inside the class, above `start()`)
 ```js
 static attributes = {
   seconds: { type: 'number', default: 150, min: 10 },
@@ -60,6 +61,7 @@ Select Systems and find the new script settings. Set seconds to `180`, save the 
 
 Replace the temporary `start()` with this smaller teaching version. Add the other two methods beside it, inside the same class:
 
+**File: `scripts/course.js`** (replace the temporary `start()` with this one and add the two other methods beside it, inside the class)
 ```js
 start() {
   this.remaining = this.attrs.seconds;
@@ -95,6 +97,7 @@ Custom UI screens start hidden. `this.ui.show('course')` is essential. If you se
 
 Add listeners in `start()` after initializing state:
 
+**File: `scripts/course.js`** (inside `start()`, after the state is initialised)
 ```js
 this.offs = [
   this.events.on('score', n => this.addScore(n)),
@@ -108,6 +111,7 @@ The existing pickup script emits a numeric `score` event and then `pickup` with 
 
 Start with these simple methods:
 
+**File: `scripts/course.js`** (add these methods inside the class, beside `start()`)
 ```js
 addScore(n) {
   if (typeof n !== 'number' || n <= 0) return;
@@ -129,6 +133,7 @@ pickup(p) {
 
 The complete version replaces the simple addScore with:
 
+**File: `scripts/course.js`** (replace the simple `addScore` with this one)
 ```js
 addScore(n) {
   if (this.ended || typeof n !== 'number' || n <= 0) return;
@@ -150,6 +155,7 @@ Subscribe to `died`, `checkpoint` and `game:win` as shown in the final controlle
 
 The final checkWin deliberately has two conditions: `bossCleared` and enough collected coins. Defeating the boss first displays how many more coins you need. A later pickup rechecks victory, so the run is not stuck after the boss is gone.
 
+**File: `scripts/course.js`** (add this method inside the class)
 ```js
 checkWin() {
   if (!this.bossCleared) return;
@@ -169,6 +175,7 @@ An **invariant** is a condition your game must always preserve. Here, “the run
 
 A pause function can stop updates with `this.game.pause()`. A keyboard check inside update would then stop too, so it could never detect the key that resumes the game. Use DOM menu buttons: their click callbacks still run while simulation is paused.
 
+**File: `scripts/course.js`** (inside `start()`, after the HUD exists)
 ```js
 this.ui.menu('course-menu', [
   { text: 'Resume', onClick: () => {
@@ -188,6 +195,7 @@ The final pause method ignores clicks after ending or while already paused, prev
 
 A win adds `ceil(remaining) * 5 + lives * 100` to score, then stores the larger of the old record and current score:
 
+**File: `scripts/course.js`** (inside the method that ends the run)
 ```js
 this.best = Math.max(this.best, this.score);
 this.save.set('coin-rush.best', this.best);
@@ -197,6 +205,7 @@ Load the record in start with `this.save.get('coin-rush.best', 0)`. This is a lo
 
 Cleanup is part of game code:
 
+**File: `scripts/course.js`** (add this method inside the class)
 ```js
 onDestroy() {
   this.offs.forEach(off => off());
@@ -218,6 +227,7 @@ Test a full loop: coin → combo → flag → damage/death → respawn → boss 
 
 From the parent folder of your personal project:
 
+**Terminal** (in the folder that contains your project folder):
 ```sh
 nord check my-coin-rush
 nord build my-coin-rush --out coin-rush-web --zip
@@ -236,6 +246,7 @@ The first file below is every line of the custom game controller. The remaining 
 
 ### scripts/course.js
 
+**File: `scripts/course.js`** (the complete file, for comparison)
 ```js
 import { NordScript } from 'nord';
 
@@ -370,6 +381,7 @@ export default class CoinRush extends NordScript {
 <details>
 <summary>Complete assets/maps/level.tilemap.json</summary>
 
+**File: `assets/maps/level.tilemap.json`** (the complete file, for comparison)
 ```json
 {
   "tileset": "assets/sprites/tileset_platformer.png",
@@ -2740,6 +2752,7 @@ export default class CoinRush extends NordScript {
 <details>
 <summary>Complete assets/sprites/coin.png.meta.json</summary>
 
+**File: `assets/sprites/coin.png.meta.json`** (the complete file, for comparison)
 ```json
 {
   "type": "spritesheet",
@@ -2768,6 +2781,7 @@ export default class CoinRush extends NordScript {
 <details>
 <summary>Complete assets/sprites/enemy_slime.png.meta.json</summary>
 
+**File: `assets/sprites/enemy_slime.png.meta.json`** (the complete file, for comparison)
 ```json
 {
   "type": "spritesheet",
@@ -2794,6 +2808,7 @@ export default class CoinRush extends NordScript {
 <details>
 <summary>Complete assets/sprites/flag.png.meta.json</summary>
 
+**File: `assets/sprites/flag.png.meta.json`** (the complete file, for comparison)
 ```json
 {
   "type": "spritesheet",
@@ -2820,6 +2835,7 @@ export default class CoinRush extends NordScript {
 <details>
 <summary>Complete assets/sprites/hero.png.meta.json</summary>
 
+**File: `assets/sprites/hero.png.meta.json`** (the complete file, for comparison)
 ```json
 {
   "type": "spritesheet",
@@ -2868,6 +2884,7 @@ export default class CoinRush extends NordScript {
 <details>
 <summary>Complete assets/sprites/tileset_platformer.png.meta.json</summary>
 
+**File: `assets/sprites/tileset_platformer.png.meta.json`** (the complete file, for comparison)
 ```json
 {
   "type": "tileset",
@@ -2884,6 +2901,7 @@ export default class CoinRush extends NordScript {
 <details>
 <summary>Complete index.html</summary>
 
+**File: `index.html`** (the complete file, for comparison)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coin Rush — code workshop</title>
@@ -2906,6 +2924,7 @@ try {
 <details>
 <summary>Complete nord.project.json</summary>
 
+**File: `nord.project.json`** (the complete file, for comparison)
 ```json
 {
   "format": 1,
@@ -2982,6 +3001,7 @@ try {
 <details>
 <summary>Complete scenes/main.scene.json</summary>
 
+**File: `scenes/main.scene.json`** (the complete file, for comparison)
 ```json
 {
   "format": 1,
@@ -4663,6 +4683,7 @@ try {
 <details>
 <summary>Complete scripts/ai-patrol.js</summary>
 
+**File: `scripts/ai-patrol.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"ai.patrol","title":"Enemy AI: patrol","category":"ai","tier":["2d"],"tags":["enemy","patrol","platformer"],"requires":["rigidbody"],"description":"Walks back and forth over a distance, turning at walls/ledge ends (checks ground ahead with overlapBox) and pauses at the ends."}
 import { NordScript } from 'nord';
@@ -4688,6 +4709,7 @@ export default class Patrol extends NordScript {
 <details>
 <summary>Complete scripts/boss.js</summary>
 
+**File: `scripts/boss.js`** (the complete file, for comparison)
 ```js
 import Enemy from './enemy.js';
 
@@ -4706,6 +4728,7 @@ export default class Boss extends Enemy {
 <details>
 <summary>Complete scripts/camera-follow.js</summary>
 
+**File: `scripts/camera-follow.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"camera.follow","title":"Camera follow (lerp + deadzone + look-ahead)","category":"camera","tier":["2d"],"tags":["camera","follow","deadzone"],"description":"Put on the camera entity (its position is the view centre; remove the camera's own 'follow'): smoothly follows a target (by name or tag) with a deadzone and optional look-ahead in the movement direction, clamped to world bounds."}
 import { NordScript } from 'nord';
@@ -4750,6 +4773,7 @@ export default class CameraFollow extends NordScript {
 <details>
 <summary>Complete scripts/checkpoint.js</summary>
 
+**File: `scripts/checkpoint.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"gameplay.checkpoint","title":"Checkpoints & respawn","category":"gameplay","tier":["2d","3d"],"tags":["checkpoint","respawn"],"requires":["trigger"],"description":"Put on every checkpoint trigger entity: touching one sets the respawn point; when the global 'died' event fires (or y passes killY) the player is moved back and healed after a delay. Emits 'checkpoint' and 'respawned'."}
 import { NordScript } from 'nord';
@@ -4775,6 +4799,7 @@ export default class Checkpoint extends NordScript {
 <details>
 <summary>Complete scripts/enemy.js</summary>
 
+**File: `scripts/enemy.js`** (the complete file, for comparison)
 ```js
 import { NordScript } from 'nord';
 
@@ -4800,6 +4825,7 @@ export default class Enemy extends NordScript {
 <details>
 <summary>Complete scripts/fx-hitstop.js</summary>
 
+**File: `scripts/fx-hitstop.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"fx.hitstop-slowmo","title":"Hit-stop, slow-mo, flash","category":"fx","tier":["2d","3d"],"tags":["juice","hitstop","slowmo","flash"],"description":"Game-feel events: 'hitstop' (ms) freezes time briefly, 'slowmo' ({scale,time}) eases timeScale, 'flash' flashes the screen. Also reacts to the global 'hit' event with a tiny hit-stop."}
 import { NordScript } from 'nord';
@@ -4821,6 +4847,7 @@ export default class Juice extends NordScript {
 <details>
 <summary>Complete scripts/health.js</summary>
 
+**File: `scripts/health.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"gameplay.health","title":"Health & damage","category":"gameplay","tier":["2d","3d"],"tags":["health","damage","invulnerable","game-ready"],"description":"Hit points with damage/heal, invulnerability frames with blink, death handling. Listens for the entity 'damage' event {amount}; emits 'health' {hp,max} on the entity and global 'died' when it hits 0."}
 import { NordScript } from 'nord';
@@ -4860,6 +4887,7 @@ export default class Health extends NordScript {
 <details>
 <summary>Complete scripts/hero-fx.js</summary>
 
+**File: `scripts/hero-fx.js`** (the complete file, for comparison)
 ```js
 import { NordScript } from 'nord';
 
@@ -4879,6 +4907,7 @@ export default class HeroFx extends NordScript {
 <details>
 <summary>Complete scripts/mk.js</summary>
 
+**File: `scripts/mk.js`** (the complete file, for comparison)
 ```js
 // Tiny helpers to spawn coloured rectangles / circles / text at runtime (placeholder art). Generated by tools/gen_examples.mjs.
 const base = (name, x, y, z, tags, comps) => ({ name, tags: tags ?? [], transform: { pos: [x, y, z ?? 0], rot: [0, 0, 0], scale: [1, 1, 1] }, components: comps, scripts: [], children: [] });
@@ -4896,6 +4925,7 @@ export const aabb = (a, b) => Math.abs(a.pos[0] - b.pos[0]) * 2 < a.w + b.w && M
 <details>
 <summary>Complete scripts/pickup.js</summary>
 
+**File: `scripts/pickup.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"gameplay.pickup","title":"Pickups & power-ups","category":"gameplay","tier":["2d","3d"],"tags":["coin","pickup","powerup","game-ready"],"requires":["trigger"],"description":"Put on collectible entities: when the player touches it, emits a global event (default 'score' + value), or applies a power-up (heal / speed / shield via entity events), plays a sound and disappears with a pop tween. Magnetises toward the player when close."}
 import { NordScript } from 'nord';
@@ -4925,6 +4955,7 @@ export default class Pickup extends NordScript {
 <details>
 <summary>Complete scripts/platformer2d.js</summary>
 
+**File: `scripts/platformer2d.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"controller.platformer2d","title":"Platformer 2D","category":"controllers","tier":["2d"],"tags":["platformer","jump","game-ready"],"requires":["rigidbody","collider"],"description":"Side-scroller controller: run, coyote time, jump buffer, variable jump height, wall slide/jump and dash. Needs actions left/right/jump (+ optional dash)."}
 import { NordScript } from 'nord';
@@ -4983,6 +5014,7 @@ export default class Platformer2D extends NordScript {
 <details>
 <summary>Complete scripts/score.js</summary>
 
+**File: `scripts/score.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"gameplay.score","title":"Score, combo & high score","category":"gameplay","tier":["2d","3d"],"tags":["score","combo","highscore","hud","game-ready"],"requires":["ui"],"description":"Score counter with a combo multiplier that decays, persistent high score and a HUD label. Add points via the global event 'score' (number) or addScore(n)."}
 import { NordScript } from 'nord';
@@ -5010,6 +5042,7 @@ export default class Score extends NordScript {
 <details>
 <summary>Complete scripts/ui-gameover.js</summary>
 
+**File: `scripts/ui-gameover.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"ui.game-over","title":"Game over / win screen","category":"ui","tier":["2d","3d"],"tags":["game-over","win","restart","game-ready"],"requires":["ui"],"description":"Shows a Game Over screen on the global 'game:over' (or the configured death event) and a You Win screen on 'game:win' (also 'wave:all-done'), with Restart. Shows the score if gameplay.score is present."}
 import { NordScript } from 'nord';
@@ -5034,6 +5067,7 @@ export default class GameOver extends NordScript {
 <details>
 <summary>Complete scripts/ui-hud.js</summary>
 
+**File: `scripts/ui-hud.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"ui.hud","title":"HUD: hearts, bars, score","category":"ui","tier":["2d","3d"],"tags":["hud","hearts","health-bar","game-ready"],"requires":["ui","gameplay.health"],"description":"Heads-up display bound to events: hearts or a health bar from the target's 'health' entity event, optional mana bar from the global 'mana' event, and a coin counter from 'pickup'. Put anywhere in the scene."}
 import { NordScript } from 'nord';
@@ -5055,6 +5089,7 @@ export default class Hud extends NordScript {
 <details>
 <summary>Complete scripts/util-sfx.js</summary>
 
+**File: `scripts/util-sfx.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"util.sfx-synth","title":"Procedural sfx (jsfxr-style)","category":"utilities","tier":["any"],"tags":["audio","sfx","synth","retro"],"description":"Generates retro sound effects with WebAudio, no files needed: sfx(game,'coin'|'jump'|'hit'|'laser'|'explosion'|'powerup'). Listens to global events 'sfx' (name). import { sfx } from './util-sfx.js' for direct use."}
 import { NordScript } from 'nord';

@@ -14,7 +14,8 @@
 </aside><p><code>game.ui</code> is a lightweight <strong>DOM overlay</strong> on top of the canvas — crisp text, accessible, CSS-themed. It works the same in 2D, 3D and plain HTML projects.
 Widgets live on named <strong>screens</strong> (layers). <code>hud</code> always exists and is visible; create others for menus and show them on demand.</p>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>Imagine a sheet of see-through plastic laid over the game. You draw the score, buttons and menus on that sheet, and the game keeps running underneath.</p>
-</aside><pre class="code" data-lang="js"><code>start() {
+</aside><p><strong>File: your script, for example <code>scripts/Hud.js</code></strong> (the <code>start()</code> method)</p>
+<pre class="code" data-lang="js"><code>start() {
   const ui = this.ui;
   this.scoreLabel = ui.label('Score: 0', { x: 16, y: 16, size: 24 });                    // top-left by default
   this.hp = ui.bar(1, { x: 16, y: 56, w: 180, color: '#bf616a' });

@@ -50,15 +50,18 @@ export default class Npc extends MonoBehaviour {
 </ul>
 <h2 id="reacting-to-the-conversation">Reacting to the conversation<a class="anchor" href="#reacting-to-the-conversation">#</a></h2>
 <p>The dialogue emits global events you can listen to anywhere:</p>
+<p><strong>File: your script, for example <code>scripts/Quest.js</code></strong> (inside <code>Start()</code>; keep the returned functions and call them in <code>OnDestroy()</code>)</p>
 <pre class="code" data-lang="js"><code>this.game.events.on('dialogue:choice', (choice) =&gt; { if (choice.flag) GameManager.instance.Set(choice.flag, true); });   // remember answers
 this.game.events.on('dialogue:end', () =&gt; this.OpenGateIfAllowed());
 // the gate:
 OpenGateIfAllowed() { if (GameManager.instance.Get('guardOk', false)) this.scene.find('Gate').enabled = false; }</code></pre>
 <p>Freeze the player while talking:</p>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (inside <code>Start()</code>)</p>
 <pre class="code" data-lang="js"><code>this.game.events.on('dialogue:start', () =&gt; GameManager.instance.SetState('talking'));
 this.game.events.on('dialogue:end',   () =&gt; GameManager.instance.SetState('playing'));
 // the player's FixedUpdate: if (GameManager.instance.state !== 'playing') stop</code></pre>
 <h2 id="your-own-simple-version-no-library">Your own simple version (no library)<a class="anchor" href="#your-own-simple-version-no-library">#</a></h2>
+<p><strong>File: <code>scripts/Npc.js</code></strong> (add this method to the NPC script; <code>lines</code> is an array of strings)</p>
 <pre class="code" data-lang="js"><code>async Talk(lines) {
   const box = this.ui.label('', { screen: 'say', anchor: 'bl', x: 40, y: 30, size: 22 });
   this.ui.show('say');

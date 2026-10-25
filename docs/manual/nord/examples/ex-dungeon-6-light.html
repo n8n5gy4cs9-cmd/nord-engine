@@ -42,24 +42,95 @@
 <p>Sprites on <strong>layer 1 and above</strong>, and the HUD, are drawn after the darkness and stay bright. Layer 0 is darkened. (The library scripts are written in the lower-case Nord style; they work together with your MonoBehaviours.)</p>
 <h2 id="2-add-the-lights">2 Add the lights<a class="anchor" href="#2-add-the-lights">#</a></h2>
 <ol>
-<li>Copy the three scripts into <code>scripts/</code>.</li>
-<li>Create an empty <code>Light2D</code> entity with <code>light2d.js</code>: <strong>ambient</strong> <code>#0a0c12</code> (the colour of no light), <code>scale</code> 7.5 (the lightmap is 1/7.5 of the screen: blurry and fast), <code>shadows</code> on.</li>
-<li>Make a child <code>Lantern</code> of the hero (drag it onto <code>Hero</code>) and attach <code>light2d-source.js</code>: <code>color</code> <code>#ffb86b</code>, <code>radius</code> 190, <code>intensity</code> 0.9, <code>falloff</code> 1.4, <code>softness</code> 5, <code>flicker</code> 0.08.</li>
+<li><p><strong>Copy the scripts.</strong> In your file manager copy <code>light2d.js</code>, <code>light2d-source.js</code> and <code>light2d-occluder.js</code> into the project&#39;s <code>scripts/</code> folder (or insert them from the <span class="c-ui">Library</span> tab, category <em>fx</em>).</p>
+</li>
+<li><p><strong>The darkness.</strong> <span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span>, rename it <code>Light2D</code>. <span class="c-ui">Inspector ▸ + Add script ▸ scripts/light2d.js</span>. Fill in its fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ambient</code></td>
+<td><code>#0a0c12</code></td>
+<td>the colour of &quot;no light&quot;</td>
+</tr>
+<tr>
+<td><code>scale</code></td>
+<td><code>7.5</code></td>
+<td>the lightmap is 1/7.5 of the screen: blurry and fast</td>
+</tr>
+<tr>
+<td><code>shadows</code></td>
+<td>on</td>
+<td>walls block light</td>
+</tr>
+<tr>
+<td><code>softShadows</code></td>
+<td><code>40</code></td>
+<td>softness of shadow edges</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>The lantern.</strong> In the Hierarchy drag a new empty object onto <code>Hero</code> so it becomes its child, rename it <code>Lantern</code>, <span class="c-ui">Inspector ▸ + Add script ▸ scripts/light2d-source.js</span>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>color</code></td>
+<td><code>#ffb86b</code></td>
+</tr>
+<tr>
+<td><code>radius</code></td>
+<td><code>190</code></td>
+</tr>
+<tr>
+<td><code>intensity</code></td>
+<td><code>0.9</code></td>
+</tr>
+<tr>
+<td><code>falloff</code></td>
+<td><code>1.4</code></td>
+</tr>
+<tr>
+<td><code>softness</code></td>
+<td><code>5</code></td>
+</tr>
+<tr>
+<td><code>flicker</code></td>
+<td><code>0.08</code></td>
+</tr>
+</tbody></table>
+</li>
+<li><p>Save the scene.</p>
+</li>
 </ol>
-<p>A child moves with its parent: nothing to write. Play: the world is black except for a warm circle.</p>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, the <code>Lantern</code> is a child of <code>Hero</code>:</p>
+<pre class="code" data-lang="json"><code>&quot;children&quot;: [ { &quot;name&quot;: &quot;Lantern&quot;, &quot;scripts&quot;: [ { &quot;path&quot;: &quot;scripts/light2d-source.js&quot;,
+  &quot;attributes&quot;: { &quot;color&quot;: &quot;#ffb86b&quot;, &quot;radius&quot;: 190, &quot;intensity&quot;: 0.9, &quot;falloff&quot;: 1.4, &quot;softness&quot;: 5, &quot;flicker&quot;: 0.08 } } ] } ]</code></pre>
+<p>A child moves with its parent: nothing to write. Press <span class="c-ui">Play</span>: the world is black except for a warm circle.</p>
 <h2 id="3-walls-that-cast-shadows">3 Walls that cast shadows<a class="anchor" href="#3-walls-that-cast-shadows">#</a></h2>
-<p>Add <code>light2d-occluder.js</code> (attribute <code>static: true</code>) to the <strong>wall prefab</strong>. Every wall in the level now blocks light. Nothing in <code>level.js</code> changes, which is the point of prefabs: one edit, every wall.</p>
+<p>Open the <strong>wall prefab</strong> (<span class="c-ui">Assets ▸ prefabs ▸ right-click <code>wall</code> ▸ Open prefab</span>) and <span class="c-ui">Inspector ▸ + Add script ▸ scripts/light2d-occluder.js</span>; tick <code>static</code>. Every wall in the level now blocks light. Nothing in <code>level.js</code> changes, which is the point of prefabs: one edit, every wall.</p>
 <p>Play: stand in a room, then walk to a corridor mouth. The lantern lights the room and the wall casts a shadow: you cannot see what is behind it. Enemies in the dark are invisible until they step into the light; the see-through chase of part 5 now feels like a horror game.</p>
 <blockquote>
 <p><strong>Why did merging walls in part 3 matter?</strong> Every occluder adds edges that light is tested against. 74 long strips are far cheaper than 449 squares.</p>
 </blockquote>
 <h2 id="4-asking-the-light">4 Asking the light<a class="anchor" href="#4-asking-the-light">#</a></h2>
 <p>The system exposes itself as <code>game.light2d</code>, so gameplay can ask <strong>how bright is it here</strong>:</p>
+<p><strong>Example</strong> (not a file: use it inside <code>Update()</code> of any script, for example a future <code>scripts/Stealth.js</code>)</p>
 <pre class="code" data-lang="js"><code>const p = this.position;
 const level = this.game.light2d.lightAt(p.x, p.y);   // 0 = dark, about 1 = fully lit, shadows included</code></pre>
 <p>Stealth games, vampires, plants that grow in the light all start from this number. The test of this page asserts that the hero stands in light (&gt; 0.5) and a point 400 pixels away is dark (&lt; 0.05).</p>
 <p><img src="../../assets/screenshots/series-dungeon-6-dark.png" alt="The dark dungeon from the start room"></p>
 <h2 id="5-shipping">5 Shipping<a class="anchor" href="#5-shipping">#</a></h2>
+<p><strong>Terminal</strong> (in the folder that contains the <code>dungeon</code> project folder):</p>
 <pre class="code" data-lang="bash"><code>nord check dungeon
 nord build dungeon --minify -o dungeon-web            # a folder of static files: upload it anywhere
 nord build dungeon --single-file -o dungeon-one       # ONE index.html: send it by e-mail, it runs from file://

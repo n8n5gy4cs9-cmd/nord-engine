@@ -35,11 +35,13 @@
 <p>The joystick drives the actions <code>left right up down</code>; the buttons press your named actions. Nothing else changes in your scripts. Unity: the Input System&#39;s on-screen controls.</p>
 <h2 id="taps-drags-and-swipes">Taps, drags and swipes<a class="anchor" href="#taps-drags-and-swipes">#</a></h2>
 <p><code>Mouse0</code> is also the first finger. Pointer position is in <code>input.pointer</code> (<code>x, y</code> screen; <code>worldX, worldY</code>; <code>down</code>).</p>
+<p><strong>File: your script, for example <code>scripts/Touch.js</code></strong> (the <code>update()</code> method)</p>
 <pre class="code" data-lang="js"><code>update() {
   const p = this.input.pointer;
   if (this.input.pressed('fire')) this.onTap(p.worldX, p.worldY);              // 'fire': [&quot;Mouse0&quot;]
 }</code></pre>
 <p>A swipe:</p>
+<p><strong>File: your script, for example <code>scripts/Touch.js</code></strong> (replace <code>update()</code> with this one)</p>
 <pre class="code" data-lang="js"><code>update() {
   const p = this.input.pointer;
   if (this.input.pressed('tap')) this.from = [p.x, p.y];                        // 'tap': [&quot;Mouse0&quot;]
@@ -59,6 +61,7 @@
 <h2 id="screen-size-and-orientation">Screen size and orientation<a class="anchor" href="#screen-size-and-orientation">#</a></h2>
 <p><code>nord.project.json</code> ▸ <code>display</code>: <code>{ &quot;width&quot;: 960, &quot;height&quot;: 540, &quot;scale&quot;: &quot;fit&quot; }</code> letterboxes the game inside any window. Design for one fixed size and let <code>fit</code> scale it. For portrait games use <code>540 × 960</code>. Read the real window size with <code>window.innerWidth / innerHeight</code> if you must adapt layouts.</p>
 <h2 id="ship-it">Ship it<a class="anchor" href="#ship-it">#</a></h2>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="bash"><code>nord build --target web-2d --pwa --single-file      # an installable offline web app in one file
 nord build --target web-2d --zip --host itch        # a zip for itch.io</code></pre>
 <p>Open the page on the phone (same Wi-Fi: <code>nord serve --lan</code> prints a link with a token) and &quot;Add to Home Screen&quot;. See <a href="../manual/export.html">Export</a> and <a href="../guides/mobile-controls.html">Mobile controls</a>.</p>

@@ -16,23 +16,28 @@
 <pre class="code" data-lang="cs"><code>[SerializeField] AudioClip jumpClip; AudioSource src;
 void Jump() { src.PlayOneShot(jumpClip, 0.8f); }</code></pre>
 <h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (add this method to the class and call it from <code>Update()</code> when the jump key is pressed)</p>
 <pre class="code" data-lang="js"><code>jump() {
   this.audio.play('assets/audio/jump.wav', { volume: 0.8, rate: 1 + this.game.rng.range(-0.05, 0.05) }); // slight pitch variation
 }</code></pre>
 <p>Options: <code>volume</code> (0..1), <code>loop</code>, <code>rate</code> (pitch/speed), <code>bus</code> (<code>sfx</code> default, <code>music</code>, <code>ui</code>), <code>pan</code> (-1 left … 1 right).
 To let designers pick the sound in the Inspector:</p>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (the <code>static attributes</code> line goes inside the class, above <code>start()</code>; the <code>play</code> call inside <code>jump()</code>)</p>
 <pre class="code" data-lang="js"><code>static attributes = { jump: { type: 'asset', assetType: 'audio', default: 'assets/audio/jump.wav' } };
 // …
 this.audio.play(this.attrs.jump);</code></pre>
 <h2 id="music-with-crossfade">Music with crossfade<a class="anchor" href="#music-with-crossfade">#</a></h2>
+<p><strong>File: <code>scripts/Level.js</code></strong> (the <code>start()</code> method of the script on an empty <code>Level</code> object)</p>
 <pre class="code" data-lang="js"><code>start() { this.audio.music('assets/audio/music/level1.mp3', { fade: 1.5, volume: 0.7 }); }  // fades the old track out
 onDestroy() { this.audio.stopMusic({ fade: 0.5 }); }</code></pre>
 <p><code>music(path, { fade, volume, offset, restart })</code>: calling it with the same track does nothing; with another track it crossfades.</p>
 <h2 id="volume-buses-settings-menu">Volume buses (settings menu)<a class="anchor" href="#volume-buses-settings-menu">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Options.js</code></strong> (inside the slider callbacks of your options screen)</p>
 <pre class="code" data-lang="js"><code>this.audio.volume('music', 0.5);      // set 0..1; reading: this.audio.volume('music')
 this.audio.mute('sfx', true);         // mute / unmute a bus</code></pre>
 <p>Buses: <code>master</code>, <code>music</code>, <code>sfx</code>, <code>ui</code>. Values are remembered between sessions. A ready-made settings screen: library script <code>ui-settings.js</code> (sliders for master / music / sfx).</p>
 <h2 id="unity-style-manager">Unity-style manager<a class="anchor" href="#unity-style-manager">#</a></h2>
+<p><strong>File: <code>scripts/Audio.js</code></strong> (new file: <code>import</code> at the top, then a class that extends <code>AudioManager</code>; put the script on one object in the first scene)</p>
 <pre class="code" data-lang="js"><code>import { AudioManager } from 'nord';       // extend it and put the script on one object (persistent)
 AudioManager.instance.PlaySfx('assets/audio/coin.wav');
 AudioManager.instance.PlayMusic('assets/audio/music/loop.mp3');

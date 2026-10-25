@@ -14,6 +14,7 @@
 <h3 id="unity">Unity<a class="anchor" href="#unity">#</a></h3>
 <pre class="code" data-lang="cs"><code>SceneManager.LoadScene(&quot;Level2&quot;);  SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);</code></pre>
 <h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<p><strong>File: your script, for example <code>scripts/Door.js</code></strong> (inside an <code>async</code> method, for example <code>async Enter()</code>)</p>
 <pre class="code" data-lang="js"><code>await this.game.loadScene('scenes/level2.scene.json');   // returns a Promise: await it if you do something afterwards
 await this.game.restart();                              // reload the current scene from its saved data
 // Unity names:
@@ -28,6 +29,7 @@ SceneManager.LoadScene('scenes/level2.scene.json'); SceneManager.ReloadScene(); 
 <li>A <strong>Singleton</strong> with <code>static persistent = true</code> (GameManager, AudioManager and your own). Put the object in the <strong>first</strong> scene only.</li>
 <li>Any object: <span class="c-ui">Inspector ▸ + Add behavior ▸ Persist</span>. When a scene loads, the surviving object replaces the copy of the same name that the new scene contains, so you can safely put the same <em>Music</em> object in every scene.</li>
 </ol>
+<p><strong>File: <code>scripts/Inventory.js</code></strong> (new file, the whole file; put it on an object in the first scene)</p>
 <pre class="code" data-lang="js"><code>import { Singleton } from 'nord';
 export default class PlayerData extends Singleton {
   static persistent = true;
@@ -44,9 +46,11 @@ export default class PlayerData extends Singleton {
 <h2 id="restart-rules">Restart rules<a class="anchor" href="#restart-rules">#</a></h2>
 <p><code>game.restart()</code> rebuilds the <em>current</em> scene, resets time scale / pause / input, and <strong>drops</strong> persistent objects (fresh game). <code>restart({ preservePersistent: true })</code> keeps them.</p>
 <h2 id="events-around-loading">Events around loading<a class="anchor" href="#events-around-loading">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Loader.js</code></strong> (inside <code>Start()</code>)</p>
 <pre class="code" data-lang="js"><code>this.game.events.on('sceneLoad', (name) =&gt; this.log('loaded', name));
 this.game.events.on('sceneUnload', (name) =&gt; {});</code></pre>
 <h2 id="fade-between-scenes">Fade between scenes<a class="anchor" href="#fade-between-scenes">#</a></h2>
+<p><strong>File: <code>scripts/Transition.js</code></strong> (add this method to the script on a persistent object; call <code>this.goTo(path)</code> instead of <code>loadScene</code>)</p>
 <pre class="code" data-lang="js"><code>async goTo(path) {
   this.game.camera.fade(400);                      // fade to black (ms)
   await new Promise((r) =&gt; setTimeout(r, 420));

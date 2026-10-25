@@ -14,13 +14,14 @@
 </aside><ol>
 <li>Create the project: hub → <strong>New</strong> → <em>2D game</em> (or <code>nord new hello -t 2d</code>). Optional: <strong>Window ▸ Layout ▸ Unity 2 by 3</strong> for the Hierarchy / Scene / Game / Inspector arrangement used in the screenshots of <a href="../manual/unity-workflow.html">Unity-style workflow</a>.</li>
 <li>Open the project’s main scene (<code>scenes/main.scene.json</code>). Its entities appear in <strong>Hierarchy</strong>. Click the <strong>Add entity</strong> (+) button, name it <code>Title</code>, and set position to <code>[320, 180, 0]</code> (the middle of a 640×360 screen).</li>
-<li>In the Inspector press <strong>+ Add component → text</strong> and set <code>text</code> = <code>Hello Nord</code>, <code>size</code> = <code>48</code>, <code>color</code> = <code>#88c0d0</code>.</li>
+<li>Select <code>Title</code>, then <span class="c-ui">Inspector ▸ + Add component ▸ text</span> and set <code>text</code> = <code>Hello Nord</code>, <code>size</code> = <code>48</code>, <code>color</code> = <code>#88c0d0</code>.</li>
 <li>Press <strong>▶ Play</strong> (Cmd+R). You see the words on the project&#39;s background colour.</li>
 <li>Change the text while the game runs — the Game tab updates when you save the scene.</li>
 </ol>
 <figure class="shot"><img src="../../assets/screenshots/manual-hello-nord.png" alt="The real Nord 2D runtime showing Hello Nord centred on a dark 640 by 360 canvas"><figcaption>Expected result: one text entity, centred at [320, 180, 0]. Captured using Nord’s Phaser adapter and the entity settings below.</figcaption></figure><p><strong>Shortcut:</strong> <strong>File ▸ New scene…</strong> with the <em>2D starter</em> template creates a scene that already holds a camera and a text entity; the <strong>Help ▸ First 10 minutes</strong> checklist ticks itself as you go.</p>
 <p><strong>Success check:</strong> the Game view shows <code>Hello Nord</code> in large letters. If it does not, confirm the text component is on Title and that the display is 640×360; otherwise use the centre of your project’s display.</p>
 <p>This is the <strong>entity entry</strong> inside the scene’s <code>entities</code> array. It is not an entire scene file:</p>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code> (the editor wrote it; check it in a text editor):</p>
 <pre class="code" data-lang="json"><code>{ &quot;id&quot;: &quot;k3j9x0a1&quot;, &quot;name&quot;: &quot;Title&quot;, &quot;transform&quot;: { &quot;pos&quot;: [320, 180, 0] },
   &quot;components&quot;: [ { &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;Hello Nord&quot;, &quot;size&quot;: 48, &quot;color&quot;: &quot;#88c0d0&quot; } ] }</code></pre>
 <p><strong>Next:</strong> <a href="tut-t02-sprite-movement.html">T02 Sprite &amp; movement</a>.</p>

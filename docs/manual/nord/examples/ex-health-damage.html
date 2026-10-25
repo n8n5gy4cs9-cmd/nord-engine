@@ -41,12 +41,15 @@
 </tr>
 </tbody></table>
 <p>Talk to it with events (Unity: <code>SendMessage(&quot;TakeDamage&quot;)</code> or an interface):</p>
+<p><strong>File: your script, for example <code>scripts/Bullet.js</code></strong> (inside <code>OnTriggerEnter</code>, on the attacker)</p>
 <pre class="code" data-lang="js"><code>target.emit('damage', { amount: 2, from: this.entity });     // hurt it
 target.emit('heal',   { amount: 1 });                         // heal it</code></pre>
 <p>It answers on the same object: <code>health</code> <code>{ hp, max }</code> after every change, <code>death</code> once; and <code>hit</code> on the global bus. Listen:</p>
+<p><strong>File: your script, for example <code>scripts/Enemy.js</code></strong> (inside <code>Start()</code>; keep the returned function and call it in <code>OnDestroy()</code>)</p>
 <pre class="code" data-lang="js"><code>const off = enemy.on('death', () =&gt; GameManager.instance.AddScore(10));
 const off2 = player.on('health', ({ hp, max }) =&gt; this.bar.set(hp / max));</code></pre>
 <h2 id="a-health-script-from-scratch-unity-style">A health script from scratch (Unity-style)<a class="anchor" href="#a-health-script-from-scratch-unity-style">#</a></h2>
+<p><strong>File: <code>scripts/Health.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, UnityEvent } from 'nord';
 
 export default class Health extends MonoBehaviour {
@@ -69,6 +72,7 @@ export default class Health extends MonoBehaviour {
 }</code></pre>
 <p><strong>Calls or events?</strong> Calls (<code>getScript(Health).TakeDamage</code>) are easy to follow; events (<code>emit(&#39;damage&#39;)</code>) work on anything that has a Health script and need no import. Pick one convention per project.</p>
 <h2 id="knockback-and-hit-reaction">Knockback and hit reaction<a class="anchor" href="#knockback-and-hit-reaction">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Bullet.js</code></strong> (inside <code>OnTriggerEnter</code>, after the damage call)</p>
 <pre class="code" data-lang="js"><code>// in the attacker: push the target away from us
 const dx = target.pos[0] - this.entity.pos[0], dy = target.pos[1] - this.entity.pos[1], d = Math.hypot(dx, dy) || 1;
 this.physics.applyImpulse(target, (dx / d) * 400, (dy / d) * 400);     // 2D: (entity, ix, iy)
@@ -83,6 +87,7 @@ target.set('sprite', 'tint', '#ff6666');  this.after(0.1, () =&gt; target.set('s
 <h2 id="invulnerability-frames-blink">Invulnerability frames (blink)<a class="anchor" href="#invulnerability-frames-blink">#</a></h2>
 <p>The library script blinks the sprite while invulnerable. By hand: a coroutine toggling <code>alpha</code> (<a href="ex-platformer.html">Jump Dash</a> uses <code>Blink()</code>).</p>
 <h2 id="death">Death<a class="anchor" href="#death">#</a></h2>
+<p><strong>File: <code>scripts/Enemy.js</code></strong> (inside <code>Start()</code>)</p>
 <pre class="code" data-lang="js"><code>this.entity.on('death', () =&gt; {
   this.Instantiate('prefabs/explosion.prefab.json', { pos: [...this.entity.pos] });   // effects
   GameManager.instance.AddScore(10);                                                 // rewards

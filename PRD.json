@@ -2523,6 +2523,12 @@
       "milestone": "M13",
       "title": "Examples: Vector Rocks replaces Coin Clicker; dungeon series + Ember Crypt moved to Examples and rewritten Unity-style",
       "status": "done"
+    },
+    {
+      "id": "M13-37",
+      "milestone": "M13",
+      "title": "Docs style rules (DOC_STYLE.md, lint) and a labelling/editor-first pass over every manual page",
+      "status": "done"
     }
   ]
 }

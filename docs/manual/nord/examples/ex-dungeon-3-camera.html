@@ -15,6 +15,7 @@
 <p><strong>Download:</strong> <a href="../../assets/downloads/series-dungeon-part3-source.zip">Part 3 project</a>, also in <code>examples/series-dungeon/part3</code>.</p>
 <h2 id="1-a-bigger-map">1 A bigger map<a class="anchor" href="#1-a-bigger-map">#</a></h2>
 <p>Replace <code>map.js</code> with the dungeon of this part (forty columns, twenty-two rows, 1280 × 704 pixels):</p>
+<p><strong>File: <code>scripts/map.js</code></strong> (replace the whole file from part 2)</p>
 <pre class="code" data-lang="js"><code>export const MAP = [
   '########################################',
   '########################################',
@@ -42,6 +43,7 @@
 <p>Play it: the hero walks in a world three times wider than the screen and… walks off the screen. We need a camera script.</p>
 <h2 id="2-the-camera-is-just-a-gameobject">2 The camera is just a GameObject<a class="anchor" href="#2-the-camera-is-just-a-gameobject">#</a></h2>
 <p>The <code>camera</code> component shows the part of the world around the entity&#39;s position. To follow something, <strong>move the camera entity</strong>: no special feature is needed. Create <code>scripts/follow.js</code> and put it on <code>Camera</code>:</p>
+<p><strong>File: <code>scripts/follow.js</code></strong> (new file, the whole file; attach it to <code>Camera</code>)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, EventBus, Mathf, Time, Vector3 } from 'nord';
 
 export default class Follow extends MonoBehaviour {
@@ -66,6 +68,7 @@ export default class Follow extends MonoBehaviour {
 
   OnDestroy() { this.off?.(); }
 }</code></pre>
+<p><strong>In the editor:</strong> select <code>Camera</code>, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/follow.js</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li><code>LateUpdate</code> runs after every <code>Update</code> and <code>FixedUpdate</code> of the frame. The camera must read the hero&#39;s position after the hero has moved, otherwise it follows the previous frame and the picture shakes. This is why Unity camera scripts live in <code>LateUpdate</code>.</li>
 <li><strong>Bounds.</strong> The camera centre may go at most half a screen away from each map edge: <code>Mathf.Clamp(hero.x, hw, width − hw)</code>. Otherwise we would see the empty space outside the level.</li>
@@ -76,12 +79,15 @@ export default class Follow extends MonoBehaviour {
 </blockquote>
 <h2 id="3-telling-the-camera-how-big-the-level-is">3 Telling the camera how big the level is<a class="anchor" href="#3-telling-the-camera-how-big-the-level-is">#</a></h2>
 <p>The camera needs the map size, which only the <code>Level</code> knows. Do not make the camera import the level: scripts should not be glued together. Use the global <strong>EventBus</strong> (a publish/subscribe board). At the end of <code>Level.Start</code>:</p>
+<p><strong>File: <code>scripts/level.js</code></strong> (add this line at the <strong>end</strong> of <code>Start()</code>, after the loops, as the last line)</p>
 <pre class="code" data-lang="js"><code>EventBus.Publish('level', { width, height });</code></pre>
 <p>and the camera subscribes in its <code>Start</code>:</p>
+<p><strong>File: <code>scripts/follow.js</code></strong> (this line is already in <code>Start()</code> of the script above; shown here on its own)</p>
 <pre class="code" data-lang="js"><code>this.off = EventBus.Subscribe('level', (size) =&gt; { this.bounds = size; this.snap = true; });</code></pre>
 <p><code>Subscribe</code> returns a function that unsubscribes; <code>OnDestroy</code> calls it (<code>this.off?.()</code>). <code>snap = true</code> makes the first frame jump to the hero instead of sweeping across the map. In C# this is <code>public static event Action&lt;Size&gt; OnLevel;</code> with <code>+=</code> and <code>-=</code>.</p>
 <h2 id="4-merge-the-walls">4 Merge the walls<a class="anchor" href="#4-merge-the-walls">#</a></h2>
 <p>The level of part 2 made one wall object per <code>#</code>. This map has 449 wall tiles. Our loader now merges <strong>horizontal runs</strong> into one wide wall:</p>
+<p><strong>File: <code>scripts/level.js</code></strong> (replace the whole file from part 2; <code>hero.js</code> stays as it was)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Instantiate, EventBus } from 'nord';
 import { MAP } from './map.js';
 

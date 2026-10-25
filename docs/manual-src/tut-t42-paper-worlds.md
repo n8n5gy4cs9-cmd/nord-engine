@@ -1849,6 +1849,7 @@ Read the entire exported desk template that embeds your documents and opens dire
 
 <!-- taught-source: paper-worlds/portfolio.html:1-34 -->
 
+**File: `portfolio.html`** (step 8.1, style a standalone viewing surface: the beginning of the file)
 ```html
 <!doctype html>
 <html lang="en">
@@ -1896,6 +1897,7 @@ Read the entire exported desk template that embeds your documents and opens dire
 
 <!-- taught-source: paper-worlds/portfolio.html:35-55 -->
 
+**File: `portfolio.html`** (step 8.2, read embedded data and handle module failures: the next part of this file; it goes **below** the code of the previous step)
 ```html
   <script id="desk-data" type="application/json">
     /*BOARD_DATA*/
@@ -1935,6 +1937,7 @@ Read the complete Nord page entry point and its failure path.
 
 <!-- taught-source: paper-worlds/index.html:1-8 -->
 
+**File: `index.html`** (step 9.1, load the local runtime and start the app: the beginning of the file)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="com.crowelian.paperworlds"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Paper Worlds — a playful 2D/3D drawing desk</title>
@@ -2058,6 +2061,7 @@ Read every stylesheet rule, grouped by the UI responsibility it controls.
 
 <!-- taught-source: paper-worlds/style.css:1-36 -->
 
+**File: `style.css`** (step 11.1, set the app foundation and reusable visual language: the beginning of the file)
 ```css
 :host {
   display: block;
@@ -2107,6 +2111,7 @@ header p {
 
 <!-- taught-source: paper-worlds/style.css:37-83 -->
 
+**File: `style.css`** (step 11.2, use the supplied sheet and style controls: the next part of this file; it goes **below** the code of the previous step)
 ```css
 .mascot {
   width: 62px;
@@ -2167,6 +2172,7 @@ aside button {
 
 <!-- taught-source: paper-worlds/style.css:84-120 -->
 
+**File: `style.css`** (step 11.3, create a studio layout without changing document coordinates: the next part of this file; it goes **below** the code of the previous step)
 ```css
 .workbench {
   display: grid;
@@ -2217,6 +2223,7 @@ h3 {
 
 <!-- taught-source: paper-worlds/style.css:121-158 -->
 
+**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
 ```css
 #flat,
 #world {
@@ -2273,7 +2280,7 @@ All authored files follow in the manual's offline CodeMirror viewers. The comple
 <details>
 <summary>Complete app.js</summary>
 
-**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
+**File: `app.js`** (the complete file, for comparison)
 ```js
 import { Save } from './save.js';
 import { newBoards, validateBoards, portfolioHTML } from './model.js';
@@ -2521,7 +2528,7 @@ export async function mount(root) {
 <details>
 <summary>Complete desk.js</summary>
 
-**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
+**File: `desk.js`** (the complete file, for comparison)
 ```js
 // Cache the pending promise too: rapid view changes must wait for the same script.
 const scriptLoads = new Map();
@@ -2695,7 +2702,7 @@ export function download(name, content, type = 'application/json') {
 <details>
 <summary>Complete flat.js</summary>
 
-**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
+**File: `flat.js`** (the complete file, for comparison)
 ```js
 import { WIDTH, HEIGHT, paint } from './model.js';
 import { loadScript } from './desk.js';
@@ -2937,6 +2944,7 @@ export async function createFlat(parent, getBoard, change) {
 <details>
 <summary>Complete index.html</summary>
 
+**File: `index.html`** (the complete file, for comparison)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="com.crowelian.paperworlds"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Paper Worlds — a playful 2D/3D drawing desk</title>
@@ -2953,7 +2961,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete model.js</summary>
 
-**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
+**File: `model.js`** (the complete file, for comparison)
 ```js
 export const WIDTH = 1200,
   HEIGHT = 850;
@@ -3108,7 +3116,7 @@ export function portfolioHTML(template, boards) {
 <details>
 <summary>Complete nord.project.json</summary>
 
-**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
+**File: `nord.project.json`** (the complete file, for comparison)
 ```json
 {
   "format": 1,
@@ -3181,6 +3189,7 @@ export function portfolioHTML(template, boards) {
 <details>
 <summary>Complete portfolio.html</summary>
 
+**File: `portfolio.html`** (the complete file, for comparison)
 ```html
 <!doctype html>
 <html lang="en">
@@ -3244,7 +3253,7 @@ export function portfolioHTML(template, boards) {
 <details>
 <summary>Complete save.js</summary>
 
-**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
+**File: `save.js`** (the complete file, for comparison)
 ```js
 // Versioned save slots on top of localStorage (or any Storage-like object).
 export class Save {
@@ -3285,6 +3294,7 @@ export class MemoryStorage {
 <details>
 <summary>Complete style.css</summary>
 
+**File: `style.css`** (the complete file, for comparison)
 ```css
 :host {
   display: block;
@@ -3451,7 +3461,7 @@ footer {
 <details>
 <summary>Complete ui/desk.ui.json</summary>
 
-**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
+**File: `ui/desk.ui.json`** (the complete file, for comparison)
 ```json
 {
   "version": 1,
@@ -3537,7 +3547,7 @@ footer {
 <details>
 <summary>Complete world.js</summary>
 
-**File: `style.css`** (step 11.4, size surfaces, honor hidden state and adapt: the next part of this file; it goes **below** the code of the previous step)
+**File: `world.js`** (the complete file, for comparison)
 ```js
 import { createDesk } from './desk.js';
 import { WIDTH, HEIGHT, paint } from './model.js';

@@ -12,6 +12,8 @@
 <p>Input connects a player’s keys, pointer, touch or gamepad to game actions. Give actions names such as left and jump so game code can stay simple.</p>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>down means a button is held. pressed means it just became held this frame. Use down for walking and pressed for a single jump or menu action.</p>
 </aside><p>Scripts never read raw keys. You declare <strong>actions</strong> in the project and ask about the action:</p>
+<p><strong>In the editor:</strong> <span class="c-ui">Project</span> tab ▸ <strong>Input Manager (actions and keys)</strong>: <strong>＋ key</strong> next to an action, then press the key (<a href="../examples/ex-input-editor.html">the steps</a>).</p>
+<p><strong>In the file</strong> <code>nord.project.json</code> (check it in a text editor):</p>
 <pre class="code" data-lang="json"><code>&quot;input&quot;: { &quot;actions&quot;: {
   &quot;jump&quot;:  [&quot;Space&quot;, &quot;ArrowUp&quot;, &quot;Gamepad0&quot;],
   &quot;left&quot;:  [&quot;KeyA&quot;, &quot;ArrowLeft&quot;, &quot;GamepadLeft&quot;],
@@ -81,6 +83,7 @@ Build a settings screen with <code>game.ui</code> (the library&#39;s <code>ui-se
 <p>While you play in the editor, the <strong>Game view</strong> owns the keyboard once it has focus (Play focuses it; clicking inside it focuses it): <code>Q W E R T F Delete</code>, arrows and every other plain key go to <strong>your game</strong>, never to the editor tools. Cmd/Ctrl combos and F-keys (Play, Pause, Step, Save…) still work. Click the Scene view, Hierarchy, Inspector or any other panel and the editor shortcuts are back.</p>
 <p><strong>Esc releases the mouse.</strong> If your game locked the cursor (first-person look), Esc in the Game view unlocks it, even when your code never does. Turn it off in <span class="c-ui">Settings ▸ Game view mouse ▸ Esc releases a locked mouse</span>. This exists only in the editor: an exported web game or desktop app does not add it (the browser&#39;s own Esc still unlocks a locked mouse; your game decides the rest).</p>
 <h2 id="which-platform-am-i-on">Which platform am I on?<a class="anchor" href="#which-platform-am-i-on">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Boot.js</code></strong> (the <code>import</code> line at the top, the checks inside <code>start()</code>)</p>
 <pre class="code" data-lang="js"><code>import { Application, RuntimePlatform } from 'nord';
 if (Application.isEditor) Debug.Log('testing inside the Nord editor');
 switch (Application.platform) {

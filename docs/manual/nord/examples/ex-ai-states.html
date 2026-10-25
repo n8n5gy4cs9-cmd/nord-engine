@@ -18,6 +18,7 @@
 State state = State.Patrol;
 void Update() { switch (state) { case State.Patrol: Patrol(); break; /* … */ } }</code></pre>
 <h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<p><strong>File: <code>scripts/Enemy.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField } from 'nord';
 import Health from './health.js';
 
@@ -63,6 +64,7 @@ export default class Enemy extends MonoBehaviour {
 <h2 id="why-a-state-machine">Why a state machine<a class="anchor" href="#why-a-state-machine">#</a></h2>
 <p>Each state is one small function, and the &quot;decide&quot; part is the only place that changes states. Add states (<code>flee</code>, <code>stunned</code>) by adding a constant, a branch in the decision, and a case in the <code>switch</code>.</p>
 <h2 id="patrol-along-waypoints">Patrol along waypoints<a class="anchor" href="#patrol-along-waypoints">#</a></h2>
+<p><strong>File: <code>scripts/Patrol.js</code></strong> (<code>Start()</code> collects the points; add the movement to <code>FixedUpdate()</code>)</p>
 <pre class="code" data-lang="js"><code>Start() { this.points = this.scene.findByTag('waypoint').map((e) =&gt; [...e.pos]); this.i = 0; }
 FixedUpdate() {
   const t = this.points[this.i], p = this.entity.pos, dx = t[0] - p[0], dy = t[1] - p[1], d = Math.hypot(dx, dy);
@@ -71,6 +73,7 @@ FixedUpdate() {
 }</code></pre>
 <p>Mark waypoints with a <code>waypoint</code> tag (empty objects with a marker sprite).</p>
 <h2 id="line-of-sight-3d-and-vision-cones">Line of sight (3D) and vision cones<a class="anchor" href="#line-of-sight-3d-and-vision-cones">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Guard3D.js</code></strong> (inside a method, called every frame while checking for the player)</p>
 <pre class="code" data-lang="js"><code>const hit = this.physics.raycast(this.entity.worldPos, this.player.worldPos, { ignore: this.entity });
 const canSee = hit &amp;&amp; hit.entity === this.player;</code></pre>
 <h2 id="pathfinding-on-a-grid">Pathfinding on a grid<a class="anchor" href="#pathfinding-on-a-grid">#</a></h2>

@@ -23,6 +23,7 @@ export default class FollowCam extends NordScript {
 }</code></pre>
 <p>Put it on the Camera entity and set <code>target</code> to <code>Player</code>.</p>
 <h2 id="screen-effects-juice">Screen effects (juice)<a class="anchor" href="#screen-effects-juice">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Player3D.js</code></strong> (inside the method that handles damage or an explosion)</p>
 <pre class="code" data-lang="js"><code>this.game.camera.shake(200, 0.01);            // duration ms, intensity
 this.game.camera.flash(120, '#ffffff');
 this.game.camera.fade(400, '#000000');        // fade out; fadeIn(400) to come back
@@ -72,6 +73,7 @@ this.game.camera.zoom?.(1.2);</code></pre>
 </tr>
 </tbody></table>
 <h2 id="move-and-turn-a-character-in-3d">Move and turn a character in 3D<a class="anchor" href="#move-and-turn-a-character-in-3d">#</a></h2>
+<p><strong>File: <code>scripts/Walker.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
 export default class Character extends NordScript {
   static attributes = { speed: { type: 'number', default: 6 }, turn: { type: 'number', default: 10 } };
@@ -91,10 +93,12 @@ export default class Character extends NordScript {
 <h2 id="third-person-camera">Third-person camera<a class="anchor" href="#third-person-camera">#</a></h2>
 <p>The library has <code>third-person3d.js</code>, <code>orbit-cam.js</code>, <code>fps3d.js</code>, <code>fly-cam.js</code>, <code>rts-cam.js</code>: insert one on the camera entity and set <code>target</code>. Or a child camera: make the Camera a <strong>child</strong> of the character at <code>[0, 2, 5]</code>; it follows automatically.</p>
 <h2 id="light-shadows-and-mood">Light, shadows and mood<a class="anchor" href="#light-shadows-and-mood">#</a></h2>
+<p><strong>File: <code>scripts/Daylight.js</code></strong> (inside <code>Start()</code> of a script on any object; <code>Sun</code> is the name of your directional light)</p>
 <pre class="code" data-lang="js"><code>const sun = this.scene.find('Sun');
 sun.set('light', 'intensity', 0.4);                 // change a component field at runtime
 this.tween({ i: 1 }, { i: 0.2 }, { duration: 4, onUpdate: (o) =&gt; sun.set('light', 'intensity', o.i) });   // sunset</code></pre>
 <h2 id="raycast-from-the-camera-click-picking">Raycast from the camera / click picking<a class="anchor" href="#raycast-from-the-camera-click-picking">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Picker.js</code></strong> (inside <code>Update()</code> on the camera object)</p>
 <pre class="code" data-lang="js"><code>const hit = this.physics.raycast(this.entity.worldPos, [fx, fy, fz]);   // from, to
 if (hit) hit.entity.emit('clicked');</code></pre>
 <p>Library <code>interact-ray.js</code> does &quot;look at it and press E&quot; for you.</p>

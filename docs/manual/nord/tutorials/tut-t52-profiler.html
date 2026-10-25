@@ -13,6 +13,7 @@
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>A game must finish each frame in about 16 milliseconds. If one script takes 12 of them, everything stutters. The profiler shows where the time goes, per script, so you fix the right thing.</p>
 </aside><h2 id="1-make-something-slow">1. Make something slow<a class="anchor" href="#1-make-something-slow">#</a></h2>
 <p>Add to any entity&#39;s script:</p>
+<p><strong>File: any script of the scene, for example <code>scripts/Hero.js</code></strong> (replace or add the <code>update()</code> method; remove it when you are done)</p>
 <pre class="code" data-lang="js"><code>update() { let x = 0; for (let i = 0; i &lt; 400000; i++) x += Math.sqrt(i); }</code></pre>
 <h2 id="2-look">2. Look<a class="anchor" href="#2-look">#</a></h2>
 <ol>

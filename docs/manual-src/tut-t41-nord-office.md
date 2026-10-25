@@ -1324,9 +1324,9 @@ export function createOfficeServer({
 
 #### 4.4 — Stop abandoned movement and release abandoned work
 
-**Read:** `server.mjs`, lines 81–118.
+**Read:** `server.mjs`, lines 81–120.
 
-<!-- taught-source: nord-office/server.mjs:81-118 -->
+<!-- taught-source: nord-office/server.mjs:81-120 -->
 
 **File: `server.mjs`** (step 4.4, stop abandoned movement and release abandoned work: the next part of this file; it goes **below** the code of the previous step)
 ```js
@@ -1361,6 +1361,8 @@ export function createOfficeServer({
       '/': 'index.html',
       '/index.html': 'index.html',
       '/app.js': 'app.js',
+      '/lib/nord-ui.js': 'lib/nord-ui.js',
+      '/ui/office.ui.json': 'ui/office.ui.json',
       '/rules.js': 'rules.js',
       '/style.css': 'style.css',
     },
@@ -1535,6 +1537,7 @@ Read the complete Nord page entry point and its failure path.
 
 <!-- taught-source: nord-office/index.html:1-8 -->
 
+**File: `index.html`** (step 6.1, load the local runtime and start the app: the beginning of the file)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="com.crowelian.nordoffice"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nord Engine Office — interns vs bugs</title>
@@ -1658,6 +1661,7 @@ Read every stylesheet rule, grouped by the UI responsibility it controls.
 
 <!-- taught-source: nord-office/style.css:1-30 -->
 
+**File: `style.css`** (step 8.1, set the app foundation and reusable visual language: the beginning of the file)
 ```css
 :host {
   display: block;
@@ -1701,6 +1705,7 @@ nav {
 
 <!-- taught-source: nord-office/style.css:31-77 -->
 
+**File: `style.css`** (step 8.2, place the map next to connection controls: the next part of this file; it goes **below** the code of the previous step)
 ```css
 .layout {
   display: grid;
@@ -1761,6 +1766,7 @@ p {
 
 <!-- taught-source: nord-office/style.css:78-112 -->
 
+**File: `style.css`** (step 8.3, style task feedback and a readable coffee target: the next part of this file; it goes **below** the code of the previous step)
 ```css
 #task {
   background: #253a51;
@@ -1814,7 +1820,7 @@ The full download contains the entire runnable game and Node server. Every autho
 <details>
 <summary>Complete app.js</summary>
 
-**File: `style.css`** (step 8.3, style task feedback and a readable coffee target: the next part of this file; it goes **below** the code of the previous step)
+**File: `app.js`** (the complete file, for comparison)
 ```js
 import {
   MAP,
@@ -2138,6 +2144,7 @@ export async function mount(root) {
 <details>
 <summary>Complete index.html</summary>
 
+**File: `index.html`** (the complete file, for comparison)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="com.crowelian.nordoffice"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nord Engine Office — interns vs bugs</title>
@@ -2154,7 +2161,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete nord.project.json</summary>
 
-**File: `style.css`** (step 8.3, style task feedback and a readable coffee target: the next part of this file; it goes **below** the code of the previous step)
+**File: `nord.project.json`** (the complete file, for comparison)
 ```json
 {
   "format": 1,
@@ -2227,7 +2234,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete rules.js</summary>
 
-**File: `style.css`** (step 8.3, style task feedback and a readable coffee target: the next part of this file; it goes **below** the code of the previous step)
+**File: `rules.js`** (the complete file, for comparison)
 ```js
 // Shared simulation: Node advances online rooms; the browser advances solo practice.
 export const MAP = [
@@ -2525,7 +2532,7 @@ export function publicOffice(s, id) {
 <details>
 <summary>Complete server-kit.mjs</summary>
 
-**File: `style.css`** (step 8.3, style task feedback and a readable coffee target: the next part of this file; it goes **below** the code of the previous step)
+**File: `server-kit.mjs`** (the complete file, for comparison)
 ```js
 // Small HTTP transport shared by the teaching servers. No npm packages.
 import http from 'node:http';
@@ -2637,7 +2644,7 @@ export const roomCode = (value) =>
 <details>
 <summary>Complete server.mjs</summary>
 
-**File: `style.css`** (step 8.3, style task feedback and a readable coffee target: the next part of this file; it goes **below** the code of the previous step)
+**File: `server.mjs`** (the complete file, for comparison)
 ```js
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
@@ -2750,6 +2757,8 @@ export function createOfficeServer({
       '/': 'index.html',
       '/index.html': 'index.html',
       '/app.js': 'app.js',
+      '/lib/nord-ui.js': 'lib/nord-ui.js',
+      '/ui/office.ui.json': 'ui/office.ui.json',
       '/rules.js': 'rules.js',
       '/style.css': 'style.css',
     },
@@ -2764,6 +2773,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 <details>
 <summary>Complete style.css</summary>
 
+**File: `style.css`** (the complete file, for comparison)
 ```css
 :host {
   display: block;
@@ -2884,7 +2894,7 @@ footer {
 <details>
 <summary>Complete ui/office.ui.json</summary>
 
-**File: `style.css`** (step 8.3, style task feedback and a readable coffee target: the next part of this file; it goes **below** the code of the previous step)
+**File: `ui/office.ui.json`** (the complete file, for comparison)
 ```json
 {
   "version": 1,

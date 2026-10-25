@@ -16,15 +16,18 @@
 <li><strong>Continuous</strong> (fire, smoke): <code>emitting</code> on, <code>burst</code> off, <code>frequency</code> 50 ms.</li>
 <li><strong>Burst</strong> (explosion, hit spark): <code>burst</code> on, <code>quantity</code> 20, then destroy the object a moment later.</li>
 </ul>
+<p><strong>File: your script, for example <code>scripts/Gun.js</code></strong> (inside the method that handles a hit; it spawns a particle prefab at the hit point)</p>
 <pre class="code" data-lang="js"><code>// a spark at the hit position
 hit(pos) { this.Instantiate('prefabs/spark.prefab.json', { pos: [pos[0], pos[1], 6] }); }
 // spark.js:  Start() { this.Destroy(this.entity, 0.7); }</code></pre>
 <p>Unity: Particle System + <code>Instantiate</code> + <code>Destroy(go, 1)</code>. Tune in play mode and copy the numbers. The library script <code>fx-particle-presets.js</code> has ready-made presets (sparks, dust, smoke, confetti).</p>
 <h2 id="screen-shake-flash-fade-2d">Screen shake, flash, fade (2D)<a class="anchor" href="#screen-shake-flash-fade-2d">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (inside the method that handles damage)</p>
 <pre class="code" data-lang="js"><code>this.game.camera.shake(150, 0.008);        // ms, intensity
 this.game.camera.flash(80, '#ffffff');     // white flash
 this.game.camera.fade(400, '#000000');     // fade out;  this.game.camera.fadeIn(400)</code></pre>
 <h2 id="hit-stop-freeze-for-a-moment">Hit-stop (freeze for a moment)<a class="anchor" href="#hit-stop-freeze-for-a-moment">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Combat.js</code></strong> (add this method to the class)</p>
 <pre class="code" data-lang="js"><code>async hitStop(ms = 60) {
   this.game.timeScale = 0.02;
   await new Promise((r) =&gt; setTimeout(r, ms));        // real time on purpose
@@ -32,13 +35,16 @@ this.game.camera.fade(400, '#000000');     // fade out;  this.game.camera.fadeIn
 }</code></pre>
 <p>or the library <code>fx-hitstop.js</code> (<code>this.events.emit(&#39;hitstop&#39;)</code>).</p>
 <h2 id="squash-and-stretch">Squash and stretch<a class="anchor" href="#squash-and-stretch">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Combat.js</code></strong> (add this method to the same class)</p>
 <pre class="code" data-lang="js"><code>punch() {
   this.tween(this.entity.scale, { 0: 1.35, 1: 0.7 }, { duration: 0.07, yoyo: true, onUpdate: () =&gt; this.entity.touch() });
 }</code></pre>
 <h2 id="flash-the-sprite-white">Flash the sprite white<a class="anchor" href="#flash-the-sprite-white">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Combat.js</code></strong> (add this method to the same class)</p>
 <pre class="code" data-lang="js"><code>flash() { this.entity.set('sprite', 'tint', '#ff8888'); this.after(0.08, () =&gt; this.entity.set('sprite', 'tint', '#ffffff')); }</code></pre>
 <h2 id="floating-damage-numbers">Floating damage numbers<a class="anchor" href="#floating-damage-numbers">#</a></h2>
 <p>UI labels live on screen, so convert the world position first (2D with the default camera: world x/y equal screen x/y minus the camera offset; the simplest is a small world-space text entity):</p>
+<p><strong>File: your script, for example <code>scripts/Combat.js</code></strong> (add this method to the same class)</p>
 <pre class="code" data-lang="js"><code>async floatText(text, pos, color = '#ffe066') {
   const e = await this.scene.spawnData({ name: 'Float', transform: { pos: [pos[0], pos[1], 20], rot: [0, 0, 0], scale: [1, 1, 1] },
     components: [{ type: 'text', text, size: 22, color }], scripts: [], children: [] });
@@ -48,6 +54,7 @@ this.game.camera.fade(400, '#000000');     // fade out;  this.game.camera.fadeIn
 <h2 id="trails-and-afterimages">Trails and afterimages<a class="anchor" href="#trails-and-afterimages">#</a></h2>
 <p>Library <code>fx-trail.js</code>. Parallax backgrounds: <code>fx-parallax.js</code>. Pixel/CRT look: <code>fx-pixelate-crt.js</code>, and scene <strong>effects</strong> (bloom, vignette, colour grading) in the scene settings (<a href="../manual/effects-particles-timelines.html">Effects, particles and timelines</a>); in 3D the <code>postProcess</code> component.</p>
 <h2 id="putting-it-together">Putting it together<a class="anchor" href="#putting-it-together">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Combat.js</code></strong> (add this method; it calls the helpers above)</p>
 <pre class="code" data-lang="js"><code>OnHit(target, point) {
   target.emit('damage', { amount: 1, from: this.entity });
   this.Instantiate('prefabs/spark.prefab.json', { pos: [point[0], point[1], 6] });

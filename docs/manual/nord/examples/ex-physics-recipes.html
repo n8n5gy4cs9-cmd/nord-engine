@@ -39,6 +39,7 @@
 </tr>
 </tbody></table>
 <h2 id="move-push-and-stop">Move, push and stop<a class="anchor" href="#move-push-and-stop">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (inside <code>fixedUpdate()</code>)</p>
 <pre class="code" data-lang="js"><code>this.physics.setVelocity(this.entity, vx, vy);        // null = keep that axis
 const [vx, vy] = this.physics.velocity(this.entity);  // read the speed
 this.physics.applyImpulse(this.entity, ix, iy);       // instant push (divided by mass)
@@ -48,6 +49,7 @@ this.physics.enable(this.entity, false);              // switch the body off / o
 <h2 id="jump-height-from-physics">Jump height from physics<a class="anchor" href="#jump-height-from-physics">#</a></h2>
 <p>With gravity <code>g</code> (px/s²) and a jump speed <code>v</code>, the jump is <code>v² / (2g)</code> high. For a 120 px jump at g = 1500: <code>v = Math.sqrt(2 * 1500 * 120)</code> ≈ 600. (<a href="ex-platformer.html">Jump Dash</a> uses this.)</p>
 <h2 id="knockback-and-explosions">Knockback and explosions<a class="anchor" href="#knockback-and-explosions">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Bomb.js</code></strong> (add this method to the class, for the moment it explodes)</p>
 <pre class="code" data-lang="js"><code>// push everything near a point away from it
 explode(x, y, radius, power) {
   for (const e of this.physics.overlapBox(x, y, radius * 2, radius * 2)) {
@@ -59,6 +61,7 @@ explode(x, y, radius, power) {
 }</code></pre>
 <h2 id="moving-platform">Moving platform<a class="anchor" href="#moving-platform">#</a></h2>
 <p>A <strong>kinematic</strong> rigidbody moved with velocity; the player standing on it must be carried:</p>
+<p><strong>File: <code>scripts/Platform.js</code></strong> (add <code>fixedUpdate()</code> to the platform&#39;s script; the player&#39;s script reads <code>this.carry</code>)</p>
 <pre class="code" data-lang="js"><code>fixedUpdate() {
   const t = this.game.time.elapsed;
   this.physics.setVelocity(this.entity, Math.cos(t) * 80, 0);          // slides left and right
@@ -77,6 +80,7 @@ if (this.entity.vars.onLadder &amp;&amp; this.input.axis('down', 'up') !== 0) th
 <h2 id="conveyor-bounce-pad-magnet">Conveyor, bounce pad, magnet<a class="anchor" href="#conveyor-bounce-pad-magnet">#</a></h2>
 <p>Library: <code>physics-conveyor.js</code>, <code>physics-bounce-pad.js</code>, <code>physics-magnet.js</code>, <code>physics-drag.js</code> (mouse dragging), <code>physics-door.js</code>, <code>physics-projectile.js</code>, <code>physics-crate.js</code>, <code>physics-explosion.js</code>, <code>physics-knockback.js</code>. Open them to see how short they are.</p>
 <h2 id="raycasts-and-queries">Raycasts and queries<a class="anchor" href="#raycasts-and-queries">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Sensor.js</code></strong> (inside a method)</p>
 <pre class="code" data-lang="js"><code>const hits = this.physics.overlapBox(x, y, w, h);                      // 2D area query (entities, plus { tile: true } for solid tiles)
 const hit = this.physics.raycast(fromXYZ, toXYZ, { ignore: this.entity });   // 3D: { entity, point, normal, distance }
 const onGround = this.physics.isGrounded(this.entity);</code></pre>

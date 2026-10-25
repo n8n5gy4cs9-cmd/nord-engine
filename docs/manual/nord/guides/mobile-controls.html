@@ -13,6 +13,7 @@
 <p>The complete reusable example is <strong><code>examples/star-not/scripts/sn/touch.js</code></strong>. Star-Not automatically shows it in combat on touch devices; its orbit menu also lets you turn it on for desktop pointer testing. No button or joystick image is required.</p>
 <h2 id="1-use-named-actions-in-your-player-code">1. Use named actions in your player code<a class="anchor" href="#1-use-named-actions-in-your-player-code">#</a></h2>
 <p>Read actions such as <code>left</code>, <code>right</code>, <code>up</code>, <code>down</code>, <code>fire</code> and <code>jump</code> through <code>this.input</code>. The project can map them to physical keys; virtual controls set those same actions.</p>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (inside <code>update(dt)</code>)</p>
 <pre class="code" data-lang="javascript"><code>const direction = this.input.vec('left', 'right', 'up', 'down');
 if (this.input.down('fire')) {
   // Keep firing while the touch button or keyboard key is held.
@@ -23,6 +24,7 @@ if (this.input.pressed('jump')) {
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>An action is a name for what the player wants to do. A keyboard key and an on-screen button can both say “fire.” Your game reads that name and does not need to care which device said it.</p>
 </aside><h2 id="2-add-a-joystick">2. Add a joystick<a class="anchor" href="#2-add-a-joystick">#</a></h2>
 <p>From a NordScript, create it under the game&#39;s UI root:</p>
+<p><strong>File: <code>scripts/Controls.js</code></strong> (inside <code>start()</code> of a script on any object)</p>
 <pre class="code" data-lang="javascript"><code>import { NordScript, virtualJoystick } from 'nord';
 
 export default class TouchMovement extends NordScript {
@@ -63,6 +65,7 @@ export function mountTouchControls(input,parent,{left='left',right='right',up='u
 </code></pre>
 <p>The second button is labelled SHIELD in this game&#39;s module; change that label to JUMP if your own second action is jump. The <code>shield</code> option accepts whichever action name you want to use.</p>
 <h2 id="4-mount-it-from-your-game">4. Mount it from your game<a class="anchor" href="#4-mount-it-from-your-game">#</a></h2>
+<p><strong>File: <code>scripts/Controls.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="javascript"><code>import { NordScript } from 'nord';
 import { mountTouchControls } from './touch.js';
 
@@ -77,6 +80,7 @@ export default class MobileControls extends NordScript {
 }</code></pre>
 <p>Attach this script to one entity. Keep it enabled only while the game is playing. For a DOM menu that covers controls, hide/remove the control layer too. For Star-Not the action names are <code>p1Left</code>, <code>p1Right</code>, <code>p1Thrust</code>, <code>p1Brake</code>, <code>p1Fire</code> and <code>p1Shield</code>; do not copy those names into a game whose actions are named differently.</p>
 <h2 id="5-show-controls-automatically-or-with-a-switch">5. Show controls automatically, or with a switch<a class="anchor" href="#5-show-controls-automatically-or-with-a-switch">#</a></h2>
+<p><strong>File: <code>scripts/Controls.js</code></strong> (inside <code>start()</code>, after the joystick exists)</p>
 <pre class="code" data-lang="javascript"><code>const touchDevice = matchMedia('(pointer: coarse)').matches;</code></pre>
 <p>This is a useful default, not a complete device detector. Give the user an override, especially on tablets with a keyboard. Star-Not&#39;s orbit menu has <strong>Touch controls: on/off</strong> so you can enable the controls and drag them with your desktop mouse before trying a phone.</p>
 <h2 id="6-open-the-game-on-your-phone">6. Open the game on your phone<a class="anchor" href="#6-open-the-game-on-your-phone">#</a></h2>

@@ -20,6 +20,8 @@
 <p><strong>Tint:</strong> an image node or a node&#39;s <code>image</code> may carry <code>tint: &#39;#rrggbb&#39;</code>; the sprite pixels are multiplied by it (Unity <code>Image.color</code>), alpha kept. See <code>tintImage()</code> in <code>runtime/core/uiscene.js</code>.</p>
 </blockquote>
 <h2 id="file-format-version-1">File format (version 1)<a class="anchor" href="#file-format-version-1">#</a></h2>
+<p><strong>In the editor:</strong> <span class="c-ui">Assets ▸ right-click ▸ New UI scene (.ui.json)</span> opens the <span class="c-ui">UI Designer</span> tab; add nodes from its palette and set their fields in its inspector. Saving writes the file below.</p>
+<p><strong>In the file</strong> <code>ui/menu.ui.json</code> (this shows the shape; the designer writes it):</p>
 <pre class="code" data-lang="json"><code>{ &quot;version&quot;: 1, &quot;name&quot;: &quot;menu&quot;, &quot;theme&quot;: { &quot;accent&quot;: &quot;#f7d89b&quot; },
   &quot;root&quot;: { &quot;type&quot;: &quot;panel&quot;, &quot;name&quot;: &quot;root&quot;, &quot;anchor&quot;: &quot;fill&quot;, &quot;children&quot;: [ …nodes… ] } }</code></pre>
 <p><code>theme</code> sets <code>--nord-*</code> CSS variables for this screen only (<code>bg panel border fg accent good font-ui</code>). Every node:</p>
@@ -96,6 +98,7 @@
 <li>Rich text (labels): <code>[b] [i] [u] [color=#f7d89b] [size=28] [br]</code>. Parsed into spans — never <code>innerHTML</code>.</li>
 </ul>
 <h2 id="script-api">Script API<a class="anchor" href="#script-api">#</a></h2>
+<p><strong>Example</strong> (not a file; calls inside a script):</p>
 <pre class="code" data-lang="js"><code>const ui = createUI(rootElement);                  // standalone; in a game: game.ui (same methods)
 const menu = await ui.load('ui/menu.ui.json');     // fetch + build + show. ui.build(obj) for sync
 menu.on('play', () =&gt; start());                    // action name from node.on.pressed; '*' = all
@@ -108,6 +111,8 @@ menu.show(); menu.hide(); menu.toggle(); menu.destroy(); ui.only('pause');  // s
 <p>UI → code: <code>on.pressed</code> names + <code>menu.on(action, fn)</code>; every action is also emitted on <code>game.events</code> as <code>ui:&lt;action&gt;</code>, so event sheets and scripts can react without wiring. Code → UI: handles and <code>set()</code> above; <code>ui.define(name, obj)</code> registers a screen without a file.</p>
 <h2 id="styles">Styles (skins): one rule set for every node<a class="anchor" href="#styles">#</a></h2>
 <p>Do not copy styles node by node. A <strong>skin</strong> is a JSON file of shared rules, applied to every UI scene:</p>
+<p><strong>In the editor:</strong> <span class="c-ui">UI Designer</span> tab ▸ the <strong>Styles</strong> tab edits the rules and saves the skin file; the <strong>Skin</strong> box in the toolbar picks which skin the preview uses.</p>
+<p><strong>In the file</strong> <code>ui/skin.skin.json</code> (a skin file):</p>
 <pre class="code" data-lang="json"><code>{ &quot;tokens&quot;: { &quot;accent&quot;: &quot;#7fb0e8&quot;, &quot;fg&quot;: &quot;#e8f0ff&quot; },
   &quot;styles&quot;: {
     &quot;button&quot;:  { &quot;bg&quot;: &quot;$accent&quot;, &quot;fg&quot;: &quot;#10203a&quot;, &quot;radius&quot;: 6, &quot;pad&quot;: &quot;8px 16px&quot;,
@@ -126,6 +131,8 @@ menu.show(); menu.hide(); menu.toggle(); menu.destroy(); ui.only('pause');  // s
 </ul>
 <h2 id="images-and-9-slice-unity-quot-sliced-quot-godot-ninepatchrect">Images and 9-slice (Unity &quot;Sliced&quot;, Godot NinePatchRect)<a class="anchor" href="#images-and-9-slice-unity-quot-sliced-quot-godot-ninepatchrect">#</a></h2>
 <p>Any node can have an image, either as a plain picture or sliced so it scales without distorting its corners:</p>
+<p><strong>In the editor:</strong> <span class="c-ui">UI Designer</span> tab ▸ select the node ▸ <strong>Image</strong>: pick the picture, choose the mode (<code>fit</code> or <code>slice</code>) and drag the four slice guides.</p>
+<p><strong>In the file</strong> <code>ui/menu.ui.json</code> (nodes with an image):</p>
 <pre class="code" data-lang="json"><code>{ &quot;type&quot;: &quot;panel&quot;, &quot;image&quot;: { &quot;src&quot;: &quot;assets/ui/skin/panel.png&quot;, &quot;slice&quot;: [8, 8, 8, 8], &quot;scale&quot;: 2, &quot;pixelated&quot;: true } }
 { &quot;type&quot;: &quot;image&quot;, &quot;src&quot;: &quot;assets/sprites/logo.png&quot;, &quot;mode&quot;: &quot;fit&quot;, &quot;w&quot;: 240, &quot;h&quot;: 80 }
 { &quot;type&quot;: &quot;image&quot;, &quot;src&quot;: &quot;assets/ui/skin/panel.png&quot;, &quot;mode&quot;: &quot;slice&quot;, &quot;slice&quot;: [8, 8, 8, 8], &quot;w&quot;: 300, &quot;h&quot;: 120 }</code></pre>

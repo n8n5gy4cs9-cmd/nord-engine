@@ -12,6 +12,7 @@
 <p>A script adds behavior to an entity: movement, a reaction to a button, or rules for your game. New to code? Read <a href="../start/developer-basics.html">Programming for dummy developers</a> first.</p>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>Attach the Spinner example below to an entity with a visible picture, press Play, and watch it turn. Change speed in the Inspector to try a different speed. Attributes are settings, not a second script.</p>
 </aside><p>Scripts are ES modules whose default export extends <code>NordScript</code>. The one import is <code>nord</code>:</p>
+<p><strong>File: <code>scripts/Hero.js</code></strong> (new file, the whole file; any name works, the file must <code>export default</code> a class that extends <code>NordScript</code>)</p>
 <pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
 
 export default class Spinner extends NordScript {
@@ -103,6 +104,7 @@ s.tween(box, { x: 100 }, { duration: 1, ease: 'cubicOut', onComplete: () =&gt; l
 s.after(0.5, () =&gt; log('half a second: x=' + Math.round(box.x)));
 for (let i = 0; i &lt; 70; i++) s.update(1 / 60);   // the engine does this for you</pre></div>
 <h2 id="spawning-and-finding">Spawning and finding<a class="anchor" href="#spawning-and-finding">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Gun.js</code></strong> (inside an <code>async</code> method of the class)</p>
 <pre class="code" data-lang="js"><code>const bullet = await this.scene.spawn('prefabs/bullet.prefab.json', { pos: this.entity.worldPos });
 const boss = this.scene.find('Boss');            // by name
 const coins = this.scene.findByTag('coin');
@@ -144,6 +146,7 @@ export default class Player extends MonoBehaviour {
 <p>The Rust tiers use a <code>Script</code> trait instead — see <a href="rust-wasm.html">Rust / WASM</a>.</p>
 <h2 id="restart-the-current-scene-from-saved-data">Restart the current scene from saved data<a class="anchor" href="#restart-the-current-scene-from-saved-data">#</a></h2>
 <p><code>this.game.restart()</code> returns a promise for a fresh current scene, like loading the level again. It destroys old entities/scripts and scheduled callbacks, rebuilds from saved JSON, resets the clock and time scale, clears held/virtual input and resumes even from Pause. Persist entities reset by default; use <code>restart({ preservePersistent: true })</code> only when you want to migrate them. Normal <code>loadScene(path)</code> transitions keep Persist state.</p>
+<p><strong>File: your script, for example <code>scripts/Menu.js</code></strong> (inside <code>start()</code>)</p>
 <pre class="code" data-lang="js"><code>this.ui.button('Restart', () =&gt; { this.game.restart(); return; });</code></pre>
 <p>Keep run state in script instances and clean up custom listeners, UI, native objects and audio in <code>onDestroy()</code>. Save storage and asset/script module caches survive. Restart does not undo external server state or reload edited source modules; use Stop/Play for source changes. Existing copied projects need <strong>Upgrade runtime</strong>. T39 demonstrates a complete scene-based restart; T40 and T41 show HTML apps resetting their own rule state and server rounds.</p>
 <div class="pager"><a href="projects-scenes.html"><small>← Previous</small>Projects &amp; scenes</a><a href="2d.html"><small>Next →</small>2D games</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#lifecycle">Lifecycle </a><a href="#attributes">Attributes </a><a href="#the-entity-api">The entity API </a><a href="#events">Events </a><a href="#timers-and-tweens">Timers and tweens </a><a href="#spawning-and-finding">Spawning and finding </a><a href="#hot-reload">Hot reload </a><a href="#debugging">Debugging </a><a href="#unity-style-scripting">Unity-style scripting </a><a href="#scripts-in-rust">Scripts in Rust </a><a href="#restart-the-current-scene-from-saved-data">Restart the current scene from saved data </a></aside></div>

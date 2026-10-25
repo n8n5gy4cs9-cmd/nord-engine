@@ -35,6 +35,7 @@ export async function mount(root) {
   menu.on('quit', () =&gt; window.close());
 }</code></pre>
 <p>In a normal 2D/3D scene script, <code>game.ui</code> already is the manager:</p>
+<p><strong>File: your script, for example <code>scripts/Menu.js</code></strong> (the <code>start()</code> method of a scene script)</p>
 <pre class="code" data-lang="js"><code>async start() {
   this.menu = await this.ui.load('ui/menu.ui.json');
   this.menu.on('play', () =&gt; this.game.events.emit('start-game'));
@@ -42,6 +43,7 @@ export async function mount(root) {
 <h3 id="where-is-quot-play-quot-handled">Where is &quot;play&quot; handled?<a class="anchor" href="#where-is-quot-play-quot-handled">#</a></h3>
 <p>Type the action into the button&#39;s <strong>Action</strong> field. Under it the Designer shows where your code handles it, with an <strong>Open</strong> button that jumps to the line. If it says <strong>⚠ No code listens</strong>, use <strong>Copy code snippet</strong> and paste it where you load the file. The <strong>Actions</strong> tab shows this for every button at once.</p>
 <figure class="shot"><img src="../../assets/screenshots/ui-designer-action-missing.png" alt="No code listens to the action two yet" loading="lazy"><figcaption>A new button with action <code>two</code>: not handled yet.</figcaption></figure><h2 id="4-talk-to-the-ui-from-code-and-back">4. Talk to the UI from code (and back)<a class="anchor" href="#4-talk-to-the-ui-from-code-and-back">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Menu.js</code></strong> (inside <code>start()</code>, after <code>menu</code> was loaded)</p>
 <pre class="code" data-lang="js"><code>menu.set('score', 120);              // every label containing {score} updates
 menu.$('score').color = '#a3be8c';   // style one node
 menu.$('play').disabled = true;      // buttons can be disabled

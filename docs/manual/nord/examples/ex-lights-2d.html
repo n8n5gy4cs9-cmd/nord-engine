@@ -73,6 +73,7 @@
 </tr>
 </tbody></table>
 <h2 id="switch-a-light-from-a-script">Switch a light from a script<a class="anchor" href="#switch-a-light-from-a-script">#</a></h2>
+<p><strong>File: <code>scripts/Lantern.js</code></strong> (new file, the whole file; attach it to the object that has <code>light2d-source.js</code>)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, UnityInput as Input } from 'nord';
 import LightSource2D from './light2d-source.js';
 
@@ -86,6 +87,7 @@ export default class Lantern extends MonoBehaviour {
 }</code></pre>
 <p>Runtime fields: <code>on</code>, <code>intensity</code>, <code>radius</code>, <code>angle</code>, <code>color</code>, <code>setColor(&#39;#rrggbb&#39;)</code>.</p>
 <h2 id="stealth-is-the-player-in-the-dark">Stealth: is the player in the dark?<a class="anchor" href="#stealth-is-the-player-in-the-dark">#</a></h2>
+<p><strong>File: <code>scripts/Stealth.js</code></strong> (the <code>import</code> line goes at the top of the file; the body goes inside <code>Update()</code> of the script on the player)</p>
 <pre class="code" data-lang="js"><code>import { light2d } from './light2d.js';
 
 Update() {

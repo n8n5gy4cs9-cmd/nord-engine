@@ -21,6 +21,7 @@ nord-runtime-wasm = { path = &quot;../../crates/nord-runtime-wasm&quot; }
 [workspace]</code></pre>
 <p>That relative path is correct inside the engine&#39;s examples/rust-salvage folder. If you extract elsewhere, change it to your engine checkout&#39;s <strong>absolute</strong> crates/nord-runtime-wasm directory. Nord-created Rust project copies normally rewrite this path; a manually extracted zip cannot infer your engine&#39;s location. Keep the empty workspace section so the project is its own Cargo workspace.</p>
 <p>Install the target if it is absent:</p>
+<p><strong>Terminal</strong> (anywhere):</p>
 <pre class="code" data-lang="sh"><code>rustup target add wasm32-unknown-unknown</code></pre>
 <p>The first Cargo build may fetch pinned crates. Later builds can use the local cache. Offline operation of the exported game does not mean Cargo can compile an uncached dependency without first obtaining it. The supplied Cargo.lock pins the resolved versions used for this sample.</p>
 <p><strong>Checkpoint:</strong> Cargo.toml points at an existing engine crate directory and Rust reports wasm32-unknown-unknown as installed. Do this before debugging gameplay code.</p>
@@ -58,6 +59,7 @@ self.ship.y += direction.1 / length * speed * dt;</code></pre>
 <p><strong>Checkpoint:</strong> test a protected overlap, then an unprotected overlap. One collision should cost one hull point and provide recovery time rather than consuming all lives in adjacent frames.</p>
 <h2 id="6-test-without-a-browser">6. Test without a browser<a class="anchor" href="#6-test-without-a-browser">#</a></h2>
 <p>From your project folder:</p>
+<p><strong>Terminal</strong> (in your project folder):</p>
 <pre class="code" data-lang="sh"><code>rustc --test src/sim.rs -o /tmp/salvage-tests
 /tmp/salvage-tests</code></pre>
 <p>The Windows equivalent uses a local output path such as salvage-tests.exe. This invocation uses only Rust&#39;s standard test support; it does not need the graphics dependency or the wasm target.</p>
@@ -77,12 +79,14 @@ if is_key_pressed(KeyCode::P) &amp;&amp; !run.over {
 <p>The overlay reads paused/over/won to choose its message. There is no second copy of the rules hidden in draw code. The native entry point calls macroquad::Window::from_config rather than using the macro attribute, matching Nord&#39;s existing direct-macroquad examples.</p>
 <h2 id="8-build-and-play-in-nord">8. Build and Play in Nord<a class="anchor" href="#8-build-and-play-in-nord">#</a></h2>
 <p>Save both Rust files. Use <strong>Build Rust</strong> and inspect compiler output in Console; Play builds the Rust project before running its dev page. From an engine checkout, the explicit commands are:</p>
+<p><strong>Terminal</strong> (in the Nord Engine folder, or give the full path):</p>
 <pre class="code" data-lang="sh"><code>nord build-rust examples/rust-salvage
 nord serve examples/rust-salvage</code></pre>
 <p>For an extracted project use its own directory path instead. Open the printed URL, click the canvas to focus, then try WASD, Space, P and R. Editing Rust requires recompilation; JS hot reload does not patch compiled WASM instructions.</p>
 <p>If the page cannot find target/web/game.wasm, run Build Rust first. If Cargo cannot find nord-runtime-wasm, fix the dependency path. If it needs the registry while offline, ensure the locked crates are cached. The existing macroquad bundle may report the repository&#39;s documented harmless register_plugin error from unused quad_net code; unrelated errors are not covered by that exception.</p>
 <h2 id="9-export-an-actual-standalone-wasm-game">9. Export an actual standalone WASM game<a class="anchor" href="#9-export-an-actual-standalone-wasm-game">#</a></h2>
 <p>From the project parent directory:</p>
+<p><strong>Terminal</strong> (in the folder that contains the project folder):</p>
 <pre class="code" data-lang="sh"><code>nord build rust-salvage --target web-wasm-game --out salvage-web --zip
 python3 -m http.server 8003 --directory salvage-web</code></pre>
 <p>The exporter compiles a release game.wasm, copies the vendored macroquad JS loader and writes an index.html with relative paths. It supplies the required wasm linker setting through Nord&#39;s Rust pipeline. A plain manual cargo command is not a replacement for all exporter setup.</p>
@@ -92,6 +96,7 @@ python3 -m http.server 8003 --directory salvage-web</code></pre>
 <h2 id="complete-source">Complete source<a class="anchor" href="#complete-source">#</a></h2>
 <p>The complete Rust renderer and simulation follow, including the production rule tests. Cargo configuration, lockfile, project metadata and dev HTML are also included; the <a href="../../assets/downloads/rust-salvage-source.zip">source archive</a> excludes compiled target files and includes the licence. Update its engine path when extracting outside the repository, then use Nord&#39;s build/export workflow above.</p>
 <!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="src-main-rs">src/main.rs<a class="anchor" href="#src-main-rs">#</a></h3>
+<p><strong>File: <code>src/main.rs</code></strong> (the complete file, for comparison)</p>
 <pre class="code" data-lang="rust"><code>use nord_runtime_wasm::macroquad::{self, prelude::*};
 mod sim;
 use sim::Run;
@@ -194,7 +199,8 @@ fn main() {
     );
 }</code></pre>
 <details>
-<summary>Complete Cargo.lock</summary><pre class="code" data-lang="toml"><code># This file is automatically @generated by Cargo.
+<summary>Complete Cargo.lock</summary><p><strong>File: <code>Cargo.lock</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="toml"><code># This file is automatically @generated by Cargo.
 # It is not intended for manual editing.
 version = 4
 
@@ -2488,7 +2494,8 @@ version = &quot;1.0.23&quot;
 source = &quot;registry+https://github.com/rust-lang/crates.io-index&quot;
 checksum = &quot;29666d0abbfad1e3dc4dcf6144730dd3a3ab225bbbdac83319345b1b44ccfc1b&quot;</code></pre>
 </details><details>
-<summary>Complete Cargo.toml</summary><pre class="code" data-lang="toml"><code>[package]
+<summary>Complete Cargo.toml</summary><p><strong>File: <code>Cargo.toml</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="toml"><code>[package]
 name = &quot;rust-salvage&quot;
 version = &quot;0.1.0&quot;
 edition = &quot;2021&quot;
@@ -2508,7 +2515,8 @@ opt-level = &quot;s&quot;
 lto = true
 panic = &quot;abort&quot;</code></pre>
 </details><details>
-<summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+<summary>Complete index.html</summary><p><strong>File: <code>index.html</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Orbital Salvage&lt;/title&gt;
 &lt;style&gt;html,body{margin:0;height:100%;background:#101418;overflow:hidden}canvas{width:100vw;height:100vh;display:block}&lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;
@@ -2518,7 +2526,8 @@ panic = &quot;abort&quot;</code></pre>
 &lt;script&gt;load(&quot;target/web/game.wasm&quot;);&lt;/script&gt;
 &lt;/body&gt;&lt;/html&gt;</code></pre>
 </details><details>
-<summary>Complete nord.project.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete nord.project.json</summary><p><strong>File: <code>nord.project.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;format&quot;: 1,
   &quot;name&quot;: &quot;Orbital Salvage \u2014 Rust/WASM workshop&quot;,
   &quot;id&quot;: &quot;com.crowelian.rustsalvage&quot;,
@@ -2546,7 +2555,8 @@ panic = &quot;abort&quot;</code></pre>
   &quot;plugins&quot;: []
 }</code></pre>
 </details><details>
-<summary>Complete src/sim.rs</summary><pre class="code" data-lang="rust"><code>// Pure rules: no renderer, browser, file system or frame clock required.
+<summary>Complete src/sim.rs</summary><p><strong>File: <code>src/sim.rs</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="rust"><code>// Pure rules: no renderer, browser, file system or frame clock required.
 #[derive(Clone, Copy, Debug)]
 pub struct Body {
     pub x: f32,

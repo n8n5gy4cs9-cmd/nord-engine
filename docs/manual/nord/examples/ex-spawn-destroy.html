@@ -57,20 +57,24 @@ export default class Bullet extends MonoBehaviour {
 }</code></pre>
 <p>Native style: <code>const e = await this.scene.spawn(&#39;prefabs/bullet.prefab.json&#39;, { pos: [x, y, 0], rot, scale, name, parent, overrides })</code>. It returns a <strong>Promise</strong> (loading a prefab can touch the network), so use <code>await</code> or <code>.then</code>.</p>
 <h2 id="overrides-change-a-prefab-39-s-values-when-spawning">Overrides: change a prefab&#39;s values when spawning<a class="anchor" href="#overrides-change-a-prefab-39-s-values-when-spawning">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Spawner.js</code></strong> (a call inside any method, in an <code>async</code> function)</p>
 <pre class="code" data-lang="js"><code>await this.scene.spawn('prefabs/enemy.prefab.json', {
   pos: [100, 100, 2],
   overrides: { scripts: { 0: { attributes: { speed: 160 } } }, components: { 0: { tint: '#ff0000' } } },
 });</code></pre>
 <p><code>scripts.0</code> / <code>components.0</code> mean &quot;the first script / component&quot;; only the fields you list change.</p>
 <h2 id="destroy">Destroy<a class="anchor" href="#destroy">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Bullet.js</code></strong> (calls inside any method)</p>
 <pre class="code" data-lang="js"><code>this.Destroy();                 // this object (MonoBehaviour)
 this.Destroy(other, 2);         // other object after 2 seconds
 entity.destroy();               // native</code></pre>
 <p>Destroying is <strong>deferred to the end of the frame</strong>: the object still exists until then, <code>entity.destroyed</code> becomes <code>true</code> immediately. <code>onDestroy()</code> runs; children go with their parent. Before using a stored reference, check <code>if (!target || target.destroyed) return;</code>.</p>
 <h2 id="clone-an-object-in-the-scene">Clone an object in the scene<a class="anchor" href="#clone-an-object-in-the-scene">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Cloner.js</code></strong> (inside an <code>async</code> method)</p>
 <pre class="code" data-lang="js"><code>const copy = await this.entity.clone();    // a copy with fresh ids
 copy.pos = [copy.pos[0] + 40, copy.pos[1], copy.pos[2]];</code></pre>
 <h2 id="pooling-avoid-creating-and-destroying-all-the-time">Pooling (avoid creating and destroying all the time)<a class="anchor" href="#pooling-avoid-creating-and-destroying-all-the-time">#</a></h2>
+<p><strong>File: <code>scripts/Gun.js</code></strong> (new file, the whole file; the <code>bullet</code> prefab must exist)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, ObjectPool } from 'nord';
 
 export default class Gun extends MonoBehaviour {
@@ -85,6 +89,7 @@ export default class Gun extends MonoBehaviour {
 }</code></pre>
 <p>Pooled objects are only <em>disabled</em>, so reset their state in <code>OnEnable()</code>.</p>
 <h2 id="children-and-parenting">Children and parenting<a class="anchor" href="#children-and-parenting">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Soldier.js</code></strong> (inside an <code>async</code> method)</p>
 <pre class="code" data-lang="js"><code>const gun = await this.scene.spawn('prefabs/gun.prefab.json', { parent: this.entity, pos: [10, 0, 1] }); // child of this object</code></pre>
 <div class="pager"><a href="ex-game-manager.html"><small>← Previous</small>4 · GameManager and Singletons</a><a href="ex-collisions.html"><small>Next →</small>6 · Collisions, triggers and raycasts</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#make-a-prefab">Make a prefab </a><a href="#unity-c">Unity (C#) </a><a href="#nord">Nord </a><a href="#overrides-change-a-prefab-39-s-values-when-spawning">Overrides: change a prefab&amp;#39;s values when spawning </a><a href="#destroy">Destroy </a><a href="#clone-an-object-in-the-scene">Clone an object in the scene </a><a href="#pooling-avoid-creating-and-destroying-all-the-time">Pooling (avoid creating and destroying all the time) </a><a href="#children-and-parenting">Children and parenting </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

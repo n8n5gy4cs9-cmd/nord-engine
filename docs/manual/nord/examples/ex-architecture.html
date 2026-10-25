@@ -22,6 +22,7 @@ prefabs/  scenes/  ui/  anim/  assets/  models/</code></pre>
 <h2 id="small-scripts-that-talk-by-events">Small scripts that talk by events<a class="anchor" href="#small-scripts-that-talk-by-events">#</a></h2>
 <p>One script, one job (movement, health, weapon, animation). They communicate with <strong>events</strong> instead of references (<a href="ex-events.html">Events</a>): the weapon emits <code>fired</code>, the animator script plays a clip, the audio script plays a sound, the HUD updates ammo. Add a feature = add a listener; nothing else changes.</p>
 <h2 id="quot-scriptable-event-channels-quot-unity-so-events-the-global-bus">&quot;Scriptable event channels&quot; (Unity SO events) = the global bus<a class="anchor" href="#quot-scriptable-event-channels-quot-unity-so-events-the-global-bus">#</a></h2>
+<p><strong>File: <code>scripts/constants.js</code></strong> (new file; other scripts import the names, listeners and senders in other files)</p>
 <pre class="code" data-lang="js"><code>// constants.js
 export const EVT = Object.freeze({ SCORE: 'score', PLAYER_DIED: 'player-died', WAVE: 'wave' });
 // anywhere
@@ -32,9 +33,11 @@ this.game.events.on(EVT.PLAYER_DIED, () =&gt; this.ShowRetry());</code></pre>
 <p><code>class AudioService extends Singleton</code> → <code>AudioService.instance.Play(&#39;coin&#39;)</code> (<a href="ex-game-manager.html">GameManager</a>). Keep the number of singletons small (game manager, audio, save, maybe input). Everything else is found by tag/name or receives what it needs through events.</p>
 <h2 id="dependency-injection-the-nord-way">Dependency injection, the Nord way<a class="anchor" href="#dependency-injection-the-nord-way">#</a></h2>
 <p>Attributes of type <code>entity</code> give a script the <em>name</em> of another object to use, set in the Inspector instead of hard-coded:</p>
+<p><strong>File: your script, for example <code>scripts/Spawner.js</code></strong> (the <code>static attributes</code> line goes inside the class)</p>
 <pre class="code" data-lang="js"><code>static attributes = { target: { type: 'entity' }, prefab: { type: 'asset', assetType: 'prefab' } };
 start() { this.t = this.scene.find(this.attrs.target); }          // [SerializeField] Transform target</code></pre>
 <h2 id="state-pattern-classes-instead-of-a-switch">State pattern (classes instead of a switch)<a class="anchor" href="#state-pattern-classes-instead-of-a-switch">#</a></h2>
+<p><strong>File: <code>scripts/states.js</code></strong> (new file; the classes are used by the script that owns the state)</p>
 <pre class="code" data-lang="js"><code>class Idle { enter(o) {} update(o, dt) { if (o.wantsRun()) return new Run(); } exit(o) {} }
 class Run  { enter(o) { o.play('run'); } update(o, dt) { o.move(dt); if (!o.wantsRun()) return new Idle(); } }
 
@@ -47,6 +50,7 @@ export default class Hero extends MonoBehaviour {
 }</code></pre>
 <p>For animation-driven logic use the Animator controller; for enemies see <a href="ex-ai-states.html">AI</a>.</p>
 <h2 id="command-pattern-with-undo">Command pattern with undo<a class="anchor" href="#command-pattern-with-undo">#</a></h2>
+<p><strong>File: <code>scripts/commands.js</code></strong> (new file; a command knows how to do and undo itself)</p>
 <pre class="code" data-lang="js"><code>class MoveCmd { constructor(unit, to) { this.unit = unit; this.to = to; this.from = [...unit.pos]; } do() { this.unit.pos = this.to; } undo() { this.unit.pos = this.from; } }
 const history = [];
 const run = (c) =&gt; { c.do(); history.push(c); };

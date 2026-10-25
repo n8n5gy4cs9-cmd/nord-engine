@@ -27,6 +27,7 @@
 <p>A script can be on many objects; each gets its own copy and its own field values. A <span class="c-term">Singleton</span> must be on <strong>one</strong> object only.</p>
 <h2 id="monobehaviour-the-unity-script">MonoBehaviour: the Unity script<a class="anchor" href="#monobehaviour-the-unity-script">#</a></h2>
 <p><span class="c-ui">Assets ▸ Create ▸ MonoBehaviour script</span> gives you this:</p>
+<p><strong>File: <code>scripts/Player.js</code></strong> (this is what <span class="c-ui">Assets ▸ Create ▸ MonoBehaviour script</span> creates)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Time, WaitForSeconds, UnityInput as Input } from 'nord';
 
 export default class Player extends MonoBehaviour {
@@ -189,6 +190,7 @@ export default class Player extends MonoBehaviour {
 <p>Rotations are Euler degrees (<code>eulerAngles</code>), there is no <code>Quaternion</code>. Vectors have no <code>+</code>/<code>*</code> operators in JavaScript: use <code>a.Add(b)</code>, <code>a.Mul(k)</code>.</p>
 <h2 id="singleton-one-object-reachable-everywhere">Singleton: one object, reachable everywhere<a class="anchor" href="#singleton-one-object-reachable-everywhere">#</a></h2>
 <p><span class="c-ui">Assets ▸ Create ▸ Singleton script</span>:</p>
+<p><strong>File: <code>scripts/Score.js</code></strong> (this is what <span class="c-ui">Assets ▸ Create ▸ Singleton script</span> creates)</p>
 <pre class="code" data-lang="js"><code>import { Singleton } from 'nord';
 
 export default class Score extends Singleton {
@@ -253,6 +255,7 @@ export default class Score extends Singleton {
 </tr>
 </tbody></table>
 <p>Fields in the Inspector: <code>startLives</code> (3) and <code>startState</code>. Listen to its events from anywhere:</p>
+<p><strong>File: your script, for example <code>scripts/Hud.js</code></strong> (inside <code>Start()</code>)</p>
 <pre class="code" data-lang="js"><code>this.game.events.on('score', ({ score }) =&gt; this.label.set(`Score ${score}`));
 this.game.events.on('gameover', () =&gt; GameManager.instance.LoadScene('scenes/menu.scene.json'));</code></pre>
 <h2 id="audiomanager">AudioManager<a class="anchor" href="#audiomanager">#</a></h2>

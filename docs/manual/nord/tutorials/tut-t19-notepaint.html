@@ -236,6 +236,7 @@ export function readDocument(value) {
 </code></pre>
 <h2 id="9-understand-the-drawing-canvas">9. Understand the drawing canvas<a class="anchor" href="#9-understand-the-drawing-canvas">#</a></h2>
 <p>The drawing has a fixed <strong>960×640</strong> working area. CSS can display it smaller. Pointer coordinates therefore need converting from screen pixels into canvas pixels:</p>
+<p><strong>Excerpt</strong> (from <code>notepaint/app.js</code> of the finished project, shown to explain the idea):</p>
 <pre class="code" data-lang="javascript"><code>const x = (event.clientX - rect.left) * canvas.width / rect.width;
 const y = (event.clientY - rect.top) * canvas.height / rect.height;</code></pre>
 <p>Without this conversion, the brush would draw in the wrong place whenever the window shrinks. Pointer events support a mouse, touchscreen and pen with the same handlers.</p>
@@ -463,11 +464,13 @@ export async function mount(root) {
 <p>An export is a real portable backup. “Saved on this device” is a local browser save. Explain the distinction in your own apps too.</p>
 <h2 id="14-open-your-app">14. Open your app<a class="anchor" href="#14-open-your-app">#</a></h2>
 <p>From the directory containing your project:</p>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="bash"><code>nord serve my-notepaint</code></pre>
 <p>Open the local address the command prints. Leave the terminal running while you edit. This serves local files; it does not upload your notebook anywhere.</p>
 <p>You should see a notebook list, a note page, drawing tools and a white drawing page. If an icon is missing, check the PNG path. If an import fails, the app displays the reason. If the whole page cannot start, read the browser Console for the first missing file or syntax error.</p>
 <h2 id="15-export-the-finished-app">15. Export the finished app<a class="anchor" href="#15-export-the-finished-app">#</a></h2>
 <p>When you choose to share it, use the editor&#39;s Export or:</p>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="bash"><code>nord export my-notepaint --target html</code></pre>
 <p>Keep your editable folder separately. Share the complete exported folder. Browser storage at a new address starts as a separate notebook, so import your portable document files there.</p>
 <h2 id="16-grow-it-carefully">16. Grow it carefully<a class="anchor" href="#16-grow-it-carefully">#</a></h2>

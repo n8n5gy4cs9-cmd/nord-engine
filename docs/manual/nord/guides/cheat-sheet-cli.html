@@ -43,10 +43,12 @@
 </tbody></table>
 <h3 id="make-plain-nord-work">Make plain <code>nord</code> work<a class="anchor" href="#make-plain-nord-work">#</a></h3>
 <p><strong>macOS or Linux:</strong> create a symbolic link once.</p>
+<p><strong>Terminal</strong> (macOS or Linux, once):</p>
 <pre class="code" data-lang="bash"><code>sudo ln -s &quot;/Applications/Nord Engine.app/Contents/MacOS/nord&quot; /usr/local/bin/nord</code></pre>
 <p>On Linux point the link at your extracted <code>nord-engine/nord</code> (for example into <code>~/.local/bin</code>, which needs no <code>sudo</code>).</p>
 <p><strong>Windows:</strong> add the <code>NordEngine</code> folder to your user <strong>PATH</strong> (Start menu → &quot;Edit environment variables for your account&quot; → <em>Path</em> → <em>Edit</em> → <em>New</em>), then open a new terminal.</p>
 <p>Check it works:</p>
+<p><strong>Terminal</strong> (any folder):</p>
 <pre class="code" data-lang="bash"><code>nord --version
 nord doctor</code></pre>
 <p><code>nord doctor</code> prints whether <code>node</code>, <code>cargo</code>, the WebAssembly target and <code>ffmpeg</code> were found, where the engine files are, and which project types you can use.</p>

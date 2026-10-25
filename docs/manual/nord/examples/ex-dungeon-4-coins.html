@@ -15,6 +15,7 @@
 <p><strong>Download:</strong> <a href="../../assets/downloads/series-dungeon-part4-source.zip">Part 4 project</a>, also in <code>examples/series-dungeon/part4</code>.</p>
 <h2 id="1-coins-in-the-map">1 Coins in the map<a class="anchor" href="#1-coins-in-the-map">#</a></h2>
 <p>Add the letter <code>o</code> to <code>map.js</code> wherever a coin should lie (the download has twelve):</p>
+<p><strong>File: <code>scripts/map.js</code></strong> (replace the whole file from part 3)</p>
 <pre class="code" data-lang="js"><code>export const MAP = [
   '########################################',
   '########################################',
@@ -40,7 +41,23 @@
   '########################################',
 ];</code></pre>
 <h2 id="2-triggers-and-the-coin-prefab">2 Triggers and the Coin prefab<a class="anchor" href="#2-triggers-and-the-coin-prefab">#</a></h2>
-<p>A <strong>trigger</strong> is a collider that does not block anything but tells you when something enters. The coin prefab (<code>prefabs/coin.prefab.json</code>) is a sprite (the round <code>circle.png</code>, tinted gold, 14 × 14), a <strong>static rigidbody</strong>, a <strong>box collider with <code>trigger: true</code></strong> (16 × 16), the tag <code>Coin</code> and the script:</p>
+<p>A <strong>trigger</strong> is a collider that does not block anything but tells you when something enters. Make the coin prefab in the editor:</p>
+<ol>
+<li><span class="c-ui">Hierarchy ▸ + Create ▸ Sprite</span>, rename it <code>Coin</code>. In the sprite set <strong>texture</strong> <code>assets/sprites/circle.png</code> (pick it from the list), <strong>size</strong> <code>14, 14</code>, <strong>tint</strong> <code>#ebcb8b</code>. Add the tag <code>Coin</code>.</li>
+<li><span class="c-ui">Inspector ▸ + Add component ▸ rigidbody</span>, <strong>mode</strong> <code>static</code>.</li>
+<li><span class="c-ui">Inspector ▸ + Add component ▸ collider</span>, <strong>shape</strong> <code>box</code>, <strong>size</strong> <code>16, 16</code>, and tick <strong>trigger</strong>.</li>
+<li>Write the script below, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/coin.js</span>.</li>
+<li><span class="c-ui">right-click <code>Coin</code> ▸ Create prefab</span>, then delete <code>Coin</code> from the scene.</li>
+</ol>
+<p><strong>In the file</strong> <code>prefabs/coin.prefab.json</code>:</p>
+<pre class="code" data-lang="json"><code>{ &quot;format&quot;: 1, &quot;root&quot;: { &quot;name&quot;: &quot;Coin&quot;, &quot;tags&quot;: [&quot;Coin&quot;],
+  &quot;components&quot;: [
+    { &quot;type&quot;: &quot;sprite&quot;, &quot;texture&quot;: &quot;assets/sprites/circle.png&quot;, &quot;size&quot;: [14, 14], &quot;tint&quot;: &quot;#ebcb8b&quot;, &quot;alpha&quot;: 1 },
+    { &quot;type&quot;: &quot;rigidbody&quot;, &quot;mode&quot;: &quot;static&quot; },
+    { &quot;type&quot;: &quot;collider&quot;, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: [16, 16], &quot;trigger&quot;: true } ],
+  &quot;scripts&quot;: [ { &quot;path&quot;: &quot;scripts/coin.js&quot;, &quot;attributes&quot;: {} } ] } }</code></pre>
+<p>The script:</p>
+<p><strong>File: <code>scripts/coin.js</code></strong> (new file, the whole file; attach it to the <code>coin</code> prefab)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager, Destroy, Random, Time, Vector3 } from 'nord';
 
 export default class Coin extends MonoBehaviour {
@@ -63,6 +80,7 @@ export default class Coin extends MonoBehaviour {
     Destroy(this.entity);
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>coin</code> prefab, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/coin.js</span>. Prefabs: first <span class="c-ui">Assets ▸ right-click the prefab ▸ Open prefab</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li><code>OnTriggerEnter(other)</code> is <code>OnTriggerEnter2D(Collider2D other)</code>. <code>other</code> is the entity that came in; <code>other.hasTag(&#39;Hero&#39;)</code> is <code>other.CompareTag(&quot;Hero&quot;)</code>.</li>
 <li><code>GameManager.instance.AddScore(1)</code>: see next section.</li>
@@ -71,10 +89,12 @@ export default class Coin extends MonoBehaviour {
 </ul>
 <h2 id="3-the-gamemanager">3 The GameManager<a class="anchor" href="#3-the-gamemanager">#</a></h2>
 <p>Nord has the Unity singleton you always write by hand. Create <code>scripts/GameManager.js</code>:</p>
+<p><strong>File: <code>scripts/GameManager.js</code></strong> (new file, the whole file; attach it to the <code>GameManager</code> object)</p>
 <pre class="code" data-lang="js"><code>import { GameManager } from 'nord';
 
 // The engine's GameManager (score, lives, state, Restart) as a script you can attach to an object.
 export default class Manager extends GameManager {}</code></pre>
+<p><strong>In the editor:</strong> select the <code>GameManager</code> object, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/GameManager.js</span>. If the object does not exist yet, create it first with <span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span> and rename it. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <p>Add an empty entity <code>GameManager</code> with that script. It keeps <code>score</code>, <code>lives</code> and <code>state</code>, offers <code>AddScore</code>, <code>LoseLife</code>, <code>SetState</code>, <code>Restart</code>, and announces changes on the global bus: <code>score</code>, <code>lives</code>, <code>state</code>, <code>gameover</code>. Anywhere in your code: <code>GameManager.instance.AddScore(1)</code>. (More in <a href="ex-game-manager.html">GameManager and Singletons</a>.)</p>
 <blockquote>
 <p><strong>Why does the coin not draw the score itself?</strong> It does not know that a HUD exists. It only says &quot;+1&quot; to the manager; the manager shouts &quot;score changed&quot;; whoever is interested (the HUD, a sound, an achievement) subscribes. Add features later without opening old files.</p>
@@ -85,6 +105,7 @@ export default class Manager extends GameManager {}</code></pre>
 <p>and the announcement carries the total: <code>EventBus.Publish(&#39;level&#39;, { width, height, coins });</code>. The complete file is in the download.</p>
 <h2 id="5-the-hud">5 The HUD<a class="anchor" href="#5-the-hud">#</a></h2>
 <p>A HUD is a screen layer of HTML elements. <code>this.ui.label(text, options)</code> makes a label; <code>screen: &#39;hud&#39;</code> puts it on the always-visible layer; <code>x</code>/<code>y</code> are pixels from the top-left; <code>anchor: &#39;c&#39;</code> centres a label and <code>x</code>/<code>y</code> become offsets from the centre. Create an empty entity <code>Hud</code> with:</p>
+<p><strong>File: <code>scripts/hud.js</code></strong> (new file, the whole file; attach it to the <code>Hud</code> object)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager, EventBus, UnityInput as Input, KeyCode } from 'nord';
 
 export default class Hud extends MonoBehaviour {
@@ -116,6 +137,7 @@ export default class Hud extends MonoBehaviour {
 
   OnDestroy() { this.score?.remove(); this.offs?.forEach((off) =&gt; off()); }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>Hud</code> object, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/hud.js</span>. If the object does not exist yet, create it first with <span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span> and rename it. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li>The HUD subscribes to <code>level</code> (the total) and <code>score</code>. <code>EventBus.Subscribe</code> returns an unsubscribe function; <code>OnDestroy</code> calls them all and removes the label. When you restart, scripts are destroyed and recreated; a script that forgets this leaves a ghost label and a ghost listener.</li>
 <li><code>Win()</code> sets the manager&#39;s state to <code>won</code> and shows two labels.</li>

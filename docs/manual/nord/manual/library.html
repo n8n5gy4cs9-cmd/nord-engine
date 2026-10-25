@@ -61,6 +61,7 @@
 <p>The <a href="../reference/templates-examples.html#examples">Platformer example</a> is built almost entirely from library scripts plus two tiny custom ones.</p>
 <h2 id="writing-your-own-entry">Writing your own entry<a class="anchor" href="#writing-your-own-entry">#</a></h2>
 <p>A library script starts with a header comment that the index builder reads:</p>
+<p><strong>File: <code>scripts/spinner.js</code></strong> (new file; the first line of the file is the header comment, the class follows)</p>
 <pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;mygame.spinner&quot;,&quot;title&quot;:&quot;Spinner&quot;,&quot;category&quot;:&quot;fx&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;rotate&quot;],&quot;description&quot;:&quot;Rotates its entity.&quot;}</code></pre>
 <p>Run <code>node tools/build-library-index.mjs</code> to regenerate <code>library/INDEX.json</code> (the editor&#39;s Library tab and the <a href="../reference/library-catalog.html">catalog</a> read it).
 Put <code>// Ported from &lt;repo&gt;/&lt;path&gt; (&lt;licence&gt;)</code> in the header when you adapt outside code, and list the source in <code>THIRD_PARTY.md</code>.</p>

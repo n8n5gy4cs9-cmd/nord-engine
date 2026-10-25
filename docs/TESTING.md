@@ -27,6 +27,7 @@
 | Offline guarantee | `nord check-offline dist/` ; headless run with network blocked (`route.abort` for non-localhost) | every export |
 | Vendor integrity | `node tools/vendor.mjs --verify` (sha256 vs VENDOR.json) | CI |
 | Task consistency | `node tools/tasks.mjs check` | CI |
+| Docs style | `node tools/lint-docs-style.mjs [--summary]`: every code block has a File / Terminal / Example / Excerpt label above it and every settings JSON has editor steps (`@ui[…]`) in its section. Rules: `docs/DOC_STYLE.md`. | docs |
 | Manual | `node tools/build-manual.mjs --check` (links, anchors, offline, runs `nord-live` snippets) — in CI | M7 |
 | Windows packaging | `./build-win.sh` cross-builds all three EXEs, compares all bundled resources by SHA-256 and CRC-checks both archives; Windows release CI also builds with MSVC and runs the packaged CLI outside the checkout | Windows release |
 | Native / mac | GitHub Actions `macos-14` builds `nord-editor`, `nord-player`; manual smoke on M1 Max | M3+ |

@@ -57,12 +57,14 @@
 <p>Browsers keep some shortcuts (<code>Cmd/Ctrl+P</code> print, <code>+K</code> search, <code>+1…4</code> tabs, <code>+R</code> reload). In the web editor quick open, the command palette, tab switching and play use <strong>Alt</strong> instead: <code>Alt+P</code>, <code>Alt+K</code>, <code>Alt+1…4</code>, <code>Alt+R</code>. The Settings window lists the current keys.</p>
 <h2 id="on-your-own-server">On your own server<a class="anchor" href="#on-your-own-server">#</a></h2>
 <p><code>nord-editor-server</code> serves the web editor and keeps projects in plain folders: <code>&lt;workspace&gt;/&lt;user&gt;/&lt;project&gt;</code>.</p>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="bash"><code>cargo build --release -p nord-editor-server -p nord-cli
 tools/build-web-editor.sh
 ./target/release/nord-editor-server --workspace ./nord-workspace --web dist/web-editor --engine .</code></pre>
 <p>It listens on <code>127.0.0.1:8787</code> and prints a random <strong>login token</strong>. Open the address, enter the token when asked, and the hub lists the projects on the server. Opening one downloads its files into the page; every save sends only the changed files back. <strong>Export…</strong> runs on the server and the zip downloads when it is done; the log lines appear in the Console.</p>
 <h3 id="several-people-and-passwords">Several people and passwords<a class="anchor" href="#several-people-and-passwords">#</a></h3>
 <p>Use a users file instead of the token: one line per person, <code>name:hash</code>.</p>
+<p><strong>Terminal</strong> (on the server):</p>
 <pre class="code" data-lang="bash"><code>printf '%s' 'a long password' | nord-editor-server hash-password      # prints the hash
 nord-editor-server --users ./users ...</code></pre>
 <p>Each user gets their own workspace and a size limit (<code>--quota-mb</code>). Only one session at a time may change a project (the first one to open it); others get a notice and see it read-only, and the lock frees itself a minute after the page is closed. Real-time co-editing is not part of this version.</p>

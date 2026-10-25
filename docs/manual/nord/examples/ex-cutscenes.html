@@ -20,7 +20,13 @@
 <h2 id="unity-c">Unity (C#)<a class="anchor" href="#unity-c">#</a></h2>
 <pre class="code" data-lang="cs"><code>public PlayableDirector director;
 void Start() { director.Play(); director.stopped += _ =&gt; ShowMenu(); }</code></pre>
-<h2 id="nord">Nord<a class="anchor" href="#nord">#</a></h2>
+<p>The <span class="c-ui">Timeline</span> tab writes all of this into the scene for you. <strong>In the file</strong> <code>scenes/main.scene.json</code> (open it in a text editor to check): the scene&#39;s <code>settings</code> now has a <code>timelines</code> entry:</p>
+<pre class="code" data-lang="json"><code>&quot;settings&quot;: { &quot;timelines&quot;: { &quot;intro&quot;: { &quot;duration&quot;: 3, &quot;loop&quot;: false,
+  &quot;tracks&quot;: [ { &quot;target&quot;: &quot;Title&quot;, &quot;property&quot;: &quot;y&quot;, &quot;keys&quot;: [ { &quot;t&quot;: 0, &quot;v&quot;: -50 }, { &quot;t&quot;: 1, &quot;v&quot;: 100, &quot;ease&quot;: &quot;backOut&quot; } ] } ],
+  &quot;events&quot;: [ { &quot;t&quot;: 2.5, &quot;name&quot;: &quot;show-menu&quot; } ] } } }</code></pre>
+<h2 id="play-it-from-a-script">Play it from a script<a class="anchor" href="#play-it-from-a-script">#</a></h2>
+<p>Create an empty object <code>Intro</code> (<span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span>), write the script, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Intro.js</span>.</p>
+<p><strong>File: <code>scripts/Intro.js</code></strong> (new file, the whole file; attach it to the <code>Intro</code> object)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour } from 'nord';
 
 export default class Intro extends MonoBehaviour {
@@ -35,6 +41,7 @@ export default class Intro extends MonoBehaviour {
 <p>Control it while it runs: <code>scene.timelines.pause(name)</code>, <code>resume(name)</code>, <code>stop(name)</code>, <code>seek(name, seconds)</code>, <code>isPlaying(name)</code>, <code>time(name)</code>, <code>progress(name)</code> (0 to 1). A looping timeline never fires <em>finished</em>, only the markers.</p>
 <p>Without code: an event sheet has the <strong>Timeline</strong> plugin with <em>Play, Pause, Resume, Stop, Set time</em>, the triggers <em>On finished</em> and <em>On event</em>, and the expressions <code>Timeline.Time(name)</code> and <code>Timeline.Progress(name)</code>.</p>
 <h2 id="skippable-cutscene">Skippable cutscene<a class="anchor" href="#skippable-cutscene">#</a></h2>
+<p><strong>File: <code>scripts/Intro.js</code></strong> (add this <code>Update()</code> method to the class above, after <code>Start()</code>)</p>
 <pre class="code" data-lang="js"><code>Update() {
   if (Input.GetKeyDown('Escape') &amp;&amp; this.scene.timelines.isPlaying('intro')) {
     this.scene.timelines.seek('intro', 3);                    // jump to the end values; finished fires on the next frame
@@ -51,5 +58,5 @@ export default class Intro extends MonoBehaviour {
 <li>Timelines run on game time. If you freeze the game with <code>Time.timeScale = 0</code> the cutscene freezes too.</li>
 </ul>
 <p>Back to <a href="../manual/effects-particles-timelines.html">Effects and timelines</a>, <a href="examples.html">Examples</a>.</p>
-<div class="pager"><a href="ex-pathfinding.html"><small>← Previous</small>46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-lights-2d.html"><small>Next →</small>48 · 2D lights and shadows (URP 2D Lights)</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#make-it-in-the-editor">Make it in the editor </a><a href="#unity-c">Unity (C#) </a><a href="#nord">Nord </a><a href="#skippable-cutscene">Skippable cutscene </a><a href="#camera-moves">Camera moves </a><a href="#traps">Traps </a></aside></div>
+<div class="pager"><a href="ex-pathfinding.html"><small>← Previous</small>46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-lights-2d.html"><small>Next →</small>48 · 2D lights and shadows (URP 2D Lights)</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#make-it-in-the-editor">Make it in the editor </a><a href="#unity-c">Unity (C#) </a><a href="#play-it-from-a-script">Play it from a script </a><a href="#skippable-cutscene">Skippable cutscene </a><a href="#camera-moves">Camera moves </a><a href="#traps">Traps </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

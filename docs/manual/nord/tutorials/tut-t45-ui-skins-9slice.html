@@ -38,12 +38,15 @@
 <p>Press <strong>Apply</strong>, then <strong>Save skin</strong>. Choose <em>Project ui/skin.json</em> in the <strong>Skin</strong> box. Every button in the preview changed together. Change <code>&quot;accent&quot;</code> and apply again: every <code>$accent</code> updates.</p>
 <p>Give the Quit button the class <code>danger</code> (Properties ▸ CSS class) and the title label the class <code>title</code>.</p>
 <h2 id="3-use-it-in-the-game">3. Use it in the game<a class="anchor" href="#3-use-it-in-the-game">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Menu.js</code></strong> (inside <code>start()</code>)</p>
 <pre class="code" data-lang="js"><code>const ui = createUI(root);              // or this.ui in a scene script
 await ui.useSkin('ui/skin.json');       // once, for every screen
 const menu = await ui.load('ui/menu.ui.json');</code></pre>
 <p>Or put <code>&quot;skin&quot;: &quot;ui/skin.json&quot;</code> at the top of the <code>.ui.json</code> file. Calling <code>useSkin</code> again with another file swaps the whole look at runtime, for example a night theme.</p>
 <h2 id="4-give-buttons-a-picture-9-slice">4. Give buttons a picture (9-slice)<a class="anchor" href="#4-give-buttons-a-picture-9-slice">#</a></h2>
 <p>Copy the sample art from <code>assets/ui/skin/</code> (<code>panel.png</code>, <code>button.png</code>, <code>button-hover.png</code>, <code>button-down.png</code>) into your project, or start from the <strong>Pixel (sample)</strong> skin in the Designer&#39;s Skin box. A sliced rule looks like this:</p>
+<p><strong>In the editor:</strong> <span class="c-ui">UI Designer</span> tab ▸ <strong>Styles</strong> tab ▸ select the <code>button</code> rule ▸ <strong>Image</strong>: pick <code>button.png</code>, drag the four slice guides to 5 pixels, set the scale to 3 and tick <strong>pixelated</strong>; do the same for the <strong>hover</strong> and <strong>pressed</strong> states with <code>button-hover.png</code> and <code>button-down.png</code>.</p>
+<p><strong>In the file</strong> <code>ui/skin.skin.json</code> (the Styles tab writes it; this is the <code>button</code> rule):</p>
 <pre class="code" data-lang="json"><code>&quot;button&quot;: {
   &quot;image&quot;: { &quot;src&quot;: &quot;assets/ui/skin/button.png&quot;, &quot;slice&quot;: [5, 5, 5, 5], &quot;scale&quot;: 3, &quot;pixelated&quot;: true },
   &quot;color&quot;: &quot;$fg&quot;, &quot;background&quot;: &quot;none&quot;,

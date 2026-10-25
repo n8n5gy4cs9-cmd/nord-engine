@@ -16,7 +16,7 @@ Menus, HUDs and dialogs are **data**: a `ui/<name>.ui.json` file edited in the *
 
 ## File format (version 1)
 
-**In the editor:** @ui[Assets ▸ right-click `ui` ▸ New UI scene] opens the @ui[UI Designer] tab; add nodes from its palette and set their fields in its inspector. Saving writes the file below.
+**In the editor:** @ui[Assets ▸ right-click ▸ New UI scene (.ui.json)] opens the @ui[UI Designer] tab; add nodes from its palette and set their fields in its inspector. Saving writes the file below.
 
 **In the file** `ui/menu.ui.json` (this shows the shape; the designer writes it):
 ```json

@@ -42,6 +42,7 @@
   &quot;potion&quot;: { &quot;id&quot;: &quot;potion&quot;, &quot;name&quot;: &quot;Potion&quot;,    &quot;max&quot;: 9 },
   &quot;sword&quot;:  { &quot;id&quot;: &quot;sword&quot;,  &quot;name&quot;: &quot;Iron sword&quot;, &quot;slot&quot;: &quot;weapon&quot;, &quot;damage&quot;: 3 } }</code></pre>
 <p>A pick-up that gives an item:</p>
+<p><strong>File: <code>scripts/Chest.js</code></strong> (new file, the whole file; it goes on the pick-up prefab)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, ScriptableObject } from 'nord';
 import Inventory from './inventory.js';          // the library script (copied into scripts/)
 
@@ -55,6 +56,7 @@ export default class ItemPickup extends MonoBehaviour {
   }
 }</code></pre>
 <p>Use / count / equip:</p>
+<p><strong>File: your script, for example <code>scripts/Shop.js</code></strong> (inside a method, after <code>Start()</code> has found the player)</p>
 <pre class="code" data-lang="js"><code>const inv = player.getScript(Inventory);
 inv.has('key');               // true when at least 1 key (has(id, n = 1))
 inv.count('potion');          // how many in all stacks
@@ -64,6 +66,7 @@ this.game.events.on('inventory', ({ items, equipped }) =&gt; this.refresh(items)
 this.entity.on('equip', (item) =&gt; {});                                           // on the inventory's object</code></pre>
 <p><code>items</code> is an array of slots (<code>null</code> or <code>{ id, name, n, … }</code>).</p>
 <h2 id="your-own-tiny-inventory-singleton">Your own tiny inventory (Singleton)<a class="anchor" href="#your-own-tiny-inventory-singleton">#</a></h2>
+<p><strong>File: <code>scripts/Inventory.js</code></strong> (new file, the whole file; put the script on the player or on an empty <code>Inventory</code> object)</p>
 <pre class="code" data-lang="js"><code>import { Singleton } from 'nord';
 export default class Bag extends Singleton {
   static persistent = true;
@@ -74,6 +77,7 @@ export default class Bag extends Singleton {
 }
 // a door:  if (Bag.instance.Take('key')) this.entity.enabled = false;</code></pre>
 <h2 id="a-hotbar-hud-from-code">A hotbar HUD from code<a class="anchor" href="#a-hotbar-hud-from-code">#</a></h2>
+<p><strong>File: <code>scripts/HotbarHud.js</code></strong> (inside <code>Start()</code> of a HUD script; create the labels before this call)</p>
 <pre class="code" data-lang="js"><code>this.game.events.on('bag', (items) =&gt; {
   this.ui.clear('bag');
   Object.entries(items).filter(([, n]) =&gt; n &gt; 0).forEach(([id, n], i) =&gt;
@@ -81,12 +85,15 @@ export default class Bag extends Singleton {
   this.ui.show('bag');
 });</code></pre>
 <h2 id="quests">Quests<a class="anchor" href="#quests">#</a></h2>
+<p><strong>In the Inspector</strong> of the object that has <code>quests.js</code>, the <code>quests</code> field (an array of events to count). As text it is stored like this:</p>
 <pre class="code" data-lang="js"><code>// the `quests` attribute of quests.js (Inspector, an array): events to count
 [{ &quot;id&quot;: &quot;coins&quot;, &quot;title&quot;: &quot;Collect 5 coins&quot;, &quot;goal&quot;: { &quot;event&quot;: &quot;coin&quot;, &quot;count&quot;: 5 } }]</code></pre>
 <p>Any script advances it by emitting that global event (<code>this.game.events.emit(&#39;coin&#39;)</code>). React when it completes:</p>
+<p><strong>File: <code>scripts/Gate.js</code></strong> (inside <code>Start()</code>, subscribing once; keep the returned function and call it in <code>OnDestroy()</code>)</p>
 <pre class="code" data-lang="js"><code>this.game.events.on('quest:done', ({ id }) =&gt; { if (id === 'coins') this.scene.find('Gate').enabled = false; });</code></pre>
 <p>Quest progress is saved in the current save slot.</p>
 <h2 id="equipment-changes-stats">Equipment changes stats<a class="anchor" href="#equipment-changes-stats">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (inside the method that computes damage, after <code>inv</code> is the player&#39;s <code>Inventory</code>)</p>
 <pre class="code" data-lang="js"><code>const weapon = inv.equipped.weapon;                       // { id: 'sword', damage: 3, ... } or undefined
 const damage = 1 + (weapon?.damage ?? 0);
 target.emit('damage', { amount: damage, from: this.entity });</code></pre>

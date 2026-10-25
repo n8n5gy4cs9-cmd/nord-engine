@@ -12,6 +12,7 @@
 <p><strong>Goal:</strong> a score label, a health bar, a pause menu with buttons.</p>
 <p>Nord&#39;s game UI is a layer of HTML elements on top of the game (not world objects), so it is always sharp and works on phones. Two ways: from code (quick) or a <code>.ui.json</code> file made in the UI Designer (best for menus).</p>
 <h2 id="from-code-like-creating-a-canvas-in-a-script">From code (like creating a Canvas in a script)<a class="anchor" href="#from-code-like-creating-a-canvas-in-a-script">#</a></h2>
+<p><strong>File: <code>scripts/Hud.js</code></strong> (new file, the whole file; attach it to an empty <code>Hud</code> object)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager } from 'nord';
 
 export default class Hud extends MonoBehaviour {
@@ -31,6 +32,7 @@ export default class Hud extends MonoBehaviour {
 <li>The UI is <strong>not</strong> destroyed when the scene changes: remove what you made in <code>OnDestroy</code>.</li>
 </ul>
 <h2 id="a-pause-menu">A pause menu<a class="anchor" href="#a-pause-menu">#</a></h2>
+<p><strong>File: <code>scripts/Pause.js</code></strong> (new file, the whole file; attach it to an empty <code>Pause</code> object)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager } from 'nord';
 
 export default class PauseMenu extends MonoBehaviour {
@@ -49,6 +51,7 @@ export default class PauseMenu extends MonoBehaviour {
 }</code></pre>
 <p>Unity: <code>Time.timeScale = 0</code> + a Canvas panel. (Setting <code>Time.timeScale = 0</code> also works; <code>game.pause()</code> freezes the whole scene tick.)</p>
 <h2 id="menus-of-buttons">Menus of buttons<a class="anchor" href="#menus-of-buttons">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Menu.js</code></strong> (inside <code>Start()</code> of the script on the title scene)</p>
 <pre class="code" data-lang="js"><code>this.ui.menu('title', [
   { text: 'Play',    onClick: () =&gt; this.game.loadScene('scenes/level1.scene.json') },
   { text: 'Options', onClick: () =&gt; this.ui.show('options') },
@@ -71,6 +74,7 @@ this.ui.show('title');</code></pre>
 </ul>
 <h2 id="health-bar-above-an-enemy-world-ui">Health bar above an enemy (world UI)<a class="anchor" href="#health-bar-above-an-enemy-world-ui">#</a></h2>
 <p>Easiest: make a child entity with a <code>sprite</code> (a small coloured rectangle) and scale its x by <code>hp / max</code>:</p>
+<p><strong>File: your script, for example <code>scripts/Enemy.js</code></strong> (inside <code>Update()</code> or the damage method; the enemy has a child named <code>HpBar</code>)</p>
 <pre class="code" data-lang="js"><code>const bar = this.entity.find('HpBar');
 bar.scale = [Math.max(0, hp / max), 1, 1];</code></pre>
 <div class="pager"><a href="ex-time-coroutines.html"><small>← Previous</small>7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-audio.html"><small>Next →</small>9 · Audio</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#from-code-like-creating-a-canvas-in-a-script">From code (like creating a Canvas in a script) </a><a href="#a-pause-menu">A pause menu </a><a href="#menus-of-buttons">Menus of buttons </a><a href="#declarative-ui-ui-designer">Declarative UI (UI Designer) </a><a href="#health-bar-above-an-enemy-world-ui">Health bar above an enemy (world UI) </a></aside></div>

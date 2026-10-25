@@ -51,6 +51,7 @@
 </tr>
 </tbody></table>
 <p><code>scene.find()</code> returns <code>null</code> when nothing matches: check before using. Names are the object names in the Hierarchy; <strong>tags</strong> are the fast, safe way to find groups (Inspector ▸ Tag).</p>
+<p><strong>File: your script, for example <code>scripts/Hud.js</code></strong> (the <code>start()</code> method; the other objects exist by then)</p>
 <pre class="code" data-lang="js"><code>start() {
   this.player = this.scene.find('Player');          // do it once in start(), not every frame
 }
@@ -64,6 +65,7 @@ update(dt) {
 var health = target.GetComponent&lt;Health&gt;();
 health.TakeDamage(10);
 var sr = GetComponent&lt;SpriteRenderer&gt;(); sr.color = Color.red;</code></pre>
+<p><strong>File: your script, for example <code>scripts/Door.js</code></strong> (inside <code>start()</code>; compare the Unity code above)</p>
 <pre class="code" data-lang="js"><code>// Nord
 import Health from './health.js';                      // the other script's class (default export)
 const health = target.getScript(Health);               // null when the object has no Health script
@@ -101,15 +103,18 @@ export default class Turret extends NordScript {
   }
 }</code></pre>
 <h2 id="calling-a-method-by-name-sendmessage">Calling a method by name (SendMessage)<a class="anchor" href="#calling-a-method-by-name-sendmessage">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Attack.js</code></strong> (inside a method; <code>other</code> is any entity)</p>
 <pre class="code" data-lang="js"><code>other.callScripts('takeDamage', 10);     // calls takeDamage(10) on every script of `other` that has it</code></pre>
 <p>Unity&#39;s <code>SendMessage</code>. Handy, but a typed <code>getScript(Class)</code> call is easier to refactor.</p>
 <h2 id="parent-and-children">Parent and children<a class="anchor" href="#parent-and-children">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Tree.js</code></strong> (inside a method; read-only lookups)</p>
 <pre class="code" data-lang="js"><code>this.entity.parent;                       // null for a root object
 this.entity.children;                     // array of child entities
 this.entity.find('Muzzle');               // child by name (searches all descendants)
 for (const e of this.entity.all()) {}     // this object and all descendants</code></pre>
 <p>Child positions are relative to the parent, like <code>localPosition</code>; <code>entity.worldPos</code> gives the absolute position.</p>
 <h2 id="enable-disable">Enable / disable<a class="anchor" href="#enable-disable">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Switch.js</code></strong> (inside a method)</p>
 <pre class="code" data-lang="js"><code>other.enabled = false;        // SetActive(false): hidden, scripts stop, onDisable is called
 other.tags.includes('boss');  // tags are a plain array</code></pre>
 <div class="pager"><a href="ex-input-movement.html"><small>← Previous</small>2 · Input and movement</a><a href="ex-game-manager.html"><small>Next →</small>4 · GameManager and Singletons</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#finding-things">Finding things </a><a href="#components-and-other-scripts">Components and other scripts </a><a href="#a-complete-example-damage-and-health">A complete example: damage and health </a><a href="#calling-a-method-by-name-sendmessage">Calling a method by name (SendMessage) </a><a href="#parent-and-children">Parent and children </a><a href="#enable-disable">Enable / disable </a></aside></div>

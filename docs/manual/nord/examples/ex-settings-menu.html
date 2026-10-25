@@ -13,6 +13,7 @@
 <h2 id="ready-made">Ready-made<a class="anchor" href="#ready-made">#</a></h2>
 <p>Library <strong>Settings screen</strong> <code>ui-settings.js</code> (sliders for master / music / sfx, remembered) and <code>ui-pause.js</code>, <code>ui-main-menu.js</code>. Add them and you have the basics. The pieces below show how each part works so you can build your own.</p>
 <h2 id="volumes">Volumes<a class="anchor" href="#volumes">#</a></h2>
+<p><strong>File: <code>scripts/Options.js</code></strong> (inside <code>Start()</code> of the script on the options screen, after <code>this.ui.load(...)</code>)</p>
 <pre class="code" data-lang="js"><code>// sliders from the UI Designer: nodes named &quot;music&quot; and &quot;sfx&quot; of type slider with on.changed actions &quot;music&quot; / &quot;sfx&quot;
 const menu = await this.ui.load('ui/options.ui.json');
 menu.on('music', (v) =&gt; this.audio.volume('music', v));      // v = the slider value (0..1), sent when the player lets go
@@ -20,6 +21,7 @@ menu.on('sfx',   (v) =&gt; this.audio.volume('sfx', v));
 menu.set('music', this.audio.volume('music'));               // show the current value</code></pre>
 <p>Audio volumes are saved by the audio system itself. Mute: <code>this.audio.mute(&#39;music&#39;, true)</code>.</p>
 <h2 id="language">Language<a class="anchor" href="#language">#</a></h2>
+<p><strong>File: <code>nord.project.json</code></strong> (the <code>strings</code> block, one table per language) and <strong>a script</strong> that switches the language:</p>
 <pre class="code" data-lang="js"><code>// nord.project.json: &quot;strings&quot;: { &quot;en&quot;: { &quot;play&quot;: &quot;Play&quot; }, &quot;fi&quot;: { &quot;play&quot;: &quot;Pelaa&quot; } }   (text objects use textKey: &quot;play&quot;)
 this.game.i18n.setLanguage('fi');                 // every textKey text updates
 this.game.i18n.t('play');                         // &quot;Pelaa&quot; for code-made text
@@ -27,15 +29,18 @@ this.game.i18n.languages;                         // ['en', 'fi']
 // the chosen language is remembered automatically and restored at the next start</code></pre>
 <p>Event <code>language</code> is emitted on the global bus when it changes: redraw your own labels there.</p>
 <h2 id="fullscreen">Fullscreen<a class="anchor" href="#fullscreen">#</a></h2>
+<p><strong>File: <code>scripts/Options.js</code></strong> (inside the button callback; browsers allow fullscreen only inside a click)</p>
 <pre class="code" data-lang="js"><code>this.ui.button('Fullscreen', () =&gt; {                     // must happen inside a click (browser rule)
   if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
 }, { screen: 'options', anchor: 'c', y: 40 });</code></pre>
 <p>(The desktop app has its own window controls: <a href="../manual/desktop-apps.html">Desktop apps</a>.)</p>
 <h2 id="accessibility">Accessibility<a class="anchor" href="#accessibility">#</a></h2>
+<p><strong>File: <code>scripts/Options.js</code></strong> (inside <code>Start()</code> or an options-menu callback)</p>
 <pre class="code" data-lang="js"><code>this.game.a11y.setColorBlind('deuteranopia');     // 'none', 'protanopia', 'deuteranopia', 'tritanopia', 'achromatopsia'
 this.game.a11y.setUiScale(1.25);                  // bigger UI</code></pre>
 <h2 id="rebinding-keys">Rebinding keys<a class="anchor" href="#rebinding-keys">#</a></h2>
 <p>The actions are just a map: <code>this.input.actions</code> is <code>{ jump: [&#39;Space&#39;], left: [&#39;KeyA&#39;, &#39;ArrowLeft&#39;], … }</code> and it can be changed while the game runs.</p>
+<p><strong>File: <code>scripts/Rebind.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour } from 'nord';
 
 export default class Rebind extends MonoBehaviour {
@@ -59,10 +64,12 @@ export default class Rebind extends MonoBehaviour {
 }</code></pre>
 <p>Gamepad buttons are codes like <code>Gamepad0</code>; mouse buttons <code>Mouse0</code>. To list the current bindings: <code>Object.entries(this.input.actions)</code>.</p>
 <h2 id="a-pause-screen-that-opens-the-options">A pause screen that opens the options<a class="anchor" href="#a-pause-screen-that-opens-the-options">#</a></h2>
+<p><strong>File: <code>scripts/Pause.js</code></strong> (inside <code>Start()</code>, after both screens are created)</p>
 <pre class="code" data-lang="js"><code>this.ui.button('Options', () =&gt; { this.ui.hide('pause'); this.ui.show('options'); }, { screen: 'pause', anchor: 'c', y: 60 });
 this.ui.button('Back',    () =&gt; { this.ui.hide('options'); this.ui.show('pause'); }, { screen: 'options', anchor: 'c', y: 120 });</code></pre>
 <p>See <a href="ex-ui-hud.html">UI</a> for pausing the game while it is open.</p>
 <h2 id="settings-in-one-place">Settings in one place<a class="anchor" href="#settings-in-one-place">#</a></h2>
+<p><strong>File: <code>scripts/Settings.js</code></strong> (new file; put it at the top of the file that reads and writes settings)</p>
 <pre class="code" data-lang="js"><code>const DEFAULTS = { language: 'en', shake: true, difficulty: 'normal' };
 export const settings = () =&gt; ({ ...DEFAULTS, ...this.save.get('settings', {}) });</code></pre>
 <p>Keep all options in one saved object so adding one more option is one line.</p>

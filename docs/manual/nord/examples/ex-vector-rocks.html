@@ -121,15 +121,32 @@
 <li><strong>Bloom.</strong> Bright things bleed light over their surroundings. The HUD adds a layer that blurs and brightens what is behind it and puts it back on top with the <code>screen</code> blend mode: a one-line CSS <code>backdropFilter: &#39;blur(6px) brightness(2.3) saturate(1.5)&#39;</code>.</li>
 <li><strong>Scanlines, curved glass and the bezel.</strong> The scene effect <code>{ &quot;type&quot;: &quot;crt&quot;, &quot;intensity&quot;: 0.35 }</code> adds scanlines. The bezel is one 800 × 600 image with a transparent screen opening, rounded corners, an inner shadow, a glass reflection, screws, a nameplate and an LED. It lies on top of the whole game.</li>
 </ol>
-<p>The project settings for the look:</p>
+<h3 id="set-up-the-project-look">Set up the project look<a class="anchor" href="#set-up-the-project-look">#</a></h3>
+<p><strong>In the editor.</strong> Open the <span class="c-ui">Project</span> tab and unfold <strong>Project properties</strong>:</p>
+<ol>
+<li><strong>Game size</strong>: type <code>800</code> × <code>600</code> (the preset buttons Tablet, HD and Full HD are for other shapes).</li>
+<li><strong>Scaling</strong>: <code>fit</code> (the game is scaled to fit any window).</li>
+<li><strong>Pixel art</strong>: off (the lines are smooth, not pixels).</li>
+<li><strong>Background</strong>: <code>#010a03</code>, a green-black.</li>
+<li><strong>Physics</strong>: <code>arcade</code>, <strong>gravity Y</strong>: <code>0</code> (we look at space, nothing falls).</li>
+<li>Press <strong>Apply project properties</strong>.</li>
+</ol>
+<p><strong>In the file</strong> <code>nord.project.json</code> (open it in any text editor to check): the editor wrote these two blocks.</p>
 <pre class="code" data-lang="json"><code>&quot;display&quot;: { &quot;width&quot;: 800, &quot;height&quot;: 600, &quot;scale&quot;: &quot;fit&quot;, &quot;pixelArt&quot;: false, &quot;background&quot;: &quot;#010a03&quot; },
 &quot;physics&quot;: { &quot;engine&quot;: &quot;arcade&quot;, &quot;gravity&quot;: [0, 0, 0] }</code></pre>
-<p>and in the scene <code>&quot;settings&quot;: { &quot;effects&quot;: [ { &quot;type&quot;: &quot;crt&quot;, &quot;intensity&quot;: 0.35 } ] }</code>.</p>
+<h3 id="add-the-scanlines-scene-effect">Add the scanlines (scene effect)<a class="anchor" href="#add-the-scanlines-scene-effect">#</a></h3>
+<p>The editor has no panel for scene effects yet, so this one is done in the scene file, or in code.</p>
+<p><strong>Option 1, in the file</strong> <code>scenes/main.scene.json</code>: the scene has a <code>settings</code> object. Add (or extend) its <code>effects</code> list:</p>
+<pre class="code" data-lang="json"><code>&quot;settings&quot;: { &quot;effects&quot;: [ { &quot;type&quot;: &quot;crt&quot;, &quot;intensity&quot;: 0.35 } ] }</code></pre>
+<p><strong>Option 2, in code</strong>, inside <code>Start()</code> of any script that lives in the scene (for example <code>Hud.js</code>), after the labels are created:</p>
+<pre class="code" data-lang="js"><code>this.game.effects.add(this.scene, 'crt', { intensity: 0.35 });</code></pre>
+<p>The finished project uses option 1. The effect list of the whole engine, with parameters, is in <a href="../manual/effects-particles-timelines.html">Effects, particles and timelines</a>.</p>
 <blockquote>
 <p><strong>Why a 4:3 game?</strong> The monitors this imitates were 4:3. The game stays 800 × 600 and is scaled to fit any window; the black bars are the table the monitor stands on.</p>
 </blockquote>
 <h2 id="2-the-screen-and-wrapping">2 The screen, and wrapping<a class="anchor" href="#2-the-screen-and-wrapping">#</a></h2>
 <p><code>Playfield.js</code> knows where the visible screen is (inside the bezel) and wraps objects around it:</p>
+<p><strong>File: <code>scripts/Playfield.js</code></strong> (new file, the whole file; a helper the other scripts import, attach it to nothing)</p>
 <pre class="code" data-lang="js"><code>// The visible screen inside the monitor bezel. A plain static helper class, like a Unity static utility.
 export default class Playfield {
   static Left = 40;
@@ -160,6 +177,7 @@ export default class Playfield {
 <p>Unity has no equivalent of <code>static</code> helper <em>classes</em> because C# has them built in; in JavaScript a class with only <code>static</code> members does the same. Anything can call <code>Playfield.Wrap(this.entity)</code>.</p>
 <h2 id="3-the-ship">3 The ship<a class="anchor" href="#3-the-ship">#</a></h2>
 <p>The scene has an entity <code>Ship</code> (tag <code>Player</code>) with a sprite, a <strong>rigidbody</strong> (dynamic), a <strong>circle collider</strong> that is a <strong>trigger</strong>, and two disabled children <code>Flame</code> and <code>Shield</code>. The script:</p>
+<p><strong>File: <code>scripts/Ship.js</code></strong> (new file, the whole file; attach it to the <code>Ship</code> object)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Instantiate, Destroy, Mathf, Vector2, Time, KeyCode, UnityInput as Input, WaitForSeconds, EventBus } from 'nord';
 import Playfield from './Playfield.js';
 import Game from './Game.js';
@@ -275,6 +293,7 @@ export default class Ship extends MonoBehaviour {
     this.safe = false;
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>Ship</code> object, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Ship.js</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <p>The Unity ideas, in order:</p>
 <ul>
 <li><code>static attributes = SerializeField({ turnSpeed: 200, … })</code> is <code>[SerializeField] float turnSpeed = 200;</code>. The fields show up in the Inspector and you read them as <code>this.turnSpeed</code>.</li>
@@ -292,6 +311,7 @@ export default class Ship extends MonoBehaviour {
 </blockquote>
 <h2 id="4-rocks-bullets-power-ups">4 Rocks, bullets, power-ups<a class="anchor" href="#4-rocks-bullets-power-ups">#</a></h2>
 <p><code>Rock.js</code>:</p>
+<p><strong>File: <code>scripts/Rock.js</code></strong> (new file, the whole file; attach it to the nine <code>rock-*</code> prefabs)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Instantiate, Destroy, Random, Time, Vector2 } from 'nord';
 import Playfield from './Playfield.js';
 import Game from './Game.js';
@@ -337,6 +357,7 @@ export default class Rock extends MonoBehaviour {
     Destroy(this.entity);
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the nine <code>rock-*</code> prefabs, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Rock.js</span>. Prefabs: first <span class="c-ui">Assets ▸ right-click the prefab ▸ Open prefab</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li>One script, three sizes: each prefab sets <code>size</code> (0 small, 1 medium, 2 large) and has a different picture and collider. Three shapes per size make the sky look varied: <code>Random.Range(0, 3)</code> picks one.</li>
 <li><code>Hit()</code> is the whole life of a rock after birth: score, sound, explosion, <strong>split into two smaller rocks</strong> that inherit half of the parent&#39;s speed plus a random push, sometimes a power-up (small rocks drop them most often), and finally <code>Destroy(this.entity)</code>.</li>
@@ -344,6 +365,7 @@ export default class Rock extends MonoBehaviour {
 <li><strong>Trap: <code>Random.Range</code> with two whole numbers returns an integer</strong>, like in C#. <code>Random.Range(-70, 70)</code> would give integers; <code>Random.Range(-70.5, 70.5)</code> gives a float. JavaScript cannot tell <code>70.0</code> from <code>70</code>.</li>
 </ul>
 <p><code>Bullet.js</code> and <code>PowerUp.js</code> are tiny:</p>
+<p><strong>File: <code>scripts/Bullet.js</code></strong> (new file, the whole file; attach it to the <code>bullet</code> prefab)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Destroy, Vector2, Mathf } from 'nord';
 import Playfield from './Playfield.js';
 import Rock from './Rock.js';
@@ -368,6 +390,8 @@ export default class Bullet extends MonoBehaviour {
     Destroy(this.entity);
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>bullet</code> prefab, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Bullet.js</span>. Prefabs: first <span class="c-ui">Assets ▸ right-click the prefab ▸ Open prefab</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
+<p><strong>File: <code>scripts/PowerUp.js</code></strong> (new file, the whole file; attach it to the five <code>pu-*</code> prefabs)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Destroy, Time, Mathf, Vector2, Random } from 'nord';
 import Playfield from './Playfield.js';
 
@@ -389,9 +413,11 @@ export default class PowerUp extends MonoBehaviour {
     Playfield.Wrap(this.entity, 16);
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the five <code>pu-*</code> prefabs, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/PowerUp.js</span>. Prefabs: first <span class="c-ui">Assets ▸ right-click the prefab ▸ Open prefab</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <p>A bullet remembers it is <code>spent</code> so that one shot hits one rock, even if it touches two in the same frame. <code>Destroy(obj, seconds)</code> removes the bullet after its lifetime. The power-up throbs with a sine and fades during its last two seconds. There is <strong>one prefab per kind</strong> (<code>pu-shield</code>, <code>pu-rapid</code>, …) with the same script and a different <code>type</code>: an easy way to get an icon per kind without any code that picks pictures.</p>
 <h2 id="5-the-game-waves-lives-heartbeat">5 The game: waves, lives, heartbeat<a class="anchor" href="#5-the-game-waves-lives-heartbeat">#</a></h2>
 <p><code>Game.js</code> is a <code>Singleton</code>: <code>Game.instance</code> works from anywhere (<code>Game.instance.AddScore(50)</code>).</p>
+<p><strong>File: <code>scripts/Game.js</code></strong> (new file, the whole file; attach it to the <code>Game</code> object)</p>
 <pre class="code" data-lang="js"><code>import { Singleton, SerializeField, Instantiate, Random, Mathf, Vector2, PlayerPrefs, EventBus, WaitForSeconds, WaitUntil, KeyCode, UnityInput as Input } from 'nord';
 import Playfield from './Playfield.js';
 import Rock from './Rock.js';
@@ -471,6 +497,7 @@ export default class Game extends Singleton {
     if (this.over &amp;&amp; (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))) this.game.restart();
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>Game</code> object, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Game.js</span>. If the object does not exist yet, create it first with <span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span> and rename it. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li><code>Waves()</code> is a coroutine: wait, spawn <code>count</code> rocks on the screen edge <strong>away from the ship</strong>, wait until they have all arrived, wait until the sky is empty, wait a moment, next wave. <code>WaitForSeconds</code> and <code>WaitUntil</code> are the Unity yield instructions.</li>
 <li><strong>Trap: <code>Instantiate</code> is asynchronous.</strong> If the coroutine only waited for <code>RockCount() === 0</code>, it would see an empty sky for a few frames while the rocks are still loading, and start the next wave at once. <code>pending</code> counts the rocks that really exist. This was a real bug while building the game.</li>
@@ -480,6 +507,7 @@ export default class Game extends Singleton {
 </ul>
 <h2 id="6-the-monitor-hud-scaler-bezel-and-bloom">6 The monitor: HUD, scaler, bezel and bloom<a class="anchor" href="#6-the-monitor-hud-scaler-bezel-and-bloom">#</a></h2>
 <p><code>Hud.js</code>:</p>
+<p><strong>File: <code>scripts/Hud.js</code></strong> (new file, the whole file; attach it to the <code>Hud</code> object)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, EventBus } from 'nord';
 import Game from './Game.js';
 
@@ -539,6 +567,7 @@ export default class Hud extends MonoBehaviour {
     this.offs?.forEach((off) =&gt; off?.());
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>Hud</code> object, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/Hud.js</span>. If the object does not exist yet, create it first with <span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span> and rename it. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li>The UI layer is measured in <strong>screen pixels</strong>, but the game is scaled to fit the window. The <code>frame</code> is one 800 × 600 box that <code>LateUpdate</code> scales and moves to sit exactly on the game canvas. That is what a Canvas Scaler does in Unity. Every label, the bloom and the bezel are children of it, so they stay glued to the picture in any window.</li>
 <li>The labels use a monospace font with a green <code>textShadow</code>, the cheapest phosphor glow there is.</li>
@@ -583,7 +612,38 @@ export default class Hud extends MonoBehaviour {
 </tbody></table>
 <p>They are all in <code>Ship.Collect(type)</code>: five lines. To add a sixth, make a prefab, give the ship a timer, make <code>Fire</code> or <code>Update</code> look at it.</p>
 <p><img src="../../assets/screenshots/vector-rocks-nova.png" alt="A nova clears the sky"></p>
-<h2 id="8-check-yourself">8 Check yourself<a class="anchor" href="#8-check-yourself">#</a></h2>
+<h2 id="8-every-monitor-effect-we-tried">8 Every monitor effect we tried<a class="anchor" href="#8-every-monitor-effect-we-tried">#</a></h2>
+<p>The same frozen frame, one effect at a time (the test script switches them on one by one and took these):</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><img src="../../assets/screenshots/vector-rocks-fx-none.png" alt="none"> <strong>No effect.</strong> Only the baked glow of the sprites and the green text shadow.</td>
+<td><img src="../../assets/screenshots/vector-rocks-fx-bloom.png" alt="bloom"> <strong>Bloom</strong> (the <code>backdropFilter</code> layer). Light bleeds out of the lines. Used.</td>
+</tr>
+<tr>
+<td><img src="../../assets/screenshots/vector-rocks-fx-crt.png" alt="crt"> <strong><code>crt</code> scene effect.</strong> Scanlines and a slight darkening. Used.</td>
+<td><img src="../../assets/screenshots/vector-rocks-fx-both.png" alt="both"> <strong>Bloom + crt</strong>: what the game ships with.</td>
+</tr>
+<tr>
+<td><img src="../../assets/screenshots/vector-rocks-fx-vignette.png" alt="vignette"> <strong><code>vignette</code> scene effect</strong> at strength 0.6. Darkens the corners; far too strong for a bright playfield, and the bezel already has an inner shadow. Not used.</td>
+<td><img src="../../assets/screenshots/vector-rocks-fx-barrel.png" alt="barrel"> <strong><code>barrel</code></strong> (curved glass). It warps only the game picture, not the bezel or the HUD, and objects that wrap around the screen edge visibly bend. Looks wrong for Asteroids. Not used.</td>
+</tr>
+<tr>
+<td><img src="../../assets/screenshots/vector-rocks-fx-glow.png" alt="glow"> <strong><code>glow</code> scene effect.</strong> Phaser&#39;s glow filter outlines objects; on thin glowing lines it adds nothing visible over the baked halo. Not used.</td>
+<td><strong><code>pixelate</code>, <code>blur</code>, <code>hue</code>, <code>sepia</code>, …</strong> The other stock effects. <code>blur</code> softens everything (a cheap &quot;out of focus tube&quot;); <code>hue</code> could turn the green monitor amber. Try <code>game.effects.add(scene, &#39;hue&#39;, { degrees: 60 })</code>.</td>
+</tr>
+</tbody></table>
+<p>Scene effects live in the scene&#39;s <code>settings.effects</code> or are added from code with <code>this.game.effects.add(this.scene, &#39;crt&#39;, { intensity: 0.5 })</code> (it returns a handle with <code>set</code>, <code>setEnabled</code> and <code>remove</code>). The full list with parameters is in <a href="../manual/effects-particles-timelines.html">Effects, particles and timelines</a>. Two more things for monitor looks:</p>
+<ul>
+<li><strong><code>library/shaders/crt.glsl</code></strong> is a hand-written full-screen CRT shader (barrel distortion, scanlines, RGB shift) for Phaser PostFX or a Babylon post-process. Using a custom GLSL shader needs engine-native code (a <code>PostFXPipeline</code> or <code>PostProcess</code>), so this tutorial sticks to the stock <code>crt</code> effect, which works without it.</li>
+<li><strong>Phosphor persistence</strong> (moving lines leaving a fading trail) is not a stock effect. The bullets fake it with a small particle trail that fades in a quarter of a second; a full-screen persistence buffer would need a custom render texture and is beyond a MonoBehaviour tutorial.</li>
+</ul>
+<h2 id="9-check-yourself">9 Check yourself<a class="anchor" href="#9-check-yourself">#</a></h2>
 <ul>
 <li>The title of the game is the screen itself: green rocks drift on black, the ship waits in the middle.</li>
 <li>Turn and thrust: the ship keeps drifting after you let go. Fly off one edge and come back on the other.</li>
@@ -594,7 +654,7 @@ export default class Hud extends MonoBehaviour {
 </ul>
 <p>The project has an automated test, <code>node tools/vector-rocks-test.mjs</code>: it flies, shoots, collects every power-up, dies, runs out of lives and restarts in a headless browser, and made the screenshots on this page.</p>
 <p><img src="../../assets/screenshots/vector-rocks-over.png" alt="Game over"></p>
-<h2 id="9-ideas">9 Ideas<a class="anchor" href="#9-ideas">#</a></h2>
+<h2 id="10-ideas">10 Ideas<a class="anchor" href="#10-ideas">#</a></h2>
 <ul>
 <li>A <strong>flying saucer</strong> that crosses the screen and shoots (a new prefab and a script like <code>Rock</code> that aims with <code>Vector2.Distance</code> and <code>Mathf.Atan2</code>).</li>
 <li>Rocks that <strong>wobble</strong> their outline by drawing a new random polygon each wave: see the art script.</li>
@@ -603,5 +663,5 @@ export default class Hud extends MonoBehaviour {
 <li>Ship it: <code>nord build vector-rocks --minify --zip</code> makes a folder you can put on a web page. See <a href="ex-build-publish.html">Build, publish and ship</a>.</li>
 </ul>
 <p>Back to <a href="examples.html">Examples</a>.</p>
-<div class="pager"><a href="ex-input-editor.html"><small>← Previous</small>43 · Input actions and the Input editor</a><a href="ex-platform.html"><small>Next →</small>45 · Which platform? Editor, Mac, Windows, web, phone</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#start-from-the-starter-project">Start from the starter project </a><a href="#the-parts">The parts </a><a href="#1-how-to-make-a-vector-monitor">1 How to make a vector monitor </a><a href="#2-the-screen-and-wrapping">2 The screen, and wrapping </a><a href="#3-the-ship">3 The ship </a><a href="#4-rocks-bullets-power-ups">4 Rocks, bullets, power-ups </a><a href="#5-the-game-waves-lives-heartbeat">5 The game: waves, lives, heartbeat </a><a href="#6-the-monitor-hud-scaler-bezel-and-bloom">6 The monitor: HUD, scaler, bezel and bloom </a><a href="#7-power-ups">7 Power-ups </a><a href="#8-check-yourself">8 Check yourself </a><a href="#9-ideas">9 Ideas </a></aside></div>
+<div class="pager"><a href="ex-input-editor.html"><small>← Previous</small>43 · Input actions and the Input editor</a><a href="ex-platform.html"><small>Next →</small>45 · Which platform? Editor, Mac, Windows, web, phone</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#start-from-the-starter-project">Start from the starter project </a><a href="#the-parts">The parts </a><a href="#1-how-to-make-a-vector-monitor">1 How to make a vector monitor </a><a href="#2-the-screen-and-wrapping">2 The screen, and wrapping </a><a href="#3-the-ship">3 The ship </a><a href="#4-rocks-bullets-power-ups">4 Rocks, bullets, power-ups </a><a href="#5-the-game-waves-lives-heartbeat">5 The game: waves, lives, heartbeat </a><a href="#6-the-monitor-hud-scaler-bezel-and-bloom">6 The monitor: HUD, scaler, bezel and bloom </a><a href="#7-power-ups">7 Power-ups </a><a href="#8-every-monitor-effect-we-tried">8 Every monitor effect we tried </a><a href="#9-check-yourself">9 Check yourself </a><a href="#10-ideas">10 Ideas </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

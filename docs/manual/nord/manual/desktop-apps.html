@@ -19,6 +19,7 @@ const granted = { store: true, notifications: false };
 const call = async (area) =&gt; { if (!granted[area]) { const e = new Error(`permission '${area}' not granted`); e.code = 'denied'; throw e; } return 'ok'; };
 console.log(await call('store'));
 console.log(await call('notifications').catch((e) =&gt; e.code));</pre></div>
+<p><strong>File: your script, for example <code>scripts/Notes.js</code></strong> (the <code>import</code> at the top of the file, the calls inside methods)</p>
 <pre class="code" data-lang="js"><code>import desktop from './nord-desktop.js';          // also window.nord.desktop
 await desktop.ready;
 await desktop.fs.writeText('notes/a.md', '# hi');   // appData:notes/a.md (always allowed)
@@ -53,6 +54,8 @@ await desktop.notify('Done', 'Saved your note');                  // needs permi
 </tbody></table>
 <h2 id="permissions-desktop-permissions">Permissions (<code>desktop.permissions</code>)<a class="anchor" href="#permissions-desktop-permissions">#</a></h2>
 <p>Default = least privilege. Review/edit them in the editor: <strong>Project ▸ Desktop app permissions…</strong>.</p>
+<p><strong>In the editor:</strong> <span class="c-ui">Project ▸ Desktop app permissions…</span>, then tick what the app may do.</p>
+<p><strong>In the file</strong> <code>nord.project.json</code>, the window writes this block:</p>
 <pre class="code" data-lang="json"><code>&quot;desktop&quot;: {
   &quot;permissions&quot;: {
     &quot;fs&quot;: { &quot;roots&quot;: [&quot;documents&quot;, &quot;picked&quot;], &quot;write&quot;: true },

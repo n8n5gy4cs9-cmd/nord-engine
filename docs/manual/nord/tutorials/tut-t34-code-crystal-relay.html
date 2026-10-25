@@ -19,7 +19,8 @@
 <p>Select <strong>Ground</strong> and remove its rigidbody and collider components, keeping the visible sand mesh and material. In this variant the sand is distant scenery: missing the platforms falls through it and eventually costs a life. Keep collision on Start and every Plat entity.</p>
 <p><strong>Checkpoint:</strong> Play now. Movement and jumping still work, gems spin, but touching a gem no longer gives the old counter. That temporary absence confirms ownership has moved out of the old script.</p>
 <h2 id="2-add-one-action-one-hazard-and-one-script">2. Add one action, one hazard and one script<a class="anchor" href="#2-add-one-action-one-hazard-and-one-script">#</a></h2>
-<p>Open <code>nord.project.json</code>. Within the existing <code>input.actions</code> object add:</p>
+<p><strong>In the editor:</strong> <span class="c-ui">Project</span> tab ▸ unfold <strong>Input Manager (actions and keys)</strong>, type <code>sprint</code> and press <strong>Add action</strong>, then <strong>＋ key</strong> and press Left Shift, <strong>＋ key</strong> again for Right Shift.</p>
+<p><strong>In the file</strong> <code>nord.project.json</code>: within the existing <code>input.actions</code> object the editor added (check it in a text editor):</p>
 <pre class="code" data-lang="json"><code>&quot;sprint&quot;: [&quot;ShiftLeft&quot;, &quot;ShiftRight&quot;]</code></pre>
 <p>Keep a comma between neighboring entries. Do not replace the other actions. This maps physical keys to a named gameplay intent, so code asks for sprint rather than hard-coding a browser key handler.</p>
 <p>In the scene add an entity named <strong>Hazard</strong> at <code>[3, 3.3, 18]</code>. Add a <strong>mesh</strong> component with shape <code>sphere</code> and size <code>[0.8, 0.8, 0.8]</code>, and a <strong>material</strong> with color <code>#ff4433</code> and emissive <code>#aa1100</code>. It needs no rigidbody or collider: the controller tests a deliberately simple spherical danger radius.</p>
@@ -34,6 +35,7 @@ export default class CrystalRelay extends NordScript {
 <p>Attach it <strong>once to Player</strong>, save the scene and Play. Console must say Relay attached to Player. If it says Camera or Systems, move the attachment now: the complete script treats its own entity as the player.</p>
 <h2 id="3-declare-state-and-find-the-world">3. Declare state and find the world<a class="anchor" href="#3-declare-state-and-find-the-world">#</a></h2>
 <p>The final file starts with four attributes: seconds, lives, normal speed and sprintSpeed. These appear in Inspector and let you tune difficulty without editing logic. It then finds the existing movement controller, the ordered gems and Hazard:</p>
+<p><strong>File: <code>scripts/relay.js</code></strong> (inside <code>start()</code>, after the attributes are read)</p>
 <pre class="code" data-lang="js"><code>this.player = this.entity;
 this.controller = this.player.scripts.find(s =&gt; 'jumpSpeed' in s.attrs);
 this.gems = this.scene.findByTag('gem')
@@ -46,6 +48,7 @@ this.spawn = [...this.player.pos];</code></pre>
 <p>The remaining start fields initialize elapsed time, countdown, next index, lives, normalized energy from zero to one, a short hazard-protection timer, the saved record and UI. The final source contains that complete setup; install it before testing the later systems.</p>
 <h2 id="4-use-time-correctly-two-clocks-two-jobs">4. Use time correctly: two clocks, two jobs<a class="anchor" href="#4-use-time-correctly-two-clocks-two-jobs">#</a></h2>
 <p>Inside update:</p>
+<p><strong>File: <code>scripts/relay.js</code></strong> (inside <code>update(dt)</code>)</p>
 <pre class="code" data-lang="js"><code>this.elapsed += dt;
 this.remaining = Math.max(0, this.remaining - dt);
 this.safeTime = Math.max(0, this.safeTime - dt);</code></pre>
@@ -54,6 +57,7 @@ this.safeTime = Math.max(0, this.safeTime - dt);</code></pre>
 <p><strong>Checkpoint:</strong> after adding the full controller, standing still reduces the countdown; pausing keeps it unchanged. Inspector&#39;s seconds setting changes the starting allowance, not your medal thresholds.</p>
 <h2 id="5-turn-sprint-into-a-resource">5. Turn sprint into a resource<a class="anchor" href="#5-turn-sprint-into-a-resource">#</a></h2>
 <p>The player movement script already controls velocity. We change its speed setting instead of moving the body a second time:</p>
+<p><strong>File: <code>scripts/relay.js</code></strong> (inside <code>update(dt)</code>, after the clock)</p>
 <pre class="code" data-lang="js"><code>const sprint = this.input.down('sprint') &amp;&amp; this.energy &gt; 0;
 this.controller.attrs.speed = sprint ? this.attrs.sprintSpeed : this.attrs.speed;
 this.energy = Math.max(0, Math.min(1,
@@ -63,6 +67,7 @@ this.energy = Math.max(0, Math.min(1,
 <p><strong>Try:</strong> hold Shift on Start and watch Sprint fall. Release and watch it refill. Compare a first-gap jump at normal speed with a sprint jump. Keep safe landing width while tuning; speed changes affect every gap.</p>
 <h2 id="6-animate-a-hazard-and-test-distance">6. Animate a hazard and test distance<a class="anchor" href="#6-animate-a-hazard-and-test-distance">#</a></h2>
 <p>The hazard moves side to side:</p>
+<p><strong>File: <code>scripts/relay.js</code></strong> (inside <code>update(dt)</code>, after the sprint code)</p>
 <pre class="code" data-lang="js"><code>this.hazard.pos = [3 + Math.sin(this.elapsed * 1.5) * 2, 3.3, 18];
 const distance = (a, b) =&gt; Math.hypot(...a.map((v, i) =&gt; v - b[i]));</code></pre>
 <p><code>Math.sin</code> oscillates between -1 and 1. Multiplying by two gives a two-unit reach each side of X=3. The <code>1.5</code> controls angular speed, not travel distance. Y and Z remain constant.</p>
@@ -71,6 +76,7 @@ const distance = (a, b) =&gt; Math.hypot(...a.map((v, i) =&gt; v - b[i]));</code
 <p><strong>Checkpoint:</strong> fall from Start. With lives remaining you return to the initial checkpoint. Later, test contact with the red sphere and verify one lost life rather than one per frame.</p>
 <h2 id="7-make-ordered-collection-and-checkpoints-work-together">7. Make ordered collection and checkpoints work together<a class="anchor" href="#7-make-ordered-collection-and-checkpoints-work-together">#</a></h2>
 <p>The controller checks only <code>this.gems[this.next]</code>. It enlarges that crystal as a visual cue. Touching a later gem does nothing, preserving a clear route.</p>
+<p><strong>File: <code>scripts/relay.js</code></strong> (inside <code>update(dt)</code>, in the collection step)</p>
 <pre class="code" data-lang="js"><code>const gem = this.gems[this.next];
 if (gem) {
   gem.scale = [1.4, 1.4, 1.4];
@@ -78,6 +84,7 @@ if (gem) {
 }</code></pre>
 <p><code>next</code> is an array index, starting at zero. <code>if (gem)</code> handles the end of the array safely. The code uses real world distance; a gem looking close in the camera projection is not enough if it is far above or behind the player.</p>
 <p>Collection destroys the gem, finds its matching platform, copies a safe spawn position above that platform, advances next and gives the bonuses:</p>
+<p><strong>File: <code>scripts/relay.js</code></strong> (inside the method that handles a collected gem)</p>
 <pre class="code" data-lang="js"><code>const platform = this.scene.find('Plat' + this.next);
 this.spawn = [platform.pos[0], platform.pos[1] + 1.5, platform.pos[2]];
 this.next++;
@@ -88,6 +95,7 @@ this.energy = 1;</code></pre>
 <h2 id="8-finish-once-award-medals-and-persist-a-record">8. Finish once, award medals and persist a record<a class="anchor" href="#8-finish-once-award-medals-and-persist-a-record">#</a></h2>
 <p>When next reaches the array length, call <code>finish(true, ...)</code>. Zero time or lives calls it with false. The ended guard makes a finish idempotent: calling it again has no effect.</p>
 <p>On victory:</p>
+<p><strong>File: <code>scripts/relay.js</code></strong> (inside the method that handles the win)</p>
 <pre class="code" data-lang="js"><code>this.best = this.best === null ? this.elapsed : Math.min(this.best, this.elapsed);
 this.save.set('crystal-relay.best', this.best);
 const medal = this.elapsed &lt; 45 ? 'Gold'
@@ -142,6 +150,7 @@ const medal = this.elapsed &lt; 45 ? 'Gold'
 <h2 id="10-verify-and-deliver">10. Verify and deliver<a class="anchor" href="#10-verify-and-deliver">#</a></h2>
 <p>Play a full run and test alternate paths through the state machine: early fall, hazard contact, pause/resume, timeout, no lives, complete collection, retry and page reload. A retry resets crystals and lives while preserving Best. A failed run must not overwrite a completed best time.</p>
 <p>From the parent folder of your own project:</p>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="sh"><code>nord check my-crystal-relay
 nord build my-crystal-relay --out crystal-relay-web --zip
 python3 -m http.server 8001 --directory crystal-relay-web</code></pre>
@@ -150,6 +159,7 @@ python3 -m http.server 8001 --directory crystal-relay-web</code></pre>
 <h2 id="complete-game-source">Complete game source<a class="anchor" href="#complete-game-source">#</a></h2>
 <p>The first file is the entire custom relay controller, followed by all other text source files: movement, camera, moving-platform and sound helpers, full scene/project data, HTML and asset metadata. Binaries are included in the <a href="../../assets/downloads/crystal-relay-source.zip">full source project archive</a>. These files reproduce the finished game; no omitted controller code or CDN is required.</p>
 <!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><h3 id="scripts-relay-js">scripts/relay.js<a class="anchor" href="#scripts-relay-js">#</a></h3>
+<p><strong>File: <code>scripts/relay.js</code></strong> (the complete file, for comparison)</p>
 <pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
 
 export default class CrystalRelay extends NordScript {
@@ -272,7 +282,8 @@ export default class CrystalRelay extends NordScript {
   }
 }</code></pre>
 <details>
-<summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+<summary>Complete index.html</summary><p><strong>File: <code>index.html</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;Crystal Relay — code workshop&lt;/title&gt;
 &lt;style&gt;html,body{margin:0;height:100%;background:#101418;overflow:hidden}#stage{position:relative;width:100vw;height:100vh}&lt;/style&gt;
 &lt;script type=&quot;importmap&quot;&gt;{&quot;imports&quot;:{&quot;nord&quot;:&quot;/runtime/core/index.js&quot;}}&lt;/script&gt;&lt;/head&gt;
@@ -290,7 +301,8 @@ try {
 } catch (e) { console.error(e); window.__nord_error = String(e); }
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
 </details><details>
-<summary>Complete nord.project.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete nord.project.json</summary><p><strong>File: <code>nord.project.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;format&quot;: 1,
   &quot;name&quot;: &quot;Crystal Relay — code workshop&quot;,
   &quot;id&quot;: &quot;com.crowelian.crystalrelay&quot;,
@@ -363,7 +375,8 @@ try {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scenes/main.scene.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete scenes/main.scene.json</summary><p><strong>File: <code>scenes/main.scene.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;format&quot;: 1,
   &quot;name&quot;: &quot;main&quot;,
   &quot;settings&quot;: {},
@@ -1743,7 +1756,8 @@ try {
   ]
 }</code></pre>
 </details><details>
-<summary>Complete scripts/camera-follow3d.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;camera.follow3d&quot;,&quot;title&quot;:&quot;Camera follow (3D rig)&quot;,&quot;category&quot;:&quot;camera&quot;,&quot;tier&quot;:[&quot;3d&quot;],&quot;tags&quot;:[&quot;camera&quot;,&quot;follow&quot;,&quot;chase&quot;],&quot;description&quot;:&quot;Chase camera for 3D: keeps an offset from a target entity (by name), smoothing position. Put on a camera entity (non-orbit) — it looks at the target.&quot;}
+<summary>Complete scripts/camera-follow3d.js</summary><p><strong>File: <code>scripts/camera-follow3d.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;camera.follow3d&quot;,&quot;title&quot;:&quot;Camera follow (3D rig)&quot;,&quot;category&quot;:&quot;camera&quot;,&quot;tier&quot;:[&quot;3d&quot;],&quot;tags&quot;:[&quot;camera&quot;,&quot;follow&quot;,&quot;chase&quot;],&quot;description&quot;:&quot;Chase camera for 3D: keeps an offset from a target entity (by name), smoothing position. Put on a camera entity (non-orbit) — it looks at the target.&quot;}
 import { NordScript } from 'nord';
 
 export default class CameraFollow3D extends NordScript {
@@ -1760,7 +1774,8 @@ export default class CameraFollow3D extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/mk.js</summary><pre class="code" data-lang="js"><code>// Tiny helpers to spawn coloured rectangles / circles / text at runtime (placeholder art). Generated by tools/gen_examples.mjs.
+<summary>Complete scripts/mk.js</summary><p><strong>File: <code>scripts/mk.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// Tiny helpers to spawn coloured rectangles / circles / text at runtime (placeholder art). Generated by tools/gen_examples.mjs.
 const base = (name, x, y, z, tags, comps) =&gt; ({ name, tags: tags ?? [], transform: { pos: [x, y, z ?? 0], rot: [0, 0, 0], scale: [1, 1, 1] }, components: comps, scripts: [], children: [] });
 export const rectData = (name, x, y, w, h, color, o = {}) =&gt; base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/square.png', size: [w, h], tint: color, alpha: o.alpha ?? 1 }]);
 export const circleData = (name, x, y, d, color, o = {}) =&gt; base(name, x, y, o.z, o.tags, [{ type: 'sprite', texture: 'assets/sprites/circle.png', size: [d, d], tint: color, alpha: o.alpha ?? 1 }]);
@@ -1770,7 +1785,8 @@ export const circle = (scene, ...a) =&gt; scene.spawnData(circleData(...a));
 export const label = (scene, ...a) =&gt; scene.spawnData(textData(...a));
 export const aabb = (a, b) =&gt; Math.abs(a.pos[0] - b.pos[0]) * 2 &lt; a.w + b.w &amp;&amp; Math.abs(a.pos[1] - b.pos[1]) * 2 &lt; a.h + b.h;</code></pre>
 </details><details>
-<summary>Complete scripts/physics-moving-platform.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;physics.moving-platform&quot;,&quot;title&quot;:&quot;Moving platform&quot;,&quot;category&quot;:&quot;physics&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;platform&quot;,&quot;path&quot;,&quot;carry&quot;],&quot;description&quot;:&quot;Moves back and forth between its start and start+offset (sine or linear). Riders (anything standing on it with a rigidbody) are carried by applying the platform's delta.&quot;}
+<summary>Complete scripts/physics-moving-platform.js</summary><p><strong>File: <code>scripts/physics-moving-platform.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;physics.moving-platform&quot;,&quot;title&quot;:&quot;Moving platform&quot;,&quot;category&quot;:&quot;physics&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;platform&quot;,&quot;path&quot;,&quot;carry&quot;],&quot;description&quot;:&quot;Moves back and forth between its start and start+offset (sine or linear). Riders (anything standing on it with a rigidbody) are carried by applying the platform's delta.&quot;}
 import { NordScript } from 'nord';
 
 export default class MovingPlatform extends NordScript {
@@ -1788,7 +1804,8 @@ export default class MovingPlatform extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/pickup.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.pickup&quot;,&quot;title&quot;:&quot;Pickups &amp; power-ups&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;coin&quot;,&quot;pickup&quot;,&quot;powerup&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;trigger&quot;],&quot;description&quot;:&quot;Put on collectible entities: when the player touches it, emits a global event (default 'score' + value), or applies a power-up (heal / speed / shield via entity events), plays a sound and disappears with a pop tween. Magnetises toward the player when close.&quot;}
+<summary>Complete scripts/pickup.js</summary><p><strong>File: <code>scripts/pickup.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;gameplay.pickup&quot;,&quot;title&quot;:&quot;Pickups &amp; power-ups&quot;,&quot;category&quot;:&quot;gameplay&quot;,&quot;tier&quot;:[&quot;2d&quot;,&quot;3d&quot;],&quot;tags&quot;:[&quot;coin&quot;,&quot;pickup&quot;,&quot;powerup&quot;,&quot;game-ready&quot;],&quot;requires&quot;:[&quot;trigger&quot;],&quot;description&quot;:&quot;Put on collectible entities: when the player touches it, emits a global event (default 'score' + value), or applies a power-up (heal / speed / shield via entity events), plays a sound and disappears with a pop tween. Magnetises toward the player when close.&quot;}
 import { NordScript } from 'nord';
 
 export default class Pickup extends NordScript {
@@ -1810,7 +1827,8 @@ export default class Pickup extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/platformer3d.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;controller3d.platformer&quot;,&quot;title&quot;:&quot;3D platformer&quot;,&quot;category&quot;:&quot;controllers&quot;,&quot;tier&quot;:[&quot;3d&quot;],&quot;tags&quot;:[&quot;platformer&quot;,&quot;jump&quot;,&quot;coyote&quot;],&quot;requires&quot;:[&quot;rigidbody&quot;,&quot;collider&quot;],&quot;description&quot;:&quot;World-axis movement (works with a fixed or follow camera looking down +z): coyote time, jump buffer, variable jump height, double jump.&quot;}
+<summary>Complete scripts/platformer3d.js</summary><p><strong>File: <code>scripts/platformer3d.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;controller3d.platformer&quot;,&quot;title&quot;:&quot;3D platformer&quot;,&quot;category&quot;:&quot;controllers&quot;,&quot;tier&quot;:[&quot;3d&quot;],&quot;tags&quot;:[&quot;platformer&quot;,&quot;jump&quot;,&quot;coyote&quot;],&quot;requires&quot;:[&quot;rigidbody&quot;,&quot;collider&quot;],&quot;description&quot;:&quot;World-axis movement (works with a fixed or follow camera looking down +z): coyote time, jump buffer, variable jump height, double jump.&quot;}
 import { NordScript } from 'nord';
 
 export default class Platformer3D extends NordScript {
@@ -1835,7 +1853,8 @@ export default class Platformer3D extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/spin.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;: &quot;util.spin&quot;, &quot;title&quot;: &quot;Spin&quot;, &quot;category&quot;: &quot;utilities&quot;, &quot;tier&quot;: [&quot;2d&quot;, &quot;3d&quot;], &quot;tags&quot;: [&quot;rotate&quot;, &quot;simple&quot;], &quot;description&quot;: &quot;Rotates the entity continuously around one axis.&quot;, &quot;requires&quot;: []}
+<summary>Complete scripts/spin.js</summary><p><strong>File: <code>scripts/spin.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;: &quot;util.spin&quot;, &quot;title&quot;: &quot;Spin&quot;, &quot;category&quot;: &quot;utilities&quot;, &quot;tier&quot;: [&quot;2d&quot;, &quot;3d&quot;], &quot;tags&quot;: [&quot;rotate&quot;, &quot;simple&quot;], &quot;description&quot;: &quot;Rotates the entity continuously around one axis.&quot;, &quot;requires&quot;: []}
 // Spin — rotates the entity continuously. Works in 2D (z axis) and 3D (y axis).
 import { NordScript } from 'nord';
 
@@ -1852,7 +1871,8 @@ export default class Spin extends NordScript {
   }
 }</code></pre>
 </details><details>
-<summary>Complete scripts/util-sfx.js</summary><pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;util.sfx-synth&quot;,&quot;title&quot;:&quot;Procedural sfx (jsfxr-style)&quot;,&quot;category&quot;:&quot;utilities&quot;,&quot;tier&quot;:[&quot;any&quot;],&quot;tags&quot;:[&quot;audio&quot;,&quot;sfx&quot;,&quot;synth&quot;,&quot;retro&quot;],&quot;description&quot;:&quot;Generates retro sound effects with WebAudio, no files needed: sfx(game,'coin'|'jump'|'hit'|'laser'|'explosion'|'powerup'). Listens to global events 'sfx' (name). import { sfx } from './util-sfx.js' for direct use.&quot;}
+<summary>Complete scripts/util-sfx.js</summary><p><strong>File: <code>scripts/util-sfx.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// @nord {&quot;id&quot;:&quot;util.sfx-synth&quot;,&quot;title&quot;:&quot;Procedural sfx (jsfxr-style)&quot;,&quot;category&quot;:&quot;utilities&quot;,&quot;tier&quot;:[&quot;any&quot;],&quot;tags&quot;:[&quot;audio&quot;,&quot;sfx&quot;,&quot;synth&quot;,&quot;retro&quot;],&quot;description&quot;:&quot;Generates retro sound effects with WebAudio, no files needed: sfx(game,'coin'|'jump'|'hit'|'laser'|'explosion'|'powerup'). Listens to global events 'sfx' (name). import { sfx } from './util-sfx.js' for direct use.&quot;}
 import { NordScript } from 'nord';
 
 const P = { coin: { w: 'square', f: [880, 1760], d: 0.18, v: 0.25 }, jump: { w: 'square', f: [260, 620], d: 0.2, v: 0.25 }, hit: { w: 'sawtooth', f: [220, 60], d: 0.18, v: 0.3 }, laser: { w: 'sawtooth', f: [1400, 200], d: 0.25, v: 0.2 }, powerup: { w: 'triangle', f: [300, 1200], d: 0.4, v: 0.3 }, explosion: { w: 'noise', f: [800, 40], d: 0.6, v: 0.4 } };

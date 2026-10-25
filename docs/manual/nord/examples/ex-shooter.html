@@ -47,6 +47,7 @@
 </tbody></table>
 <p>Project: gravity <code>[0,0,0]</code>, actions <code>left right up down fire (Mouse0, Space) restart</code>.</p>
 <h2 id="aim-at-the-mouse">Aim at the mouse<a class="anchor" href="#aim-at-the-mouse">#</a></h2>
+<p><strong>File: <code>scripts/Ship.js</code></strong> (replace the <code>Update()</code> method of the script on the player ship)</p>
 <pre class="code" data-lang="js"><code>Update() {
   const p = this.input.pointer, e = this.entity.pos;                 // pointer.worldX / worldY are in world units
   const angle = Math.atan2(p.worldY - e[1], p.worldX - e[0]) * 180 / Math.PI;   // degrees, 0 = pointing right
@@ -55,6 +56,7 @@
 }</code></pre>
 <p>Unity: <code>Camera.main.ScreenToWorldPoint(Input.mousePosition)</code> + <code>Mathf.Atan2</code>. Here the engine already gives you world coordinates.</p>
 <h2 id="bullets-from-an-object-pool">Bullets from an object pool<a class="anchor" href="#bullets-from-an-object-pool">#</a></h2>
+<p><strong>File: <code>scripts/Ship.js</code></strong> (replace <code>Start()</code> and add the <code>Fire()</code> method below it)</p>
 <pre class="code" data-lang="js"><code>async Start() {
   this.pool = new ObjectPool(this.scene, 'prefabs/bullet.prefab.json');
   await this.pool.Warm(20);                              // create 20 bullets once, disabled
@@ -64,6 +66,7 @@ async Shoot(angle) {
   const b = await this.pool.Get({ pos: [e[0] + Math.cos(r) * 26, e[1] + Math.sin(r) * 26, 4] });   // reuse a free bullet and enable it
   b.getScript(Bullet).Launch(this.pool, r);
 }</code></pre>
+<p><strong>File: <code>scripts/bullet.js</code></strong> (new file, the whole file; attach it to the <code>bullet</code> prefab)</p>
 <pre class="code" data-lang="js"><code>// bullet.js
 Launch(pool, radians) { this.pool = pool; this.age = 0; this.alive = true; this.physics.setVelocity(this.entity, Math.cos(radians) * this.speed, Math.sin(radians) * this.speed); }
 Update(dt) { if (!this.alive) return; this.age += dt; if (this.age &gt; this.life) this.Recycle(); }
@@ -74,10 +77,12 @@ Recycle() { if (!this.alive) return; this.alive = false; this.physics.setVelocit
 <p>The library <code>health.js</code> (copied into <code>scripts/</code>) handles hit points on <strong>any</strong> object. You never call it directly; you send an event, and it answers with events:</p>
 <pre class="code" data-lang="js"><code>other.emit('damage', { amount: 1, from: this.entity });   // &quot;please take 1 damage&quot;
 // health.js emits on the same object:   'health' { hp, max }   and   'death'</code></pre>
+<p><strong>File: <code>scripts/ship.js</code></strong> (inside <code>Start()</code>, after the Health script is on the ship)</p>
 <pre class="code" data-lang="js"><code>this.entity.on('death', () =&gt; this.Die());                 // ship.js: game over
 player.on('health', ({ hp, max }) =&gt; this.bar.set(hp / max));   // hud.js: the health bar</code></pre>
 <p>Set <code>max</code>, <code>invulnTime</code> (blink time after a hit) and <code>destroyOnDeath</code> per object in the Inspector: the player has 5 hp and survives, enemies have 2 hp and <code>destroyOnDeath</code> on. More patterns: <a href="ex-health-damage.html">Health and damage</a>.</p>
 <h2 id="enemies-chase-ram-explode">Enemies: chase, ram, explode<a class="anchor" href="#enemies-chase-ram-explode">#</a></h2>
+<p><strong>File: <code>scripts/enemy.js</code></strong> (new file, the whole file; attach it to the <code>enemy</code> prefab)</p>
 <pre class="code" data-lang="js"><code>// enemy.js
 Start() { this.player = this.FindWithTag('player'); this.entity.on('death', () =&gt; this.Explode()); }
 FixedUpdate() { /* velocity towards the player, see the AI page */ }
@@ -88,6 +93,7 @@ Explode() {
 }</code></pre>
 <p>The explosion prefab is a <code>particles</code> component with <strong>burst</strong> ticked (<code>quantity</code> 22, <code>lifespan</code> 550 ms, <code>speed</code> 240, small <code>scale</code>) and a script that destroys the object after 0.9 s.</p>
 <h2 id="waves-with-a-coroutine">Waves with a coroutine<a class="anchor" href="#waves-with-a-coroutine">#</a></h2>
+<p><strong>File: <code>scripts/Waves.js</code></strong> (add this coroutine to the script on an empty <code>Waves</code> object and start it with <code>this.StartCoroutine(this.Waves())</code> in <code>Start()</code>)</p>
 <pre class="code" data-lang="js"><code>*Waves() {
   for (let wave = 1; ; wave++) {
     GameManager.instance.Set('wave', wave);                               // the HUD listens to the 'data' event

@@ -85,6 +85,7 @@ export default class Agent extends MonoBehaviour {
 <p>Call <code>SetDestination</code> from anywhere: <code>this.entity.getScript(Agent).SetDestination(player.pos[0], player.pos[1])</code>. Listen for the end with <code>entity.on(&#39;arrived&#39;, …)</code>.</p>
 <h2 id="chasing-a-moving-target">Chasing a moving target<a class="anchor" href="#chasing-a-moving-target">#</a></h2>
 <p>Do not recompute every frame. Recompute twice a second, or when the target changed cell:</p>
+<p><strong>File: <code>scripts/agent.js</code></strong> (replace <code>Start()</code> of the script above with this line, or add it at the end of <code>Start()</code>)</p>
 <pre class="code" data-lang="js"><code>Start() { this.every(0.5, () =&gt; { const p = this.scene.find('Player'); if (p) this.SetDestination(p.pos[0], p.pos[1]); }); }</code></pre>
 <p><code>this.every(seconds, fn)</code> is the repeating timer from the <a href="ex-time-coroutines.html">Time page</a>.</p>
 <h2 id="nord-fixed-routes">Nord: fixed routes<a class="anchor" href="#nord-fixed-routes">#</a></h2>

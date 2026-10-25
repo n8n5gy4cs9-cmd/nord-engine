@@ -21,6 +21,7 @@
 </ol>
 <p>On the entity add an <strong>Animated Sprite</strong> (2D) or a <strong>Model</strong> (3D, then <em>Animation</em> = the glTF animation name) and an <strong>Animator</strong> component (controller = your file). For models, <em>Animation</em> in a state is the glTF animation name, <em>Speed</em> and <em>Loop</em> apply to it, and the model component&#39;s own <em>Animation</em> field should stay empty.</p>
 <h2 id="from-a-script">From a script<a class="anchor" href="#from-a-script">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (inside <code>update(dt)</code>)</p>
 <pre class="code" data-lang="js"><code>const anim = this.entity.getComponent('animator');
 anim.setFloat('speed', Math.abs(this.vx));
 if (jumped) anim.setTrigger('jump');

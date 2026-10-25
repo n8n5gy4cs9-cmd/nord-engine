@@ -17,6 +17,7 @@
 if (Application.platform == RuntimePlatform.WebGLPlayer) quitButton.SetActive(false);
 if (Application.isMobilePlatform) ShowTouchControls();</code></pre>
 <h2 id="nord">Nord<a class="anchor" href="#nord">#</a></h2>
+<p><strong>File: <code>scripts/Platform.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, Application, RuntimePlatform, Debug } from 'nord';
 
 export default class PlatformSetup extends MonoBehaviour {
@@ -63,6 +64,7 @@ export default class PlatformSetup extends MonoBehaviour {
 </tbody></table>
 <p><code>switch (Application.platform) { case RuntimePlatform.OSXPlayer: … }</code> works like in C#.</p>
 <h2 id="mouse-lock-fps-look">Mouse lock (FPS look)<a class="anchor" href="#mouse-lock-fps-look">#</a></h2>
+<p><strong>File: <code>scripts/MouseLook.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, Cursor, CursorLockMode, UnityInput as Input, KeyCode } from 'nord';
 export default class LookLock extends MonoBehaviour {
   Update() {

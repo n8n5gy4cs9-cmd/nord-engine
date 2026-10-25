@@ -13,6 +13,7 @@
 <h2 id="random-and-color">Random and Color<a class="anchor" href="#random-and-color">#</a></h2>
 <pre class="code" data-lang="cs"><code>int die = Random.Range(1, 7);          float f = Random.Range(0.5f, 1.5f);
 Vector2 p = Random.insideUnitCircle;   sprite.color = Color.red;</code></pre>
+<p><strong>File: <code>scripts/Loot.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, Random, Color } from 'nord';
 export default class Dice extends MonoBehaviour {
   Start() {
@@ -24,6 +25,7 @@ export default class Dice extends MonoBehaviour {
 }</code></pre>
 <p><span class="c-bad">Trap:</span> <code>Random.Range(0, 1)</code> is two integers in JavaScript, so it returns <code>0</code>. For a 0..1 float use <code>Random.value</code>.</p>
 <h2 id="keys-buttons-and-axes">Keys, buttons and axes<a class="anchor" href="#keys-buttons-and-axes">#</a></h2>
+<p><strong>File: <code>scripts/Inputs.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, UnityInput as Input, KeyCode, Time } from 'nord';
 export default class Mover extends MonoBehaviour {
   speed = 5;
@@ -37,6 +39,7 @@ export default class Mover extends MonoBehaviour {
 }</code></pre>
 <p>Use <code>GetButton(&#39;jump&#39;)</code> for the names in your <a href="ex-input-editor.html">Input editor</a> and <code>GetKey(KeyCode.X)</code> for fixed keys.</p>
 <h2 id="mouse-events-on-an-object">Mouse events on an object<a class="anchor" href="#mouse-events-on-an-object">#</a></h2>
+<p><strong>File: <code>scripts/Clickable.js</code></strong> (new file, the whole file; attach it to the object you want to click)</p>
 <pre class="code" data-lang="js"><code>export default class Clickable extends MonoBehaviour {
   OnMouseEnter() { this.localScale = new Vector3(1.1, 1.1, 1); }
   OnMouseExit()  { this.localScale = Vector3.one; }
@@ -44,6 +47,7 @@ export default class Mover extends MonoBehaviour {
 }</code></pre>
 <p>The pointer is tested against the object&#39;s box. Also <code>OnMouseUp</code>, <code>OnMouseOver</code>, <code>OnMouseDrag</code>, <code>OnMouseUpAsButton</code>.</p>
 <h2 id="create-and-destroy-without-this">Create and destroy without <code>this</code><a class="anchor" href="#create-and-destroy-without-this">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Spawner.js</code></strong> (the <code>import</code> goes at the top; the calls go inside methods)</p>
 <pre class="code" data-lang="js"><code>import { Instantiate, Destroy, GameObject, UnityObject, DontDestroyOnLoad } from 'nord';
 const bullet = await Instantiate('prefabs/bullet.prefab.json', { pos: [0, 0, 0] });
 Destroy(bullet, 2);                         // after 2 s
@@ -51,6 +55,7 @@ const player = GameObject.Find('Player');
 const hud = UnityObject.FindObjectOfType(HudScript);
 DontDestroyOnLoad(player);</code></pre>
 <h2 id="inspector-field-helpers">Inspector field helpers<a class="anchor" href="#inspector-field-helpers">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Enemy.js</code></strong> (the <code>import</code> goes at the top, above the class; the <code>static attributes</code> line goes inside the class)</p>
 <pre class="code" data-lang="js"><code>import { SerializeField, Range, Enum, EntityRef } from 'nord';
 static attributes = SerializeField({
   speed: Range(0, 10, 5),                   // [Range(0,10)] slider
@@ -58,6 +63,7 @@ static attributes = SerializeField({
   target: EntityRef(),                      // an object name: this.Find(this.target)
 });</code></pre>
 <h2 id="smooth-camera-follow">Smooth camera follow<a class="anchor" href="#smooth-camera-follow">#</a></h2>
+<p><strong>File: <code>scripts/CameraFollow.js</code></strong> (new file; attach it to the <code>Camera</code> object)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, Mathf, GameObject } from 'nord';
 export default class Follow extends MonoBehaviour {
   Start() { this.t = GameObject.Find('Player'); this.vx = 0; }

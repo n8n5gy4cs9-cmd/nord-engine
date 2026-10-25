@@ -14,6 +14,7 @@
 </aside><h2 id="1-a-ship-prefab">1. A ship prefab<a class="anchor" href="#1-a-ship-prefab">#</a></h2>
 <p>Make <code>prefabs/ship.prefab.json</code> (sprite + your movement script). Add a <strong>netSync</strong> component: <code>rate</code> 15, <code>interpolate</code> on. Only the player who owns a ship moves it; everybody else just watches it glide.</p>
 <h2 id="2-a-script-that-spawns-one-ship-per-player">2. A script that spawns one ship per player<a class="anchor" href="#2-a-script-that-spawns-one-ship-per-player">#</a></h2>
+<p><strong>File: <code>scripts/Spawner.js</code></strong> (new file, the whole file; attach it to an empty object)</p>
 <pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
 export default class Lobby extends NordScript {
   start() {

@@ -19,6 +19,7 @@
   &quot;potion&quot;: { &quot;title&quot;: &quot;Potion&quot;,     &quot;heal&quot;: 25,    &quot;icon&quot;: &quot;assets/ui/potion.png&quot;, &quot;price&quot;: 10 }
 }</code></pre>
 <p>Load it:</p>
+<p><strong>File: <code>scripts/Shop.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, ScriptableObject } from 'nord';
 
 export default class Shop extends MonoBehaviour {
@@ -29,6 +30,7 @@ export default class Shop extends MonoBehaviour {
 }</code></pre>
 <p>Native: <code>const data = await this.game.loadJSON(&#39;data/items.json&#39;);</code> (each call loads again; cache it yourself or use <code>ScriptableObject.Load</code>). <code>ScriptableObject.Clear()</code> empties the cache (useful while editing in Play mode).</p>
 <h2 id="using-the-data">Using the data<a class="anchor" href="#using-the-data">#</a></h2>
+<p><strong>File: <code>scripts/Shop.js</code></strong> (add this method to the class above)</p>
 <pre class="code" data-lang="js"><code>buy(id) {
   const item = this.items[id];
   if (GameManager.instance.Get('coins', 0) &lt; item.price) return false;
@@ -37,6 +39,7 @@ export default class Shop extends MonoBehaviour {
   return true;
 }</code></pre>
 <h2 id="share-one-data-object-between-scripts">Share one data object between scripts<a class="anchor" href="#share-one-data-object-between-scripts">#</a></h2>
+<p><strong>File: <code>data/enemies.json</code></strong> (new file) and the script that reads it:</p>
 <pre class="code" data-lang="js"><code>// data/enemies.json: { &quot;slime&quot;: { &quot;hp&quot;: 10, &quot;speed&quot;: 40 }, &quot;bat&quot;: { &quot;hp&quot;: 4, &quot;speed&quot;: 90 } }
 async Start() {
   const defs = await ScriptableObject.Load('data/enemies.json');
@@ -45,11 +48,13 @@ async Start() {
 }</code></pre>
 <p>A designer edits a number in the JSON, no code change. Add an Inspector attribute <code>kind</code> (enum or string) to choose which row an enemy uses.</p>
 <h2 id="level-data-as-json">Level data as JSON<a class="anchor" href="#level-data-as-json">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Level.js</code></strong> (inside <code>Start()</code>; the comment shows the file it reads)</p>
 <pre class="code" data-lang="js"><code>const level = await ScriptableObject.Load('data/level1.json');   // { &quot;enemies&quot;: [[&quot;slime&quot;, 100, 40], ...] }
 for (const [kind, x, y] of level.enemies)
   await this.scene.spawn('prefabs/enemy.prefab.json', { pos: [x, y, 2], overrides: { scripts: { 0: { attributes: { kind } } } } });</code></pre>
 <h2 id="data-inside-the-inspector-instead">Data inside the Inspector instead<a class="anchor" href="#data-inside-the-inspector-instead">#</a></h2>
 <p>For small things, an <code>array</code> / <code>curve</code> attribute is enough:</p>
+<p><strong>File: your script, for example <code>scripts/Spawner.js</code></strong> (inside the class, above <code>Start()</code>)</p>
 <pre class="code" data-lang="js"><code>static attributes = { waves: { type: 'array', default: [3, 5, 8] }, damageCurve: { type: 'curve' } };</code></pre>
 <h2 id="validating">Validating<a class="anchor" href="#validating">#</a></h2>
 <p>The project checker (<code>nord check</code>, or the Console&#39;s <em>Validate project</em>) warns about files that scenes reference but are missing. Keep data files valid JSON: the editor&#39;s code tab marks syntax errors as you type.</p>

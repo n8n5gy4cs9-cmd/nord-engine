@@ -1516,6 +1516,7 @@ Read the complete Nord page entry point and its failure path.
 
 <!-- taught-source: coastline-sprint/index.html:1-8 -->
 
+**File: `index.html`** (step 7.1, load the local runtime and start the app: the beginning of the file)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="com.crowelian.coastlinesprint"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coastline Sprint — Amiga road racer</title>
@@ -1701,7 +1702,7 @@ Every JavaScript file, generated HTML, project metadata and sprite metadata is l
 <details>
 <summary>Complete app.js</summary>
 
-**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
+**File: `app.js`** (the complete file, for comparison)
 ```js
 import { COURSE, driver, traffic, updateDriver, padInput } from './track.js';
 import { drawView } from './render.js';
@@ -1896,7 +1897,7 @@ export async function mount(root) {
 <details>
 <summary>Complete assets/sprites/racing-cars.png.meta.json</summary>
 
-**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
+**File: `assets/sprites/racing-cars.png.meta.json`** (the complete file, for comparison)
 ```json
 {
   "type": "spritesheet",
@@ -1917,7 +1918,7 @@ export async function mount(root) {
 <details>
 <summary>Complete assets/sprites/roadside.png.meta.json</summary>
 
-**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
+**File: `assets/sprites/roadside.png.meta.json`** (the complete file, for comparison)
 ```json
 {
   "type": "spritesheet",
@@ -1938,7 +1939,7 @@ export async function mount(root) {
 <details>
 <summary>Complete audio-config.js</summary>
 
-**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
+**File: `audio-config.js`** (the complete file, for comparison)
 ```js
 // Put your replacement MP3/WAV/OGG files in assets/audio and change these paths.
 export const AUDIO = {
@@ -1958,7 +1959,7 @@ export const AUDIO = {
 <details>
 <summary>Complete audio.js</summary>
 
-**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
+**File: `audio.js`** (the complete file, for comparison)
 ```js
 // Local MP3/WAV/OGG files, decoded on first user activation. No external service.
 export class RetroAudio {
@@ -2059,6 +2060,7 @@ export class RetroAudio {
 <details>
 <summary>Complete index.html</summary>
 
+**File: `index.html`** (the complete file, for comparison)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="com.crowelian.coastlinesprint"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coastline Sprint — Amiga road racer</title>
@@ -2075,7 +2077,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete nord.project.json</summary>
 
-**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
+**File: `nord.project.json`** (the complete file, for comparison)
 ```json
 {
   "format": 1,
@@ -2148,7 +2150,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete render.js</summary>
 
-**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
+**File: `render.js`** (the complete file, for comparison)
 ```js
 // Extended from Nord's own Amiga Showcase road/sprite presentation.
 import { curve, hill, COURSE } from './track.js';
@@ -2282,7 +2284,7 @@ export function drawView(g, p, cars, others, images, w, h) {
 <details>
 <summary>Complete track.js</summary>
 
-**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
+**File: `track.js`** (the complete file, for comparison)
 ```js
 export const COURSE = {
   length: 180000,
@@ -2395,7 +2397,7 @@ export function padInput(pad) {
 <details>
 <summary>Complete ui/menu.ui.json</summary>
 
-**File: `assets/sprites/roadside.png.meta.json`** (step 10.1, describe cell geometry and asset identity: the next part of this file; it goes **below** the code of the previous step)
+**File: `ui/menu.ui.json`** (the complete file, for comparison)
 ```json
 {
   "version": 1,

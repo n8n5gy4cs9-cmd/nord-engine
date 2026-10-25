@@ -14,7 +14,8 @@
 </aside><p><code>this.audio</code> is a WebAudio manager with four <strong>buses</strong>: <code>master → music / sfx / ui</code>. Calls made before the player&#39;s first click/key are <strong>queued and replayed</strong> (browsers block audio until a gesture).
 Missing or blocked audio never throws into game code.</p>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>Think of buses as volume knobs: one knob for music, one for effects, one for menus, and a big master knob over all of them.</p>
-</aside><pre class="code" data-lang="js"><code>this.audio.play('assets/audio/sfx/jump.wav');                       // one-shot
+</aside><p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (calls inside any method)</p>
+<pre class="code" data-lang="js"><code>this.audio.play('assets/audio/sfx/jump.wav');                       // one-shot
 const h = this.audio.play('assets/audio/sfx/engine.wav', { loop: true, volume: 0.4, rate: 1.2, pan: -0.5 });
 h.stop();
 this.audio.music('assets/audio/music/music_adventure.mp3', { fade: 1.5 });  // crossfade
@@ -41,6 +42,7 @@ this.audio.mute('sfx', true);</code></pre>
 <li><strong>Build your title screen and queue the title music first</strong>, then install the gate as the last step of setup.</li>
 <li><strong>Destroy</strong> it in <code>onDestroy()</code>, and keep a reference so your own input code can ignore input while <code>startGate.active</code> is true.</li>
 </ol>
+<p><strong>File: <code>scripts/Boot.js</code></strong> (new file; this is the start-gate script, put it on an object of the first scene)</p>
 <pre class="code" data-lang="js"><code>import { NordScript, touchToStart } from 'nord';
 
 export default class MyGame extends NordScript {

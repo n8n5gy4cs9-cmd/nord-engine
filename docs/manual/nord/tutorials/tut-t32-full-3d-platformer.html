@@ -13,6 +13,7 @@
 <p><strong>Allow:</strong> 60–90 minutes. <strong>You need:</strong> Nord Editor, keyboard, a writable project folder and a browser with WebGL. Everything needed by this example is bundled. The terminal commands assume <code>nord</code> is available; in an engine checkout its binary is <code>target/debug/nord</code>. This is a keyboard game with a following camera, not an FPS mouse-look game.</p>
 <h2 id="1-create-a-personal-game">1. Create a personal game<a class="anchor" href="#1-create-a-personal-game">#</a></h2>
 <p>In the welcome screen choose <strong>New project → 3D platformer</strong> and create <code>sunset-gems</code>. This copies the working starter into your folder. The bundled example is named <code>platformer3d</code>; the template ID used by the CLI is <code>platformer-3d</code>.</p>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="sh"><code>nord new sunset-gems -t platformer-3d
 nord serve sunset-gems</code></pre>
 <p>Open the printed local address if using the browser. Editor users can press Play. Keep a backup before you start changing physics or scripts.</p>
@@ -98,6 +99,7 @@ nord serve sunset-gems</code></pre>
 </ul>
 <h2 id="10-export-the-actual-game">10. Export the actual game<a class="anchor" href="#10-export-the-actual-game">#</a></h2>
 <p>Save all project files. Use <strong>Project → Export…</strong> and choose the normal web folder target. From the parent directory of your project, the terminal equivalent is:</p>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="sh"><code>nord check sunset-gems
 nord build sunset-gems --out sunset-gems-web --zip
 python3 -m http.server 8001 --directory sunset-gems-web</code></pre>

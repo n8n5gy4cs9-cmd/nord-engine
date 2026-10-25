@@ -15,15 +15,18 @@
 <li>Copy these three files from <code>library/scripts/</code> into your project&#39;s <code>scripts/</code> folder (or insert them from the editor <strong>Library</strong> panel: <em>2D lighting &amp; shadows</em>, <em>2D light source</em>, <em>2D shadow caster</em>).</li>
 <li>Add this entity to your scene (one per scene; any name, any position). It makes the scene dark:</li>
 </ol>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code> (the entity list; add it, or build it with the editor: <span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span> and <span class="c-ui">Inspector ▸ + Add script ▸ scripts/light2d.js</span>):</p>
 <pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Light2D&quot;, &quot;transform&quot;: { &quot;pos&quot;: [0, 0, 0] },
   &quot;scripts&quot;: [{ &quot;path&quot;: &quot;scripts/light2d.js&quot;, &quot;attributes&quot;: { &quot;ambient&quot;: &quot;#14172b&quot;, &quot;force&quot;: 1, &quot;shadowStrength&quot;: 1, &quot;softness&quot;: 1 } }] }</code></pre>
 <ol start="3">
 <li>Add a light to anything: put the script on a torch, the player, a lamp…</li>
 </ol>
+<p><strong>In the file</strong> a torch entity&#39;s <code>scripts</code> list in <code>scenes/main.scene.json</code> (editor: <span class="c-ui">Inspector ▸ + Add script ▸ scripts/light2d-source.js</span>):</p>
 <pre class="code" data-lang="json"><code>{ &quot;path&quot;: &quot;scripts/light2d-source.js&quot;, &quot;attributes&quot;: { &quot;color&quot;: &quot;#ffb25a&quot;, &quot;radius&quot;: 200, &quot;intensity&quot;: 1, &quot;flicker&quot;: 0.25, &quot;softness&quot;: 4 } }</code></pre>
 <ol start="4">
 <li>Make walls, crates and pillars cast shadows (size comes from the sprite or collider):</li>
 </ol>
+<p><strong>In the file</strong> a wall entity&#39;s <code>scripts</code> list in <code>scenes/main.scene.json</code> (editor: <span class="c-ui">Inspector ▸ + Add script ▸ scripts/light2d-occluder.js</span>):</p>
 <pre class="code" data-lang="json"><code>{ &quot;path&quot;: &quot;scripts/light2d-occluder.js&quot;, &quot;attributes&quot;: {} }</code></pre>
 <p>Use <code>&quot;shape&quot;: &quot;circle&quot;, &quot;radius&quot;: 22</code> for round things.</p>
 <p>That is all. Press <strong>Play</strong>: the scene is dark, lights glow and the occluders throw shadows. Anything on <strong>layer 1 or higher</strong>, and the whole HUD, is drawn above the darkness.</p>
@@ -354,6 +357,7 @@ export default class Occluder2D extends NordScript {
 </tbody></table>
 <p>Per light (<code>light2d-source.js</code>): <code>color</code>, <code>intensity</code>, <code>radius</code>, <code>falloff</code> (1 linear, higher = tighter glow), <code>shadows</code>, <code>softness</code>, <code>angle</code> (360 = point light, 50 = flashlight cone), <code>aim</code> (<code>fixed</code>, <code>pointer</code>, <code>move</code>), <code>flicker</code>, <code>on</code>.</p>
 <p>Change them from a script:</p>
+<p><strong>File: your script, for example <code>scripts/Dials.js</code></strong> (inside <code>update(dt)</code>)</p>
 <pre class="code" data-lang="js"><code>const sys = [...this.scene.all()].flatMap((e) =&gt; e.scripts).find((s) =&gt; s.setLook);
 sys.setLook({ force: 1.6, shadowStrength: 0.7, softness: 2, ambient: '#2b2f52' }); // darker/lighter scene at will
 sys.toggleShadows();

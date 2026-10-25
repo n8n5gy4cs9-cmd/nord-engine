@@ -14,6 +14,7 @@
 <li>A floor: entity with <code>collider</code> (box) and <strong>no</strong> rigidbody = static. A crate: <code>rigidbody</code> (<code>dynamic</code>) + <code>collider</code>.</li>
 <li>A coin: add a <a href="../components/component-trigger.html"><code>trigger</code></a> and a script:</li>
 </ol>
+<p><strong>File: <code>scripts/coin.js</code></strong> (new file, the whole file; attach it to the coin)</p>
 <pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
 export default class Coin extends NordScript {
   onTriggerEnter(other) {

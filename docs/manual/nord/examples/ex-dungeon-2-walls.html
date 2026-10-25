@@ -15,6 +15,7 @@
 <p><strong>Download:</strong> <a href="../../assets/downloads/series-dungeon-part2-source.zip">Part 2 project</a>, also in <code>examples/series-dungeon/part2</code>.</p>
 <h2 id="1-describe-the-level-as-data">1 Describe the level as data<a class="anchor" href="#1-describe-the-level-as-data">#</a></h2>
 <p>You could drag two hundred wall sprites into the scene; then you would drag them again for every change. Instead, make the level <strong>text</strong>. Create <code>scripts/map.js</code>:</p>
+<p><strong>File: <code>scripts/map.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>export const MAP = [
   '####################',
   '#P.......#.........#',
@@ -31,16 +32,30 @@
 <p><code>#</code> is a wall, <code>.</code> is floor and <code>P</code> is the hero&#39;s start. Twenty columns × eleven rows of 32-pixel tiles = 640 × 352 pixels. A script reads it and creates the objects, the way Unity developers use a <em>tilemap</em> or a level-loader script.</p>
 <h2 id="2-prefabs">2 Prefabs<a class="anchor" href="#2-prefabs">#</a></h2>
 <p>A <strong>prefab</strong> is a saved entity you create copies of. Make two:</p>
-<ul>
-<li><code>prefabs/wall.prefab.json</code>: a sprite (the white <code>square.png</code>, tinted <code>#4c566a</code>, 32 × 32), a <strong>static rigidbody</strong>, a <strong>box collider</strong> 32 × 32, the tag <code>solid</code>. (Select the object ▸ <span class="c-ui">right-click ▸ Create prefab</span>.)</li>
-<li><code>prefabs/floor.prefab.json</code>: one sprite, tinted <code>#2e3440</code>.</li>
-</ul>
+<p><strong>Wall.</strong> In the editor:</p>
+<ol>
+<li><span class="c-ui">Hierarchy ▸ + Create ▸ Sprite</span>, rename it <code>Wall</code>. Sprite <strong>size</strong> <code>32, 32</code>, <strong>tint</strong> <code>#4c566a</code>. Add the tag <code>solid</code> in <span class="c-ui">Inspector ▸ Tags</span>.</li>
+<li><span class="c-ui">Inspector ▸ + Add component ▸ rigidbody</span>, <strong>mode</strong> <code>static</code>.</li>
+<li><span class="c-ui">Inspector ▸ + Add component ▸ collider</span>, <strong>shape</strong> <code>box</code>, <strong>size</strong> <code>32, 32</code>.</li>
+<li>In the Hierarchy <span class="c-ui">right-click <code>Wall</code> ▸ Create prefab</span>. The file <code>prefabs/wall.prefab.json</code> appears in the <span class="c-ui">Assets</span> panel. Delete the <code>Wall</code> object from the scene (the prefab stays).</li>
+</ol>
+<p><strong>In the file</strong> <code>prefabs/wall.prefab.json</code> (check it in a text editor):</p>
+<pre class="code" data-lang="json"><code>{ &quot;format&quot;: 1, &quot;root&quot;: { &quot;name&quot;: &quot;Wall&quot;, &quot;tags&quot;: [&quot;solid&quot;],
+  &quot;transform&quot;: { &quot;pos&quot;: [0, 0, 1], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [1, 1, 1] },
+  &quot;components&quot;: [
+    { &quot;type&quot;: &quot;sprite&quot;, &quot;texture&quot;: &quot;assets/sprites/square.png&quot;, &quot;size&quot;: [32, 32], &quot;tint&quot;: &quot;#4c566a&quot;, &quot;alpha&quot;: 1 },
+    { &quot;type&quot;: &quot;rigidbody&quot;, &quot;mode&quot;: &quot;static&quot; },
+    { &quot;type&quot;: &quot;collider&quot;, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: [32, 32] } ],
+  &quot;scripts&quot;: [] } }</code></pre>
+<p>The order of <code>components</code> matters later: index 0 is the sprite, 1 the rigidbody, 2 the collider (the overrides in the Level script use these numbers).</p>
+<p><strong>Floor.</strong> The same way: a sprite named <code>Floor</code>, tint <code>#2e3440</code>, size <code>640, 352</code>, made into the prefab <code>prefabs/floor.prefab.json</code>.</p>
 <p>The square texture is plain white: <strong>tint and size turn it into anything</strong>, which is how you prototype a whole game without art.</p>
 <blockquote>
 <p><strong>Static vs dynamic.</strong> A <em>static</em> rigidbody takes part in collisions but never moves (a wall). A <em>dynamic</em> one is moved by physics (our hero). In Unity: <code>Rigidbody2D</code> with Body Type Static / Dynamic.</p>
 </blockquote>
 <h2 id="3-the-level-script">3 The Level script<a class="anchor" href="#3-the-level-script">#</a></h2>
 <p>Create an empty entity <code>Level</code> with <code>scripts/level.js</code>:</p>
+<p><strong>File: <code>scripts/level.js</code></strong> (new file, the whole file; attach it to the <code>Level</code> object)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Instantiate } from 'nord';
 import { MAP } from './map.js';
 
@@ -63,6 +78,7 @@ export default class Level extends MonoBehaviour {
     }
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>Level</code> object, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/level.js</span>. If the object does not exist yet, create it first with <span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span> and rename it. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li><code>Instantiate(path, { pos, overrides })</code> is <code>Instantiate(prefab, position, rotation)</code>. It returns a <strong>Promise</strong> (loading a prefab can touch the network), so we <code>await</code> it.</li>
 <li><strong>Overrides</strong> change fields of one instance: <code>components: { 0: { size: [w, h] } }</code> means &quot;component 0 (the sprite) gets this size&quot;. The prefab file is not touched. In Unity that is a prefab <em>instance override</em>.</li>
@@ -74,12 +90,17 @@ export default class Level extends MonoBehaviour {
 <p><strong>Delete the <code>Floor</code> entity from part 1</strong>: the Level now creates its own.</p>
 </blockquote>
 <h2 id="4-a-body-for-the-hero">4 A body for the hero<a class="anchor" href="#4-a-body-for-the-hero">#</a></h2>
-<p>Walls only stop things that have a collider and a rigidbody. Select <code>Hero</code> and add with <span class="c-ui">+ Add component</span>:</p>
-<ul>
-<li><strong>rigidbody</strong>, mode <code>dynamic</code>;</li>
-<li><strong>collider</strong>, shape <code>box</code>, size 24 × 24.</li>
-</ul>
+<p>Walls only stop things that have a collider and a rigidbody. Select <code>Hero</code> in the Hierarchy and in the <span class="c-ui">Inspector</span>:</p>
+<ol>
+<li><span class="c-ui">+ Add component ▸ rigidbody</span>, <strong>mode</strong> <code>dynamic</code>.</li>
+<li><span class="c-ui">+ Add component ▸ collider</span>, <strong>shape</strong> <code>box</code>, <strong>size</strong> <code>24, 24</code>.</li>
+</ol>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, the <code>Hero</code> entity now has these <code>components</code> (the sprite from part 1 plus the two new ones):</p>
+<pre class="code" data-lang="json"><code>{ &quot;type&quot;: &quot;sprite&quot;, &quot;texture&quot;: &quot;assets/sprites/square.png&quot;, &quot;size&quot;: [24, 24], &quot;tint&quot;: &quot;#88c0d0&quot;, &quot;alpha&quot;: 1 },
+{ &quot;type&quot;: &quot;rigidbody&quot;, &quot;mode&quot;: &quot;dynamic&quot; },
+{ &quot;type&quot;: &quot;collider&quot;, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: [24, 24] }</code></pre>
 <p>Writing <code>position</code> directly would teleport the hero through the walls, because it ignores physics. We set the <strong>velocity</strong>, exactly as in Unity (<code>rb.velocity = …</code>), and let the physics engine resolve collisions:</p>
+<p><strong>File: <code>scripts/hero.js</code></strong> (replace the whole file from part 1)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, UnityInput as Input, Vector2 } from 'nord';
 
 export default class Hero extends MonoBehaviour {

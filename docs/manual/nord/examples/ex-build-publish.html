@@ -16,10 +16,12 @@
 <li>From a terminal: <code>nord serve my-game</code> starts the dev server with live reload (<code>http://localhost:4173</code>); <code>nord serve my-game --lan</code> also gives phones on your Wi-Fi a link with a secret token.</li>
 </ul>
 <h2 id="check-before-you-build">Check before you build<a class="anchor" href="#check-before-you-build">#</a></h2>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="bash"><code>nord check my-game             # validates scenes and prefabs: unique ids, missing files, bad references
 nord check-offline my-game     # fails if anything loads from an external web address (the game must work offline)</code></pre>
 <p>The editor&#39;s Console has <strong>Validate project</strong>, and the same checks run when you export.</p>
 <h2 id="build-for-the-web-unity-webgl-build">Build for the web (Unity: WebGL build)<a class="anchor" href="#build-for-the-web-unity-webgl-build">#</a></h2>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="bash"><code>nord build my-game                         # auto target, output in my-game/dist
 nord build my-game -t web-2d -o out        # or html | web-2d | web-3d | web-3d-pc | web-wasm-game | web-wasm-app
 nord build my-game --minify --optimize     # smaller JS/JSON, recompressed PNGs (and WAV to MP3 when ffmpeg is installed)
@@ -28,17 +30,20 @@ nord build my-game --zip                   # also writes out.zip (for itch.io st
 nord build my-game --pwa                   # installable offline web app: manifest + service worker (Add to Home Screen)</code></pre>
 <p>The output folder is static files: upload it anywhere. <strong>File ▸ Build Settings</strong> in the editor offers the same options with buttons.</p>
 <h2 id="hosting-presets">Hosting presets<a class="anchor" href="#hosting-presets">#</a></h2>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="bash"><code>nord build my-game --zip --host itch              # itch.io: a zip you upload as an HTML5 game
 nord build my-game --host github-pages            # adds the files GitHub Pages needs
 nord build my-game --host netlify                 # or vercel | docker  (adds the deploy files next to the build)</code></pre>
 <p>The presets only write files; the upload itself is yours (drag the folder / zip to the site, or <code>git push</code>).</p>
 <h2 id="desktop-apps-unity-windows-macos-linux-builds">Desktop apps (Unity: Windows / macOS / Linux builds)<a class="anchor" href="#desktop-apps-unity-windows-macos-linux-builds">#</a></h2>
+<p><strong>Terminal</strong> (in the folder that contains your project folder):</p>
 <pre class="code" data-lang="bash"><code>nord bundle-mac my-game --name &quot;My Game&quot; --icon icon.png --dmg          # macOS .app (and a .dmg), builds the project first
 nord bundle-portable my-game --os windows --name &quot;My Game&quot;             # a folder + zip for Windows
 nord bundle-portable my-game --os linux  --name &quot;My Game&quot;              # a folder + tar.gz for Linux</code></pre>
 <p>They wrap your web build in the small prebuilt <code>nord-player</code> shell (a native window with a web view); no compiler needed. Details and signing notes: <a href="../manual/desktop-apps.html">Desktop apps</a>, <a href="../manual/export.html">Export</a>.</p>
 <h2 id="project-settings-that-matter-for-a-release">Project settings that matter for a release<a class="anchor" href="#project-settings-that-matter-for-a-release">#</a></h2>
-<p>In <code>nord.project.json</code>:</p>
+<p><strong>In the editor:</strong> <span class="c-ui">Project</span> tab ▸ <strong>Project properties</strong>: set <strong>Name</strong>, <strong>Version</strong> and <strong>Icon</strong>, then press <strong>Apply project properties</strong>. The export options (single file, minify, which scenes to include) are in <span class="c-ui">File ▸ Build Settings</span>. The bundle id and the exact <code>id</code> are in the file.</p>
+<p><strong>In the file</strong> <code>nord.project.json</code>:</p>
 <pre class="code" data-lang="json"><code>&quot;name&quot;: &quot;My Game&quot;, &quot;id&quot;: &quot;com.you.mygame&quot;,
 &quot;display&quot;: { &quot;width&quot;: 960, &quot;height&quot;: 540, &quot;scale&quot;: &quot;fit&quot;, &quot;pixelArt&quot;: false, &quot;background&quot;: &quot;#101418&quot; },
 &quot;export&quot;: { &quot;web&quot;: { &quot;singleFile&quot;: false, &quot;minify&quot;: true }, &quot;mac&quot;: { &quot;bundleId&quot;: &quot;com.you.mygame&quot;, &quot;icon&quot;: &quot;assets/icon.png&quot; } }</code></pre>

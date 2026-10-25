@@ -55,6 +55,7 @@
 </tr>
 </tbody></table>
 <h2 id="the-one-import">The one import<a class="anchor" href="#the-one-import">#</a></h2>
+<p><strong>Example</strong> (not a file; the one import line every script starts with):</p>
 <pre class="code" data-lang="js"><code>import { NordScript, clamp, lerp, remap, vec, ease, Rng, Pool, Events } from 'nord';</code></pre>
 <p><code>nord</code> maps to <code>runtime/core/index.js</code>. Backends add components and <code>game.camera</code> / <code>game.physics</code> / <code>game.gui</code>; scripts never import Phaser or Babylon.</p>
 <h2 id="escape-hatch">Escape hatch<a class="anchor" href="#escape-hatch">#</a></h2>

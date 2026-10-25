@@ -195,6 +195,7 @@ All browser, stylesheet, Node and rule-module source is included below. The [com
 
 ### app.js
 
+**File: `app.js`** (the complete file, for comparison)
 ```js
 import { createUI } from './lib/nord-ui.js';
 export async function mount(root) {
@@ -260,6 +261,7 @@ controls();
 <details>
 <summary>Complete index.html</summary>
 
+**File: `index.html`** (the complete file, for comparison)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="com.crowelian.circuitvault"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Circuit Vault — Node game workshop</title>
@@ -449,6 +451,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 <details>
 <summary>Complete style.css</summary>
 
+**File: `style.css`** (the complete file, for comparison)
 ```css
 :host{display:block;min-height:100vh;color:#dce8ff;font:17px system-ui}main{max-width:820px;margin:3vh auto;padding:24px;background:#111b34;border:1px solid #365078;border-radius:20px}h1{letter-spacing:.15em;color:#7df4ff}button,input{font:inherit;padding:10px;border-radius:8px;border:1px solid #677eaa;margin:6px}button{cursor:pointer;background:#263c65;color:white}button:disabled{opacity:.45;cursor:default}label{display:inline-block}#api{width:230px}#tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}#tiles button{height:110px;font-size:36px;background:#135363}#tiles button:nth-child(2){background:#7d2e66}#tiles button:nth-child(3){background:#81641a}#tiles button:nth-child(4){background:#286042}small{display:block;font-size:13px}#tiles button.lit{opacity:1;filter:brightness(2);box-shadow:0 0 22px #acf}#status{min-height:48px;white-space:pre-wrap}ol{min-height:24px}
 ```

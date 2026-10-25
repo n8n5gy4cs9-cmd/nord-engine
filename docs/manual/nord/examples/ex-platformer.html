@@ -18,6 +18,7 @@
 <li><strong>Spikes, coins, goal</strong>: prefabs with a <code>trigger</code>. <strong>Camera</strong>: script <code>camera-follow.js</code>.</li>
 </ul>
 <h2 id="the-jump-feel-unity-the-same-three-tricks">The jump feel (Unity: the same three tricks)<a class="anchor" href="#the-jump-feel-unity-the-same-three-tricks">#</a></h2>
+<p><strong>File: <code>scripts/Player.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, WaitForSeconds, GameManager } from 'nord';
 
 export default class Player extends MonoBehaviour {
@@ -71,12 +72,14 @@ export default class Player extends MonoBehaviour {
 </tbody></table>
 <p><code>physics.velocity(entity)</code> returns <code>[vx, vy]</code>; <code>setVelocity(e, vx, vy)</code> with <code>null</code> keeps that axis; <code>isGrounded(e)</code> is true when standing on something. Input reading is in <code>Update</code> (edge events live one frame) and physics in <code>FixedUpdate</code>, exactly like Unity.</p>
 <h2 id="hazards-pits-and-respawn">Hazards, pits and respawn<a class="anchor" href="#hazards-pits-and-respawn">#</a></h2>
+<p><strong>File: <code>scripts/spikes.js</code></strong> (new file; attach it to the spikes prefab, which has a trigger collider)</p>
 <pre class="code" data-lang="js"><code>// spikes.js: the prefab's trigger touches the player
 import { MonoBehaviour } from 'nord';
 import Player from './player.js';
 export default class Spikes extends MonoBehaviour {
   OnTriggerEnter(other) { other.getScript(Player)?.Hurt(); }   // only the player object has a Player script
 }</code></pre>
+<p><strong>File: <code>scripts/Player.js</code></strong> (add this method to the class above)</p>
 <pre class="code" data-lang="js"><code>// player.js (continued)
 LateUpdate() { if (this.entity.pos[1] &gt; 700) this.Hurt(true); }            // fell into a pit
 
@@ -97,6 +100,7 @@ Hurt(fell = false) {
 <p><code>physics.teleport(e, x, y)</code> moves a body without keeping its speed (assigning <code>entity.pos</code> does the same for a body).</p>
 <aside class="box warn"><div class="box-title">Careful</div><p><strong>Do not name your own fields like lifecycle methods.</strong> <code>this.start = [80, 470]</code> in <code>Awake</code> replaced the <code>start()</code> method and produced <code>s.start is not a function</code>. Use <code>spawnPoint</code>, <code>startPos</code>… (avoid <code>init</code>, <code>start</code>, <code>update</code>, <code>fixedUpdate</code>, <code>lateUpdate</code>, <code>onDestroy</code>).</p>
 </aside><h2 id="the-camera">The camera<a class="anchor" href="#the-camera">#</a></h2>
+<p><strong>File: <code>scripts/camera-follow.js</code></strong> (new file; attach it to the <code>Camera</code> object)</p>
 <pre class="code" data-lang="js"><code>// camera-follow.js on the Camera object
 lateUpdate(dt) {                                  // lateUpdate: the player has already moved this frame
   const p = this.entity.pos, goal = Math.min(this.attrs.maxX, Math.max(this.attrs.minX, this.t.pos[0]));
@@ -104,6 +108,7 @@ lateUpdate(dt) {                                  // lateUpdate: the player has 
 }</code></pre>
 <p><code>minX</code> / <code>maxX</code> keep the view inside the level (half a screen from each end). The library script <code>camera-follow.js</code> adds a dead zone, look-ahead and bounds in both axes.</p>
 <h2 id="the-goal">The goal<a class="anchor" href="#the-goal">#</a></h2>
+<p><strong>File: <code>scripts/goal.js</code></strong> (new file; attach it to the flag object, which has a trigger collider)</p>
 <pre class="code" data-lang="js"><code>// goal.js
 OnTriggerEnter(other) {
   if (!other.hasTag('player') || GameManager.instance.state !== 'playing') return;

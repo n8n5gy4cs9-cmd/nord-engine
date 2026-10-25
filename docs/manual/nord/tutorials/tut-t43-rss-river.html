@@ -73,7 +73,8 @@ Project type : HTML-lite        &lt;-- pick this one</code></pre>
 import { mount } from './app.js';
 try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
-<p>Open <span class="f">nord.project.json</span> and add this block next to the other top-level fields (it allows the three feed hosts):</p>
+<p><strong>In the editor:</strong> <span class="c-ui">Project ▸ Desktop app permissions…</span>, open the network permission and add the three hosts <code>hnrss.org</code>, <code>simonwillison.net</code> and <code>github.blog</code>.</p>
+<p><strong>In the file</strong> <span class="f">nord.project.json</span>: the window adds this block next to the other top-level fields (it allows the three feed hosts):</p>
 <pre class="code" data-lang="json"><code>&quot;desktop&quot;: { &quot;permissions&quot;: { &quot;net&quot;: { &quot;hosts&quot;: [&quot;hnrss.org&quot;, &quot;simonwillison.net&quot;, &quot;github.blog&quot;] } } }</code></pre>
 <h3 id="step-4-write-the-code-files-and-design-the-page-in-this-order">Step 4 — Write the code files (and design the page) in this order<a class="anchor" href="#step-4-write-the-code-files-and-design-the-page-in-this-order">#</a></h3>
 <table>
@@ -199,6 +200,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <p>This project is inspired by reader workflows in FreshRSS and NetNewsWire. Their repositories were consulted for product context; no PHP/Swift source or assets were copied. This app implements its own small browser data model and renderer rather than claiming to port a complete mature aggregator.</p>
 <h2 id="3-parse-rss-and-atom-into-one-article-model">3. Parse RSS and Atom into one article model<a class="anchor" href="#3-parse-rss-and-atom-into-one-article-model">#</a></h2>
 <p>RSS uses <code>item</code>, <code>title</code>, <code>link</code>, <code>description</code> and often <code>guid</code>. Atom uses <code>entry</code>, link attributes, <code>summary</code>/<code>content</code> and <code>id</code>. <code>parseFeed()</code> accepts both and converts each entry into the same shape:</p>
+<p><strong>Excerpt</strong> (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):</p>
 <pre class="code" data-lang="js"><code>{
   id: 'source:stable-entry-id', feed: 'source', source: 'Source name',
   title: 'Article title', link: 'https://example.org/article',
@@ -209,6 +211,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <p><strong>Learning check:</strong> import a tiny RSS file with two items. Give one a description containing bold text and verify it appears as text, then try malformed XML and check the visible error. Add an Atom <code>entry</code> with an alternate <code>link href</code> and confirm Read original points to that link.</p>
 <h2 id="4-merge-updates-without-losing-reading-state">4. Merge updates without losing reading state<a class="anchor" href="#4-merge-updates-without-losing-reading-state">#</a></h2>
 <p><code>mergeArticles(old, incoming)</code> indexes existing entries by stable ID. Incoming content updates a record while preserving its old <code>read</code> and <code>star</code> flags. Refreshing should not turn every article unread again or remove a star.</p>
+<p><strong>Excerpt</strong> (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):</p>
 <pre class="code" data-lang="js"><code>const previous = map.get(article.id);
 map.set(article.id, { ...article,
   read: previous?.read || false,
@@ -234,6 +237,7 @@ map.set(article.id, { ...article,
 <h2 id="7-paint-articles-onto-babylon-papers">7. Paint articles onto Babylon papers<a class="anchor" href="#7-paint-articles-onto-babylon-papers">#</a></h2>
 <p><img src="../../assets/screenshots/ed-rss-river.png" alt="The optional 3D river with readable article papers"></p>
 <p><code>createRiver()</code> receives up to eighteen filtered articles. For each it creates a plane and a DynamicTexture. A canvas painter wraps the title and summary, prints the source and reading status, and fills an ivory page. The material is unlit/emissive for stable text legibility; the mesh casts a shadow onto the illuminated desk.</p>
+<p><strong>Excerpt</strong> (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):</p>
 <pre class="code" data-lang="js"><code>const paper = desk.paper('Article', width, height, context =&gt; {
   context.fillStyle = '#f7f4e9';
   context.fillRect(0, 0, 1024, 768);
@@ -243,6 +247,7 @@ map.set(article.id, { ...article,
 <p>A render-loop callback moves floating papers slowly along Z and wraps them to the start. A small sine offset gives gentle vertical motion and tilt. Starred papers use larger dimensions and a higher base Y, making importance visible in space. This movement is a view effect and does not change article order or reading flags.</p>
 <h2 id="8-flick-a-floating-paper-into-real-physics">8. Flick a floating paper into real physics<a class="anchor" href="#8-flick-a-floating-paper-into-real-physics">#</a></h2>
 <p>A floating paper initially follows its authored river animation. Clicking Flick creates an invisible thin box collider of the same dimensions and parents the visual plane to it. A dynamic Babylon PhysicsAggregate takes over and receives an impulse. That paper stops participating in the river movement loop.</p>
+<p><strong>Excerpt</strong> (from the finished project, shown to explain the idea; the file walkthrough further down gives the real file and where each part goes):</p>
 <pre class="code" data-lang="js"><code>aggregate.body.applyImpulse(
   new BABYLON.Vector3(1.6, 2.8, -1.2), body.position);</code></pre>
 <p>Havok handles gravity, collision with the desk, bounce and friction. The collider is a thin box rather than a zero-thickness plane, which gives the rigid-body solver useful dimensions. Returning to list and reopening the river rebuilds the temporary papers; your saved library is unchanged.</p>
@@ -319,7 +324,8 @@ map.set(article.id, { ...article,
 <p>Build all feed configuration, parsing, safe-link and cache-merge logic.</p>
 <h4 id="1-1-give-subscriptions-stable-identities">1.1 — Give subscriptions stable identities<a class="anchor" href="#1-1-give-subscriptions-stable-identities">#</a></h4>
 <p><strong>Read:</strong> <code>feeds.js</code>, lines 1–21.</p>
-<!-- taught-source: rss-river/feeds.js:1-21 --><pre class="code" data-lang="js"><code>// Feed URLs are user data, not CDN dependencies. Nothing is requested until Refresh.
+<!-- taught-source: rss-river/feeds.js:1-21 --><p><strong>File: <code>feeds.js</code></strong> (step 1.1, give subscriptions stable identities: the beginning of the file)</p>
+<pre class="code" data-lang="js"><code>// Feed URLs are user data, not CDN dependencies. Nothing is requested until Refresh.
 export const DEFAULT_FEEDS = [
   {
     id: 'hn',
@@ -344,7 +350,8 @@ export const DEFAULT_FEEDS = [
 <p><strong>Try it / expected result:</strong> Change a source name without changing its ID. Existing cached items should still belong to that source.</p>
 <h4 id="1-2-normalize-links-before-creating-anchors">1.2 — Normalize links before creating anchors<a class="anchor" href="#1-2-normalize-links-before-creating-anchors">#</a></h4>
 <p><strong>Read:</strong> <code>feeds.js</code>, lines 22–35.</p>
-<!-- taught-source: rss-river/feeds.js:22-35 --><pre class="code" data-lang="js"><code>export function safeLink(value, base = 'https://example.org/') {
+<!-- taught-source: rss-river/feeds.js:22-35 --><p><strong>File: <code>feeds.js</code></strong> (step 1.2, normalize links before creating anchors: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>export function safeLink(value, base = 'https://example.org/') {
   try {
     const u = new URL(value, base);
     return ['https:', 'http:'].includes(u.protocol) ? u.href : '';
@@ -362,7 +369,8 @@ export function parseFeed(xml, feed) {
 <p><strong>Try it / expected result:</strong> Import an HTML error page renamed .xml. It should be rejected rather than shown as fake articles.</p>
 <h4 id="1-3-extract-inert-text-and-choose-a-usable-link">1.3 — Extract inert text and choose a usable link<a class="anchor" href="#1-3-extract-inert-text-and-choose-a-usable-link">#</a></h4>
 <p><strong>Read:</strong> <code>feeds.js</code>, lines 36–48.</p>
-<!-- taught-source: rss-river/feeds.js:36-48 --><pre class="code" data-lang="js"><code>  const plain = (html) =&gt; {
+<!-- taught-source: rss-river/feeds.js:36-48 --><p><strong>File: <code>feeds.js</code></strong> (step 1.3, extract inert text and choose a usable link: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  const plain = (html) =&gt; {
     const d = new DOMParser().parseFromString(html, 'text/html');
     d.querySelectorAll('script,style,iframe,object').forEach((e) =&gt; e.remove());
     return (d.body.textContent || '').replace(/\s+/g, ' ').trim();
@@ -379,7 +387,8 @@ export function parseFeed(xml, feed) {
 <p><strong>Try it / expected result:</strong> Import a description containing bold markup and a script tag. The reader should show text without executing the script or creating a live script element.</p>
 <h4 id="1-4-choose-stable-keys-and-a-single-article-schema">1.4 — Choose stable keys and a single article schema<a class="anchor" href="#1-4-choose-stable-keys-and-a-single-article-schema">#</a></h4>
 <p><strong>Read:</strong> <code>feeds.js</code>, lines 49–67.</p>
-<!-- taught-source: rss-river/feeds.js:49-67 --><pre class="code" data-lang="js"><code>    const raw = linkNode?.getAttribute('href') || linkNode?.textContent || '',
+<!-- taught-source: rss-river/feeds.js:49-67 --><p><strong>File: <code>feeds.js</code></strong> (step 1.4, choose stable keys and a single article schema: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>    const raw = linkNode?.getAttribute('href') || linkNode?.textContent || '',
       link = safeLink(raw, feed.url),
       guid = node.querySelector('guid, id')?.textContent || link || title + index;
     return {
@@ -402,7 +411,8 @@ export function parseFeed(xml, feed) {
 <p><strong>Try it / expected result:</strong> Import one RSS item and one Atom entry. Verify both produce a usable title, plain summary and Read original link.</p>
 <h4 id="1-5-preserve-reading-choices-while-refreshing-content">1.5 — Preserve reading choices while refreshing content<a class="anchor" href="#1-5-preserve-reading-choices-while-refreshing-content">#</a></h4>
 <p><strong>Read:</strong> <code>feeds.js</code>, lines 68–75.</p>
-<!-- taught-source: rss-river/feeds.js:68-75 --><pre class="code" data-lang="js"><code>export function mergeArticles(old, items) {
+<!-- taught-source: rss-river/feeds.js:68-75 --><p><strong>File: <code>feeds.js</code></strong> (step 1.5, preserve reading choices while refreshing content: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>export function mergeArticles(old, items) {
   const map = new Map(old.map((a) =&gt; [a.id, a]));
   for (const a of items) {
     const prev = map.get(a.id);
@@ -416,7 +426,8 @@ export function parseFeed(xml, feed) {
 <p>Build the complete reader host, filters, both fetch paths, river lifetime and import/backup flow.</p>
 <h4 id="2-1-imports-load-the-ui-file-and-name-the-handles">2.1 — Imports, load the UI file and name the handles<a class="anchor" href="#2-1-imports-load-the-ui-file-and-name-the-handles">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 1–19.</p>
-<!-- taught-source: rss-river/app.js:1-19 --><pre class="code" data-lang="js"><code>import { Save } from './save.js';
+<!-- taught-source: rss-river/app.js:1-19 --><p><strong>File: <code>app.js</code></strong> (step 2.1, imports, load the UI file and name the handles: the beginning of the file)</p>
+<pre class="code" data-lang="js"><code>import { Save } from './save.js';
 import { DEFAULT_FEEDS, parseFeed, mergeArticles, safeLink } from './feeds.js';
 import { createRiver } from './river.js';
 import { download } from './desk.js';
@@ -439,7 +450,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Open the UI file in the UI Designer, rename a node and reload Play. The Console should name the missing node on the first lookup instead of silently doing nothing; rename it back afterwards.</p>
 <h4 id="2-2-persist-carefully-and-create-filter-options">2.2 — Persist carefully and create filter options<a class="anchor" href="#2-2-persist-carefully-and-create-filter-options">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 20–54.</p>
-<!-- taught-source: rss-river/app.js:20-54 --><pre class="code" data-lang="js"><code>  const say = (t) =&gt; ($('status').textContent = t);
+<!-- taught-source: rss-river/app.js:20-54 --><p><strong>File: <code>app.js</code></strong> (step 2.2, persist carefully and create filter options: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  const say = (t) =&gt; ($('status').textContent = t);
   const persist = () =&gt; {
     try {
       save.set('feeds', feeds);
@@ -478,7 +490,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Enable Starred only with no stars. You should see an empty state, not a broken render or an automatic network refresh.</p>
 <h4 id="2-3-open-one-article-without-trusting-its-markup">2.3 — Open one article without trusting its markup<a class="anchor" href="#2-3-open-one-article-without-trusting-its-markup">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 55–95.</p>
-<!-- taught-source: rss-river/app.js:55-95 --><pre class="code" data-lang="js"><code>  function read(id) {
+<!-- taught-source: rss-river/app.js:55-95 --><p><strong>File: <code>app.js</code></strong> (step 2.3, open one article without trusting its markup: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  function read(id) {
     selected = id;
     const a = articles.find((a) =&gt; a.id === id);
     if (!a) return;
@@ -523,7 +536,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Click a story, star it, then search for it. Its title and state should agree between the article pane and list.</p>
 <h4 id="2-4-rebuild-an-understandable-list-from-filtered-records">2.4 — Rebuild an understandable list from filtered records<a class="anchor" href="#2-4-rebuild-an-understandable-list-from-filtered-records">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 96–120.</p>
-<!-- taught-source: rss-river/app.js:96-120 --><pre class="code" data-lang="js"><code>  function renderList() {
+<!-- taught-source: rss-river/app.js:96-120 --><p><strong>File: <code>app.js</code></strong> (step 2.4, rebuild an understandable list from filtered records: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  function renderList() {
     const list = $('list');
     list.replaceChildren();
     const items = visible();
@@ -552,7 +566,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Mark visible read with a source selected. Other-source unread counts should remain until you read them.</p>
 <h4 id="2-5-discard-superseded-asynchronous-scenes">2.5 — Discard superseded asynchronous scenes<a class="anchor" href="#2-5-discard-superseded-asynchronous-scenes">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 121–159.</p>
-<!-- taught-source: rss-river/app.js:121-159 --><pre class="code" data-lang="js"><code>  let riverVersion = 0;
+<!-- taught-source: rss-river/app.js:121-159 --><p><strong>File: <code>app.js</code></strong> (step 2.5, discard superseded asynchronous scenes: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  let riverVersion = 0;
   async function showRiver() {
     const version = ++riverVersion;
     try {
@@ -595,7 +610,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Double-click 3D or change filters rapidly. You should end with the latest view and one live Babylon engine.</p>
 <h4 id="2-6-fetch-intentionally-through-browser-or-nord-host">2.6 — Fetch intentionally through browser or Nord host<a class="anchor" href="#2-6-fetch-intentionally-through-browser-or-nord-host">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 160–199.</p>
-<!-- taught-source: rss-river/app.js:160-199 --><pre class="code" data-lang="js"><code>  async function refresh(native = false) {
+<!-- taught-source: rss-river/app.js:160-199 --><p><strong>File: <code>app.js</code></strong> (step 2.6, fetch intentionally through browser or Nord host: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  async function refresh(native = false) {
     $('refresh').disabled = true;
     let count = 0;
     const errors = [];
@@ -639,7 +655,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Refresh while one endpoint is unavailable. Read cached articles afterward and inspect the per-source error text.</p>
 <h4 id="2-7-wire-batch-actions-and-add-subscriptions-as-data">2.7 — Wire batch actions and add subscriptions as data<a class="anchor" href="#2-7-wire-batch-actions-and-add-subscriptions-as-data">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 200–223.</p>
-<!-- taught-source: rss-river/app.js:200-223 --><pre class="code" data-lang="js"><code>  $('refresh').onclick = () =&gt; refresh();
+<!-- taught-source: rss-river/app.js:200-223 --><p><strong>File: <code>app.js</code></strong> (step 2.7, wire batch actions and add subscriptions as data: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  $('refresh').onclick = () =&gt; refresh();
   $('native').onclick = () =&gt; refresh(true);
   $('readall').onclick = () =&gt; {
     visible().forEach((a) =&gt; (a.read = true));
@@ -667,7 +684,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Add the same endpoint twice. The second attempt should report Already subscribed rather than create duplicate source options.</p>
 <h4 id="2-8-use-a-real-local-feed-fixture-and-restore-backups">2.8 — Use a real local feed fixture and restore backups<a class="anchor" href="#2-8-use-a-real-local-feed-fixture-and-restore-backups">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 224–278.</p>
-<!-- taught-source: rss-river/app.js:224-278 --><pre class="code" data-lang="js"><code>  async function demo() {
+<!-- taught-source: rss-river/app.js:224-278 --><p><strong>File: <code>app.js</code></strong> (step 2.8, use a real local feed fixture and restore backups: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  async function demo() {
     const r = await fetch('demo.xml');
     const f = {
       id: 'demo',
@@ -726,7 +744,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Back up, import that JSON, then import a small XML feed. Verify the first restores state while the second adds a source.</p>
 <h4 id="2-9-finish-startup-and-release-a-replaced-view">2.9 — Finish startup and release a replaced view<a class="anchor" href="#2-9-finish-startup-and-release-a-replaced-view">#</a></h4>
 <p><strong>Read:</strong> <code>app.js</code>, lines 279–300.</p>
-<!-- taught-source: rss-river/app.js:279-300 --><pre class="code" data-lang="js"><code>  $('backup').onclick = () =&gt;
+<!-- taught-source: rss-river/app.js:279-300 --><p><strong>File: <code>app.js</code></strong> (step 2.9, finish startup and release a replaced view: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  $('backup').onclick = () =&gt;
     download('rss-river-library.json', JSON.stringify({ feeds, articles }, null, 2));
   renderList();
   if (!articles.length) await demo();
@@ -754,7 +773,8 @@ export async function mount(root) {
 <p>Describe the reader as data: header with actions, source controls, the list and river surfaces, the reader pane and the footer.</p>
 <h4 id="3-1-page-settings-and-the-header">3.1 — Page settings and the header<a class="anchor" href="#3-1-page-settings-and-the-header">#</a></h4>
 <p><strong>Read:</strong> <code>ui/reader.ui.json</code>, lines 1–27.</p>
-<!-- taught-source: rss-river/ui/reader.ui.json:1-27 --><pre class="code" data-lang="json"><code>{
+<!-- taught-source: rss-river/ui/reader.ui.json:1-27 --><p><strong>File: <code>ui/reader.ui.json</code></strong> (step 3.1, page settings and the header: the beginning of the file)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;version&quot;: 1,
   &quot;name&quot;: &quot;reader&quot;,
   &quot;page&quot;: true,
@@ -785,7 +805,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Rename the Refresh feeds button text in the Designer and reload Play; the button still works because only its name matters to code.</p>
 <h4 id="3-2-source-controls-on-the-left">3.2 — Source controls on the left<a class="anchor" href="#3-2-source-controls-on-the-left">#</a></h4>
 <p><strong>Read:</strong> <code>ui/reader.ui.json</code>, lines 28–53.</p>
-<!-- taught-source: rss-river/ui/reader.ui.json:28-53 --><pre class="code" data-lang="json"><code>    { &quot;class&quot;: &quot;layout&quot;, &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;section&quot;, &quot;children&quot;: [
+<!-- taught-source: rss-river/ui/reader.ui.json:28-53 --><p><strong>File: <code>ui/reader.ui.json</code></strong> (step 3.2, source controls on the left: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="json"><code>    { &quot;class&quot;: &quot;layout&quot;, &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;section&quot;, &quot;children&quot;: [
       { &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;aside&quot;, &quot;children&quot;: [
         { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;h3&quot;, &quot;text&quot;: &quot;SOURCES&quot; },
         { &quot;name&quot;: &quot;feed&quot;, &quot;type&quot;: &quot;select&quot;, &quot;options&quot;: [[&quot;all&quot;, &quot;All sources&quot;]] },
@@ -815,7 +836,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Add a third checkbox named todo inside its own label box and save; it renders immediately but filters nothing until the code reads it.</p>
 <h4 id="3-3-list-river-canvas-and-status-bar">3.3 — List, river canvas and status bar<a class="anchor" href="#3-3-list-river-canvas-and-status-bar">#</a></h4>
 <p><strong>Read:</strong> <code>ui/reader.ui.json</code>, lines 54–61.</p>
-<!-- taught-source: rss-river/ui/reader.ui.json:54-61 --><pre class="code" data-lang="json"><code>      { &quot;class&quot;: &quot;content&quot;, &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
+<!-- taught-source: rss-river/ui/reader.ui.json:54-61 --><p><strong>File: <code>ui/reader.ui.json</code></strong> (step 3.3, list, river canvas and status bar: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="json"><code>      { &quot;class&quot;: &quot;content&quot;, &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
         { &quot;class&quot;: &quot;viewbar&quot;, &quot;type&quot;: &quot;box&quot;, &quot;children&quot;: [
           { &quot;name&quot;: &quot;heading&quot;, &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;b&quot;, &quot;text&quot;: &quot;Your reading room&quot; },
           { &quot;name&quot;: &quot;status&quot;, &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;span&quot;, &quot;text&quot;: &quot;Local cache ready&quot; }
@@ -827,7 +849,8 @@ export async function mount(root) {
 <p><strong>Try it / expected result:</strong> Set the river canvas visible in the Designer and reload Play. It appears over the list; turn it off again.</p>
 <h4 id="3-4-reader-pane-and-footer">3.4 — Reader pane and footer<a class="anchor" href="#3-4-reader-pane-and-footer">#</a></h4>
 <p><strong>Read:</strong> <code>ui/reader.ui.json</code>, lines 62–72.</p>
-<!-- taught-source: rss-river/ui/reader.ui.json:62-72 --><pre class="code" data-lang="json"><code>      { &quot;name&quot;: &quot;reader&quot;, &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;article&quot;, &quot;children&quot;: [
+<!-- taught-source: rss-river/ui/reader.ui.json:62-72 --><p><strong>File: <code>ui/reader.ui.json</code></strong> (step 3.4, reader pane and footer: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="json"><code>      { &quot;name&quot;: &quot;reader&quot;, &quot;type&quot;: &quot;box&quot;, &quot;tag&quot;: &quot;article&quot;, &quot;children&quot;: [
         { &quot;class&quot;: &quot;eyebrow&quot;, &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;p&quot;, &quot;text&quot;: &quot;SELECT A PAPER&quot; },
         { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;h2&quot;, &quot;text&quot;: &quot;Welcome to the river.&quot; },
         { &quot;type&quot;: &quot;label&quot;, &quot;tag&quot;: &quot;p&quot;, &quot;text&quot;: &quot;Your saved articles stay on this device. The initial demo is original tutorial content, clearly marked as local demo.&quot; }
@@ -844,7 +867,8 @@ export async function mount(root) {
 <p>Follow every texture, pick, movement, physics and cleanup operation in the 3D reader.</p>
 <h4 id="4-1-wrap-text-into-bounded-canvas-lines">4.1 — Wrap text into bounded canvas lines<a class="anchor" href="#4-1-wrap-text-into-bounded-canvas-lines">#</a></h4>
 <p><strong>Read:</strong> <code>river.js</code>, lines 1–20.</p>
-<!-- taught-source: rss-river/river.js:1-20 --><pre class="code" data-lang="js"><code>import { createDesk } from './desk.js';
+<!-- taught-source: rss-river/river.js:1-20 --><p><strong>File: <code>river.js</code></strong> (step 4.1, wrap text into bounded canvas lines: the beginning of the file)</p>
+<pre class="code" data-lang="js"><code>import { createDesk } from './desk.js';
 export async function createRiver(canvas, articles, open) {
   const d = await createDesk(canvas),
     { B, scene } = d;
@@ -868,7 +892,8 @@ export async function createRiver(canvas, articles, open) {
 <p><strong>Try it / expected result:</strong> Use a long title in a demo copy. It should wrap into bounded lines rather than painting across neighbouring paper edges.</p>
 <h4 id="4-2-paint-each-article-and-encode-importance-spatially">4.2 — Paint each article and encode importance spatially<a class="anchor" href="#4-2-paint-each-article-and-encode-importance-spatially">#</a></h4>
 <p><strong>Read:</strong> <code>river.js</code>, lines 21–48.</p>
-<!-- taught-source: rss-river/river.js:21-48 --><pre class="code" data-lang="js"><code>  articles.slice(0, 18).forEach((a, i) =&gt; {
+<!-- taught-source: rss-river/river.js:21-48 --><p><strong>File: <code>river.js</code></strong> (step 4.2, paint each article and encode importance spatially: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  articles.slice(0, 18).forEach((a, i) =&gt; {
     const width = a.star ? 4.5 : 3.6,
       height = a.star ? 3.2 : 2.5,
       p = d.paper('Article ' + i, width, height, (ctx) =&gt; {
@@ -900,7 +925,8 @@ export async function createRiver(canvas, articles, open) {
 <p><strong>Try it / expected result:</strong> Star one story and reopen the river. Its paper should be larger/higher, and clicking it should open that same article ID.</p>
 <h4 id="4-3-route-picks-and-animate-only-floating-papers">4.3 — Route picks and animate only floating papers<a class="anchor" href="#4-3-route-picks-and-animate-only-floating-papers">#</a></h4>
 <p><strong>Read:</strong> <code>river.js</code>, lines 49–65.</p>
-<!-- taught-source: rss-river/river.js:49-65 --><pre class="code" data-lang="js"><code>  scene.onPointerObservable.add((info) =&gt; {
+<!-- taught-source: rss-river/river.js:49-65 --><p><strong>File: <code>river.js</code></strong> (step 4.3, route picks and animate only floating papers: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  scene.onPointerObservable.add((info) =&gt; {
     if (info.type === B.PointerEventTypes.POINTERPICK) {
       const id = info.pickInfo?.pickedMesh?.metadata?.article;
       if (id) open(id);
@@ -921,7 +947,8 @@ export async function createRiver(canvas, articles, open) {
 <p><strong>Try it / expected result:</strong> Read one paper from the river, then flick it. Its original read flag remains even after its visual motion changes.</p>
 <h4 id="4-4-hand-one-paper-over-to-a-rigid-body">4.4 — Hand one paper over to a rigid body<a class="anchor" href="#4-4-hand-one-paper-over-to-a-rigid-body">#</a></h4>
 <p><strong>Read:</strong> <code>river.js</code>, lines 66–96.</p>
-<!-- taught-source: rss-river/river.js:66-96 --><pre class="code" data-lang="js"><code>  return {
+<!-- taught-source: rss-river/river.js:66-96 --><p><strong>File: <code>river.js</code></strong> (step 4.4, hand one paper over to a rigid body: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  return {
     ...d,
     papers,
     flick(id) {
@@ -958,7 +985,8 @@ export async function createRiver(canvas, articles, open) {
 <p>Build the complete reusable Babylon/Havok desk and browser-download helper.</p>
 <h4 id="5-1-share-pending-local-script-loads">5.1 — Share pending local script loads<a class="anchor" href="#5-1-share-pending-local-script-loads">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 1–20.</p>
-<!-- taught-source: rss-river/desk.js:1-20 --><pre class="code" data-lang="js"><code>// Cache the pending promise too: rapid view changes must wait for the same script.
+<!-- taught-source: rss-river/desk.js:1-20 --><p><strong>File: <code>desk.js</code></strong> (step 5.1, share pending local script loads: the beginning of the file)</p>
+<pre class="code" data-lang="js"><code>// Cache the pending promise too: rapid view changes must wait for the same script.
 const scriptLoads = new Map();
 export function loadScript(src) {
   if (!scriptLoads.has(src)) {
@@ -982,7 +1010,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Click the 3D mode button twice rapidly. There should be one ready view, not an undefined BABYLON error.</p>
 <h4 id="5-2-create-one-engine-scene-and-controllable-camera">5.2 — Create one engine, scene and controllable camera<a class="anchor" href="#5-2-create-one-engine-scene-and-controllable-camera">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 21–42.</p>
-<!-- taught-source: rss-river/desk.js:21-42 --><pre class="code" data-lang="js"><code>export async function createDesk(canvas, { physics = true } = {}) {
+<!-- taught-source: rss-river/desk.js:21-42 --><p><strong>File: <code>desk.js</code></strong> (step 5.2, create one engine, scene and controllable camera: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>export async function createDesk(canvas, { physics = true } = {}) {
   await loadScript('vendor/babylonjs/babylon.js');
   const B = window.BABYLON;
   const engine = new B.Engine(canvas, true, {
@@ -1008,7 +1037,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Compare orbit dragging with moving a paper: the camera changes the view without altering saved document coordinates.</p>
 <h4 id="5-3-light-a-surface-and-prepare-shadow-ownership">5.3 — Light a surface and prepare shadow ownership<a class="anchor" href="#5-3-light-a-surface-and-prepare-shadow-ownership">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 43–62.</p>
-<!-- taught-source: rss-river/desk.js:43-62 --><pre class="code" data-lang="js"><code>  const fill = new B.HemisphericLight('Sky', new B.Vector3(0, 1, 0), scene);
+<!-- taught-source: rss-river/desk.js:43-62 --><p><strong>File: <code>desk.js</code></strong> (step 5.3, light a surface and prepare shadow ownership: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  const fill = new B.HemisphericLight('Sky', new B.Vector3(0, 1, 0), scene);
   fill.intensity = 0.65;
   const light = new B.DirectionalLight('Sun', new B.Vector3(-0.4, -1, 0.5), scene);
   light.position.set(8, 18, -8);
@@ -1032,7 +1062,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Change the directional light direction temporarily and observe where shadows fall, while paper text remains readable.</p>
 <h4 id="5-4-load-the-packaged-physics-binary">5.4 — Load the packaged physics binary<a class="anchor" href="#5-4-load-the-packaged-physics-binary">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 63–77.</p>
-<!-- taught-source: rss-river/desk.js:63-77 --><pre class="code" data-lang="js"><code>  if (physics) {
+<!-- taught-source: rss-river/desk.js:63-77 --><p><strong>File: <code>desk.js</code></strong> (step 5.4, load the packaged physics binary: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  if (physics) {
     await loadScript('vendor/havok/HavokPhysics_umd.js');
     const havok = await window.HavokPhysics({
       locateFile: (name) =&gt; 'vendor/havok/' + name,
@@ -1051,7 +1082,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Temporarily set physics false at the helper call. Static papers should still render, but there will be no physical sticky/flick response.</p>
 <h4 id="5-5-create-a-writable-texture-rather-than-a-screenshot-file">5.5 — Create a writable texture rather than a screenshot file<a class="anchor" href="#5-5-create-a-writable-texture-rather-than-a-screenshot-file">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 78–104.</p>
-<!-- taught-source: rss-river/desk.js:78-104 --><pre class="code" data-lang="js"><code>  const paper = (name, width, height, paint) =&gt; {
+<!-- taught-source: rss-river/desk.js:78-104 --><p><strong>File: <code>desk.js</code></strong> (step 5.5, create a writable texture rather than a screenshot file: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  const paper = (name, width, height, paint) =&gt; {
     const mesh = B.MeshBuilder.CreatePlane(
       name,
       { width, height, sideOrientation: B.Mesh.DOUBLESIDE },
@@ -1082,7 +1114,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Draw a bold line in 2D and switch views. It should appear as actual texture content on the corresponding paper.</p>
 <h4 id="5-6-create-a-visible-rigid-sticky-toy">5.6 — Create a visible rigid sticky toy<a class="anchor" href="#5-6-create-a-visible-rigid-sticky-toy">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 105–126.</p>
-<!-- taught-source: rss-river/desk.js:105-126 --><pre class="code" data-lang="js"><code>  const box = (name, pos, color = '#f6d675', mass = 0.2) =&gt; {
+<!-- taught-source: rss-river/desk.js:105-126 --><p><strong>File: <code>desk.js</code></strong> (step 5.6, create a visible rigid sticky toy: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  const box = (name, pos, color = '#f6d675', mass = 0.2) =&gt; {
     const mesh = B.MeshBuilder.CreateBox(
       name,
       { width: 1.1, height: 0.13, depth: 0.9 },
@@ -1108,7 +1141,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Increase restitution slightly and flick a sticky. It should bounce more without changing the original 2D note shape.</p>
 <h4 id="5-7-own-the-render-loop-and-resize-lifecycle">5.7 — Own the render loop and resize lifecycle<a class="anchor" href="#5-7-own-the-render-loop-and-resize-lifecycle">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 127–156.</p>
-<!-- taught-source: rss-river/desk.js:127-156 --><pre class="code" data-lang="js"><code>  const update = new Set(),
+<!-- taught-source: rss-river/desk.js:127-156 --><p><strong>File: <code>desk.js</code></strong> (step 5.7, own the render loop and resize lifecycle: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  const update = new Set(),
     render = () =&gt; {
       for (const fn of update) fn(Math.min(0.05, engine.getDeltaTime() / 1000));
       scene.render();
@@ -1142,7 +1176,8 @@ export function loadScript(src) {
 <p><strong>Try it / expected result:</strong> Switch back to 2D and observe that the old desk stops animating. Reopening 3D creates one fresh owner.</p>
 <h4 id="5-8-hand-a-browser-a-real-downloadable-object">5.8 — Hand a browser a real downloadable object<a class="anchor" href="#5-8-hand-a-browser-a-real-downloadable-object">#</a></h4>
 <p><strong>Read:</strong> <code>desk.js</code>, lines 157–165.</p>
-<!-- taught-source: rss-river/desk.js:157-165 --><pre class="code" data-lang="js"><code>export function download(name, content, type = 'application/json') {
+<!-- taught-source: rss-river/desk.js:157-165 --><p><strong>File: <code>desk.js</code></strong> (step 5.8, hand a browser a real downloadable object: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>export function download(name, content, type = 'application/json') {
   const blob = content instanceof Blob ? content : new Blob([content], { type }),
     url = URL.createObjectURL(blob),
     a = document.createElement('a');
@@ -1157,7 +1192,8 @@ export function loadScript(src) {
 <p>Understand the complete existing Nord Save helper bundled with this app.</p>
 <h4 id="6-1-namespace-slots-and-read-versioned-data">6.1 — Namespace slots and read versioned data<a class="anchor" href="#6-1-namespace-slots-and-read-versioned-data">#</a></h4>
 <p><strong>Read:</strong> <code>save.js</code>, lines 1–20.</p>
-<!-- taught-source: rss-river/save.js:1-20 --><pre class="code" data-lang="js"><code>// Versioned save slots on top of localStorage (or any Storage-like object).
+<!-- taught-source: rss-river/save.js:1-20 --><p><strong>File: <code>save.js</code></strong> (step 6.1, namespace slots and read versioned data: the beginning of the file)</p>
+<pre class="code" data-lang="js"><code>// Versioned save slots on top of localStorage (or any Storage-like object).
 export class Save {
   constructor(gameId, { version = 1, storage = globalThis.localStorage, migrate = null } = {}) {
     this.prefix = `nord:${gameId}:`;
@@ -1181,7 +1217,8 @@ export class Save {
 <p><strong>Try it / expected result:</strong> Compare the Paper Worlds and RSS River storage prefixes in browser tools. Their saves should not overwrite each other.</p>
 <h4 id="6-2-read-and-write-values-then-define-memory-storage">6.2 — Read and write values, then define memory storage<a class="anchor" href="#6-2-read-and-write-values-then-define-memory-storage">#</a></h4>
 <p><strong>Read:</strong> <code>save.js</code>, lines 21–32.</p>
-<!-- taught-source: rss-river/save.js:21-32 --><pre class="code" data-lang="js"><code>  get(k, def) { const d = this.#read().data; return k in d ? d[k] : def; }
+<!-- taught-source: rss-river/save.js:21-32 --><p><strong>File: <code>save.js</code></strong> (step 6.2, read and write values, then define memory storage: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  get(k, def) { const d = this.#read().data; return k in d ? d[k] : def; }
   set(k, v) { const o = this.#read(); o.data[k] = v; o.v = this.version; o.t = Date.now(); this.storage.setItem(this.#key(), JSON.stringify(o)); }
   all() { return this.#read().data; }
   has(n = this.slotId) { return this.storage.getItem(this.#key(n)) != null; }
@@ -1199,7 +1236,8 @@ export class MemoryStorage {
 <p>Read the complete original local RSS fixture; it is also an example of the input format.</p>
 <h4 id="7-1-recognize-an-rss-channel-and-stable-item-ids">7.1 — Recognize an RSS channel and stable item IDs<a class="anchor" href="#7-1-recognize-an-rss-channel-and-stable-item-ids">#</a></h4>
 <p><strong>Read:</strong> <code>demo.xml</code>, lines 1–10.</p>
-<!-- taught-source: rss-river/demo.xml:1-10 --><pre class="code" data-lang="xml"><code>&lt;?xml version=&quot;1.0&quot;?&gt;&lt;rss version=&quot;2.0&quot;&gt;&lt;channel&gt;&lt;title&gt;Original tutorial demo — not live news&lt;/title&gt;&lt;link&gt;https://example.org/&lt;/link&gt;&lt;description&gt;Fictional local content for learning RSS River.&lt;/description&gt;
+<!-- taught-source: rss-river/demo.xml:1-10 --><p><strong>File: <code>demo.xml</code></strong> (step 7.1, recognize an RSS channel and stable item IDs: the beginning of the file)</p>
+<pre class="code" data-lang="xml"><code>&lt;?xml version=&quot;1.0&quot;?&gt;&lt;rss version=&quot;2.0&quot;&gt;&lt;channel&gt;&lt;title&gt;Original tutorial demo — not live news&lt;/title&gt;&lt;link&gt;https://example.org/&lt;/link&gt;&lt;description&gt;Fictional local content for learning RSS River.&lt;/description&gt;
 &lt;item&gt;&lt;guid&gt;demo-1&lt;/guid&gt;&lt;title&gt;A small app can be a place you want to visit&lt;/title&gt;&lt;link&gt;https://example.org/demo/1&lt;/link&gt;&lt;description&gt;This is original tutorial demo content, not a published news report. Try starring this paper, switching to the 3D river and flicking it onto the desk.&lt;/description&gt;&lt;/item&gt;
 &lt;item&gt;&lt;guid&gt;demo-2&lt;/guid&gt;&lt;title&gt;AI reading list: keep the source next to the summary&lt;/title&gt;&lt;link&gt;https://example.org/demo/2&lt;/link&gt;&lt;description&gt;Demo: a good reading tool preserves the original link. The app stores plain text and lets you open the publisher when you want the complete article.&lt;/description&gt;&lt;/item&gt;
 &lt;item&gt;&lt;guid&gt;demo-3&lt;/guid&gt;&lt;title&gt;Why seconds and milliseconds deserve different names&lt;/title&gt;&lt;link&gt;https://example.org/demo/3&lt;/link&gt;&lt;description&gt;Demo coding note: engines often give delta time in seconds while a physics API expects milliseconds. Write the conversion at the boundary.&lt;/description&gt;&lt;/item&gt;
@@ -1215,7 +1253,8 @@ export class MemoryStorage {
 <p>Read the entire explicit feed-host allowlist.</p>
 <h4 id="8-1-distinguish-intentional-news-endpoints-from-library-dependencies">8.1 — Distinguish intentional news endpoints from library dependencies<a class="anchor" href="#8-1-distinguish-intentional-news-endpoints-from-library-dependencies">#</a></h4>
 <p><strong>Read:</strong> <code>.offline-allow</code>, lines 1–3.</p>
-<!-- taught-source: rss-river/.offline-allow:1-3 --><pre class="code" data-lang="text"><code>hnrss.org
+<!-- taught-source: rss-river/.offline-allow:1-3 --><p><strong>File: <code>.offline-allow</code></strong> (step 8.1, distinguish intentional news endpoints from library dependencies: the beginning of the file)</p>
+<pre class="code" data-lang="text"><code>hnrss.org
 simonwillison.net
 github.blog</code></pre>
 <p><strong>What and why:</strong> These three hostnames declare the app’s deliberate external feed data to Nord’s static URL checker. They do not make browser CORS disappear and do not grant native HTTP capabilities; those are separate boundaries. Babylon, Havok and artwork still load from the project. A new default feed needs an intentional update here and in the appropriate permission configuration.</p>
@@ -1224,7 +1263,8 @@ github.blog</code></pre>
 <p>Read the complete Nord page entry point and its failure path.</p>
 <h4 id="9-1-load-the-local-runtime-and-start-the-app">9.1 — Load the local runtime and start the app<a class="anchor" href="#9-1-load-the-local-runtime-and-start-the-app">#</a></h4>
 <p><strong>Read:</strong> <code>index.html</code>, lines 1–8.</p>
-<!-- taught-source: rss-river/index.html:1-8 --><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+<!-- taught-source: rss-river/index.html:1-8 --><p><strong>File: <code>index.html</code></strong> (step 9.1, load the local runtime and start the app: the beginning of the file)</p>
+<pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.rssriver&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;RSS River — a calm reading desk&lt;/title&gt;
 &lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
@@ -1238,7 +1278,8 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <p>Read every project field that tells Nord which host, display and services to use.</p>
 <h4 id="10-1-identify-the-project-and-choose-its-presentation">10.1 — Identify the project and choose its presentation<a class="anchor" href="#10-1-identify-the-project-and-choose-its-presentation">#</a></h4>
 <p><strong>Read:</strong> <code>nord.project.json</code>, lines 1–22.</p>
-<!-- taught-source: rss-river/nord.project.json:1-22 --><pre class="code" data-lang="json"><code>{
+<!-- taught-source: rss-river/nord.project.json:1-22 --><p><strong>File: <code>nord.project.json</code></strong> (step 10.1, identify the project and choose its presentation: the beginning of the file)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;format&quot;: 1,
   &quot;name&quot;: &quot;RSS River&quot;,
   &quot;id&quot;: &quot;com.crowelian.rssriver&quot;,
@@ -1264,7 +1305,8 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <p><strong>Try it / expected result:</strong> Change only the display title/name in a copy and reopen the project. Do not change the stable ID casually if you want to keep the same save namespace.</p>
 <h4 id="10-2-distinguish-scene-actions-from-html-event-handling">10.2 — Distinguish scene actions from HTML event handling<a class="anchor" href="#10-2-distinguish-scene-actions-from-html-event-handling">#</a></h4>
 <p><strong>Read:</strong> <code>nord.project.json</code>, lines 23–75.</p>
-<!-- taught-source: rss-river/nord.project.json:23-75 --><pre class="code" data-lang="json"><code>  &quot;input&quot;: {
+<!-- taught-source: rss-river/nord.project.json:23-75 --><p><strong>File: <code>nord.project.json</code></strong> (step 10.2, distinguish scene actions from HTML event handling: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="json"><code>  &quot;input&quot;: {
     &quot;actions&quot;: {
       &quot;left&quot;: [
         &quot;KeyA&quot;,
@@ -1323,7 +1365,8 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <p>Read every stylesheet rule, grouped by the UI responsibility it controls.</p>
 <h4 id="11-1-set-the-app-foundation-and-reusable-visual-language">11.1 — Set the app foundation and reusable visual language<a class="anchor" href="#11-1-set-the-app-foundation-and-reusable-visual-language">#</a></h4>
 <p><strong>Read:</strong> <code>style.css</code>, lines 1–64.</p>
-<!-- taught-source: rss-river/style.css:1-64 --><pre class="code" data-lang="css"><code>:host {
+<!-- taught-source: rss-river/style.css:1-64 --><p><strong>File: <code>style.css</code></strong> (step 11.1, set the app foundation and reusable visual language: the beginning of the file)</p>
+<pre class="code" data-lang="css"><code>:host {
   display: block;
   min-height: 100vh;
   color: #dce9ee;
@@ -1391,7 +1434,8 @@ nav button {
 <p><strong>Try it / expected result:</strong> Change one accent colour on a copy and reopen Play; no gameplay or saved-document data should change.</p>
 <h4 id="11-2-arrange-source-list-and-reading-columns">11.2 — Arrange source, list and reading columns<a class="anchor" href="#11-2-arrange-source-list-and-reading-columns">#</a></h4>
 <p><strong>Read:</strong> <code>style.css</code>, lines 65–121.</p>
-<!-- taught-source: rss-river/style.css:65-121 --><pre class="code" data-lang="css"><code>.layout {
+<!-- taught-source: rss-river/style.css:65-121 --><p><strong>File: <code>style.css</code></strong> (step 11.2, arrange source, list and reading columns: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="css"><code>.layout {
   display: grid;
   grid-template-columns: 205px minmax(350px, 1fr) 330px;
   gap: 18px;
@@ -1452,7 +1496,8 @@ hr {
 <p><strong>Try it / expected result:</strong> Narrow the window and observe which areas move before changing any article data.</p>
 <h4 id="11-3-give-list-entries-useful-reading-states">11.3 — Give list entries useful reading states<a class="anchor" href="#11-3-give-list-entries-useful-reading-states">#</a></h4>
 <p><strong>Read:</strong> <code>style.css</code>, lines 122–163.</p>
-<!-- taught-source: rss-river/style.css:122-163 --><pre class="code" data-lang="css"><code>#list {
+<!-- taught-source: rss-river/style.css:122-163 --><p><strong>File: <code>style.css</code></strong> (step 11.3, give list entries useful reading states: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="css"><code>#list {
   height: 680px;
   overflow: auto;
   background: #142536;
@@ -1498,7 +1543,8 @@ hr {
 <p><strong>Try it / expected result:</strong> Read a story and then select another. The first should remain read while the selected border moves.</p>
 <h4 id="11-4-make-article-text-calm-and-readable">11.4 — Make article text calm and readable<a class="anchor" href="#11-4-make-article-text-calm-and-readable">#</a></h4>
 <p><strong>Read:</strong> <code>style.css</code>, lines 164–207.</p>
-<!-- taught-source: rss-river/style.css:164-207 --><pre class="code" data-lang="css"><code>#reader {
+<!-- taught-source: rss-river/style.css:164-207 --><p><strong>File: <code>style.css</code></strong> (step 11.4, make article text calm and readable: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="css"><code>#reader {
   background: #f7f4e9;
   color: #253a4c;
   border-radius: 10px;
@@ -1546,7 +1592,8 @@ footer {
 <p><strong>Try it / expected result:</strong> Open a long summary and inspect line length. The pane should remain useful even when the 3D river is hidden.</p>
 <h4 id="11-5-adapt-columns-at-two-viewport-widths">11.5 — Adapt columns at two viewport widths<a class="anchor" href="#11-5-adapt-columns-at-two-viewport-widths">#</a></h4>
 <p><strong>Read:</strong> <code>style.css</code>, lines 208–232.</p>
-<!-- taught-source: rss-river/style.css:208-232 --><pre class="code" data-lang="css"><code>@media (max-width: 1050px) {
+<!-- taught-source: rss-river/style.css:208-232 --><p><strong>File: <code>style.css</code></strong> (step 11.5, adapt columns at two viewport widths: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="css"><code>@media (max-width: 1050px) {
   .layout {
     grid-template-columns: 180px minmax(300px, 1fr);
   }
@@ -1577,7 +1624,8 @@ footer {
 <p>Read the complete bundled Nord bridge used by the optional host-fetch button.</p>
 <h4 id="12-1-normalize-errors-and-choose-request-transports">12.1 — Normalize errors and choose request transports<a class="anchor" href="#12-1-normalize-errors-and-choose-request-transports">#</a></h4>
 <p><strong>Read:</strong> <code>nord-desktop.js</code>, lines 1–34.</p>
-<!-- taught-source: rss-river/nord-desktop.js:1-34 --><pre class="code" data-lang="js"><code>// Nord desktop API (M9, ADR-020): window.nord.desktop.* — files, dialogs, notifications, clipboard, storage, windows, menus, tray.
+<!-- taught-source: rss-river/nord-desktop.js:1-34 --><p><strong>File: <code>nord-desktop.js</code></strong> (step 12.1, normalize errors and choose request transports: the beginning of the file)</p>
+<pre class="code" data-lang="js"><code>// Nord desktop API (M9, ADR-020): window.nord.desktop.* — files, dialogs, notifications, clipboard, storage, windows, menus, tray.
 // One API, three transports, picked automatically:
 //   ipc  — inside the native player (wry): window.ipc.postMessage ⇄ Rust `nord-desktop` bridge, capability-checked
 //   http — `nord serve` / editor Play: POST /__desktop/call (same Rust bridge, same permissions)
@@ -1615,7 +1663,8 @@ function httpTransport() {
 <p><strong>Try it / expected result:</strong> Find where RSS River calls desktop.http.fetch and where this module converts that call into a method/params request.</p>
 <h4 id="12-2-build-bounded-browser-fallbacks">12.2 — Build bounded browser fallbacks<a class="anchor" href="#12-2-build-bounded-browser-fallbacks">#</a></h4>
 <p><strong>Read:</strong> <code>nord-desktop.js</code>, lines 35–49.</p>
-<!-- taught-source: rss-river/nord-desktop.js:35-49 --><pre class="code" data-lang="js"><code>function webTransport(appId) {
+<!-- taught-source: rss-river/nord-desktop.js:35-49 --><p><strong>File: <code>nord-desktop.js</code></strong> (step 12.2, build bounded browser fallbacks: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>function webTransport(appId) {
   const ls = (() =&gt; { try { return window.localStorage; } catch { return null; } })();
   const mem = new Map();
   const kv = { get: (k) =&gt; (ls ? ls.getItem(k) : mem.get(k) ?? null), set: (k, v) =&gt; (ls ? ls.setItem(k, v) : mem.set(k, v)), del: (k) =&gt; (ls ? ls.removeItem(k) : mem.delete(k)), keys: () =&gt; (ls ? Object.keys(ls) : [...mem.keys()]) };
@@ -1634,7 +1683,8 @@ function httpTransport() {
 <p><strong>Try it / expected result:</strong> Run a static browser export and inspect desktop.transport after readiness: it should choose web rather than claim a native host exists.</p>
 <h4 id="12-3-map-supported-browser-operations-explicitly">12.3 — Map supported browser operations explicitly<a class="anchor" href="#12-3-map-supported-browser-operations-explicitly">#</a></h4>
 <p><strong>Read:</strong> <code>nord-desktop.js</code>, lines 50–85.</p>
-<!-- taught-source: rss-river/nord-desktop.js:50-85 --><pre class="code" data-lang="js"><code>  const m = {
+<!-- taught-source: rss-river/nord-desktop.js:50-85 --><p><strong>File: <code>nord-desktop.js</code></strong> (step 12.3, map supported browser operations explicitly: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>  const m = {
     'app.info': () =&gt; ({ name: document.title, version: '', id: appId, os: 'web', arch: '', shell: 'web' }),
     'app.paths': () =&gt; ({ appData: 'appData:' }), 'app.permissions': () =&gt; ({ summary: ['browser sandbox'], granted: {} }), 'app.launch': () =&gt; ({ files: [], urls: [] }),
     'app.quit': () =&gt; window.close(), 'app.quitGuard': () =&gt; { },
@@ -1674,7 +1724,8 @@ function httpTransport() {
 <p><strong>Try it / expected result:</strong> Use Refresh feeds in a plain browser. A blocked publisher still needs XML import or a genuine Nord host, not this fallback.</p>
 <h4 id="12-4-deliver-events-and-await-transport-readiness">12.4 — Deliver events and await transport readiness<a class="anchor" href="#12-4-deliver-events-and-await-transport-readiness">#</a></h4>
 <p><strong>Read:</strong> <code>nord-desktop.js</code>, lines 86–111.</p>
-<!-- taught-source: rss-river/nord-desktop.js:86-111 --><pre class="code" data-lang="js"><code>const handlers = new Map();
+<!-- taught-source: rss-river/nord-desktop.js:86-111 --><p><strong>File: <code>nord-desktop.js</code></strong> (step 12.4, deliver events and await transport readiness: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>const handlers = new Map();
 function emit(name, payload) { for (const f of handlers.get(name) ?? []) { try { f(payload); } catch (e) { console.error(e); } } }
 let poller = null;
 function startPolling() {
@@ -1704,7 +1755,8 @@ export function create(appId = 'web-app', force) {
 <p><strong>Try it / expected result:</strong> Call a bridge method just after app startup. It should wait for ready rather than failing because call is still null.</p>
 <h4 id="12-5-expose-capability-shaped-wrappers-and-the-shared-instance">12.5 — Expose capability-shaped wrappers and the shared instance<a class="anchor" href="#12-5-expose-capability-shaped-wrappers-and-the-shared-instance">#</a></h4>
 <p><strong>Read:</strong> <code>nord-desktop.js</code>, lines 112–157.</p>
-<!-- taught-source: rss-river/nord-desktop.js:112-157 --><pre class="code" data-lang="js"><code>    fs: {
+<!-- taught-source: rss-river/nord-desktop.js:112-157 --><p><strong>File: <code>nord-desktop.js</code></strong> (step 12.5, expose capability-shaped wrappers and the shared instance: the next part of this file; it goes <strong>below</strong> the code of the previous step)</p>
+<pre class="code" data-lang="js"><code>    fs: {
       readText: (path) =&gt; c('fs.readText', { path }), writeText: (path, text) =&gt; c('fs.writeText', { path, text }), append: (path, text) =&gt; c('fs.append', { path, text }),
       read: async (path) =&gt; unb64(await c('fs.read', { path })), write: (path, data) =&gt; c('fs.write', { path, data: b64(bytes(data)) }),
       list: (path = '') =&gt; c('fs.list', { path }), stat: (path) =&gt; c('fs.stat', { path }), exists: (path) =&gt; c('fs.exists', { path }), mkdir: (path) =&gt; c('fs.mkdir', { path }),
@@ -1755,7 +1807,8 @@ export default desktop;</code></pre>
 <!-- END GENERATED FILE WALKTHROUGH --><h2 id="complete-project-source">Complete project source<a class="anchor" href="#complete-project-source">#</a></h2>
 <p>All authored text files follow in offline CodeMirror viewers. The archive includes the original sprite sheet and all pinned binary/vendor dependencies and licences. It contains no scraped article collection: <code>demo.xml</code> is original, explicitly fictional tutorial material, and real news comes from the subscriptions you choose to refresh.</p>
 <!-- GENERATED GAME SOURCE: regenerate with node tools/build-code-workshops.mjs --><details>
-<summary>Complete app.js</summary><pre class="code" data-lang="js"><code>import { Save } from './save.js';
+<summary>Complete app.js</summary><p><strong>File: <code>app.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>import { Save } from './save.js';
 import { DEFAULT_FEEDS, parseFeed, mergeArticles, safeLink } from './feeds.js';
 import { createRiver } from './river.js';
 import { download } from './desk.js';
@@ -2056,11 +2109,13 @@ export async function mount(root) {
   };
 }</code></pre>
 </details><details>
-<summary>Complete .offline-allow</summary><pre class="code" data-lang="text"><code>hnrss.org
+<summary>Complete .offline-allow</summary><p><strong>File: <code>.offline-allow</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="text"><code>hnrss.org
 simonwillison.net
 github.blog</code></pre>
 </details><details>
-<summary>Complete demo.xml</summary><pre class="code" data-lang="xml"><code>&lt;?xml version=&quot;1.0&quot;?&gt;&lt;rss version=&quot;2.0&quot;&gt;&lt;channel&gt;&lt;title&gt;Original tutorial demo — not live news&lt;/title&gt;&lt;link&gt;https://example.org/&lt;/link&gt;&lt;description&gt;Fictional local content for learning RSS River.&lt;/description&gt;
+<summary>Complete demo.xml</summary><p><strong>File: <code>demo.xml</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="xml"><code>&lt;?xml version=&quot;1.0&quot;?&gt;&lt;rss version=&quot;2.0&quot;&gt;&lt;channel&gt;&lt;title&gt;Original tutorial demo — not live news&lt;/title&gt;&lt;link&gt;https://example.org/&lt;/link&gt;&lt;description&gt;Fictional local content for learning RSS River.&lt;/description&gt;
 &lt;item&gt;&lt;guid&gt;demo-1&lt;/guid&gt;&lt;title&gt;A small app can be a place you want to visit&lt;/title&gt;&lt;link&gt;https://example.org/demo/1&lt;/link&gt;&lt;description&gt;This is original tutorial demo content, not a published news report. Try starring this paper, switching to the 3D river and flicking it onto the desk.&lt;/description&gt;&lt;/item&gt;
 &lt;item&gt;&lt;guid&gt;demo-2&lt;/guid&gt;&lt;title&gt;AI reading list: keep the source next to the summary&lt;/title&gt;&lt;link&gt;https://example.org/demo/2&lt;/link&gt;&lt;description&gt;Demo: a good reading tool preserves the original link. The app stores plain text and lets you open the publisher when you want the complete article.&lt;/description&gt;&lt;/item&gt;
 &lt;item&gt;&lt;guid&gt;demo-3&lt;/guid&gt;&lt;title&gt;Why seconds and milliseconds deserve different names&lt;/title&gt;&lt;link&gt;https://example.org/demo/3&lt;/link&gt;&lt;description&gt;Demo coding note: engines often give delta time in seconds while a physics API expects milliseconds. Write the conversion at the boundary.&lt;/description&gt;&lt;/item&gt;
@@ -2071,7 +2126,8 @@ github.blog</code></pre>
 &lt;item&gt;&lt;guid&gt;demo-8&lt;/guid&gt;&lt;title&gt;Ship the smallest complete version&lt;/title&gt;&lt;link&gt;https://example.org/demo/8&lt;/link&gt;&lt;description&gt;Demo: include import, backup, empty states and connection errors before adding an account system. A complete local app is already useful.&lt;/description&gt;&lt;/item&gt;
 &lt;/channel&gt;&lt;/rss&gt;</code></pre>
 </details><details>
-<summary>Complete desk.js</summary><pre class="code" data-lang="js"><code>// Cache the pending promise too: rapid view changes must wait for the same script.
+<summary>Complete desk.js</summary><p><strong>File: <code>desk.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// Cache the pending promise too: rapid view changes must wait for the same script.
 const scriptLoads = new Map();
 export function loadScript(src) {
   if (!scriptLoads.has(src)) {
@@ -2237,7 +2293,8 @@ export function download(name, content, type = 'application/json') {
   setTimeout(() =&gt; URL.revokeObjectURL(url), 1000);
 }</code></pre>
 </details><details>
-<summary>Complete feeds.js</summary><pre class="code" data-lang="js"><code>// Feed URLs are user data, not CDN dependencies. Nothing is requested until Refresh.
+<summary>Complete feeds.js</summary><p><strong>File: <code>feeds.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// Feed URLs are user data, not CDN dependencies. Nothing is requested until Refresh.
 export const DEFAULT_FEEDS = [
   {
     id: 'hn',
@@ -2313,7 +2370,8 @@ export function mergeArticles(old, items) {
   return [...map.values()].slice(-240);
 }</code></pre>
 </details><details>
-<summary>Complete index.html</summary><pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
+<summary>Complete index.html</summary><p><strong>File: <code>index.html</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="html"><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;nord-app-id&quot; content=&quot;com.crowelian.rssriver&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;RSS River — a calm reading desk&lt;/title&gt;
 &lt;style&gt;html,body{margin:0;height:100%;background:#2e3440}#app{height:100vh}&lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;
@@ -2322,7 +2380,8 @@ import { mount } from './app.js';
 try { await mount(document.getElementById('app')); window.__nord_ready = true; } catch (e) { console.error(e); window.__nord_error = String(e); }
 &lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
 </details><details>
-<summary>Complete nord-desktop.js</summary><pre class="code" data-lang="js"><code>// Nord desktop API (M9, ADR-020): window.nord.desktop.* — files, dialogs, notifications, clipboard, storage, windows, menus, tray.
+<summary>Complete nord-desktop.js</summary><p><strong>File: <code>nord-desktop.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// Nord desktop API (M9, ADR-020): window.nord.desktop.* — files, dialogs, notifications, clipboard, storage, windows, menus, tray.
 // One API, three transports, picked automatically:
 //   ipc  — inside the native player (wry): window.ipc.postMessage ⇄ Rust `nord-desktop` bridge, capability-checked
 //   http — `nord serve` / editor Play: POST /__desktop/call (same Rust bridge, same permissions)
@@ -2480,7 +2539,8 @@ const desktop = create(globalThis.NORD_APP_ID ?? document.querySelector('meta[na
 (globalThis.nord ??= {}).desktop = desktop;
 export default desktop;</code></pre>
 </details><details>
-<summary>Complete nord.project.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete nord.project.json</summary><p><strong>File: <code>nord.project.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;format&quot;: 1,
   &quot;name&quot;: &quot;RSS River&quot;,
   &quot;id&quot;: &quot;com.crowelian.rssriver&quot;,
@@ -2556,7 +2616,8 @@ export default desktop;</code></pre>
   }
 }</code></pre>
 </details><details>
-<summary>Complete river.js</summary><pre class="code" data-lang="js"><code>import { createDesk } from './desk.js';
+<summary>Complete river.js</summary><p><strong>File: <code>river.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>import { createDesk } from './desk.js';
 export async function createRiver(canvas, articles, open) {
   const d = await createDesk(canvas),
     { B, scene } = d;
@@ -2653,7 +2714,8 @@ export async function createRiver(canvas, articles, open) {
   };
 }</code></pre>
 </details><details>
-<summary>Complete save.js</summary><pre class="code" data-lang="js"><code>// Versioned save slots on top of localStorage (or any Storage-like object).
+<summary>Complete save.js</summary><p><strong>File: <code>save.js</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="js"><code>// Versioned save slots on top of localStorage (or any Storage-like object).
 export class Save {
   constructor(gameId, { version = 1, storage = globalThis.localStorage, migrate = null } = {}) {
     this.prefix = `nord:${gameId}:`;
@@ -2686,7 +2748,8 @@ export class MemoryStorage {
   removeItem(k) { this.#m.delete(k); }
 }</code></pre>
 </details><details>
-<summary>Complete style.css</summary><pre class="code" data-lang="css"><code>:host {
+<summary>Complete style.css</summary><p><strong>File: <code>style.css</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="css"><code>:host {
   display: block;
   min-height: 100vh;
   color: #dce9ee;
@@ -2919,7 +2982,8 @@ footer {
   }
 }</code></pre>
 </details><details>
-<summary>Complete ui/reader.ui.json</summary><pre class="code" data-lang="json"><code>{
+<summary>Complete ui/reader.ui.json</summary><p><strong>File: <code>ui/reader.ui.json</code></strong> (the complete file, for comparison)</p>
+<pre class="code" data-lang="json"><code>{
   &quot;version&quot;: 1,
   &quot;name&quot;: &quot;reader&quot;,
   &quot;page&quot;: true,

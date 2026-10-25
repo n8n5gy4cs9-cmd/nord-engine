@@ -201,6 +201,7 @@
 </tbody></table>
 <h2 id="the-traps-c-to-javascript">The traps (C# to JavaScript)<a class="anchor" href="#the-traps-c-to-javascript">#</a></h2>
 <p><strong>1. <code>this</code> and callbacks.</strong> Inside a normal <code>function () {}</code> callback <code>this</code> is not your script. Use arrow functions:</p>
+<p><strong>File: your script, for example <code>scripts/Bomb.js</code></strong> (inside <code>Start()</code>; compare the wrong version with the arrow version)</p>
 <pre class="code" data-lang="js"><code>this.after(1, () =&gt; this.explode());        // arrow: this = the script
 this.after(1, function () { this.explode(); });   // WRONG: this is not the script</code></pre>
 <p><strong>2. Positions are arrays and are copied.</strong> <code>const p = entity.pos; p[0] += 1;</code> changes the entity&#39;s data but the engine is not told: call <code>entity.touch()</code>, or assign a new array (<code>entity.pos = [x, y, z]</code>). <code>entity.pos</code> returns the real array, so copy it if you want a snapshot: <code>const old = [...entity.pos]</code>.</p>

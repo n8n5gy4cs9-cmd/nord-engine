@@ -1317,9 +1317,9 @@ export function createBattleServer({
 
 #### 5.4 — Expire sessions and advance both boards on one server clock
 
-**Read:** `server.mjs`, lines 101–142.
+**Read:** `server.mjs`, lines 101–144.
 
-<!-- taught-source: jengatedris/server.mjs:101-142 -->
+<!-- taught-source: jengatedris/server.mjs:101-144 -->
 
 **File: `server.mjs`** (step 5.4, expire sessions and advance both boards on one server clock: the next part of this file; it goes **below** the code of the previous step)
 ```js
@@ -1356,6 +1356,8 @@ export function createBattleServer({
       '/': 'index.html',
       '/index.html': 'index.html',
       '/app.js': 'app.js',
+      '/lib/nord-ui.js': 'lib/nord-ui.js',
+      '/ui/menu.ui.json': 'ui/menu.ui.json',
       '/rules.js': 'rules.js',
       '/chaos.js': 'chaos.js',
       '/style.css': 'style.css',
@@ -1532,6 +1534,7 @@ Read the complete Nord page entry point and its failure path.
 
 <!-- taught-source: jengatedris/index.html:1-8 -->
 
+**File: `index.html`** (step 7.1, load the local runtime and start the app: the beginning of the file)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="com.crowelian.jengatedris"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JengaTedris — grid, topple and battle</title>
@@ -1655,6 +1658,7 @@ Read every stylesheet rule, grouped by the UI responsibility it controls.
 
 <!-- taught-source: jengatedris/style.css:1-44 -->
 
+**File: `style.css`** (step 9.1, set the app foundation and reusable visual language: the beginning of the file)
 ```css
 :host {
   display: block;
@@ -1712,6 +1716,7 @@ button:hover {
 
 <!-- taught-source: jengatedris/style.css:45-80 -->
 
+**File: `style.css`** (step 9.2, lay out board and previews: the next part of this file; it goes **below** the code of the previous step)
 ```css
 .layout {
   display: flex;
@@ -1761,6 +1766,7 @@ p {
 
 <!-- taught-source: jengatedris/style.css:81-94 -->
 
+**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
 ```css
 footer {
   clear: both;
@@ -1793,7 +1799,7 @@ The archive contains every file needed for the complete local game and Node batt
 <details>
 <summary>Complete app.js</summary>
 
-**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
+**File: `app.js`** (the complete file, for comparison)
 ```js
 import { newGrid, cells, ghost, COLORS, action, tickGrid, SHAPES } from './rules.js';
 import { createChaos } from './chaos.js';
@@ -2077,7 +2083,7 @@ export async function mount(root) {
 <details>
 <summary>Complete chaos.js</summary>
 
-**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
+**File: `chaos.js`** (the complete file, for comparison)
 ```js
 // Matter is already bundled with Nord's pinned Phaser. No CDN and no extra npm install.
 import { SHAPES, COLORS } from './rules.js';
@@ -2183,6 +2189,7 @@ export async function createChaos() {
 <details>
 <summary>Complete index.html</summary>
 
+**File: `index.html`** (the complete file, for comparison)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="nord-app-id" content="com.crowelian.jengatedris"><meta name="viewport" content="width=device-width,initial-scale=1"><title>JengaTedris — grid, topple and battle</title>
@@ -2199,7 +2206,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete nord.project.json</summary>
 
-**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
+**File: `nord.project.json`** (the complete file, for comparison)
 ```json
 {
   "format": 1,
@@ -2272,7 +2279,7 @@ try { await mount(document.getElementById('app')); window.__nord_ready = true; }
 <details>
 <summary>Complete rules.js</summary>
 
-**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
+**File: `rules.js`** (the complete file, for comparison)
 ```js
 // Grid mode has no physics bodies. Board values are colour indices, zero means empty.
 export const W = 10,
@@ -2484,7 +2491,7 @@ export function ghost(s) {
 <details>
 <summary>Complete server-kit.mjs</summary>
 
-**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
+**File: `server-kit.mjs`** (the complete file, for comparison)
 ```js
 // Small HTTP transport shared by the teaching servers. No npm packages.
 import http from 'node:http';
@@ -2596,7 +2603,7 @@ export const roomCode = (value) =>
 <details>
 <summary>Complete server.mjs</summary>
 
-**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
+**File: `server.mjs`** (the complete file, for comparison)
 ```js
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
@@ -2731,6 +2738,8 @@ export function createBattleServer({
       '/': 'index.html',
       '/index.html': 'index.html',
       '/app.js': 'app.js',
+      '/lib/nord-ui.js': 'lib/nord-ui.js',
+      '/ui/menu.ui.json': 'ui/menu.ui.json',
       '/rules.js': 'rules.js',
       '/chaos.js': 'chaos.js',
       '/style.css': 'style.css',
@@ -2747,6 +2756,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
 <details>
 <summary>Complete style.css</summary>
 
+**File: `style.css`** (the complete file, for comparison)
 ```css
 :host {
   display: block;
@@ -2849,7 +2859,7 @@ footer {
 <details>
 <summary>Complete ui/menu.ui.json</summary>
 
-**File: `style.css`** (step 9.3, clear auxiliary content and stack on narrow screens: the next part of this file; it goes **below** the code of the previous step)
+**File: `ui/menu.ui.json`** (the complete file, for comparison)
 ```json
 {
   "version": 1,

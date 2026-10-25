@@ -168,6 +168,7 @@ Every custom JavaScript/GLSL line follows, along with the inherited relay game, 
 
 ### scripts/prism.js
 
+**File: `scripts/prism.js`** (the complete file, for comparison)
 ```js
 import { NordScript } from 'nord';
 import { vertexSource, fragmentSource } from './prism-shaders.js';
@@ -218,6 +219,7 @@ export default class Prism extends NordScript {
 <details>
 <summary>Complete index.html</summary>
 
+**File: `index.html`** (the complete file, for comparison)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prism Relay — GLSL workshop</title>

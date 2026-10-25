@@ -27,8 +27,9 @@ Select **Ground** and remove its rigidbody and collider components, keeping the 
 
 ## 2. Add one action, one hazard and one script
 
-Open `nord.project.json`. Within the existing `input.actions` object add:
+**In the editor:** @ui[Project] tab ▸ unfold **Input Manager (actions and keys)**, type `sprint` and press **Add action**, then **＋ key** and press Left Shift, **＋ key** again for Right Shift.
 
+**In the file** `nord.project.json`: within the existing `input.actions` object the editor added (check it in a text editor):
 ```json
 "sprint": ["ShiftLeft", "ShiftRight"]
 ```
@@ -55,6 +56,7 @@ Attach it **once to Player**, save the scene and Play. Console must say Relay at
 
 The final file starts with four attributes: seconds, lives, normal speed and sprintSpeed. These appear in Inspector and let you tune difficulty without editing logic. It then finds the existing movement controller, the ordered gems and Hazard:
 
+**File: `scripts/relay.js`** (inside `start()`, after the attributes are read)
 ```js
 this.player = this.entity;
 this.controller = this.player.scripts.find(s => 'jumpSpeed' in s.attrs);
@@ -76,6 +78,7 @@ The remaining start fields initialize elapsed time, countdown, next index, lives
 
 Inside update:
 
+**File: `scripts/relay.js`** (inside `update(dt)`)
 ```js
 this.elapsed += dt;
 this.remaining = Math.max(0, this.remaining - dt);
@@ -92,6 +95,7 @@ Elapsed time measures performance and determines medals. Remaining time is a res
 
 The player movement script already controls velocity. We change its speed setting instead of moving the body a second time:
 
+**File: `scripts/relay.js`** (inside `update(dt)`, after the clock)
 ```js
 const sprint = this.input.down('sprint') && this.energy > 0;
 this.controller.attrs.speed = sprint ? this.attrs.sprintSpeed : this.attrs.speed;
@@ -109,6 +113,7 @@ This simple version permits small bursts while energy recharges if Shift remains
 
 The hazard moves side to side:
 
+**File: `scripts/relay.js`** (inside `update(dt)`, after the sprint code)
 ```js
 this.hazard.pos = [3 + Math.sin(this.elapsed * 1.5) * 2, 3.3, 18];
 const distance = (a, b) => Math.hypot(...a.map((v, i) => v - b[i]));
@@ -126,6 +131,7 @@ The distance helper subtracts matching coordinates with `map`. The spread operat
 
 The controller checks only `this.gems[this.next]`. It enlarges that crystal as a visual cue. Touching a later gem does nothing, preserving a clear route.
 
+**File: `scripts/relay.js`** (inside `update(dt)`, in the collection step)
 ```js
 const gem = this.gems[this.next];
 if (gem) {
@@ -138,6 +144,7 @@ if (gem) {
 
 Collection destroys the gem, finds its matching platform, copies a safe spawn position above that platform, advances next and gives the bonuses:
 
+**File: `scripts/relay.js`** (inside the method that handles a collected gem)
 ```js
 const platform = this.scene.find('Plat' + this.next);
 this.spawn = [platform.pos[0], platform.pos[1] + 1.5, platform.pos[2]];
@@ -156,6 +163,7 @@ When next reaches the array length, call `finish(true, ...)`. Zero time or lives
 
 On victory:
 
+**File: `scripts/relay.js`** (inside the method that handles the win)
 ```js
 this.best = this.best === null ? this.elapsed : Math.min(this.best, this.elapsed);
 this.save.set('crystal-relay.best', this.best);
@@ -194,6 +202,7 @@ Play a full run and test alternate paths through the state machine: early fall, 
 
 From the parent folder of your own project:
 
+**Terminal** (in the folder that contains your project folder):
 ```sh
 nord check my-crystal-relay
 nord build my-crystal-relay --out crystal-relay-web --zip
@@ -212,6 +221,7 @@ The first file is the entire custom relay controller, followed by all other text
 
 ### scripts/relay.js
 
+**File: `scripts/relay.js`** (the complete file, for comparison)
 ```js
 import { NordScript } from 'nord';
 
@@ -339,6 +349,7 @@ export default class CrystalRelay extends NordScript {
 <details>
 <summary>Complete index.html</summary>
 
+**File: `index.html`** (the complete file, for comparison)
 ```html
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Crystal Relay — code workshop</title>
@@ -364,6 +375,7 @@ try {
 <details>
 <summary>Complete nord.project.json</summary>
 
+**File: `nord.project.json`** (the complete file, for comparison)
 ```json
 {
   "format": 1,
@@ -444,6 +456,7 @@ try {
 <details>
 <summary>Complete scenes/main.scene.json</summary>
 
+**File: `scenes/main.scene.json`** (the complete file, for comparison)
 ```json
 {
   "format": 1,
@@ -1831,6 +1844,7 @@ try {
 <details>
 <summary>Complete scripts/camera-follow3d.js</summary>
 
+**File: `scripts/camera-follow3d.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"camera.follow3d","title":"Camera follow (3D rig)","category":"camera","tier":["3d"],"tags":["camera","follow","chase"],"description":"Chase camera for 3D: keeps an offset from a target entity (by name), smoothing position. Put on a camera entity (non-orbit) — it looks at the target."}
 import { NordScript } from 'nord';
@@ -1855,6 +1869,7 @@ export default class CameraFollow3D extends NordScript {
 <details>
 <summary>Complete scripts/mk.js</summary>
 
+**File: `scripts/mk.js`** (the complete file, for comparison)
 ```js
 // Tiny helpers to spawn coloured rectangles / circles / text at runtime (placeholder art). Generated by tools/gen_examples.mjs.
 const base = (name, x, y, z, tags, comps) => ({ name, tags: tags ?? [], transform: { pos: [x, y, z ?? 0], rot: [0, 0, 0], scale: [1, 1, 1] }, components: comps, scripts: [], children: [] });
@@ -1872,6 +1887,7 @@ export const aabb = (a, b) => Math.abs(a.pos[0] - b.pos[0]) * 2 < a.w + b.w && M
 <details>
 <summary>Complete scripts/physics-moving-platform.js</summary>
 
+**File: `scripts/physics-moving-platform.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"physics.moving-platform","title":"Moving platform","category":"physics","tier":["2d","3d"],"tags":["platform","path","carry"],"description":"Moves back and forth between its start and start+offset (sine or linear). Riders (anything standing on it with a rigidbody) are carried by applying the platform's delta."}
 import { NordScript } from 'nord';
@@ -1897,6 +1913,7 @@ export default class MovingPlatform extends NordScript {
 <details>
 <summary>Complete scripts/pickup.js</summary>
 
+**File: `scripts/pickup.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"gameplay.pickup","title":"Pickups & power-ups","category":"gameplay","tier":["2d","3d"],"tags":["coin","pickup","powerup","game-ready"],"requires":["trigger"],"description":"Put on collectible entities: when the player touches it, emits a global event (default 'score' + value), or applies a power-up (heal / speed / shield via entity events), plays a sound and disappears with a pop tween. Magnetises toward the player when close."}
 import { NordScript } from 'nord';
@@ -1926,6 +1943,7 @@ export default class Pickup extends NordScript {
 <details>
 <summary>Complete scripts/platformer3d.js</summary>
 
+**File: `scripts/platformer3d.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"controller3d.platformer","title":"3D platformer","category":"controllers","tier":["3d"],"tags":["platformer","jump","coyote"],"requires":["rigidbody","collider"],"description":"World-axis movement (works with a fixed or follow camera looking down +z): coyote time, jump buffer, variable jump height, double jump."}
 import { NordScript } from 'nord';
@@ -1958,6 +1976,7 @@ export default class Platformer3D extends NordScript {
 <details>
 <summary>Complete scripts/spin.js</summary>
 
+**File: `scripts/spin.js`** (the complete file, for comparison)
 ```js
 // @nord {"id": "util.spin", "title": "Spin", "category": "utilities", "tier": ["2d", "3d"], "tags": ["rotate", "simple"], "description": "Rotates the entity continuously around one axis.", "requires": []}
 // Spin — rotates the entity continuously. Works in 2D (z axis) and 3D (y axis).
@@ -1982,6 +2001,7 @@ export default class Spin extends NordScript {
 <details>
 <summary>Complete scripts/util-sfx.js</summary>
 
+**File: `scripts/util-sfx.js`** (the complete file, for comparison)
 ```js
 // @nord {"id":"util.sfx-synth","title":"Procedural sfx (jsfxr-style)","category":"utilities","tier":["any"],"tags":["audio","sfx","synth","retro"],"description":"Generates retro sound effects with WebAudio, no files needed: sfx(game,'coin'|'jump'|'hit'|'laser'|'explosion'|'powerup'). Listens to global events 'sfx' (name). import { sfx } from './util-sfx.js' for direct use."}
 import { NordScript } from 'nord';

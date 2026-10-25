@@ -41,6 +41,7 @@
 <pre class="code" data-lang="cs"><code>public static event Action&lt;int&gt; OnScore;   // GameManager
 OnScore?.Invoke(5);   OnScore += Handler;   OnScore -= Handler;</code></pre>
 <h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<p><strong>File: your script, for example <code>scripts/Coin.js</code></strong> (inside a method, the sender)</p>
 <pre class="code" data-lang="js"><code>this.game.events.emit('score', { score: 5 });
 const off = this.game.events.on('score', ({ score }) =&gt; this.refresh(score));
 this.game.events.once('gameover', () =&gt; this.showEnd());
@@ -48,6 +49,7 @@ off();                                       // unsubscribe (do it in onDestroy)
 this.game.events.on('*', ({ name, data }) =&gt; console.log(name, data));   // wildcard: every event (great for debugging)</code></pre>
 <p>Built-in events: <code>score</code>, <code>lives</code>, <code>state</code>, <code>gameover</code> (GameManager), <code>sceneLoad</code>, <code>sceneUnload</code>, <code>pause</code>, <code>resume</code>, <code>error</code>, <code>language</code>.</p>
 <h2 id="events-on-an-object">Events on an object<a class="anchor" href="#events-on-an-object">#</a></h2>
+<p><strong>File: <code>scripts/health.js</code></strong> (add <code>entity.emit</code> in the method that changes hp; the listener goes in another script&#39;s <code>start()</code>)</p>
 <pre class="code" data-lang="js"><code>// health.js
 this.entity.emit('hp', { hp: this.hp, max: this.max });
 // healthbar.js (on the same object or any script that has a reference)
@@ -57,15 +59,18 @@ const off = this.target.on('hp', ({ hp, max }) =&gt; this.bar.set(hp / max));</c
 <ol>
 <li>Button object: script emits when pressed:</li>
 </ol>
+<p><strong>File: <code>scripts/button.js</code></strong> (new file; attach it to the button object, which has a trigger collider)</p>
 <pre class="code" data-lang="js"><code>onTriggerEnter(o) { if (o.hasTag('player')) this.entity.emit('pressed'); }</code></pre>
 <ol start="2">
 <li>Door object: script has <code>open()</code>:</li>
 </ol>
+<p><strong>File: <code>scripts/door.js</code></strong> (new file; attach it to the door object)</p>
 <pre class="code" data-lang="js"><code>open() { this.entity.enabled = false; }</code></pre>
 <ol start="3">
 <li>Select the <strong>button</strong> ▸ <span class="c-ui">Inspector ▸ Signals ▸ +</span>: event <code>pressed</code>, target <code>Door</code>, method <code>open</code>. Done: when the button emits <code>pressed</code>, <code>Door</code>&#39;s scripts get <code>open(data)</code> called. (Target empty = the button itself.)</li>
 </ol>
 <h2 id="unityevent-and-eventbus-unity-names">UnityEvent and EventBus (Unity names)<a class="anchor" href="#unityevent-and-eventbus-unity-names">#</a></h2>
+<p><strong>File: <code>scripts/Alarm.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, UnityEvent, EventBus } from 'nord';
 
 export default class Switch extends MonoBehaviour {

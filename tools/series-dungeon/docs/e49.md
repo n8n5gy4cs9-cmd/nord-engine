@@ -56,7 +56,7 @@ A scene is a list of **GameObjects** (Nord calls them entities): a name, a posit
 1. **Floor.** @ui[Hierarchy ▸ + Create ▸ Sprite]. In the @ui[Inspector], rename it `Floor` (F2 in the Hierarchy also renames). Set **Position** to `320, 180, -5`. In the `sprite` component set **size** `640, 360` and **tint** `#2e3440`.
 2. **Hero.** @ui[Hierarchy ▸ + Create ▸ Sprite], rename it `Hero`, **Position** `320, 180, 2`, sprite **size** `24, 24`, **tint** `#88c0d0`. In the Inspector **Tags**, add the tag `Hero`.
 3. **Camera.** @ui[Hierarchy ▸ + Create ▸ Camera], rename it `Camera`, **Position** `320, 180, 10`. Its `camera` component has **zoom** `1`.
-4. Save the scene with @ui[File ▸ Save] (Cmd/Ctrl+S).
+4. Save the scene with @ui[File ▸ Save all] (Cmd+S).
 
 | Name | Position (x, y, z) | Sprite size | Tint | Notes |
 |---|---|---|---|---|

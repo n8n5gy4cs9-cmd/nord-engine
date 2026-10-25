@@ -24,13 +24,30 @@
 <p><img src="../../assets/screenshots/series-dungeon-1-moved.png" alt="The hero square, after moving to the right edge"></p>
 <p><strong>Download:</strong> <a href="../../assets/downloads/series-dungeon-part1-source.zip">Part 1 project</a>, also in <code>examples/series-dungeon/part1</code> of the engine. Unzip it, open <code>nord.project.json</code> in Nord and press <span class="c-ui">Play</span>.</p>
 <h2 id="1-a-new-project">1 A new project<a class="anchor" href="#1-a-new-project">#</a></h2>
-<p>Create a <strong>2D</strong> project called <code>dungeon</code> (<span class="c-ui">New project</span>) or from a terminal:</p>
+<p><strong>In the editor:</strong> start Nord and choose <span class="c-ui">New project</span>, type <code>dungeon</code> as the name, pick <strong>2D</strong> and press <strong>Create</strong>. The new project opens with an empty scene.</p>
+<p><strong>Terminal</strong> (in the folder where the project should be created), as an alternative to the editor:</p>
 <pre class="code" data-lang="bash"><code>nord new dungeon -t 2d</code></pre>
-<p><code>nord.project.json</code> is the Unity <em>Project Settings</em> in one file. We want a small, crisp screen that scales to fit any window, and no gravity, because we look at the dungeon from above:</p>
+<p>Now the project settings. In Unity this is <em>Project Settings</em>; in Nord it is the <span class="c-ui">Project</span> tab ▸ <strong>Project properties</strong>. We want a small, crisp screen that scales to fit any window, and no gravity, because we look at the dungeon from above:</p>
+<ol>
+<li><strong>Game size</strong>: <code>640</code> × <code>360</code>.</li>
+<li><strong>Scaling</strong>: <code>fit</code>.</li>
+<li><strong>Pixel art</strong>: off.</li>
+<li><strong>Background</strong>: <code>#14161c</code>.</li>
+<li><strong>Physics</strong>: <code>arcade</code>, <strong>gravity Y</strong>: <code>0</code>.</li>
+<li>Press <strong>Apply project properties</strong>.</li>
+</ol>
+<p><strong>In the file</strong> <code>nord.project.json</code> (open it in a text editor to check what the editor wrote):</p>
 <pre class="code" data-lang="json"><code>&quot;display&quot;: { &quot;width&quot;: 640, &quot;height&quot;: 360, &quot;scale&quot;: &quot;fit&quot;, &quot;pixelArt&quot;: false, &quot;background&quot;: &quot;#14161c&quot; },
 &quot;physics&quot;: { &quot;engine&quot;: &quot;arcade&quot;, &quot;gravity&quot;: [0, 0, 0] },</code></pre>
+<p>The <strong>input actions</strong> (<code>left</code>, <code>right</code>, <code>up</code>, <code>down</code>) that <code>Input.GetAxis</code> reads are already in every new project; you can see them in <span class="c-ui">Project</span> tab ▸ <strong>Input Manager (actions and keys)</strong>.</p>
 <h2 id="2-the-scene">2 The scene<a class="anchor" href="#2-the-scene">#</a></h2>
-<p>A scene is a list of <strong>GameObjects</strong> (Nord calls them entities): a name, a position, components and scripts. Create three with <span class="c-ui">Hierarchy ▸ Create ▸ Sprite</span>:</p>
+<p>A scene is a list of <strong>GameObjects</strong> (Nord calls them entities): a name, a position, components and scripts. The new project already has an empty <code>main</code> scene. Build it in the editor:</p>
+<ol>
+<li><strong>Floor.</strong> <span class="c-ui">Hierarchy ▸ + Create ▸ Sprite</span>. In the <span class="c-ui">Inspector</span>, rename it <code>Floor</code> (F2 in the Hierarchy also renames). Set <strong>Position</strong> to <code>320, 180, -5</code>. In the <code>sprite</code> component set <strong>size</strong> <code>640, 360</code> and <strong>tint</strong> <code>#2e3440</code>.</li>
+<li><strong>Hero.</strong> <span class="c-ui">Hierarchy ▸ + Create ▸ Sprite</span>, rename it <code>Hero</code>, <strong>Position</strong> <code>320, 180, 2</code>, sprite <strong>size</strong> <code>24, 24</code>, <strong>tint</strong> <code>#88c0d0</code>. In the Inspector <strong>Tags</strong>, add the tag <code>Hero</code>.</li>
+<li><strong>Camera.</strong> <span class="c-ui">Hierarchy ▸ + Create ▸ Camera</span>, rename it <code>Camera</code>, <strong>Position</strong> <code>320, 180, 10</code>. Its <code>camera</code> component has <strong>zoom</strong> <code>1</code>.</li>
+<li>Save the scene with <span class="c-ui">File ▸ Save all</span> (Cmd+S).</li>
+</ol>
 <table>
 <thead>
 <tr>
@@ -53,7 +70,7 @@
 <td>320, 180, <strong>2</strong></td>
 <td>24 × 24</td>
 <td><code>#88c0d0</code></td>
-<td>give it the tag <code>Hero</code></td>
+<td>tag <code>Hero</code></td>
 </tr>
 <tr>
 <td><code>Camera</code></td>
@@ -63,6 +80,11 @@
 <td>a <strong>camera</strong> component, zoom 1</td>
 </tr>
 </tbody></table>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code> (open it in a text editor to check): the <code>Hero</code> entity looks like this. Floor and Camera have the same shape.</p>
+<pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Hero&quot;, &quot;tags&quot;: [&quot;Hero&quot;],
+  &quot;transform&quot;: { &quot;pos&quot;: [320, 180, 2], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [1, 1, 1] },
+  &quot;components&quot;: [ { &quot;type&quot;: &quot;sprite&quot;, &quot;texture&quot;: &quot;assets/sprites/square.png&quot;, &quot;size&quot;: [24, 24], &quot;tint&quot;: &quot;#88c0d0&quot;, &quot;alpha&quot;: 1 } ],
+  &quot;scripts&quot;: [] }</code></pre>
 <blockquote>
 <p><strong>What is z for?</strong> In 2D, <code>z</code> is the draw order: bigger is in front (like Unity&#39;s <em>Order in Layer</em>). The floor at −5 is behind everything.</p>
 </blockquote>
@@ -80,6 +102,7 @@ export default class Hero extends MonoBehaviour {
 <p>The Unity methods you know work with the same names and the same meaning: <code>Awake</code>, <code>Start</code>, <code>Update</code>, <code>FixedUpdate</code>, <code>LateUpdate</code>, <code>OnEnable</code>, <code>OnDisable</code>, <code>OnDestroy</code>, <code>OnTriggerEnter</code>, <code>OnCollisionEnter</code>, <code>OnMouseDown</code>.</p>
 <h2 id="4-moving">4 Moving<a class="anchor" href="#4-moving">#</a></h2>
 <p><code>Input.GetAxis(&#39;Horizontal&#39;)</code> and <code>(&#39;Vertical&#39;)</code> return −1 … 1 for A/D, W/S, the arrows and a gamepad stick, just like Unity&#39;s default Input Manager. Note the import: Nord&#39;s <code>Input</code> for Unity code is called <code>UnityInput</code>, so we rename it on import.</p>
+<p><strong>File: <code>scripts/hero.js</code></strong> (new file, the whole file; attach it to <code>Hero</code>)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, UnityInput as Input, Time, Mathf, Vector2, Vector3 } from 'nord';
 
 export default class Hero extends MonoBehaviour {
@@ -95,6 +118,7 @@ export default class Hero extends MonoBehaviour {
       p.z);
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select <code>Hero</code>, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/hero.js</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <p>Walk through it:</p>
 <ul>
 <li><code>static attributes = SerializeField({ speed: 160 })</code> is <code>[SerializeField] float speed = 160;</code>. The field appears in the <span class="c-ui">Inspector</span> with that default, you can change it while the game runs, the value is saved in the scene, and you read it as <code>this.speed</code>.</li>

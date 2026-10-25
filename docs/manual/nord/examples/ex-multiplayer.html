@@ -25,6 +25,7 @@ export default class NetPlayer extends MonoBehaviour {
   }
 }</code></pre>
 <h2 id="2-a-lobby-host-or-join">2. A lobby: host or join<a class="anchor" href="#2-a-lobby-host-or-join">#</a></h2>
+<p><strong>File: <code>scripts/Lobby.js</code></strong> (new file, the whole file; attach it to an empty <code>Lobby</code> object)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour } from 'nord';
 
 export default class Lobby extends MonoBehaviour {
@@ -50,6 +51,7 @@ export default class Lobby extends MonoBehaviour {
 <h2 id="3-try-it">3. Try it<a class="anchor" href="#3-try-it">#</a></h2>
 <p><span class="c-ui">Project ▸ Play multiplayer (browser windows)</span> opens 2–3 windows (the first hosts, the others join) and can add <strong>100 ms lag and 2 % packet loss</strong>. Or run <code>nord serve</code> and open <code>http://localhost:4173/?net=host:room1</code> and <code>?net=join:room1</code> in two windows.</p>
 <h2 id="messages-and-rpc">Messages and RPC<a class="anchor" href="#messages-and-rpc">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (inside <code>Start()</code>, after <code>this.game.net</code> is connected)</p>
 <pre class="code" data-lang="js"><code>const net = this.game.net;
 net.send('chat', { text: 'hello' });                                   // to everybody else
 net.on('message', ({ from, name, data }) =&gt; this.log(from, name, data));

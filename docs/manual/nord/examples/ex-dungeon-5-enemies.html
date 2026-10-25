@@ -14,10 +14,25 @@
 <p><img src="../../assets/screenshots/series-dungeon-5-chase.png" alt="An enemy chases the hero"></p>
 <p><strong>Download:</strong> <a href="../../assets/downloads/series-dungeon-part5-source.zip">Part 5 project</a>, also in <code>examples/series-dungeon/part5</code>.</p>
 <h2 id="1-the-enemy-prefab">1 The enemy prefab<a class="anchor" href="#1-the-enemy-prefab">#</a></h2>
-<p>The letter <code>e</code> in <code>map.js</code> marks an enemy. Make <code>prefabs/enemy.prefab.json</code>: a red square sprite (22 × 22, <code>#bf616a</code>), a <strong>dynamic rigidbody</strong>, a box collider 22 × 22, the tag <code>Enemy</code> and the script <code>enemy.js</code>. In <code>level.js</code> add one branch next to the coin one:</p>
+<p>The letter <code>e</code> in <code>map.js</code> marks an enemy. Make the enemy prefab in the editor:</p>
+<ol>
+<li><span class="c-ui">Hierarchy ▸ + Create ▸ Sprite</span>, rename it <code>Enemy</code>, sprite <strong>size</strong> <code>22, 22</code>, <strong>tint</strong> <code>#bf616a</code>, tag <code>Enemy</code>.</li>
+<li><span class="c-ui">Inspector ▸ + Add component ▸ rigidbody</span>, <strong>mode</strong> <code>dynamic</code>; <span class="c-ui">+ Add component ▸ collider</span>, <strong>shape</strong> <code>box</code>, <strong>size</strong> <code>22, 22</code>.</li>
+<li>After writing <code>scripts/enemy.js</code> (next section): <span class="c-ui">Inspector ▸ + Add script ▸ scripts/enemy.js</span>.</li>
+<li><span class="c-ui">right-click <code>Enemy</code> ▸ Create prefab</span>, then delete <code>Enemy</code> from the scene.</li>
+</ol>
+<p><strong>In the file</strong> <code>prefabs/enemy.prefab.json</code>:</p>
+<pre class="code" data-lang="json"><code>{ &quot;format&quot;: 1, &quot;root&quot;: { &quot;name&quot;: &quot;Enemy&quot;, &quot;tags&quot;: [&quot;Enemy&quot;],
+  &quot;components&quot;: [
+    { &quot;type&quot;: &quot;sprite&quot;, &quot;texture&quot;: &quot;assets/sprites/square.png&quot;, &quot;size&quot;: [22, 22], &quot;tint&quot;: &quot;#bf616a&quot;, &quot;alpha&quot;: 1 },
+    { &quot;type&quot;: &quot;rigidbody&quot;, &quot;mode&quot;: &quot;dynamic&quot; },
+    { &quot;type&quot;: &quot;collider&quot;, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: [22, 22] } ],
+  &quot;scripts&quot;: [ { &quot;path&quot;: &quot;scripts/enemy.js&quot;, &quot;attributes&quot;: {} } ] } }</code></pre>
+<p>In <code>level.js</code> add one branch next to the coin one:</p>
 <pre class="code" data-lang="js"><code>else if (ch === 'e') await Instantiate('prefabs/enemy.prefab.json', { pos: [x, y, 2] });</code></pre>
 <h2 id="2-the-enemy-brain">2 The enemy brain<a class="anchor" href="#2-the-enemy-brain">#</a></h2>
 <p>Two moods: if the hero is near, <strong>chase</strong>; if not, <strong>wander</strong>. The wandering is a <strong>coroutine</strong>: &quot;pick a direction, wait one or two seconds, pick another&quot; without a single timer variable.</p>
+<p><strong>File: <code>scripts/enemy.js</code></strong> (new file, the whole file; attach it to the <code>enemy</code> prefab)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Random, Vector2, Vector3, WaitForSeconds } from 'nord';
 import Health from './health.js';
 
@@ -53,6 +68,7 @@ export default class Enemy extends MonoBehaviour {
     if (this.hero &amp;&amp; !this.hero.destroyed &amp;&amp; this.distance &lt; this.reach) this.hero.getScript(Health).TakeDamage(this.entity);
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select the <code>enemy</code> prefab, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/enemy.js</span>. Prefabs: first <span class="c-ui">Assets ▸ right-click the prefab ▸ Open prefab</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li><code>*Wander()</code> is a generator, <code>yield new WaitForSeconds(…)</code> is the same as in Unity. <code>this.StartCoroutine(this.Wander())</code> starts it. It stops by itself when the enemy is destroyed.</li>
 <li><code>Random.Range(1.0, 2.5)</code> is a float because 2.5 is not a whole number (two whole numbers would give an integer, as in C#).</li>
@@ -65,6 +81,7 @@ export default class Enemy extends MonoBehaviour {
 </blockquote>
 <h2 id="3-lives-health-and-knockback">3 Lives, Health and knockback<a class="anchor" href="#3-lives-health-and-knockback">#</a></h2>
 <p>The hero&#39;s hearts are the <strong>GameManager&#39;s lives</strong> (<code>startLives: 3</code> in the scene). A small <code>Health</code> script adds what a game needs around them: a <em>grace period</em> and blinking. Add <code>health.js</code> to the Hero:</p>
+<p><strong>File: <code>scripts/health.js</code></strong> (new file, the whole file; attach it to <code>Hero</code>, next to <code>hero.js</code>)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, GameManager, Time } from 'nord';
 import Hero from './hero.js';
 
@@ -87,6 +104,7 @@ export default class Health extends MonoBehaviour {
     this.entity.set('sprite', 'alpha', blink ? 0.35 : 1);            // a field of the sprite component
   }
 }</code></pre>
+<p><strong>In the editor:</strong> select <code>Hero</code>, next to <code>hero.js</code>, then <span class="c-ui">Inspector ▸ + Add script ▸ scripts/health.js</span>. The scene or prefab file then lists the script under <code>&quot;scripts&quot;</code>.</p>
 <ul>
 <li><strong>Grace.</strong> After a hit the hero is protected for <code>grace</code> seconds; without it an enemy touching the hero would take a heart every frame.</li>
 <li><code>GameManager.instance.LoseLife()</code> emits <code>lives</code>, and at zero <code>gameover</code>. Health does not know about hearts or HUDs.</li>
@@ -94,6 +112,7 @@ export default class Health extends MonoBehaviour {
 <li>The blink toggles the sprite&#39;s alpha ten times a second: <code>entity.set(&#39;sprite&#39;, &#39;alpha&#39;, value)</code> changes a field of the sprite component.</li>
 </ul>
 <p>The hero reacts to the knockback:</p>
+<p><strong>File: <code>scripts/hero.js</code></strong> (replace the whole file from part 2)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, UnityInput as Input, GameManager, Time, Vector2 } from 'nord';
 
 export default class Hero extends MonoBehaviour {
@@ -122,6 +141,7 @@ export default class Hero extends MonoBehaviour {
 </ul>
 <h2 id="4-hearts-and-game-over">4 Hearts and game over<a class="anchor" href="#4-hearts-and-game-over">#</a></h2>
 <p>The HUD draws hearts from the manager&#39;s lives and has one <code>Finish</code> for both endings:</p>
+<p><strong>File: <code>scripts/hud.js</code></strong> (replace the whole file from part 4)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager, EventBus, UnityInput as Input, KeyCode } from 'nord';
 
 export default class Hud extends MonoBehaviour {

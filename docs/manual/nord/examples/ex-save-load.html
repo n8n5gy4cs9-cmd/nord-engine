@@ -15,6 +15,7 @@
 <h3 id="unity">Unity<a class="anchor" href="#unity">#</a></h3>
 <pre class="code" data-lang="cs"><code>PlayerPrefs.SetInt(&quot;best&quot;, 120); int best = PlayerPrefs.GetInt(&quot;best&quot;, 0); PlayerPrefs.Save();</code></pre>
 <h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
+<p><strong>File: your script, for example <code>scripts/Score.js</code></strong> (calls inside any method)</p>
 <pre class="code" data-lang="js"><code>this.save.set('best', 120);                   // anything JSON-able: numbers, strings, arrays, objects
 const best = this.save.get('best', 0);        // second argument = default
 // Unity names also work:
@@ -23,9 +24,11 @@ PlayerPrefs.SetInt('best', 120); PlayerPrefs.GetInt('best', 0); PlayerPrefs.HasK
 <p>There is no <code>Save()</code> call: writes happen immediately.</p>
 <h2 id="high-score-the-easy-way">High score the easy way<a class="anchor" href="#high-score-the-easy-way">#</a></h2>
 <p><code>GameManager.instance.SaveHighScore()</code> stores the score only if it beats the old one and returns the best:</p>
+<p><strong>File: your script, for example <code>scripts/GameOver.js</code></strong> (inside the method that ends the run)</p>
 <pre class="code" data-lang="js"><code>const best = GameManager.instance.SaveHighScore('highscore');
 this.ui.label(`Best ${best}`, { anchor: 'c', y: 40 });</code></pre>
 <h2 id="whole-game-state-in-a-slot">Whole game state in a slot<a class="anchor" href="#whole-game-state-in-a-slot">#</a></h2>
+<p><strong>File: <code>scripts/SaveSlots.js</code></strong> (add these methods to the class; <code>save</code> writes a slot, <code>load</code> reads it)</p>
 <pre class="code" data-lang="js"><code>// save
 saveGame() {
   const p = this.scene.find('Player');
@@ -48,6 +51,7 @@ async loadGame() {
 </ul>
 <aside class="box tip"><div class="box-title">Tip</div><p>Remember: loading a scene creates <strong>new</strong> objects. Restore values <em>after</em> <code>await loadScene</code>, from the new scene&#39;s objects.</p>
 </aside><h2 id="settings-volume-language-controls">Settings (volume, language, controls)<a class="anchor" href="#settings-volume-language-controls">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Options.js</code></strong> (inside <code>Start()</code> to read, in the slider callbacks to write)</p>
 <pre class="code" data-lang="js"><code>const vol = this.save.get('settings.volume', 0.8);
 this.audio.volume('master', vol);
 this.save.set('settings.volume', 0.5);</code></pre>
