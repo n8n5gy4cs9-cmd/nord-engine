@@ -14,6 +14,7 @@
   const out = {};
   const defs = Class?.attributes ?? {};
   for (const [k, def] of Object.entries(defs)) {
+    if (def.type === 'button') continue; // an Inspector button, not a value
     const d = structuredClone(def.default);
     let v = k in given ? given[k] : d;
     if (def.type === 'enum') v = def.options?.includes(v) ? v : (def.options?.includes(d) ? d : def.options?.[0]);
@@ -30,7 +31,7 @@
     }
     out[k] = v;
   }
-  for (const k of Object.keys(given)) if (!(k in defs)) warn(`[nord] unknown attribute '${k}' on ${Class?.name ?? 'script'}`);
+  for (const k of Object.keys(given)) if (!(k in defs) &amp;&amp; defs[k]?.type !== 'button') warn(`[nord] unknown attribute '${k}' on ${Class?.name ?? 'script'}`);
   return out;
 }</code></pre><h2 id="export-registercomponent"><code>registerComponent</code></h2><p class="muted">Import from <code>nord</code>. Definition from <code>runtime/core/entity.js</code>; names and defaults below are taken directly from the runtime.</p><pre class="code" data-lang="js"><code>export const registerComponent = (type, impl) =&gt; components.set(type, impl);</code></pre><h2 id="export-components"><code>components</code></h2><p>type -&gt; { create(entity, data, comp), update?(comp, dt), destroy?(comp), set?(comp, key, value) } — filled by backends.</p>
 <p class="muted">Import from <code>nord</code>. Definition from <code>runtime/core/entity.js</code>; names and defaults below are taken directly from the runtime.</p><pre class="code" data-lang="js"><code>export const components = new Map();</code></pre><h2 id="export-applyoverrides"><code>applyOverrides</code></h2><p>Deep-merge prefab overrides onto entity data. Plain objects merge; objects with numeric keys patch arrays by index.</p>

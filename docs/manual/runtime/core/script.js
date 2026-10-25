@@ -41,6 +41,7 @@ export function resolveAttributes(Class, given = {}, warn = console.warn) {
   const out = {};
   const defs = Class?.attributes ?? {};
   for (const [k, def] of Object.entries(defs)) {
+    if (def.type === 'button') continue; // an Inspector button, not a value
     const d = structuredClone(def.default);
     let v = k in given ? given[k] : d;
     if (def.type === 'enum') v = def.options?.includes(v) ? v : (def.options?.includes(d) ? d : def.options?.[0]);
@@ -57,6 +58,6 @@ export function resolveAttributes(Class, given = {}, warn = console.warn) {
     }
     out[k] = v;
   }
-  for (const k of Object.keys(given)) if (!(k in defs)) warn(`[nord] unknown attribute '${k}' on ${Class?.name ?? 'script'}`);
+  for (const k of Object.keys(given)) if (!(k in defs) && defs[k]?.type !== 'button') warn(`[nord] unknown attribute '${k}' on ${Class?.name ?? 'script'}`);
   return out;
 }

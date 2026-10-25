@@ -396,7 +396,98 @@ Press @ui[Play]: a real analog clock. The hours arm creeps, the minutes arm glid
 
 > **No casting needed.** The C# exercise has to convert `double` to `float`. JavaScript has one number type, so there is no cast and no `f` suffix.
 
-## 5 What you learned (and the traps)
+## 5 Optional: let the editor build the hour indicators for you
+
+Typing twelve positions is a good way to learn transforms, and a bad way to spend an afternoon when you want a 24-hour dial. Unity solves this with editor scripts and buttons in the Inspector. Nord has the same idea: a script can declare an **Inspector button**, and pressing it runs a **static method of the script, in the editor**, on the object that has the script. The method edits a copy of that object (for example adds children) and the editor applies the result as one **undo** step.
+
+### 5.1 The script
+
+1. @ui[Assets ▸ right-click ▸ New MonoBehaviour script (Unity-style)], name it `HourIndicators`, open it and replace everything with:
+
+**File: `scripts/HourIndicators.js`** (new file, the whole file; attach it to the `Clock` object, **not** to the face)
+```js
+import { MonoBehaviour, SerializeField, Header, Tooltip, Button } from 'nord';
+
+/** Optional helper for the clock: builds the twelve hour indicators for you. It does nothing while the game runs; it works in the editor. */
+export default class HourIndicators extends MonoBehaviour {
+  static attributes = SerializeField({
+    radius: Header('Layout', Tooltip('Distance of every indicator from the centre of the clock', 4)),
+    depth: Tooltip('Z position: negative is in front of the face', -0.25),
+    indicatorSize: [0.5, 1, 0.1],
+    material: { type: 'asset', assetType: 'material', default: 'assets/materials/hour-indicator.mat.json' },
+    generate: Button('Generate hour indicators', 'GenerateHourIndicators'),
+  });
+
+  /** Runs in the editor when you press the button in the Inspector. `ctx.entity` is the object that has this script (the clock). */
+  static GenerateHourIndicators(ctx) {
+    for (const old of ctx.FindAll((e) => /^Hour Indicator \d+$/.test(e.name))) ctx.Destroy(old);   // regenerate cleanly
+
+    const { radius, depth, indicatorSize, material } = ctx.attrs;
+    for (let hour = 1; hour <= 12; hour++) {
+      const angle = (hour * 30 * Math.PI) / 180;               // each hour is 30 degrees, clockwise from the top
+      ctx.CreateChild({
+        name: `Hour Indicator ${hour}`,
+        pos: [radius * Math.sin(angle), radius * Math.cos(angle), depth],
+        rot: [0, 0, -hour * 30],                               // clockwise is negative, like the manual version
+        scale: indicatorSize,
+        components: [
+          { type: 'mesh', shape: 'box', size: [1, 1, 1], castShadow: true },
+          { type: 'material', asset: material },
+        ],
+      });
+    }
+    ctx.log('Created 12 hour indicators');
+  }
+}
+```
+
+2. Put it on the `Clock` object (not on `Face`). `Face` is scaled `10, 0.2, 10` and turned 90°, and children inherit their parent's scale and rotation, so indicators created under the face would be squashed and turned. Created under `Clock` they have exactly the numbers of the manual version.
+
+When you select `Clock`, the Inspector shows a section **Layout** with `Radius`, `Depth`, `Indicator size`, `Material` and a button **Generate hour indicators**. Delete the twelve indicators you made by hand, press the button, and they appear again; press it twice and you still get twelve (the script removes the old ones first). **Edit ▸ Undo** takes the whole batch back.
+
+**In the file** `scenes/main.scene.json`, the script entry of `Clock` holds only values (a button is not a value, so it is not stored):
+```json
+{ "path": "scripts/HourIndicators.js", "attributes": {
+  "radius": 4, "depth": -0.25, "indicatorSize": [0.5, 1, 0.1], "material": "assets/materials/hour-indicator.mat.json" } }
+```
+
+### 5.2 How it works
+
+| In the script | Unity equivalent | What it does |
+|---|---|---|
+| `Button('Generate hour indicators', 'GenerateHourIndicators')` | a button in a custom editor, or `[ContextMenu]` | a button in the Inspector that calls the **static** method with that name |
+| `static GenerateHourIndicators(ctx) { … }` | an `Editor` script method | runs in the editor, not in the game |
+| `ctx.entity` | `target` of the editor | a copy of the object that has the script, as scene data |
+| `ctx.attrs` | the serialized fields | the current values of the Inspector fields (`radius`, `depth`, …) |
+| `ctx.CreateChild({ name, pos, rot, scale, components })` | `new GameObject` + `SetParent` | adds a child; pass `ctx.CreateChild(data, parent)` for a deeper level |
+| `ctx.FindAll(test)`, `ctx.Find(name)` | `transform.Find` | look through the object's children |
+| `ctx.Destroy(child)` | `DestroyImmediate` | removes a child |
+| `ctx.log(text)` | `Debug.Log` | writes to the @ui[Console] |
+
+The component list you pass to `CreateChild` is the same data the Inspector writes (`{ "type": "mesh", "shape": "box", … }`), so anything you can build by hand you can generate. Errors show in the Console as `[script button] …`.
+
+> **Trap: the method must be `static`.** An ordinary method (`GenerateHourIndicators() {}`) belongs to a script instance, and in the editor no instance exists, because the game is not running. If the button does nothing, check the Console for `has no static method`.
+
+### 5.3 More Inspector options, like Unity's attributes
+
+The same `SerializeField({ … })` list can shape the Inspector. These helpers are written inside `static attributes`; the editor reads them without running any code.
+
+| Unity | Nord (inside `SerializeField`) | Effect |
+|---|---|---|
+| `[Header("Layout")]` | `radius: Header('Layout', 4)` or `{ default: 4, header: 'Layout' }` | a bold heading above the field |
+| `[Tooltip("…")]` | `Tooltip('Text', 4)` or `{ default: 4, tooltip: 'Text' }` | text when you hover the field name |
+| `[Space(10)]` | `Space(10, 4)` or `{ default: 4, space: 10 }` | extra space above the field |
+| `[Range(0, 10)]` | `Range(0, 10, 5)` | a slider |
+| `[TextArea]` | `TextArea('hello')` or `{ default: 'hello', multiline: true }` | a multi-line text box |
+| read-only field | `ReadOnly(5)` or `{ default: 5, readonly: true }` | shown, greyed out |
+| `[HideInInspector]` | `HideInInspector(5)` or `{ default: 5, hidden: true }` | kept and saved, not shown |
+| an enum | `Enum(['idle', 'chase'], 'idle')` | a drop-down |
+| a reference to another object | `EntityRef('Name')` | a picker of the scene's objects (holds the name) |
+| a button | `Button('Label', 'method')` | the button of this section |
+
+Helpers combine: `Header('Layout', Tooltip('Distance from the centre', Range(0, 10, 4)))`.
+
+## 6 What you learned (and the traps)
 
 | Unity idea | Where you used it in Nord |
 |---|---|
@@ -407,6 +498,7 @@ Press @ui[Play]: a real analog clock. The hours arm creeps, the minutes arm glid
 | Material and colour (albedo) | three `.mat.json` files, hex `#494949`, `#000000`, `#B30000` |
 | Pivot object | rotating around the clock's centre instead of the arm's own centre |
 | Component and script | `Clock.js` added with @ui[+ Add script] |
+| Editor scripts and Inspector buttons | `HourIndicators.js` with `Button(...)` and a static method |
 | `[SerializeField]` | `static attributes = SerializeField({ … })` |
 | `Awake` / `Start` / `Update` | look up objects in `Start`, move the arms in `Update` |
 | `Quaternion.Euler`, `localRotation` | the arm rotations |

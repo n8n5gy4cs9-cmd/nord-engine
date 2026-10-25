@@ -289,15 +289,19 @@ class Coroutine {
 }
 
 // ---------- MonoBehaviour ----------
-/** Declare attributes Unity-style: `static attributes = SerializeField({ speed: 5, name: 'Bob', jump: { default: 3, min: 0, max: 10 } })`. */
+/** Type of a plain default value (the same rule the Inspector uses when it reads the script source). */
+const inferType = (v) => (typeof v === 'number' ? 'number' : typeof v === 'boolean' ? 'bool' : typeof v === 'string' ? (/^#[0-9a-f]{3,8}$/i.test(v) ? 'color' : 'string') : Array.isArray(v) ? (v.length === 3 ? 'vec3' : 'vec2') : 'string');
+/**
+ * Declare attributes Unity-style: `static attributes = SerializeField({ speed: 5, name: 'Bob', jump: { default: 3, min: 0, max: 10 } })`.
+ * Extra keys on a field are Inspector options: `header`, `tooltip`, `space`, `readonly`, `hidden`, `multiline`, `label`; or use the helpers
+ * `Header('Movement', 5)`, `Tooltip('…', f)`, `Space(8, f)`, `ReadOnly(f)`, `HideInInspector(f)`, `TextArea(f)`, `Range(0, 10, 5)`, `Button('Label', 'method')`.
+ */
 export function SerializeField(fields) {
   const out = {};
   for (const [k, v] of Object.entries(fields)) {
-    if (v && typeof v === 'object' && !Array.isArray(v) && 'default' in v) { out[k] = { type: typeof v.default === 'number' ? 'number' : 'string', ...v }; continue; }
-    if (typeof v === 'number') out[k] = { type: 'number', default: v };
-    else if (typeof v === 'boolean') out[k] = { type: 'bool', default: v };
-    else if (typeof v === 'string') out[k] = { type: /^#[0-9a-f]{3,8}$/i.test(v) ? 'color' : 'string', default: v };
-    else if (Array.isArray(v)) out[k] = { type: v.length === 3 ? 'vec3' : 'vec2', default: v };
+    if (v && typeof v === 'object' && !Array.isArray(v) && ('default' in v || 'type' in v)) { out[k] = { type: v.type ?? inferType(v.default), ...v }; continue; }
+    if (v === undefined || v === null || typeof v === 'object' && !Array.isArray(v)) continue;
+    out[k] = { type: inferType(v), default: v };
   }
   return out;
 }
@@ -308,6 +312,24 @@ export const Range = (min, max, def = min) => ({ default: def, min, max });
 export const Enum = (options, def = options[0]) => ({ type: 'enum', options, default: def });
 /** Field that points at another object by name: `SerializeField({ target: EntityRef() })`, read it with `this.Find(this.target)`. */
 export const EntityRef = (def = '') => ({ type: 'entity', default: def });
+const asField = (f) => (f && typeof f === 'object' && !Array.isArray(f) ? { ...f } : { default: f });
+/** Unity's `[Header("Movement")]`: a bold heading above the field in the Inspector. */
+export const Header = (text, field) => ({ ...asField(field), header: text });
+/** `[Tooltip("…")]`: text shown when hovering the field name. */
+export const Tooltip = (text, field) => ({ ...asField(field), tooltip: text });
+/** `[Space(8)]`: extra space above the field. */
+export const Space = (px, field) => ({ ...asField(field), space: px });
+/** Shown in the Inspector but not editable. */
+export const ReadOnly = (field) => ({ ...asField(field), readonly: true });
+/** `[HideInInspector]`: kept (and saved) but not shown. */
+export const HideInInspector = (field) => ({ ...asField(field), hidden: true });
+/** `[TextArea]`: a multi-line text box. */
+export const TextArea = (field) => ({ ...asField(field), multiline: true });
+/**
+ * An Inspector button (Unity's custom-editor button / `[ContextMenu]`): `generate: Button('Generate hour indicators', 'GenerateHourIndicators')`.
+ * Pressing it in the editor calls the script's **static** method of that name with an editor context, see the Clock example (page 3.5).
+ */
+export const Button = (label, method) => ({ type: 'button', label, method });
 
 /**
  * Unity-flavoured script base. Subclass and write Awake/Start/Update/FixedUpdate/LateUpdate/OnEnable/OnDisable/OnDestroy and

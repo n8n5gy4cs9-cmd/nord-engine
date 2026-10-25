@@ -111,6 +111,19 @@
             "minutesPivot": "Minutes Arm Pivot",
             "secondsPivot": "Seconds Arm Pivot"
           }
+        },
+        {
+          "path": "scripts/HourIndicators.js",
+          "attributes": {
+            "radius": 4,
+            "depth": -0.25,
+            "indicatorSize": [
+              0.5,
+              1,
+              0.1
+            ],
+            "material": "assets/materials/hour-indicator.mat.json"
+          }
         }
       ],
       "children": [

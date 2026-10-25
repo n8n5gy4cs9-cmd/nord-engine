@@ -21,6 +21,8 @@ pub enum FieldType {
     /// list of `[t, value]` points
     Curve,
     Array(Box<FieldType>),
+    /// A button in the Inspector (script attribute `Button('Label', 'method')`): runs the script's static editor method on this entity
+    Button,
 }
 
 #[derive(Debug, Clone)]
@@ -31,6 +33,18 @@ pub struct Field {
     pub default: Value,
     /// tooltip text (script `description`/`tooltip` attribute), empty when none
     pub hint: String,
+    /// Unity's [Header]: a bold heading above the field (script attribute `header`)
+    pub header: String,
+    /// Unity's [Space]: extra pixels above the field (script attribute `space`)
+    pub space: f32,
+    /// Unity's [ReadOnly]: shown but greyed out (`readonly: true`)
+    pub readonly: bool,
+    /// Unity's [HideInInspector]: not shown (`hidden: true`)
+    pub hidden: bool,
+    /// Unity's [TextArea]: a multi-line text box (`multiline: true`, strings only)
+    pub multiline: bool,
+    /// Buttons: the static method of the script that is called (`method: 'GenerateHourIndicators'`)
+    pub method: String,
 }
 
 pub fn default_for(ty: &FieldType) -> Value {
@@ -45,6 +59,7 @@ pub fn default_for(ty: &FieldType) -> Value {
         FieldType::Enum(o) => json!(o.first().cloned().unwrap_or_default()),
         FieldType::Curve => json!([[0.0, 0.0], [1.0, 1.0]]),
         FieldType::Array(_) => json!([]),
+        FieldType::Button => Value::Null,
     }
 }
 
@@ -72,6 +87,7 @@ pub fn parse_type(t: &str) -> Option<FieldType> {
         "vec3" => FieldType::Vec3,
         "entity" => FieldType::Entity,
         "curve" => FieldType::Curve,
+        "button" => FieldType::Button,
         "asset" => FieldType::Asset("image".into()),
         _ => return None,
     })
@@ -96,6 +112,12 @@ fn dsl(s: &str) -> Vec<Field> {
                 ty,
                 default,
                 hint: String::new(),
+                header: String::new(),
+                space: 0.0,
+                readonly: false,
+                hidden: false,
+                multiline: false,
+                method: String::new(),
             })
         })
         .collect()
@@ -275,6 +297,157 @@ pub fn js_literal_to_json(src: &str) -> String {
     res
 }
 
+/// Split `a, b, [c, d], 'e,f'` at the top-level commas.
+fn split_args(s: &str) -> Vec<String> {
+    let (mut out, mut cur, mut depth, mut quote) = (Vec::new(), String::new(), 0i32, None::<char>);
+    let mut prev = '\0';
+    for ch in s.chars() {
+        match quote {
+            Some(q) => {
+                cur.push(ch);
+                if ch == q && prev != '\\' {
+                    quote = None;
+                }
+            }
+            None => match ch {
+                '\'' | '"' | '`' => {
+                    quote = Some(ch);
+                    cur.push(ch);
+                }
+                '(' | '[' | '{' => {
+                    depth += 1;
+                    cur.push(ch);
+                }
+                ')' | ']' | '}' => {
+                    depth -= 1;
+                    cur.push(ch);
+                }
+                ',' if depth == 0 => out.push(std::mem::take(&mut cur)),
+                _ => cur.push(ch),
+            },
+        }
+        prev = ch;
+    }
+    if !cur.trim().is_empty() {
+        out.push(cur);
+    }
+    out.into_iter().map(|a| a.trim().to_string()).collect()
+}
+
+/// A field expression (`5`, `'x'`, `{ default: 5 }`) with one more key: `{ default: 5, "header": "Movement" }`.
+fn with_key(field: &str, key: &str, value: &str) -> String {
+    let f = field.trim();
+    if let Some(rest) = f.strip_prefix('{') {
+        format!("{{\"{key}\": {value}, {rest}")
+    } else {
+        format!("{{\"default\": {f}, \"{key}\": {value}}}")
+    }
+}
+
+/// Rewrite the Unity-style helper calls inside `SerializeField({ … })` into plain object literals, so the Inspector can read them without
+/// running any JavaScript: `Range(0, 10, 5)`, `Enum(['a','b'], 'a')`, `EntityRef('Name')`, `Button('Label', 'method')`, `Header('Text', field)`,
+/// `Tooltip('Text', field)`, `Space(8, field)`, `ReadOnly(field)`, `HideInInspector(field)`, `TextArea(field)`. They may be nested.
+pub fn expand_helpers(src: &str) -> String {
+    const HELPERS: [&str; 10] = [
+        "Range", "Enum", "EntityRef", "Button", "Header", "Tooltip", "Space", "ReadOnly", "HideInInspector", "TextArea",
+    ];
+    let c: Vec<char> = src.chars().collect();
+    let mut out = String::new();
+    let mut i = 0;
+    let mut quote: Option<char> = None;
+    while i < c.len() {
+        let ch = c[i];
+        if let Some(q) = quote {
+            out.push(ch);
+            if ch == '\\' && i + 1 < c.len() {
+                out.push(c[i + 1]);
+                i += 2;
+                continue;
+            }
+            if ch == q {
+                quote = None;
+            }
+            i += 1;
+            continue;
+        }
+        if matches!(ch, '\'' | '"' | '`') {
+            quote = Some(ch);
+            out.push(ch);
+            i += 1;
+            continue;
+        }
+        if (ch.is_alphabetic() || ch == '_' || ch == '$') && (i == 0 || !(c[i - 1].is_alphanumeric() || c[i - 1] == '_' || c[i - 1] == '.')) {
+            let st = i;
+            while i < c.len() && (c[i].is_alphanumeric() || c[i] == '_' || c[i] == '$') {
+                i += 1;
+            }
+            let w: String = c[st..i].iter().collect();
+            let mut j = i;
+            while j < c.len() && c[j].is_whitespace() {
+                j += 1;
+            }
+            if HELPERS.contains(&w.as_str()) && c.get(j) == Some(&'(') {
+                // balanced parentheses
+                let (mut depth, mut k, mut q2) = (0i32, j, None::<char>);
+                let mut end = None;
+                while k < c.len() {
+                    let x = c[k];
+                    match q2 {
+                        Some(q) => {
+                            if x == '\\' {
+                                k += 1;
+                            } else if x == q {
+                                q2 = None;
+                            }
+                        }
+                        None => match x {
+                            '\'' | '"' | '`' => q2 = Some(x),
+                            '(' => depth += 1,
+                            ')' => {
+                                depth -= 1;
+                                if depth == 0 {
+                                    end = Some(k);
+                                    break;
+                                }
+                            }
+                            _ => {}
+                        },
+                    }
+                    k += 1;
+                }
+                if let Some(e) = end {
+                    let inner: String = c[j + 1..e].iter().collect();
+                    let args: Vec<String> = split_args(&inner).iter().map(|a| expand_helpers(a)).collect();
+                    let a = |n: usize| args.get(n).cloned().unwrap_or_else(|| "null".into());
+                    let rewritten = match w.as_str() {
+                        "Range" => {
+                            let def = if args.len() > 2 { a(2) } else { a(0) };
+                            format!("{{\"default\": {def}, \"min\": {}, \"max\": {}}}", a(0), a(1))
+                        }
+                        "Enum" => format!("{{\"type\": \"enum\", \"options\": {}, \"default\": {}}}", a(0), a(1)),
+                        "EntityRef" => format!("{{\"type\": \"entity\", \"default\": {}}}", if args.is_empty() { "\"\"".into() } else { a(0) }),
+                        "Button" => format!("{{\"type\": \"button\", \"label\": {}, \"method\": {}}}", a(0), a(1)),
+                        "Header" => with_key(&a(1), "header", &a(0)),
+                        "Tooltip" => with_key(&a(1), "tooltip", &a(0)),
+                        "Space" => with_key(&a(1), "space", &a(0)),
+                        "ReadOnly" => with_key(&a(0), "readonly", "true"),
+                        "HideInInspector" => with_key(&a(0), "hidden", "true"),
+                        _ => with_key(&a(0), "multiline", "true"),
+                    };
+                    out.push_str(&rewritten);
+                    i = e + 1;
+                    continue;
+                }
+            }
+            out.push_str(&w);
+            continue;
+        }
+        out.push(ch);
+        i += 1;
+    }
+    out
+}
+
 /// Extract `static attributes = {…}` fields from a script source.
 pub fn script_attributes(src: &str) -> Vec<Field> {
     let Some(p) = src.find("static attributes") else {
@@ -303,7 +476,8 @@ pub fn script_attributes(src: &str) -> Vec<Field> {
         }
     }
     let Some(end) = end else { return vec![] };
-    let Ok(Value::Object(m)) = serde_json::from_str::<Value>(&js_literal_to_json(&body[..end]))
+    let Ok(Value::Object(m)) =
+        serde_json::from_str::<Value>(&js_literal_to_json(&expand_helpers(&body[..end])))
     else {
         return vec![];
     };
@@ -388,12 +562,20 @@ fn attr_field(name: &str, v: &Value) -> Option<Field> {
         .and_then(Value::as_str)
         .unwrap_or("")
         .to_string();
+    let text = |k: &str| o.get(k).and_then(Value::as_str).unwrap_or("").to_string();
+    let flag = |k: &str| o.get(k).and_then(Value::as_bool).unwrap_or(false);
     Some(Field {
         name: name.into(),
         label,
         ty,
         default,
         hint,
+        header: text("header"),
+        space: o.get("space").and_then(Value::as_f64).unwrap_or(0.0) as f32,
+        readonly: flag("readonly"),
+        hidden: flag("hidden"),
+        multiline: flag("multiline"),
+        method: text("method"),
     })
 }
 
@@ -487,5 +669,43 @@ mod serialize_field_tests {
         assert!(matches!(f[2].ty, FieldType::Bool));
         assert!(matches!(f[3].ty, FieldType::Color));
         assert!(matches!(f[4].ty, FieldType::Number { max: Some(m), .. } if m == 10.0));
+    }
+}
+
+#[cfg(test)]
+mod unity_attribute_tests {
+    use super::*;
+
+    #[test]
+    fn unity_helpers_header_tooltip_button_and_friends_are_read_without_running_js() {
+        let src = r#"export default class Clock extends MonoBehaviour {
+  static attributes = SerializeField({
+    hoursPivot: EntityRef('Hours Arm Pivot'),
+    speed: Header('Movement', Tooltip('Pixels per second', Range(0, 10, 5))),
+    mode: Enum(['a', 'b'], 'b'),
+    note: TextArea({ default: 'hi' }),
+    secret: HideInInspector(3),
+    shown: ReadOnly(7),
+    gap: Space(12, 1),
+    generate: Button('Generate hour indicators', 'GenerateHourIndicators'),
+  });
+}"#;
+        let f = script_attributes(src);
+        let names: Vec<_> = f.iter().map(|f| f.name.as_str()).collect();
+        assert_eq!(names, ["hoursPivot", "speed", "mode", "note", "secret", "shown", "gap", "generate"]);
+        assert_eq!(f[0].ty, FieldType::Entity);
+        assert_eq!(f[0].default, json!("Hours Arm Pivot"));
+        assert_eq!(f[1].header, "Movement");
+        assert_eq!(f[1].hint, "Pixels per second");
+        assert!(matches!(f[1].ty, FieldType::Number { min: Some(a), max: Some(b) } if a == 0.0 && b == 10.0));
+        assert_eq!(f[1].default, json!(5));
+        assert_eq!(f[2].ty, FieldType::Enum(vec!["a".into(), "b".into()]));
+        assert!(f[3].multiline);
+        assert!(f[4].hidden);
+        assert!(f[5].readonly);
+        assert_eq!(f[6].space, 12.0);
+        assert_eq!(f[7].ty, FieldType::Button);
+        assert_eq!(f[7].label, "Generate hour indicators");
+        assert_eq!(f[7].method, "GenerateHourIndicators");
     }
 }

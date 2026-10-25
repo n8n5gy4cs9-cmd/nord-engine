@@ -157,3 +157,31 @@ for (const kind of ['2d', '3d']) {
     if (errors.length) throw new Error(errors.join('\n'));
   };
 }
+
+// Inspector script buttons: the editor sends {t:'scriptCall'}, the page runs the script's static method and answers {t:'entityEdited'}.
+suites['edit-viewport-script-button'] = async () => {
+  const project = `${ROOT}/examples/clock`;
+  const { errors, result } = await withServe(project, async ({ page, base, ipc, cmd, sceneMsg }) => {
+    await page.goto(`${base}/__edit?mode=3d`);
+    await page.waitForFunction(() => window.__nord_edit_ready === true);
+    await waitFor(async () => (await ipc()).some((m) => m.t === 'ready'));
+    const msg = sceneMsg();
+    const clock = msg.scene.entities.find((e) => e.name === 'Clock');
+    clock.children = clock.children.filter((c) => !c.name.startsWith('Hour Indicator'));          // start without indicators
+    await cmd(msg);
+    await page.waitForFunction(() => window.__nordEdit.state.scene?.entities?.length > 0);
+    await cmd({ t: 'scriptCall', id: clock.id, script: 'scripts/HourIndicators.js', method: 'GenerateHourIndicators' });
+    const done = await waitFor(async () => (await ipc()).find((m) => m.t === 'entityEdited' || m.t === 'scriptError'));
+    if (done.t === 'scriptError') throw new Error(done.text);
+    const kids = done.entity.children.filter((c) => c.name.startsWith('Hour Indicator'));
+    const h1 = kids.find((c) => c.name === 'Hour Indicator 1'), h9 = kids.find((c) => c.name === 'Hour Indicator 9');
+    return { n: kids.length, h1: h1.transform, h9: h9.transform, material: h1.components.find((c) => c.type === 'material').asset, ids: new Set(done.entity.children.map((c) => c.id)).size, total: done.entity.children.length };
+  });
+  console.log(JSON.stringify(result));
+  if (errors.length) throw new Error(errors.join('\n'));
+  if (result.n !== 12) throw new Error(`expected 12 indicators, got ${result.n}`);
+  if (Math.abs(result.h1.pos[0] - 2) > 0.01 || Math.abs(result.h1.pos[1] - 3.464) > 0.01 || result.h1.rot[2] !== -30) throw new Error('hour 1 is not at (2, 3.464) turned -30');
+  if (Math.abs(result.h9.pos[0] + 4) > 0.01 || result.h9.rot[2] !== -270) throw new Error('hour 9 is wrong');
+  if (result.material !== 'assets/materials/hour-indicator.mat.json') throw new Error('material asset not passed on');
+  if (result.ids !== result.total) throw new Error('child ids are not unique');
+};

@@ -57,7 +57,8 @@ def build():
     def arm(name, scale, y, z, material):
         return ent(f'{name} Pivot', children=[ent(name, pos=(0, y, z), scale=scale, comps=[mesh('box', (1, 1, 1)), mat(f'assets/materials/{material}.mat.json')])])
 
-    clock = ent('Clock', scripts=[('scripts/Clock.js', {"hoursPivot": "Hours Arm Pivot", "minutesPivot": "Minutes Arm Pivot", "secondsPivot": "Seconds Arm Pivot"})],
+    clock = ent('Clock', scripts=[('scripts/Clock.js', {"hoursPivot": "Hours Arm Pivot", "minutesPivot": "Minutes Arm Pivot", "secondsPivot": "Seconds Arm Pivot"}),
+                                  ('scripts/HourIndicators.js', {"radius": 4, "depth": -0.25, "indicatorSize": [0.5, 1, 0.1], "material": "assets/materials/hour-indicator.mat.json"})],
                 children=[face, *indicators,
                           arm('Hours Arm', (0.3, 2.5, 0.1), 0.75, -0.25, 'clock-arm'),
                           arm('Minutes Arm', (0.2, 4, 0.1), 1, -0.35, 'clock-arm'),
@@ -68,6 +69,7 @@ def build():
     scene = {"format": 1, "name": "main", "settings": {"ambient": "#8a93a3", "ambientIntensity": 0.6}, "entities": [camera, light, clock]}
     (OUT / 'scenes/main.scene.json').write_text(json.dumps(scene, indent=2) + '\n')
     shutil.copy(SRC / 'Clock.js', OUT / 'scripts/Clock.js')
+    shutil.copy(SRC / 'HourIndicators.js', OUT / 'scripts/HourIndicators.js')
     html = (ROOT / 'examples/platformer3d/index.html').read_text().replace('3D Platformer', 'Clock')
     (OUT / 'index.html').write_text(html)
     (OUT / 'README.md').write_text('# Clock\n\nExamples page 3.5: the Unity Basics "Game Objects and Scripts" exercise, built from cylinders and cubes. Open it in the Nord editor, press Play.\n'
@@ -90,7 +92,7 @@ def docs():
         spec = m.group(1)
         name, _, note = [x.strip() for x in spec.partition('|')]
         body = (SRC / name).read_text().rstrip()
-        return f'**File: `scripts/Clock.js`** ({note})\n```js\n{body}\n```'
+        return f'**File: `scripts/{'Clock.js' if name.startswith('step') else name}`** ({note})\n```js\n{body}\n```'
     text = re.sub(r'@@code ([^@]+)@@', code, text)
     (ROOT / 'docs/manual-src/ex-clock.md').write_text(text)
     (ROOT / 'docs/tutorial-downloads').mkdir(exist_ok=True)

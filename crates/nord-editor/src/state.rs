@@ -1639,6 +1639,25 @@ impl EditorState {
                     None => {}
                 }
             }
+            Some("entityEdited") => {
+                // result of an Inspector script button: the whole entity as the script left it (children added, fields changed)
+                let Some(id) = m["id"].as_str().map(String::from) else { return };
+                let Ok(mut ne) = serde_json::from_value::<nord_core::scene::Entity>(m["entity"].clone()) else {
+                    self.log(LogLevel::Error, "script button: the returned entity is not valid");
+                    return;
+                };
+                let label = m["method"].as_str().unwrap_or("script").to_string();
+                self.edit(&format!("Run {label}"), None, |l| {
+                    if let Some(e) = scene_ops::find_mut(l, &id) {
+                        ne.id = e.id.clone();
+                        *e = ne;
+                    }
+                });
+            }
+            Some("scriptError") => {
+                let t = m["text"].as_str().unwrap_or("").to_string();
+                self.log(LogLevel::Error, format!("[script button] {t}"));
+            }
             Some("thumb") => {
                 // model thumbnail rendered by the viewport; the file is written by the server (/api/thumb-upload)
                 if let Some(p) = m["path"].as_str() {

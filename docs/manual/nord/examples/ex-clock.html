@@ -480,7 +480,170 @@ export default class Clock extends MonoBehaviour {
 <blockquote>
 <p><strong>No casting needed.</strong> The C# exercise has to convert <code>double</code> to <code>float</code>. JavaScript has one number type, so there is no cast and no <code>f</code> suffix.</p>
 </blockquote>
-<h2 id="5-what-you-learned-and-the-traps">5 What you learned (and the traps)<a class="anchor" href="#5-what-you-learned-and-the-traps">#</a></h2>
+<h2 id="5-optional-let-the-editor-build-the-hour-indicators-for-you">5 Optional: let the editor build the hour indicators for you<a class="anchor" href="#5-optional-let-the-editor-build-the-hour-indicators-for-you">#</a></h2>
+<p>Typing twelve positions is a good way to learn transforms, and a bad way to spend an afternoon when you want a 24-hour dial. Unity solves this with editor scripts and buttons in the Inspector. Nord has the same idea: a script can declare an <strong>Inspector button</strong>, and pressing it runs a <strong>static method of the script, in the editor</strong>, on the object that has the script. The method edits a copy of that object (for example adds children) and the editor applies the result as one <strong>undo</strong> step.</p>
+<h3 id="5-1-the-script">5.1 The script<a class="anchor" href="#5-1-the-script">#</a></h3>
+<ol>
+<li><span class="c-ui">Assets ▸ right-click ▸ New MonoBehaviour script (Unity-style)</span>, name it <code>HourIndicators</code>, open it and replace everything with:</li>
+</ol>
+<p><strong>File: <code>scripts/HourIndicators.js</code></strong> (new file, the whole file; attach it to the <code>Clock</code> object, <strong>not</strong> to the face)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Header, Tooltip, Button } from 'nord';
+
+/** Optional helper for the clock: builds the twelve hour indicators for you. It does nothing while the game runs; it works in the editor. */
+export default class HourIndicators extends MonoBehaviour {
+  static attributes = SerializeField({
+    radius: Header('Layout', Tooltip('Distance of every indicator from the centre of the clock', 4)),
+    depth: Tooltip('Z position: negative is in front of the face', -0.25),
+    indicatorSize: [0.5, 1, 0.1],
+    material: { type: 'asset', assetType: 'material', default: 'assets/materials/hour-indicator.mat.json' },
+    generate: Button('Generate hour indicators', 'GenerateHourIndicators'),
+  });
+
+  /** Runs in the editor when you press the button in the Inspector. `ctx.entity` is the object that has this script (the clock). */
+  static GenerateHourIndicators(ctx) {
+    for (const old of ctx.FindAll((e) =&gt; /^Hour Indicator \d+$/.test(e.name))) ctx.Destroy(old);   // regenerate cleanly
+
+    const { radius, depth, indicatorSize, material } = ctx.attrs;
+    for (let hour = 1; hour &lt;= 12; hour++) {
+      const angle = (hour * 30 * Math.PI) / 180;               // each hour is 30 degrees, clockwise from the top
+      ctx.CreateChild({
+        name: `Hour Indicator ${hour}`,
+        pos: [radius * Math.sin(angle), radius * Math.cos(angle), depth],
+        rot: [0, 0, -hour * 30],                               // clockwise is negative, like the manual version
+        scale: indicatorSize,
+        components: [
+          { type: 'mesh', shape: 'box', size: [1, 1, 1], castShadow: true },
+          { type: 'material', asset: material },
+        ],
+      });
+    }
+    ctx.log('Created 12 hour indicators');
+  }
+}</code></pre>
+<ol start="2">
+<li>Put it on the <code>Clock</code> object (not on <code>Face</code>). <code>Face</code> is scaled <code>10, 0.2, 10</code> and turned 90°, and children inherit their parent&#39;s scale and rotation, so indicators created under the face would be squashed and turned. Created under <code>Clock</code> they have exactly the numbers of the manual version.</li>
+</ol>
+<p>When you select <code>Clock</code>, the Inspector shows a section <strong>Layout</strong> with <code>Radius</code>, <code>Depth</code>, <code>Indicator size</code>, <code>Material</code> and a button <strong>Generate hour indicators</strong>. Delete the twelve indicators you made by hand, press the button, and they appear again; press it twice and you still get twelve (the script removes the old ones first). <strong>Edit ▸ Undo</strong> takes the whole batch back.</p>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, the script entry of <code>Clock</code> holds only values (a button is not a value, so it is not stored):</p>
+<pre class="code" data-lang="json"><code>{ &quot;path&quot;: &quot;scripts/HourIndicators.js&quot;, &quot;attributes&quot;: {
+  &quot;radius&quot;: 4, &quot;depth&quot;: -0.25, &quot;indicatorSize&quot;: [0.5, 1, 0.1], &quot;material&quot;: &quot;assets/materials/hour-indicator.mat.json&quot; } }</code></pre>
+<h3 id="5-2-how-it-works">5.2 How it works<a class="anchor" href="#5-2-how-it-works">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>In the script</th>
+<th>Unity equivalent</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Button(&#39;Generate hour indicators&#39;, &#39;GenerateHourIndicators&#39;)</code></td>
+<td>a button in a custom editor, or <code>[ContextMenu]</code></td>
+<td>a button in the Inspector that calls the <strong>static</strong> method with that name</td>
+</tr>
+<tr>
+<td><code>static GenerateHourIndicators(ctx) { … }</code></td>
+<td>an <code>Editor</code> script method</td>
+<td>runs in the editor, not in the game</td>
+</tr>
+<tr>
+<td><code>ctx.entity</code></td>
+<td><code>target</code> of the editor</td>
+<td>a copy of the object that has the script, as scene data</td>
+</tr>
+<tr>
+<td><code>ctx.attrs</code></td>
+<td>the serialized fields</td>
+<td>the current values of the Inspector fields (<code>radius</code>, <code>depth</code>, …)</td>
+</tr>
+<tr>
+<td><code>ctx.CreateChild({ name, pos, rot, scale, components })</code></td>
+<td><code>new GameObject</code> + <code>SetParent</code></td>
+<td>adds a child; pass <code>ctx.CreateChild(data, parent)</code> for a deeper level</td>
+</tr>
+<tr>
+<td><code>ctx.FindAll(test)</code>, <code>ctx.Find(name)</code></td>
+<td><code>transform.Find</code></td>
+<td>look through the object&#39;s children</td>
+</tr>
+<tr>
+<td><code>ctx.Destroy(child)</code></td>
+<td><code>DestroyImmediate</code></td>
+<td>removes a child</td>
+</tr>
+<tr>
+<td><code>ctx.log(text)</code></td>
+<td><code>Debug.Log</code></td>
+<td>writes to the <span class="c-ui">Console</span></td>
+</tr>
+</tbody></table>
+<p>The component list you pass to <code>CreateChild</code> is the same data the Inspector writes (<code>{ &quot;type&quot;: &quot;mesh&quot;, &quot;shape&quot;: &quot;box&quot;, … }</code>), so anything you can build by hand you can generate. Errors show in the Console as <code>[script button] …</code>.</p>
+<blockquote>
+<p><strong>Trap: the method must be <code>static</code>.</strong> An ordinary method (<code>GenerateHourIndicators() {}</code>) belongs to a script instance, and in the editor no instance exists, because the game is not running. If the button does nothing, check the Console for <code>has no static method</code>.</p>
+</blockquote>
+<h3 id="5-3-more-inspector-options-like-unity-39-s-attributes">5.3 More Inspector options, like Unity&#39;s attributes<a class="anchor" href="#5-3-more-inspector-options-like-unity-39-s-attributes">#</a></h3>
+<p>The same <code>SerializeField({ … })</code> list can shape the Inspector. These helpers are written inside <code>static attributes</code>; the editor reads them without running any code.</p>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord (inside <code>SerializeField</code>)</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>[Header(&quot;Layout&quot;)]</code></td>
+<td><code>radius: Header(&#39;Layout&#39;, 4)</code> or <code>{ default: 4, header: &#39;Layout&#39; }</code></td>
+<td>a bold heading above the field</td>
+</tr>
+<tr>
+<td><code>[Tooltip(&quot;…&quot;)]</code></td>
+<td><code>Tooltip(&#39;Text&#39;, 4)</code> or <code>{ default: 4, tooltip: &#39;Text&#39; }</code></td>
+<td>text when you hover the field name</td>
+</tr>
+<tr>
+<td><code>[Space(10)]</code></td>
+<td><code>Space(10, 4)</code> or <code>{ default: 4, space: 10 }</code></td>
+<td>extra space above the field</td>
+</tr>
+<tr>
+<td><code>[Range(0, 10)]</code></td>
+<td><code>Range(0, 10, 5)</code></td>
+<td>a slider</td>
+</tr>
+<tr>
+<td><code>[TextArea]</code></td>
+<td><code>TextArea(&#39;hello&#39;)</code> or <code>{ default: &#39;hello&#39;, multiline: true }</code></td>
+<td>a multi-line text box</td>
+</tr>
+<tr>
+<td>read-only field</td>
+<td><code>ReadOnly(5)</code> or <code>{ default: 5, readonly: true }</code></td>
+<td>shown, greyed out</td>
+</tr>
+<tr>
+<td><code>[HideInInspector]</code></td>
+<td><code>HideInInspector(5)</code> or <code>{ default: 5, hidden: true }</code></td>
+<td>kept and saved, not shown</td>
+</tr>
+<tr>
+<td>an enum</td>
+<td><code>Enum([&#39;idle&#39;, &#39;chase&#39;], &#39;idle&#39;)</code></td>
+<td>a drop-down</td>
+</tr>
+<tr>
+<td>a reference to another object</td>
+<td><code>EntityRef(&#39;Name&#39;)</code></td>
+<td>a picker of the scene&#39;s objects (holds the name)</td>
+</tr>
+<tr>
+<td>a button</td>
+<td><code>Button(&#39;Label&#39;, &#39;method&#39;)</code></td>
+<td>the button of this section</td>
+</tr>
+</tbody></table>
+<p>Helpers combine: <code>Header(&#39;Layout&#39;, Tooltip(&#39;Distance from the centre&#39;, Range(0, 10, 4)))</code>.</p>
+<h2 id="6-what-you-learned-and-the-traps">6 What you learned (and the traps)<a class="anchor" href="#6-what-you-learned-and-the-traps">#</a></h2>
 <table>
 <thead>
 <tr>
@@ -517,6 +680,10 @@ export default class Clock extends MonoBehaviour {
 <td><code>Clock.js</code> added with <span class="c-ui">+ Add script</span></td>
 </tr>
 <tr>
+<td>Editor scripts and Inspector buttons</td>
+<td><code>HourIndicators.js</code> with <code>Button(...)</code> and a static method</td>
+</tr>
+<tr>
 <td><code>[SerializeField]</code></td>
 <td><code>static attributes = SerializeField({ … })</code></td>
 </tr>
@@ -542,5 +709,5 @@ export default class Clock extends MonoBehaviour {
 <li>If the clock face looks black, check the camera is at <code>0, 0, −14</code> and the directional light exists.</li>
 </ul>
 <p>Next: <a href="ex-find-and-talk.html">Finding objects and talking to scripts</a> (page 3) goes deeper into <code>Find</code> and <code>GetComponent</code>, and <a href="ex-game-manager.html">GameManager and Singletons</a> (page 4) is the next building block. Back to <a href="examples.html">Examples</a>.</p>
-<div class="pager"><a href="ex-find-and-talk.html"><small>← Previous</small>3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html"><small>Next →</small>4 · GameManager and Singletons</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-create-the-project">1 Create the project </a><a href="#2-build-the-clock">2 Build the clock </a><a href="#3-a-camera-and-a-light">3 A camera and a light </a><a href="#4-make-it-tell-the-time-your-first-script">4 Make it tell the time: your first script </a><a href="#5-what-you-learned-and-the-traps">5 What you learned (and the traps) </a></aside></div>
+<div class="pager"><a href="ex-find-and-talk.html"><small>← Previous</small>3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html"><small>Next →</small>4 · GameManager and Singletons</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-create-the-project">1 Create the project </a><a href="#2-build-the-clock">2 Build the clock </a><a href="#3-a-camera-and-a-light">3 A camera and a light </a><a href="#4-make-it-tell-the-time-your-first-script">4 Make it tell the time: your first script </a><a href="#5-optional-let-the-editor-build-the-hour-indicators-for-you">5 Optional: let the editor build the hour indicators for you </a><a href="#6-what-you-learned-and-the-traps">6 What you learned (and the traps) </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

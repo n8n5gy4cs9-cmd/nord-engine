@@ -73,9 +73,19 @@
 <td><code>static attributes = SerializeField({…})</code></td>
 </tr>
 <tr>
-<td><code>[Header]</code>, <code>[Tooltip]</code>, <code>[HideInInspector]</code>, <code>[RequireComponent]</code></td>
+<td><code>[Header]</code>, <code>[Tooltip]</code>, <code>[Space]</code>, <code>[TextArea]</code>, <code>[HideInInspector]</code>, read-only fields</td>
+<td>✔</td>
+<td><code>Header(&#39;x&#39;, f)</code>, <code>Tooltip(…)</code>, <code>Space(…)</code>, <code>TextArea(…)</code>, <code>HideInInspector(…)</code>, <code>ReadOnly(…)</code> or the same keys in the field object</td>
+</tr>
+<tr>
+<td>Inspector button (custom editor / <code>[ContextMenu]</code>)</td>
+<td>◐</td>
+<td><code>Button(&#39;Label&#39;, &#39;method&#39;)</code> runs a <strong>static</strong> method with an editor context (<code>ctx.entity</code>, <code>CreateChild</code>, …); edits the scene as one undo step. See <a href="../examples/ex-clock.html">Build a clock</a></td>
+</tr>
+<tr>
+<td><code>[RequireComponent]</code>, <code>[CreateAssetMenu]</code>, <code>[DisallowMultipleComponent]</code></td>
 <td>✘</td>
-<td>attribute <code>label</code> / <code>description</code> give the Inspector label and tooltip</td>
+<td></td>
 </tr>
 <tr>
 <td><code>gameObject</code>, <code>transform</code>, <code>tag</code>, <code>name</code></td>

@@ -163,6 +163,9 @@ A persistent singleton: add `AudioManager` (import from `'nord'` and extend it, 
 * @api[ScriptableObject]: shared JSON data files: `const sword = await ScriptableObject.Load('data/sword.asset.json')`.
 * @api[ObjectPool]: reuse bullets instead of creating them: `const pool = new ObjectPool(this.scene, 'prefabs/bullet.prefab.json'); await pool.Warm(10); const b = await pool.Get({ pos }); pool.Release(b);`.
 
+### Inspector attributes and buttons
+Inside `static attributes = SerializeField({ … })` the Unity attributes are helper calls (or the same keys in a field object): `Header('Movement', 5)`, `Tooltip('Pixels per second', 5)`, `Space(8, 5)`, `Range(0, 10, 5)`, `TextArea('hello')`, `ReadOnly(5)`, `HideInInspector(5)`, `Enum(['a', 'b'], 'a')`, `EntityRef('Name')` and `Button('Generate', 'Generate')`. A **button** runs the script's **static** method in the editor on the object that has the script: it receives `ctx` with `ctx.entity`, `ctx.attrs`, `ctx.CreateChild(data)`, `ctx.Destroy(child)`, `ctx.Find`, `ctx.FindAll`, `ctx.log`, and the result is one undo step. A full example that builds the twelve hour indicators of a clock is on page [3.5](ex-clock.html).
+
 ### More Unity classes (part 2)
 Import from `'nord'`. Full list with what is missing: [Unity coverage](unity-coverage.html).
 

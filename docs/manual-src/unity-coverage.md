@@ -27,7 +27,9 @@ The tables below have **92 rows** (each row is one Unity feature or a small grou
 | `OnApplicationFocus/Pause/Quit` | ✘ | `window` events |
 | `OnValidate`, `Reset`, `OnDrawGizmos` | ✘ | editor only |
 | `[SerializeField]`, `[Range]`, `Enum`, `EntityRef` | ✔ | `static attributes = SerializeField({…})` |
-| `[Header]`, `[Tooltip]`, `[HideInInspector]`, `[RequireComponent]` | ✘ | attribute `label` / `description` give the Inspector label and tooltip |
+| `[Header]`, `[Tooltip]`, `[Space]`, `[TextArea]`, `[HideInInspector]`, read-only fields | ✔ | `Header('x', f)`, `Tooltip(…)`, `Space(…)`, `TextArea(…)`, `HideInInspector(…)`, `ReadOnly(…)` or the same keys in the field object |
+| Inspector button (custom editor / `[ContextMenu]`) | ◐ | `Button('Label', 'method')` runs a **static** method with an editor context (`ctx.entity`, `CreateChild`, …); edits the scene as one undo step. See [Build a clock](ex-clock.html) |
+| `[RequireComponent]`, `[CreateAssetMenu]`, `[DisallowMultipleComponent]` | ✘ | |
 | `gameObject`, `transform`, `tag`, `name` | ✔ | |
 | `gameObject.SetActive`, `activeSelf`, `activeInHierarchy` | ✔ | |
 | `CompareTag`, `FindWithTag`, `Find`, `FindObjectOfType` | ✔ | |

@@ -284,6 +284,7 @@ pub fn field_ui(ui: &mut Ui, cx: &Ctx, ty: &FieldType, v: &mut Value, id: &str) 
                 *v = json!(pts);
             }
         }
+        FieldType::Button => {} // drawn by `fields_ui` (it knows the label and the script)
         FieldType::Array(inner) => {
             let mut items = v.as_array().cloned().unwrap_or_default();
             let mut del = None;
@@ -341,6 +342,7 @@ fn type_hint(ty: &FieldType) -> String {
         FieldType::Asset(k) => format!("asset ({k})"),
         FieldType::Curve => "curve".into(),
         FieldType::Array(i) => format!("array of {}", type_hint(i)),
+        FieldType::Button => "button: runs a script method in the editor".into(),
     }
 }
 
@@ -359,6 +361,39 @@ fn fields_ui(
         .spacing([8.0, 4.0])
         .show(ui, |ui| {
             for f in fields {
+                if f.hidden {
+                    continue; // Unity's [HideInInspector]
+                }
+                if f.space > 0.0 {
+                    ui.add_space(f.space); // [Space]
+                    ui.label("");
+                    ui.end_row();
+                }
+                if !f.header.is_empty() {
+                    ui.label(egui::RichText::new(&f.header).strong()); // [Header]
+                    ui.label("");
+                    ui.end_row();
+                }
+                if f.ty == FieldType::Button {
+                    // a button that runs `static <method>(ctx)` of the script on this entity, inside the Scene view page
+                    ui.label("");
+                    let r = ui.button(&f.label);
+                    let r = if f.hint.is_empty() { r } else { r.on_hover_text(&f.hint) };
+                    if r.clicked() {
+                        let ctx: Option<(String, String)> =
+                            ui.ctx().data(|d| d.get_temp(egui::Id::new("script_ctx")));
+                        if let Some((entity, script)) = ctx {
+                            ui.ctx().data_mut(|d| {
+                                d.insert_temp(
+                                    egui::Id::new("script_call"),
+                                    (entity, script, f.method.clone()),
+                                )
+                            });
+                        }
+                    }
+                    ui.end_row();
+                    continue;
+                }
                 let overridden = base.filter(|b| {
                     b.get(&f.name).unwrap_or(&f.default) != data.get(&f.name).unwrap_or(&f.default)
                 });
@@ -384,7 +419,28 @@ fn fields_ui(
                 }
                 let mut revert = false;
                 ui.horizontal(|ui| {
-                    if field_ui(ui, cx, &f.ty, &mut cur, &format!("{id}.{}", f.name)) {
+                    let changed = ui
+                        .add_enabled_ui(!f.readonly, |ui| {
+                            if f.multiline && f.ty == FieldType::Str {
+                                // Unity's [TextArea]
+                                let mut t = cur.as_str().unwrap_or("").to_string();
+                                let c = ui
+                                    .add(
+                                        egui::TextEdit::multiline(&mut t)
+                                            .desired_rows(3)
+                                            .desired_width(f32::INFINITY),
+                                    )
+                                    .changed();
+                                if c {
+                                    cur = json!(t);
+                                }
+                                c
+                            } else {
+                                field_ui(ui, cx, &f.ty, &mut cur, &format!("{id}.{}", f.name))
+                            }
+                        })
+                        .inner;
+                    if changed {
                         data.insert(f.name.clone(), cur.clone());
                         ch = true;
                     }
@@ -1366,6 +1422,9 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                         if fields.is_empty() {
                             ui.weak("No `static attributes` declared");
                         }
+                        ui.ctx().data_mut(|d| {
+                            d.insert_temp(egui::Id::new("script_ctx"), (e.id.clone(), s.path.clone()))
+                        });
                         fields_ui(
                             ui,
                             &cx,

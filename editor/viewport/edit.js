@@ -76,7 +76,49 @@ export function onMessage(m) {
     case 'view': backend?.setView?.(m); break;
     case 'live': applyLive(m.items ?? []); break;
     case 'thumbs': backend?.thumbs?.(m.items ?? []); break;
+    case 'scriptCall': runScriptCall(m); break;
     default: break;
+  }
+}
+
+// ---- Inspector script buttons (Button('Label', 'method')) ----
+// The editor sends {t:'scriptCall', id, script, method}. We import the script module, call its STATIC method with an editor context that
+// edits a copy of the entity as scene JSON, and send the finished entity back ({t:'entityEdited'}); the editor applies it as one undo step.
+const newId = () => Math.random().toString(36).slice(2, 10);
+function makeCtx(entity, attrs) {
+  const all = () => flatten(entity.children, entity).map((x) => x.e);
+  const parentOf = (child, from = entity) => { for (const c of from.children ?? []) { if (c === child) return from; const p = parentOf(child, c); if (p) return p; } return null; };
+  return {
+    entity, attrs,
+    /** Add a child entity (scene JSON shape; `pos`, `rot`, `scale` may be given directly). Returns it. */
+    CreateChild(data, parent = entity) {
+      const { pos, rot, scale, ...rest } = data;
+      const child = { id: newId(), enabled: true, tags: [], layer: 0, components: [], scripts: [], children: [], prefab: null, ...rest,
+        transform: { pos: pos ?? [0, 0, 0], rot: rot ?? [0, 0, 0], scale: scale ?? [1, 1, 1], ...(rest.transform ?? {}) } };
+      (parent.children ??= []).push(child);
+      return child;
+    },
+    /** Remove a descendant. */
+    Destroy(child) { const p = parentOf(child); if (p) p.children = p.children.filter((c) => c !== child); },
+    Find(name) { return all().find((e) => e.name === name) ?? null; },
+    FindAll(test) { return all().filter(test); },
+    log(text) { send({ t: 'log', text: String(text) }); },
+  };
+}
+async function runScriptCall(m) {
+  const hit = flatten(state.scene?.entities).find(({ e }) => e.id === m.id);
+  try {
+    if (!hit) throw new Error(`entity ${m.id} is not in the scene`);
+    const mod = await import(`/${m.script}?v=${Date.now()}`);
+    const Class = mod.default, fn = Class?.[m.method];
+    if (typeof fn !== 'function') throw new Error(`${m.script} has no static method ${m.method}(ctx)`);
+    const { resolveAttributes } = await import('/runtime/core/script.js');
+    const entity = structuredClone(hit.e);
+    const given = entity.scripts?.find((s) => s.path === m.script)?.attributes ?? {};
+    await fn.call(Class, makeCtx(entity, resolveAttributes(Class, given, () => {})));
+    send({ t: 'entityEdited', id: m.id, method: m.method, entity });
+  } catch (err) {
+    send({ t: 'scriptError', text: `${m.script} ${m.method}: ${err?.message ?? err}` });
   }
 }
 
