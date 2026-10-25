@@ -1548,44 +1548,107 @@
     "file": "nord/guides/cookbook.html",
     "title": "Cheatsheets — find an answer",
     "section": "Cheatsheets",
-    "group": "Cheatsheets",
+    "group": "Find an answer",
     "summary": "Quick lookup tables for scripting, editor tasks, debugging and publishing.",
     "old": null,
     "hub": true
   },
   {
-    "file": "nord/guides/mobile-controls.html",
-    "title": "Mobile and on-screen touch controls",
-    "section": "Cheatsheets",
-    "group": "Cheatsheets",
-    "summary": "Code-drawn joystick and hold buttons for any Nord 2D/3D game, with desktop pointer testing.",
-    "old": null,
-    "hub": false
-  },
-  {
     "file": "nord/guides/cheat-sheet-unity.html",
     "title": "Unity scripting cheatsheet",
     "section": "Cheatsheets",
-    "group": "Cheatsheets",
+    "group": "Unity scripting and gameplay",
     "summary": "Copy a minimal MonoBehaviour, then look up lifecycle, movement, input, objects and saving.",
     "old": null,
     "hub": false
   },
   {
-    "file": "nord/guides/cheat-sheet-export.html",
-    "title": "Cheat sheet — export",
+    "file": "nord/guides/cheat-sheet-objects.html",
+    "title": "Objects, prefabs and events cheatsheet",
     "section": "Cheatsheets",
-    "group": "Cheatsheets",
-    "summary": "Build, bundle and host commands on one page.",
+    "group": "Unity scripting and gameplay",
+    "summary": "Find objects, get components, expose fields, spawn prefabs, change scenes, and clean up subscriptions.",
     "old": null,
     "hub": false
   },
   {
-    "file": "nord/guides/ui-scenes.html",
-    "title": "UI scenes reference",
+    "file": "nord/guides/cheat-sheet-input-physics.html",
+    "title": "Input and physics cheatsheet",
     "section": "Cheatsheets",
-    "group": "Cheatsheets",
-    "summary": "The .ui.json format, text, images and 9-slice, skins, and the script API.",
+    "group": "Unity scripting and gameplay",
+    "summary": "Held versus pressed input, 2D/3D coordinates, transform versus body motion, queries, triggers and contact troubleshooting.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/cheat-sheet-maths-time.html",
+    "title": "Maths, timing and coroutines cheatsheet",
+    "section": "Cheatsheets",
+    "group": "Unity scripting and gameplay",
+    "summary": "Vectors, angles, clamping, interpolation, random ranges, frame time, coroutines and pause limitations.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/cheat-sheet-presentation.html",
+    "title": "UI, audio and saves cheatsheet",
+    "section": "Cheatsheets",
+    "group": "Unity scripting and gameplay",
+    "summary": "HUD handles, button actions, sound buses, PlayerPrefs, save slots and cleanup, with a complete persistent counter.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/cheat-sheet-editor.html",
+    "title": "Editor and project workflow cheatsheet",
+    "section": "Cheatsheets",
+    "group": "Editor and visual tools",
+    "summary": "The edit-test-save loop, scene versus prefab, project files, shortcuts, and safe iteration.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/cheat-sheet-visual-tools.html",
+    "title": "Assets and visual tools cheatsheet",
+    "section": "Cheatsheets",
+    "group": "Editor and visual tools",
+    "summary": "Choose the right authoring tool, follow the saved file into the scene, and verify levels, UI, models and animation.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/cheat-sheet-fps-level.html",
+    "title": "FPS Level — quick reference",
+    "section": "Cheatsheets",
+    "group": "Editor and visual tools",
+    "summary": "Build, select, patrol, test, stop, customise shortcuts, save and export first-person levels.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/shortcuts.html",
+    "title": "Keyboard shortcuts",
+    "section": "Cheatsheets",
+    "group": "Editor and visual tools",
+    "summary": "Editor shortcuts (macOS).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/cheat-sheet-debugging.html",
+    "title": "Debugging, performance and testing cheatsheet",
+    "section": "Cheatsheets",
+    "group": "Test and ship",
+    "summary": "A symptom-first triage table, breakpoints and inspection, measurement rules, restart checks and export verification.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/cheat-sheet-export.html",
+    "title": "Export, hosting and release cheatsheet",
+    "section": "Cheatsheets",
+    "group": "Test and ship",
+    "summary": "Choose web, single-file, desktop, PWA or mobile output; validate it and test what players actually receive.",
     "old": null,
     "hub": false
   },
@@ -1593,7 +1656,7 @@
     "file": "nord/guides/cheat-sheet-cli.html",
     "title": "Cheat sheet — command line",
     "section": "Cheatsheets",
-    "group": "Cheatsheets",
+    "group": "Test and ship",
     "summary": "How to start the nord command on macOS, Windows and Linux, and every command with its common options.",
     "old": null,
     "hub": false
@@ -1602,7 +1665,7 @@
     "file": "nord/guides/glossary.html",
     "title": "Glossary",
     "section": "Cheatsheets",
-    "group": "Cheatsheets",
+    "group": "Reference tables",
     "summary": "Plain-language meanings of the words used in this manual.",
     "old": null,
     "hub": false
@@ -1611,26 +1674,26 @@
     "file": "nord/guides/graph-reference.html",
     "title": "Node graph reference",
     "section": "Cheatsheets",
-    "group": "Cheatsheets",
+    "group": "Reference tables",
     "summary": "Pins, events, flow, the full node list, the runner and the component.",
     "old": null,
     "hub": false
   },
   {
-    "file": "nord/guides/shortcuts.html",
-    "title": "Keyboard shortcuts",
+    "file": "nord/guides/ui-scenes.html",
+    "title": "UI scenes reference",
     "section": "Cheatsheets",
-    "group": "Cheatsheets",
-    "summary": "Editor shortcuts (macOS).",
+    "group": "Reference tables",
+    "summary": "The .ui.json format, text, images and 9-slice, skins, and the script API.",
     "old": null,
     "hub": false
   },
   {
-    "file": "nord/guides/cheat-sheet-fps-level.html",
-    "title": "FPS Level — quick reference",
+    "file": "nord/guides/mobile-controls.html",
+    "title": "Mobile and on-screen touch controls",
     "section": "Cheatsheets",
-    "group": "Cheatsheets",
-    "summary": "Build, select, patrol, test, stop, customise shortcuts, save and export first-person levels.",
+    "group": "Reference tables",
+    "summary": "Code-drawn joystick and hold buttons for any Nord 2D/3D game, with desktop pointer testing.",
     "old": null,
     "hub": false
   },

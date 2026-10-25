@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Debugging, performance and testing cheatsheet — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="cookbook.html" class="active" aria-current="page">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details><summary>Find an answer <small>(1)</small></summary><a href="cookbook.html">Cheatsheets — find an answer</a></details><details><summary>Unity scripting and gameplay <small>(5)</small></summary><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-objects.html">Objects, prefabs and events cheatsheet</a><a href="cheat-sheet-input-physics.html">Input and physics cheatsheet</a><a href="cheat-sheet-maths-time.html">Maths, timing and coroutines cheatsheet</a><a href="cheat-sheet-presentation.html">UI, audio and saves cheatsheet</a></details><details><summary>Editor and visual tools <small>(4)</small></summary><a href="cheat-sheet-editor.html">Editor and project workflow cheatsheet</a><a href="cheat-sheet-visual-tools.html">Assets and visual tools cheatsheet</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a><a href="shortcuts.html">Keyboard shortcuts</a></details><details open><summary>Test and ship <small>(3)</small></summary><a href="cheat-sheet-debugging.html" class="cur" aria-current="page">Debugging, performance and testing cheatsheet</a><a href="cheat-sheet-export.html">Export, hosting and release cheatsheet</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a></details><details><summary>Reference tables <small>(4)</small></summary><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="ui-scenes.html">UI scenes reference</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Debugging, performance and testing cheatsheet</h1>
+<p>Use this page to narrow a problem before changing code. Start with a saved project, a repeatable action and one expected result.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A useful bug report is a recipe: which project, which scene, what you did, what you expected, and what happened instead. “Broken” is a feeling. “The score increases twice after restarting” is a testable clue.</p>
+</aside><h2 id="first-five-checks">First five checks<a class="anchor" href="#first-five-checks">#</a></h2>
+<ol>
+<li>Reproduce once with the smallest relevant scene. Record the first incorrect result.</li>
+<li>Open <span class="c-ui">Console</span> and read the first error. Later errors can be consequences of that one.</li>
+<li>Inspect the affected object in <span class="c-ui">Hierarchy</span> and <span class="c-ui">Inspector</span>. Confirm enabled state, attached scripts, components and paths.</li>
+<li>Pause or inspect through the <a href="../manual/debugger.html">Debugger</a> when you need current values. Compare the running value with the saved starting value.</li>
+<li>Change one cause, run the same action again, then save a checkpoint if it fixes the result.</li>
+</ol>
+<h2 id="symptom-lookup">Symptom lookup<a class="anchor" href="#symptom-lookup">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>First evidence to collect</th>
+<th>Likely next check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Script never runs</td>
+<td>Attached script and Console</td>
+<td>Base class, callback capitalization, imports, enabled state</td>
+</tr>
+<tr>
+<td>Object disappears</td>
+<td>Position and active camera</td>
+<td>Parent transform, scale, layer and renderer</td>
+</tr>
+<tr>
+<td>Input is zero</td>
+<td>Focused Game view and current action</td>
+<td>Raw key versus named action, mapping and device</td>
+</tr>
+<tr>
+<td>Movement jitters</td>
+<td>Transform and body velocity</td>
+<td>Two systems writing motion</td>
+</tr>
+<tr>
+<td>Trigger never fires</td>
+<td>Collider/body settings</td>
+<td>Trigger flag, backend, layer filtering and callback name</td>
+</tr>
+<tr>
+<td>Score updates twice</td>
+<td>Number of listeners before/after restart</td>
+<td>Subscription added repeatedly or never removed</td>
+</tr>
+<tr>
+<td>UI remains after scene change</td>
+<td>UI owner and handles</td>
+<td>OnDestroy removal or shared-screen ownership</td>
+</tr>
+<tr>
+<td>Audio is silent</td>
+<td>User activation and bus levels</td>
+<td>Resource path, decode error, mute and volume</td>
+</tr>
+<tr>
+<td>Save seems missing</td>
+<td>Project id, slot, origin and key</td>
+<td>Different port/profile or shared slot mutation</td>
+</tr>
+<tr>
+<td>Long load or frame hitch</td>
+<td>Profiler recording</td>
+<td>Asset loading, per-frame allocations, expensive queries</td>
+</tr>
+<tr>
+<td>Works in editor, fails online</td>
+<td>First exported Console/network error</td>
+<td>File case, missing files, hosting and relative paths</td>
+</tr>
+</tbody></table>
+<h2 id="measure-performance">Measure performance<a class="anchor" href="#measure-performance">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Measure</th>
+<th>Make the test useful</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>What makes a frame slow?</td>
+<td><a href="../manual/performance.html">Performance manual</a> or <a href="../tutorials/tut-t52-profiler.html">Profiler tutorial</a></td>
+<td>Compare the same scene and actions</td>
+</tr>
+<tr>
+<td>Does work grow with enemies?</td>
+<td>Object count and script/component cost</td>
+<td>Test realistic counts before a stress case</td>
+</tr>
+<tr>
+<td>Is memory growing?</td>
+<td>Repeated scene restart and resource counts</td>
+<td>Look for a trend, not one sample</td>
+</tr>
+<tr>
+<td>Are queries expensive?</td>
+<td>Frequency, collider count and query shapes</td>
+<td>Some Unity-style geometry queries scan colliders</td>
+</tr>
+<tr>
+<td>Is rendering expensive?</td>
+<td>Draw work, effects and resolution</td>
+<td>Change one quality setting and compare</td>
+</tr>
+<tr>
+<td>Is the export too large?</td>
+<td>Built file sizes and referenced assets</td>
+<td>Check what shipped before optimizing source text</td>
+</tr>
+</tbody></table>
+<p>Use a baseline and a single changed variable. Pooling, batching or caching helps only when it addresses measured work; do not add all three because the game feels slow.</p>
+<h2 id="debug-output-without-a-flood">Debug output without a flood<a class="anchor" href="#debug-output-without-a-flood">#</a></h2>
+<p>Import <code>Debug</code> from <code>nord</code>. Use <code>Debug.Log(...)</code>, <code>LogWarning(...)</code>, or <code>LogError(...)</code> at meaningful state changes. Logging every Update can hide the event you need and affect performance. A named transition, entity id and relevant value are often more useful than a large object dump.</p>
+<p>The editor Console reports output. The <a href="../manual/dev-console.html">in-game Dev Console</a> is a deliberately added command UI; remove or configure debug-only behavior for the build you intend to share. See its guide for command registration.</p>
+<h2 id="a-practical-regression-checklist">A practical regression checklist<a class="anchor" href="#a-practical-regression-checklist">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Pass result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Fresh start</td>
+<td>Correct scene and initial state</td>
+</tr>
+<tr>
+<td>Normal interaction</td>
+<td>One input produces one intended action</td>
+</tr>
+<tr>
+<td>Hold versus press</td>
+<td>Holding does not repeat a one-shot action accidentally</td>
+</tr>
+<tr>
+<td>Restart three times</td>
+<td>No duplicate labels, listeners or music</td>
+</tr>
+<tr>
+<td>Missing target / empty save</td>
+<td>Sensible fallback, no exception</td>
+</tr>
+<tr>
+<td>Pause / resume</td>
+<td>Active UI can resume; timers behave as documented</td>
+</tr>
+<tr>
+<td>Exported build</td>
+<td>Same essential behavior from the actual output</td>
+</tr>
+</tbody></table>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<p>Write the reproduction steps and rerun them after the fix. State what you tested and what still needs hardware or human verification. A performance claim includes before/after measurements from comparable runs.</p>
+<p>Next: <a href="cheat-sheet-export.html">Export</a>. Back to: <a href="cookbook.html">Cheatsheets</a>.</p>
+<div class="pager"><a href="shortcuts.html"><small>← Previous</small>Keyboard shortcuts</a><a href="cheat-sheet-export.html"><small>Next →</small>Export, hosting and release cheatsheet</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#first-five-checks">First five checks </a><a href="#symptom-lookup">Symptom lookup </a><a href="#measure-performance">Measure performance </a><a href="#debug-output-without-a-flood">Debug output without a flood </a><a href="#a-practical-regression-checklist">A practical regression checklist </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

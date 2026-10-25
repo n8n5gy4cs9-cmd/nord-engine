@@ -1,7 +1,8 @@
 ---
 title: Node graph reference
 section: Guides
-order: 4
+group: Reference tables
+order: 41
 summary: Pins, events, flow, the full node list, the runner and the component.
 ---
 

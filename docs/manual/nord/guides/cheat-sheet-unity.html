@@ -8,7 +8,7 @@
 <div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="cookbook.html" class="active" aria-current="page">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
-<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details open><summary>Cheatsheets <small>(10)</small></summary><a href="cookbook.html">Cheatsheets — find an answer</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a><a href="cheat-sheet-unity.html" class="cur" aria-current="page">Unity scripting cheatsheet</a><a href="cheat-sheet-export.html">Cheat sheet — export</a><a href="ui-scenes.html">UI scenes reference</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="shortcuts.html">Keyboard shortcuts</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Unity scripting cheatsheet</h1>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details><summary>Find an answer <small>(1)</small></summary><a href="cookbook.html">Cheatsheets — find an answer</a></details><details open><summary>Unity scripting and gameplay <small>(5)</small></summary><a href="cheat-sheet-unity.html" class="cur" aria-current="page">Unity scripting cheatsheet</a><a href="cheat-sheet-objects.html">Objects, prefabs and events cheatsheet</a><a href="cheat-sheet-input-physics.html">Input and physics cheatsheet</a><a href="cheat-sheet-maths-time.html">Maths, timing and coroutines cheatsheet</a><a href="cheat-sheet-presentation.html">UI, audio and saves cheatsheet</a></details><details><summary>Editor and visual tools <small>(4)</small></summary><a href="cheat-sheet-editor.html">Editor and project workflow cheatsheet</a><a href="cheat-sheet-visual-tools.html">Assets and visual tools cheatsheet</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a><a href="shortcuts.html">Keyboard shortcuts</a></details><details><summary>Test and ship <small>(3)</small></summary><a href="cheat-sheet-debugging.html">Debugging, performance and testing cheatsheet</a><a href="cheat-sheet-export.html">Export, hosting and release cheatsheet</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a></details><details><summary>Reference tables <small>(4)</small></summary><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="ui-scenes.html">UI scenes reference</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Unity scripting cheatsheet</h1>
 <p>Use this page beside the Code tab. For the full explanations, read <a href="../manual/unity-scripting.html">Unity-style scripting</a>; for signatures, read <a href="../api/api-unity.html">Unity API</a>.</p>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>A cheatsheet is a reminder, not a complete game. The file below is complete. The table contains individual calls for use inside your own methods. JavaScript is case-sensitive: <code>Update</code> and <code>update</code> are different names.</p>
 </aside><h2 id="create-and-attach-a-script">Create and attach a script<a class="anchor" href="#create-and-attach-a-script">#</a></h2>
@@ -129,6 +129,111 @@ export default class Mover extends MonoBehaviour {
 <blockquote>
 <p><strong>Trap:</strong> Instantiate returns a Promise in Nord. Unity&#39;s synchronous C# example cannot be copied line for line. Vector operators also become explicit method calls in JavaScript. See the API reference&#39;s differences table.</p>
 </blockquote>
+<h2 id="choose-the-lifecycle-hook">Choose the lifecycle hook<a class="anchor" href="#choose-the-lifecycle-hook">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>Use for</th>
+<th>Avoid</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Awake</td>
+<td>Initialize this instance&#39;s own state</td>
+<td>Assuming another object&#39;s Start has already run</td>
+</tr>
+<tr>
+<td>Start</td>
+<td>Initial lookup and scene setup</td>
+<td>Adding the same listener every frame</td>
+</tr>
+<tr>
+<td>Update</td>
+<td>Read frame input; render-frame gameplay</td>
+<td>Treating a one-frame press as a held key</td>
+</tr>
+<tr>
+<td>FixedUpdate</td>
+<td>Controller work tied to the fixed scene step</td>
+<td>Fighting the physics body with another transform controller</td>
+</tr>
+<tr>
+<td>LateUpdate</td>
+<td>Follow-up work after normal updates</td>
+<td>Using it to hide an unexplained ordering bug</td>
+</tr>
+<tr>
+<td>OnEnable / OnDisable</td>
+<td>Lifetime of enabled-only work</td>
+<td>Disabling an object and expecting its own Update to wake it</td>
+</tr>
+<tr>
+<td>OnDestroy</td>
+<td>Remove UI and release external subscriptions</td>
+<td>Keeping callbacks attached to a destroyed scene object</td>
+</tr>
+</tbody></table>
+<h2 id="import-and-field-decisions">Import and field decisions<a class="anchor" href="#import-and-field-decisions">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Import / pattern</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Editable number</td>
+<td>SerializeField; read <code>this.speed</code></td>
+<td>The object&#39;s saved override may differ from the code default</td>
+</tr>
+<tr>
+<td>Bounded number</td>
+<td>Range</td>
+<td>Helper arguments are min, max, default</td>
+</tr>
+<tr>
+<td>Dropdown</td>
+<td>Enum</td>
+<td>Options and stored selection agree</td>
+</tr>
+<tr>
+<td>Object slot</td>
+<td>EntityRef</td>
+<td>Assign the target in Inspector; handle an empty slot</td>
+</tr>
+<tr>
+<td>Key input</td>
+<td>UnityInput as Input, KeyCode</td>
+<td>Native Input has a different contract</td>
+</tr>
+<tr>
+<td>Vector math</td>
+<td>Vector2 / Vector3</td>
+<td>Use Add/Sub/Mul, not JavaScript operators</td>
+</tr>
+<tr>
+<td>Scene transition</td>
+<td>SceneManager</td>
+<td>Async scene change replaces scene-local objects</td>
+</tr>
+<tr>
+<td>Global manager</td>
+<td>Your Singleton / GameManager / AudioManager subclass</td>
+<td>One attached instance must exist; importing does not create it</td>
+</tr>
+</tbody></table>
+<h2 id="javascript-differences-worth-remembering">JavaScript differences worth remembering<a class="anchor" href="#javascript-differences-worth-remembering">#</a></h2>
+<ul>
+<li>Use <code>===</code> for strict comparisons and guard absent objects before accessing components.</li>
+<li><code>await this.Instantiate(...)</code> belongs in an async method. Handle load failures instead of using an unresolved Promise like an entity.</li>
+<li>Use a generator method (<code>*Sequence()</code>) for coroutines and capitalized lifecycle names for MonoBehaviour.</li>
+<li>A C# comparison block is orientation, not JavaScript you can paste into a script.</li>
+<li>The implementation is a documented Unity-style subset. Check coverage before planning around an unfamiliar Unity package.</li>
+</ul>
+<h2 id="more-complete-lookup-sheets">More complete lookup sheets<a class="anchor" href="#more-complete-lookup-sheets">#</a></h2>
+<p><a href="cheat-sheet-objects.html">Objects and events</a> · <a href="cheat-sheet-input-physics.html">Input and physics</a> · <a href="cheat-sheet-maths-time.html">Maths and timing</a> · <a href="cheat-sheet-presentation.html">UI, audio and saves</a>.</p>
 <h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
 <ul>
 <li><code>Mover.js</code> imports the real Nord exports and uses capitalized <code>Update()</code>.</li>
@@ -136,5 +241,5 @@ export default class Mover extends MonoBehaviour {
 <li>If it does not move, check attachment, enabled state and the Console&#39;s first error.</li>
 </ul>
 <p>Next: <a href="../examples/ex-unity-api.html">Unity API map and recipes</a>. Back to: <a href="cookbook.html">Cheatsheets</a>.</p>
-<div class="pager"><a href="mobile-controls.html"><small>← Previous</small>Mobile and on-screen touch controls</a><a href="cheat-sheet-export.html"><small>Next →</small>Cheat sheet — export</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#create-and-attach-a-script">Create and attach a script </a><a href="#lifecycle">Lifecycle </a><a href="#calls-to-remember">Calls to remember </a><a href="#check-yourself">Check yourself </a></aside></div>
+<div class="pager"><a href="cookbook.html"><small>← Previous</small>Cheatsheets — find an answer</a><a href="cheat-sheet-objects.html"><small>Next →</small>Objects, prefabs and events cheatsheet</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#create-and-attach-a-script">Create and attach a script </a><a href="#lifecycle">Lifecycle </a><a href="#calls-to-remember">Calls to remember </a><a href="#choose-the-lifecycle-hook">Choose the lifecycle hook </a><a href="#import-and-field-decisions">Import and field decisions </a><a href="#javascript-differences-worth-remembering">JavaScript differences worth remembering </a><a href="#more-complete-lookup-sheets">More complete lookup sheets </a><a href="#check-yourself">Check yourself </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

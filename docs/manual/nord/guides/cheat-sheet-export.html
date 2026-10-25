@@ -1,78 +1,232 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>Cheat sheet — export — Nord Engine Docs</title>
+<title>Export, hosting and release cheatsheet — Nord Engine Docs</title>
 <script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
 <link rel="stylesheet" href="../../assets/manual.css"></head>
 <body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
 <div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="cookbook.html" class="active" aria-current="page">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
-<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details open><summary>Cheatsheets <small>(10)</small></summary><a href="cookbook.html">Cheatsheets — find an answer</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-export.html" class="cur" aria-current="page">Cheat sheet — export</a><a href="ui-scenes.html">UI scenes reference</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="shortcuts.html">Keyboard shortcuts</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Cheat sheet — export</h1>
-<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Save the editable project first. An export is the playable result; it does not replace your source project. Run commands from the project folder, and check the built result before uploading it.</p>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details><summary>Find an answer <small>(1)</small></summary><a href="cookbook.html">Cheatsheets — find an answer</a></details><details><summary>Unity scripting and gameplay <small>(5)</small></summary><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-objects.html">Objects, prefabs and events cheatsheet</a><a href="cheat-sheet-input-physics.html">Input and physics cheatsheet</a><a href="cheat-sheet-maths-time.html">Maths, timing and coroutines cheatsheet</a><a href="cheat-sheet-presentation.html">UI, audio and saves cheatsheet</a></details><details><summary>Editor and visual tools <small>(4)</small></summary><a href="cheat-sheet-editor.html">Editor and project workflow cheatsheet</a><a href="cheat-sheet-visual-tools.html">Assets and visual tools cheatsheet</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a><a href="shortcuts.html">Keyboard shortcuts</a></details><details open><summary>Test and ship <small>(3)</small></summary><a href="cheat-sheet-debugging.html">Debugging, performance and testing cheatsheet</a><a href="cheat-sheet-export.html" class="cur" aria-current="page">Export, hosting and release cheatsheet</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a></details><details><summary>Reference tables <small>(4)</small></summary><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="ui-scenes.html">UI scenes reference</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Export, hosting and release cheatsheet</h1>
+<p>Use this page when the saved project works and you are ready to share it. Keep the editable project; an export is a separate playable artifact.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A successful build means Nord produced files. A successful release means the player can load those files, control the game, hear audio after interaction, and reach the intended ending. Test the delivered version, not just the editor preview.</p>
 </aside><h2 id="export-from-the-editor">Export from the editor<a class="anchor" href="#export-from-the-editor">#</a></h2>
-<p>Save the project, then open <span class="c-ui">File ▸ Export…</span>. Choose the web or desktop output appropriate to your audience. The export window reports the result; open that output and confirm that the first scene appears. A desktop export needs the matching player template: see <a href="../manual/desktop-apps.html">Desktop apps</a>.</p>
-<p><strong>In the file</strong> <code>nord.project.json</code>, the project&#39;s type and start scene determine what gets built. Check their exact saved values with <a href="../reference/project-format.html">Project format</a>; keep the editable project alongside your backups.</p>
+<ol>
+<li>Stop Play and save the scene, scripts and tool documents. Confirm the project&#39;s starting scene.</li>
+<li>Open <span class="c-ui">File ▸ Export…</span>. Choose web or desktop output, an output folder and the required options. For desktop, install the matching player template through <span class="c-ui">Project ▸ Export templates…</span> when required.</li>
+<li>Run the export and read its result in Console. Open the output folder, then test the artifact using the method appropriate to its target below.</li>
+</ol>
+<p><strong>In the file</strong> <code>nord.project.json</code>, the project type, start scene and export settings determine the build. A scene can reference separate levels, UI screens and controllers; save those resources too. <a href="../reference/project-format.html">Project format</a> defines the fields.</p>
+<h2 id="choose-the-artifact">Choose the artifact<a class="anchor" href="#choose-the-artifact">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Audience / need</th>
+<th>Output</th>
+<th>Test it by</th>
+<th>Limit to remember</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Browser on a static host</td>
+<td>Normal web folder</td>
+<td>Serving the whole output over HTTP</td>
+<td>Keep its files and relative paths together</td>
+</tr>
+<tr>
+<td>itch.io browser game</td>
+<td>Web ZIP / itch preset</td>
+<td>Uploading as an HTML game and testing its page</td>
+<td>Viewport, input focus and audio need checking</td>
+</tr>
+<tr>
+<td>Supported double-click workflow</td>
+<td>Single-file export</td>
+<td>Opening its generated HTML</td>
+<td>Not every dynamic-resource workflow fits this mode</td>
+</tr>
+<tr>
+<td>Installable web app</td>
+<td>PWA export</td>
+<td>HTTP/HTTPS test with its manifest and worker</td>
+<td>Old caches can hide new files</td>
+</tr>
+<tr>
+<td>Mac / Windows / Linux app</td>
+<td>Desktop export</td>
+<td>Running the actual target-platform bundle</td>
+<td>Matching player, signing and platform checks apply</td>
+</tr>
+<tr>
+<td>Android / iOS project</td>
+<td>Mobile project from Build Settings</td>
+<td>Building and running through its platform tools</td>
+<td>Exported project is not a finished signed store submission</td>
+</tr>
+<tr>
+<td>Multiplayer with a separate server</td>
+<td>Client build plus separately deployed server</td>
+<td>Two clients connected to that server</td>
+<td>Static hosting does not start a Node process</td>
+</tr>
+</tbody></table>
 <h2 id="command-lookup">Command lookup<a class="anchor" href="#command-lookup">#</a></h2>
-<p>These commands are alternatives to the editor workflow. Run them from the project folder. If <code>nord</code> is not found, use the executable path in the <a href="cheat-sheet-cli.html">CLI cheatsheet</a>.</p>
+<p>Run from the project folder. If <code>nord</code> is not on PATH, use the executable path in the <a href="cheat-sheet-cli.html">CLI cheatsheet</a>.</p>
 <table>
 <thead>
 <tr>
 <th>Goal</th>
 <th>Command</th>
+<th>Result</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Check project</td>
+<td>Validate source</td>
 <td><code>nord check .</code></td>
+<td>Project/scene problems reported</td>
 </tr>
 <tr>
-<td>Dev server (live reload)</td>
+<td>Preview with reload</td>
 <td><code>nord serve . -p 4173</code></td>
+<td>Local development server</td>
 </tr>
 <tr>
-<td>Web build</td>
-<td><code>nord build .</code> → <code>dist/</code></td>
+<td>Build default web target</td>
+<td><code>nord build .</code></td>
+<td><code>dist/</code></td>
 </tr>
 <tr>
-<td>Smaller</td>
+<td>Choose output folder</td>
+<td><code>nord build . -o ../site</code></td>
+<td>Separate output folder</td>
+</tr>
+<tr>
+<td>Minify and optimize</td>
 <td><code>nord build . --minify --optimize</code></td>
+<td>Processed output; compare behavior and size</td>
 </tr>
 <tr>
-<td>itch.io zip</td>
+<td>Make ZIP too</td>
 <td><code>nord build . --zip</code></td>
+<td>Folder plus archive</td>
 </tr>
 <tr>
-<td>Double-clickable</td>
+<td>Single HTML output</td>
 <td><code>nord build . --single-file</code></td>
+<td>Supported resources packed into HTML</td>
+</tr>
+<tr>
+<td>PWA files</td>
+<td><code>nord build . --pwa</code></td>
+<td>Manifest/worker and build</td>
+</tr>
+<tr>
+<td>Hosting preset</td>
+<td><code>nord build . --host github-pages</code></td>
+<td>Host-specific deploy files; also itch/netlify/vercel/docker</td>
 </tr>
 <tr>
 <td>Rust game / app</td>
 <td><code>nord export . --target web-wasm-game</code> / <code>web-wasm-app</code></td>
+<td>Corresponding Rust/WASM target</td>
 </tr>
 <tr>
-<td>Dev build of Rust</td>
-<td><code>nord build-rust .</code></td>
-</tr>
-<tr>
-<td>Mac app</td>
-<td><code>nord bundle-mac . --name &quot;My Game&quot; --icon icon.png --dmg</code></td>
-</tr>
-<tr>
-<td>Offline scan</td>
+<td>Check output for outside URLs</td>
 <td><code>nord check-offline dist</code></td>
+<td>Offline-reference scan</td>
 </tr>
 <tr>
-<td>Toolchain advice</td>
+<td>Diagnose missing tools</td>
 <td><code>nord doctor</code></td>
+<td>Toolchain report</td>
+</tr>
+</tbody></table>
+<p>For desktop CLI commands and archive options, see <a href="cheat-sheet-cli.html#desktop-apps">CLI</a>. For the current desktop export window and templates, see <a href="../manual/desktop-apps.html">Desktop apps</a>. Desktop and mobile builds still need testing on their destination platforms.</p>
+<h2 id="release-checks">Release checks<a class="anchor" href="#release-checks">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Pass condition</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Start scene</td>
+<td>Fresh launch reaches the intended first screen</td>
 </tr>
 <tr>
-<td>Details: <a href="../manual/export.html">Export &amp; hosting</a>, <a href="../reference/cli.html">CLI</a>.</td>
-<td></td>
+<td>Files</td>
+<td>Images, sound, models, fonts and level data resolve with correct filename case</td>
+</tr>
+<tr>
+<td>Controls</td>
+<td>Keyboard/mouse work after focus; intended touch/gamepad controls are tested on devices</td>
+</tr>
+<tr>
+<td>Audio</td>
+<td>A user gesture enables sound, volume controls work, music does not duplicate</td>
+</tr>
+<tr>
+<td>Saves</td>
+<td>Missing data is handled; stored data survives the expected restart</td>
+</tr>
+<tr>
+<td>Scene changes</td>
+<td>No stale HUD, doubled listener or old scene object reference</td>
+</tr>
+<tr>
+<td>Display</td>
+<td>Intended viewport/aspect works; essential UI remains reachable</td>
+</tr>
+<tr>
+<td>Hosting</td>
+<td>Nested path, refresh behavior and MIME types work for this host</td>
+</tr>
+<tr>
+<td>Offline promise</td>
+<td>Scan passes and runtime behavior is checked without unintended external requests</td>
+</tr>
+<tr>
+<td>Multiplayer</td>
+<td>Required server is running separately and clients can reach it</td>
+</tr>
+</tbody></table>
+<h2 id="troubleshooting">Troubleshooting<a class="anchor" href="#troubleshooting">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Blank folder build after double-click</td>
+<td>Serve it over HTTP or choose a supported single-file workflow</td>
+</tr>
+<tr>
+<td>Works locally, missing art online</td>
+<td>File case, relative paths, omitted dependencies and uploaded folder structure</td>
+</tr>
+<tr>
+<td>Old version remains</td>
+<td>Host cache, browser cache and PWA service worker</td>
+</tr>
+<tr>
+<td>Save appears reset on new URL</td>
+<td>Browser origin/port/profile and project id/slot</td>
+</tr>
+<tr>
+<td>Desktop template unavailable</td>
+<td>Template version/platform and installed player templates</td>
+</tr>
+<tr>
+<td>Exported multiplayer is offline</td>
+<td>Static files cannot launch its separate server</td>
 </tr>
 </tbody></table>
 <h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
-<p>Confirm the result in your saved project. Check Console errors and compare exact names with the linked reference if the result differs.</p>
-<p>Next: <a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a>. Back to: <a href="cookbook.html">Cheatsheets</a>.</p>
-<div class="pager"><a href="cheat-sheet-unity.html"><small>← Previous</small>Unity scripting cheatsheet</a><a href="ui-scenes.html"><small>Next →</small>UI scenes reference</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#export-from-the-editor">Export from the editor </a><a href="#command-lookup">Command lookup </a><a href="#check-yourself">Check yourself </a></aside></div>
+<p>Launch the actual deliverable from a fresh session, complete its main interaction, restart and verify persistence. State which platforms and devices still need a human pass.</p>
+<p>Next: <a href="cheat-sheet-cli.html">Command line</a>. Back to: <a href="cookbook.html">Cheatsheets</a>.</p>
+<div class="pager"><a href="cheat-sheet-debugging.html"><small>← Previous</small>Debugging, performance and testing cheatsheet</a><a href="cheat-sheet-cli.html"><small>Next →</small>Cheat sheet — command line</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#export-from-the-editor">Export from the editor </a><a href="#choose-the-artifact">Choose the artifact </a><a href="#command-lookup">Command lookup </a><a href="#release-checks">Release checks </a><a href="#troubleshooting">Troubleshooting </a><a href="#check-yourself">Check yourself </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

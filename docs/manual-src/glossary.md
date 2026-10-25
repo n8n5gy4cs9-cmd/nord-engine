@@ -1,7 +1,8 @@
 ---
 title: Glossary
 section: Guides
-order: 4
+group: Reference tables
+order: 40
 summary: Plain-language meanings of the words used in this manual.
 ---
 ::: dummies

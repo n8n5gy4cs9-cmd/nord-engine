@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Maths, timing and coroutines cheatsheet — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="cookbook.html" class="active" aria-current="page">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details><summary>Find an answer <small>(1)</small></summary><a href="cookbook.html">Cheatsheets — find an answer</a></details><details open><summary>Unity scripting and gameplay <small>(5)</small></summary><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-objects.html">Objects, prefabs and events cheatsheet</a><a href="cheat-sheet-input-physics.html">Input and physics cheatsheet</a><a href="cheat-sheet-maths-time.html" class="cur" aria-current="page">Maths, timing and coroutines cheatsheet</a><a href="cheat-sheet-presentation.html">UI, audio and saves cheatsheet</a></details><details><summary>Editor and visual tools <small>(4)</small></summary><a href="cheat-sheet-editor.html">Editor and project workflow cheatsheet</a><a href="cheat-sheet-visual-tools.html">Assets and visual tools cheatsheet</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a><a href="shortcuts.html">Keyboard shortcuts</a></details><details><summary>Test and ship <small>(3)</small></summary><a href="cheat-sheet-debugging.html">Debugging, performance and testing cheatsheet</a><a href="cheat-sheet-export.html">Export, hosting and release cheatsheet</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a></details><details><summary>Reference tables <small>(4)</small></summary><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="ui-scenes.html">UI scenes reference</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Maths, timing and coroutines cheatsheet</h1>
+<p>Use these helpers from <code>nord</code> inside Unity-style scripts. Read <a href="../examples/ex-unity-api-math.html">Unity maths</a> when you need matrix, bounds, ray or plane operations beyond this daily lookup.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A position says where something is. A direction says which way it points. A velocity says how quickly its position changes. Multiplying a velocity by elapsed seconds gives a displacement for this frame. The units are your best error detector.</p>
+</aside><h2 id="numbers-and-vectors">Numbers and vectors<a class="anchor" href="#numbers-and-vectors">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Helper / operation</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Keep a value in a range</td>
+<td><code>Mathf.Clamp(value, min, max)</code></td>
+<td>Stops below min and above max</td>
+</tr>
+<tr>
+<td>Keep a fraction valid</td>
+<td><code>Mathf.Clamp01(value)</code></td>
+<td>Clamps to 0..1; useful for health bars</td>
+</tr>
+<tr>
+<td>Blend endpoints</td>
+<td><code>Mathf.Lerp(a, b, t)</code></td>
+<td>A fraction along a to b; t is not a duration</td>
+</tr>
+<tr>
+<td>Move at a bounded rate</td>
+<td><code>Mathf.MoveTowards(current, target, speed * Time.deltaTime)</code></td>
+<td>Maximum change this frame</td>
+</tr>
+<tr>
+<td>Compare approximate floats</td>
+<td><code>Mathf.Approximately(a, b)</code></td>
+<td>Avoids relying on exact floating-point equality</td>
+</tr>
+<tr>
+<td>Wrap repeated motion</td>
+<td><code>Mathf.Repeat(t, length)</code></td>
+<td>Repeating interval</td>
+</tr>
+<tr>
+<td>Back-and-forth motion</td>
+<td><code>Mathf.PingPong(t, length)</code></td>
+<td>Triangle-wave movement</td>
+</tr>
+<tr>
+<td>Construct a vector</td>
+<td><code>new Vector2(x, y)</code> / <code>new Vector3(x, y, z)</code></td>
+<td>Component values</td>
+</tr>
+<tr>
+<td>Vector arithmetic</td>
+<td><code>a.Add(b)</code>, <code>a.Sub(b)</code>, <code>a.Mul(scale)</code></td>
+<td>Explicit methods; JavaScript does not overload + or *</td>
+</tr>
+<tr>
+<td>Vector length</td>
+<td><code>direction.magnitude</code></td>
+<td>Distance or length</td>
+</tr>
+<tr>
+<td>Unit direction</td>
+<td><code>direction.normalized</code></td>
+<td>Direction with length 1, subject to zero-vector handling</td>
+</tr>
+<tr>
+<td>Rotate from degrees</td>
+<td><code>Quaternion.Euler(x, y, z)</code></td>
+<td>Quaternion from Euler angles</td>
+</tr>
+</tbody></table>
+<p>Do not use <code>a + b</code> to add vectors. Keep degree-based rotation helpers distinct from JavaScript&#39;s radian-based trigonometry. Check local versus world coordinates when the object has a rotated or scaled parent.</p>
+<h2 id="transform-reminders">Transform reminders<a class="anchor" href="#transform-reminders">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Property / operation</th>
+<th>Coordinate space</th>
+<th>Caution</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>this.transform.position</code></td>
+<td>World</td>
+<td>Includes parent transforms</td>
+</tr>
+<tr>
+<td><code>this.transform.localPosition</code></td>
+<td>Parent-relative</td>
+<td>Parent motion affects the result</td>
+</tr>
+<tr>
+<td><code>this.transform.localScale</code></td>
+<td>Parent-relative</td>
+<td>World scale also includes ancestors</td>
+</tr>
+<tr>
+<td><code>this.transform.SetParent(parent, true)</code></td>
+<td>Preserves world placement</td>
+<td>Parent can be a supported wrapper/entity or null</td>
+</tr>
+<tr>
+<td><code>this.transform.TransformPoint(point)</code></td>
+<td>Local point to world point</td>
+<td>Includes translation and scale</td>
+</tr>
+<tr>
+<td><code>this.transform.TransformDirection(direction)</code></td>
+<td>Local direction to world direction</td>
+<td>Direction conversion is not point conversion</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Trap:</strong> <code>Mathf.SmoothDamp(...)</code> returns an object with <code>value</code> and <code>velocity</code> in Nord. Save the returned velocity for the next call; there is no C# ref parameter.</p>
+</blockquote>
+<h2 id="time-and-waiting">Time and waiting<a class="anchor" href="#time-and-waiting">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Use</th>
+<th>Unit / limitation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Movement per render frame</td>
+<td><code>Time.deltaTime</code></td>
+<td>Scaled seconds</td>
+</tr>
+<tr>
+<td>Fixed-step reference interval</td>
+<td><code>Time.fixedDeltaTime</code></td>
+<td>Current implementation reports 1/60 second</td>
+</tr>
+<tr>
+<td>Elapsed game time</td>
+<td><code>Time.time</code></td>
+<td>Game seconds</td>
+</tr>
+<tr>
+<td>A clock independent of scene time scale</td>
+<td><code>Time.realtimeSinceStartup</code></td>
+<td>Monotonic clock seconds; not a saved game timestamp</td>
+</tr>
+<tr>
+<td>Slow motion</td>
+<td><code>Time.timeScale = 0.5</code></td>
+<td>Restore the previous scale afterward</td>
+</tr>
+<tr>
+<td>Freeze scene ticking</td>
+<td><code>this.game.pause()</code></td>
+<td>A frozen scene cannot process its own Update to resume</td>
+</tr>
+<tr>
+<td>Resume from an active UI callback</td>
+<td><code>this.game.resume()</code></td>
+<td>A button can remain responsive while scene updates are paused</td>
+</tr>
+<tr>
+<td>Start a generator</td>
+<td><code>this.StartCoroutine(this.Sequence())</code></td>
+<td>Sequence must be a generator method</td>
+</tr>
+<tr>
+<td>Wait in the generator</td>
+<td><code>yield new WaitForSeconds(1)</code></td>
+<td>Scaled game seconds</td>
+</tr>
+<tr>
+<td>Wait for a condition</td>
+<td><code>yield new WaitUntil(() =&gt; ready)</code></td>
+<td>The predicate is checked while the coroutine is stepped</td>
+</tr>
+<tr>
+<td>Cancel owned generators</td>
+<td><code>this.StopAllCoroutines()</code></td>
+<td>Use when the behavior&#39;s work should end</td>
+</tr>
+</tbody></table>
+<p><code>WaitForSecondsRealtime</code> currently inherits the same scheduler behavior as WaitForSeconds; do not treat its name as a guarantee that it continues during a paused scene. Likewise, <code>unscaledDeltaTime</code> cannot create updates while the scene loop is stopped. The <a href="../api/api-unity.html#coroutines">API differences</a> document these compatibility limits.</p>
+<h2 id="random-values">Random values<a class="anchor" href="#random-values">#</a></h2>
+<p><code>Random.Range(0, 10)</code> uses integer behavior for integer endpoints: 0 through 9. Float endpoints use floating-point behavior. Use the documented random helper consistently; a reproducible simulation needs deliberate seed management, not scattered calls to Math.random.</p>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<p>Test a moving object at different frame rates, with a rotated parent, and during pause. Explain whether each calculation uses pixels, world units, degrees, a fraction or seconds.</p>
+<p>Next: <a href="cheat-sheet-presentation.html">UI, audio and saves</a>. Back to: <a href="cookbook.html">Cheatsheets</a>.</p>
+<div class="pager"><a href="cheat-sheet-input-physics.html"><small>← Previous</small>Input and physics cheatsheet</a><a href="cheat-sheet-presentation.html"><small>Next →</small>UI, audio and saves cheatsheet</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#numbers-and-vectors">Numbers and vectors </a><a href="#transform-reminders">Transform reminders </a><a href="#time-and-waiting">Time and waiting </a><a href="#random-values">Random values </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

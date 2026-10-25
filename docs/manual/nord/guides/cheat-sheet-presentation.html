@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>UI, audio and saves cheatsheet — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="cookbook.html" class="active" aria-current="page">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details><summary>Find an answer <small>(1)</small></summary><a href="cookbook.html">Cheatsheets — find an answer</a></details><details open><summary>Unity scripting and gameplay <small>(5)</small></summary><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-objects.html">Objects, prefabs and events cheatsheet</a><a href="cheat-sheet-input-physics.html">Input and physics cheatsheet</a><a href="cheat-sheet-maths-time.html">Maths, timing and coroutines cheatsheet</a><a href="cheat-sheet-presentation.html" class="cur" aria-current="page">UI, audio and saves cheatsheet</a></details><details><summary>Editor and visual tools <small>(4)</small></summary><a href="cheat-sheet-editor.html">Editor and project workflow cheatsheet</a><a href="cheat-sheet-visual-tools.html">Assets and visual tools cheatsheet</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a><a href="shortcuts.html">Keyboard shortcuts</a></details><details><summary>Test and ship <small>(3)</small></summary><a href="cheat-sheet-debugging.html">Debugging, performance and testing cheatsheet</a><a href="cheat-sheet-export.html">Export, hosting and release cheatsheet</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a></details><details><summary>Reference tables <small>(4)</small></summary><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="ui-scenes.html">UI scenes reference</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>UI, audio and saves cheatsheet</h1>
+<p>Use this page for the player-facing parts of a game: a visible result, a sound and a value remembered next time. UI and audio services remain available from a MonoBehaviour; using them does not require switching to the lower-case lifecycle.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>The HUD shows the current answer. A sound confirms an event. A save remembers data after the scene ends. These are three separate jobs: showing “10” does not save 10, and saving 10 does not automatically update a label.</p>
+</aside><h2 id="ui-lookup">UI lookup<a class="anchor" href="#ui-lookup">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Call from MonoBehaviour</th>
+<th>Lifetime / contract</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Create a label</td>
+<td><code>this.ui.label(&#39;Score 0&#39;, { x: 16, y: 16 })</code></td>
+<td>Returns a handle; keep it</td>
+</tr>
+<tr>
+<td>Change a label</td>
+<td><code>label.set(&#39;Score 1&#39;)</code></td>
+<td>Updates the existing handle</td>
+</tr>
+<tr>
+<td>Create a button</td>
+<td><code>this.ui.button(&#39;Play&#39;, callback, options)</code></td>
+<td>Callback handles the press</td>
+</tr>
+<tr>
+<td>Show / hide a named screen</td>
+<td><code>this.ui.show(&#39;pause&#39;)</code> / <code>this.ui.hide(&#39;pause&#39;)</code></td>
+<td>Does not itself pause gameplay</td>
+</tr>
+<tr>
+<td>Remove one element</td>
+<td><code>label.remove()</code></td>
+<td>Release UI you created when its owner ends</td>
+</tr>
+<tr>
+<td>Load a designed screen</td>
+<td><code>await this.ui.load(&#39;ui/menu.ui.json&#39;)</code></td>
+<td>Promise; wire actions after loading</td>
+</tr>
+<tr>
+<td>Update a binding</td>
+<td><code>screen.set(&#39;score&#39;, 12)</code></td>
+<td>Matches a binding used by the designed screen</td>
+</tr>
+<tr>
+<td>Handle a designed action</td>
+<td><code>screen.on(&#39;start&#39;, callback)</code></td>
+<td>Action name must match the UI Designer</td>
+</tr>
+</tbody></table>
+<p>Open <span class="c-ui">Window ▸ Editors ▸ UI Designer</span> to create a designed screen. Name nodes and configure their actions, then save. <strong>In the file</strong> <code>ui/menu.ui.json</code>, layout and actions are data; a script loads that same path. See <a href="ui-scenes.html">UI scenes reference</a> for the file contract.</p>
+<h2 id="complete-example-a-counter-that-remembers">Complete example: a counter that remembers<a class="anchor" href="#complete-example-a-counter-that-remembers">#</a></h2>
+<ol>
+<li>In <span class="c-ui">Assets</span>, create a <span class="c-ui">New MonoBehaviour script (Unity-style)</span> named <code>TapCounter</code>. Replace the file with the complete code below.</li>
+<li>Select an entity in <span class="c-ui">Hierarchy</span> and attach it through <span class="c-ui">Inspector ▸ + Add script</span>. Save the scene.</li>
+<li>Press <span class="c-ui">Play</span>, focus the Game view and press Space. The label increments once per press. Stop and Play again: the value returns from the current save slot.</li>
+</ol>
+<p><strong>File: <code>scripts/TapCounter.js</code></strong> (new file, the whole file)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, UnityInput as Input, KeyCode, PlayerPrefs } from 'nord';
+
+export default class TapCounter extends MonoBehaviour {
+  Start() {
+    this.count = PlayerPrefs.GetInt('cheatsheet.tapCount', 0);
+    this.label = this.ui.label(`Taps ${this.count}`, { x: 16, y: 16 });
+  }
+
+  Update() {
+    if (!Input.GetKeyDown(KeyCode.Space)) return;
+    this.count += 1;
+    PlayerPrefs.SetInt('cheatsheet.tapCount', this.count);
+    this.label.set(`Taps ${this.count}`);
+  }
+
+  OnDestroy() {
+    this.label?.remove();
+  }
+}</code></pre>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code> (or your open scene), the selected entity&#39;s <code>scripts</code> array includes this entry; preserve its other entries:</p>
+<pre class="code" data-lang="json"><code>{ &quot;path&quot;: &quot;scripts/TapCounter.js&quot;, &quot;attributes&quot;: {} }</code></pre>
+<p><img src="../../assets/screenshots/manual-cheatsheet-counter.png" alt="The documented counter running with Nord UI, showing Taps 2 after two presses"></p>
+<p>This stores a small value per press to demonstrate persistence. Do not write large world snapshots every render frame. It needs no audio file, project input action or physics body.</p>
+<h2 id="audio-lookup">Audio lookup<a class="anchor" href="#audio-lookup">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Call</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Play a sound</td>
+<td><code>this.audio.play(&#39;assets/audio/coin.wav&#39;, { volume: 0.8 })</code></td>
+<td>File exists inside this project</td>
+</tr>
+<tr>
+<td>Play music</td>
+<td><code>this.audio.music(&#39;assets/audio/music.mp3&#39;, { fade: 1 })</code></td>
+<td>Music player handles one current track</td>
+</tr>
+<tr>
+<td>Stop music</td>
+<td><code>this.audio.stopMusic({ fade: 0.5 })</code></td>
+<td>Consider who owns the music between scenes</td>
+</tr>
+<tr>
+<td>Set a bus level</td>
+<td><code>this.audio.volume(&#39;music&#39;, 0.5)</code></td>
+<td>0..1; buses include master, music, sfx, ui</td>
+</tr>
+<tr>
+<td>Mute a bus</td>
+<td><code>this.audio.mute(&#39;sfx&#39;, true)</code></td>
+<td>Separate from changing its stored volume</td>
+</tr>
+</tbody></table>
+<p>Browsers require user activation before audible playback. Test after a click or key press. AudioManager.instance requires an actual AudioManager subclass instance in the game; importing the class does not create a singleton.</p>
+<h2 id="persistence-lookup">Persistence lookup<a class="anchor" href="#persistence-lookup">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Call</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Number setting</td>
+<td><code>PlayerPrefs.SetInt(key, number)</code> / <code>GetInt(key, fallback)</code></td>
+<td>Integer conversion</td>
+</tr>
+<tr>
+<td>Decimal setting</td>
+<td><code>PlayerPrefs.SetFloat(key, number)</code> / <code>GetFloat(key, fallback)</code></td>
+<td>Numeric value</td>
+</tr>
+<tr>
+<td>Text setting</td>
+<td><code>PlayerPrefs.SetString(key, text)</code> / <code>GetString(key, fallback)</code></td>
+<td>Text value</td>
+</tr>
+<tr>
+<td>Check / remove one key</td>
+<td><code>PlayerPrefs.HasKey(key)</code> / <code>DeleteKey(key)</code></td>
+<td>Current slot</td>
+</tr>
+<tr>
+<td>JSON game data</td>
+<td><code>this.save.set(&#39;checkpoint&#39;, plainData)</code></td>
+<td>Store serializable data, not live entities</td>
+</tr>
+<tr>
+<td>Select a slot</td>
+<td><code>this.save.slot(1)</code></td>
+<td>Mutates the shared Save object&#39;s active slot; it is not an independent handle</td>
+</tr>
+<tr>
+<td>Read data</td>
+<td><code>this.save.get(&#39;checkpoint&#39;, null)</code></td>
+<td>Missing key returns your fallback</td>
+</tr>
+</tbody></table>
+<p>Writes happen immediately; PlayerPrefs.Save is a compatibility no-op. PlayerPrefs uses the game&#39;s currently selected Save slot too. Agree on slot ownership before mixing settings and campaign saves. Restore scene references after the destination scene loads, not from old destroyed objects.</p>
+<blockquote>
+<p><strong>Trap:</strong> clearing all preferences deletes the active slot&#39;s data. Use a namespaced test key and remove only that key when checking this example. Browser storage can also differ across origins, ports and browser profiles.</p>
+</blockquote>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<p>Hold Space: the counter should not climb every frame. Release and press again: it increments once. Restart: the count returns without duplicate labels. Test volume after an actual user gesture and test saved data on the origin where you will ship.</p>
+<p>Next: <a href="cheat-sheet-debugging.html">Debugging and performance</a>. Back to: <a href="cookbook.html">Cheatsheets</a>.</p>
+<div class="pager"><a href="cheat-sheet-maths-time.html"><small>← Previous</small>Maths, timing and coroutines cheatsheet</a><a href="cheat-sheet-editor.html"><small>Next →</small>Editor and project workflow cheatsheet</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#ui-lookup">UI lookup </a><a href="#complete-example-a-counter-that-remembers">Complete example: a counter that remembers </a><a href="#audio-lookup">Audio lookup </a><a href="#persistence-lookup">Persistence lookup </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

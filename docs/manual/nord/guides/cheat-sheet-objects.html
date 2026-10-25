@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Objects, prefabs and events cheatsheet — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="cookbook.html" class="active" aria-current="page">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details><summary>Find an answer <small>(1)</small></summary><a href="cookbook.html">Cheatsheets — find an answer</a></details><details open><summary>Unity scripting and gameplay <small>(5)</small></summary><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-objects.html" class="cur" aria-current="page">Objects, prefabs and events cheatsheet</a><a href="cheat-sheet-input-physics.html">Input and physics cheatsheet</a><a href="cheat-sheet-maths-time.html">Maths, timing and coroutines cheatsheet</a><a href="cheat-sheet-presentation.html">UI, audio and saves cheatsheet</a></details><details><summary>Editor and visual tools <small>(4)</small></summary><a href="cheat-sheet-editor.html">Editor and project workflow cheatsheet</a><a href="cheat-sheet-visual-tools.html">Assets and visual tools cheatsheet</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a><a href="shortcuts.html">Keyboard shortcuts</a></details><details><summary>Test and ship <small>(3)</small></summary><a href="cheat-sheet-debugging.html">Debugging, performance and testing cheatsheet</a><a href="cheat-sheet-export.html">Export, hosting and release cheatsheet</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a></details><details><summary>Reference tables <small>(4)</small></summary><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="ui-scenes.html">UI scenes reference</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Objects, prefabs and events cheatsheet</h1>
+<p>Use these operations inside a class extending <code>MonoBehaviour</code>. For complete files, follow <a href="../examples/ex-spawn-destroy.html">Spawning and Destroy</a> or <a href="../examples/ex-events.html">Events</a>.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>An entity is the object. A component is one capability. A script instance is one running copy of your behavior. A prefab is the recipe used to create more objects. Finding a recipe is not the same as having a live object.</p>
+</aside><h2 id="set-up-the-object-first">Set up the object first<a class="anchor" href="#set-up-the-object-first">#</a></h2>
+<p>Select an entity in <span class="c-ui">Hierarchy</span>. Use <span class="c-ui">Inspector ▸ + Add component</span> for its renderer, collider or body, then <span class="c-ui">+ Add script</span> for behavior. Save the scene. You should see both the component fields and script fields before testing.</p>
+<p><strong>In the file</strong> your current <code>.scene.json</code>, each entity has its component data and script entries. Prefab data is stored separately in <code>.prefab.json</code>; use <a href="../reference/project-format.html">Project format</a> when comparing or editing saved data.</p>
+<h2 id="find-and-connect">Find and connect<a class="anchor" href="#find-and-connect">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Call inside MonoBehaviour</th>
+<th>Return / caution</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Current object</td>
+<td><code>this.gameObject</code></td>
+<td>The attached entity</td>
+</tr>
+<tr>
+<td>Find by name or id</td>
+<td><code>this.Find(&#39;Player&#39;)</code></td>
+<td>Entity or no result; guard before use</td>
+</tr>
+<tr>
+<td>First object with tag</td>
+<td><code>this.FindWithTag(&#39;enemy&#39;)</code></td>
+<td>Entity or <code>null</code></td>
+</tr>
+<tr>
+<td>All with tag</td>
+<td><code>this.FindGameObjectsWithTag(&#39;enemy&#39;)</code></td>
+<td>Array</td>
+</tr>
+<tr>
+<td>Component on this object</td>
+<td><code>this.GetComponent(&#39;Rigidbody2D&#39;)</code></td>
+<td>Wrapper or <code>null</code></td>
+</tr>
+<tr>
+<td>Another script on this object</td>
+<td><code>this.GetComponent(Health)</code></td>
+<td>Import the script class <code>Health</code> first</td>
+</tr>
+<tr>
+<td>Search children / parents</td>
+<td><code>this.GetComponentInChildren(Type)</code> / <code>this.GetComponentInParent(Type)</code></td>
+<td>Check missing results</td>
+</tr>
+<tr>
+<td>Inspect a child</td>
+<td><code>this.GetChild(0)</code></td>
+<td>Child entity or no result</td>
+</tr>
+<tr>
+<td>Test a tag</td>
+<td><code>this.CompareTag(&#39;player&#39;)</code></td>
+<td>Boolean</td>
+</tr>
+</tbody></table>
+<p>Prefer an Inspector reference when designers must choose a specific object. Import <code>SerializeField</code> and <code>EntityRef</code>, declare the reference with those helpers, then assign it in the Inspector. See <a href="../api/api-unity.html#serializefield-and-inspector-attributes">Unity API attributes</a> for field types and defaults.</p>
+<h2 id="create-activate-and-destroy">Create, activate and destroy<a class="anchor" href="#create-activate-and-destroy">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Operation</th>
+<th>Important behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Spawn a prefab</td>
+<td><code>await this.Instantiate(&#39;prefabs/coin.prefab.json&#39;, { pos: [100, 80, 0] })</code></td>
+<td>Returns a Promise of an entity; method must be <code>async</code></td>
+</tr>
+<tr>
+<td>Clone an entity</td>
+<td><code>await this.Instantiate(source)</code></td>
+<td>Also asynchronous at the call site</td>
+</tr>
+<tr>
+<td>Disable this object</td>
+<td><code>this.SetActive(false)</code></td>
+<td>Its normal gameplay updates stop; do not rely on its Update to re-enable itself</td>
+</tr>
+<tr>
+<td>Destroy this object</td>
+<td><code>this.Destroy()</code></td>
+<td>Ends this object&#39;s lifetime</td>
+</tr>
+<tr>
+<td>Destroy another later</td>
+<td><code>this.Destroy(target, 2)</code></td>
+<td>Delay is in game seconds</td>
+</tr>
+<tr>
+<td>Change scene</td>
+<td><code>await SceneManager.LoadScene(&#39;scenes/level2.scene.json&#39;)</code></td>
+<td>Import SceneManager; old scene objects are replaced</td>
+</tr>
+<tr>
+<td>Restart scene</td>
+<td><code>SceneManager.ReloadScene()</code></td>
+<td>Recreates starting scene state</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Trap:</strong> after an <code>await</code>, the scene may have changed. Check that the caller and target are still valid before applying a delayed result. Cache references during setup, but do not reuse old scene objects after a scene load.</p>
+</blockquote>
+<h2 id="events-and-ownership">Events and ownership<a class="anchor" href="#events-and-ownership">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Call</th>
+<th>Ownership rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Subscribe globally</td>
+<td><code>this.game.events.on(&#39;score&#39;, handler)</code></td>
+<td>Returns an unsubscribe function; keep it</td>
+</tr>
+<tr>
+<td>Emit globally</td>
+<td><code>this.game.events.emit(&#39;score&#39;, { score: 10 })</code></td>
+<td>Sender and receiver agree on the payload shape</td>
+</tr>
+<tr>
+<td>Subscribe on one entity</td>
+<td><code>target.on(&#39;damage&#39;, handler)</code></td>
+<td>Keep the returned unsubscribe function</td>
+</tr>
+<tr>
+<td>Remove a subscription</td>
+<td>Call the saved unsubscribe function</td>
+<td>Release it in OnDestroy</td>
+</tr>
+<tr>
+<td>Create a UI element</td>
+<td><code>this.ui.label(&#39;Hello&#39;)</code></td>
+<td>Keep its handle; remove it when the owner is destroyed</td>
+</tr>
+</tbody></table>
+<p>Do not subscribe in Update: one subscription per frame quickly becomes hundreds. Subscribe once during setup and release once during cleanup. Use OnEnable/OnDisable pairs instead when the listener should exist only while enabled.</p>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<p>Test a missing target, two spawned instances, and a scene restart. There should be no stale-reference error or doubled event response after restarting.</p>
+<p>Next: <a href="cheat-sheet-input-physics.html">Input and physics</a>. Back to: <a href="cookbook.html">Cheatsheets</a>.</p>
+<div class="pager"><a href="cheat-sheet-unity.html"><small>← Previous</small>Unity scripting cheatsheet</a><a href="cheat-sheet-input-physics.html"><small>Next →</small>Input and physics cheatsheet</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#set-up-the-object-first">Set up the object first </a><a href="#find-and-connect">Find and connect </a><a href="#create-activate-and-destroy">Create, activate and destroy </a><a href="#events-and-ownership">Events and ownership </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

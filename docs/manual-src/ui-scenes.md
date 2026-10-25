@@ -1,7 +1,8 @@
 ---
 title: UI scenes reference
 section: Guides
-order: 3
+group: Reference tables
+order: 42
 summary: The .ui.json format, text, images and 9-slice, skins, and the script API.
 ---
 

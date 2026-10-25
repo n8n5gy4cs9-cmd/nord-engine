@@ -8,7 +8,7 @@
 <div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="cookbook.html" class="active" aria-current="page">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
-<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details open><summary>Cheatsheets <small>(10)</small></summary><a href="cookbook.html">Cheatsheets — find an answer</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-export.html">Cheat sheet — export</a><a href="ui-scenes.html">UI scenes reference</a><a href="cheat-sheet-cli.html" class="cur" aria-current="page">Cheat sheet — command line</a><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="shortcuts.html">Keyboard shortcuts</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Cheat sheet — command line</h1>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details><summary>Find an answer <small>(1)</small></summary><a href="cookbook.html">Cheatsheets — find an answer</a></details><details><summary>Unity scripting and gameplay <small>(5)</small></summary><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-objects.html">Objects, prefabs and events cheatsheet</a><a href="cheat-sheet-input-physics.html">Input and physics cheatsheet</a><a href="cheat-sheet-maths-time.html">Maths, timing and coroutines cheatsheet</a><a href="cheat-sheet-presentation.html">UI, audio and saves cheatsheet</a></details><details><summary>Editor and visual tools <small>(4)</small></summary><a href="cheat-sheet-editor.html">Editor and project workflow cheatsheet</a><a href="cheat-sheet-visual-tools.html">Assets and visual tools cheatsheet</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a><a href="shortcuts.html">Keyboard shortcuts</a></details><details open><summary>Test and ship <small>(3)</small></summary><a href="cheat-sheet-debugging.html">Debugging, performance and testing cheatsheet</a><a href="cheat-sheet-export.html">Export, hosting and release cheatsheet</a><a href="cheat-sheet-cli.html" class="cur" aria-current="page">Cheat sheet — command line</a></details><details><summary>Reference tables <small>(4)</small></summary><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="ui-scenes.html">UI scenes reference</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Cheat sheet — command line</h1>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>Choose the row that matches your current task. Names in code are case-sensitive. Follow the linked manual chapter for setup steps before using this quick reference.</p>
 </aside><p><code>nord</code> is Nord&#39;s optional <strong>command-line tool</strong>. It does the same project jobs as the editor without a window, which suits scripts, build servers and people who like terminals. You never need it to make a game. This page lists every command.</p>
 <h2 id="how-to-run-nord">How to run <code>nord</code><a class="anchor" href="#how-to-run-nord">#</a></h2>
@@ -240,6 +240,111 @@ nord doctor</code></pre>
 <td><code>nord vendor --verify</code></td>
 </tr>
 </tbody></table>
+<h2 id="output-options-and-defaults">Output options and defaults<a class="anchor" href="#output-options-and-defaults">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Type</th>
+<th>Default</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>build <code>--target</code> / <code>-t</code></td>
+<td>Target name</td>
+<td>auto</td>
+<td>Choose the runtime target; auto uses project type</td>
+</tr>
+<tr>
+<td>build <code>--out</code> / <code>-o</code></td>
+<td>Folder path</td>
+<td>project/dist</td>
+<td>Write a separate playable output</td>
+</tr>
+<tr>
+<td>build <code>--host</code></td>
+<td>Preset name</td>
+<td>none</td>
+<td>Add deploy files; does not publish them</td>
+</tr>
+<tr>
+<td>build <code>--minify</code></td>
+<td>Flag</td>
+<td>off</td>
+<td>Minify supported JS/JSON output</td>
+</tr>
+<tr>
+<td>build <code>--optimize</code></td>
+<td>Flag</td>
+<td>off</td>
+<td>Recompress supported assets; audio conversion needs ffmpeg</td>
+</tr>
+<tr>
+<td>build <code>--zip</code></td>
+<td>Flag</td>
+<td>off</td>
+<td>Also make the output archive</td>
+</tr>
+<tr>
+<td>build <code>--pwa</code></td>
+<td>Flag</td>
+<td>off</td>
+<td>Add installable web-app files</td>
+</tr>
+<tr>
+<td>serve <code>--port</code> / <code>-p</code></td>
+<td>Integer</td>
+<td>4173</td>
+<td>Choose the local dev-server port</td>
+</tr>
+<tr>
+<td>serve <code>--lan</code></td>
+<td>Flag</td>
+<td>off</td>
+<td>Share the game on the local network using the printed link</td>
+</tr>
+</tbody></table>
+<p>Inspect <code>nord build --help</code> or the generated <a href="../reference/cli.html">CLI reference</a> when combining options. A hosting preset prepares files; a separate host upload/deploy step still follows.</p>
+<h2 id="desktop-player-template-packaging">Desktop player template packaging<a class="anchor" href="#desktop-player-template-packaging">#</a></h2>
+<p><code>nord template-pack --platform mac-arm64 --player PATH --out OUTPUT</code> packs an already-built player into a <code>.nordtemplates</code> file. Platform names are <code>mac-arm64</code>, <code>mac-x64</code>, <code>windows-x64</code>, <code>linux-x64</code>, and <code>linux-arm64</code>. PATH and OUTPUT stand for your actual input binary and destination folder; this call does not compile a player.</p>
+<p>For ordinary desktop export, use the editor&#39;s Export templates window to install the matching release template. The packaging command is for release/tooling work; it is not a prerequisite for making your first web game.</p>
+<h2 id="automation-order">Automation order<a class="anchor" href="#automation-order">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Command family</th>
+<th>Expected evidence</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. Diagnose tools</td>
+<td>doctor</td>
+<td>Required tools available for the chosen tier</td>
+</tr>
+<tr>
+<td>2. Validate source</td>
+<td>check</td>
+<td>No unresolved project/scene errors</td>
+</tr>
+<tr>
+<td>3. Build once</td>
+<td>build / export</td>
+<td>Output path and successful exit status</td>
+</tr>
+<tr>
+<td>4. Scan the result</td>
+<td>check-offline</td>
+<td>No unintended external-host references</td>
+</tr>
+<tr>
+<td>5. Test the result</td>
+<td>Open through the intended server or platform shell</td>
+<td>Actual game interaction works</td>
+</tr>
+</tbody></table>
+<p>Stop a build script when a command fails. Do not upload an old dist folder just because it still exists after a failed build. See the <a href="cheat-sheet-export.html#release-checks">release checklist</a> for the user-visible checks a command exit code cannot prove.</p>
 <h2 id="common-problems">Common problems<a class="anchor" href="#common-problems">#</a></h2>
 <table>
 <thead>
@@ -267,7 +372,7 @@ nord doctor</code></pre>
 </tbody></table>
 <p>More detail for each command is in the generated <a href="../reference/cli.html">command reference</a>.</p>
 <h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
-<p>Confirm the result in your saved project. Check Console errors and compare exact names with the linked reference if the result differs.</p>
+<p>Run the command with --help first, then the intended project path. Confirm its exit status and actual output folder; test the result before sharing it.</p>
 <p>Next: <a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a>. Back to: <a href="cookbook.html">Cheatsheets</a>.</p>
-<div class="pager"><a href="ui-scenes.html"><small>← Previous</small>UI scenes reference</a><a href="glossary.html"><small>Next →</small>Glossary</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#how-to-run-nord">How to run nord </a><a href="#projects">Projects </a><a href="#run-and-test">Run and test </a><a href="#export-web">Export (web) </a><a href="#desktop-apps">Desktop apps </a><a href="#addons-and-creator-tools">Addons and creator tools </a><a href="#checks-and-maintenance">Checks and maintenance </a><a href="#common-problems">Common problems </a><a href="#check-yourself">Check yourself </a></aside></div>
+<div class="pager"><a href="cheat-sheet-export.html"><small>← Previous</small>Export, hosting and release cheatsheet</a><a href="glossary.html"><small>Next →</small>Glossary</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#how-to-run-nord">How to run nord </a><a href="#projects">Projects </a><a href="#run-and-test">Run and test </a><a href="#export-web">Export (web) </a><a href="#desktop-apps">Desktop apps </a><a href="#addons-and-creator-tools">Addons and creator tools </a><a href="#checks-and-maintenance">Checks and maintenance </a><a href="#output-options-and-defaults">Output options and defaults </a><a href="#desktop-player-template-packaging">Desktop player template packaging </a><a href="#automation-order">Automation order </a><a href="#common-problems">Common problems </a><a href="#check-yourself">Check yourself </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

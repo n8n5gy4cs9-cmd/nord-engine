@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Input and physics cheatsheet — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="cookbook.html" class="active" aria-current="page">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details><summary>Find an answer <small>(1)</small></summary><a href="cookbook.html">Cheatsheets — find an answer</a></details><details open><summary>Unity scripting and gameplay <small>(5)</small></summary><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-objects.html">Objects, prefabs and events cheatsheet</a><a href="cheat-sheet-input-physics.html" class="cur" aria-current="page">Input and physics cheatsheet</a><a href="cheat-sheet-maths-time.html">Maths, timing and coroutines cheatsheet</a><a href="cheat-sheet-presentation.html">UI, audio and saves cheatsheet</a></details><details><summary>Editor and visual tools <small>(4)</small></summary><a href="cheat-sheet-editor.html">Editor and project workflow cheatsheet</a><a href="cheat-sheet-visual-tools.html">Assets and visual tools cheatsheet</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a><a href="shortcuts.html">Keyboard shortcuts</a></details><details><summary>Test and ship <small>(3)</small></summary><a href="cheat-sheet-debugging.html">Debugging, performance and testing cheatsheet</a><a href="cheat-sheet-export.html">Export, hosting and release cheatsheet</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a></details><details><summary>Reference tables <small>(4)</small></summary><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="ui-scenes.html">UI scenes reference</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Input and physics cheatsheet</h1>
+<p>Use this sheet to choose the right input test and movement method. Start with two simple shapes before adding models, animations or a complex controller.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A key held down is a continuous signal. A key pressed this frame is one short pulse. Use the continuous signal to move; use the pulse for one jump or menu action. Physics adds another rule: one system should own an object&#39;s motion at a time.</p>
+</aside><h2 id="set-up-in-the-editor">Set up in the editor<a class="anchor" href="#set-up-in-the-editor">#</a></h2>
+<ol>
+<li>Select the moving object in <span class="c-ui">Hierarchy</span>. Add the required rigidbody and collider through <span class="c-ui">Inspector ▸ + Add component</span>. Check the component reference for the selected backend.</li>
+<li>Add a second collider as a simple obstacle. Save, press Play and confirm the bodies can meet.</li>
+<li>For named actions, configure the project&#39;s input in the <span class="c-ui">Project</span> tab. Focus the Game view before testing. See <a href="../manual/input.html">Input</a> and <a href="../manual/physics.html">Physics</a> for the exact setup.</li>
+</ol>
+<p><strong>In the file</strong> <code>nord.project.json</code>, input and physics settings belong to the project. The selected entity&#39;s <code>.scene.json</code> entry owns its rigidbody and collider data. <a href="../reference/project-format.html">Project format</a> describes both; do not copy a 2D body configuration into a 3D project unchanged.</p>
+<h2 id="input-lookup">Input lookup<a class="anchor" href="#input-lookup">#</a></h2>
+<p>Import <code>UnityInput as Input</code> and <code>KeyCode</code> from <code>nord</code> for these Unity-style names.</p>
+<table>
+<thead>
+<tr>
+<th>Intention</th>
+<th>Call</th>
+<th>Value / use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Key is held</td>
+<td><code>Input.GetKey(KeyCode.Space)</code></td>
+<td>Boolean every frame held</td>
+</tr>
+<tr>
+<td>Key was pressed</td>
+<td><code>Input.GetKeyDown(KeyCode.Space)</code></td>
+<td>Boolean on the new press</td>
+</tr>
+<tr>
+<td>Key was released</td>
+<td><code>Input.GetKeyUp(KeyCode.Space)</code></td>
+<td>Boolean on release</td>
+</tr>
+<tr>
+<td>Named action held / pressed</td>
+<td><code>Input.GetButton(&#39;jump&#39;)</code> / <code>Input.GetButtonDown(&#39;jump&#39;)</code></td>
+<td>Action must exist in project input</td>
+</tr>
+<tr>
+<td>Horizontal / vertical axis</td>
+<td><code>Input.GetAxis(&#39;Horizontal&#39;)</code> / <code>Input.GetAxis(&#39;Vertical&#39;)</code></td>
+<td>Signed input value; choose world direction explicitly</td>
+</tr>
+<tr>
+<td>Left mouse press</td>
+<td><code>Input.GetMouseButtonDown(0)</code></td>
+<td>Button 0 left, 1 right, 2 middle</td>
+</tr>
+<tr>
+<td>Pointer position</td>
+<td><code>Input.mousePosition</code></td>
+<td>Screen-space vector; not automatically a world position</td>
+</tr>
+</tbody></table>
+<p>Named actions help keyboard, touch and gamepad share one behavior. Read a one-frame press in Update and store a request if a later fixed update must consume it; do not assume a press survives until another tick.</p>
+<h2 id="choose-movement-ownership">Choose movement ownership<a class="anchor" href="#choose-movement-ownership">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Use</th>
+<th>Avoid</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Decorative drifting or a marker</td>
+<td>Transform movement in Update</td>
+<td>Expecting it to simulate physical contact</td>
+</tr>
+<tr>
+<td>Dynamic movement against walls</td>
+<td>Rigidbody velocity / forces in the controller&#39;s physics step</td>
+<td>Reassigning transform position every frame too</td>
+</tr>
+<tr>
+<td>Teleport or reset</td>
+<td>Explicit position change, then verify body state</td>
+<td>Treating a teleport as normal walking</td>
+</tr>
+<tr>
+<td>A continuous push</td>
+<td>AddForce with the appropriate force mode</td>
+<td>Repeated impulse calls when only one impulse was intended</td>
+</tr>
+<tr>
+<td>A single impact</td>
+<td>An impulse at the triggering event</td>
+<td>Multiplying the impulse every render frame</td>
+</tr>
+</tbody></table>
+<p>Use <code>this.GetComponent(&#39;Rigidbody2D&#39;)</code> for 2D and <code>this.GetComponent(&#39;Rigidbody&#39;)</code> for 3D. The wrappers&#39; properties and backend limits are in the <a href="../examples/ex-unity-api-physics2d.html">Unity physics examples</a> and <a href="../examples/ex-unity-api-physics3d.html">3D reference</a>.</p>
+<h2 id="units-and-queries">Units and queries<a class="anchor" href="#units-and-queries">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>2D</th>
+<th>3D</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Coordinates</td>
+<td>Pixels; x right, y down</td>
+<td>World units; y up</td>
+</tr>
+<tr>
+<td>Planar movement</td>
+<td>x/y</td>
+<td>Usually x/z</td>
+</tr>
+<tr>
+<td>Query helper</td>
+<td>Physics2D with Vector2 inputs</td>
+<td>Physics with Vector3 inputs</td>
+</tr>
+<tr>
+<td>Ray miss check</td>
+<td>Inspect the hit&#39;s collider</td>
+<td>Inspect the hit&#39;s collider; use the documented overload</td>
+</tr>
+<tr>
+<td>Overlap / cast variants</td>
+<td>First / All / NonAlloc variants differ</td>
+<td>Check the specific 3D API entry</td>
+</tr>
+</tbody></table>
+<p>Do not assume a result object is a successful hit. Check its documented collider field, and distinguish an overlap result from a raycast-hit record. Native adapter methods may return a different shape from the Unity wrapper.</p>
+<h2 id="when-contact-does-not-happen">When contact does not happen<a class="anchor" href="#when-contact-does-not-happen">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check first</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Passes through walls</td>
+<td>Body, collider, layers, detection mode and competing transform movement</td>
+</tr>
+<tr>
+<td>Trigger does not physically block</td>
+<td>Trigger is for notification; use solid collision when blocking is required</td>
+</tr>
+<tr>
+<td>No callback</td>
+<td>Enabled objects, matching backend, collider setup, and exact callback capitalization</td>
+</tr>
+<tr>
+<td>Query sees the player itself</td>
+<td>Origin/shape, layer filter and intended collider exclusions</td>
+</tr>
+<tr>
+<td>Sprite jumps downward</td>
+<td>2D upward velocity is negative y</td>
+</tr>
+<tr>
+<td>Mouse pick is displaced</td>
+<td>Convert screen input through the active camera before using world coordinates</td>
+</tr>
+</tbody></table>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<p>Verify held movement, a single press, solid contact and a trigger separately. Then run the <a href="../examples/ex-physics-lab.html">Physics Lab</a> for the backend you actually use.</p>
+<p>Next: <a href="cheat-sheet-maths-time.html">Maths and timing</a>. Back to: <a href="cookbook.html">Cheatsheets</a>.</p>
+<div class="pager"><a href="cheat-sheet-objects.html"><small>← Previous</small>Objects, prefabs and events cheatsheet</a><a href="cheat-sheet-maths-time.html"><small>Next →</small>Maths, timing and coroutines cheatsheet</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#set-up-in-the-editor">Set up in the editor </a><a href="#input-lookup">Input lookup </a><a href="#choose-movement-ownership">Choose movement ownership </a><a href="#units-and-queries">Units and queries </a><a href="#when-contact-does-not-happen">When contact does not happen </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

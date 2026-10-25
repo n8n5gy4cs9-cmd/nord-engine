@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Assets and visual tools cheatsheet — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="cookbook.html" class="active" aria-current="page">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details><summary>Find an answer <small>(1)</small></summary><a href="cookbook.html">Cheatsheets — find an answer</a></details><details><summary>Unity scripting and gameplay <small>(5)</small></summary><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-objects.html">Objects, prefabs and events cheatsheet</a><a href="cheat-sheet-input-physics.html">Input and physics cheatsheet</a><a href="cheat-sheet-maths-time.html">Maths, timing and coroutines cheatsheet</a><a href="cheat-sheet-presentation.html">UI, audio and saves cheatsheet</a></details><details open><summary>Editor and visual tools <small>(4)</small></summary><a href="cheat-sheet-editor.html">Editor and project workflow cheatsheet</a><a href="cheat-sheet-visual-tools.html" class="cur" aria-current="page">Assets and visual tools cheatsheet</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a><a href="shortcuts.html">Keyboard shortcuts</a></details><details><summary>Test and ship <small>(3)</small></summary><a href="cheat-sheet-debugging.html">Debugging, performance and testing cheatsheet</a><a href="cheat-sheet-export.html">Export, hosting and release cheatsheet</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a></details><details><summary>Reference tables <small>(4)</small></summary><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="ui-scenes.html">UI scenes reference</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Assets and visual tools cheatsheet</h1>
+<p>Use this sheet to follow a resource from the editing panel to its saved file, then into the running game. Start with one asset in one scene before importing a whole pack.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>An authoring file is the editable recipe. The runtime resource is what your scene actually loads. Saving a new recipe does not help if the scene still points at yesterday&#39;s export. Follow the file path like a trail of breadcrumbs.</p>
+</aside><h2 id="choose-a-tool-and-verify-the-handoff">Choose a tool and verify the handoff<a class="anchor" href="#choose-a-tool-and-verify-the-handoff">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Tool / starting point</th>
+<th>Saved result</th>
+<th>First check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Paint or slice sprite art</td>
+<td>Sprite editor; <a href="../manual/sprites-animation-tilemaps.html">Sprites and tilemaps</a></td>
+<td>Image/sprite metadata used by the object</td>
+<td>Correct frame, origin and filtering</td>
+</tr>
+<tr>
+<td>Paint a 2D map</td>
+<td><span class="c-ui">2D Level</span>; <a href="../manual/level-creator-2d.html">Level Creator</a></td>
+<td><code>.level2d.json</code></td>
+<td>Game scene references this saved map</td>
+</tr>
+<tr>
+<td>Build first-person rooms</td>
+<td><span class="c-ui">FPS Level</span>; <a href="cheat-sheet-fps-level.html">FPS cheatsheet</a></td>
+<td><code>.fpsl.json</code> and project content</td>
+<td>Save map and confirm scene&#39;s Level file</td>
+</tr>
+<tr>
+<td>Design a menu</td>
+<td><span class="c-ui">UI Designer</span>; <a href="../manual/ui-designer.html">Designer guide</a></td>
+<td><code>.ui.json</code></td>
+<td>Loading script uses that path and matching actions</td>
+</tr>
+<tr>
+<td>Model and paint</td>
+<td><span class="c-ui">3D Modeler</span>; <a href="../manual/modeler.html">Modeler guide</a></td>
+<td>Authoring model plus chosen runtime export</td>
+<td>Scene uses the model you saved/exported</td>
+</tr>
+<tr>
+<td>Control animation states</td>
+<td><span class="c-ui">Animator</span>; <a href="../manual/animator.html">Animator guide</a></td>
+<td>Controller data</td>
+<td>Animator component points at it; parameters match</td>
+</tr>
+<tr>
+<td>Build visual logic</td>
+<td><span class="c-ui">Graph</span>; <a href="../manual/graph.html">Node graph guide</a></td>
+<td><code>.graph.json</code></td>
+<td>Graph component or scene setting loads it</td>
+</tr>
+<tr>
+<td>Build conditions/actions</td>
+<td>Event sheets; <a href="../manual/event-sheets.html">Event-sheet guide</a></td>
+<td>Event-sheet source</td>
+<td>Correct sheet is included in the running layout</td>
+</tr>
+</tbody></table>
+<p>Open the guide linked in the table for that tool&#39;s exact controls. These tools do not share a universal Save/Test contract.</p>
+<h2 id="import-and-attach-a-resource">Import and attach a resource<a class="anchor" href="#import-and-attach-a-resource">#</a></h2>
+<ol>
+<li>In <span class="c-ui">Assets</span>, find or import the file into your project. The asset list should show it at the expected relative path.</li>
+<li>Select the destination object in <span class="c-ui">Hierarchy</span>. Assign the appropriate component or resource field in <span class="c-ui">Inspector</span>, following that component&#39;s reference.</li>
+<li>Save the resource and scene, press Play, and confirm one visible or audible result.</li>
+</ol>
+<p><strong>In the file</strong> your <code>.scene.json</code>, the component stores the resource reference. A Level Creator map, designed UI and Animator controller remain separate files; changing their contents does not rename the scene&#39;s reference for you.</p>
+<h2 id="asset-decisions">Asset decisions<a class="anchor" href="#asset-decisions">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Decide before using it</th>
+<th>Common failure</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sprite sheet</td>
+<td>Frame size/order, origin and pixel filtering</td>
+<td>Wrong crop, wobbling animation or blurry pixels</td>
+</tr>
+<tr>
+<td>Tile set</td>
+<td>Tile size and collision rules</td>
+<td>Visible floor does not collide</td>
+</tr>
+<tr>
+<td>Texture</td>
+<td>Color use, repeat/filter settings and material slot</td>
+<td>Correct file, wrong appearance</td>
+</tr>
+<tr>
+<td>3D model</td>
+<td>Runtime export, material/texture references and scale</td>
+<td>Authoring model saved but runtime model unchanged</td>
+</tr>
+<tr>
+<td>Audio</td>
+<td>File path, decode support, bus and user activation</td>
+<td>Silent first run or wrong volume bus</td>
+</tr>
+<tr>
+<td>Font</td>
+<td>Project-local resource and chosen UI/world-text system</td>
+<td>Fallback typeface or different layout</td>
+</tr>
+<tr>
+<td>Prefab</td>
+<td>Defaults versus instance overrides</td>
+<td>One edit appears to affect the wrong objects</td>
+</tr>
+</tbody></table>
+<p>Keep resources inside the project and use the documented relative path. Avoid machine-specific absolute paths. Filenames must retain correct case for deployment to hosts with case-sensitive filesystems.</p>
+<h2 id="save-test-export-chain">Save-test-export chain<a class="anchor" href="#save-test-export-chain">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>If this works…</th>
+<th>Also verify…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tool preview</td>
+<td>Scene actually loads the tool&#39;s saved file</td>
+</tr>
+<tr>
+<td>Unsaved FPS test</td>
+<td>Main Play loads the saved map named by the scene</td>
+</tr>
+<tr>
+<td>Modeler viewport</td>
+<td>Runtime export preserves the features you need</td>
+</tr>
+<tr>
+<td>UI preview</td>
+<td>Button action reaches the intended script callback</td>
+</tr>
+<tr>
+<td>Animator preview</td>
+<td>Running object&#39;s parameters make the same state changes</td>
+</tr>
+<tr>
+<td>Main Play</td>
+<td>Export includes every referenced resource</td>
+</tr>
+</tbody></table>
+<h2 id="tiny-challenge">Tiny challenge<a class="anchor" href="#tiny-challenge">#</a></h2>
+<p>Rename nothing. Change one obvious color, save it, and prove which file made the running result change. It is less glamorous than importing 400 textures, but much easier to debug.</p>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<p>Reopen the resource, reopen its scene, then test an export. You can identify both the editable source and the runtime reference that consumes it.</p>
+<p>Next: <a href="cheat-sheet-export.html">Export cheatsheet</a>. Back to: <a href="cookbook.html">Cheatsheets</a>.</p>
+<div class="pager"><a href="cheat-sheet-editor.html"><small>← Previous</small>Editor and project workflow cheatsheet</a><a href="cheat-sheet-fps-level.html"><small>Next →</small>FPS Level — quick reference</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#choose-a-tool-and-verify-the-handoff">Choose a tool and verify the handoff </a><a href="#import-and-attach-a-resource">Import and attach a resource </a><a href="#asset-decisions">Asset decisions </a><a href="#save-test-export-chain">Save-test-export chain </a><a href="#tiny-challenge">Tiny challenge </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

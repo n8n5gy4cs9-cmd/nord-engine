@@ -396,7 +396,7 @@ const engineArchives = engineDownloads({ root, add, renderMd, esc, slug });
 
   const sc = read('crates/nord-editor/src/panels/settings.rs');
   const rows = [...sc.matchAll(/\("([^"]+)", "([^"]+)"\),/g)].map((m) => `<tr><td><kbd>${esc(m[1])}</kbd></td><td>${esc(m[2])}</td></tr>`).join('');
-  add({ file: 'shortcuts.html', title: 'Keyboard shortcuts', section: 'Cheatsheets', order: 5, summary: 'Editor shortcuts (macOS).',
+  add({ file: 'shortcuts.html', title: 'Keyboard shortcuts', section: 'Cheatsheets', group: 'Editor and visual tools', order: 25, summary: 'Editor shortcuts (macOS).',
     html: `<p class="lead">Editor shortcuts on macOS (Ctrl replaces Cmd on other platforms). Also listed in <b>Settings (Cmd+,)</b>.</p><table><thead><tr><th>Keys</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>` });
 }
 
@@ -541,7 +541,7 @@ copy(path.join(root, 'vendor/codemirror/cm.bundle.js'), 'assets/cm.bundle.js');
 for (const [source, name] of [['inter/inter-latin-400-normal.woff2', 'inter.woff2'], ['plus-jakarta-sans/plus-jakarta-sans-latin-700-normal.woff2', 'jakarta.woff2'], ['jetbrains-mono/jetbrains-mono-latin-400-normal.woff2', 'mono.woff2']]) copy(path.join(root, 'vendor/fonts', source), `assets/${name}`);
 for (const [file, bytes] of engineArchives) emit(file, bytes);
 if (fs.existsSync(path.join(root, 'docs/tutorial-downloads'))) copyTree(path.join(root, 'docs/tutorial-downloads'), 'assets/downloads');
-for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png', ...fs.readdirSync(path.join(root, 'docs/screenshots')).filter((f) => /^(es|ed|ui|graph|mod|ex|vector-rocks|ember-crypt|series-dungeon|manual-redesign)-.*\.png$/.test(f))]) copy(path.join(root, 'docs/screenshots', file), `assets/screenshots/${file}`);
+for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png', ...fs.readdirSync(path.join(root, 'docs/screenshots')).filter((f) => /^(es|ed|ui|graph|mod|ex|vector-rocks|ember-crypt|series-dungeon|manual-redesign|manual-cheatsheet)-.*\.png$/.test(f))]) copy(path.join(root, 'docs/screenshots', file), `assets/screenshots/${file}`);
 for (const [source, name] of [['notepaint/assets/ui/tools.png', 'notepaint-tools.png'], ['star-not/assets/sprites/space.png', 'star-not-space.png'], ['star-not/assets/ui/portraits.png', 'star-not-ui.png']]) copy(path.join(root, 'examples', source), `assets/tutorials/${name}`);
 // The vendored bundle is standalone ESM. Expose its exact exports as a classic-script global
 // so syntax highlighting also works when the user double-clicks the offline HTML file.

@@ -8,49 +8,82 @@
 <div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="cookbook.html" class="active" aria-current="page">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
-<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details open><summary>Cheatsheets <small>(10)</small></summary><a href="cookbook.html" class="cur" aria-current="page">Cheatsheets — find an answer</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-export.html">Cheat sheet — export</a><a href="ui-scenes.html">UI scenes reference</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="shortcuts.html">Keyboard shortcuts</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Cheatsheets — find an answer</h1>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details open><summary>Find an answer <small>(1)</small></summary><a href="cookbook.html" class="cur" aria-current="page">Cheatsheets — find an answer</a></details><details><summary>Unity scripting and gameplay <small>(5)</small></summary><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-objects.html">Objects, prefabs and events cheatsheet</a><a href="cheat-sheet-input-physics.html">Input and physics cheatsheet</a><a href="cheat-sheet-maths-time.html">Maths, timing and coroutines cheatsheet</a><a href="cheat-sheet-presentation.html">UI, audio and saves cheatsheet</a></details><details><summary>Editor and visual tools <small>(4)</small></summary><a href="cheat-sheet-editor.html">Editor and project workflow cheatsheet</a><a href="cheat-sheet-visual-tools.html">Assets and visual tools cheatsheet</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a><a href="shortcuts.html">Keyboard shortcuts</a></details><details><summary>Test and ship <small>(3)</small></summary><a href="cheat-sheet-debugging.html">Debugging, performance and testing cheatsheet</a><a href="cheat-sheet-export.html">Export, hosting and release cheatsheet</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a></details><details><summary>Reference tables <small>(4)</small></summary><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="ui-scenes.html">UI scenes reference</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Cheatsheets — find an answer</h1>
 <p>Keep these pages open while working. Choose the task first, then use the matching reference when you need details.</p>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>A tutorial teaches a project in order. A cheatsheet is a short reminder for a task you already started. Start with one row, try it, and compare the result before adding more code.</p>
 </aside><h2 id="choose-a-cheatsheet">Choose a cheatsheet<a class="anchor" href="#choose-a-cheatsheet">#</a></h2>
 <table>
 <thead>
 <tr>
-<th>Task</th>
+<th>Your task</th>
 <th>Cheatsheet</th>
-<th>Expected result</th>
+<th>What it covers</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>Write new Unity-style JavaScript</td>
 <td><a href="cheat-sheet-unity.html">Unity scripting</a></td>
-<td>A complete attached script with a working Update</td>
+<td>A complete MonoBehaviour, lifecycle, imports and fields</td>
 </tr>
 <tr>
-<td>Run a command</td>
-<td><a href="cheat-sheet-cli.html">Command line</a></td>
-<td>Know the project folder, command and output</td>
+<td>Connect or create objects</td>
+<td><a href="cheat-sheet-objects.html">Objects, prefabs and events</a></td>
+<td>Lookup, references, spawning, scenes, subscriptions and cleanup</td>
 </tr>
 <tr>
-<td>Share a game</td>
-<td><a href="cheat-sheet-export.html">Export</a></td>
-<td>Produce the right build and check it</td>
+<td>Read input or move physically</td>
+<td><a href="cheat-sheet-input-physics.html">Input and physics</a></td>
+<td>Held/pressed input, body ownership, units, queries and contacts</td>
 </tr>
 <tr>
-<td>Edit an FPS level</td>
+<td>Calculate motion or wait</td>
+<td><a href="cheat-sheet-maths-time.html">Maths and timing</a></td>
+<td>Vectors, interpolation, angles, random ranges, coroutines and pause limits</td>
+</tr>
+<tr>
+<td>Display feedback and remember data</td>
+<td><a href="cheat-sheet-presentation.html">UI, audio and saves</a></td>
+<td>Handles, screens, buses, PlayerPrefs, slots and a complete counter</td>
+</tr>
+<tr>
+<td>Find the correct panel or file</td>
+<td><a href="cheat-sheet-editor.html">Editor workflow</a></td>
+<td>Edit/test/save loop, ownership and main shortcuts</td>
+</tr>
+<tr>
+<td>Import or author a resource</td>
+<td><a href="cheat-sheet-visual-tools.html">Assets and visual tools</a></td>
+<td>Sprites, maps, UI, models, animation, graphs and runtime handoff</td>
+</tr>
+<tr>
+<td>Build first-person rooms</td>
 <td><a href="cheat-sheet-fps-level.html">FPS Level</a></td>
-<td>Recall tools, test controls and saving</td>
+<td>Building, patrols, variants, testing and map selection</td>
 </tr>
 <tr>
-<td>Find a keyboard action</td>
-<td><a href="shortcuts.html">Shortcuts</a></td>
-<td>Find the action and verify its configured binding</td>
+<td>Diagnose wrong or slow behavior</td>
+<td><a href="cheat-sheet-debugging.html">Debugging and testing</a></td>
+<td>Symptom checks, profiling and restart regression checklist</td>
 </tr>
 <tr>
-<td>Recall a graph node</td>
-<td><a href="graph-reference.html">Graph reference</a></td>
-<td>Choose the node with the correct inputs</td>
+<td>Deliver a playable result</td>
+<td><a href="cheat-sheet-export.html">Export and hosting</a></td>
+<td>Target choice, commands, release checks and troubleshooting</td>
+</tr>
+<tr>
+<td>Automate a project job</td>
+<td><a href="cheat-sheet-cli.html">Command line</a></td>
+<td>Program location, commands and output</td>
+</tr>
+<tr>
+<td>Look up a precise tool contract</td>
+<td><a href="shortcuts.html">Shortcuts</a>, <a href="graph-reference.html">Graph nodes</a>, <a href="ui-scenes.html">UI scenes</a>, <a href="glossary.html">Glossary</a></td>
+<td>Supporting reference tables</td>
 </tr>
 </tbody></table>
+<h2 id="how-to-use-these-sheets">How to use these sheets<a class="anchor" href="#how-to-use-these-sheets">#</a></h2>
+<p>Start with the operation you need, confirm its prerequisites, then check the observable result at the bottom. Tables contain call patterns, not complete games. A fenced file explicitly labelled “the whole file” is complete; an inline call assumes the documented class, imports and resources.</p>
+<p>New game code uses MonoBehaviour and Unity names in JavaScript. The <strong>Old</strong> group preserves native NordScript reminders. Nord&#39;s Unity layer is a supported subset: <a href="../manual/unity-coverage.html">Coverage</a> and the exact <a href="../api/api-unity.html">API reference</a> take precedence over assumptions from C#.</p>
 <h2 id="debug-a-script-quickly">Debug a script quickly<a class="anchor" href="#debug-a-script-quickly">#</a></h2>
 <table>
 <thead>
@@ -153,8 +186,8 @@
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>Debugging is detective work with fewer trench coats. “The player does not move” is a clue. “Input axis is zero when Game is focused” is a more useful clue. Record what you observe instead of changing five settings at once.</p>
 </aside><h2 id="tiny-challenge-the-rescue-card">Tiny challenge: the rescue card<a class="anchor" href="#tiny-challenge-the-rescue-card">#</a></h2>
 <p>Bookmark the cheatsheet you needed today. Add one line to your project notes: the symptom, its cause, and the check that proved the fix. Tomorrow-you gets a very small gift.</p>
-<section class="topic-directory"><h2 id="topic-directory">Topics in this section</h2><p>Choose a task below. Each link opens a focused page; you do not need to read the directory in order.</p><details><summary>Cheatsheets <small>(9)</small></summary><ul><li><a href="mobile-controls.html">Mobile and on-screen touch controls</a> — Code-drawn joystick and hold buttons for any Nord 2D/3D game, with desktop pointer testing.</li><li><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a> — Copy a minimal MonoBehaviour, then look up lifecycle, movement, input, objects and saving.</li><li><a href="cheat-sheet-export.html">Cheat sheet — export</a> — Build, bundle and host commands on one page.</li><li><a href="ui-scenes.html">UI scenes reference</a> — The .ui.json format, text, images and 9-slice, skins, and the script API.</li><li><a href="cheat-sheet-cli.html">Cheat sheet — command line</a> — How to start the nord command on macOS, Windows and Linux, and every command with its common options.</li><li><a href="glossary.html">Glossary</a> — Plain-language meanings of the words used in this manual.</li><li><a href="graph-reference.html">Node graph reference</a> — Pins, events, flow, the full node list, the runner and the component.</li><li><a href="shortcuts.html">Keyboard shortcuts</a> — Editor shortcuts (macOS).</li><li><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a> — Build, select, patrol, test, stop, customise shortcuts, save and export first-person levels.</li></ul></details><details><summary>Appendix <small>(4)</small></summary><ul><li><a href="../appendix/appendix.html">Appendix</a> — Versions, licences, troubleshooting, FAQ.</li><li><a href="../appendix/decisions.html">Design decisions</a> — Architecture decision records.</li><li><a href="../appendix/known-issues.html">Known issues</a> — Open bugs and unverified risks.</li><li><a href="../appendix/changelog.html">Changelog</a> — What changed.</li></ul></details></section><h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<section class="topic-directory"><h2 id="topic-directory">Topics in this section</h2><p>Choose a task below. Each link opens a focused page; you do not need to read the directory in order.</p><details><summary>Unity scripting and gameplay <small>(5)</small></summary><ul><li><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a> — Copy a minimal MonoBehaviour, then look up lifecycle, movement, input, objects and saving.</li><li><a href="cheat-sheet-objects.html">Objects, prefabs and events cheatsheet</a> — Find objects, get components, expose fields, spawn prefabs, change scenes, and clean up subscriptions.</li><li><a href="cheat-sheet-input-physics.html">Input and physics cheatsheet</a> — Held versus pressed input, 2D/3D coordinates, transform versus body motion, queries, triggers and contact troubleshooting.</li><li><a href="cheat-sheet-maths-time.html">Maths, timing and coroutines cheatsheet</a> — Vectors, angles, clamping, interpolation, random ranges, frame time, coroutines and pause limitations.</li><li><a href="cheat-sheet-presentation.html">UI, audio and saves cheatsheet</a> — HUD handles, button actions, sound buses, PlayerPrefs, save slots and cleanup, with a complete persistent counter.</li></ul></details><details><summary>Editor and visual tools <small>(4)</small></summary><ul><li><a href="cheat-sheet-editor.html">Editor and project workflow cheatsheet</a> — The edit-test-save loop, scene versus prefab, project files, shortcuts, and safe iteration.</li><li><a href="cheat-sheet-visual-tools.html">Assets and visual tools cheatsheet</a> — Choose the right authoring tool, follow the saved file into the scene, and verify levels, UI, models and animation.</li><li><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a> — Build, select, patrol, test, stop, customise shortcuts, save and export first-person levels.</li><li><a href="shortcuts.html">Keyboard shortcuts</a> — Editor shortcuts (macOS).</li></ul></details><details><summary>Test and ship <small>(3)</small></summary><ul><li><a href="cheat-sheet-debugging.html">Debugging, performance and testing cheatsheet</a> — A symptom-first triage table, breakpoints and inspection, measurement rules, restart checks and export verification.</li><li><a href="cheat-sheet-export.html">Export, hosting and release cheatsheet</a> — Choose web, single-file, desktop, PWA or mobile output; validate it and test what players actually receive.</li><li><a href="cheat-sheet-cli.html">Cheat sheet — command line</a> — How to start the nord command on macOS, Windows and Linux, and every command with its common options.</li></ul></details><details><summary>Reference tables <small>(4)</small></summary><ul><li><a href="glossary.html">Glossary</a> — Plain-language meanings of the words used in this manual.</li><li><a href="graph-reference.html">Node graph reference</a> — Pins, events, flow, the full node list, the runner and the component.</li><li><a href="ui-scenes.html">UI scenes reference</a> — The .ui.json format, text, images and 9-slice, skins, and the script API.</li><li><a href="mobile-controls.html">Mobile and on-screen touch controls</a> — Code-drawn joystick and hold buttons for any Nord 2D/3D game, with desktop pointer testing.</li></ul></details><details><summary>Appendix <small>(4)</small></summary><ul><li><a href="../appendix/appendix.html">Appendix</a> — Versions, licences, troubleshooting, FAQ.</li><li><a href="../appendix/decisions.html">Design decisions</a> — Architecture decision records.</li><li><a href="../appendix/known-issues.html">Known issues</a> — Open bugs and unverified risks.</li><li><a href="../appendix/changelog.html">Changelog</a> — What changed.</li></ul></details></section><h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
 <p>Choose one task, perform its action and confirm the expected result. If a call is unfamiliar, open its API reference before copying it into a different lifecycle style.</p>
 <p>Next: <a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a>. Back to: <a href="../manual/manual-paths.html">Manual reading paths</a>.</p>
-<details class="archive-panel"><summary>Old · earlier pages and workflows (2)</summary><p>These pages remain available for existing projects and saved links. Start with the replacement when creating something new.</p><ul><li><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a> — Native lower-case scripting reminder, useful when maintaining older tutorials and projects. <a href="cheat-sheet-unity.html">Current starting point</a>.</li><li><a href="native-cookbook.html">Native service recipes (old)</a> — Original service recipes use native scene and scheduler calls. Retained for maintenance; start with current Unity-style examples. <a href="cookbook.html">Current starting point</a>.</li></ul></details><div class="pager"><span></span><a href="mobile-controls.html"><small>Next →</small>Mobile and on-screen touch controls</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#choose-a-cheatsheet">Choose a cheatsheet </a><a href="#debug-a-script-quickly">Debug a script quickly </a><a href="#common-gameplay-recipes">Common gameplay recipes </a><a href="#keep-these-distinctions-nearby">Keep these distinctions nearby </a><a href="#a-one-minute-troubleshooting-routine">A one-minute troubleshooting routine </a><a href="#tiny-challenge-the-rescue-card">Tiny challenge: the rescue card </a><a href="#topic-directory">Topics in this section</a><a href="#check-yourself">Check yourself </a></aside></div>
+<details class="archive-panel"><summary>Old · earlier pages and workflows (2)</summary><p>These pages remain available for existing projects and saved links. Start with the replacement when creating something new.</p><ul><li><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a> — Native lower-case scripting reminder, useful when maintaining older tutorials and projects. <a href="cheat-sheet-unity.html">Current starting point</a>.</li><li><a href="native-cookbook.html">Native service recipes (old)</a> — Original service recipes use native scene and scheduler calls. Retained for maintenance; start with current Unity-style examples. <a href="cookbook.html">Current starting point</a>.</li></ul></details><div class="pager"><span></span><a href="cheat-sheet-unity.html"><small>Next →</small>Unity scripting cheatsheet</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#choose-a-cheatsheet">Choose a cheatsheet </a><a href="#how-to-use-these-sheets">How to use these sheets </a><a href="#debug-a-script-quickly">Debug a script quickly </a><a href="#common-gameplay-recipes">Common gameplay recipes </a><a href="#keep-these-distinctions-nearby">Keep these distinctions nearby </a><a href="#a-one-minute-troubleshooting-routine">A one-minute troubleshooting routine </a><a href="#tiny-challenge-the-rescue-card">Tiny challenge: the rescue card </a><a href="#topic-directory">Topics in this section</a><a href="#check-yourself">Check yourself </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

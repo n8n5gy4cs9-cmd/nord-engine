@@ -1823,6 +1823,12 @@
       "status": "done"
     },
     {
+      "id": "M7-34",
+      "milestone": "M7",
+      "title": "Complete cheatsheet coverage for editor, objects, physics, maths, presentation, visual tools and debugging",
+      "status": "done"
+    },
+    {
       "id": "M8-01",
       "milestone": "M8",
       "title": ".dmg packaging + notarisation notes",

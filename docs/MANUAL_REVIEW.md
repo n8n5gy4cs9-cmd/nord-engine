@@ -4,7 +4,7 @@ This report inventories every published content page. The pass checks current/Ol
 
 Earlier workflows are retained for existing projects. Old does not mean that a supported native API is broken. Existing tutorial/example code is preserved, apart from correcting T01's claim that Play edits save the starting scene. This is a navigation, clarity and structural review; it is not a new human execution of every older workshop.
 
-261 content pages: 245 current, 16 Old.
+268 content pages: 252 current, 16 Old.
 
 | Page | Area | Disposition and topic |
 |---|---|---|
@@ -178,15 +178,22 @@ Earlier workflows are retained for existing projects. Old does not mean that a s
 | [18 · Migration guide: C# habits to JavaScript](manual/nord/examples/ex-migration.html) | Examples | **Old:** Earlier C# migration overview overlaps the fuller language and conversion guides. |
 | [29 · The editor for Unity users](manual/nord/examples/ex-editor-for-unity-users.html) | Examples | **Old:** Earlier editor translation overview overlaps the maintained Unity-style workflow chapter and tutorial. |
 | [Cheatsheets — find an answer](manual/nord/guides/cookbook.html) | Cheatsheets | Quick lookup tables for scripting, editor tasks, debugging and publishing. |
-| [Mobile and on-screen touch controls](manual/nord/guides/mobile-controls.html) | Cheatsheets | Code-drawn joystick and hold buttons for any Nord 2D/3D game, with desktop pointer testing. |
 | [Unity scripting cheatsheet](manual/nord/guides/cheat-sheet-unity.html) | Cheatsheets | Copy a minimal MonoBehaviour, then look up lifecycle, movement, input, objects and saving. |
-| [Cheat sheet — export](manual/nord/guides/cheat-sheet-export.html) | Cheatsheets | Build, bundle and host commands on one page. |
-| [UI scenes reference](manual/nord/guides/ui-scenes.html) | Cheatsheets | The .ui.json format, text, images and 9-slice, skins, and the script API. |
+| [Objects, prefabs and events cheatsheet](manual/nord/guides/cheat-sheet-objects.html) | Cheatsheets | Find objects, get components, expose fields, spawn prefabs, change scenes, and clean up subscriptions. |
+| [Input and physics cheatsheet](manual/nord/guides/cheat-sheet-input-physics.html) | Cheatsheets | Held versus pressed input, 2D/3D coordinates, transform versus body motion, queries, triggers and contact troubleshooting. |
+| [Maths, timing and coroutines cheatsheet](manual/nord/guides/cheat-sheet-maths-time.html) | Cheatsheets | Vectors, angles, clamping, interpolation, random ranges, frame time, coroutines and pause limitations. |
+| [UI, audio and saves cheatsheet](manual/nord/guides/cheat-sheet-presentation.html) | Cheatsheets | HUD handles, button actions, sound buses, PlayerPrefs, save slots and cleanup, with a complete persistent counter. |
+| [Editor and project workflow cheatsheet](manual/nord/guides/cheat-sheet-editor.html) | Cheatsheets | The edit-test-save loop, scene versus prefab, project files, shortcuts, and safe iteration. |
+| [Assets and visual tools cheatsheet](manual/nord/guides/cheat-sheet-visual-tools.html) | Cheatsheets | Choose the right authoring tool, follow the saved file into the scene, and verify levels, UI, models and animation. |
+| [FPS Level — quick reference](manual/nord/guides/cheat-sheet-fps-level.html) | Cheatsheets | Build, select, patrol, test, stop, customise shortcuts, save and export first-person levels. |
+| [Keyboard shortcuts](manual/nord/guides/shortcuts.html) | Cheatsheets | Editor shortcuts (macOS). |
+| [Debugging, performance and testing cheatsheet](manual/nord/guides/cheat-sheet-debugging.html) | Cheatsheets | A symptom-first triage table, breakpoints and inspection, measurement rules, restart checks and export verification. |
+| [Export, hosting and release cheatsheet](manual/nord/guides/cheat-sheet-export.html) | Cheatsheets | Choose web, single-file, desktop, PWA or mobile output; validate it and test what players actually receive. |
 | [Cheat sheet — command line](manual/nord/guides/cheat-sheet-cli.html) | Cheatsheets | How to start the nord command on macOS, Windows and Linux, and every command with its common options. |
 | [Glossary](manual/nord/guides/glossary.html) | Cheatsheets | Plain-language meanings of the words used in this manual. |
 | [Node graph reference](manual/nord/guides/graph-reference.html) | Cheatsheets | Pins, events, flow, the full node list, the runner and the component. |
-| [Keyboard shortcuts](manual/nord/guides/shortcuts.html) | Cheatsheets | Editor shortcuts (macOS). |
-| [FPS Level — quick reference](manual/nord/guides/cheat-sheet-fps-level.html) | Cheatsheets | Build, select, patrol, test, stop, customise shortcuts, save and export first-person levels. |
+| [UI scenes reference](manual/nord/guides/ui-scenes.html) | Cheatsheets | The .ui.json format, text, images and 9-slice, skins, and the script API. |
+| [Mobile and on-screen touch controls](manual/nord/guides/mobile-controls.html) | Cheatsheets | Code-drawn joystick and hold buttons for any Nord 2D/3D game, with desktop pointer testing. |
 | [Native NordScript cheatsheet](manual/nord/guides/cheat-sheet-nordjs.html) | Cheatsheets | **Old:** Native lower-case scripting reminder, useful when maintaining older tutorials and projects. |
 | [Native service recipes (old)](manual/nord/guides/native-cookbook.html) | Cheatsheets | **Old:** Original service recipes use native scene and scheduler calls. Retained for maintenance; start with current Unity-style examples. |
 | [API reference](manual/nord/api/api.html) | API | Nord's complete public scripting surface, components, desktop bridge and engine references. |

@@ -1,7 +1,8 @@
 ---
 title: Unity scripting cheatsheet
 section: Guides
-order: 1
+group: Unity scripting and gameplay
+order: 10
 summary: Copy a minimal MonoBehaviour, then look up lifecycle, movement, input, objects and saving.
 ---
 Use this page beside the Code tab. For the full explanations, read [Unity-style scripting](unity-scripting.html); for signatures, read [Unity API](api-unity.html).
@@ -62,6 +63,42 @@ These calls belong inside methods of a `MonoBehaviour`. Import the named helpers
 | Read a number | `PlayerPrefs.GetInt('best', 0)` | `0` is the fallback |
 
 > **Trap:** Instantiate returns a Promise in Nord. Unity's synchronous C# example cannot be copied line for line. Vector operators also become explicit method calls in JavaScript. See the API reference's differences table.
+
+## Choose the lifecycle hook
+
+| Hook | Use for | Avoid |
+|---|---|---|
+| Awake | Initialize this instance's own state | Assuming another object's Start has already run |
+| Start | Initial lookup and scene setup | Adding the same listener every frame |
+| Update | Read frame input; render-frame gameplay | Treating a one-frame press as a held key |
+| FixedUpdate | Controller work tied to the fixed scene step | Fighting the physics body with another transform controller |
+| LateUpdate | Follow-up work after normal updates | Using it to hide an unexplained ordering bug |
+| OnEnable / OnDisable | Lifetime of enabled-only work | Disabling an object and expecting its own Update to wake it |
+| OnDestroy | Remove UI and release external subscriptions | Keeping callbacks attached to a destroyed scene object |
+
+## Import and field decisions
+
+| Need | Import / pattern | Check |
+|---|---|---|
+| Editable number | SerializeField; read `this.speed` | The object's saved override may differ from the code default |
+| Bounded number | Range | Helper arguments are min, max, default |
+| Dropdown | Enum | Options and stored selection agree |
+| Object slot | EntityRef | Assign the target in Inspector; handle an empty slot |
+| Key input | UnityInput as Input, KeyCode | Native Input has a different contract |
+| Vector math | Vector2 / Vector3 | Use Add/Sub/Mul, not JavaScript operators |
+| Scene transition | SceneManager | Async scene change replaces scene-local objects |
+| Global manager | Your Singleton / GameManager / AudioManager subclass | One attached instance must exist; importing does not create it |
+
+## JavaScript differences worth remembering
+
+- Use `===` for strict comparisons and guard absent objects before accessing components.
+- `await this.Instantiate(...)` belongs in an async method. Handle load failures instead of using an unresolved Promise like an entity.
+- Use a generator method (`*Sequence()`) for coroutines and capitalized lifecycle names for MonoBehaviour.
+- A C# comparison block is orientation, not JavaScript you can paste into a script.
+- The implementation is a documented Unity-style subset. Check coverage before planning around an unfamiliar Unity package.
+
+## More complete lookup sheets
+[Objects and events](cheat-sheet-objects.html) · [Input and physics](cheat-sheet-input-physics.html) · [Maths and timing](cheat-sheet-maths-time.html) · [UI, audio and saves](cheat-sheet-presentation.html).
 
 ## Check yourself
 - `Mover.js` imports the real Nord exports and uses capitalized `Update()`.

@@ -1,7 +1,8 @@
 ---
 title: FPS Level — quick reference
 section: Guides
-order: 29
+group: Editor and visual tools
+order: 22
 summary: Build, select, patrol, test, stop, customise shortcuts, save and export first-person levels.
 ---
 
@@ -72,8 +73,20 @@ Save the level → set the scene’s **Level file** → save the scene → verif
 See [Open, edit and switch level files](fps-creator.html#open-edit-and-switch-level-files) for the complete workflow and screenshot.
 
 
+## Troubleshoot the level handoff
+
+| Symptom | Check |
+|---|---|
+| FPS Test shows a change but main Play does not | Save the map; compare the scene's Level file with the open map |
+| Wrong starting position | Distinguish normal Test from Test from selected object/cursor |
+| Cannot place an item | Active palette/tool, current storey and item choice |
+| Enemy stands still | Patrol points, script/rules and reachable geometry |
+| Mouse will not turn the camera | Click to capture; Esc releases it; test the native/browser capture path separately |
+| Updated item looks different in another placement | Variant defaults versus instance overrides; save the level after editing |
+| Export misses custom behavior | Custom files in project content; use the documented folder export workflow |
+
 ## Check yourself
 
-Confirm the result in your saved project. Check Console errors and compare exact names with the linked reference if the result differs.
+Save, close and reopen the map. Test it from Player Start, then run main Play using the scene reference. Confirm custom content also works in the exported folder.
 
 Next: [Unity scripting cheatsheet](cheat-sheet-unity.html). Back to: [Cheatsheets](cookbook.html).

@@ -1,7 +1,8 @@
 ---
 title: Cheat sheet — command line
 section: Guides
-order: 4
+group: Test and ship
+order: 32
 summary: How to start the nord command on macOS, Windows and Linux, and every command with its common options.
 ---
 
@@ -119,6 +120,40 @@ Targets for `-t`: `auto` (default, from the project type), `html`, `web-2d`, `we
 | Allow one host on purpose | `nord check-offline dist --allow cdn.example.com` (or a `.offline-allow` file in the folder) |
 | Verify bundled libraries are unchanged | `nord vendor --verify` |
 
+## Output options and defaults
+
+| Option | Type | Default | Effect |
+|---|---|---|---|
+| build `--target` / `-t` | Target name | auto | Choose the runtime target; auto uses project type |
+| build `--out` / `-o` | Folder path | project/dist | Write a separate playable output |
+| build `--host` | Preset name | none | Add deploy files; does not publish them |
+| build `--minify` | Flag | off | Minify supported JS/JSON output |
+| build `--optimize` | Flag | off | Recompress supported assets; audio conversion needs ffmpeg |
+| build `--zip` | Flag | off | Also make the output archive |
+| build `--pwa` | Flag | off | Add installable web-app files |
+| serve `--port` / `-p` | Integer | 4173 | Choose the local dev-server port |
+| serve `--lan` | Flag | off | Share the game on the local network using the printed link |
+
+Inspect `nord build --help` or the generated [CLI reference](cli.html) when combining options. A hosting preset prepares files; a separate host upload/deploy step still follows.
+
+## Desktop player template packaging
+
+`nord template-pack --platform mac-arm64 --player PATH --out OUTPUT` packs an already-built player into a `.nordtemplates` file. Platform names are `mac-arm64`, `mac-x64`, `windows-x64`, `linux-x64`, and `linux-arm64`. PATH and OUTPUT stand for your actual input binary and destination folder; this call does not compile a player.
+
+For ordinary desktop export, use the editor's Export templates window to install the matching release template. The packaging command is for release/tooling work; it is not a prerequisite for making your first web game.
+
+## Automation order
+
+| Step | Command family | Expected evidence |
+|---|---|---|
+| 1. Diagnose tools | doctor | Required tools available for the chosen tier |
+| 2. Validate source | check | No unresolved project/scene errors |
+| 3. Build once | build / export | Output path and successful exit status |
+| 4. Scan the result | check-offline | No unintended external-host references |
+| 5. Test the result | Open through the intended server or platform shell | Actual game interaction works |
+
+Stop a build script when a command fails. Do not upload an old dist folder just because it still exists after a failed build. See the [release checklist](cheat-sheet-export.html#release-checks) for the user-visible checks a command exit code cannot prove.
+
 ## Common problems
 
 | What you see | Try this |
@@ -133,6 +168,6 @@ More detail for each command is in the generated [command reference](cli.html).
 
 ## Check yourself
 
-Confirm the result in your saved project. Check Console errors and compare exact names with the linked reference if the result differs.
+Run the command with --help first, then the intended project path. Confirm its exit status and actual output folder; test the result before sharing it.
 
 Next: [Unity scripting cheatsheet](cheat-sheet-unity.html). Back to: [Cheatsheets](cookbook.html).

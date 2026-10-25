@@ -1,7 +1,8 @@
 ---
 title: Mobile and on-screen touch controls
 section: Guides
-order: 1
+group: Reference tables
+order: 43
 summary: Code-drawn joystick and hold buttons for any Nord 2D/3D game, with desktop pointer testing.
 ---
 Yes: draw simple mobile controls **with code**. Nord already provides a virtual joystick. Buttons can drive the same named input actions as keyboard controls, so your player controller does not need a separate mobile version.
