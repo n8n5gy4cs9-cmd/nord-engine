@@ -267,7 +267,12 @@ const methods = {
   GetComponentInChildren(type) { for (const e of this.all()) { const c = getUnityComponent(e, type); if (c) return c; } return null; },
   GetComponentsInChildren(type) { return [...this.all()].map((e) => getUnityComponent(e, type)).filter(Boolean); },
   GetComponentInParent(type) { for (let e = this; e; e = e.parent) { const c = getUnityComponent(e, type); if (c) return c; } return null; },
-  AddComponent(type, data = {}) { return typeof type === 'function' ? this.addScript(type, data) : this.addComponent(UNITY_TO_NORD[type] ?? type, data); },
+  AddComponent(type, data = {}) {
+    if (typeof type === 'function') return type.nord ? (this.addComponent(type.nord, { ...(type.defaults ?? {}), ...data }), getUnityComponent(this, type)) : this.addScript(type, data);
+    const name = typeof type === 'string' ? type : type?.name;
+    this.addComponent(UNITY_TO_NORD[name] ?? name, { ...(UNITY_DEFAULTS[name] ?? {}), ...data });
+    return getUnityComponent(this, name);
+  },
   SendMessage(method, arg) { this.callScripts(method, arg); },
   BroadcastMessage(method, arg) { for (const e of this.all()) e.callScripts(method, arg); },
   SendMessageUpwards(method, arg) { for (let e = this; e; e = e.parent) e.callScripts(method, arg); },
@@ -288,7 +293,7 @@ const MODE_NAME = { dynamic: 'Dynamic', kinematic: 'Kinematic', static: 'Static'
 export const ForceMode2D = Object.freeze({ Force: 0, Impulse: 1 });
 export const ForceMode = Object.freeze({ Force: 0, Acceleration: 5, Impulse: 1, VelocityChange: 2 });
 
-class ComponentBase {
+export class ComponentBase {
   constructor(entity) { this.entity = entity; }
   get gameObject() { return this.entity; }
   get transform() { return Transform.Of(this.entity); }
@@ -330,8 +335,15 @@ export class Rigidbody2D extends ComponentBase {
   set position(v) { this.entity.pos = [v.x, v.y, this.entity.pos[2]]; }
   get rotation() { return this.entity.rot[2] ?? 0; }
   set rotation(a) { const r = this.entity.rot; this.entity.rot = [r[0], r[1], a]; }
-  get angularVelocity() { const b = this.#ph?.body?.(this.entity); return b?.angularVelocity ?? 0; }
-  set angularVelocity(v) { const b = this.#ph?.body?.(this.entity); if (b) b.angularVelocity = v; }
+  /** Degrees per second (2D) — radians per second in 3D like Unity's Rigidbody. */
+  get angularVelocity() {
+    const ph = this.#ph; if (ph?.angularVelocity) return ph.angularVelocity(this.entity);
+    const b = ph?.body?.(this.entity); return b?.angularVelocity ?? 0;
+  }
+  set angularVelocity(v) {
+    const ph = this.#ph; if (ph?.setAngularVelocity) { ph.setAngularVelocity(this.entity, v); return; }
+    const b = ph?.body?.(this.entity); if (b) b.angularVelocity = v;
+  }
   /** `AddForce(force)` continuous (call every FixedUpdate) or `AddForce(force, ForceMode2D.Impulse)` for a one-off push. */
   AddForce(f, mode = ForceMode2D.Force) {
     const m = this.mass || 1, dt = Time.fixedDeltaTime;
@@ -350,7 +362,73 @@ export class Rigidbody2D extends ComponentBase {
   MoveRotation(a) { this.rotation = a; }
   Sleep() {} WakeUp() {}
   IsSleeping() { return false; }
+
+  /** Freeze flags (Unity's `constraints`): RigidbodyConstraints2D / RigidbodyConstraints values or a mix with `|`. */
+  get constraints() {
+    const d = this.data, t = is3D() ? CONSTRAINTS3D : CONSTRAINTS2D;
+    return (d.freezePositionX ? t.FreezePositionX : 0) | (d.freezePositionY ? t.FreezePositionY : 0) | (is3D() && d.freezePositionZ ? t.FreezePositionZ : 0)
+      | (is3D() ? ((d.freezeRotationX ? t.FreezeRotationX : 0) | (d.freezeRotationY ? t.FreezeRotationY : 0) | ((d.freezeRotationZ ?? d.fixedRotation) ? t.FreezeRotationZ : 0)) : (d.fixedRotation ? t.FreezeRotation : 0));
+  }
+  set constraints(v) {
+    const t = is3D() ? CONSTRAINTS3D : CONSTRAINTS2D, has = (f) => (v & f) === f && f !== 0;
+    const set = { freezePositionX: has(t.FreezePositionX), freezePositionY: has(t.FreezePositionY) };
+    if (is3D()) Object.assign(set, { freezePositionZ: has(t.FreezePositionZ), freezeRotationX: has(t.FreezeRotationX), freezeRotationY: has(t.FreezeRotationY), freezeRotationZ: has(t.FreezeRotationZ), fixedRotation: has(t.FreezeRotation) });
+    else set.fixedRotation = has(t.FreezeRotation);
+    for (const [k, val] of Object.entries(set)) this.set_(k, val);
+    rebuildBody(this.entity);
+  }
+  /** 'None' | 'Interpolate' | 'Extrapolate' (Unity's RigidbodyInterpolation): smooths the picture between fixed physics steps. */
+  get interpolation() { return INTERP_NAME[this.data.interpolation ?? 'none'] ?? 'None'; }
+  set interpolation(v) { this.set_('interpolation', INTERP[v] ?? String(v).toLowerCase()); game()?.physics?.setInterpolation?.(this.entity, this.data.interpolation); }
+  /** 'Discrete' | 'Continuous' (| 'ContinuousDynamic' | 'ContinuousSpeculative' in 3D): fast bodies are stepped in smaller pieces so they cannot tunnel through thin walls. */
+  get collisionDetectionMode() { return CCD_NAME[this.data.collisionDetection ?? 'discrete'] ?? 'Discrete'; }
+  set collisionDetectionMode(v) { this.set_('collisionDetection', CCD[v] ?? (typeof v === 'number' ? ['discrete', 'continuous', 'continuousDynamic', 'continuousSpeculative'][v] : String(v).toLowerCase())); game()?.physics?.setContinuous?.(this.entity, this.data.collisionDetection); }
+  get angularDrag() { return this.data.angularDrag ?? 0.05; }
+  set angularDrag(v) { this.set_('angularDrag', v); rebuildBody(this.entity); }
+  get angularDamping() { return this.angularDrag; }
+  set angularDamping(v) { this.angularDrag = v; }
+  get useGravity() { return (this.data.gravityScale ?? 1) !== 0; }
+  set useGravity(on) { this.gravityScale = on ? 1 : 0; }
+  get detectCollisions() { return this.data.detectCollisions !== false; }
+  set detectCollisions(on) { this.set_('detectCollisions', !!on); game()?.physics?.enable?.(this.entity, !!on); }
+  /** `{ friction, bounciness }` of the body (Unity's PhysicsMaterial2D / PhysicMaterial); assigning copies the numbers. */
+  get sharedMaterial() { return { friction: this.data.friction ?? 0.1, bounciness: this.data.bounce ?? 0 }; }
+  set sharedMaterial(m) { if (m) { this.set_('friction', m.friction ?? m.dynamicFriction ?? 0.1); this.set_('bounce', m.bounciness ?? m.bounce ?? 0); rebuildBody(this.entity); } }
+  /** Push everything near `position` away: `AddExplosionForce(force, position, radius, upwardsModifier, mode)` (linear fall-off). */
+  AddExplosionForce(force, position, radius, upwards = 0, mode = ForceMode2D.Force) {
+    const p = this.entity.worldPos, dx = p[0] - position.x, dy = p[1] - position.y, dz = is3D() ? p[2] - position.z : 0, d = Math.hypot(dx, dy, dz);
+    if (d > radius) return;
+    const k = (1 - d / radius) * force, n = d > 1e-9 ? [dx / d, dy / d, dz / d] : [0, is3D() ? 1 : -1, 0];
+    this.AddForce(new Vector3(n[0] * k, n[1] * k + (is3D() ? upwards * k : 0), n[2] * k), mode === ForceMode2D.Force ? ForceMode2D.Impulse : mode);
+  }
+  GetPointVelocity(point) {
+    const v = this.velocity, w = (this.angularVelocity ?? 0) * D2R, p = this.entity.worldPos, rx = point.x - p[0], ry = point.y - p[1];
+    return is3D() ? v : new Vector2(v.x - w * ry, v.y + w * rx);
+  }
+  GetRelativePointVelocity(point) { return this.GetPointVelocity(point); }
+  /** Sweep this body's collider along `direction` and list what it would hit (`results`, returns the count). */
+  Cast(direction, results = [], distance = Infinity) {
+    const c = Collider2D.Of(this.entity); return c ? c.Cast(direction, results, distance) : 0;
+  }
+  OverlapCollider(filter, results) { const c = Collider2D.Of(this.entity); return c ? c.OverlapCollider(filter, results) : 0; }
+  IsTouching(other) { const c = Collider2D.Of(this.entity); return c ? c.IsTouching(other) : false; }
+  IsTouchingLayers(mask = -1) { const c = Collider2D.Of(this.entity); return c ? c.IsTouchingLayers(mask) : false; }
+  get worldCenterOfMass() { return is3D() ? v3(this.entity.worldPos) : new Vector2(...this.entity.worldPos); }
+  get centerOfMass() { return is3D() ? Vector3.zero : Vector2.zero; }
 }
+/** Unity's RigidbodyConstraints2D (flags) and RigidbodyConstraints (3D). */
+export const RigidbodyConstraints2D = Object.freeze({ None: 0, FreezePositionX: 1, FreezePositionY: 2, FreezeRotation: 4, FreezePosition: 3, FreezeAll: 7 });
+export const RigidbodyConstraints = Object.freeze({ None: 0, FreezePositionX: 2, FreezePositionY: 4, FreezePositionZ: 8, FreezePosition: 14, FreezeRotationX: 16, FreezeRotationY: 32, FreezeRotationZ: 64, FreezeRotation: 112, FreezeAll: 126 });
+const CONSTRAINTS2D = RigidbodyConstraints2D, CONSTRAINTS3D = RigidbodyConstraints;
+export const RigidbodyInterpolation2D = Object.freeze({ None: 0, Interpolate: 1, Extrapolate: 2 });
+export const RigidbodyInterpolation = RigidbodyInterpolation2D;
+export const CollisionDetectionMode2D = Object.freeze({ Discrete: 0, Continuous: 1 });
+export const CollisionDetectionMode = Object.freeze({ Discrete: 0, Continuous: 1, ContinuousDynamic: 2, ContinuousSpeculative: 3 });
+export const RigidbodySleepMode2D = Object.freeze({ NeverSleep: 0, StartAwake: 1, StartAsleep: 2 });
+const INTERP = { 0: 'none', 1: 'interpolate', 2: 'extrapolate', None: 'none', Interpolate: 'interpolate', Extrapolate: 'extrapolate' };
+const INTERP_NAME = { none: 'None', interpolate: 'Interpolate', extrapolate: 'Extrapolate' };
+const CCD = { 0: 'discrete', 1: 'continuous', 2: 'continuousDynamic', 3: 'continuousSpeculative', Discrete: 'discrete', Continuous: 'continuous', ContinuousDynamic: 'continuousDynamic', ContinuousSpeculative: 'continuousSpeculative' };
+const CCD_NAME = { discrete: 'Discrete', continuous: 'Continuous', continuousDynamic: 'ContinuousDynamic', continuousSpeculative: 'ContinuousSpeculative' };
 /** 3D alias: same members, Vector3 velocity. */
 export class Rigidbody extends Rigidbody2D {}
 
@@ -369,12 +447,66 @@ export class Collider2D extends ComponentBase {
   get offset() { const o = this.data.offset ?? [0, 0]; return new Vector2(o[0], o[1]); }
   set offset(v) { this.set_('offset', [v.x, v.y]); rebuildBody(this.entity); }
   get attachedRigidbody() { return Rigidbody2D.Of(this.entity); }
-  get bounds() { const b = aabbOf(this.entity); return b ? { center: new Vector2((b.l + b.r) / 2, (b.t + b.b) / 2), size: new Vector2(b.r - b.l, b.b - b.t), min: new Vector2(b.l, b.t), max: new Vector2(b.r, b.b) } : null; }
+  get usedByComposite() { return !!this.data.usedByComposite; }
+  set usedByComposite(v) { this.set_('usedByComposite', !!v); rebuildBody(this.entity); }
+  get sharedMaterial() { return Rigidbody2D.Of(this.entity)?.sharedMaterial ?? { friction: 0.1, bounciness: 0 }; }
+  set sharedMaterial(m) { const r = Rigidbody2D.Of(this.entity); if (r) r.sharedMaterial = m; }
+  get friction() { return this.sharedMaterial.friction; }
+  get bounciness() { return this.sharedMaterial.bounciness; }
+  /** Is `point` inside this collider? */
+  OverlapPoint(point) { return Physics2D.OverlapPointAll(point).includes(this.entity); }
+  /** Closest points to another collider: `{ distance, isOverlapped, isValid, normal, pointA, pointB }`. */
+  Distance(other) { return Physics2D.Distance(this, other); }
+  ClosestPoint(position) { return Physics2D.ClosestPoint(position, this); }
+  IsTouching(other) { return Physics2D.IsTouching(this, other); }
+  IsTouchingLayers(mask = -1) { return Physics2D.IsTouchingLayers(this, mask); }
+  /** Everything overlapping this collider: `OverlapCollider(filter, results)` → count. */
+  OverlapCollider(filter, results = []) { return Physics2D.OverlapCollider(this, filter, results); }
+  /** Sweep this collider along `direction`: `Cast(direction, results, distance)` → count (hits are RaycastHit2D). */
+  Cast(direction, results = [], distance = Infinity) { return unityHooks.castCollider?.(this.entity, direction, results, distance) ?? 0; }
+  /** Rays starting at the collider's centre: `Raycast(direction, results, distance)` → count. */
+  Raycast(direction, results = [], distance = Infinity) { return Physics2D.RaycastNonAlloc(new Vector2(...this.entity.worldPos.slice(0, 2)), direction, results, distance); }
+  /** World-space Bounds of the collider (Unity's `collider.bounds`). */
+  get bounds() { return unityHooks.colliderBounds?.(this.entity) ?? null; }
 }
 export class BoxCollider2D extends Collider2D {}
 export class CircleCollider2D extends Collider2D {}
 export class BoxCollider extends Collider2D {}
 export class SphereCollider extends Collider2D {}
+/** CapsuleCollider2D: `size` (Vector2) and `direction` ('Vertical' | 'Horizontal'). */
+export class CapsuleCollider2D extends Collider2D {
+  get direction() { const d = String(this.data.direction ?? 'vertical').toLowerCase(); return d.startsWith('h') ? 'Horizontal' : 'Vertical'; }
+  set direction(v) { this.set_('direction', String(v).toLowerCase().startsWith('h') || v === 1 ? 'horizontal' : 'vertical'); rebuildBody(this.entity); }
+}
+/** CapsuleCollider (3D): `radius`, `height`, `direction` (0 X, 1 Y, 2 Z; the engine capsule is always upright, Y). */
+export class CapsuleCollider extends Collider2D {
+  get height() { return (this.data.size ?? [1, 2, 1])[1]; }
+  set height(h) { const s = [...(this.data.size ?? [1, 2, 1])]; s[1] = h; this.set_('size', s); rebuildBody(this.entity); }
+  get direction() { return 1; }
+}
+/** PolygonCollider2D: `points` (Vector2[]), `pointCount`, `pathCount` (1), GetPath / SetPath. Concave outlines are fine. */
+export class PolygonCollider2D extends Collider2D {
+  get points() { return (this.data.points ?? []).map((p) => new Vector2(p[0], p[1])); }
+  set points(v) { this.set_('points', v.map((p) => [p.x, p.y])); rebuildBody(this.entity); }
+  get pointCount() { return (this.data.points ?? []).length; }
+  get pathCount() { return 1; }
+  GetPath() { return this.points; }
+  SetPath(_i, pts) { this.points = pts; }
+  CreatePrimitive(sides, scale = Vector2.one, offset = Vector2.zero) { this.points = Array.from({ length: sides }, (_, i) => { const a = i / sides * Math.PI * 2; return new Vector2(Math.cos(a) * scale.x * 0.5 + offset.x, Math.sin(a) * scale.y * 0.5 + offset.y); }); }
+}
+/** EdgeCollider2D: an open (or closed) poly-line; `points`, `pointCount`, `edgeRadius` (thickness is half of it each side). */
+export class EdgeCollider2D extends PolygonCollider2D {
+  get edgeRadius() { return this.data.edgeRadius ?? 0; }
+  set edgeRadius(v) { this.set_('edgeRadius', v); rebuildBody(this.entity); }
+  Reset() { this.set_('points', [[-0.5, 0], [0.5, 0]]); rebuildBody(this.entity); }
+}
+/** CompositeCollider2D: merges the colliders (`usedByComposite = true`) on this object and its children into one body. */
+export class CompositeCollider2D extends Collider2D {
+  get pointCount() { return 0; }
+  get geometryType() { return this.data.geometryType ?? 'Outlines'; }
+  set geometryType(v) { this.set_('geometryType', v); rebuildBody(this.entity); }
+  GenerateGeometry() { rebuildBody(this.entity); }
+}
 
 /** Unity's SpriteRenderer for `sprite` and `animatedSprite` components. */
 export class SpriteRenderer extends ComponentBase {
@@ -533,10 +665,16 @@ export class Material extends ComponentBase {
   SetFloat(name, v) { if (/metal/i.test(name)) this.metallic = v; else if (/rough|smooth/i.test(name)) this.roughness = /smooth/i.test(name) ? 1 - v : v; else if (/alpha|cutoff/i.test(name)) this.set_('alpha', v); }
 }
 
-const WRAPPERS = { Rigidbody2D, Rigidbody, Collider2D, BoxCollider2D, CircleCollider2D, Collider: Collider2D, BoxCollider, SphereCollider, SpriteRenderer, Animator, AudioSource, Camera, Light, ParticleSystem, TextMesh, Text: TextMesh, TextMeshPro: TextMesh, Renderer: MeshRenderer, MeshRenderer, Transform };
-const UNITY_TO_NORD = { Rigidbody2D: 'rigidbody', Rigidbody: 'rigidbody', BoxCollider2D: 'collider', CircleCollider2D: 'collider', Collider2D: 'collider', BoxCollider: 'collider', SphereCollider: 'collider', SpriteRenderer: 'sprite', AudioSource: 'audioSource', Light: 'light', ParticleSystem: 'particles', Camera: 'camera', Animator: 'animator', TextMesh: 'text' };
+const WRAPPERS = { Rigidbody2D, Rigidbody, Collider2D, BoxCollider2D, CircleCollider2D, CapsuleCollider2D, PolygonCollider2D, EdgeCollider2D, CompositeCollider2D, CapsuleCollider, Collider: Collider2D, BoxCollider, SphereCollider, SpriteRenderer, Animator, AudioSource, Camera, Light, ParticleSystem, TextMesh, Text: TextMesh, TextMeshPro: TextMesh, Renderer: MeshRenderer, MeshRenderer, Transform };
+const UNITY_TO_NORD = { Rigidbody2D: 'rigidbody', Rigidbody: 'rigidbody', BoxCollider2D: 'collider', CircleCollider2D: 'collider', CapsuleCollider2D: 'collider', PolygonCollider2D: 'collider', EdgeCollider2D: 'collider', CompositeCollider2D: 'collider', CapsuleCollider: 'collider', Collider2D: 'collider', BoxCollider: 'collider', SphereCollider: 'collider', SpriteRenderer: 'sprite', AudioSource: 'audioSource', Light: 'light', ParticleSystem: 'particles', Camera: 'camera', Animator: 'animator', TextMesh: 'text' };
 
 /** `GetComponent(type)`: a script class, a wrapper class (`SpriteRenderer`), a Unity name (`'Rigidbody2D'`), a Nord component type (`'sprite'`), a behavior name or a script class name. */
+const UNITY_DEFAULTS = { Rigidbody2D: { mode: 'dynamic' }, Rigidbody: { mode: 'dynamic' }, CircleCollider2D: { shape: 'circle' }, SphereCollider: { shape: 'sphere' }, CapsuleCollider2D: { shape: 'capsule' }, CapsuleCollider: { shape: 'capsule' }, PolygonCollider2D: { shape: 'polygon' }, EdgeCollider2D: { shape: 'edge' }, CompositeCollider2D: { shape: 'composite' } };
+/** Register a wrapper class for `GetComponent(Name)` / `AddComponent("Name")`: `Name` ↔ Nord component `nord`, with default data for AddComponent. */
+export function registerUnityComponent(name, Class, nord, defaults) {
+  WRAPPERS[name] = Class; UNITY_TO_NORD[name] = nord;
+  if (defaults) UNITY_DEFAULTS[name] = defaults;
+}
 export function getUnityComponent(entity, type) {
   if (!entity || type == null) return null;
   if (typeof type === 'function') {
@@ -557,97 +695,17 @@ sceneHooks.ensureRequired = (entity, need) => {
 };
 unityHooks.transform = (e) => Transform.Of(e);
 
-// ---------------------------------------------------------------- physics queries
-function aabbOf(e) {
-  const col = e.getComponent('collider'); if (!col) return null;
-  const d = col.data, w = e.worldPos, s = [Math.abs(e.scale[0]), Math.abs(e.scale[1])];
-  const size = d.size ?? [16, 16], off = d.offset ?? [0, 0];
-  const bd = game()?.physics?.body?.(e);
-  if (bd && bd.width != null && !d.size && bd.enable !== false) return { l: bd.x, t: bd.y, r: bd.x + bd.width, b: bd.y + bd.height, circle: false, e };
-  const r = d.shape === 'circle' ? (d.radius ?? Math.max(size[0], size[1]) / 2) * Math.max(s[0], s[1]) : 0;
-  const hw = d.shape === 'circle' ? r : (size[0] * s[0]) / 2, hh = d.shape === 'circle' ? r : (size[1] * s[1]) / 2;
-  const cx = w[0] + off[0] * s[0], cy = w[1] + off[1] * s[1];
-  return { l: cx - hw, t: cy - hh, r: cx + hw, b: cy + hh, circle: d.shape === 'circle', cx, cy, rad: r, e };
-}
-function* colliders(includeTriggers = true) {
-  for (const e of game()?.scene?.all?.() ?? []) {
-    if (!e.enabled || e.destroyed) continue;
-    const col = e.getComponent('collider'); if (!col || (!includeTriggers && col.data.trigger)) continue;
-    const b = aabbOf(e); if (b) yield b;
-  }
-}
-const hitOf = (b, point, normal, distance, fraction = 0) => ({
-  collider: b.e, transform: Transform.Of(b.e), rigidbody: Rigidbody2D.Of(b.e), gameObject: b.e,
-  point: new Vector2(point[0], point[1]), normal: new Vector2(normal[0], normal[1]), distance, fraction,
-});
-const NO_HIT = () => ({ collider: null, transform: null, rigidbody: null, gameObject: null, point: Vector2.zero, normal: Vector2.zero, distance: 0, fraction: 0 });
-function rayVsBox(ox, oy, dx, dy, b) {
-  let tmin = -Infinity, tmax = Infinity, nx = 0, ny = 0;
-  for (const [o, d, lo, hi, axis] of [[ox, dx, b.l, b.r, 0], [oy, dy, b.t, b.b, 1]]) {
-    if (Math.abs(d) < 1e-12) { if (o < lo || o > hi) return null; continue; }
-    let t1 = (lo - o) / d, t2 = (hi - o) / d, n = -1;
-    if (t1 > t2) { [t1, t2] = [t2, t1]; n = 1; }
-    if (t1 > tmin) { tmin = t1; nx = axis === 0 ? n : 0; ny = axis === 1 ? n : 0; }
-    if (t2 < tmax) tmax = t2;
-    if (tmin > tmax) return null;
-  }
-  if (tmax < 0) return null;
-  return tmin >= 0 ? { t: tmin, n: [nx, ny] } : { t: 0, n: [0, 0] };
-}
-function rayVsCircle(ox, oy, dx, dy, b) {
-  const fx = ox - b.cx, fy = oy - b.cy, a = dx * dx + dy * dy, bb = 2 * (fx * dx + fy * dy), c = fx * fx + fy * fy - b.rad * b.rad;
-  const disc = bb * bb - 4 * a * c; if (disc < 0 || a === 0) return null;
-  const t = (-bb - Math.sqrt(disc)) / (2 * a); if (t < 0) return c <= 0 ? { t: 0, n: [0, 0] } : null;
-  const px = ox + dx * t, py = oy + dy * t, l = Math.hypot(px - b.cx, py - b.cy) || 1;
-  return { t, n: [(px - b.cx) / l, (py - b.cy) / l] };
-}
-function castAll(origin, direction, distance = Infinity) {
-  const len = Math.hypot(direction.x, direction.y) || 1, dx = direction.x / len, dy = direction.y / len, out = [];
-  for (const b of colliders(Physics2D.queriesHitTriggers)) {
-    const r = b.circle ? rayVsCircle(origin.x, origin.y, dx, dy, b) : rayVsBox(origin.x, origin.y, dx, dy, b);
-    if (r && r.t <= distance) out.push(hitOf(b, [origin.x + dx * r.t, origin.y + dy * r.t], r.n, r.t, distance === Infinity ? 0 : r.t / distance));
-  }
-  return out.sort((a, b) => a.distance - b.distance);
-}
-const inCircle = (b, c, r) => { const nx = clamp(c.x, b.l, b.r), ny = clamp(c.y, b.t, b.b); return (nx - c.x) ** 2 + (ny - c.y) ** 2 <= r * r; };
-const inBox = (b, l, t, r, bt) => b.l < r && b.r > l && b.t < bt && b.b > t;
-
-Object.assign(Physics2D, {
-  queriesHitTriggers: true,
-  /** `Physics2D.Raycast(origin, direction, distance)` → hit with `.collider` (an entity, null when nothing is hit), `.point`, `.normal`, `.distance`. Collider shapes are boxes and circles (rotation ignored). */
-  Raycast(origin, direction, distance = Infinity) { return castAll(origin, direction, distance)[0] ?? NO_HIT(); },
-  RaycastAll(origin, direction, distance = Infinity) { return castAll(origin, direction, distance); },
-  Linecast(a, b) { const d = new Vector2(b.x - a.x, b.y - a.y); return castAll(a, d, d.magnitude)[0] ?? NO_HIT(); },
-  OverlapPoint(p) { for (const b of colliders(Physics2D.queriesHitTriggers)) if (p.x >= b.l && p.x <= b.r && p.y >= b.t && p.y <= b.b) return b.e; return null; },
-  OverlapCircle(c, r) { for (const b of colliders(Physics2D.queriesHitTriggers)) if (inCircle(b, c, r)) return b.e; return null; },
-  OverlapCircleAll(c, r) { return [...colliders(Physics2D.queriesHitTriggers)].filter((b) => inCircle(b, c, r)).map((b) => b.e); },
-  OverlapBoxAll(c, size) { const l = c.x - size.x / 2, t = c.y - size.y / 2; return [...colliders(Physics2D.queriesHitTriggers)].filter((b) => inBox(b, l, t, l + size.x, t + size.y)).map((b) => b.e); },
-  OverlapAreaAll(a, b) { const l = Math.min(a.x, b.x), t = Math.min(a.y, b.y); return [...colliders(Physics2D.queriesHitTriggers)].filter((o) => inBox(o, l, t, Math.max(a.x, b.x), Math.max(a.y, b.y))).map((o) => o.e); },
-});
+// ---------------------------------------------------------------- physics queries live in unity-physics.js (Physics2D casts / overlaps, Physics 3D)
 // accessors must be defined, not copied by Object.assign (which would read the getter once)
 Object.defineProperty(Physics2D, 'gravity', {
   configurable: true,
   get() { const g = game()?.physics?.world?.gravity; return g ? new Vector2(g.x, g.y) : new Vector2(...(game()?.project?.physics?.gravity ?? [0, 0, 0]).slice(0, 2)); },
   set(v) { game()?.physics?.setGravity?.(v.x, v.y); },
 });
-/** 3D physics queries (Havok). */
+/** 3D physics facade (Unity's `Physics`); the query methods are added by unity-physics.js. */
 export const Physics = {
   get gravity() { const g = game()?.project?.physics?.gravity ?? [0, -9.81, 0]; return v3(g); },
   set gravity(v) { game()?.physics?.setGravity?.(v.x, v.y, v.z); },
-  /** `Physics.Raycast(origin, direction, maxDistance)` → hit `{ collider, point, normal, distance }` or `{ collider: null }`. */
-  Raycast(origin, direction, maxDistance = 1000) {
-    const d = direction.normalized, to = [origin.x + d.x * maxDistance, origin.y + d.y * maxDistance, origin.z + d.z * maxDistance];
-    const h = game()?.physics?.raycast?.([origin.x, origin.y, origin.z], to);
-    if (!h) return { collider: null, point: Vector3.zero, normal: Vector3.zero, distance: 0 };
-    return { collider: h.entity, gameObject: h.entity, transform: h.entity && Transform.Of(h.entity), point: v3(h.point), normal: v3(h.normal), distance: h.distance };
-  },
-  Linecast(a, b) { const d = b.Sub(a); return Physics.Raycast(a, d, d.magnitude); },
-  /** All entities with a `collider` whose box/sphere overlaps the sphere (approximate: bounding sphere). */
-  OverlapSphere(center, radius) {
-    const out = [];
-    for (const e of game()?.scene?.all?.() ?? []) { if (!e.enabled || !e.getComponent('collider')) continue; const w = e.worldPos, s = e.getComponent('collider').data.size ?? [1, 1, 1], r = Math.max(...s) * Math.max(...e.scale) / 2; if (Math.hypot(w[0] - center.x, w[1] - center.y, w[2] - center.z) <= radius + r) out.push(e); }
-    return out;
-  },
 };
 
 // ---------------------------------------------------------------- Time, Input, SceneManager, Application: missing members

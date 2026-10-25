@@ -275,3 +275,134 @@ test('InputActionAsset.FromJson (Unity .inputactions) + PlayerInput sends On<Act
   assert.ok(msgs.includes('click'));
   pi.DeactivateInput(); assert.ok(!asset.enabled);
 });
+
+// ---------------------------------------------------------------- physics queries (geometry.js + unity-physics.js)
+import { Physics2D, Physics, ContactFilter2D, CapsuleDirection2D, Geometry, Collider2D, CapsuleCollider2D, PolygonCollider2D, Rigidbody2D, RigidbodyConstraints2D, QueryTriggerInteraction } from './index.js';
+
+test('geometry: GJK distance, sweeps and rays agree with simple cases', () => {
+  const ax = [[1, 0, 0], [0, 1, 0], [0, 0, 1]], G = Geometry;
+  const b = G.box([0, 0, 0], ax, [1, 1, 1]);
+  near(G.distance(G.sphere([5, 0, 0], 1), b).distance, 3);
+  near(G.distance(G.capsule([0, 3, 0], [0, 5, 0], 0.5), b).distance, 1.5);
+  assert.ok(G.overlaps(b, G.sphere([1.5, 0, 0], 0.6)) && !G.overlaps(b, G.sphere([2.5, 0, 0], 1)));
+  const h = G.sweep(G.sphere([-6, 0, 0], 1), [1, 0, 0], 20, b, [-6, 0, 0]);
+  near(h.t, 4); assert.deepEqual(h.normal.map((v) => Math.abs(v) < 1e-9 ? 0 : v), [-1, 0, 0]); near(h.point[0], -1);
+  assert.equal(G.sweep(G.sphere([-6, 5, 0], 1), [1, 0, 0], 20, b), null);
+  assert.equal(G.sweep(G.sphere([-6, 0, 0], 1), [1, 0, 0], 2, b), null, 'too short to reach');
+  const inside = G.sweep(G.sphere([0, 0, 0], 0.2), [0, -1, 0], 5, b, [0, 0, 0]); assert.equal(inside.t, 0); assert.deepEqual(inside.point, [0, 0, 0]);
+  near(G.ray([-5, 0, 0], [1, 0, 0], G.capsule([0, -1, 0], [0, 1, 0], 0.5), 100, false).t, 4.5);
+  near(G.ray([-1, 1, 0], [1, 0, 0], G.poly([[0, 0, 0], [4, 0, 0], [0, 4, 0]])).t, 1);
+  assert.equal(G.triangulate([[0, 0], [4, 0], [4, 4], [2, 1], [0, 4]]).length, 3, 'concave polygon is split into triangles');
+  assert.equal(G.ray([-5, 0, 0], [1, 0, 0], b, 100, false).t, 4);
+  assert.equal(G.ray([0, 0, 0], [1, 0, 0], b, 100, false), null, 'starting inside misses when startInside is false');
+});
+
+const sceneWith = async (entities, project = {}) => { files.s = { name: 's', entities }; const g = mk(project); await g.loadScene('s'); return g; };
+const col = (o) => ({ type: 'collider', ...o });
+
+test('Physics2D: Raycast, RaycastAll, Linecast hit boxes, circles, capsules and polygons', async () => {
+  const g = await sceneWith([
+    ent('Box', { transform: { pos: [10, 0, 0] }, components: [col({ shape: 'box', size: [2, 2] })] }),
+    ent('Ball', { transform: { pos: [20, 0, 0] }, components: [col({ shape: 'circle', radius: 1 })] }),
+    ent('Pill', { transform: { pos: [30, 0, 0] }, components: [col({ shape: 'capsule', size: [2, 6] })] }),
+    ent('Tri', { transform: { pos: [40, 0, 0] }, components: [col({ shape: 'polygon', points: [[-1, -1], [1, -1], [0, 1]] })] }),
+    ent('Trig', { transform: { pos: [5, 0, 0] }, components: [col({ shape: 'box', size: [1, 1], trigger: true })] }),
+  ]);
+  const r = Physics2D.Raycast(new Vector2(0, 0), new Vector2(1, 0));
+  assert.equal(r.collider.name, 'Trig'); near(r.distance, 4.5); assert.deepEqual([r.normal.x, r.normal.y], [-1, 0]);
+  Physics2D.queriesHitTriggers = false;
+  const first = Physics2D.Raycast(new Vector2(0, 0), new Vector2(1, 0)); assert.equal(first.collider.name, 'Box'); near(first.distance, 9); near(first.point.x, 9);
+  assert.deepEqual(Physics2D.RaycastAll(new Vector2(0, 0), new Vector2(1, 0)).map((h) => h.collider.name), ['Box', 'Ball', 'Pill', 'Tri']);
+  near(Physics2D.Raycast(new Vector2(0, 0), new Vector2(1, 0), 100, 1 << 5).distance, 0); assert.equal(Physics2D.Raycast(new Vector2(0, 0), new Vector2(1, 0), 100, 1 << 5).collider, null);
+  assert.equal(Physics2D.Raycast(new Vector2(0, 5), new Vector2(1, 0)).collider, null);
+  assert.equal(Physics2D.Linecast(new Vector2(0, 0), new Vector2(15, 0)).collider.name, 'Box'); assert.equal(Physics2D.Linecast(new Vector2(0, 0), new Vector2(5, 0)).collider, null);
+  const res = []; assert.equal(Physics2D.RaycastNonAlloc(new Vector2(0, 0), new Vector2(1, 0), res, 25), 2); assert.equal(res[1].collider.name, 'Ball');
+  near(Physics2D.Raycast(new Vector2(30, -10), new Vector2(0, 1)).distance, 7, 1e-6); // capsule (height 6 → top end at y=-3)
+  near(Physics2D.Raycast(new Vector2(30, -10), new Vector2(0, 1)).point.y, -3);
+  const filter = new ContactFilter2D().SetLayerMask(1); const out = [];
+  assert.equal(Physics2D.Raycast(new Vector2(0, 0), new Vector2(1, 0), filter, out, 50), 5, 'filter form: results + count, triggers included by default');
+  assert.equal(Physics2D.Raycast(new Vector2(0, 0), new Vector2(1, 0), new ContactFilter2D().SetLayerMask(1 << 5), [], 50), 0);
+  Physics2D.queriesHitTriggers = true;
+});
+
+test('Physics2D: CircleCast, BoxCast, CapsuleCast sweep a shape, starting inside reports distance 0', async () => {
+  const g = await sceneWith([ent('Wall', { transform: { pos: [10, 0, 0] }, components: [col({ shape: 'box', size: [2, 10] })] })]);
+  const c = Physics2D.CircleCast(new Vector2(0, 0), 1, new Vector2(1, 0)); assert.equal(c.collider.name, 'Wall'); near(c.distance, 8); near(c.centroid.x, 8); near(c.point.x, 9);
+  const b = Physics2D.BoxCast(new Vector2(0, 0), new Vector2(2, 2), 0, new Vector2(1, 0)); near(b.distance, 8);
+  const b45 = Physics2D.BoxCast(new Vector2(0, 0), new Vector2(2, 2), 45, new Vector2(1, 0)); near(b45.distance, 9 - Math.SQRT2, 1e-4);
+  const cap = Physics2D.CapsuleCast(new Vector2(0, 0), new Vector2(2, 4), CapsuleDirection2D.Vertical, 0, new Vector2(1, 0)); near(cap.distance, 8);
+  assert.equal(Physics2D.CircleCast(new Vector2(0, 20), 1, new Vector2(1, 0)).collider, null, 'passes above the wall');
+  const inside = Physics2D.CircleCast(new Vector2(10, 0), 0.5, new Vector2(1, 0)); assert.equal(inside.distance, 0); assert.deepEqual([inside.normal.x, inside.normal.y], [-1, 0]);
+  assert.equal(Physics2D.CircleCastAll(new Vector2(0, 0), 1, new Vector2(1, 0)).length, 1);
+});
+
+test('Physics2D: Overlap* queries, Distance, ClosestPoint, OverlapCollider, IgnoreCollision flags', async () => {
+  const g = await sceneWith([
+    ent('A', { transform: { pos: [0, 0, 0] }, components: [col({ shape: 'box', size: [4, 4] })] }),
+    ent('B', { transform: { pos: [3, 0, 0] }, components: [col({ shape: 'circle', radius: 1.5 })] }),
+    ent('C', { transform: { pos: [20, 0, 0], rot: [0, 0, 90] }, components: [col({ shape: 'capsule', size: [2, 8] })] }),
+  ]);
+  const A = g.scene.find('A'), B = g.scene.find('B'), C = g.scene.find('C');
+  assert.equal(Physics2D.OverlapPoint(new Vector2(1, 1)).name, 'A'); assert.equal(Physics2D.OverlapPoint(new Vector2(100, 1)), null);
+  assert.deepEqual(Physics2D.OverlapPointAll(new Vector2(2, 0)).map((e) => e.name).sort(), ['A', 'B']);
+  assert.equal(Physics2D.OverlapCircle(new Vector2(23.5, 0), 0.4).name, 'C', 'the capsule rotated 90° lies along x: its end cap reaches x = 24'); assert.equal(Physics2D.OverlapCircle(new Vector2(20, 3.5), 0.4), null);
+  assert.equal(Physics2D.OverlapBoxAll(new Vector2(0, 0), new Vector2(1, 1), 0).length, 1);
+  assert.equal(Physics2D.OverlapAreaAll(new Vector2(-1, -1), new Vector2(10, 1)).length, 2);
+  assert.equal(Physics2D.OverlapCapsule(new Vector2(20, 0), new Vector2(2, 8), CapsuleDirection2D.Vertical, 90).name, 'C');
+  const d = Physics2D.Distance(A, C); assert.ok(d.isValid && !d.isOverlapped); assert.ok(d.distance > 10);
+  const dab = Physics2D.Distance(A, B); assert.ok(dab.isOverlapped && dab.distance <= 0);
+  const cp = Physics2D.ClosestPoint(new Vector2(10, 0), A); near(cp.x, 2); near(cp.y, 0);
+  const results = []; assert.equal(Physics2D.OverlapCollider(Collider2D.Of(A), new ContactFilter2D(), results), 1); assert.equal(results[0].name, 'B');
+  assert.ok(Physics2D.IsTouching(A, B) && !Physics2D.IsTouching(A, C));
+  Physics2D.IgnoreCollision(A, B); assert.ok(Physics2D.GetIgnoreCollision(B, A)); Physics2D.IgnoreCollision(A, B, false); assert.ok(!Physics2D.GetIgnoreCollision(A, B));
+  Physics2D.IgnoreLayerCollision(1, 2); assert.ok(Physics2D.GetIgnoreLayerCollision(2, 1)); Physics2D.IgnoreLayerCollision(1, 2, false);
+  assert.equal(Collider2D.Of(A).bounds.size.x, 4); near(Collider2D.Of(C).bounds.size.y, 2);
+});
+
+test('Physics2D: composite collider is the union of the colliders marked usedByComposite', async () => {
+  const g = await sceneWith([ent('Walls', { components: [col({ shape: 'composite' })], children: [
+    ent('L', { transform: { pos: [-5, 0, 0] }, components: [col({ shape: 'box', size: [2, 10], usedByComposite: true })] }),
+    ent('R', { transform: { pos: [5, 0, 0] }, components: [col({ shape: 'box', size: [2, 10], usedByComposite: true })] }),
+  ] })]);
+  assert.equal(Physics2D.Raycast(new Vector2(0, 0), new Vector2(1, 0)).collider.name, 'Walls');
+  assert.equal(Physics2D.Raycast(new Vector2(0, 0), new Vector2(-1, 0)).collider.name, 'Walls');
+  near(Physics2D.Raycast(new Vector2(0, 0), new Vector2(1, 0)).distance, 4);
+  assert.equal(Physics2D.RaycastAll(new Vector2(-20, 0), new Vector2(1, 0)).length, 1, 'one collider = one hit, whatever its parts');
+});
+
+test('Physics 3D: RaycastAll / NonAlloc, SphereCast, BoxCast, CapsuleCast, OverlapBox, Check*', async () => {
+  const g = await sceneWith([
+    ent('Cube', { transform: { pos: [0, 0, 10] }, components: [col({ shape: 'box', size: [2, 2, 2] })] }),
+    ent('Ball', { transform: { pos: [0, 0, 20] }, components: [col({ shape: 'sphere', radius: 1 })] }),
+    ent('Cap', { transform: { pos: [5, 0, 10] }, components: [col({ shape: 'capsule', size: [1, 4, 1], radius: 0.5 })] }),
+  ], { type: '3d' });
+  const ray = Physics.RaycastAll(Vector3.zero, Vector3.forward); assert.deepEqual(ray.map((h) => h.collider.name), ['Cube', 'Ball']); near(ray[0].distance, 9);
+  const res = []; assert.equal(Physics.RaycastNonAlloc(Vector3.zero, Vector3.forward, res, 15), 1);
+  const sc = Physics.SphereCast(new Vector3(0, 0, 0), 0.5, Vector3.forward); assert.equal(sc.collider.name, 'Cube'); near(sc.distance, 8.5);
+  const missRay = Physics.SphereCast(new Vector3(0, 3, 0), 0.5, Vector3.forward); assert.equal(missRay.collider, null);
+  const grazing = Physics.SphereCast(new Vector3(0, 1.2, 0), 0.5, Vector3.forward); assert.equal(grazing.collider.name, 'Cube', 'a fat ray touches where a thin one misses');
+  assert.equal(Physics.Raycast(new Vector3(0, 1.2, 0), Vector3.forward, 100).collider, null);
+  const bc = Physics.BoxCast(Vector3.zero, new Vector3(0.5, 0.5, 0.5), Vector3.forward); near(bc.distance, 8.5);
+  const cc = Physics.CapsuleCast(new Vector3(5, 0, 0), new Vector3(5, 1, 0), 0.25, Vector3.forward); assert.equal(cc.collider.name, 'Cap');
+  assert.deepEqual(Physics.OverlapBox(new Vector3(0, 0, 10.5), new Vector3(0.2, 0.2, 0.2)).map((e) => e.name), ['Cube']);
+  assert.deepEqual(Physics.OverlapSphere(new Vector3(1.8, 0, 10), 1).map((e) => e.name), ['Cube']); assert.equal(Physics.OverlapSphere(new Vector3(2.2, 0, 10), 1).length, 0);
+  assert.ok(Physics.CheckSphere(new Vector3(0, 0, 20), 0.1) && !Physics.CheckSphere(new Vector3(0, 9, 20), 0.1));
+  assert.ok(Physics.CheckBox(new Vector3(0, 0, 10), Vector3.one) && Physics.CheckCapsule(new Vector3(5, -3, 10), new Vector3(5, 3, 10), 0.2));
+  const longBar = new Vector3(0.1, 0.1, 1.6); assert.ok(Physics.CheckBox(new Vector3(0, 0, 12.5), longBar)); assert.ok(!Physics.CheckBox(new Vector3(0, 0, 12.5), longBar, Quaternion.Euler(0, 90, 0)), 'turned across, the bar no longer reaches the cube');
+  assert.deepEqual(Physics.Raycast({ origin: Vector3.zero, direction: Vector3.forward }, 50).collider?.name, 'Cube', 'Ray form');
+});
+
+test('Rigidbody2D wrapper: constraints, interpolation, collisionDetectionMode, sharedMaterial, AddExplosionForce data', async () => {
+  const g = await sceneWith([ent('R', { components: [{ type: 'rigidbody', mode: 'dynamic' }, col({ shape: 'box', size: [1, 1] })] })]);
+  const R = g.scene.find('R'), rb = Rigidbody2D.Of(R);
+  rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+  assert.equal(R.getComponent('rigidbody').data.freezePositionX, true); assert.equal(R.getComponent('rigidbody').data.freezePositionY, false); assert.equal(R.getComponent('rigidbody').data.fixedRotation, true);
+  assert.equal(rb.constraints, RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation);
+  rb.constraints = RigidbodyConstraints2D.None; assert.equal(rb.freezeRotation, false);
+  rb.interpolation = 'Interpolate'; assert.equal(R.getComponent('rigidbody').data.interpolation, 'interpolate'); assert.equal(rb.interpolation, 'Interpolate');
+  rb.collisionDetectionMode = 1; assert.equal(rb.collisionDetectionMode, 'Continuous');
+  rb.sharedMaterial = { friction: 0.7, bounciness: 0.4 }; assert.equal(R.getComponent('rigidbody').data.friction, 0.7); assert.equal(rb.sharedMaterial.bounciness, 0.4);
+  const cap = R.AddComponent(CapsuleCollider2D); assert.ok(cap); 
+  const poly = R.AddComponent('PolygonCollider2D'); poly.points = [new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1)]; assert.equal(poly.pointCount, 3);
+  assert.equal(QueryTriggerInteraction.Ignore, 1);
+});

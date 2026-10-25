@@ -33,6 +33,7 @@ export class Scene {
     this.roots = [];
     this.scheduler = new Scheduler();
     this.running = false;
+    this.alpha = 1;
     this.systems = []; // per-scene systems (event sheet runner): update/start/end/onDispatch/onCreated/onDestroyed
     this.#pending = [];
     this.#dead = new Set();
@@ -161,6 +162,7 @@ export class Scene {
       this.backend?.step?.(FIXED_DT, this);
     }
     if (this.#acc > FIXED_DT * MAX_STEPS) this.#acc = 0;
+    this.alpha = this.#acc / FIXED_DT; // how far the frame is between two physics steps (0..1): rigidbody interpolation uses it
     lap('fixed+physics');
     this.scheduler.update(dt);
     for (const s of this.systems) { try { s.update?.(dt); } catch (err) { this.game.reportError(err, s, 'update'); } }

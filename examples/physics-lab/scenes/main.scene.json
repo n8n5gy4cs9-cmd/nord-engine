@@ -1,0 +1,779 @@
+{
+  "format": 1,
+  "name": "main",
+  "settings": {},
+  "entities": [
+    {
+      "id": "floor001",
+      "name": "Floor",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          400,
+          580,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "drag": 0.1,
+          "gravityScale": 1,
+          "bounce": 0.1,
+          "friction": 0.3,
+          "freezeRotationZ": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            800,
+            40
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "wallL01",
+      "name": "WallLeft",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          -10,
+          300,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "drag": 0.1,
+          "gravityScale": 1,
+          "bounce": 0.1,
+          "friction": 0.3,
+          "freezeRotationZ": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            20,
+            600
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "wallR01",
+      "name": "WallRight",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          810,
+          300,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "drag": 0.1,
+          "gravityScale": 1,
+          "bounce": 0.1,
+          "friction": 0.3,
+          "freezeRotationZ": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            20,
+            600
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ramp001",
+      "name": "Ramp",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          130,
+          470,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          20
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "drag": 0.1,
+          "gravityScale": 1,
+          "bounce": 0.1,
+          "friction": 0.3,
+          "freezeRotationZ": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            200,
+            16
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ball0001",
+      "name": "Ball",
+      "enabled": true,
+      "tags": [
+        "ball"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          110,
+          80,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1,
+          "drag": 0.1,
+          "gravityScale": 1,
+          "bounce": 0.5,
+          "friction": 0.3,
+          "freezeRotationZ": false
+        },
+        {
+          "type": "collider",
+          "shape": "circle",
+          "radius": 20
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "caps0001",
+      "name": "Capsule",
+      "enabled": true,
+      "tags": [
+        "capsule"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          250,
+          80,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1,
+          "drag": 0.1,
+          "gravityScale": 1,
+          "bounce": 0.1,
+          "friction": 0.3,
+          "freezeRotationZ": false
+        },
+        {
+          "type": "collider",
+          "shape": "capsule",
+          "size": [
+            40,
+            100
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "lpoly001",
+      "name": "LShape",
+      "enabled": true,
+      "tags": [
+        "lshape"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          360,
+          80,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1,
+          "drag": 0.1,
+          "gravityScale": 1,
+          "bounce": 0.1,
+          "friction": 0.3,
+          "freezeRotationZ": false
+        },
+        {
+          "type": "collider",
+          "shape": "polygon",
+          "points": [
+            [
+              -30,
+              -30
+            ],
+            [
+              30,
+              -30
+            ],
+            [
+              30,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              30
+            ],
+            [
+              -30,
+              30
+            ]
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "anchor01",
+      "name": "Anchor",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          560,
+          60,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "drag": 0.1,
+          "gravityScale": 1,
+          "bounce": 0.1,
+          "friction": 0.3,
+          "freezeRotationZ": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            20,
+            20
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "bob00001",
+      "name": "Bob",
+      "enabled": true,
+      "tags": [
+        "bob"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          560,
+          200,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1,
+          "drag": 0.1,
+          "gravityScale": 1,
+          "bounce": 0.1,
+          "friction": 0.3,
+          "freezeRotationZ": false
+        },
+        {
+          "type": "collider",
+          "shape": "circle",
+          "radius": 18
+        },
+        {
+          "type": "joint",
+          "kind": "hinge",
+          "connectedBody": "anchor01",
+          "anchor": [
+            0,
+            -140,
+            0
+          ],
+          "connectedAnchor": [
+            0,
+            0,
+            0
+          ],
+          "autoConfigureConnectedAnchor": false
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "spra0001",
+      "name": "SpringAnchor",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          770,
+          60,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "drag": 0.1,
+          "gravityScale": 1,
+          "bounce": 0.1,
+          "friction": 0.3,
+          "freezeRotationZ": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            20,
+            20
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "sprb0001",
+      "name": "SpringBob",
+      "enabled": true,
+      "tags": [
+        "springbob"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          770,
+          160,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "rigidbody",
+          "mode": "dynamic",
+          "mass": 1,
+          "drag": 0.1,
+          "gravityScale": 1,
+          "bounce": 0.1,
+          "friction": 0.3,
+          "freezeRotationZ": false
+        },
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            30,
+            30
+          ]
+        },
+        {
+          "type": "joint",
+          "kind": "spring",
+          "connectedBody": "spra0001",
+          "frequency": 2,
+          "dampingRatio": 0.2,
+          "distance": 100,
+          "autoConfigureDistance": false,
+          "autoConfigureConnectedAnchor": false,
+          "connectedAnchor": [
+            0,
+            0,
+            0
+          ],
+          "anchor": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "comp0001",
+      "name": "Composite",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          520,
+          520,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "rigidbody",
+          "mode": "static",
+          "mass": 1,
+          "drag": 0.1,
+          "gravityScale": 1,
+          "bounce": 0.1,
+          "friction": 0.3,
+          "freezeRotationZ": false
+        },
+        {
+          "type": "collider",
+          "shape": "composite"
+        }
+      ],
+      "scripts": [],
+      "children": [
+        {
+          "id": "compc001",
+          "name": "CompL",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              -60,
+              0,
+              0
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "collider",
+              "shape": "box",
+              "size": [
+                40,
+                40
+              ],
+              "usedByComposite": true
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        },
+        {
+          "id": "compc002",
+          "name": "CompR",
+          "enabled": true,
+          "tags": [],
+          "layer": 0,
+          "transform": {
+            "pos": [
+              60,
+              0,
+              0
+            ],
+            "rot": [
+              0,
+              0,
+              0
+            ],
+            "scale": [
+              1,
+              1,
+              1
+            ]
+          },
+          "components": [
+            {
+              "type": "collider",
+              "shape": "box",
+              "size": [
+                40,
+                40
+              ],
+              "usedByComposite": true
+            }
+          ],
+          "scripts": [],
+          "children": [],
+          "prefab": null
+        }
+      ],
+      "prefab": null
+    },
+    {
+      "id": "trig0001",
+      "name": "Zone",
+      "enabled": true,
+      "tags": [
+        "zone"
+      ],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          650,
+          540,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "collider",
+          "shape": "box",
+          "size": [
+            80,
+            40
+          ],
+          "trigger": true
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ctl00001",
+      "name": "Controller",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/lab.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    }
+  ]
+}

@@ -221,6 +221,7 @@ class Backend {
     for (const pad of navigator.getGamepads?.() ?? []) if (pad) { g.input.pollGamepad(pad); break; }
     this.physics?.flushDirty();
     g.tick(dt);
+    this.physics?.interpolate?.(g.scene?.alpha ?? 1); // rigidbody.interpolation: draw between the last two physics steps
     if (g.scene?.settings?.layers) this.#applyLayers(g.scene);
     else if (this._bg?.size) for (const r of this._bg.values()) r.setVisible(false); // previous scene's layer backgrounds
   }

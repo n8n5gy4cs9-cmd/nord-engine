@@ -248,6 +248,17 @@ export function registerPhaserComponents(backend) {
   const phys = (e) => { if (backend.physics) backend.physics.build(e); };
   registerComponent('rigidbody', { create: phys, destroy: (c) => backend.physics?.forget(c.entity) });
   registerComponent('collider', { create: phys, destroy: (c) => backend.physics?.forget(c.entity) });
+  // joint: Unity-style joints (hinge, spring, distance, fixed, slider, wheel, target, relative, friction) between this entity's body and `connectedBody`; see runtime/phaser/joints.js
+  registerComponent('joint', {
+    create: (e, d, comp) => backend.physics?.addJoint(comp),
+    destroy: (c) => backend.physics?.removeJoint(c),
+    set(c, k, v) {
+      c.data[k] = v;
+      const j = backend.physics?.joints.get(c);
+      if (k === 'target' && j?.setTarget) j.setTarget(v[0], v[1]);
+      else if (k !== 'useMotor' && k !== 'motorSpeed' && k !== 'useLimits' && k !== 'lowerAngle' && k !== 'upperAngle' && k !== 'lowerTranslation' && k !== 'upperTranslation' && k !== 'breakForce' && k !== 'maxMotorTorque' && k !== 'maxForce') { backend.physics?.removeJoint(c); backend.physics?.addJoint(c); }
+    },
+  });
   // trigger = static collider zone that only overlaps
   registerComponent('trigger', {
     create(e, d) {
