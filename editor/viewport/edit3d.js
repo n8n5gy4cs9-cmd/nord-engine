@@ -1,5 +1,6 @@
 // 3D edit view (Babylon): orbit/fly camera, grid, picking, move/rotate/scale gizmos, snap, IPC sync, offscreen model thumbnails.
 import { canvas, state, send, log } from './edit.js';
+import { createTextMesh } from '/runtime/babylon/text3d.js';
 import { createSpriteMaterial, createLight, applyAmbient, allowManyLights, createLightCuller, qualitySettings } from '/runtime/babylon/lighting.js';
 
 let B, engine, scene, camera, gizmoManager, gridMesh;
@@ -484,6 +485,11 @@ function buildEntity(e, parentNode, token) {
         if (t.isReady()) fit(); else t.onLoadObservable.addOnce(fit);
       });
     }
+    visual = true;
+  }
+  const txt = comp(e, 'text');
+  if (txt) { // world-space text (Unity's TextMesh), same code as the game runtime
+    const t = createTextMesh(B, scene, e.id + '.text', txt); t.mesh.parent = node; tag(t.mesh, e.id);
     visual = true;
   }
   const model = comp(e, 'model');

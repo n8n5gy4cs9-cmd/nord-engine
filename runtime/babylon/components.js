@@ -1,6 +1,7 @@
 // Babylon 3D components. Each entity's native is a TransformNode; visuals are parented to it.
 import { registerComponent } from '../core/index.js';
 import { rgb } from './index.js';
+import { createTextMesh } from './text3d.js';
 import { createLight, createShadows, setLightField, createSpriteMaterial } from './lighting.js';
 
 const D2R = Math.PI / 180;
@@ -121,6 +122,19 @@ export function registerBabylonComponents(backend) {
     create(e, d, comp) { buildSprite(comp); },
     set(comp, k, v) { comp.data[k] = v; if (k === 'visible') comp.mesh.isVisible = v; else buildSprite(comp); },
     destroy(comp) { const e = comp.entity; e.__meshes = (e.__meshes ?? []).filter((x) => x !== comp.mesh); comp.mesh?.dispose(); comp.mat?.dispose(); },
+  });
+
+  // ---- text in 3D: a plane in the world (Unity's TextMesh); see text3d.js ----
+  registerComponent('text', {
+    create(e, d, comp) {
+      const t = createTextMesh(B, scene, `${e.name}.text`, d);
+      comp.text3d = t; comp.mesh = t.mesh;
+      t.mesh.parent = e.native; t.mesh.metadata = { entity: e };
+      (e.__meshes ??= []).push(t.mesh);
+      if (d.billboard) t.mesh.billboardMode = B.Mesh.BILLBOARDMODE_Y;
+    },
+    set(comp, k, v) { comp.data[k] = v; if (k === 'visible') comp.mesh.isVisible = v; else comp.text3d.update(comp.data); },
+    destroy(comp) { const e = comp.entity; e.__meshes = (e.__meshes ?? []).filter((x) => x !== comp.mesh); comp.text3d?.dispose(); },
   });
 
   registerComponent('model', {

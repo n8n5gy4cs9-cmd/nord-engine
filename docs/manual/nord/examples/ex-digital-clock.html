@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>3.6 · Build a digital clock: primitives and 3D text in the world — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-clock.html">3.5 · Build a clock: objects, hierarchy, materials and your first script</a><a href="ex-digital-clock.html" class="cur" aria-current="page">3.6 · Build a digital clock: primitives and 3D text in the world</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-music-player.html">9.5 · A music player and sound effects</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html">55 · Ember Crypt: a complete game, from art to export</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>3.6 · Build a digital clock: primitives and 3D text in the world</h1>
+<p><strong>Goal:</strong> a desk clock made from <strong>primitives</strong> (cubes, a sphere, two cylinders) whose screen shows the real time and date as <strong>3D text that lives in the world</strong>. You practise the same things as page <a href="ex-clock.html">3.5</a> (objects, hierarchy, materials, a script) and add one new idea: <strong>world-space text</strong>.</p>
+<p><img src="../../assets/screenshots/ex-digital-clock-result.png" alt="The finished digital clock showing 10:09:36"></p>
+<p><strong>Download:</strong> <a href="../../assets/downloads/digital-clock-source.zip">the finished project</a>, also in <code>examples/digital-clock</code>. Open <code>nord.project.json</code> in Nord and press <span class="c-ui">Play</span>. Allow 30 minutes to build it yourself. Do page <a href="ex-clock.html">3.5</a> first if you have never used the editor.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Text on a screen can be in two places. <strong>Screen-space</strong> text (<code>this.ui.label(...)</code>, the HUD of page 8) is glued to the window: it never moves when the camera does. <strong>World-space</strong> text is a real object standing in the scene, like a sign: it has a position, you can walk around it, and it sits <em>behind</em> things in front of it. A clock on a desk needs the second kind.</p>
+</aside><h2 id="1-create-the-project">1 Create the project<a class="anchor" href="#1-create-the-project">#</a></h2>
+<p><strong>In the editor:</strong> <span class="c-ui">New project</span>, name it <code>digital-clock</code>, pick <strong>3D</strong> and press <strong>Create</strong>. Then <span class="c-ui">Window ▸ Panels ▸ Project</span> ▸ <strong>Project properties</strong>: <strong>Game size</strong> <code>800 × 500</code>, <strong>Background</strong> <code>#31506e</code>, <strong>Physics</strong> <code>none</code>, and press <strong>Apply project properties</strong>.</p>
+<p><strong>In the file</strong> <code>nord.project.json</code> (check what the editor wrote):</p>
+<pre class="code" data-lang="json"><code>&quot;display&quot;: { &quot;width&quot;: 800, &quot;height&quot;: 500, &quot;scale&quot;: &quot;fit&quot;, &quot;pixelArt&quot;: false, &quot;background&quot;: &quot;#31506e&quot; },
+&quot;physics&quot;: { &quot;engine&quot;: &quot;none&quot;, &quot;gravity&quot;: [0, 0, 0] }</code></pre>
+<blockquote>
+<p><strong>Axes.</strong> X points right, Y up, Z forward (into the screen). The clock&#39;s front faces the camera, which sits at negative Z looking along +Z. So &quot;in front of&quot; the clock means a <strong>smaller (more negative) Z</strong>.</p>
+</blockquote>
+<h2 id="2-the-case-and-the-parts">2 The case and the parts<a class="anchor" href="#2-the-case-and-the-parts">#</a></h2>
+<h3 id="2-1-the-empty-parent">2.1 The empty parent<a class="anchor" href="#2-1-the-empty-parent">#</a></h3>
+<ol>
+<li><span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span>, rename it <code>Digital Clock</code> (<strong>F2</strong>). Position <code>0, 0, 0</code>.</li>
+<li>Everything below becomes its <strong>child</strong>: drag each new object onto <code>Digital Clock</code> in the Hierarchy (or right-click it ▸ <strong>Create child</strong>).</li>
+</ol>
+<h3 id="2-2-nine-parts-from-primitives">2.2 Nine parts from primitives<a class="anchor" href="#2-2-nine-parts-from-primitives">#</a></h3>
+<p>Make each object with <span class="c-ui">Hierarchy ▸ + Create ▸ Cube / Sphere / Cylinder</span>, rename it and set its <strong>Transform</strong> exactly as in the table. Materials come in step 2.3; leave them white for now.</p>
+<table>
+<thead>
+<tr>
+<th>Object</th>
+<th>Create ▸</th>
+<th>Position</th>
+<th>Scale</th>
+<th>Material</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Case</code></td>
+<td>Cube</td>
+<td>0, 0, 0.5</td>
+<td>10, 4, 1</td>
+<td><code>case</code></td>
+</tr>
+<tr>
+<td><code>Bezel</code></td>
+<td>Cube</td>
+<td>0, 0.1, −0.1</td>
+<td>9.4, 3.4, 0.2</td>
+<td><code>bezel</code></td>
+</tr>
+<tr>
+<td><code>Screen</code></td>
+<td>Cube</td>
+<td>0, 0.1, −0.25</td>
+<td>9, 3, 0.1</td>
+<td><code>screen</code></td>
+</tr>
+<tr>
+<td><code>Button 1</code></td>
+<td>Cube</td>
+<td>−1.5, −1.75, −0.1</td>
+<td>0.8, 0.25, 0.2</td>
+<td><code>button</code></td>
+</tr>
+<tr>
+<td><code>Button 2</code></td>
+<td>Cube</td>
+<td>0, −1.75, −0.1</td>
+<td>0.8, 0.25, 0.2</td>
+<td><code>button</code></td>
+</tr>
+<tr>
+<td><code>Button 3</code></td>
+<td>Cube</td>
+<td>1.5, −1.75, −0.1</td>
+<td>0.8, 0.25, 0.2</td>
+<td><code>button</code></td>
+</tr>
+<tr>
+<td><code>LED</code></td>
+<td>Sphere</td>
+<td>4.3, −1.75, −0.1</td>
+<td>0.25, 0.25, 0.25</td>
+<td><code>led</code></td>
+</tr>
+<tr>
+<td><code>Foot Left</code></td>
+<td>Cylinder</td>
+<td>−3.5, −2.15, 0.5</td>
+<td>0.6, 0.3, 0.6</td>
+<td><code>bezel</code></td>
+</tr>
+<tr>
+<td><code>Foot Right</code></td>
+<td>Cylinder</td>
+<td>3.5, −2.15, 0.5</td>
+<td>0.6, 0.3, 0.6</td>
+<td><code>bezel</code></td>
+</tr>
+</tbody></table>
+<p>Why these numbers (all in units; the case is 10 wide and 4 high):</p>
+<ul>
+<li>The <strong>Case</strong> is a block 10 × 4 × 1 whose front face is at <code>Z = 0</code> (centre <code>Z = 0.5</code>, half the depth).</li>
+<li>The <strong>Bezel</strong> (a dark frame) is a bit smaller and sticks 0.2 out of the front. The <strong>Screen</strong> is smaller still and sits in front of the bezel, so you see three layers: case, frame, glass. That is why each part has a <strong>more negative Z</strong> than the one behind it.</li>
+<li>The three <strong>Buttons</strong> and the <strong>LED</strong> sit in the thin strip under the screen (<code>Y = −1.75</code>).</li>
+<li>The <strong>Feet</strong> are two cylinders. A cylinder is 2 high by default, so scale Y <code>0.3</code> makes them <code>0.6</code> tall.</li>
+</ul>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, one part inside the <code>children</code> of <code>Digital Clock</code> (the screen):</p>
+<pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Screen&quot;, &quot;transform&quot;: { &quot;pos&quot;: [0, 0.1, -0.25], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [9, 3, 0.1] },
+  &quot;components&quot;: [ { &quot;type&quot;: &quot;mesh&quot;, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: [1, 1, 1], &quot;castShadow&quot;: true },
+                  { &quot;type&quot;: &quot;material&quot;, &quot;asset&quot;: &quot;assets/materials/screen.mat.json&quot; } ] }</code></pre>
+<h3 id="2-3-materials">2.3 Materials<a class="anchor" href="#2-3-materials">#</a></h3>
+<p>A material is a file that holds a colour and a surface look. Make five and assign them with <span class="c-ui">Assets ▸ right-click ▸ New material (.mat.json)</span>, then drag each onto the part (or set <strong>Asset</strong> in its <code>material</code> component).</p>
+<table>
+<thead>
+<tr>
+<th>Material</th>
+<th>Colour</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>case</code></td>
+<td><code>#1b1f27</code></td>
+<td>Case</td>
+</tr>
+<tr>
+<td><code>bezel</code></td>
+<td><code>#0b0d12</code></td>
+<td>Bezel, both Feet</td>
+</tr>
+<tr>
+<td><code>screen</code></td>
+<td><code>#0a2615</code></td>
+<td>Screen (dark green glass)</td>
+</tr>
+<tr>
+<td><code>button</code></td>
+<td><code>#6b7380</code></td>
+<td>the three Buttons</td>
+</tr>
+<tr>
+<td><code>led</code></td>
+<td><code>#e23b3b</code></td>
+<td>LED</td>
+</tr>
+</tbody></table>
+<p><strong>In the file</strong> <code>assets/materials/screen.mat.json</code> (new file):</p>
+<pre class="code" data-lang="json"><code>{ &quot;color&quot;: &quot;#0a2615&quot;, &quot;metallic&quot;: 0, &quot;roughness&quot;: 0.6 }</code></pre>
+<h3 id="2-4-camera-and-light">2.4 Camera and light<a class="anchor" href="#2-4-camera-and-light">#</a></h3>
+<p>Create a camera and a light as in page 3.5: <strong>Main Camera</strong> at <code>0, 0, −13</code> (looking along +Z, field of view 60) and a <strong>Directional Light</strong>. Press <span class="c-ui">Play</span>: you see the case, frame, glass, buttons and feet, but no numbers yet.</p>
+<h2 id="3-world-space-text">3 World-space text<a class="anchor" href="#3-world-space-text">#</a></h2>
+<p>In a 3D scene the <strong>text</strong> component is a flat plane in the world with your words drawn on it (the Unity <em>TextMesh</em>). It follows the object&#39;s Transform, hides behind objects that are in front of it, and is lit by nothing: it glows like a screen.</p>
+<ol>
+<li>Select <code>Digital Clock</code>, then <span class="c-ui">Hierarchy ▸ + Create ▸ Text</span> and make it a child. Rename it <code>Time Text</code>.</li>
+<li><strong>Position</strong> <code>0, 0.45, −0.32</code> (the screen&#39;s front is at <code>Z = −0.3</code>, so the text floats 0.02 in front: if it were <em>inside</em> the screen you would not see it).</li>
+<li>In the Inspector, on the <code>text</code> component: <strong>text</strong> <code>12:34:56</code>, <strong>size</strong> <code>72</code>, <strong>color</strong> <code>#7dff9a</code>, <strong>font</strong> <code>Courier New, monospace</code>, <strong>bold</strong> on, <strong>align</strong> <code>center</code>.</li>
+<li>Make a second text, <code>Date Text</code>: <strong>Position</strong> <code>0, −0.85, −0.32</code>, <strong>text</strong> <code>Thursday 1 January</code>, <strong>size</strong> <code>28</code>, <strong>color</strong> <code>#4fbf6a</code>, same font, bold on.</li>
+</ol>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, inside the <code>children</code> of <code>Digital Clock</code>:</p>
+<pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Time Text&quot;, &quot;transform&quot;: { &quot;pos&quot;: [0, 0.45, -0.32], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [1, 1, 1] },
+  &quot;components&quot;: [ { &quot;type&quot;: &quot;text&quot;, &quot;text&quot;: &quot;12:34:56&quot;, &quot;size&quot;: 72, &quot;color&quot;: &quot;#7dff9a&quot;,
+                    &quot;font&quot;: &quot;Courier New, monospace&quot;, &quot;bold&quot;: true, &quot;align&quot;: &quot;center&quot; } ] }</code></pre>
+<p><strong>What you see:</strong> green numbers floating on the dark screen. Walk the camera around in the Scene view: the text is a real object, a flat sign in the world.</p>
+<p><strong>How big is it?</strong> The text is drawn at <code>size</code> pixels and one world unit is 64 pixels (the same as sprites). A <code>size</code> of 64 is about one unit tall. To make a text bigger or smaller <em>without</em> redrawing it, change the object&#39;s <strong>Scale</strong>.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Why a monospace font? In a normal font a &quot;1&quot; is narrower than an &quot;8&quot;, so a ticking clock would jiggle left and right. A <em>monospace</em> font gives every character the same width, so the digits stay put.</p>
+</aside><blockquote>
+<p><strong>Traps.</strong> Text is only visible from the front: from behind the plane is invisible (like Unity&#39;s TextMesh). If your text is invisible, check its <strong>Z</strong> is more negative than the screen&#39;s. <code>billboard</code> on the <code>text</code> component makes it always turn to face the camera sideways, handy for name tags, not for a clock.</p>
+</blockquote>
+<h2 id="4-the-script">4 The script<a class="anchor" href="#4-the-script">#</a></h2>
+<p>Now the part that makes it a clock. The script finds the two text objects, reads the time every frame and writes it into the text.</p>
+<p><strong>File: <code>scripts/DigitalClock.js</code></strong> (new file, the whole file; put it in <code>scripts/</code> and attach it to <code>Digital Clock</code>)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, EntityRef, UnityInput as Input, KeyCode } from 'nord';
+
+const two = (n) =&gt; String(n).padStart(2, '0');
+
+export default class DigitalClock extends MonoBehaviour {
+  static attributes = SerializeField({
+    timeText: EntityRef('Time Text'),
+    dateText: EntityRef('Date Text'),
+    use24Hour: true,
+    blinkColon: true,
+  });
+
+  Start() {
+    // GetComponent('TextMesh') is the Unity name for the `text` component
+    this.timeMesh = this.timeText.GetComponent('TextMesh');
+    this.dateMesh = this.dateText.GetComponent('TextMesh');
+  }
+
+  Update() {
+    if (Input.GetKeyDown(KeyCode.Space)) this.use24Hour = !this.use24Hour;   // Space switches 24 h / 12 h
+
+    const now = new Date();
+    let hours = now.getHours();
+    const suffix = this.use24Hour ? '' : (hours &gt;= 12 ? ' PM' : ' AM');
+    if (!this.use24Hour) hours = hours % 12 || 12;
+
+    const colon = this.blinkColon &amp;&amp; now.getSeconds() % 2 === 1 ? ' ' : ':';
+    this.SetText(this.timeMesh, `${two(hours)}${colon}${two(now.getMinutes())}${colon}${two(now.getSeconds())}${suffix}`);
+    this.SetText(this.dateMesh, now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }));
+  }
+
+  // only touch the text when it changed: redrawing a texture sixty times a second for nothing is wasteful
+  SetText(mesh, text) {
+    if (mesh.text !== text) mesh.text = text;
+  }
+}</code></pre>
+<p><strong>What each part does</strong></p>
+<ul>
+<li><code>static attributes = SerializeField({ ... })</code>: the fields in the Inspector. <code>timeText</code> and <code>dateText</code> are <strong>EntityRef</strong> fields (an object slot, like a <code>TextMesh</code> field in Unity); <code>use24Hour</code> and <code>blinkColon</code> are check boxes.</li>
+<li><code>this.timeText.GetComponent(&#39;TextMesh&#39;)</code>: <code>&#39;TextMesh&#39;</code> is the Unity name of the <code>text</code> component. The object you dragged into the slot is <code>this.timeText</code> itself; there is no <code>Find</code> to write.</li>
+<li><code>now.getHours()</code>, <code>now.getMinutes()</code>, <code>now.getSeconds()</code>: the browser&#39;s clock, the same as C# <code>DateTime.Now</code>.</li>
+<li><code>String(n).padStart(2, &#39;0&#39;)</code>: turns <code>7</code> into <code>07</code> so the clock always shows two digits.</li>
+<li><code>SetText</code> only writes when the text changed. Redrawing the text texture 60 times a second for the same words would be wasted work.</li>
+</ul>
+<h3 id="attach-it-and-fill-the-slots">Attach it and fill the slots<a class="anchor" href="#attach-it-and-fill-the-slots">#</a></h3>
+<ol>
+<li><span class="c-ui">Assets ▸ right-click <code>scripts</code> ▸ New MonoBehaviour script</span>, name it <code>DigitalClock</code>, replace the whole file with the code above.</li>
+<li>Select <code>Digital Clock</code>, <span class="c-ui">Inspector ▸ + Add script ▸ scripts/DigitalClock.js</span>.</li>
+<li>Drag <code>Time Text</code> from the Hierarchy onto the <strong>timeText</strong> slot, and <code>Date Text</code> onto <strong>dateText</strong>.</li>
+</ol>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, on <code>Digital Clock</code> (the editor stores the object&#39;s id; a name works too):</p>
+<pre class="code" data-lang="json"><code>&quot;scripts&quot;: [ { &quot;path&quot;: &quot;scripts/DigitalClock.js&quot;,
+               &quot;attributes&quot;: { &quot;timeText&quot;: &quot;Time Text&quot;, &quot;dateText&quot;: &quot;Date Text&quot;, &quot;use24Hour&quot;: true, &quot;blinkColon&quot;: true } } ]</code></pre>
+<p>Press <span class="c-ui">Play</span>. The numbers show the real time and the colons blink once a second. Press <strong>Space</strong> to switch between 24-hour (<code>15:10:39</code>) and 12-hour (<code>03:10:39 PM</code>).</p>
+<h2 id="5-make-it-your-own">5 Make it your own<a class="anchor" href="#5-make-it-your-own">#</a></h2>
+<ul>
+<li><strong>Colour by time:</strong> write <code>this.timeMesh.color = Color.red;</code> when the seconds are <code>00</code> (add <code>Color</code> to the <code>import</code>).</li>
+<li><strong>A bigger screen:</strong> change the <strong>Scale</strong> of <code>Digital Clock</code> to <code>1.5, 1.5, 1.5</code>. Everything, text included, grows together because the parts are its children.</li>
+<li><strong>Add the sounds</strong> from page <a href="ex-music-player.html">9.5</a>: a tick every second and a chime on the hour.</li>
+<li><strong>Flip-clock digits:</strong> make six <code>text</code> objects (one per digit) and move each one when it changes.</li>
+</ul>
+<p><strong>Check yourself:</strong></p>
+<ol>
+<li><span class="c-ui">Play</span>: the screen shows your computer&#39;s time, and the colons blink.</li>
+<li><strong>Space</strong> switches 24-hour and 12-hour.</li>
+<li>In the Scene view, orbit with <strong>Alt + left mouse</strong>: the text stays on the screen and turns with the clock.</li>
+</ol>
+<p><strong>Next:</strong> <a href="ex-game-manager.html">4 · Game Manager</a>, or add sound with <a href="ex-music-player.html">9.5 · A music player and sound effects</a>.</p>
+<div class="pager"><a href="ex-clock.html"><small>← Previous</small>3.5 · Build a clock: objects, hierarchy, materials and your first script</a><a href="ex-game-manager.html"><small>Next →</small>4 · GameManager and Singletons</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-create-the-project">1 Create the project </a><a href="#2-the-case-and-the-parts">2 The case and the parts </a><a href="#3-world-space-text">3 World-space text </a><a href="#4-the-script">4 The script </a><a href="#5-make-it-your-own">5 Make it your own </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

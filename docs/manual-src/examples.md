@@ -104,6 +104,7 @@ You do not need to learn both. If you know Unity, use `MonoBehaviour`. If you ha
 2. [Input and movement](ex-input-movement.html): keys, axes, 2D and 3D, physics movement.
 3. [Finding objects and talking to scripts](ex-find-and-talk.html): Find, tags, GetComponent, calling other scripts.
 3.5. [Build a clock: objects, hierarchy, materials and your first script](ex-clock.html): the classic first Unity exercise from primitives, with the same numbers and colours.
+3.6. [Build a digital clock: primitives and 3D text in the world](ex-digital-clock.html): a desk clock whose numbers are world-space text, with a Unity-style script, a blinking colon and a 12/24 hour switch.
 4. [GameManager and Singletons](ex-game-manager.html): score, lives, state; other scripts call and listen.
 5. [Spawning, prefabs and Destroy](ex-spawn-destroy.html)
 6. [Collisions, triggers and raycasts](ex-collisions.html)
