@@ -83,7 +83,7 @@ q.addEventListener('input', async () => {
     const t = p.t.toLowerCase(), x = p.x.toLowerCase();
     let score = 0;
     for (const w of terms) { const a = t.includes(w) ? 10 + (t.startsWith(w) ? 5 : 0) : 0, b = x.includes(w) ? 1 : 0; if (!a && !b) { score = 0; break; } score += a + b; }
-    if (score) hits.push([score + (p.s === 'Engine docs' ? 0 : 4), p]);
+    if (score) hits.push([(score + 4) * (p.a && !terms.includes('old') ? 0.2 : 1), p]);
   }
   if (q.value !== query) return;
   hits.sort((a, b) => b[0] - a[0]);

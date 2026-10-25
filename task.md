@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 335/350 tasks (96%)** · updated 2026-10-25
+**Overall: 336/351 tasks (96%)** · updated 2026-10-25
 
 | Milestone | Progress |
 |---|---|
@@ -14,7 +14,7 @@
 | M4 Export | 8/11 (73%) |
 | M5 Rust/WASM | 9/9 (100%) |
 | M6 Library | 51/51 (100%) |
-| M7 Docs | 32/32 (100%) |
+| M7 Docs | 33/33 (100%) |
 | M8 Polish & portability | 27/32 (84%) |
 | M9 Desktop apps | 17/17 (100%) |
 | M10 Construct-style editor | 36/36 (100%) |
@@ -232,6 +232,7 @@ _manual, guides, tutorials, in-editor docs_
 - [x] **M7-30** Audit and format full coding tutorials, synchronize readable source downloads and repair portfolio data embedding
 - [x] **M7-31** Teach T38–T43 code in small explained steps with source-linked excerpts, exercises and implementation coverage
 - [x] **M7-32** Reorganise manual by task, add Unity cheatsheets and themes, archive upstream APIs, verify search
+- [x] **M7-33** Review every manual page, curate Old categories and topic hubs, add five dark themes
 
 ## M8 — Polish & portability
 _dmg, CI, Windows, Linux, perf_

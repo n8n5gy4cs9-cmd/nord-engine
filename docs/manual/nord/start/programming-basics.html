@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Programming basics — your first MonoBehaviour — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html" class="active" aria-current="page">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="../guides/cookbook.html">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Start here</div><details open><summary>Start here <small>(3)</small></summary><a href="getting-started.html">Getting started</a><a href="how-nord-works.html">How Nord works</a><a href="programming-basics.html" class="cur" aria-current="page">Programming basics — your first MonoBehaviour</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="start-legacy.html">Original first-hour guide (old)</a><a href="developer-basics.html">Programming for dummy developers</a></details></nav><main id="content"><div class="crumb">Start here / Nord Engine</div><h1>Programming basics — your first MonoBehaviour</h1>
+<p>You will attach one script to a visible object and make it drift to the right. This is JavaScript using Nord&#39;s Unity-style API. It is a small enough example to read from top to bottom.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A script is an instruction card. <code>Start()</code> means “when this object begins,” and <code>Update()</code> means “each frame.” The engine calls these methods for you. You write the instructions inside them.</p>
+</aside><h2 id="before-you-start">Before you start<a class="anchor" href="#before-you-start">#</a></h2>
+<p>Open a <strong>2D</strong> project with a visible object. Press Play once to confirm it works, then Stop. Keep the Console visible so you can see errors. No physics components are required for this movement example.</p>
+<h2 id="create-the-complete-script">Create the complete script<a class="anchor" href="#create-the-complete-script">#</a></h2>
+<ol>
+<li>In <span class="c-ui">Assets</span>, right-click the scripts folder and select <span class="c-ui">New MonoBehaviour script (Unity-style)</span>. Name the file <code>Drift</code> and open it in <span class="c-ui">Code</span>.</li>
+<li>Replace its contents with the complete file below. Save the file.</li>
+<li>Select the visible object in <span class="c-ui">Hierarchy</span>. In <span class="c-ui">Inspector</span>, press <span class="c-ui">+ Add script</span> and select <code>scripts/Drift.js</code>. A <code>speed</code> field appears.</li>
+</ol>
+<p><strong>File: <code>scripts/Drift.js</code></strong> (new file, the whole file)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Time, Debug } from 'nord';
+
+export default class Drift extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 40 });
+
+  Start() {
+    Debug.Log('Drift is ready');
+  }
+
+  Update() {
+    const distance = this.speed * Time.deltaTime;
+    this.Translate(distance, 0, 0);
+  }
+}</code></pre>
+<p>Press <span class="c-ui">Play</span>. The Console shows <code>Drift is ready</code>, and the object moves right at about 40 pixels per second. Stop, set <code>speed</code> to <code>-40</code> in the Inspector, and Play again. It now moves left.</p>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code> (or your selected scene), the entity&#39;s <code>scripts</code> array contains this entry alongside any existing scripts:</p>
+<pre class="code" data-lang="json"><code>{ &quot;path&quot;: &quot;scripts/Drift.js&quot;, &quot;attributes&quot;: { &quot;speed&quot;: 40 } }</code></pre>
+<p>The JSON shows the starting value. If you saved <code>-40</code> in the Inspector, its stored attribute will be <code>-40</code> instead.</p>
+<h2 id="read-the-file-one-piece-at-a-time">Read the file one piece at a time<a class="anchor" href="#read-the-file-one-piece-at-a-time">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+<th>Change it when</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>import { ... } from &#39;nord&#39;</code></td>
+<td>Bring named helpers into this file</td>
+<td>You need another documented helper</td>
+</tr>
+<tr>
+<td><code>class Drift extends MonoBehaviour</code></td>
+<td>Define one kind of attached behavior</td>
+<td>You create a different behavior</td>
+</tr>
+<tr>
+<td><code>SerializeField({ speed: 40 })</code></td>
+<td>Declare an editable number with a default</td>
+<td>You want an Inspector setting</td>
+</tr>
+<tr>
+<td><code>this.speed</code></td>
+<td>Read this object&#39;s saved field value</td>
+<td>You use that setting in a method</td>
+</tr>
+<tr>
+<td><code>Start()</code></td>
+<td>Run setup once</td>
+<td>You need to find another object or initialize state</td>
+</tr>
+<tr>
+<td><code>Update()</code></td>
+<td>Run frame work repeatedly</td>
+<td>You need ongoing movement or input</td>
+</tr>
+<tr>
+<td><code>const distance = ...</code></td>
+<td>Calculate a local value for this call</td>
+<td>A readable intermediate value helps</td>
+</tr>
+<tr>
+<td><code>Time.deltaTime</code></td>
+<td>Elapsed frame time in seconds</td>
+<td>You convert units per second into units this frame</td>
+</tr>
+<tr>
+<td><code>this.Translate(x, y, z)</code></td>
+<td>Move by the supplied displacement</td>
+<td>You want direct transform movement</td>
+</tr>
+</tbody></table>
+<p><code>this</code> means the current script instance. Attach Drift to two objects and each has its own <code>speed</code>. A <strong>property</strong> is a stored or calculated value such as <code>this.speed</code>; a <strong>method</strong> is an operation called with parentheses, such as <code>this.Translate(...)</code>.</p>
+<h2 id="numbers-text-and-decisions">Numbers, text and decisions<a class="anchor" href="#numbers-text-and-decisions">#</a></h2>
+<p>A number such as <code>40</code> can be multiplied. Text such as <code>&#39;Drift is ready&#39;</code> has quotes. <code>true</code> and <code>false</code> are Boolean values used for decisions. JavaScript arrays such as <code>[20, 30, 0]</code> keep ordered values; Nord positions use x, y, z order.</p>
+<p>You can add branches and loops later. First understand the small path already here: read a setting, calculate a distance, move the object, repeat next frame.</p>
+<blockquote>
+<p><strong>Trap:</strong> capitalization matters. <code>Update()</code> is the MonoBehaviour callback. <code>update()</code> belongs to the original NordScript API. Also, 2D y points down; 3D y points up. This example uses only x.</p>
+</blockquote>
+<h2 id="try-a-tiny-challenge">Try a tiny challenge<a class="anchor" href="#try-a-tiny-challenge">#</a></h2>
+<p>Set speed to <code>0</code>, predict the result, and Play. Then give two objects the same Drift file with opposite speeds. They should travel apart while sharing one file. Your object parade now has a very small traffic problem.</p>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<ul>
+<li>The log appears once per script instance when Play starts.</li>
+<li>Positive speed moves right, negative speed moves left, and zero stops movement.</li>
+<li>You can explain why multiplying by elapsed seconds makes a speed independent of frame rate.</li>
+</ul>
+<p>Next: <a href="../examples/ex-input-movement.html">Input and movement</a>. Back to: <a href="getting-started.html">Getting started</a>.</p>
+<div class="pager"><a href="how-nord-works.html"><small>← Previous</small>How Nord works</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#before-you-start">Before you start </a><a href="#create-the-complete-script">Create the complete script </a><a href="#read-the-file-one-piece-at-a-time">Read the file one piece at a time </a><a href="#numbers-text-and-decisions">Numbers, text and decisions </a><a href="#try-a-tiny-challenge">Try a tiny challenge </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

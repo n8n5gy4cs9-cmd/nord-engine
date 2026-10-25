@@ -11,6 +11,26 @@ These pages show **how to do the everyday things** in Nord, written for someone 
 Never used Unity? These pages still work: each example is a small script plus the steps to try it. Start with *1 · Your first script* and follow the numbers.
 :::
 
+## Choose an example by task
+
+| Task | Read in this order | You should finish with |
+|---|---|---|
+| Start writing behavior | [First script](ex-first-script.html) → [Input and movement](ex-input-movement.html) | A controllable object |
+| Connect objects | [Find and talk](ex-find-and-talk.html) → [Events](ex-events.html) | One object responding to another |
+| Make a game loop | [Spawning](ex-spawn-destroy.html) → [Health](ex-health-damage.html) → [Scenes](ex-scenes.html) | Objects can appear, take damage and restart |
+| Add player feedback | [UI](ex-ui-hud.html) → [Audio](ex-audio.html) → [Juice](ex-juice-effects.html) | A result the player can see and hear |
+| Use maths or physics | [Unity API map](ex-unity-api.html) → the relevant API group → [Physics Lab](ex-physics-lab.html) | A small isolated experiment |
+| Finish something | [Coin Dash](ex-coin-dash.html), [Dungeon part 1](ex-dungeon-1-hero.html), or [Ember Crypt](ex-ember-crypt.html) | A whole game to inspect and adapt |
+| Bring a Unity tutorial | [Language comparison](ex-language.html) → [Conversion workflow](ex-unity-conversion.html) | A port based on supported Nord features |
+
+## Before copying a file
+Use a project of the page's stated type. Follow its scene setup and component requirements, copy the complete file into the named path, then attach it in the Inspector. Imports alone do not attach behavior. C# code is a comparison; the Nord JavaScript file is the runnable version.
+
+> **Trap:** `Instantiate` returns a Promise in Nord. Await it before using the result. Import `UnityInput as Input` when using Unity-style input names; the native Input service has a different contract.
+
+## Try a tiny challenge
+Combine just two recipes: a moving object and a score label. Add one point when the object reaches your target. Only then add particles, triumphant music, or the world's smallest victory parade.
+
 ## How the Unity-style coding works
 Nord keeps Unity's mental model: a **scene** holds **objects**, an object holds **components**, and a **script** is one more component whose methods the engine calls at the right moment. The difference is the language (JavaScript instead of C#) and that nothing needs compiling: save the file and press @ui[Play].
 
@@ -185,3 +205,10 @@ You do not need to learn both. If you know Unity, use `MonoBehaviour`. If you ha
 62. [Physics 3D, joints and the camera](ex-unity-api-physics3d.html): SphereCast, BoxCast, overlaps, joints, ScreenPointToRay.
 63. [Lines, trails, masks and shapes](ex-unity-api-rendering.html): LineRenderer, TrailRenderer, SpriteMask, SpriteShape.
 64. [Physics Lab](ex-physics-lab.html): three test projects, how to run their checks, and play-mode editing.
+
+
+## Check yourself
+
+Confirm the example works on its own before combining it with another. Check the Console and required components if the expected result is missing.
+
+Next: [Your first script](ex-first-script.html). Back to: [Manual topics](manual-paths.html).

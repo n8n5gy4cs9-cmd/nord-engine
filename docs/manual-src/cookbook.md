@@ -15,7 +15,6 @@ A tutorial teaches a project in order. A cheatsheet is a short reminder for a ta
 | Task | Cheatsheet | Expected result |
 |---|---|---|
 | Write new Unity-style JavaScript | [Unity scripting](cheat-sheet-unity.html) | A complete attached script with a working Update |
-| Read an older tutorial | [Native nord.js](cheat-sheet-nordjs.html) | Recognize lower-case lifecycle and services |
 | Run a command | [Command line](cheat-sheet-cli.html) | Know the project folder, command and output |
 | Share a game | [Export](cheat-sheet-export.html) | Produce the right build and check it |
 | Edit an FPS level | [FPS Level](cheat-sheet-fps-level.html) | Recall tools, test controls and saving |
@@ -38,71 +37,32 @@ A tutorial teaches a project in order. A cheatsheet is a short reminder for a ta
 
 Use [Examples](examples.html) for complete Unity-style files: input and movement, spawning, health, UI, saves and physics. The sidebar groups related pages so you can collapse the topics you do not need.
 
-<details>
-<summary>Existing native Nord service recipes (advanced reference)</summary>
-
-Each recipe is plain Nord API — no Phaser/Babylon calls.
-
-## Movement & feel
-**Coyote time + jump buffer** — use `platformer2d.js` (`coyoteTime`, `jumpBuffer`), or in your own script: remember `this.lastGrounded = time.elapsed` while grounded and allow a jump if `elapsed - lastGrounded < 0.1`.
-
-**Smooth camera** — `camera` component with `follow` and `lerp: 0.1`; add `deadzone: [60, 40]`.
-
-**Screen shake on hit**
-
-**File: your script, for example `scripts/Player.js`** (inside `Start()`)
-```js
-this.entity.on('damage', () => this.game.camera.shake(150, 0.01));
-```
-
-**Slow motion**
-
-**File: your script, for example `scripts/Game.js`** (a line inside any method)
-```js
-this.game.timeScale = 0.3;
-this.after(0.5, () => (this.game.timeScale = 1));   // timers run on scaled time: 0.5 game-seconds ≈ 1.7 s real
-```
-
-## Audio on first touch
-**Silent title screen / first click hits a button** — install the opt-in [touch-to-start gate](audio.html#touch-to-start): `this.startGate = touchToStart(this.game, { title: 'MY GAME' });` after building the title, and `this.startGate?.destroy()` in `onDestroy()`.
-
-## Spawning
-**Bullets with a lifetime**
-
-**File: your script, for example `scripts/Gun.js`** (inside an `async` method)
-```js
-const b = await this.scene.spawn('prefabs/bullet.prefab.json', { pos: this.entity.worldPos });
-this.physics.setVelocity(b, this.facing * 400, 0);
-this.after(2, () => b.destroy());
-```
-**Random spawn points** — `this.rng.pick(this.scene.findByTag('spawn')).worldPos`. `rng` is seedable (`new Rng(seed)`) for replays.
-
-## Timers & tweens
-
-**File: your script, for example `scripts/Spawner.js`** (inside `Start()`; keep `stop` to cancel it later)
-```js
-const stop = this.every(1, () => this.spawnCoin());   // later: stop()
-this.tween(this.entity.pos, [400, 100, 0], { duration: 1.2, ease: 'backOut' });
-```
-
-## Data
-**High score**: `if (score > this.save.get('best', 0)) this.save.set('best', score);`
-**Settings screen**: `this.audio.volume('music', v)` is persisted automatically.
-
-## UI
-**Floating damage numbers**: library `ui-damage-numbers.js`, triggered by `events.emit('dmg', { pos, amount })`.
-**Tooltip / dialogue**: `dialogue.js` reads `assets/story.json` nodes (`speaker`, `text`, `next`/`choices`).
-
-## 3D
-**Third-person follow** — `third-person3d.js`; **orbit** — `camera` `type: orbit` + `follow`.
-**Ground check** — `this.physics.isGrounded(this.entity)`.
-**Interact with what you look at** — `interact-ray.js` casts from the camera.
-
-## Debug
-`this.game.timeScale`, `this.game.pause()`, `this.events.on('error', e => …)`, `util-debug.js`.
 
 
-</details>
+## Keep these distinctions nearby
+
+| Often confused | Remember | Reference |
+|---|---|---|
+| Script file / script instance | One file can run independently on many objects | [Unity scripting](unity-scripting.html) |
+| Frame time / speed | Multiply units per second by Time.deltaTime for this frame's displacement | [Unity cheatsheet](cheat-sheet-unity.html) |
+| Transform / physics movement | Use a Rigidbody when physics should own motion | [Physics recipes](ex-physics-recipes.html) |
+| 2D / 3D coordinates | 2D uses pixels with y down; 3D uses world units with y up | [Maths](ex-unity-api-math.html) |
+| Scene / prefab | A scene arranges objects; a prefab is a reusable object recipe | [Projects and scenes](projects-scenes.html) |
+| Editor / in-game Console | One reports editor/runtime output; the other is a command UI you deliberately add to a game | [Dev Console](dev-console.html) |
+| Saved edit / live edit | Stop Play before changing the saved starting state | [Unity workflow](unity-workflow.html) |
+
+## A one-minute troubleshooting routine
+1. Reproduce the problem with the fewest objects possible. You should be able to name the first incorrect result.
+2. Read the first Console error. Fix that before investigating later errors caused by it.
+3. Compare imports, paths, capitalization and required components with one working example.
+4. Change one thing, then test again. If the result improves, save a checkpoint before experimenting further.
+
+::: dummies
+Debugging is detective work with fewer trench coats. “The player does not move” is a clue. “Input axis is zero when Game is focused” is a more useful clue. Record what you observe instead of changing five settings at once.
+:::
+
+## Tiny challenge: the rescue card
+Bookmark the cheatsheet you needed today. Add one line to your project notes: the symptom, its cause, and the check that proved the fix. Tomorrow-you gets a very small gift.
 
 ## Check yourself
 Choose one task, perform its action and confirm the expected result. If a call is unfamiliar, open its API reference before copying it into a different lifecycle style.

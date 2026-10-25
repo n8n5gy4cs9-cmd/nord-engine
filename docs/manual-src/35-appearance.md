@@ -49,13 +49,19 @@ Missing symbols? The editor falls back to a bundled symbol font for arrows, bull
 
 
 ## Documentation reader appearance
-The documentation HTML has its own appearance controls. In the documentation header, choose **Theme**: Graphite, Paper, Nord, Sepia, Forest or High contrast. The page changes immediately and remembers the selection on the next page. This changes the manual reader; use the editor Settings described above to change editor appearance.
+The documentation HTML has its own appearance controls. In the documentation header, choose **Theme**: Graphite, Paper, Nord, Sepia, Forest, High contrast, Slate, Deep ocean, Ember, Plum, or Arcade night. The page changes immediately and remembers the selection on the next page. This changes the manual reader; use the editor Settings described above to change editor appearance.
+
+The five added palettes stay dark: **Slate** uses muted blue-gray, **Deep ocean** uses teal, **Ember** uses warm charcoal, and **Plum** uses soft purple. **Arcade night** adds cyan/purple accents and a subtle background glow. It keeps the same readable code blocks and controls; there are no flashing decorations.
+
+Sidebar categories use compact tinted headers derived from the current theme's accent, purple, green, amber and rose colors. The **Old** category uses a quieter neutral header. Its pages keep earlier workflows and explain the current replacement; an Old label does not mean a supported native API has stopped working.
 
 The **For dummies** button shows or hides beginner explanations across the manual. **Menu** opens section navigation on a narrow screen. Expand a sidebar category to see its pages, or collapse it to make the list shorter.
 
 ![Manual reading paths with grouped navigation in the Nord documentation theme](assets/screenshots/manual-redesign-desktop.png)
 
 ![Collapsible Examples categories on a narrow screen](assets/screenshots/manual-redesign-mobile.png)
+
+![Manual topics in the dark Arcade night documentation theme](assets/screenshots/manual-redesign-arcade.png)
 
 Check: select a different theme, open another chapter, and confirm the theme remains selected.
 

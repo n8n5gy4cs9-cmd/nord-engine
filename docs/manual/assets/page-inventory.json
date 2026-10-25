@@ -1,0 +1,2399 @@
+[
+  {
+    "file": "nord/start/getting-started.html",
+    "title": "Getting started",
+    "section": "Start here",
+    "group": "Start here",
+    "summary": "Open a working project, learn the five editor concepts, make a safe change and choose your next lesson.",
+    "old": null,
+    "hub": true
+  },
+  {
+    "file": "nord/start/how-nord-works.html",
+    "title": "How Nord works",
+    "section": "Start here",
+    "group": "Start here",
+    "summary": "What is on your computer, what runs your game, and which libraries do the work - in plain words, with exact versions.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/start/programming-basics.html",
+    "title": "Programming basics — your first MonoBehaviour",
+    "section": "Start here",
+    "group": "Start here",
+    "summary": "Learn variables, methods, lifecycle, fields and elapsed time through one complete Unity-style movement script.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/start/start-legacy.html",
+    "title": "Original first-hour guide (old)",
+    "section": "Start here",
+    "group": "Start here",
+    "summary": "A complete first-hour guide - install, tour the editor, learn the mental model, change a real game, export it.",
+    "old": {
+      "reason": "Original first-hour guide, including older shortcuts and the native Pulse script. Retained as a historical snapshot; use the revised first-session workflow.",
+      "replacement": "getting-started.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/start/developer-basics.html",
+    "title": "Programming for dummy developers",
+    "section": "Start here",
+    "group": "Start here",
+    "summary": "Read your first Nord script, understand values and calls, and fix a small error.",
+    "old": {
+      "reason": "Original programming introduction uses the lower-case NordScript lifecycle. New beginners should learn MonoBehaviour first.",
+      "replacement": "programming-basics.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/manual/manual-paths.html",
+    "title": "Manual — choose a task",
+    "section": "Manual",
+    "group": "Getting oriented",
+    "summary": "A structured reading path through the editor, gameplay systems and publishing tools.",
+    "old": null,
+    "hub": true
+  },
+  {
+    "file": "nord/manual/editor-tour.html",
+    "title": "Editor tour",
+    "section": "Manual",
+    "group": "Getting oriented",
+    "summary": "Panels, viewport, inspector, code editor, console, shortcuts.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/appearance.html",
+    "title": "Editor appearance",
+    "section": "Manual",
+    "group": "Getting oriented",
+    "summary": "Themes, font pairs, interface/text/button size with reset, and the built-in theme editor for your own themes. Everything is saved when you close the app.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/organise-project.html",
+    "title": "Organising your project",
+    "section": "Manual",
+    "group": "Getting oriented",
+    "summary": "Colour folders, custom folder icons, colour tags and descriptions for any asset, the Notes manager, the Console with tags and search, and the Transform grid. Saved per project.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/projects-scenes.html",
+    "title": "Projects & scenes",
+    "section": "Manual",
+    "group": "Projects, objects and scripts",
+    "summary": "Folder layout, entities, components, prefabs, tags and layers.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/library.html",
+    "title": "The library",
+    "section": "Manual",
+    "group": "Projects, objects and scripts",
+    "summary": "Scripts, prefabs, shaders, apps and templates you can drop in — and how to add your own.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/unity-workflow.html",
+    "title": "Unity-style workflow",
+    "section": "Manual",
+    "group": "Projects, objects and scripts",
+    "summary": "Layouts, menus, Scene-view tools, prefabs, materials, Build Settings, Game view, New scene and the first-10-minutes checklist.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/ai-mcp.html",
+    "title": "AI and MCP",
+    "section": "Manual",
+    "group": "Projects, objects and scripts",
+    "summary": "Let Claude Code, opencode, Codex or pi build a Nord game for you: install the Nord MCP server, what the tools do, and the 3D Modeler tools with a preview the AI can look at.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/unity-coverage.html",
+    "title": "Unity coverage",
+    "section": "Manual",
+    "group": "Projects, objects and scripts",
+    "summary": "What of Unity's scripting API works in Nord, what works with limits, and what is missing. Honest list with counts.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/unity-scripting.html",
+    "title": "Unity-style scripting",
+    "section": "Manual",
+    "group": "Projects, objects and scripts",
+    "summary": "MonoBehaviour, Singleton, GameManager, AudioManager, coroutines, Invoke, UnityEvent, ScriptableObject and ObjectPool: how to create them, attach them, and every method, with Unity names and step-by-step examples.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/2d.html",
+    "title": "2D games",
+    "section": "Manual",
+    "group": "2D and 3D worlds",
+    "summary": "Sprites, animation, tilemaps, cameras, particles, lights, text, parallax.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/3d.html",
+    "title": "3D games",
+    "section": "Manual",
+    "group": "2D and 3D worlds",
+    "summary": "Models, materials, lights/shadows, skybox, cameras, animation, post-processing, GUI.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/physics.html",
+    "title": "Physics",
+    "section": "Manual",
+    "group": "2D and 3D worlds",
+    "summary": "2D arcade/matter, 3D Havok, bodies, triggers, raycasts.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/assets.html",
+    "title": "Assets",
+    "section": "Manual",
+    "group": "2D and 3D worlds",
+    "summary": "Importing, thumbnails, spritesheets, models, audio, fonts, optional packs.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/layout-editor.html",
+    "title": "Layout, layers and objects",
+    "section": "Manual",
+    "group": "2D and 3D worlds",
+    "summary": "Layers with parallax and opacity, guides and rulers, aligning objects, object types, saved views and layouts — the Construct-style layout tools.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/sprites-animation-tilemaps.html",
+    "title": "Sprites, animation and tilemaps",
+    "section": "Manual",
+    "group": "2D and 3D worlds",
+    "summary": "Paint pixel art, set origins and image points, build animations from frames or GIFs, and paint tilemaps with auto-tiling.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/fps-creator.html",
+    "title": "FPS Creator — build first-person levels",
+    "section": "Manual",
+    "group": "2D and 3D worlds",
+    "summary": "A grid level editor with walls, doors, windows, stairs, lights, ready-made enemies, pickups, scripts and no-code rules. Build, play-test with F5, ship with your game.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/level-creator-2d.html",
+    "title": "2D Level Creator — sprites, maps and physics",
+    "section": "Manual",
+    "group": "2D and 3D worlds",
+    "summary": "Paint side-scroller and top-down maps, browse the Amiga and Kenney sprite bank, edit scripts and physics, test and export. Includes Machine Workshop.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/modeler.html",
+    "title": "3D Modeler",
+    "section": "Manual",
+    "group": "2D and 3D worlds",
+    "summary": "Full guide to the 3D Modeler: build a model from scratch, open and change the models of your scene with their textures, paint, fix UVs, and save as overwrite, new model, prefab or variant. Every tool explained with screenshots.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/audio.html",
+    "title": "Audio",
+    "section": "Manual",
+    "group": "Gameplay, sound and interfaces",
+    "summary": "Sound effects, music, buses, autoplay rules.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/ui.html",
+    "title": "UI & HUD",
+    "section": "Manual",
+    "group": "Gameplay, sound and interfaces",
+    "summary": "DOM HUD, menus, themes and skins, touch controls, 3D labels.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/input.html",
+    "title": "Input",
+    "section": "Manual",
+    "group": "Gameplay, sound and interfaces",
+    "summary": "Actions, keyboard, mouse, touch, gamepad, rebinding.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/event-sheets.html",
+    "title": "Event sheets",
+    "section": "Manual",
+    "group": "Gameplay, sound and interfaces",
+    "summary": "Build game logic without code — conditions, actions, picking, triggers, loops, variables and functions, the Construct way.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/behaviors.html",
+    "title": "Behaviors",
+    "section": "Manual",
+    "group": "Gameplay, sound and interfaces",
+    "summary": "Attach ready-made movement and gameplay (Platform, 8-Direction, Bullet, Sine, Turret, Pathfinding…) to any entity.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/effects-particles-timelines.html",
+    "title": "Effects, particles and timelines",
+    "section": "Manual",
+    "group": "Gameplay, sound and interfaces",
+    "summary": "Blur, glow, vignette and colour effects; a particle editor with live preview; keyframe timelines with easing.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/addons-data-localisation.html",
+    "title": "Addons, data objects and languages",
+    "section": "Manual",
+    "group": "Gameplay, sound and interfaces",
+    "summary": "Extend event sheets with your own plugins, keep data in Array/Dictionary/JSON objects, and translate your game.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/ui-designer.html",
+    "title": "UI Designer",
+    "section": "Manual",
+    "group": "Gameplay, sound and interfaces",
+    "summary": "Build menus, HUDs and dialogs visually. Layout, text, images and 9-slice, skins, input fields, and how a button reaches your code.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/graph.html",
+    "title": "Node graphs (visual scripting)",
+    "section": "Manual",
+    "group": "Gameplay, sound and interfaces",
+    "summary": "Make gameplay by connecting nodes: events, flow, math, entities, input, UI, audio and scenes. No code needed, and an escape hatch to any code when you need it.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/animator.html",
+    "title": "Animator",
+    "section": "Manual",
+    "group": "Gameplay, sound and interfaces",
+    "summary": "A Unity-style state machine for sprite animation. Parameters, states, transitions with conditions, Any State, live testing.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/multiplayer.html",
+    "title": "Multiplayer",
+    "section": "Manual",
+    "group": "Gameplay, sound and interfaces",
+    "summary": "Host and join a room, send messages, call functions on other players (RPC), spawn and sync entities, and test with fake lag. Peer to peer, no server.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/dev-console.html",
+    "title": "In-game Dev Console",
+    "section": "Manual",
+    "group": "Gameplay, sound and interfaces",
+    "summary": "Drop one prefab into your game and get a command console with cheats, autocomplete and your own commands. Add commands with one line of code.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/rust-wasm.html",
+    "title": "Rust / WASM",
+    "section": "Manual",
+    "group": "Test and publish",
+    "summary": "Rust game runtime (macroquad + rapier) and Rust apps (egui), building and limits.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/export.html",
+    "title": "Export & hosting",
+    "section": "Manual",
+    "group": "Test and publish",
+    "summary": "Static web builds, single-file, Mac app, hosting recipes, offline guarantee.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/performance.html",
+    "title": "Performance & debugging",
+    "section": "Manual",
+    "group": "Test and publish",
+    "summary": "Profiling, pooling, texture and physics budgets.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/reference.html",
+    "title": "Find an API or file setting",
+    "section": "Manual",
+    "group": "Test and publish",
+    "summary": "Choose the Unity API, native Nord API, component fields or file reference for the task in front of you.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/desktop-apps.html",
+    "title": "Desktop apps",
+    "section": "Manual",
+    "group": "Test and publish",
+    "summary": "Real native apps — files, dialogs, notifications, tray, menus, storage, a local web server — from the same project, in JS or Rust.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/debugger.html",
+    "title": "Debugger and profiler",
+    "section": "Manual",
+    "group": "Test and publish",
+    "summary": "Pause, step, breakpoints on events, live instance editing, an expression console and a frame profiler — in any running game.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/preview-history-tools.html",
+    "title": "Preview, history and project tools",
+    "section": "Manual",
+    "group": "Test and publish",
+    "summary": "Test on your phone, undo a bad afternoon with version history, rename safely, and export an installable web app.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/web-editor.html",
+    "title": "Run the editor in a browser or on a server",
+    "section": "Manual",
+    "group": "Test and publish",
+    "summary": "The same Nord editor in a browser tab (no install, projects stay in your browser) or on your own Linux server for you and your team.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/manual/welcome.html",
+    "title": "Welcome",
+    "section": "Manual",
+    "group": "Getting oriented",
+    "summary": "What Nord is, the project types, how to open it, and a map of every chapter.",
+    "old": {
+      "reason": "Earlier welcome and chapter list duplicates the current entry points. Feature details remain in the relevant Manual chapters.",
+      "replacement": "manual-paths.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/manual/scripting.html",
+    "title": "Scripting",
+    "section": "Manual",
+    "group": "Projects, objects and scripts",
+    "summary": "NordScript lifecycle, attributes, events, timers, tweens, hot reload, debugging.",
+    "old": {
+      "reason": "Native NordScript lifecycle reference, preserved for existing projects. New gameplay scripts use the Unity-style layer.",
+      "replacement": "unity-scripting.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tutorials.html",
+    "title": "Learn by building",
+    "section": "Tutorials",
+    "group": "Choose a learning path",
+    "summary": "Pick a learning path or browse every tutorial by level and topic.",
+    "old": null,
+    "hub": true
+  },
+  {
+    "file": "nord/tutorials/tut-t01-hello-nord.html",
+    "title": "T01 Hello Nord",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Create a project, add an entity with text, press Play.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t04-platformer.html",
+    "title": "T04 Platformer from template",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Start from the platformer template and customise it with attributes.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t05-physics.html",
+    "title": "T05 Physics & collisions",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Rigidbodies, colliders, triggers, bounce pads, pickups.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t06-tilemaps.html",
+    "title": "T06 Tilemaps",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Paint a level with the tilemap painter and make tiles solid.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t07-animation-juice.html",
+    "title": "T07 Animation & juice",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Animated sprites, tweens, particles, camera shake, hit-stop.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t08-ui-hud.html",
+    "title": "T08 UI & HUD",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Score, hearts, menus and game-over screen.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t09-audio.html",
+    "title": "T09 Audio",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Sound effects through events, music crossfades, volume sliders.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t10-3d-scene.html",
+    "title": "T10 3D scene & camera",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Primitives, lights, shadows, skybox and an orbit camera.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t11-3d-physics.html",
+    "title": "T11 3D physics (FPS)",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "First-person controller, crates, hit-scan shooting.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t12-enemy-ai.html",
+    "title": "T12 Enemy AI",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Patrol, chase, state machines, waves.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t13-save-load.html",
+    "title": "T13 Save & load",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Persistent data, slots, high scores.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t14-export-host.html",
+    "title": "T14 Export to web & host it",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Build a static folder, test it, upload it.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t15-mac-app.html",
+    "title": "T15 Mac app",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Wrap a build into a double-clickable .app and .dmg.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t16-rust-game.html",
+    "title": "T16 Rust/WASM game",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "A Rust-scripted 2D game running natively and in the browser.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t17-rust-egui-app.html",
+    "title": "T17 Rust egui app",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "A tool/app with egui that runs natively and on the web.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t18-library-snippets.html",
+    "title": "T18 Writing library snippets",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Create a reusable script, document it, add it to the index.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t19-notepaint.html",
+    "title": "T19 Build notepaint, from a blank folder",
+    "section": "Tutorials",
+    "group": "Apps and visual tools",
+    "summary": "Recreate a complete notes-and-paint app, with every file, autosave, drawing tools and portable documents.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t20-star-not.html",
+    "title": "T20 Build Star-Not, a complete small space adventure",
+    "section": "Tutorials",
+    "group": "Apps and visual tools",
+    "summary": "Recreate the solar chart, three races, diplomacy, ship combat, campaign saves, co-op and ending.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t21-project-design.html",
+    "title": "T21 Plan a bigger Nord project",
+    "section": "Tutorials",
+    "group": "Apps and visual tools",
+    "summary": "A plain-text game design and folder example, with responsibilities, milestones and practical scope choices.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t22-shader-terrain.html",
+    "title": "T22 Put a terrain shader in a Nord app",
+    "section": "Tutorials",
+    "group": "Apps and visual tools",
+    "summary": "Render the provided synthwave shader in Play/export, add audio, click terrain and drop a cube onto a matching GPU height.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t23-light-shadows.html",
+    "title": "T23 2D lights and real shadows",
+    "section": "Tutorials",
+    "group": "Apps and visual tools",
+    "summary": "Make any 2D scene dark, add torches and a flashlight that cast real shadows, tune darkness / light force / shadow softness, and use the light in gameplay. Includes a copy-paste kit.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t24-event-sheet-platformer.html",
+    "title": "T24 A platformer from events",
+    "section": "Tutorials",
+    "group": "Apps and visual tools",
+    "summary": "Make a small platformer with an event sheet and behaviors — coins, enemies, a turret and a win — with no scripts.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t25-topdown-shooter.html",
+    "title": "T25 A top-down shooter from events",
+    "section": "Tutorials",
+    "group": "Apps and visual tools",
+    "summary": "Open the shooter template, read how aiming, shooting, enemies and game-over are built from events, and change them.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t26-menus-languages.html",
+    "title": "T26 Menus and two languages",
+    "section": "Tutorials",
+    "group": "Apps and visual tools",
+    "summary": "Build a main menu, an options screen and a game scene that switch with events, then add a second language.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t27-fps-level.html",
+    "title": "T27 Build your first FPS level",
+    "section": "Tutorials",
+    "group": "Apps and visual tools",
+    "summary": "Rooms, a door, enemies, a key, a switch and an exit — then play it.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t28-machine-workshop.html",
+    "title": "T28 Machine Workshop — build a gravity puzzle in 2D Level",
+    "section": "Tutorials",
+    "group": "Apps and visual tools",
+    "summary": "Learn the new 2D editor by placing ramps and a ball, editing Matter bodies, testing a machine and exporting it.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t29-dungeon-two-floors.html",
+    "title": "T29 Two Floors — edit a Shattered Pixel Dungeon adaptation",
+    "section": "Tutorials",
+    "group": "Apps and visual tools",
+    "summary": "Build and change two connected dungeon floors with tile collision, turn-based combat, keys, doors, fog, potions and a relic.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t30-tank-patrol.html",
+    "title": "T30 Tiny Tank Patrol — build a top-down tank arena",
+    "section": "Tutorials",
+    "group": "Apps and visual tools",
+    "summary": "Learn 2D Level Creator through NES-style tank movement, shells, destructible cover, steel obstacles, enemy tuning and base defense.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t31-full-2d-platformer.html",
+    "title": "T31 Full game workshop — Coin Canyon (2D)",
+    "section": "Tutorials",
+    "group": "Complete workshops",
+    "summary": "Turn the working Platformer into your own coin-and-slime obstacle course, tune jumps, edit terrain, build a boss finale and export it.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t32-full-3d-platformer.html",
+    "title": "T32 Full game workshop — Sunset Gems (3D)",
+    "section": "Tutorials",
+    "group": "Complete workshops",
+    "summary": "Build a complete seven-gem jumping challenge from the 3D Platformer, with a deliberate route, moving platform, camera tuning, victory and web export.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t33-code-coin-rush.html",
+    "title": "T33 Code a full 2D game — Coin Rush",
+    "section": "Tutorials",
+    "group": "Complete workshops",
+    "summary": "Learn JavaScript and Nord by coding a timed platformer with combos, lives, checkpoints, boss victory, pause menus and persistent records. Includes all source.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t34-code-crystal-relay.html",
+    "title": "T34 Code a full 3D game — Crystal Relay",
+    "section": "Tutorials",
+    "group": "Complete workshops",
+    "summary": "Write an ordered-collection 3D time trial: sprint stamina, moving hazard, checkpoint lives, medals, pause/retry and saved records, with all source included.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t35-advanced-prism-shaders.html",
+    "title": "T35 Prism Relay — code reactive GLSL game materials",
+    "section": "Tutorials",
+    "group": "Complete workshops",
+    "summary": "Build a real 3D shader game from Crystal Relay: UV grids, moving scan waves, gameplay uniforms, live controls and GPU resource cleanup. Complete JavaScript and GLSL included.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t36-advanced-node-vault.html",
+    "title": "T36 Circuit Vault — a web game with a real Node server",
+    "section": "Tutorials",
+    "group": "Complete workshops",
+    "summary": "Code a memory-heist game and its HTTP API: fetch, async UI, server-owned rules, sessions, validation, deadlines, lives and a leaderboard. Full browser and Node source included.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t37-advanced-rust-wasm.html",
+    "title": "T37 Orbital Salvage — code Rust gameplay and export real WASM",
+    "section": "Tutorials",
+    "group": "Complete workshops",
+    "summary": "Build a complete Rust arcade game with dash/shield, bouncing hazards, timed cargo collection, pause/retry, pure rule tests and a verified WebAssembly export.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t38-coastline-sprint.html",
+    "title": "T38 Coastline Sprint — code an Amiga racer with two-player split-screen",
+    "section": "Tutorials",
+    "group": "Complete workshops",
+    "summary": "Build a complete one-course pseudo-3D racer using the supplied Amiga Lotus-style cars: keyboard solo, keyboard/gamepad split-screen, traffic, nitro, checkpoints, MP3 music and SFX. All source and assets included.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t39-vector-patrol.html",
+    "title": "T39 Vector Patrol — code a retro 3D rail shooter",
+    "section": "Tutorials",
+    "group": "Complete workshops",
+    "summary": "Original Blocksmith ships, combat, boss, vertex snapping, palette dithering, ground dots and local MP3 audio; full code and assets.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t40-jengatedris.html",
+    "title": "T40 JengaTedris — grid, physics and Node battle",
+    "section": "Tutorials",
+    "group": "Complete workshops",
+    "summary": "Complete array-based grid game, real Matter compound tower and authoritative two-browser battle, with every source file.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t41-nord-office.html",
+    "title": "T41 Nord Engine Office — interns, bugs and AI",
+    "section": "Tutorials",
+    "group": "Complete workshops",
+    "summary": "Build a multiplayer office game with JavaScript puzzles, wiring, coffee timing, pranks, Node authority and a pathfinding AI coworker.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t42-paper-worlds.html",
+    "title": "T42 Paper Worlds — draw in 2D, explore your ideas in 3D",
+    "section": "Tutorials",
+    "group": "Complete workshops",
+    "summary": "A complete local-first drawing app with ten paper boards, Phaser tools, Babylon textures, Havok sticky toys, doors, minigames and an exportable 3D portfolio. Full source and original sprites.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t43-rss-river.html",
+    "title": "T43 RSS River — build a calm reader with a physical paper view",
+    "section": "Tutorials",
+    "group": "Complete workshops",
+    "summary": "A complete HTML news reader with RSS/Atom import, three default subscriptions, offline cache, search/read/star state and a Babylon/Havok river of papers. Full source and original sprites.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t44-ui-designer.html",
+    "title": "T44 Menus and HUDs with the UI Designer",
+    "section": "Tutorials",
+    "group": "Editor workflows",
+    "summary": "Design a main menu and a HUD visually, save them as ui/*.ui.json, and connect them to your game with three lines of code.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t45-ui-skins-9slice.html",
+    "title": "T45 One style for every button, and 9-slice images",
+    "section": "Tutorials",
+    "group": "Editor workflows",
+    "summary": "Restyle all buttons at once with a skin file, add variants and hover states, then use 9-slice images so panels and buttons stretch like in Unity or Godot.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t46-node-graph-coins.html",
+    "title": "T46 Node graph — build a coin collector with no code",
+    "section": "Tutorials",
+    "group": "Editor workflows",
+    "summary": "Move a player, collect coins and show a win screen using only graphs and a UI file. Then change the rules by rewiring nodes.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t47-unity-workflow.html",
+    "title": "T47 The Unity-style workflow",
+    "section": "Tutorials",
+    "group": "Editor workflows",
+    "summary": "New scene, Scene-view tools, a shared material, a prefab and a variant, a GameManager singleton, then Build And Run.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t48-neon-harbor.html",
+    "title": "T48 Neon Harbor, the full Unity-style showcase",
+    "section": "Tutorials",
+    "group": "Editor workflows",
+    "summary": "A finished 3D night harbour with a 2D HUD and minimap. Take it apart with every Unity-style editor feature: multi-object gizmos, prefabs and variants, materials, import settings, UI Designer, event sheet, graphs and a mobile export.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t49-3d-modeler.html",
+    "title": "T49 Model and paint a crate (3D Modeler)",
+    "section": "Tutorials",
+    "group": "Editor workflows",
+    "summary": "Build a crate from scratch in the 3D Modeler: shape it, paint its texture (also straight on the model), fix its UVs, export a GLB and put it in a 3D scene.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t50-animator.html",
+    "title": "T50 A hero that idles, walks and jumps (Animator)",
+    "section": "Tutorials",
+    "group": "Editor workflows",
+    "summary": "Draw an animation state machine for a sprite with parameters and transitions, test it live, and drive it from a script.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t51-hosting-presets.html",
+    "title": "T51 Ship it with a hosting preset",
+    "section": "Tutorials",
+    "group": "Editor workflows",
+    "summary": "Export a web build with one flag and get the deploy files for itch.io, GitHub Pages, Netlify, Vercel or Docker.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t52-profiler.html",
+    "title": "T52 Find the slow part (Profiler)",
+    "section": "Tutorials",
+    "group": "Editor workflows",
+    "summary": "Use the per-phase, per-script and per-component profiler, catch a slow frame with its culprit, record a session and save the profile.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t53-multiplayer.html",
+    "title": "T53 Two players with spawn, sync and RPC",
+    "section": "Tutorials",
+    "group": "Editor workflows",
+    "summary": "Host and join from two browser windows, spawn one ship per player, sync movement with netSync, call a function on the other player and test with fake lag.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t54-change-scene-model.html",
+    "title": "T54 Change a model in your scene (and its texture)",
+    "section": "Tutorials",
+    "group": "Editor workflows",
+    "summary": "Open a model that is already in your scene in the 3D Modeler as it is, change the shape and paint on its texture, then choose whether to overwrite it, keep a new model, make a prefab or a prefab variant.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t02-sprite-movement.html",
+    "title": "T02 Sprite & movement",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Show a sprite and move it with the keyboard using actions.",
+    "old": {
+      "reason": "Original movement tutorial teaches native NordScript. Its code is retained for older projects; the new learning path uses Unity-style input and movement.",
+      "replacement": "ex-input-movement.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/tutorials/tut-t03-first-script.html",
+    "title": "T03 Your first script",
+    "section": "Tutorials",
+    "group": "Foundations",
+    "summary": "Attributes, lifecycle, events, hot reload.",
+    "old": {
+      "reason": "Original scripting tutorial teaches the lower-case lifecycle. Use the Unity-style first-script lesson for new work.",
+      "replacement": "ex-first-script.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/examples/examples.html",
+    "title": "Examples (coming from Unity)",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "Short, copy-and-run code examples for everything a Unity developer does every day, each with the C# version next to the Nord JavaScript version, plus a complete small game.",
+    "old": null,
+    "hub": true
+  },
+  {
+    "file": "nord/examples/ex-first-script.html",
+    "title": "1 · Your first script",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "A script with Awake/Start/Update, Inspector fields and logging: Unity C# next to Nord JavaScript.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-input-movement.html",
+    "title": "2 · Input and movement",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "Keyboard, axes and actions; move by position or by physics; 2D and 3D.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-find-and-talk.html",
+    "title": "3 · Finding objects and talking to scripts",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "Find, tags, GetComponent, calling methods on other scripts, parents and children.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-clock.html",
+    "title": "3.5 · Build a clock: objects, hierarchy, materials and your first script",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "The classic first Unity exercise in Nord Engine: build a clock from a cylinder and cubes, give it pivots and materials, then write a script that turns the arms to show the real time. Same numbers and colours as the Unity version.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-digital-clock.html",
+    "title": "3.6 · Build a digital clock: primitives and 3D text in the world",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "Build a digital clock from primitives, put its numbers on a world-space text object (not a screen label), and write a Unity-style script that shows the real time, a blinking colon and a 12/24 hour switch.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-game-manager.html",
+    "title": "4 · GameManager and Singletons",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "Keep score, lives and game state in one place; other scripts call it and listen to it. Unity's singleton GameManager, step by step.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-spawn-destroy.html",
+    "title": "5 · Spawning, prefabs and Destroy",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "Make prefabs, spawn them at runtime, pass data in, destroy and pool them.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-collisions.html",
+    "title": "6 · Collisions, triggers and raycasts",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "Pick-ups, damage zones, hit detection, overlap queries and 3D raycasts.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-time-coroutines.html",
+    "title": "7 · Time: coroutines, Invoke, timers and tweens",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "Wait, repeat, delay, fade and ease: Unity coroutines and Invoke next to Nord's equivalents.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-ui-hud.html",
+    "title": "8 · UI: HUD, buttons and menus",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "Labels, bars, buttons and screens from code, or declarative .ui.json from the UI Designer.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-audio.html",
+    "title": "9 · Audio",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "Sound effects, music with crossfade, volume buses and event-driven sounds.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-music-player.html",
+    "title": "9.5 · A music player and sound effects",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "Build a playlist player with autoplay, next/previous, stop and a volume control, then add clock sounds (a tick every second and a chime on the full hour), written Unity-style.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-save-load.html",
+    "title": "10 · Saving and loading",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "PlayerPrefs-style settings, high scores, save slots with JSON data.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-scenes.html",
+    "title": "11 · Scenes and persistent objects",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Load scenes, restart, keep objects alive between scenes and pass data along.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-events.html",
+    "title": "12 · Events and messages",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Global events, per-object events, Inspector signals, UnityEvent and EventBus: who should call whom.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-ai-states.html",
+    "title": "13 · Enemy AI and state machines",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Patrol, chase, attack with a simple state machine, plus the ready-made AI scripts.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-data-assets.html",
+    "title": "14 · Data assets (ScriptableObject)",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Keep items, enemy stats and levels as JSON files that scripts load: the Nord version of ScriptableObjects.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-camera-3d.html",
+    "title": "15 · Camera, 3D and effects",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Follow cameras, screen shake and flashes, a 3D scene with a model, lights and a third-person character.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-debug-tools.html",
+    "title": "16 · Debugging and the Dev Console",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Logging with tags, the Console, errors, hot reload, the profiler and the in-game console for cheats.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-coin-dash.html",
+    "title": "17 · Coin Dash: a whole small game",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Every script of a complete game (player, coins, enemies, spawner, GameManager, HUD, game over) explained, the Unity way.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-platformer.html",
+    "title": "19 · A platformer: Jump Dash",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Jumping that feels good (coyote time, jump buffer, variable height), hazards, pits, a follow camera and a goal. Complete project examples/jump-dash.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-shooter.html",
+    "title": "20 · A shooter: Star Shooter",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Aim with the mouse, shoot pooled bullets, waves of enemies, particles on death and a health bar. Complete project examples/star-shooter.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-health-damage.html",
+    "title": "21 · Health, damage and death",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "A reusable Health script, damage by events, invulnerability frames, knockback, health bars and death handling.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-animation.html",
+    "title": "22 · Animation: sprites and the Animator",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Play sprite-sheet animations from code, flip by direction, drive an Animator state machine with parameters, frame events, and 3D clips.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-tilemap-levels.html",
+    "title": "23 · Tilemaps and level design",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Paint a level with tiles, make tiles solid, add objects to the level, and load several levels.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-inventory-quests.html",
+    "title": "24 · Inventory, items and quests",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Item data in JSON, a stacking inventory, a grid UI, equipment and a quest log driven by events.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-dialogue-npc.html",
+    "title": "25 · Talking to NPCs: interaction and dialogue",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Press E near a character, branching dialogue from a JSON file with typewriter text and choices, and reacting to the answers.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-juice-effects.html",
+    "title": "26 · Juice: particles, shake, hit-stop and floating text",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Make hits feel good with particle bursts, screen shake, flashes, hit-stop, squash and stretch, and numbers that float up.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-mobile-touch.html",
+    "title": "27 · Touch, mobile and responsive games",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Virtual joystick and buttons, tap and swipe, screen scaling and orientation, and shipping a web app that installs on a phone.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-multiplayer.html",
+    "title": "28 · Multiplayer basics",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Host and join from two windows, spawn one ship per player, move your own, and send a message to everyone.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-language.html",
+    "title": "30 · C# to JavaScript: the language side by side",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Classes, inheritance, interfaces, properties, enums, generics, LINQ, events, async and null handling: the C# you know and the JavaScript that replaces it.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-physics-recipes.html",
+    "title": "31 · Physics recipes",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Gravity, forces and impulses, bounce and friction, moving platforms, one-way platforms, ladders, knockback, explosions, pushing crates, raycasts.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-picking-dragging.html",
+    "title": "32 · Clicking, hovering and dragging objects",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Select things with the mouse or a finger, hover highlights, drag and drop, drag-select boxes, and telling clicks on the UI from clicks on the world.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-settings-menu.html",
+    "title": "33 · Options menu: volume, language, fullscreen, key rebinding",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "A settings screen that remembers its values, switches language, sets volumes, toggles fullscreen and lets the player rebind keys.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-3d-controllers.html",
+    "title": "34 · 3D: controllers, cameras, vehicles and interaction",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "First-person, third-person, platformer and vehicle controllers from the library, click-to-move, interaction rays, lights and materials.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-architecture.html",
+    "title": "35 · Structuring a bigger game: patterns you know from Unity",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Event channels, singletons and services, state machines, command/undo, data-driven design, folders and naming, so a project stays tidy as it grows.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-unity-packages.html",
+    "title": "36 · Unity packages and features: what to use in Nord",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Cinemachine, TextMeshPro, Input System, DOTween, NavMesh, Timeline, Addressables, Shader Graph, Localization, Netcode and more, mapped to Nord.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-genres.html",
+    "title": "37 · Starting points by game type",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Which template, example project and library scripts to start from for platformers, shooters, RPGs, puzzles, racing, tower defense, card games and more.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-build-publish.html",
+    "title": "38 · Build, publish and ship",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Run, build for the web, single-file and PWA, itch.io / GitHub Pages / Netlify, Mac / Windows / Linux apps, and the checks before you ship.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-optimization-testing.html",
+    "title": "39 · Optimising and testing your game",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Find slow scripts with the profiler, pool objects, cache lookups, keep assets small, and test logic and gameplay automatically.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-procedural.html",
+    "title": "40 · Procedural content and randomness",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Seeded random numbers, random levels and dungeons, loot tables, noise, weighted choice, and shuffling.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-unity-conversion.html",
+    "title": "41 · Convert a Unity project or tutorial (for you and for AI)",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "A step-by-step playbook, mapping tables and prompts to turn any Unity tutorial or whole C# codebase into a Nord project. Written so an AI agent can follow it.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-unity-helpers.html",
+    "title": "42 · Unity helpers cookbook",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Random, Color, KeyCode, mouse events, free Instantiate/Destroy, field helpers and SmoothDamp: the Unity habits that now work as-is.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-input-editor.html",
+    "title": "43 · Input actions and the Input editor",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Edit your project's input map in the Project tab: bind keys by pressing them, add actions, restore the basics.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-vector-rocks.html",
+    "title": "44 · Vector Rocks: Asteroids on a green vector monitor",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "A whole game in Unity-style code: Asteroids with glowing phosphor lines, a monitor bezel, waves, a heartbeat that speeds up, and five power-ups. About 370 lines of MonoBehaviours, prefabs, coroutines and triggers.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-platform.html",
+    "title": "45 · Which platform? Editor, Mac, Windows, web, phone",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Application.platform, isEditor, os and Cursor: do different things in the editor, on the web, in the desktop app or on a phone.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-pathfinding.html",
+    "title": "46 · Pathfinding and NavMesh: moving around obstacles",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Unity's NavMeshAgent mapped to Nord: grid A* (findPath), waypoint paths and simple steering, with a runnable agent script.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-cutscenes.html",
+    "title": "47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Keyframe an intro, a camera move or a door opening in the Timeline tab, play it from a script and wait for it to finish.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-lights-2d.html",
+    "title": "48 · 2D lights and shadows (URP 2D Lights)",
+    "section": "Examples",
+    "group": "Production · tools and systems",
+    "summary": "Dark scenes with torches, flashlights and real shadows in 2D, three library scripts, plus asking \"how lit is this spot?\" for stealth.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-dungeon-1-hero.html",
+    "title": "49 · Dungeon 1: A hero that moves",
+    "section": "Examples",
+    "group": "Complete games and shader lab",
+    "summary": "Series part 1 of 6, Unity style. Create a project, put a hero on screen, move it with Input.GetAxis and Time.deltaTime, keep it on the screen with Mathf.Clamp.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-dungeon-2-walls.html",
+    "title": "50 · Dungeon 2: Walls",
+    "section": "Examples",
+    "group": "Complete games and shader lab",
+    "summary": "Series part 2 of 6, Unity style. Build a level from a text map with Instantiate and prefabs, give the hero a Rigidbody2D and BoxCollider2D, and move it by velocity.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-dungeon-3-camera.html",
+    "title": "51 · Dungeon 3: Camera and a bigger level",
+    "section": "Examples",
+    "group": "Complete games and shader lab",
+    "summary": "Series part 3 of 6, Unity style. A follow camera in LateUpdate with Mathf.Lerp and bounds, frame-rate independent smoothing, EventBus, and merging wall tiles into long strips.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-dungeon-4-coins.html",
+    "title": "52 · Dungeon 4: Coins and score",
+    "section": "Examples",
+    "group": "Complete games and shader lab",
+    "summary": "Series part 4 of 6, Unity style. Trigger colliders and OnTriggerEnter, a coin prefab, the built-in GameManager singleton, a HUD and restarting.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-dungeon-5-enemies.html",
+    "title": "53 · Dungeon 5: Enemies and health",
+    "section": "Examples",
+    "group": "Complete games and shader lab",
+    "summary": "Series part 5 of 6, Unity style. Wandering and chasing enemies with a coroutine, a Health component with a grace period, knockback, hearts from GameManager lives, and game over.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-dungeon-6-light.html",
+    "title": "54 · Dungeon 6: Light and shipping",
+    "section": "Examples",
+    "group": "Complete games and shader lab",
+    "summary": "Series part 6 of 6, Unity style. A dark dungeon lit by a lantern with real shadows (three library scripts, like URP 2D Lights), light queries for gameplay, and a build for the web.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-ember-crypt.html",
+    "title": "55 · Ember Crypt: a complete game, from art to export",
+    "section": "Examples",
+    "group": "Complete games and shader lab",
+    "summary": "Build a finished dark-dungeon game in Unity-style code with pixel art, an animated hero with a sword, slimes and bats with line of sight, keys and gates, real shadows, particles, sound, a title screen, pause, saved high score and a web export.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-shadertoy.html",
+    "title": "56 · Shadertoy: use any shader from shadertoy.com",
+    "section": "Examples",
+    "group": "Complete games and shader lab",
+    "summary": "Paste a Shadertoy shader and it runs inside your game: as a picture in the scene, a full-screen background, on a 3D plane or mesh, or as a post effect over the whole game. Textures, Buffer A-D, keyboard, audio, mouse and screen inputs included.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-unity-api.html",
+    "title": "57 · Unity API in Nord: the map",
+    "section": "Examples",
+    "group": "Unity API · map and recipes",
+    "summary": "Every Unity command that works in Nord, in Unity's own groups, with links to the pages that explain them. Plus the honest list of what is not built yet.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-unity-api-scripting.html",
+    "title": "58 · Unity API: scripting and objects",
+    "section": "Examples",
+    "group": "Unity API · map and recipes",
+    "summary": "MonoBehaviour events including OnBecameVisible and OnApplicationFocus, SetParent at run time, RequireComponent, Awaitable, PlayerPrefs, and the scene-tree commands.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-unity-api-math.html",
+    "title": "59 · Unity API: math types",
+    "section": "Examples",
+    "group": "Unity API · map and recipes",
+    "summary": "Vector4, Matrix4x4, Bounds, Rect, RectInt, Ray, Ray2D, Plane, Color32, Vector2Int and Vector3Int, Random.ColorHSV, AnimationCurve and Gradient, with the Unity names and results.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-unity-api-input.html",
+    "title": "60 · Unity API: input",
+    "section": "Examples",
+    "group": "Unity API · map and recipes",
+    "summary": "The classic Input class (axes, mouse, touches, sensors, location) and the New Input System (InputAction, .inputactions files, PlayerInput, Keyboard.current) in Unity names.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-unity-api-physics2d.html",
+    "title": "61 · Unity API: Physics 2D",
+    "section": "Examples",
+    "group": "Unity API · map and recipes",
+    "summary": "Rigidbody2D constraints and interpolation, capsule, polygon, edge and composite colliders, every Physics2D cast and overlap, IgnoreCollision, and the nine 2D joints.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-unity-api-physics3d.html",
+    "title": "62 · Unity API: Physics 3D, joints and the camera",
+    "section": "Examples",
+    "group": "Unity API · map and recipes",
+    "summary": "Physics.Raycast/SphereCast/BoxCast/CapsuleCast and their All and NonAlloc forms, Overlap and Check calls, IgnoreCollision, Rigidbody constraints, the five 3D joints and Camera.WorldToScreenPoint / ScreenPointToRay.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-unity-api-rendering.html",
+    "title": "63 · Unity API: LineRenderer, TrailRenderer, SpriteMask and SpriteShape",
+    "section": "Examples",
+    "group": "Unity API · map and recipes",
+    "summary": "Lasers, ropes, trails, windows that reveal sprites and hand-drawn terrain with the Unity classes LineRenderer, TrailRenderer, SpriteMask and SpriteShapeController, in 2D and 3D.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-physics-lab.html",
+    "title": "64 · Physics Lab: a bench for the Unity physics layer",
+    "section": "Examples",
+    "group": "Unity API · map and recipes",
+    "summary": "Open the Physics Lab and the Shadertoy Lab projects, run their self-tests in the browser, and see what each check proves. Also how the play-mode editing of the Unity-style editor works.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-migration.html",
+    "title": "18 · Migration guide: C# habits to JavaScript",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "The Unity to Nord API table and the traps C# developers meet in JavaScript (this, null, vectors, async, equality).",
+    "old": {
+      "reason": "Earlier C# migration overview overlaps the fuller language and conversion guides.",
+      "replacement": "ex-unity-conversion.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/examples/ex-editor-for-unity-users.html",
+    "title": "29 · The editor for Unity users",
+    "section": "Examples",
+    "group": "Gameplay · reusable recipes",
+    "summary": "Where every Unity window, menu and workflow lives in the Nord editor, with screenshots: layout, Hierarchy, Inspector, prefabs, materials, build settings, animation, particles.",
+    "old": {
+      "reason": "Earlier editor translation overview overlaps the maintained Unity-style workflow chapter and tutorial.",
+      "replacement": "unity-workflow.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/guides/cookbook.html",
+    "title": "Cheatsheets — find an answer",
+    "section": "Cheatsheets",
+    "group": "Cheatsheets",
+    "summary": "Quick lookup tables for scripting, editor tasks, debugging and publishing.",
+    "old": null,
+    "hub": true
+  },
+  {
+    "file": "nord/guides/mobile-controls.html",
+    "title": "Mobile and on-screen touch controls",
+    "section": "Cheatsheets",
+    "group": "Cheatsheets",
+    "summary": "Code-drawn joystick and hold buttons for any Nord 2D/3D game, with desktop pointer testing.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/cheat-sheet-unity.html",
+    "title": "Unity scripting cheatsheet",
+    "section": "Cheatsheets",
+    "group": "Cheatsheets",
+    "summary": "Copy a minimal MonoBehaviour, then look up lifecycle, movement, input, objects and saving.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/cheat-sheet-export.html",
+    "title": "Cheat sheet — export",
+    "section": "Cheatsheets",
+    "group": "Cheatsheets",
+    "summary": "Build, bundle and host commands on one page.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/ui-scenes.html",
+    "title": "UI scenes reference",
+    "section": "Cheatsheets",
+    "group": "Cheatsheets",
+    "summary": "The .ui.json format, text, images and 9-slice, skins, and the script API.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/cheat-sheet-cli.html",
+    "title": "Cheat sheet — command line",
+    "section": "Cheatsheets",
+    "group": "Cheatsheets",
+    "summary": "How to start the nord command on macOS, Windows and Linux, and every command with its common options.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/glossary.html",
+    "title": "Glossary",
+    "section": "Cheatsheets",
+    "group": "Cheatsheets",
+    "summary": "Plain-language meanings of the words used in this manual.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/graph-reference.html",
+    "title": "Node graph reference",
+    "section": "Cheatsheets",
+    "group": "Cheatsheets",
+    "summary": "Pins, events, flow, the full node list, the runner and the component.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/shortcuts.html",
+    "title": "Keyboard shortcuts",
+    "section": "Cheatsheets",
+    "group": "Cheatsheets",
+    "summary": "Editor shortcuts (macOS).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/cheat-sheet-fps-level.html",
+    "title": "FPS Level — quick reference",
+    "section": "Cheatsheets",
+    "group": "Cheatsheets",
+    "summary": "Build, select, patrol, test, stop, customise shortcuts, save and export first-person levels.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/guides/cheat-sheet-nordjs.html",
+    "title": "Native NordScript cheatsheet",
+    "section": "Cheatsheets",
+    "group": "Cheatsheets",
+    "summary": "Quick lookup for the original lower-case scripting lifecycle and Nord services.",
+    "old": {
+      "reason": "Native lower-case scripting reminder, useful when maintaining older tutorials and projects.",
+      "replacement": "cheat-sheet-unity.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/guides/native-cookbook.html",
+    "title": "Native service recipes (old)",
+    "section": "Cheatsheets",
+    "group": "Cheatsheets",
+    "summary": "Original camera, scheduler, spawning and UI recipes retained for existing native-style projects.",
+    "old": {
+      "reason": "Original service recipes use native scene and scheduler calls. Retained for maintenance; start with current Unity-style examples.",
+      "replacement": "cookbook.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/api/api.html",
+    "title": "API reference",
+    "section": "API",
+    "group": "API",
+    "summary": "Nord's complete public scripting surface, components, desktop bridge and engine references.",
+    "old": null,
+    "hub": true
+  },
+  {
+    "file": "nord/api/api-namespaces.html",
+    "title": "game.* namespaces",
+    "section": "API",
+    "group": "API",
+    "summary": "game.camera, game.physics, game.gui, game.ui, game.audio…",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-entity.html",
+    "title": "Entity",
+    "section": "API",
+    "group": "API",
+    "summary": "A node in the scene tree.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-scene.html",
+    "title": "Scene",
+    "section": "API",
+    "group": "API",
+    "summary": "The running scene: entities, lifecycle, prefabs.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-unity.html",
+    "title": "Unity-style scripting API",
+    "section": "API",
+    "group": "API",
+    "summary": "Scripting reference for the Unity-style layer (MonoBehaviour, Transform, Vector3, Quaternion, Time, Input, Physics2D, components…) in the format of the Unity Scripting API, with the differences from C#.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-game.html",
+    "title": "Game",
+    "section": "API",
+    "group": "API",
+    "summary": "Owns the scene and shared services (this.game).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-mcp-tools.html",
+    "title": "MCP tools reference",
+    "section": "API",
+    "group": "API",
+    "summary": "Every tool of the Nord MCP servers (project, scenes, Unity conversion, 3D Modeler, 2D Sprite editor), one table per group.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-input.html",
+    "title": "Input",
+    "section": "API",
+    "group": "API",
+    "summary": "Action-based input (this.input).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-events.html",
+    "title": "Events",
+    "section": "API",
+    "group": "API",
+    "summary": "Event emitter (this.events, entity.on).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-save.html",
+    "title": "Save",
+    "section": "API",
+    "group": "API",
+    "summary": "Versioned save slots (this.save).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-audio.html",
+    "title": "Audio",
+    "section": "API",
+    "group": "API",
+    "summary": "Buses, sfx, music (this.audio).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-ui.html",
+    "title": "UI",
+    "section": "API",
+    "group": "API",
+    "summary": "DOM HUD/menu layer (this.ui).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-scheduler.html",
+    "title": "Scheduler",
+    "section": "API",
+    "group": "API",
+    "summary": "Timers and tweens (this.after/every/tween).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-rng.html",
+    "title": "Rng",
+    "section": "API",
+    "group": "API",
+    "summary": "Seedable random numbers (this.rng).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-pool.html",
+    "title": "Pool",
+    "section": "API",
+    "group": "API",
+    "summary": "Reuse objects instead of allocating a new one each time.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-loader.html",
+    "title": "Loader",
+    "section": "API",
+    "group": "API",
+    "summary": "Load project files safely, with caching and progress reporting.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-memorystorage.html",
+    "title": "MemoryStorage",
+    "section": "API",
+    "group": "API",
+    "summary": "In-memory storage for Save when browser storage is unavailable or for isolated runs.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-arcadeadapter.html",
+    "title": "ArcadeAdapter",
+    "section": "API",
+    "group": "API",
+    "summary": "2D physics (Arcade) — this.physics in 2D games.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-matteradapter.html",
+    "title": "MatterAdapter",
+    "section": "API",
+    "group": "API",
+    "summary": "2D physics (Matter) — this.physics when physics.engine is matter.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-havokadapter.html",
+    "title": "HavokAdapter",
+    "section": "API",
+    "group": "API",
+    "summary": "3D physics (Havok) — this.physics in 3D games.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-helpers.html",
+    "title": "Math & helpers",
+    "section": "API",
+    "group": "API",
+    "summary": "clamp, lerp, remap, vec, ease…",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-exports.html",
+    "title": "All Nord public exports",
+    "section": "API",
+    "group": "API",
+    "summary": "NordScript, resolveAttributes, Entity, registerComponent, components, Scene, applyOverrides, FIXED_DT, Game, I18n, Accessibility, COLORBLIND, colorMatrixValues, Multiplayer, registerNetSync, loadAddons, Timelines, bezier, sample, Effects, EFFECT_TYPES, registerEffect, Debugger, attachDebugOverlay, Events, Input, attachDom, virtualJoystick, Save, MemoryStorage, Rng, Scheduler, Pool, ease, clamp, lerp, remap, deg2rad, rad2deg, angleDiff, vec, Loader, safePath, Audio, BUSES, touchToStart, UI, THEME_CSS, UIManager, createUI, validate as validateUI, blank as blankUI, richText, NODE_TYPES, AnimatorController, validateController as validateAnimator, Graph, graphSystem, attachGraph, NODES as GRAPH_NODES, validate as validateGraph, createGame, makeStage, errorOverlay, devSceneOverride, registerCoreComponents, SKINS, THEMES, FONTS, skin, theme, fontFaceCSS, themeVars, applyTheme, CODE_CSS, EventSheet, registerPlugin, registerObjectAces, registerDataType, dataTypes, compile as compileExpression, Behavior, registerBehavior, behaviors, Shadertoy, createShadertoy, splitTabs, Awaitable",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-desktop.html",
+    "title": "Desktop bridge",
+    "section": "API",
+    "group": "API",
+    "summary": "window.nord.desktop: fs dialog app store secret clipboard notify window menu tray shortcut shell process server http",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-rust.html",
+    "title": "Rust public API",
+    "section": "API",
+    "group": "API",
+    "summary": "Script Ctx World Registry Input assets physics App desktop Rust declarations",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/api/api-nordscript.html",
+    "title": "NordScript",
+    "section": "API",
+    "group": "API",
+    "summary": "Base class of every script.",
+    "old": {
+      "reason": "Source-generated native base-class reference. The class remains supported; new scripts normally extend MonoBehaviour.",
+      "replacement": "api-unity.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-sprite.html",
+    "title": "sprite",
+    "section": "API",
+    "group": "Components",
+    "summary": "A single image (or one frame of a spritesheet) drawn at the entity position.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-animatedSprite.html",
+    "title": "animatedSprite",
+    "section": "API",
+    "group": "Components",
+    "summary": "A spritesheet with named animations. Animations are declared in the texture's `.meta.json` (`anims`).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-text.html",
+    "title": "text",
+    "section": "API",
+    "group": "Components",
+    "summary": "World-space text (Phaser Text). For HUD text prefer `uiLabel`.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-tilemap.html",
+    "title": "tilemap",
+    "section": "API",
+    "group": "Components",
+    "summary": "A grid of tiles from a tileset image. Loads Tiled JSON (`.tmj`/`.json`) or Nord simple maps (`layers[].data`).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-parallax.html",
+    "title": "parallax",
+    "section": "API",
+    "group": "Components",
+    "summary": "A screen-filling background layer that scrolls slower than the camera for depth.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-particles.html",
+    "title": "particles",
+    "section": "API",
+    "group": "Components",
+    "summary": "Particle emitter. 2D (Phaser emitter) and 3D (Babylon ParticleSystem) use the same component with tier-specific fields.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-camera.html",
+    "title": "camera",
+    "section": "API",
+    "group": "Components",
+    "summary": "2D: configures the main camera (zoom, follow, bounds). 3D: creates a free (first-person) or orbit camera.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-light.html",
+    "title": "light",
+    "section": "API",
+    "group": "Components",
+    "summary": "2D: Phaser point light (turns on the light pipeline for all sprites). 3D: point / directional / spot / hemispheric light, optional shadows.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-mesh.html",
+    "title": "mesh",
+    "section": "API",
+    "group": "Components",
+    "summary": "A primitive 3D shape (box, sphere, cylinder, capsule, torus, plane, ground).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-model.html",
+    "title": "model",
+    "section": "API",
+    "group": "Components",
+    "summary": "A glTF/GLB model instanced into the scene, with its animations.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-material.html",
+    "title": "material",
+    "section": "API",
+    "group": "Components",
+    "summary": "PBR (or unlit) material applied to the meshes of this entity.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-skybox.html",
+    "title": "skybox",
+    "section": "API",
+    "group": "Components",
+    "summary": "Cube-map sky. `path` is a folder containing px/nx/py/ny/pz/nz.png (e.g. `assets/skybox/day`).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-postProcess.html",
+    "title": "postProcess",
+    "section": "API",
+    "group": "Components",
+    "summary": "Full-screen effects on the active camera: bloom, FXAA/MSAA, vignette, tone mapping, grain, sharpen, chromatic aberration.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-rigidbody.html",
+    "title": "rigidbody",
+    "section": "API",
+    "group": "Components",
+    "summary": "Makes the entity a physics body. Add a `collider` for its shape.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-collider.html",
+    "title": "collider",
+    "section": "API",
+    "group": "Components",
+    "summary": "Collision shape. Without an explicit `size` it is taken from the sprite/mesh bounds.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-joint.html",
+    "title": "joint",
+    "section": "API",
+    "group": "Components",
+    "summary": "A Unity-style joint between this body and `connectedBody` (or the world): hinge, spring, distance, fixed, slider, wheel, target, relative, friction (2D, Matter) and hinge, fixed, spring, distance, ball (CharacterJoint), configurable (3D, Havok).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-trigger.html",
+    "title": "trigger",
+    "section": "API",
+    "group": "Components",
+    "summary": "Shorthand for a collider with `trigger: true` — an invisible zone that fires `onTriggerEnter` / `onTriggerExit`.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-lineRenderer.html",
+    "title": "lineRenderer",
+    "section": "API",
+    "group": "Components",
+    "summary": "A poly-line drawn as a ribbon with a width and a colour gradient (Unity's LineRenderer).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-trailRenderer.html",
+    "title": "trailRenderer",
+    "section": "API",
+    "group": "Components",
+    "summary": "Leaves a fading trail behind a moving entity (Unity's TrailRenderer).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-spriteMask.html",
+    "title": "spriteMask",
+    "section": "API",
+    "group": "Components",
+    "summary": "Shows or hides sprites inside its shape (Unity's SpriteMask).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-spriteShape.html",
+    "title": "spriteShape",
+    "section": "API",
+    "group": "Components",
+    "summary": "A filled shape with an edge line from a list of points (Unity's SpriteShape: hills, platforms, pools).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-shadertoy.html",
+    "title": "shadertoy",
+    "section": "API",
+    "group": "Components",
+    "summary": "Runs a shader written for shadertoy.com (GLSL ES 3.00 `mainImage`) as a picture in the scene or on a mesh.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-audioSource.html",
+    "title": "audioSource",
+    "section": "API",
+    "group": "Components",
+    "summary": "Plays a clip from an entity. Use `bus` to route it (sfx | music | ui).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-audioListener.html",
+    "title": "audioListener",
+    "section": "API",
+    "group": "Components",
+    "summary": "Marker for the entity that \"hears\" the game. Currently a no-op placeholder (audio is not spatialised yet).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-uiPanel.html",
+    "title": "uiPanel",
+    "section": "API",
+    "group": "Components",
+    "summary": "A background box in the DOM UI layer.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-uiLabel.html",
+    "title": "uiLabel",
+    "section": "API",
+    "group": "Components",
+    "summary": "Text in the DOM UI layer.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-uiImage.html",
+    "title": "uiImage",
+    "section": "API",
+    "group": "Components",
+    "summary": "An image in the DOM UI layer.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-uiBar.html",
+    "title": "uiBar",
+    "section": "API",
+    "group": "Components",
+    "summary": "A progress bar (0..1).",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-uiButton.html",
+    "title": "uiButton",
+    "section": "API",
+    "group": "Components",
+    "summary": "A clickable button. Emits `click` on the entity, calls `onClick()` on its scripts and, if `event` is set, `game.events.emit(event)`.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-path.html",
+    "title": "path",
+    "section": "API",
+    "group": "Components",
+    "summary": "A list of waypoints that can be sampled by distance — for patrols, moving platforms, camera rails.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-spawner.html",
+    "title": "spawner",
+    "section": "API",
+    "group": "Components",
+    "summary": "Spawns a prefab every `interval` seconds at the entity (plus `offset` and random `jitter`), keeping at most `max` alive.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-graph.html",
+    "title": "graph",
+    "section": "API",
+    "group": "Components",
+    "summary": "Runs a visual-scripting graph file (`graphs/*.graph.json`) on this entity. *This entity* in the graph is the owner. Built in the Graph tab.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-animator.html",
+    "title": "animator",
+    "section": "API",
+    "group": "Components",
+    "summary": "Unity-style state machine (`anim/*.animator.json`) that switches the clip of the `animatedSprite` (or the glTF animation of the `model`) on the same entity from parameters (float, int, bool, trigger). Built in the Animator tab; see the Animator chapter.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/components/component-netSync.html",
+    "title": "netSync",
+    "section": "API",
+    "group": "Components",
+    "summary": "Multiplayer: the owning peer sends this entity's position (and optionally rotation, scale and chosen `vars`) to everyone else, who see it move smoothly. Owner = the player given to `net.spawn`, otherwise the host. Needs `game.net` connected; see the Multiplayer chapter.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/reference/project-format.html",
+    "title": "Project format",
+    "section": "API",
+    "group": "Reference",
+    "summary": "nord.project.json, scenes, prefabs, components, attribute types.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/reference/event-reference.html",
+    "title": "Event sheet reference",
+    "section": "API",
+    "group": "Reference",
+    "summary": "All conditions, actions, expressions and behaviors available to event sheets.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/reference/components.html",
+    "title": "Component index",
+    "section": "API",
+    "group": "Reference",
+    "summary": "All built-in components.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/reference/cli.html",
+    "title": "Command line (nord)",
+    "section": "API",
+    "group": "Reference",
+    "summary": "nord new/serve/build/check/bundle-mac…",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/reference/library-catalog.html",
+    "title": "Library catalog",
+    "section": "API",
+    "group": "Reference",
+    "summary": "Every library script, prefab and kit.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/reference/templates-examples.html",
+    "title": "Templates & examples",
+    "section": "API",
+    "group": "Reference",
+    "summary": "Starter templates and example games.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/reference/rust-tier-spec.html",
+    "title": "Rust tier spec",
+    "section": "API",
+    "group": "Reference",
+    "summary": "Detailed Rust/WASM reference.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/reference/export-targets-spec.html",
+    "title": "Export targets spec",
+    "section": "API",
+    "group": "Reference",
+    "summary": "Export targets and layout.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/reference/hosting-spec.html",
+    "title": "Hosting notes",
+    "section": "API",
+    "group": "Reference",
+    "summary": "Where to host a build.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/reference/desktop-apps-spec.html",
+    "title": "Desktop apps spec",
+    "section": "API",
+    "group": "Reference",
+    "summary": "Desktop backend design, capability model, bridge.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/reference/packaging.html",
+    "title": "Packaging",
+    "section": "API",
+    "group": "Reference",
+    "summary": "macOS/Windows/Linux bundles, signing, notarisation, file types.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/reference/engine-docs.html",
+    "title": "Phaser and Babylon API downloads",
+    "section": "API",
+    "group": "Reference",
+    "summary": "",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/reference/phaser-api-index.html",
+    "title": "Upstream API downloads",
+    "section": "API",
+    "group": "Reference",
+    "summary": "",
+    "old": {
+      "reason": "Superseded upstream index alias. Exact-version APIs are available as ZIP downloads from one maintained landing page.",
+      "replacement": "engine-docs.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/reference/babylon-api-index.html",
+    "title": "Upstream API downloads",
+    "section": "API",
+    "group": "Reference",
+    "summary": "",
+    "old": {
+      "reason": "Superseded upstream index alias. Exact-version APIs are available as ZIP downloads from one maintained landing page.",
+      "replacement": "engine-docs.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/reference/phaser-archive.html",
+    "title": "Upstream API downloads",
+    "section": "API",
+    "group": "Reference",
+    "summary": "",
+    "old": {
+      "reason": "Earlier Phaser 4.1 snapshot index does not match Nord's bundled Phaser 4.2.1.",
+      "replacement": "engine-docs.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/reference/babylon-guides.html",
+    "title": "Upstream API downloads",
+    "section": "API",
+    "group": "Reference",
+    "summary": "",
+    "old": {
+      "reason": "Retained old guide-index alias. Use the current upstream download and official-link page.",
+      "replacement": "engine-docs.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/reference/babylon-guide-index.html",
+    "title": "Upstream API downloads",
+    "section": "API",
+    "group": "Reference",
+    "summary": "",
+    "old": {
+      "reason": "Retained old guide-index alias. Use the current upstream download and official-link page.",
+      "replacement": "engine-docs.html"
+    },
+    "hub": false
+  },
+  {
+    "file": "nord/appendix/appendix.html",
+    "title": "Appendix",
+    "section": "Cheatsheets",
+    "group": "Appendix",
+    "summary": "Versions, licences, troubleshooting, FAQ.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/appendix/decisions.html",
+    "title": "Design decisions",
+    "section": "Cheatsheets",
+    "group": "Appendix",
+    "summary": "Architecture decision records.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/appendix/known-issues.html",
+    "title": "Known issues",
+    "section": "Cheatsheets",
+    "group": "Appendix",
+    "summary": "Open bugs and unverified risks.",
+    "old": null,
+    "hub": false
+  },
+  {
+    "file": "nord/appendix/changelog.html",
+    "title": "Changelog",
+    "section": "Cheatsheets",
+    "group": "Appendix",
+    "summary": "What changed.",
+    "old": null,
+    "hub": false
+  }
+]

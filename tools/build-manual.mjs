@@ -111,6 +111,7 @@ function frontMatter(src) {
 const plain = (html) => html.replace(/<pre[\s\S]*?<\/pre>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;/g, ' ').replace(/\s+/g, ' ').trim();
 
 // ---------- pages ---------------------------------------------------------------------------------------------------------
+const navigation = JSON.parse(read('docs/manual-src/_navigation.json'));
 const pages = []; // { file, title, section, order, html (body), group }
 const add = (p) => pages.push({ order: 50, ...p, section: p.section === 'Guides' ? 'Cheatsheets' : p.section });
 
@@ -407,31 +408,49 @@ const SECTION_DIR = {
 };
 for (const p of pages) {
   p.legacyFile = p.file;
+  p.archive = navigation.old[p.legacyFile] ?? null;
   p.file = p.outputFile ?? path.posix.join(SECTION_DIR[p.section] ?? 'nord/reference', p.file);
 }
 const manualGroups = ['Getting oriented', 'Projects, objects and scripts', '2D and 3D worlds', 'Gameplay, sound and interfaces', 'Test and publish'];
-pages.sort((a, b) => SECTION_ORDER.indexOf(a.section) - SECTION_ORDER.indexOf(b.section) || (a.section === 'Manual' ? manualGroups.indexOf(a.group) - manualGroups.indexOf(b.group) : 0) || a.order - b.order || a.title.localeCompare(b.title));
+pages.sort((a, b) => SECTION_ORDER.indexOf(a.section) - SECTION_ORDER.indexOf(b.section) || Number(Boolean(a.archive)) - Number(Boolean(b.archive)) || (a.section === 'Manual' ? manualGroups.indexOf(a.group) - manualGroups.indexOf(b.group) : 0) || a.order - b.order || a.title.localeCompare(b.title));
 const bySection = new Map();
 for (const p of pages) { if (!bySection.has(p.section)) bySection.set(p.section, []); bySection.get(p.section).push(p); }
 for (const s of bySection.keys()) if (!SECTION_ORDER.includes(s)) throw new Error(`unknown section '${s}'`);
 const area = p => ['API', 'Components', 'Reference', 'Engine docs'].includes(p.section) ? 'API' : p.section === 'Appendix' ? 'Cheatsheets' : p.section;
 const tabs = [['Start here', 'getting-started.html'], ['Manual', 'manual-paths.html'], ['Tutorials', 'tutorials.html'], ['Examples', 'examples.html'], ['Cheatsheets', 'cookbook.html'], ['API', 'api.html']];
+const pageLink = (p, cur) => `<a href="${p.file}"${p === cur ? ' class="cur" aria-current="page"' : ''}>${esc(p.title)}</a>`;
+const topicGroup = p => p.group || (p.section === 'Examples' ? (p.order >= 57 ? 'Unity API · map and recipes' : p.order >= 49 ? 'Complete games and shader lab' : p.order >= 30 ? 'Production · tools and systems' : p.order >= 10 ? 'Gameplay · reusable recipes' : 'Start coding · fundamentals') : p.section === 'Tutorials' ? (p.order === 0 ? 'Choose a learning path' : p.order <= 18 ? 'Foundations' : p.order <= 30 ? 'Apps and visual tools' : p.order <= 43 ? 'Complete workshops' : 'Editor workflows') : p.section);
 const nav = cur => {
   const sections = [...bySection].filter(([s]) => area({ section: s }) === area(cur));
-  return `<a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">${esc(area(cur))}</div>` + sections.map(([s, ps]) => {
-    if (s === 'Engine docs') return '<a href="engine-docs.html">Phaser & Babylon documentation</a>';
+  const archived = sections.flatMap(([, ps]) => ps.filter(p => p.archive));
+  const current = sections.map(([s, ps]) => {
     const groups = new Map();
-    for (const p of ps) {
-      const group = p.group || (s === 'Examples' ? (p.order >= 57 ? 'Unity API · map and recipes' : p.order >= 49 ? 'Dungeon · complete game series' : p.order >= 30 ? 'Production · tools and systems' : p.order >= 10 ? 'Gameplay · reusable recipes' : 'Start coding · fundamentals') : s);
+    for (const p of ps.filter(p => !p.archive)) {
+      const group = topicGroup(p);
       if (!groups.has(group)) groups.set(group, []);
       groups.get(group).push(p);
     }
-    return [...groups].map(([group, entries]) => `<details${entries.includes(cur) ? ' open' : ''}><summary>${esc(group)} <small>(${entries.length})</small></summary>${entries.map(p => `<a href="${p.file}"${p === cur ? ' class="cur" aria-current="page"' : ''}>${esc(p.title)}</a>`).join('')}</details>`).join('');
+    return [...groups].map(([group, entries]) => `<details${entries.includes(cur) ? ' open' : ''}><summary>${esc(group)} <small>(${entries.length})</small></summary>${entries.map(p => pageLink(p, cur)).join('')}</details>`).join('');
   }).join('');
+  return `<a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">${esc(area(cur))}</div>` + current + `<details class="old-category"${cur.archive ? ' open' : ''}><summary>Old <small>(${archived.length})</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p>${archived.map(p => pageLink(p, cur)).join('')}</details>`;
 };
+const hubFiles = new Set(tabs.map(([, file]) => file));
+function currentTopics(cur) {
+  const groups = new Map();
+  for (const p of pages.filter(p => !p.archive && p !== cur && area(p) === area(cur))) {
+    const group = topicGroup(p);
+    if (!groups.has(group)) groups.set(group, []);
+    groups.get(group).push(p);
+  }
+  return `<section class="topic-directory"><h2 id="topic-directory">Topics in this section</h2><p>Choose a task below. Each link opens a focused page; you do not need to read the directory in order.</p>${[...groups].map(([group, entries]) => `<details><summary>${esc(group)} <small>(${entries.length})</small></summary><ul>${entries.map(p => `<li><a href="${p.file}">${esc(p.title)}</a>${p.summary ? ` — ${esc(p.summary)}` : ''}</li>`).join('')}</ul></details>`).join('')}</section>`;
+}
+function oldTopics(cur) {
+  const archived = pages.filter(p => p.archive && area(p) === area(cur));
+  return `<details class="archive-panel"><summary>Old · earlier pages and workflows (${archived.length})</summary><p>These pages remain available for existing projects and saved links. Start with the replacement when creating something new.</p><ul>${archived.map(p => `<li><a href="${p.file}">${esc(p.title)}</a> — ${esc(p.archive.reason)} <a href="${p.archive.replacement}">Current starting point</a>.</li>`).join('')}</ul></details>`;
+}
 const layout = (p, body) => {
   const headings = [...body.matchAll(/<h2 id="([^"]+)">([\s\S]*?)<\/h2>/g)].map(m => [m[1], plain(m[2]).replace(/#$/, '')]);
-  const siblings = bySection.get(p.section) ?? [], pos = siblings.indexOf(p);
+  const siblings = (bySection.get(p.section) ?? []).filter(q => Boolean(q.archive) === Boolean(p.archive)), pos = siblings.indexOf(p);
   const pager = p.file === 'index.html' || p.section === 'Engine docs' ? '' : `<div class="pager">${[siblings[pos - 1], siblings[pos + 1]].map((n, i) => n ? `<a href="${n.file}"><small>${i ? 'Next →' : '← Previous'}</small>${esc(n.title)}</a>` : '<span></span>').join('')}</div>`;
   const manualRoot = path.posix.relative(path.posix.dirname(p.file), '.') || '.';
   return `<!doctype html>
@@ -442,7 +461,7 @@ const layout = (p, body) => {
 <link rel="stylesheet" href="assets/manual.css"></head>
 <body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
 <div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
-<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections">${tabs.map(([name, href]) => `<a href="${href}"${area(p) === name ? ' class="active" aria-current="page"' : ''}>${name}</a>`).join('')}</nav></header>
 <div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation">${nav(p)}</nav><main id="content"><div class="crumb">${esc(p.section)} / Nord Engine</div><h1>${esc(p.title)}</h1>
 ${body}${pager}<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b>${headings.map(([id, title]) => `<a href="#${id}">${esc(title)}</a>`).join('')}</aside></div>
@@ -482,20 +501,31 @@ const searchGroup = () => 'nord';
 let searchCount = 0;
 for (const p of all) {
   let body = p === home ? homeBody : p.html;
-  if (!body.includes('box dummies')) body = `<aside class="box dummies"><div class="box-title">For dummies</div><p>${esc(p.summary || p.title)} Use the contents list to find a topic. Code names are case-sensitive; component settings belong to the selected object in the Inspector. Start with <a href="getting-started.html">Getting started</a> if you have not opened a project yet.</p></aside>` + body;
+  if (p.archive) body = `<aside class="box warn archive-notice"><div class="box-title">Old · retained reference</div><p>${esc(p.archive.reason)} <a href="${p.archive.replacement}">Open the current starting point</a>.</p></aside>` + body;
+  if (hubFiles.has(p.legacyFile)) {
+    const directory = currentTopics(p);
+    const end = body.indexOf('<h2 id="check-yourself">');
+    body = end < 0 ? body + directory : body.slice(0, end) + directory + body.slice(end);
+    body += oldTopics(p);
+  }
+  if (!body.includes('box dummies')) {
+    const help = p.section === 'API' ? 'An API entry is a contract: check its owner, inputs, return value and supported backend. A JavaScript helper must be imported or accessed on its documented object before you can call it.' : p.section === 'Components' ? 'A component gives one scene object a capability. Select the object in Hierarchy, inspect the component fields in Inspector, and compare the saved scene data with this reference.' : p.section === 'Tutorials' ? 'Follow the setup and files in order, then compare one visible result before adding your own features. Keep the scripting style used by this lesson consistent.' : p.section === 'Examples' ? 'Try this example by itself first. Use its stated project type, create the named files, attach scripts to the required objects, then test the stated result.' : 'Choose the topic that matches your current task. Use the linked editor chapter for setup and check the exact names in the reference before changing project files.';
+    body = `<aside class="box dummies"><div class="box-title">For dummies</div><p>${esc(p.summary || p.title)} ${help} <a href="getting-started.html">Start here</a> if the editor is new to you.</p></aside>` + body;
+  }
   emit(p.file, localLinks(layout(p, body), p.file));
   if (p !== home) {
     const search = searchGroups.get(searchGroup(p));
-    search.push({ f: p.file, t: p.title, s: p.section, x: plain(body) });
-    for (const m of p.searchMembers ?? []) search.push({ f: p.file + '#' + m.id, t: p.title + '.' + m.name, s: p.section, x: m.text.slice(0, 1200) });
+    search.push({ f: p.file, t: p.title, s: p.archive ? 'Old · ' + p.section : p.section, a: Boolean(p.archive), x: plain(body) });
+    for (const m of p.searchMembers ?? []) search.push({ f: p.file + '#' + m.id, t: p.title + '.' + m.name, s: p.archive ? 'Old · ' + p.section : p.section, a: Boolean(p.archive), x: m.text.slice(0, 1200) });
     const headings = [...body.matchAll(/<h[23] id="([^"]+)">([\s\S]*?)<\/h[23]>/g)];
     for (const [i, heading] of headings.entries()) {
       const content = body.slice(heading.index, headings[i + 1]?.index ?? body.length);
-      search.push({ f: p.file + '#' + heading[1], t: plain(heading[2]).replace(/#$/, '').trim() + ' — ' + p.title, s: p.section, x: plain(content) });
+      search.push({ f: p.file + '#' + heading[1], t: plain(heading[2]).replace(/#$/, '').trim() + ' — ' + p.title, s: p.archive ? 'Old · ' + p.section : p.section, a: Boolean(p.archive), x: plain(content) });
     }
     searchCount += 1 + headings.length + (p.searchMembers?.length ?? 0);
   }
 }
+emit('assets/page-inventory.json', JSON.stringify(pages.map(p => ({ file: p.file, title: p.title, section: area(p), group: topicGroup(p), summary: p.summary || '', old: p.archive, hub: hubFiles.has(p.legacyFile) })), null, 2) + '\n');
 const searchFiles = [];
 for (const [name, search] of searchGroups) {
   const file = `assets/search/${name}.js`;

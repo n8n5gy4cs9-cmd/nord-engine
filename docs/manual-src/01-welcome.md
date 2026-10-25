@@ -52,7 +52,7 @@ The whole manual is offline and also lives inside the editor's **Docs** tab. Pre
 :::
 
 ::: dummies
-There is also an optional command-line program called `nord`, used for automation and build servers. You never need it to make a game. See [Getting started, Part 11](getting-started.html#part-11-the-optional-nord-command).
+There is also an optional command-line program called `nord`, used for automation and build servers. You never need it to make a game. See [Getting started, Part 11](start-legacy.html#part-11-the-optional-nord-command).
 :::
 
 ## How this manual is organised

@@ -1817,6 +1817,12 @@
       "status": "done"
     },
     {
+      "id": "M7-33",
+      "milestone": "M7",
+      "title": "Review every manual page, curate Old categories and topic hubs, add five dark themes",
+      "status": "done"
+    },
+    {
       "id": "M8-01",
       "milestone": "M8",
       "title": ".dmg packaging + notarisation notes",

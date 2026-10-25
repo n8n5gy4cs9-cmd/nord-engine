@@ -172,7 +172,7 @@ Nothing is uploaded anywhere. Nord never needs the internet to edit, play or exp
 
 ## Part 8: The same engine without the window
 
-The editor and the optional `nord` command-line tool use the same project code. Anything you do by clicking, such as creating, validating, serving or exporting a project, the command line can also do for scripts and build servers. It is not required. See [Getting started, Part 11](getting-started.html#part-11-the-optional-nord-command).
+The editor and the optional `nord` command-line tool use the same project code. Anything you do by clicking, such as creating, validating, serving or exporting a project, the command line can also do for scripts and build servers. It is not required. See [Getting started, Part 11](start-legacy.html#part-11-the-optional-nord-command).
 
 ## Where next
 

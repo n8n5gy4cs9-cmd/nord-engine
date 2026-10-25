@@ -1,6 +1,7 @@
 ---
 title: Unity coverage
 section: Manual
+group: Projects, objects and scripts
 order: 37
 summary: What of Unity's scripting API works in Nord, what works with limits, and what is missing. Honest list with counts.
 

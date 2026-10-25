@@ -1,6 +1,7 @@
 ---
 title: In-game Dev Console
 section: Manual
+group: Gameplay, sound and interfaces
 order: 38
 summary: Drop one prefab into your game and get a command console with cheats, autocomplete and your own commands. Add commands with one line of code.
 ---

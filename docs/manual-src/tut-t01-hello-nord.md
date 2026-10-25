@@ -13,8 +13,8 @@ A *project* is a folder. A *scene* is one screen/level inside it. Anything you s
 1. Create the project: hub → **New** → *2D game* (or `nord new hello -t 2d`). Optional: **Window ▸ Layout ▸ Unity 2 by 3** for the Hierarchy / Scene / Game / Inspector arrangement used in the screenshots of [Unity-style workflow](unity-workflow.html).
 2. Open the project’s main scene (`scenes/main.scene.json`). Its entities appear in **Hierarchy**. Click the **Add entity** (+) button, name it `Title`, and set position to `[320, 180, 0]` (the middle of a 640×360 screen).
 3. Select `Title`, then @ui[Inspector ▸ + Add component ▸ text] and set `text` = `Hello Nord`, `size` = `48`, `color` = `#88c0d0`.
-4. Press **▶ Play** (Cmd+R). You see the words on the project's background colour.
-5. Change the text while the game runs — the Game tab updates when you save the scene.
+4. Press @ui[Play] (default F5). You see the words on the project's background colour.
+5. Press @ui[Stop], change the text in the Inspector, save the scene, and press @ui[Play] again. The Game view shows the saved text. Edits made during Play affect the running game and are not saved to the starting scene.
 
 <figure class="shot"><img src="assets/screenshots/manual-hello-nord.png" alt="The real Nord 2D runtime showing Hello Nord centred on a dark 640 by 360 canvas"><figcaption>Expected result: one text entity, centred at [320, 180, 0]. Captured using Nord’s Phaser adapter and the entity settings below.</figcaption></figure>
 

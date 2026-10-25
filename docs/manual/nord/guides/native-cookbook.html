@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Native service recipes (old) — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="cookbook.html" class="active" aria-current="page">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details><summary>Cheatsheets <small>(10)</small></summary><a href="cookbook.html">Cheatsheets — find an answer</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-export.html">Cheat sheet — export</a><a href="ui-scenes.html">UI scenes reference</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="shortcuts.html">Keyboard shortcuts</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details><details class="old-category" open><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="cheat-sheet-nordjs.html">Native NordScript cheatsheet</a><a href="native-cookbook.html" class="cur" aria-current="page">Native service recipes (old)</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Native service recipes (old)</h1>
+<aside class="box dummies"><div class="box-title">For dummies</div><p>Original camera, scheduler, spawning and UI recipes retained for existing native-style projects. Choose the topic that matches your current task. Use the linked editor chapter for setup and check the exact names in the reference before changing project files. <a href="../start/getting-started.html">Start here</a> if the editor is new to you.</p></aside><aside class="box warn archive-notice"><div class="box-title">Old · retained reference</div><p>Original service recipes use native scene and scheduler calls. Retained for maintenance; start with current Unity-style examples. <a href="cookbook.html">Open the current starting point</a>.</p></aside><p>Each recipe is plain Nord API — no Phaser/Babylon calls.</p>
+<h2 id="movement-amp-feel">Movement &amp; feel<a class="anchor" href="#movement-amp-feel">#</a></h2>
+<p><strong>Coyote time + jump buffer</strong> — use <code>platformer2d.js</code> (<code>coyoteTime</code>, <code>jumpBuffer</code>), or in your own script: remember <code>this.lastGrounded = time.elapsed</code> while grounded and allow a jump if <code>elapsed - lastGrounded &lt; 0.1</code>.</p>
+<p><strong>Smooth camera</strong> — <code>camera</code> component with <code>follow</code> and <code>lerp: 0.1</code>; add <code>deadzone: [60, 40]</code>.</p>
+<p><strong>Screen shake on hit</strong></p>
+<p><strong>File: your script, for example <code>scripts/Player.js</code></strong> (inside <code>Start()</code>)</p>
+<pre class="code" data-lang="js"><code>this.entity.on('damage', () =&gt; this.game.camera.shake(150, 0.01));</code></pre>
+<p><strong>Slow motion</strong></p>
+<p><strong>File: your script, for example <code>scripts/Game.js</code></strong> (a line inside any method)</p>
+<pre class="code" data-lang="js"><code>this.game.timeScale = 0.3;
+this.after(0.5, () =&gt; (this.game.timeScale = 1));   // timers run on scaled time: 0.5 game-seconds ≈ 1.7 s real</code></pre>
+<h2 id="audio-on-first-touch">Audio on first touch<a class="anchor" href="#audio-on-first-touch">#</a></h2>
+<p><strong>Silent title screen / first click hits a button</strong> — install the opt-in <a href="../manual/audio.html#touch-to-start">touch-to-start gate</a>: <code>this.startGate = touchToStart(this.game, { title: &#39;MY GAME&#39; });</code> after building the title, and <code>this.startGate?.destroy()</code> in <code>onDestroy()</code>.</p>
+<h2 id="spawning">Spawning<a class="anchor" href="#spawning">#</a></h2>
+<p><strong>Bullets with a lifetime</strong></p>
+<p><strong>File: your script, for example <code>scripts/Gun.js</code></strong> (inside an <code>async</code> method)</p>
+<pre class="code" data-lang="js"><code>const b = await this.scene.spawn('prefabs/bullet.prefab.json', { pos: this.entity.worldPos });
+this.physics.setVelocity(b, this.facing * 400, 0);
+this.after(2, () =&gt; b.destroy());</code></pre>
+<p><strong>Random spawn points</strong> — <code>this.rng.pick(this.scene.findByTag(&#39;spawn&#39;)).worldPos</code>. <code>rng</code> is seedable (<code>new Rng(seed)</code>) for replays.</p>
+<h2 id="timers-amp-tweens">Timers &amp; tweens<a class="anchor" href="#timers-amp-tweens">#</a></h2>
+<p><strong>File: your script, for example <code>scripts/Spawner.js</code></strong> (inside <code>Start()</code>; keep <code>stop</code> to cancel it later)</p>
+<pre class="code" data-lang="js"><code>const stop = this.every(1, () =&gt; this.spawnCoin());   // later: stop()
+this.tween(this.entity.pos, [400, 100, 0], { duration: 1.2, ease: 'backOut' });</code></pre>
+<h2 id="data">Data<a class="anchor" href="#data">#</a></h2>
+<p><strong>High score</strong>: <code>if (score &gt; this.save.get(&#39;best&#39;, 0)) this.save.set(&#39;best&#39;, score);</code>
+<strong>Settings screen</strong>: <code>this.audio.volume(&#39;music&#39;, v)</code> is persisted automatically.</p>
+<h2 id="ui">UI<a class="anchor" href="#ui">#</a></h2>
+<p><strong>Floating damage numbers</strong>: library <code>ui-damage-numbers.js</code>, triggered by <code>events.emit(&#39;dmg&#39;, { pos, amount })</code>.
+<strong>Tooltip / dialogue</strong>: <code>dialogue.js</code> reads <code>assets/story.json</code> nodes (<code>speaker</code>, <code>text</code>, <code>next</code>/<code>choices</code>).</p>
+<h2 id="3d">3D<a class="anchor" href="#3d">#</a></h2>
+<p><strong>Third-person follow</strong> — <code>third-person3d.js</code>; <strong>orbit</strong> — <code>camera</code> <code>type: orbit</code> + <code>follow</code>.
+<strong>Ground check</strong> — <code>this.physics.isGrounded(this.entity)</code>.
+<strong>Interact with what you look at</strong> — <code>interact-ray.js</code> casts from the camera.</p>
+<h2 id="debug">Debug<a class="anchor" href="#debug">#</a></h2>
+<p><code>this.game.timeScale</code>, <code>this.game.pause()</code>, <code>this.events.on(&#39;error&#39;, e =&gt; …)</code>, <code>util-debug.js</code>.</p>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<p>Use the native API reference for the exact service contract. New scripts should start with the Unity scripting cheatsheet.</p>
+<p>Next: <a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a>. Back to: <a href="cookbook.html">Cheatsheets</a>.</p>
+<div class="pager"><a href="cheat-sheet-nordjs.html"><small>← Previous</small>Native NordScript cheatsheet</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#movement-amp-feel">Movement feel </a><a href="#audio-on-first-touch">Audio on first touch </a><a href="#spawning">Spawning </a><a href="#timers-amp-tweens">Timers tweens </a><a href="#data">Data </a><a href="#ui">UI </a><a href="#3d">3D </a><a href="#debug">Debug </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

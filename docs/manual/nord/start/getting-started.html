@@ -6,515 +6,154 @@
 <link rel="stylesheet" href="../../assets/manual.css"></head>
 <body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
 <div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
-<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="getting-started.html" class="active" aria-current="page">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="../guides/cookbook.html">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
-<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Start here</div><details open><summary>Start here <small>(3)</small></summary><a href="getting-started.html" class="cur" aria-current="page">Getting started</a><a href="how-nord-works.html">How Nord works</a><a href="developer-basics.html">Programming for dummy developers</a></details></nav><main id="content"><div class="crumb">Start here / Nord Engine</div><h1>Getting started</h1>
-<p>Nord is an <strong>editor</strong>, like Unity or Godot. You open <strong>Nord Engine</strong>, click through windows, press <strong>▶ Play</strong>, and see your game run. This guide takes about an hour and ends with a game you changed, understood and exported.</p>
-<aside class="box dummies"><div class="box-title">For dummy developers</div><p><strong>Is <code>nord</code> a command I must type?</strong> No. Everything in this guide is done by clicking in the editor. A small companion program also called <code>nord</code> exists for people who want to automate things (build servers, scripts). It is optional, and <a href="#part-11-the-optional-nord-command">Part 11</a> explains exactly what it is. If you never open a terminal, you miss nothing.</p>
-</aside><h2 id="pick-your-path">Pick your path<a class="anchor" href="#pick-your-path">#</a></h2>
-<table>
-<thead>
-<tr>
-<th>You are…</th>
-<th>Do this</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>New to game making</strong></td>
-<td>Read every part in order. Parts 4–6 are the heart of it.</td>
-</tr>
-<tr>
-<td><strong>Coming from Unity or Godot</strong></td>
-<td>Skim Part 1, read the <a href="#part-5-the-mental-model">translation table in Part 5</a>, then jump to Part 6.</td>
-</tr>
-<tr>
-<td><strong>Impatient</strong></td>
-<td>Do Parts 1–3 (ten minutes), then <a href="../tutorials/tut-t01-hello-nord.html">T01: Hello Nord</a>. Come back for the rest.</td>
-</tr>
-<tr>
-<td><strong>Want to build levels, not code</strong></td>
-<td>Do Parts 1–4, then <a href="#part-9-the-built-in-creator-tools">Part 9</a>: the 2D Level Creator and FPS Creator.</td>
-</tr>
-<tr>
-<td><strong>Just want to see what Nord can do</strong></td>
-<td>Open the hub&#39;s <strong>Examples</strong> and play a few. Nothing in them is mocked up.</td>
-</tr>
-</tbody></table>
-<h2 id="what-you-will-have-at-the-end">What you will have at the end<a class="anchor" href="#what-you-will-have-at-the-end">#</a></h2>
-<ul>
-<li>A running platformer game, opened and played in the editor.</li>
-<li>A game you tuned (higher jumps, new text, a new script) without breaking it.</li>
-<li>A clear picture of <strong>project → scene → entity → component → script</strong>.</li>
-<li>A taste of the level creators (<strong>2D Level</strong> and <strong>FPS Level</strong>) that build games without code.</li>
-<li>An exported web folder you can put on any website.</li>
-</ul>
-<hr>
-<h2 id="part-1-install-and-open-the-editor">Part 1: Install and open the editor<a class="anchor" href="#part-1-install-and-open-the-editor">#</a></h2>
-<p><strong>macOS (recommended).</strong> Open <strong>Nord Engine.app</strong>. If you are working from this repository instead, run <code>./run.sh</code> in the repo folder to start the editor from source, or <code>./build.sh</code> to produce the <code>.app</code>. The first compile of the editor takes a few minutes; later starts are quick.</p>
-<p><strong>Windows and Linux.</strong> Build with <code>./build.sh</code> (Linux) or <code>build-win.sh</code> (see <code>docs/BUILD_WINDOWS.md</code> in the repository). The editor is the <code>nord-editor</code> program in the output folder.</p>
-<p>A splash screen shows for a moment, then the <strong>project hub</strong> opens.</p>
-<aside class="box tip"><div class="box-title">Tip</div><p>Everything here works <strong>offline</strong>. The manual you are reading is also inside the editor: click <strong>Docs</strong> in the hub or in any project.</p>
-</aside><h2 id="part-2-the-project-hub">Part 2: The project hub<a class="anchor" href="#part-2-the-project-hub">#</a></h2>
-<p>The hub is the editor&#39;s front door. It has three jobs.</p>
-<table>
-<thead>
-<tr>
-<th>Area</th>
-<th>What it is for</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>New project</strong></td>
-<td>Pick a template, pick a folder, press create. Templates are complete starting points, such as <em>Platformer</em>, <em>3D platformer</em>, <em>Shooter</em>, <em>Puzzle grid</em> or <em>UI app</em>.</td>
-</tr>
-<tr>
-<td><strong>Recent</strong></td>
-<td>Projects you opened lately. Hover a row to see its full folder path.</td>
-</tr>
-<tr>
-<td><strong>Examples and Tutorials</strong></td>
-<td>Finished games and the lessons from this manual. Use the filter chips (<strong>Featured, All, 2D, 3D, FPS, Physics, Apps, Rust</strong>) and the search box.</td>
-</tr>
-</tbody></table>
-<p>Two buttons are worth knowing now: <strong>Docs</strong> opens this manual, and <strong>Back to projects</strong> (inside a project) returns you here.</p>
-<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A <strong>template</strong> is a project somebody already built so you do not start from a blank page. In real engines too (Unity &quot;Templates&quot;, Godot &quot;demo projects&quot;), the fastest way to learn is to open something that works and change it.</p>
-</aside><h2 id="part-3-create-your-first-project-and-press-play">Part 3: Create your first project and press Play<a class="anchor" href="#part-3-create-your-first-project-and-press-play">#</a></h2>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Start here</div><details open><summary>Start here <small>(3)</small></summary><a href="getting-started.html" class="cur" aria-current="page">Getting started</a><a href="how-nord-works.html">How Nord works</a><a href="programming-basics.html">Programming basics — your first MonoBehaviour</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="start-legacy.html">Original first-hour guide (old)</a><a href="developer-basics.html">Programming for dummy developers</a></details></nav><main id="content"><div class="crumb">Start here / Nord Engine</div><h1>Getting started</h1>
+<p>Use this page for your first session in Nord. You will open a working game, change one object, and know where to go next. You do not need a terminal or previous programming experience.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Think of Nord as a small theatre. A <strong>project</strong> is the whole production, a <strong>scene</strong> is one stage arrangement, and an <strong>entity</strong> is one thing on that stage. <strong>Components</strong> give it capabilities. <strong>Scripts</strong> tell it what to do. Start with one actor, not the entire musical.</p>
+</aside><h2 id="before-you-start">Before you start<a class="anchor" href="#before-you-start">#</a></h2>
+<p>Open <strong>Nord Engine</strong>. The project hub appears. Use a project folder you can find again, and keep your editable project when exporting a playable build. If you are running from source, follow the platform setup in <a href="../manual/editor-tour.html">Editor tour</a>; this page assumes the editor is already open.</p>
+<h2 id="1-open-a-game-that-already-works">1. Open a game that already works<a class="anchor" href="#1-open-a-game-that-already-works">#</a></h2>
 <ol>
-<li>In the hub choose <strong>New project</strong> and expand <strong>Starter templates</strong>.</li>
-<li>Pick <strong>Platformer</strong>. Choose a folder you will find again, for example <code>Projects/my-first-game</code>. Create it.</li>
-<li>The editor opens your new project. Press <strong>▶ Play</strong> in the toolbar (or <strong>Cmd+R</strong>).</li>
-<li>Play it. <strong>A / D</strong> or the arrow keys run, <strong>Space</strong> jumps, <strong>Shift</strong> dashes. Stomp the slimes, collect coins, touch flags for checkpoints. The big slime at the end is the boss.</li>
-<li>Press <strong>■ Stop</strong> (<strong>Cmd+.</strong>) to go back to editing.</li>
+<li>In the hub, browse <strong>Examples and Tutorials</strong>. Choose a small 2D example or a starter project. The editor opens its scene and files.</li>
+<li>Press <span class="c-ui">Play</span> in the toolbar. The <span class="c-ui">Game</span> view shows the running game. Click inside it before testing keyboard input.</li>
+<li>Press <span class="c-ui">Stop</span>. You return to editing. If nothing appears, open <span class="c-ui">Console</span> and read the first error before making changes.</li>
 </ol>
-<p><strong>Checkpoint:</strong> you can run left and right and jump. If the Game view is blank, look at the <strong>Console</strong> panel and read the first red message before touching anything.</p>
-<aside class="box tip"><div class="box-title">Tip</div><p>Always press Play on an untouched template first. If it works, any later breakage is <em>your</em> change, and undo (<strong>Cmd+Z</strong>) can fix it. If it does not work, tell yourself the template is broken before you hunt in your own edits.</p>
-</aside><h2 id="part-4-a-guided-tour-of-the-editor">Part 4: A guided tour of the editor<a class="anchor" href="#part-4-a-guided-tour-of-the-editor">#</a></h2>
-<p>Look at the screen. The scene is in the middle, the list of things on the left, the settings of the selected thing on the right, files and messages at the bottom. (Dock tabs can be dragged around, so your layout may differ.)</p>
-<figure class="shot"><img src="../../assets/editor-layout.svg" alt="Nord editor diagram: toolbar above Hierarchy, Scene/Game and Inspector; Assets and Console below"><figcaption>Panel map. Start by clicking an item on the left and reading what appears on the right.</figcaption></figure><p>Do each &quot;try this&quot; now. They take under a minute and each one teaches a reflex you will use daily.</p>
-<h3 id="toolbar">Toolbar<a class="anchor" href="#toolbar">#</a></h3>
-<p><strong>▶ Play / ■ Stop</strong> runs or stops the game. <strong>Export…</strong> packages it. The magnifier opens the <strong>command palette</strong> (<strong>Cmd+K</strong>): type what you want (&quot;export&quot;, &quot;new script&quot;) and run it. Forgotten where something lives? Use the palette.</p>
-<p><em>Try this:</em> press <strong>Cmd+K</strong>, type <code>play</code>, look at what it offers, press <strong>Esc</strong>.</p>
-<h3 id="hierarchy-left-what-exists">Hierarchy (left): <em>what exists</em><a class="anchor" href="#hierarchy-left-what-exists">#</a></h3>
-<p>The tree of every <strong>entity</strong> in the current scene: <code>Sky</code>, <code>Hills</code>, <code>Level</code>, <code>Hero</code>, the coins, the slimes, the <code>Boss</code>. Click one to select it. <strong>Right-click</strong> for Add child, Duplicate, Delete, Copy and Paste. Drag a row onto another to make it a child.</p>
-<p><em>Try this:</em> click <code>Hero</code>. The Scene view highlights the character and the Inspector fills with its settings.</p>
-<h3 id="scene-view-centre-arrange-things">Scene view (centre): <em>arrange things</em><a class="anchor" href="#scene-view-centre-arrange-things">#</a></h3>
-<p>The <strong>Scene</strong> tab is the edit view. Pan, zoom and drag things around. Keys <strong>W / E / R</strong> switch the move, rotate and scale handles, <strong>F</strong> focuses on the selection.</p>
-<p><em>Try this:</em> click a coin, press <strong>W</strong>, drag it somewhere else, then press <strong>Cmd+Z</strong> to undo.</p>
-<h3 id="game-view-centre-what-the-player-sees">Game view (centre): <em>what the player sees</em><a class="anchor" href="#game-view-centre-what-the-player-sees">#</a></h3>
-<p>The <strong>Game</strong> tab runs the real game. When you press Play, it shows here. Use Scene to build, Game to test.</p>
-<h3 id="inspector-right-how-each-thing-is-set-up">Inspector (right): <em>how each thing is set up</em><a class="anchor" href="#inspector-right-how-each-thing-is-set-up">#</a></h3>
-<p>For the selected entity: its <strong>transform</strong> (position, rotation, scale), its <strong>components</strong>, and its <strong>scripts</strong> with their adjustable values. Everything is a field you can type into. <strong>+ Add component</strong> and <strong>+ Add script</strong> live here.</p>
-<p><em>Try this:</em> select <code>Hero</code> and find the <code>platformer2d</code> script. You will see fields such as <strong>Run speed</strong> and <code>jumpForce</code>. You will use them in Part 6.</p>
-<h3 id="assets-bottom-your-files">Assets (bottom): <em>your files</em><a class="anchor" href="#assets-bottom-your-files">#</a></h3>
-<p>Pictures, sounds, 3D models and sprite sheets, shown as thumbnails. Drop a file from Finder to import it. Dropping an asset into empty Hierarchy space creates an entity from it.</p>
-<h3 id="library-ready-made-scripts-and-prefabs">Library: <em>ready-made scripts and prefabs</em><a class="anchor" href="#library-ready-made-scripts-and-prefabs">#</a></h3>
-<p>Searchable scripts, prefabs and kits. <strong>Insert</strong> adds one to the selected entity. This is how the template got its jumping, health and score: it is mostly library scripts glued together.</p>
-<h3 id="console-bottom-messages-and-errors">Console (bottom): <em>messages and errors</em><a class="anchor" href="#console-bottom-messages-and-errors">#</a></h3>
-<p>Everything the running game prints with <code>console.log</code>, plus errors. Click <code>file.js:12</code> to jump to that line. <strong>When something is wrong, the Console is your first stop.</strong></p>
-<h3 id="code-and-docs">Code and Docs<a class="anchor" href="#code-and-docs">#</a></h3>
-<p><strong>Code</strong> is the built-in code editor with highlighting, autocomplete and error squiggles. <strong>Docs</strong> is this manual.</p>
+<p>Use the toolbar buttons while learning. Shortcuts can be rebound in Settings; <a href="../manual/unity-workflow.html">Unity-style workflow</a> explains the default F5/F6 workflow. A tutorial&#39;s older key binding may differ from your saved settings.</p>
+<h2 id="2-learn-where-changes-happen">2. Learn where changes happen<a class="anchor" href="#2-learn-where-changes-happen">#</a></h2>
 <table>
 <thead>
 <tr>
-<th>Where you click</th>
-<th>What it means</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Hierarchy</td>
-<td>Choose the thing you want to change.</td>
-</tr>
-<tr>
-<td>Inspector</td>
-<td>Change that thing&#39;s settings.</td>
-</tr>
-<tr>
-<td>Scene view</td>
-<td>Arrange things before the game runs.</td>
-</tr>
-<tr>
-<td>Game view</td>
-<td>See what a player will actually see.</td>
-</tr>
-<tr>
-<td>Console</td>
-<td>Read messages and errors from the game.</td>
-</tr>
-<tr>
-<td>Assets</td>
-<td>Browse, import and drag files.</td>
-</tr>
-<tr>
-<td>Library</td>
-<td>Add ready-made behaviour.</td>
-</tr>
-</tbody></table>
-<h2 id="part-5-the-mental-model">Part 5: The mental model<a class="anchor" href="#part-5-the-mental-model">#</a></h2>
-<p>Nord has five ideas. Learn them once and every tutorial makes sense.</p>
-<pre class="code" data-lang=""><code>Project (a folder)
- └─ Scene (one level or screen, a .scene.json file)
-     └─ Entity (one thing: hero, coin, camera, label)
-         ├─ Components (data: sprite, collider, light, text...)
-         └─ Scripts (code you attach: what it does)</code></pre>
-<ul>
-<li><strong>Project</strong> - a plain folder. Contains <code>nord.project.json</code>, scenes, scripts and assets. Copy the folder and you copied the game. It works with git.</li>
-<li><strong>Scene</strong> - one saved arrangement of entities: a level, a menu, a title screen. <code>game.loadScene()</code> switches between them.</li>
-<li><strong>Entity</strong> - an empty box with a name and a position. On its own it does nothing.</li>
-<li><strong>Component</strong> - a feature you put in the box: a <strong>sprite</strong> (what it looks like), a <strong>rigidbody</strong> (obeys physics), a <strong>text</strong>, a <strong>camera</strong>, a <strong>light</strong>. Components are <em>data</em>.</li>
-<li><strong>Script</strong> - a JavaScript file attached to an entity. Scripts are <em>behaviour</em>: &quot;move when a key is pressed&quot;, &quot;turn on when the player is near&quot;.</li>
-</ul>
-<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Build a player like a character sheet: the entity is the blank card, the <strong>sprite</strong> is the portrait, the <strong>rigidbody</strong> is &quot;falls and collides&quot;, and the <strong>script</strong> is &quot;moves when I press a key&quot;. You add only the features that thing needs.</p>
-</aside><h3 id="if-you-already-know-another-engine">If you already know another engine<a class="anchor" href="#if-you-already-know-another-engine">#</a></h3>
-<table>
-<thead>
-<tr>
-<th>Nord</th>
-<th>Unity</th>
-<th>Godot</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Entity</td>
-<td>GameObject</td>
-<td>Node</td>
-<td>Entities can have children; child positions are relative to the parent.</td>
-</tr>
-<tr>
-<td>Component</td>
-<td>Component</td>
-<td>(built into node types)</td>
-<td>Plain JSON in the scene file.</td>
-</tr>
-<tr>
-<td>Script (<code>NordScript</code>)</td>
-<td>MonoBehaviour</td>
-<td>Script on a node</td>
-<td><code>start()</code>, <code>update()</code>, <code>fixedUpdate()</code> are the familiar callbacks.</td>
-</tr>
-<tr>
-<td>Scene</td>
-<td>Scene</td>
-<td>Scene</td>
-<td>One JSON file.</td>
-</tr>
-<tr>
-<td>Prefab</td>
-<td>Prefab</td>
-<td>Packed scene</td>
-<td>Spawn at runtime with <code>this.scene.spawn(...)</code>.</td>
-</tr>
-<tr>
-<td>Inspector</td>
-<td>Inspector</td>
-<td>Inspector</td>
-<td>Script <code>static attributes</code> appear here, like <code>[SerializeField]</code> / <code>@export</code>.</td>
-</tr>
-<tr>
-<td>Hierarchy</td>
-<td>Hierarchy</td>
-<td>Scene dock</td>
-<td></td>
-</tr>
-<tr>
-<td>Console</td>
-<td>Console</td>
-<td>Output</td>
-<td></td>
-</tr>
-<tr>
-<td>Library</td>
-<td>Asset Store (offline)</td>
-<td>AssetLib</td>
-<td>Local and searchable.</td>
-</tr>
-</tbody></table>
-<p>2D uses <strong>pixels, y points down</strong>. 3D uses <strong>metres, y points up</strong>. Rotation is in degrees.</p>
-<h3 id="what-actually-runs-the-game">What actually runs the game<a class="anchor" href="#what-actually-runs-the-game">#</a></h3>
-<p>Nord is the workshop; under the hood it uses existing engines to draw: <strong>Phaser</strong> for 2D, <strong>Babylon.js</strong> with Havok physics for 3D, and Rust compiled to WebAssembly for the Rust tiers. You use Nord&#39;s own API (<code>entity.pos</code>, <code>game.loadScene(...)</code>); you do not need to learn Phaser or Babylon first. <a href="how-nord-works.html">How Nord works</a> explains the pieces in plain English.</p>
-<h2 id="part-6-change-a-real-game-five-small-wins">Part 6: Change a real game (five small wins)<a class="anchor" href="#part-6-change-a-real-game-five-small-wins">#</a></h2>
-<p>Do these on your Platformer project, in order. Save with <strong>Cmd+S</strong> after each, press Play, observe, press Stop. Keep the loop: <strong>change → save → play → observe.</strong></p>
-<h3 id="win-1-move-something">Win 1: Move something<a class="anchor" href="#win-1-move-something">#</a></h3>
-<p>Select a <code>Coin</code> in Hierarchy. In Inspector, change <strong>Position</strong> <code>x</code> or <code>y</code> by about 50. Press Play. The coin is now somewhere else.</p>
-<h3 id="win-2-make-the-hero-jump-higher">Win 2: Make the hero jump higher<a class="anchor" href="#win-2-make-the-hero-jump-higher">#</a></h3>
-<p>Select <code>Hero</code>. In its <code>platformer2d</code> script, raise <code>jumpForce</code> from <code>420</code> to <code>520</code>. Play. You jump higher. Now try <strong>Run speed</strong> <code>180</code> → <code>260</code>. Try tick-boxes: turn <strong>dash</strong> off, turn <strong>wallSlide</strong> on.</p>
-<p>Why this works: the script declared <code>static attributes</code>, and Nord shows each one as an Inspector field. You are editing <em>data</em>, not code.</p>
-<h3 id="win-3-add-text">Win 3: Add text<a class="anchor" href="#win-3-add-text">#</a></h3>
-<p>Select the root of the scene (or add an entity with <strong>Add entity</strong>), name it <code>Welcome</code>, set position near <code>[320, 40, 0]</code>, then <strong>+ Add component → text</strong>. Set <code>text</code> = <code>Collect everything!</code>, <code>size</code> = <code>28</code>, <code>color</code> = <code>#ebcb8b</code>. Play: your words are on screen. (This is <a href="../tutorials/tut-t01-hello-nord.html">T01</a> in miniature.)</p>
-<h3 id="win-4-write-your-own-script">Win 4: Write your own script<a class="anchor" href="#win-4-write-your-own-script">#</a></h3>
-<p>Create <code>scripts/pulse.js</code> in the <strong>Code</strong> panel and paste:</p>
-<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
-export default class Pulse extends NordScript {
-  static attributes = {
-    amount: { type: 'number', default: 0.2, min: 0, max: 1 },
-    rate:   { type: 'number', default: 3 },
-  };
-  start() { this.base = [...this.entity.scale]; }
-  update() {
-    const k = 1 + Math.sin(this.time.elapsed * this.attrs.rate) * this.attrs.amount;
-    this.entity.scale = this.base.map((v) =&gt; v * k);
-  }
-}</code></pre>
-<p>Select a <code>Coin</code>, <strong>+ Add script</strong>, choose <code>scripts/pulse.js</code>. Play: the coin breathes. Read it aloud: <em>when I start, remember my scale; every frame, scale me by a sine wave.</em></p>
-<h3 id="win-5-hot-reload-and-breaking-things-on-purpose">Win 5: Hot reload and breaking things on purpose<a class="anchor" href="#win-5-hot-reload-and-breaking-things-on-purpose">#</a></h3>
-<p>While the game is <strong>running</strong>, change <code>3</code> to <code>8</code> in <code>rate</code> through the Inspector, or edit the script and save. The game keeps running with the new behaviour: that is <strong>hot reload</strong>. Now delete a bracket and save. The game keeps its last working code and the Console shows the error with a <code>file:line</code> link. You cannot ruin anything by trying.</p>
-<p><strong>Checkpoint:</strong> you changed settings, text and code, and each time the game told you what happened.</p>
-<aside class="box tip"><div class="box-title">Tip</div><p>When you want a feature (health bar, enemy patrol, pickups), search the <strong>Library</strong> before writing code. Then read <a href="../manual/scripting.html">Scripting</a> when you want to know why a library script works.</p>
-</aside><h2 id="part-7-save-undo-and-your-files">Part 7: Save, undo and your files<a class="anchor" href="#part-7-save-undo-and-your-files">#</a></h2>
-<ul>
-<li><strong>Cmd+S</strong> saves. The editor also autosaves for crash recovery.</li>
-<li><strong>Cmd+Z / Shift+Cmd+Z</strong> undo and redo almost everything in a scene.</li>
-<li>Your project is a folder of readable files:</li>
-</ul>
-<pre class="code" data-lang=""><code>my-first-game/
-├─ nord.project.json      project settings (type, start scene, display size)
-├─ scenes/main.scene.json entities and components
-├─ scripts/pulse.js       your code
-├─ assets/                pictures, sounds, models
-└─ dist/                  export output (created when you export)</code></pre>
-<aside class="box dummies"><div class="box-title">For dummy developers</div><p><strong>Examples edit their own source.</strong> With <strong>Settings → USE CACHED CONTENT</strong> off (the default), opening an example and saving changes that example&#39;s files. For experiments, always create your own project from a template, as you did in Part 3. <a href="../manual/editor-tour.html#current-example-content">Details</a>.</p>
-</aside><h2 id="part-8-make-something-of-your-own">Part 8: Make something of your own<a class="anchor" href="#part-8-make-something-of-your-own">#</a></h2>
-<p>You now know enough to start. A good order, borrowed from how other engines teach:</p>
-<ol>
-<li><strong>Reshape the template.</strong> Move platforms, add coins, change colours. Keep playing after each tweak.</li>
-<li><strong>Follow the tutorials in order.</strong> <a href="../tutorials/tut-t01-hello-nord.html">T01 Hello Nord</a>, <a href="../tutorials/tut-t02-sprite-movement.html">T02 Sprite and movement</a>, <a href="../tutorials/tut-t03-first-script.html">T03 First script</a>, <a href="../tutorials/tut-t04-platformer.html">T04 Platformer</a>. Each names its goal, shows the expected result and ends with a visible check.</li>
-<li><strong>Build one complete small game</strong> such as Coin Canyon from the <a href="../tutorials/tutorials.html">tutorial list</a> before starting a big one. Finishing teaches more than starting.</li>
-<li><strong>Reach for the reference only when you need it.</strong> The <a href="../manual/welcome.html">Manual</a> explains tools; the <a href="../api/api.html">API</a> lists exact methods.</li>
-</ol>
-<p>Habits that save hours:</p>
-<ul>
-<li>Change <strong>one thing at a time</strong>, then Play.</li>
-<li>Read the <strong>first</strong> error in the Console, not the last.</li>
-<li>Prefer Inspector fields and Library scripts to hand-written code until you need something unique.</li>
-<li>Keep a copy (git, or just duplicate the folder) before big experiments.</li>
-<li>Name entities clearly: <code>Hero</code>, <code>CoinTrail</code>, <code>ScoreLabel</code>.</li>
-</ul>
-<h2 id="part-9-the-built-in-creator-tools">Part 9: The built-in creator tools<a class="anchor" href="#part-9-the-built-in-creator-tools">#</a></h2>
-<p>Scripts are only one way to build in Nord. Several tools let you make a game by painting, placing and clicking. They appear as extra tabs or project options; you can ignore them until you want them.</p>
-<table>
-<thead>
-<tr>
-<th>Tool</th>
-<th>Where you find it</th>
-<th>What it is for</th>
-<th>Learn more</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>2D Level Creator</strong> (the <strong>2D Level</strong> tab)</td>
-<td>Hub templates <strong>2D Platform Workshop</strong>, <strong>2D Top-down Workshop</strong> and <strong>Machine Workshop</strong></td>
-<td>Paint a side-scroller or top-down map from a bank of ready sprites, place the player, pickups, enemies and exits, set physics, and test with <strong>F5</strong>.</td>
-<td><a href="../manual/level-creator-2d.html">2D Level Creator</a></td>
-</tr>
-<tr>
-<td><strong>FPS Creator</strong> (the <strong>FPS Level</strong> tab)</td>
-<td>Hub template <strong>FPS Creator (level editor)</strong>, or <strong>Project ▸ Add / upgrade FPS Creator…</strong> in any 3D project</td>
-<td>Draw rooms on a grid, add doors, stairs, lights, enemies and pickups, and walk through your level in first person with <strong>F5</strong>.</td>
-<td><a href="../manual/fps-creator.html">FPS Creator</a></td>
-</tr>
-<tr>
-<td><strong>Event sheets</strong></td>
-<td>The Event sheets tab</td>
-<td>Game logic as readable &quot;when this happens, do that&quot; rules, no code.</td>
-<td><a href="../manual/event-sheets.html">Event sheets</a></td>
-</tr>
-<tr>
-<td><strong>Behaviors</strong></td>
-<td>Inspector, on any entity</td>
-<td>Ready-made movement and gameplay such as Platform, 8-Direction, Bullet and Turret.</td>
-<td><a href="../manual/behaviors.html">Behaviors</a></td>
-</tr>
-<tr>
-<td><strong>Sprite, animation and tilemap editors</strong></td>
-<td>Assets and Inspector</td>
-<td>Paint pixel art, build animations, paint tile maps.</td>
-<td><a href="../manual/sprites-animation-tilemaps.html">Sprites and tilemaps</a></td>
-</tr>
-<tr>
-<td><strong>Layout editor</strong></td>
-<td>Scene view tools</td>
-<td>Layers, parallax, guides and alignment.</td>
-<td><a href="../manual/layout-editor.html">Layout editor</a></td>
-</tr>
-<tr>
-<td><strong>Particles and timelines</strong></td>
-<td>Inspector</td>
-<td>Effects such as sparks and smoke, and keyframed animation.</td>
-<td><a href="../manual/effects-particles-timelines.html">Effects and timelines</a></td>
-</tr>
-<tr>
-<td><strong>Debugger and profiler</strong></td>
-<td>While the game is running</td>
-<td>Pause, step through and inspect a live game; find what is slow.</td>
-<td><a href="../manual/debugger.html">Debugger</a></td>
-</tr>
-</tbody></table>
-<p><strong>Quickest taste:</strong> make a new project from <strong>2D Platform Workshop</strong>, open the <strong>2D Level</strong> tab, paint a few solid blocks with <strong>B Brush</strong>, place a <strong>Player start</strong>, press <strong>F5</strong> and run across your own level. Press <strong>Shift+Esc</strong> to return to editing. For a first-person version, make a project from <strong>FPS Creator (level editor)</strong>, open the <strong>FPS Level</strong> tab, click <strong>Open…</strong>, choose <code>level1.fpsl.json</code> and press <strong>F5</strong>.</p>
-<aside class="box dummies"><div class="box-title">For dummy developers</div><p>You do not need to pick between &quot;visual tools&quot; and &quot;code&quot;. Most projects mix both: paint the level in a creator tool, then attach a small script to make one thing special.</p>
-</aside><h2 id="part-10-export-your-game">Part 10: Export your game<a class="anchor" href="#part-10-export-your-game">#</a></h2>
-<p>When the game runs well, press <strong>Export…</strong> in the toolbar and follow the dialog. The result is a static folder (<code>dist</code>) containing <code>index.html</code> and all assets.</p>
-<ul>
-<li>Share <strong>the whole folder</strong>, never only <code>index.html</code>.</li>
-<li>Put it on any web host (itch.io, GitHub Pages, your own server). Most browsers need the folder to be <em>served</em>; double-clicking <code>index.html</code> may fail because of browser security rules.</li>
-<li>Mac app, Windows and Linux bundles are also possible: see <a href="../manual/export.html">Export and hosting</a> and the <a href="../manual/desktop-apps.html">desktop apps chapter</a>.</li>
-</ul>
-<h2 id="part-11-the-optional-nord-command">Part 11: The optional <code>nord</code> command<a class="anchor" href="#part-11-the-optional-nord-command">#</a></h2>
-<p>You may have seen commands such as <code>nord new</code> or <code>nord build</code> in places. Here is what they are.</p>
-<p><strong><code>nord</code> is the Nord Engine command-line tool.</strong> It is a small program that does the same project jobs as the editor, but without a window. It exists for:</p>
-<ul>
-<li><strong>Automation</strong> - export on a build server or in a GitHub Action.</li>
-<li><strong>Scripting</strong> - validate projects (<code>nord check</code>), generate thumbnails, pack addons.</li>
-<li><strong>Tinkerers</strong> - people who prefer a terminal to menus.</li>
-</ul>
-<p><strong>It is not how you use the engine.</strong> Creating, editing, playing and exporting from the editor needs no terminal.</p>
-<p><strong>Where it lives.</strong> It ships inside the app, right next to the editor, but it is <strong>not on your PATH</strong>, so typing <code>nord</code> in a fresh terminal says &quot;command not found&quot;. Call it by its full path:</p>
-<table>
-<thead>
-<tr>
-<th>System</th>
-<th>Run it</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>macOS</strong></td>
-<td><code>&quot;/Applications/Nord Engine.app/Contents/MacOS/nord&quot; doctor</code> (keep the quotes; the app&#39;s name has a space)</td>
-</tr>
-<tr>
-<td><strong>Windows</strong></td>
-<td><code>C:\Path\To\NordEngine\nord.exe doctor</code> (the folder you unzipped, beside <code>nord-editor.exe</code>)</td>
-</tr>
-<tr>
-<td><strong>Linux</strong></td>
-<td><code>./nord-engine/nord doctor</code> (the extracted folder, beside <code>nord-editor</code>)</td>
-</tr>
-</tbody></table>
-<p>To type just <code>nord</code>, add a shortcut. On macOS: <code>sudo ln -s &quot;/Applications/Nord Engine.app/Contents/MacOS/nord&quot; /usr/local/bin/nord</code>. On Windows: add the <code>NordEngine</code> folder to your user PATH. The <a href="../guides/cheat-sheet-cli.html">command line cheat sheet</a> has every step and every command.</p>
-<table>
-<thead>
-<tr>
-<th>Command</th>
-<th>Does the same as</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><code>nord info</code></td>
-<td>Print engine info.</td>
-</tr>
-<tr>
-<td><code>nord doctor</code></td>
-<td>Check your toolchain and recommend a project tier.</td>
-</tr>
-<tr>
-<td><code>nord new my-game -t platformer</code></td>
-<td>Hub → <strong>New project</strong> → <em>Platformer</em>.</td>
-</tr>
-<tr>
-<td><code>nord serve my-game</code></td>
-<td>A development server with live reload at <code>http://localhost:4173</code>, so you can play in a browser tab.</td>
-</tr>
-<tr>
-<td><code>nord check my-game</code></td>
-<td>Validate ids, scenes and missing files.</td>
-</tr>
-<tr>
-<td><code>nord build my-game</code></td>
-<td>Toolbar → <strong>Export…</strong>; writes <code>my-game/dist</code>.</td>
-</tr>
-</tbody></table>
-<p><code>nord --help</code> lists everything else, including the bundling and addon commands. All of them are on the <a href="../guides/cheat-sheet-cli.html">command line cheat sheet</a>.</p>
-<h2 id="if-you-get-stuck">If you get stuck<a class="anchor" href="#if-you-get-stuck">#</a></h2>
-<table>
-<thead>
-<tr>
+<th>Select or open</th>
+<th>Use it to</th>
 <th>What you see</th>
-<th>Try this</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>A blank Game view</td>
-<td>Check Console. Confirm the project has a start scene and visible entities inside the camera view.</td>
+<td><span class="c-ui">Hierarchy</span></td>
+<td>Select an entity</td>
+<td>A named scene object becomes selected</td>
 </tr>
 <tr>
-<td>Play does nothing</td>
-<td>Click once inside the Game view so it has keyboard focus.</td>
+<td><span class="c-ui">Inspector</span></td>
+<td>Change that object&#39;s data</td>
+<td>Transform, components and scripts</td>
 </tr>
 <tr>
-<td>Your change disappeared</td>
-<td>Save (<strong>Cmd+S</strong>). Check that you reopened <em>your</em> project folder, not an example.</td>
+<td><span class="c-ui">Scene</span></td>
+<td>Arrange the saved scene</td>
+<td>Editing handles and scene contents</td>
 </tr>
 <tr>
-<td>A picture will not load</td>
-<td>Check its project-relative path and the exact filename, including capitals.</td>
+<td><span class="c-ui">Game</span></td>
+<td>Test the running game</td>
+<td>What the player sees</td>
 </tr>
 <tr>
-<td>No sound</td>
-<td>Click or tap the game once; browsers wait for a gesture before playing audio.</td>
+<td><span class="c-ui">Assets</span></td>
+<td>Find project files</td>
+<td>Images, scripts, models and other resources</td>
 </tr>
 <tr>
-<td>Code changed but an imported helper did not</td>
-<td>Stop and Play again; imported helper modules need a full restart.</td>
-</tr>
-<tr>
-<td><code>nord: command not found</code></td>
-<td>You do not need it. See <a href="#part-11-the-optional-nord-command">Part 11</a> if you want it.</td>
-</tr>
-<tr>
-<td>You broke something</td>
-<td><strong>Cmd+Z</strong>. If that is not enough, recreate the project from the template and compare.</td>
+<td><span class="c-ui">Console</span></td>
+<td>Read errors and messages</td>
+<td>Output with file/line links where available</td>
 </tr>
 </tbody></table>
-<h2 id="words-you-met">Words you met<a class="anchor" href="#words-you-met">#</a></h2>
+<p>The <a href="../manual/editor-tour.html">Editor tour</a> explains the remaining panels. You can learn them when your current task needs them.</p>
+<h2 id="3-make-one-visible-change">3. Make one visible change<a class="anchor" href="#3-make-one-visible-change">#</a></h2>
+<ol>
+<li>Stop Play and select a visible object in <span class="c-ui">Hierarchy</span>. Its settings appear in <span class="c-ui">Inspector</span>.</li>
+<li>Change one position field by a small amount. In a 2D project, try moving it 20 pixels right. The <span class="c-ui">Scene</span> view shows the new position.</li>
+<li>Save the scene, press <span class="c-ui">Play</span>, and compare. The game should start with the object in its new position. Stop before making the next saved edit.</li>
+</ol>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code> (or the scene you opened), the selected entity stores its transform. See <a href="../manual/projects-scenes.html">Projects and scenes</a> before editing that JSON directly. Its id and unrelated components should stay intact.</p>
+<blockquote>
+<p><strong>Trap:</strong> edits made while Play is running affect the running game. Stop Play before changing the saved starting scene. Saving a project and exporting a game are separate operations.</p>
+</blockquote>
+<h2 id="4-choose-what-to-learn-next">4. Choose what to learn next<a class="anchor" href="#4-choose-what-to-learn-next">#</a></h2>
 <table>
 <thead>
 <tr>
-<th>Word</th>
-<th>Meaning</th>
+<th>Your goal</th>
+<th>Next page</th>
+<th>Result</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>Project</td>
-<td>The folder holding the whole game.</td>
+<td>Put your own words on screen</td>
+<td><a href="../tutorials/tut-t01-hello-nord.html">T01 Hello Nord</a></td>
+<td>A text entity you can see</td>
 </tr>
 <tr>
-<td>Scene</td>
-<td>A saved level or screen.</td>
+<td>Understand code from zero</td>
+<td><a href="programming-basics.html">Programming basics</a></td>
+<td>A complete Unity-style script and the meaning of each part</td>
 </tr>
 <tr>
-<td>Entity</td>
-<td>One thing in a scene.</td>
+<td>Write familiar Unity-style gameplay</td>
+<td><a href="../examples/ex-first-script.html">Your first script</a>, then <a href="../examples/ex-input-movement.html">Input and movement</a></td>
+<td>Attached MonoBehaviour behavior</td>
 </tr>
 <tr>
-<td>Component</td>
-<td>A feature attached to an entity.</td>
+<td>Build without writing code</td>
+<td><a href="../tutorials/tut-t24-event-sheet-platformer.html">Event-sheet platformer</a></td>
+<td>Conditions and actions driving a game</td>
 </tr>
 <tr>
-<td>Script</td>
-<td>A code file that gives an entity behaviour.</td>
+<td>Paint a level</td>
+<td><a href="../manual/level-creator-2d.html">2D Level Creator</a> or <a href="../manual/fps-creator.html">FPS Creator</a></td>
+<td>An editable map you can test</td>
 </tr>
 <tr>
-<td>Attribute</td>
-<td>A script setting shown as an Inspector field.</td>
+<td>Understand the engine&#39;s parts</td>
+<td><a href="how-nord-works.html">How Nord works</a></td>
+<td>Know what the editor, runtime and export do</td>
 </tr>
 <tr>
-<td>Hot reload</td>
-<td>Code changes applied while the game runs.</td>
-</tr>
-<tr>
-<td>Export</td>
-<td>Packaging the game into a folder others can play.</td>
-</tr>
-<tr>
-<td>Tier</td>
-<td>Project kind: HTML, 2D, 3D, Rust game, Rust app.</td>
+<td>Share a game</td>
+<td><a href="../manual/export.html">Export and hosting</a></td>
+<td>A playable build beside your editable project</td>
 </tr>
 </tbody></table>
-<p>More terms are in the <a href="../guides/glossary.html">glossary</a>.</p>
-<h2 id="where-next">Where next<a class="anchor" href="#where-next">#</a></h2>
+<h2 id="try-a-tiny-challenge">Try a tiny challenge<a class="anchor" href="#try-a-tiny-challenge">#</a></h2>
+<p>Move one collectible somewhere cheeky but reachable. Predict what changes, save, and press Play. If the collectible stays put, find which script controls its position. You have just done a useful debugging exercise: make a prediction and compare it with evidence.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>You do not have to memorize the menus or API. The Manual explains features, Tutorials guide a project, Examples show complete code, Cheatsheets remind you of common operations, and API pages give exact names. <strong>Old</strong> contains retained earlier workflows, not the recommended starting path.</p>
+</aside><h2 id="if-something-goes-wrong">If something goes wrong<a class="anchor" href="#if-something-goes-wrong">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>First check</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Keys do nothing</td>
+<td>Click the Game view, then check the project&#39;s input setup</td>
+</tr>
+<tr>
+<td>You cannot see an object</td>
+<td>Check its position, enabled state, camera and renderer component</td>
+</tr>
+<tr>
+<td>Your saved change disappeared</td>
+<td>Stop Play, edit the scene, save, and confirm you reopened the same project</td>
+</tr>
+<tr>
+<td>A script fails</td>
+<td>Read the first Console error and compare import names and capitalization</td>
+</tr>
+<tr>
+<td>The instructions use lower-case <code>start()</code></td>
+<td>That lesson uses the original NordScript lifecycle; keep its style consistent or choose the new Unity-style path</td>
+</tr>
+</tbody></table>
+<section class="topic-directory"><h2 id="topic-directory">Topics in this section</h2><p>Choose a task below. Each link opens a focused page; you do not need to read the directory in order.</p><details><summary>Start here <small>(2)</small></summary><ul><li><a href="how-nord-works.html">How Nord works</a> — What is on your computer, what runs your game, and which libraries do the work - in plain words, with exact versions.</li><li><a href="programming-basics.html">Programming basics — your first MonoBehaviour</a> — Learn variables, methods, lifecycle, fields and elapsed time through one complete Unity-style movement script.</li></ul></details></section><h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
 <ul>
-<li><a href="how-nord-works.html">How Nord works</a> - the pieces and the engines under the hood.</li>
-<li><a href="../tutorials/tut-t01-hello-nord.html">T01 Hello Nord</a> - your first from-scratch scene.</li>
-<li><a href="../manual/editor-tour.html">Editor tour</a> - every panel in detail.</li>
-<li><a href="../manual/scripting.html">Scripting</a> - lifecycle, input, events and the full API.</li>
+<li>You can start and stop the game using the toolbar.</li>
+<li>You can select an object, change it while stopped, save, and see the result in Play.</li>
+<li>You can name one next lesson that matches what you want to make.</li>
 </ul>
-<div class="pager"><span></span><a href="how-nord-works.html"><small>Next →</small>How Nord works</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#pick-your-path">Pick your path </a><a href="#what-you-will-have-at-the-end">What you will have at the end </a><a href="#part-1-install-and-open-the-editor">Part 1: Install and open the editor </a><a href="#part-2-the-project-hub">Part 2: The project hub </a><a href="#part-3-create-your-first-project-and-press-play">Part 3: Create your first project and press Play </a><a href="#part-4-a-guided-tour-of-the-editor">Part 4: A guided tour of the editor </a><a href="#part-5-the-mental-model">Part 5: The mental model </a><a href="#part-6-change-a-real-game-five-small-wins">Part 6: Change a real game (five small wins) </a><a href="#part-7-save-undo-and-your-files">Part 7: Save, undo and your files </a><a href="#part-8-make-something-of-your-own">Part 8: Make something of your own </a><a href="#part-9-the-built-in-creator-tools">Part 9: The built-in creator tools </a><a href="#part-10-export-your-game">Part 10: Export your game </a><a href="#part-11-the-optional-nord-command">Part 11: The optional nord command </a><a href="#if-you-get-stuck">If you get stuck </a><a href="#words-you-met">Words you met </a><a href="#where-next">Where next </a></aside></div>
+<p>Next: <a href="programming-basics.html">Programming basics</a> or <a href="../manual/manual-paths.html">Manual topics</a>. Back to: <a href="../../index.html">Documentation home</a>.</p>
+<details class="archive-panel"><summary>Old · earlier pages and workflows (2)</summary><p>These pages remain available for existing projects and saved links. Start with the replacement when creating something new.</p><ul><li><a href="start-legacy.html">Original first-hour guide (old)</a> — Original first-hour guide, including older shortcuts and the native Pulse script. Retained as a historical snapshot; use the revised first-session workflow. <a href="getting-started.html">Current starting point</a>.</li><li><a href="developer-basics.html">Programming for dummy developers</a> — Original programming introduction uses the lower-case NordScript lifecycle. New beginners should learn MonoBehaviour first. <a href="programming-basics.html">Current starting point</a>.</li></ul></details><div class="pager"><span></span><a href="how-nord-works.html"><small>Next →</small>How Nord works</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#before-you-start">Before you start </a><a href="#1-open-a-game-that-already-works">1. Open a game that already works </a><a href="#2-learn-where-changes-happen">2. Learn where changes happen </a><a href="#3-make-one-visible-change">3. Make one visible change </a><a href="#4-choose-what-to-learn-next">4. Choose what to learn next </a><a href="#try-a-tiny-challenge">Try a tiny challenge </a><a href="#if-something-goes-wrong">If something goes wrong </a><a href="#topic-directory">Topics in this section</a><a href="#check-yourself">Check yourself </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

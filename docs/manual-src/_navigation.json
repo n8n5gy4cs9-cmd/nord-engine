@@ -1,0 +1,20 @@
+{
+  "old": {
+    "start-legacy.html": { "reason": "Original first-hour guide, including older shortcuts and the native Pulse script. Retained as a historical snapshot; use the revised first-session workflow.", "replacement": "getting-started.html" },
+    "developer-basics.html": { "reason": "Original programming introduction uses the lower-case NordScript lifecycle. New beginners should learn MonoBehaviour first.", "replacement": "programming-basics.html" },
+    "welcome.html": { "reason": "Earlier welcome and chapter list duplicates the current entry points. Feature details remain in the relevant Manual chapters.", "replacement": "manual-paths.html" },
+    "scripting.html": { "reason": "Native NordScript lifecycle reference, preserved for existing projects. New gameplay scripts use the Unity-style layer.", "replacement": "unity-scripting.html" },
+    "tut-t02-sprite-movement.html": { "reason": "Original movement tutorial teaches native NordScript. Its code is retained for older projects; the new learning path uses Unity-style input and movement.", "replacement": "ex-input-movement.html" },
+    "tut-t03-first-script.html": { "reason": "Original scripting tutorial teaches the lower-case lifecycle. Use the Unity-style first-script lesson for new work.", "replacement": "ex-first-script.html" },
+    "ex-migration.html": { "reason": "Earlier C# migration overview overlaps the fuller language and conversion guides.", "replacement": "ex-unity-conversion.html" },
+    "ex-editor-for-unity-users.html": { "reason": "Earlier editor translation overview overlaps the maintained Unity-style workflow chapter and tutorial.", "replacement": "unity-workflow.html" },
+    "cheat-sheet-nordjs.html": { "reason": "Native lower-case scripting reminder, useful when maintaining older tutorials and projects.", "replacement": "cheat-sheet-unity.html" },
+    "native-cookbook.html": { "reason": "Original service recipes use native scene and scheduler calls. Retained for maintenance; start with current Unity-style examples.", "replacement": "cookbook.html" },
+    "api-nordscript.html": { "reason": "Source-generated native base-class reference. The class remains supported; new scripts normally extend MonoBehaviour.", "replacement": "api-unity.html" },
+    "phaser-api-index.html": { "reason": "Superseded upstream index alias. Exact-version APIs are available as ZIP downloads from one maintained landing page.", "replacement": "engine-docs.html" },
+    "babylon-api-index.html": { "reason": "Superseded upstream index alias. Exact-version APIs are available as ZIP downloads from one maintained landing page.", "replacement": "engine-docs.html" },
+    "phaser-archive.html": { "reason": "Earlier Phaser 4.1 snapshot index does not match Nord's bundled Phaser 4.2.1.", "replacement": "engine-docs.html" },
+    "babylon-guides.html": { "reason": "Retained old guide-index alias. Use the current upstream download and official-link page.", "replacement": "engine-docs.html" },
+    "babylon-guide-index.html": { "reason": "Retained old guide-index alias. Use the current upstream download and official-link page.", "replacement": "engine-docs.html" }
+  }
+}
