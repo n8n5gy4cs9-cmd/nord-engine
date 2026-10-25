@@ -20,8 +20,10 @@ public class Spin : MonoBehaviour
     void Start() { Debug.Log(&quot;Spin ready&quot;); }
     void Update() { transform.Rotate(0, 0, speed * Time.deltaTime); }
 }</code></pre>
+<h2 id="before-you-write-the-file">Before you write the file<a class="anchor" href="#before-you-write-the-file">#</a></h2>
+<p>Create a visible sprite using the editor&#39;s Create controls, then create a MonoBehaviour script in Assets. Select the sprite in Hierarchy and attach the script with Inspector&#39;s + Add script. After replacing the file below and saving, Play should print one message and rotate the sprite.</p>
 <h2 id="nord-the-unity-style">Nord: the Unity style<a class="anchor" href="#nord-the-unity-style">#</a></h2>
-<p><code>scripts/spin.js</code></p>
+<p><strong>File: <code>scripts/spin.js</code></strong> (new file, the whole file)</p>
 <pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Time, Debug } from 'nord';
 
 export default class Spin extends MonoBehaviour {
@@ -30,20 +32,7 @@ export default class Spin extends MonoBehaviour {
   Start() { Debug.Log('Spin ready'); }
   Update() { this.Rotate(0, 0, this.speed * Time.deltaTime); }
 }</code></pre>
-<h2 id="nord-the-native-style-lower-case">Nord: the native style (lower-case)<a class="anchor" href="#nord-the-native-style-lower-case">#</a></h2>
-<p><strong>File: <code>scripts/spin.js</code></strong> (new file, the whole file; the same script written in the native style)</p>
-<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
-
-export default class Spin extends NordScript {
-  static attributes = { speed: { type: 'number', default: 90, min: 0, max: 720, label: 'Degrees per second' } };
-
-  start() { this.log('Spin ready'); }          // shows as [Spin] Spin ready in the Console
-  update(dt) {                                 // dt = seconds since the last frame
-    const r = this.entity.rot;                 // [x, y, z] degrees
-    this.entity.rot = [r[0], r[1], r[2] + this.attrs.speed * dt];
-  }
-}</code></pre>
-<p>Pick <strong>one style per script</strong>; do not mix <code>Update</code> and <code>update</code> in the same class. Both styles can be used in the same project.</p>
+<p>The recommended beginner path uses the Unity-style file above. The original lower-case version is retained at the end for readers maintaining older projects.</p>
 <h2 id="2d-or-3d-which-axis-spins">2D or 3D? Which axis spins<a class="anchor" href="#2d-or-3d-which-axis-spins">#</a></h2>
 <p><code>Rotate(x, y, z)</code> adds degrees to each axis. In a <strong>2D</strong> project the object spins around <strong>Z</strong> (what you see on screen). In a <strong>3D</strong> project Z is &quot;roll&quot;; to turn a cube like a turntable use <strong>Y</strong>: <code>this.Rotate(0, this.speed * Time.deltaTime, 0)</code>. The script above is otherwise identical in 2D and 3D, and it needs no input actions or physics.</p>
 <h2 id="try-it">Try it<a class="anchor" href="#try-it">#</a></h2>
@@ -106,7 +95,7 @@ export default class Spin extends NordScript {
 </tr>
 </tbody></table>
 <h2 id="inspector-fields-attributes">Inspector fields (attributes)<a class="anchor" href="#inspector-fields-attributes">#</a></h2>
-<p><strong>File: <code>scripts/Spin.js</code></strong> (the <code>static attributes</code> block goes inside the class, above <code>Start()</code>)</p>
+<p><strong>File: <code>scripts/spin.js</code></strong> (the <code>static attributes</code> block goes inside the class, above <code>Start()</code>)</p>
 <pre class="code" data-lang="js"><code>static attributes = {
   speed:   { type: 'number', default: 5, min: 0, max: 20 },   // slider
   name:    { type: 'string', default: 'Bob' },
@@ -119,6 +108,23 @@ export default class Spin extends NordScript {
 };</code></pre>
 <p>Types: <code>number int bool string color vec2 vec3 enum entity asset curve array</code>. Read them as <code>this.attrs.speed</code> (native) or <code>this.speed</code> (MonoBehaviour with <code>SerializeField</code>). Wrong types fall back to the default with a warning in the Console.</p>
 <aside class="box tip"><div class="box-title">Tip</div><p>Unity runs <code>Awake</code> of <em>all</em> objects before any <code>Start</code>; Nord too. Put &quot;set up my own data&quot; in <code>Awake/init</code> and &quot;find other objects&quot; in <code>Start/start</code>.</p>
-</aside>
-<div class="pager"><a href="examples.html"><small>← Previous</small>Examples (coming from Unity)</a><a href="ex-input-movement.html"><small>Next →</small>2 · Input and movement</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#unity-c">Unity (C#) </a><a href="#nord-the-unity-style">Nord: the Unity style </a><a href="#nord-the-native-style-lower-case">Nord: the native style (lower-case) </a><a href="#2d-or-3d-which-axis-spins">2D or 3D? Which axis spins </a><a href="#try-it">Try it </a><a href="#the-lifecycle-in-order">The lifecycle in order </a><a href="#inspector-fields-attributes">Inspector fields (attributes) </a></aside></div>
+</aside><details>
+<summary>Old · the same behavior using native NordScript</summary><h2 id="nord-the-native-style-lower-case">Nord: the native style (lower-case)<a class="anchor" href="#nord-the-native-style-lower-case">#</a></h2>
+<p><strong>File: <code>scripts/spin.js</code></strong> (new file, the whole file; the same script written in the native style)</p>
+<pre class="code" data-lang="js"><code>import { NordScript } from 'nord';
+
+export default class Spin extends NordScript {
+  static attributes = { speed: { type: 'number', default: 90, min: 0, max: 720, label: 'Degrees per second' } };
+
+  start() { this.log('Spin ready'); }          // shows as [Spin] Spin ready in the Console
+  update(dt) {                                 // dt = seconds since the last frame
+    const r = this.entity.rot;                 // [x, y, z] degrees
+    this.entity.rot = [r[0], r[1], r[2] + this.attrs.speed * dt];
+  }
+}</code></pre>
+<p>Pick <strong>one style per script</strong>; do not mix <code>Update</code> and <code>update</code> in the same class. Both styles can be used in the same project.</p>
+</details><h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<p>The Console prints Spin ready once per instance at the start. The sprite rotates about Z; for a 3D turntable use Y as described above. Stop Play before saving a different starting transform.</p>
+<p>Next: <a href="ex-input-movement.html">Input and movement</a>. Back to: <a href="examples.html">Examples</a>.</p>
+<div class="pager"><a href="examples.html"><small>← Previous</small>Examples (coming from Unity)</a><a href="ex-input-movement.html"><small>Next →</small>2 · Input and movement</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#unity-c">Unity (C#) </a><a href="#before-you-write-the-file">Before you write the file </a><a href="#nord-the-unity-style">Nord: the Unity style </a><a href="#2d-or-3d-which-axis-spins">2D or 3D? Which axis spins </a><a href="#try-it">Try it </a><a href="#the-lifecycle-in-order">The lifecycle in order </a><a href="#inspector-fields-attributes">Inspector fields (attributes) </a><a href="#nord-the-native-style-lower-case">Nord: the native style (lower-case) </a><a href="#check-yourself">Check yourself </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

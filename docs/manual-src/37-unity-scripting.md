@@ -6,17 +6,6 @@ order: 37
 summary: MonoBehaviour, Singleton, GameManager, AudioManager, coroutines, Invoke, UnityEvent, ScriptableObject and ObjectPool: how to create them, attach them, and every method, with Unity names and step-by-step examples.
 ---
 
-## Use this page
-
-This chapter explains **unity-style scripting**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Create a script (3 ways) | [Read this section](#create-a-script-3-ways) |
-| Attach it to an object | [Read this section](#attach-it-to-an-object) |
-| MonoBehaviour: the Unity script | [Read this section](#monobehaviour-the-unity-script) |
-| Singleton: one object, reachable everywhere | [Read this section](#singleton-one-object-reachable-everywhere) |
-
 If you know Unity, you can write Nord scripts the way you already do. @term[MonoBehaviour], @term[Singleton], @term[GameManager] and friends use Unity's names and rules (`Awake`, `Start`, `Update`, coroutines, `Instantiate`, `PlayerPrefs`…), on top of the normal Nord script system. Everything here is optional: a plain `NordScript` (lower-case `start()`/`update()`) works side by side in the same project.
 
 ::: dummies
@@ -36,31 +25,29 @@ A **script** is a file with instructions for one object. A **MonoBehaviour** is 
 
 A script can be on many objects; each gets its own copy and its own field values. A @term[Singleton] must be on **one** object only.
 
-## MonoBehaviour: the Unity script
-@ui[Assets ▸ Create ▸ MonoBehaviour script] gives you this:
+## MonoBehaviour: a complete movement script
+Create a MonoBehaviour file with the Assets menu described above, then replace its contents with this example. Attach it to a visible object in a **2D** scene. It moves left and right with the Horizontal axis; it does not require a physics body.
 
-**File: `scripts/Player.js`** (this is what @ui[Assets ▸ Create ▸ MonoBehaviour script] creates)
+**File: `scripts/Player.js`** (replace the whole generated file)
 ```js
-import { MonoBehaviour, SerializeField, Time, WaitForSeconds, UnityInput as Input } from 'nord';
+import { MonoBehaviour, SerializeField, Time, Debug, UnityInput as Input } from 'nord';
 
 export default class Player extends MonoBehaviour {
-  static attributes = SerializeField({ speed: 5, jump: { default: 3, min: 0, max: 10 } });
+  static attributes = SerializeField({ speed: 200 });
 
-  Awake() {}                       // once, when the object is created
-  Start() {                        // once, before the first Update
-    this.StartCoroutine(this.Blink());
+  Start() {
+    Debug.Log('Player ready');
   }
-  Update() {                       // every frame
-    this.Translate(Input.GetAxis('Horizontal') * this.speed * Time.deltaTime);
-  }
-  OnTriggerEnter(other) {          // a trigger collider was entered
-    if (other.CompareTag('coin')) this.Destroy(other);
-  }
-  *Blink() {                       // a coroutine
-    while (true) { this.SetActive(false); yield new WaitForSeconds(0.1); this.SetActive(true); yield new WaitForSeconds(0.4); }
+
+  Update() {
+    const distance = Input.GetAxis('Horizontal') * this.speed * Time.deltaTime;
+    this.Translate(distance, 0, 0);
   }
 }
 ```
+Press Play and focus Game. A/D or the default horizontal bindings move the object; the Console prints Player ready once. Stop before changing the saved starting position. For 3D, use a speed appropriate to world units and follow [Input and movement](ex-input-movement.html).
+
+> **Trap:** do not disable an object and expect its own Update or coroutine to re-enable it later. Keep the controller active, or let another active object own the re-enable operation.
 
 @ui[Rules:] extend @api[MonoBehaviour]; use the **capitalised** Unity names; never mix them with the lower-case Nord names (`start`, `update`) in the same class.
 

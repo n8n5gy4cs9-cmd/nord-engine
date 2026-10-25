@@ -6,17 +6,6 @@ order: 34
 summary: Host and join a room, send messages, call functions on other players (RPC), spawn and sync entities, and test with fake lag. Peer to peer, no server.
 ---
 
-## Use this page
-
-This chapter explains **multiplayer**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Connect | [Read this section](#connect) |
-| Messages and RPC | [Read this section](#messages-and-rpc) |
-| Spawn and sync | [Read this section](#spawn-and-sync) |
-| Test it | [Read this section](#test-it) |
-
 Nord games can be played by several people at once. Players connect **directly** to each other (WebRTC data channels), with a tiny signalling relay built into `nord serve`. No cloud, no account. It works between devices on the same network (`nord serve --lan` lets a phone join a PC).
 
 ::: dummies

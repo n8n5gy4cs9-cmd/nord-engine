@@ -6,17 +6,6 @@ order: 7
 summary: 2D arcade/matter, 3D Havok, bodies, triggers, raycasts.
 ---
 
-## Use this page
-
-This chapter explains **physics**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Setting up a body | [Read this section](#setting-up-a-body) |
-| Moving things | [Read this section](#moving-things) |
-| Events | [Read this section](#events) |
-| Queries | [Read this section](#queries) |
-
 Physics makes objects fall, collide and react to pushes. Choose the system for your project, then give objects bodies and collision shapes.
 
 ::: dummies

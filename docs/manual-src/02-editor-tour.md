@@ -6,17 +6,6 @@ order: 2
 summary: Panels, viewport, inspector, code editor, console, shortcuts.
 ---
 
-## Use this page
-
-This chapter explains **editor tour**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Appearance and project hub | [Read this section](#appearance-and-project-hub) |
-| Panels | [Read this section](#panels) |
-| Play, stop, reload | [Read this section](#play-stop-reload) |
-| Undo and project safety | [Read this section](#undo-and-project-safety) |
-
 The editor lets you choose an object, change its settings and try the result. Start with Hierarchy, Inspector and the Play button; learn the other panels when you need them.
 
 ::: dummies
@@ -128,7 +117,6 @@ The welcome screen filters both starter templates and samples with **Featured**,
 * **Remote scene tree:** while the game runs, **Hierarchy** and **Inspector** show the *live* entities of the running game (blue "LIVE" header). Click an entity to see its transform, components and script attributes; edit a value and it changes in the running game at once. Right-click for Activate/Deactivate, Duplicate, Destroy. Live edits are **never saved**; stop the game and they are gone. (Desktop editor only; not in the web editor.)
 * **F1** while the pointer is over a component header (or script) in the Inspector opens that component's manual page in your browser; each component also has a **Docs (F1)** button.
 * Double-click a `.ui.json` in Assets to open it in the [UI Designer](ui-designer.html), a `.graph.json` in the [Graph editor](graph.html).
-
 
 
 ## Check yourself

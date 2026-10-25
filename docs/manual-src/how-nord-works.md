@@ -151,7 +151,7 @@ Besides the editor panels, Nord includes tools that build things for you. They a
 
 An **API** is the list of commands a library understands. You will meet three layers:
 
-1. **Nord's API** - what you should use first. Examples: `this.entity.pos`, `this.input.axis('left', 'right')`, `game.loadScene('scenes/level2.scene.json')`. It works the same in 2D and 3D. Reference: [API](api.html).
+1. **Nord's API** - what you should use first. New scripts normally use MonoBehaviour, UnityInput and SceneManager. Native services such as `this.entity.pos` and `this.game.loadScene(...)` remain available; supported operations and units depend on the backend. Reference: [API](api.html).
 2. **Nord's components** - the settings you edit in the Inspector, such as `sprite`, `text`, `rigidbody`, `light`. Reference: [Components](components.html).
 3. **The library underneath** - Phaser or Babylon. Nord keeps these hidden on purpose. For something Nord has not wrapped yet, an *escape hatch* gives you the raw object: `entity.native`, and on some components `component.obj` or `component.mesh`. The raw objects differ between Phaser and Babylon, so code that uses them is tied to that engine and version. Reference: [Engine documentation](engine-docs.html), which is labelled by engine and version.
 
@@ -168,11 +168,11 @@ Think of Nord as a car's dashboard. You press the pedal and turn the wheel (Nord
 | Thumbnails and autosaves | `.nord-cache/` inside the project (safe to delete) |
 | Editor preferences, recent projects, layout | `~/.config/nord/` on macOS and Linux; `%APPDATA%\NordEngine\` on Windows |
 
-Nothing is uploaded anywhere. Nord never needs the internet to edit, play or export.
+Editing and normal web play/export use local project files and bundled libraries. Downloading desktop player templates, installing missing toolchains, fetching online data, or using a networked game can require a connection. Exporting does not publish your project automatically.
 
 ## Part 8: The same engine without the window
 
-The editor and the optional `nord` command-line tool use the same project code. Anything you do by clicking, such as creating, validating, serving or exporting a project, the command line can also do for scripts and build servers. It is not required. See [Getting started, Part 11](start-legacy.html#part-11-the-optional-nord-command).
+The editor and the optional `nord` command-line tool use the same project code. Anything you do by clicking, such as creating, validating, serving or exporting a project, the command line can also do for scripts and build servers. It is not required. See the [command-line cheatsheet](cheat-sheet-cli.html) for executable paths and common jobs.
 
 ## Where next
 

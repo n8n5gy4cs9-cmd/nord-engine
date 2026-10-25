@@ -53,7 +53,9 @@ Read each class like a Unity manual page: **Properties** are values you read or 
 | Signature | Description |
 |---|---|
 | `GetComponent(type)` | A component or script on this object, or `null`. `type` is a script class, a Unity name (`'Rigidbody2D'`, `'SpriteRenderer'`), a wrapper class, or a Nord component name (`'sprite'`). |
-| `GetComponentInChildren(type)`, `GetComponentInParent(type)`, `GetComponents(type)`, `TryGetComponent(type)` | As in Unity. |
+| `GetComponentInChildren(type)`, `GetComponentInParent(type)` | Search the entity traversal / ancestor chain; guard a missing result. |
+| `GetComponents(type)` | Returns matches from this entity traversal, including descendants; do not assume Unity's same-object-only semantics. |
+| `TryGetComponent(type)` | Returns the component or null, not a Boolean/out-parameter pair. |
 | `AddComponent(type, data?)` | Add a script class or a component (`this.AddComponent('sprite', { texture: 'a.png' })`). |
 | `Find(nameOrObject)` | The object with that name or id; an object passed in is returned unchanged. |
 | `FindWithTag(tag)`, `FindGameObjectsWithTag(tag)` | One / all objects with the tag. |
@@ -120,7 +122,7 @@ export default class Pickup extends MonoBehaviour {
 ## Transform
 `this.transform` (or `someObject.transform`). Position, rotation and scale of an object, and its place in the hierarchy.
 
-### Properties
+### Properties {#transform-properties}
 | Name | Type | Description |
 |---|---|---|
 | `position` | Vector3 | World position. |
@@ -134,7 +136,7 @@ export default class Pickup extends MonoBehaviour {
 | `childCount` | number | Number of children. |
 | `gameObject`, `name`, `tag` | | The object, its name and first tag. |
 
-### Methods
+### Methods {#transform-methods}
 | Signature | Description |
 |---|---|
 | `Translate(x, y, z)` / `Translate(vector, space?)` | Move. `Space.Self` (default) moves along the object's axes, `Space.World` along the world axes. |
@@ -224,7 +226,7 @@ Static maths. Constants: `PI`, `Infinity`, `NegativeInfinity`, `Epsilon`, `Deg2R
 | Property | Description |
 |---|---|
 | `Time.deltaTime` | Seconds since the last frame (scaled by `timeScale`). |
-| `Time.unscaledDeltaTime`, `Time.smoothDeltaTime` | Not scaled; smoothed. |
+| `Time.unscaledDeltaTime`, `Time.smoothDeltaTime` | Unscaled / smoothed frame-time helpers; they do not make a paused scene run callbacks. |
 | `Time.fixedDeltaTime` | Always `1/60`. |
 | `Time.time`, `Time.fixedTime` | Seconds since the game started. |
 | `Time.realtimeSinceStartup`, `Time.unscaledTime` | Real clock seconds, ignoring pause and scale. |
@@ -249,7 +251,7 @@ Static maths. Constants: `PI`, `Infinity`, `NegativeInfinity`, `Epsilon`, `Deg2R
 ```js
 Update() {
   this.Translate(Input.GetAxis('Horizontal') * 5 * Time.deltaTime, 0, 0);
-  if (Input.GetButtonDown('jump')) this.SetVelocity(this.velocity.x, 8);
+  if (Input.GetButtonDown('jump')) this.SetVelocity(this.velocity.x, -200); // 2D up is negative y
 }
 ```
 

@@ -131,8 +131,16 @@
 <td>A component or script on this object, or <code>null</code>. <code>type</code> is a script class, a Unity name (<code>&#39;Rigidbody2D&#39;</code>, <code>&#39;SpriteRenderer&#39;</code>), a wrapper class, or a Nord component name (<code>&#39;sprite&#39;</code>).</td>
 </tr>
 <tr>
-<td><code>GetComponentInChildren(type)</code>, <code>GetComponentInParent(type)</code>, <code>GetComponents(type)</code>, <code>TryGetComponent(type)</code></td>
-<td>As in Unity.</td>
+<td><code>GetComponentInChildren(type)</code>, <code>GetComponentInParent(type)</code></td>
+<td>Search the entity traversal / ancestor chain; guard a missing result.</td>
+</tr>
+<tr>
+<td><code>GetComponents(type)</code></td>
+<td>Returns matches from this entity traversal, including descendants; do not assume Unity&#39;s same-object-only semantics.</td>
+</tr>
+<tr>
+<td><code>TryGetComponent(type)</code></td>
+<td>Returns the component or null, not a Boolean/out-parameter pair.</td>
 </tr>
 <tr>
 <td><code>AddComponent(type, data?)</code></td>
@@ -330,7 +338,7 @@
 </tbody></table>
 <h2 id="transform">Transform<a class="anchor" href="#transform">#</a></h2>
 <p><code>this.transform</code> (or <code>someObject.transform</code>). Position, rotation and scale of an object, and its place in the hierarchy.</p>
-<h3 id="properties">Properties<a class="anchor" href="#properties">#</a></h3>
+<h3 id="transform-properties">Properties<a class="anchor" href="#transform-properties">#</a></h3>
 <table>
 <thead>
 <tr>
@@ -390,7 +398,7 @@
 <td>The object, its name and first tag.</td>
 </tr>
 </tbody></table>
-<h3 id="methods">Methods<a class="anchor" href="#methods">#</a></h3>
+<h3 id="transform-methods">Methods<a class="anchor" href="#transform-methods">#</a></h3>
 <table>
 <thead>
 <tr>
@@ -633,7 +641,7 @@
 </tr>
 <tr>
 <td><code>Time.unscaledDeltaTime</code>, <code>Time.smoothDeltaTime</code></td>
-<td>Not scaled; smoothed.</td>
+<td>Unscaled / smoothed frame-time helpers; they do not make a paused scene run callbacks.</td>
 </tr>
 <tr>
 <td><code>Time.fixedDeltaTime</code></td>
@@ -694,7 +702,7 @@
 <p><strong>Example</strong> (not a file: jump on the button, move on the axis):</p>
 <pre class="code" data-lang="js"><code>Update() {
   this.Translate(Input.GetAxis('Horizontal') * 5 * Time.deltaTime, 0, 0);
-  if (Input.GetButtonDown('jump')) this.SetVelocity(this.velocity.x, 8);
+  if (Input.GetButtonDown('jump')) this.SetVelocity(this.velocity.x, -200); // 2D up is negative y
 }</code></pre>
 <h2 id="coroutines">Coroutines<a class="anchor" href="#coroutines">#</a></h2>
 <p>A coroutine is a generator method that can wait. Start it with <code>StartCoroutine</code>.</p>

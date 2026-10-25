@@ -6,17 +6,6 @@ order: 10
 summary: Actions, keyboard, mouse, touch, gamepad, rebinding.
 ---
 
-## Use this page
-
-This chapter explains **input**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Input Manager (per project) | [Read this section](#input-manager-per-project) |
-| Rebinding | [Read this section](#rebinding) |
-| Touch | [Read this section](#touch) |
-| Mobile and on-screen controls | [Read this section](#mobile-and-on-screen-controls) |
-
 Input connects a player’s keys, pointer, touch or gamepad to game actions. Give actions names such as left and jump so game code can stay simple.
 
 ::: dummies

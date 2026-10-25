@@ -949,7 +949,7 @@
     "title": "2 · Input and movement",
     "section": "Examples",
     "group": "Start coding · fundamentals",
-    "summary": "Keyboard, axes and actions; move by position or by physics; 2D and 3D.",
+    "summary": "Complete Unity-style scripts for 2D transform movement, 2D physics movement and 3D ground-plane movement.",
     "old": null,
     "hub": false
   },

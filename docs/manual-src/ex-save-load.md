@@ -16,14 +16,21 @@ PlayerPrefs.SetInt("best", 120); int best = PlayerPrefs.GetInt("best", 0); Playe
 ```
 ### Nord
 
-**File: your script, for example `scripts/Score.js`** (calls inside any method)
+Import PlayerPrefs at the top of your MonoBehaviour file, outside the class. Call its methods from your score/settings methods; see the [complete counter](cheat-sheet-presentation.html) for a runnable whole file.
+
+**File: `scripts/Score.js`** (add to the import list at the top of your existing file)
 ```js
-this.save.set('best', 120);                   // anything JSON-able: numbers, strings, arrays, objects
-const best = this.save.get('best', 0);        // second argument = default
-// Unity names also work:
 import { PlayerPrefs } from 'nord';
-PlayerPrefs.SetInt('best', 120); PlayerPrefs.GetInt('best', 0); PlayerPrefs.HasKey('best'); PlayerPrefs.DeleteAll();
 ```
+
+**File: `scripts/Score.js`** (calls inside your existing score-saving method)
+```js
+PlayerPrefs.SetInt('best', 120);
+const best = PlayerPrefs.GetInt('best', 0);
+```
+
+The native Save service can store JSON data with `this.save.set(key, value)` and read it with `this.save.get(key, fallback)`. Avoid DeleteAll when you only intend to reset one test key.
+
 There is no `Save()` call: writes happen immediately.
 
 ## High score the easy way
@@ -56,7 +63,7 @@ async loadGame() {
   p.pos = g.pos; p.getScript(Health).hp = g.hp;
 }
 ```
-* `save.slot(n)` selects the slot for the following calls (keep using `slot(1)` the same way everywhere).
+* `save.slot(n)` mutates the shared Save object's active slot. It does not create an independent slot handle; PlayerPrefs reads that active slot too.
 * `save.has(n)` tells whether a slot exists; `save.delete(n)` removes it; `save.all()` returns the slot's data object.
 
 ::: tip

@@ -1,8 +1,8 @@
 # Manual page review — 25 October 2026
 
-This report inventories every published content page. The pass checks current/Old navigation, a beginner explanation on each page, retained local illustrations, archive notices, and topic directories on all six section landing pages. The manual builder separately checks links, anchors and live snippets. The browser pass checks all eleven themes, text contrast, offline search and collapse behavior.
+This report inventories every published content page. The pass checks current/Old navigation, a beginner explanation on each page, unique HTML ids for unambiguous contents links, retained local illustrations, archive notices, and topic directories on all six section landing pages. The manual builder separately checks links, anchors and live snippets. The browser pass checks all eleven themes, text contrast, offline search and collapse behavior.
 
-Earlier workflows are retained for existing projects. Old does not mean that a supported native API is broken. Existing tutorial/example code is preserved, apart from correcting T01's claim that Play edits save the starting scene. This is a navigation, clarity and structural review; it is not a new human execution of every older workshop.
+Earlier workflows are retained for existing projects. Old does not mean that a supported native API is broken. Existing complete-workshop code is preserved. T01 corrects Play-edit persistence guidance; the introductory scripting and movement examples are corrected in the final quality pass. The final clarity pass also removes repetitive chapter openings and duplicate indexes, fixes the introductory scripts and runs **node tools/manual/check-beginner-examples.mjs**. Its small physics fixture verifies callback handoff and arithmetic, not backend collision integration. This is a navigation, clarity and structural review; it is not a new human execution of every older workshop.
 
 268 content pages: 252 current, 16 Old.
 
@@ -111,7 +111,7 @@ Earlier workflows are retained for existing projects. Old does not mean that a s
 | [T03 Your first script](manual/nord/tutorials/tut-t03-first-script.html) | Tutorials | **Old:** Original scripting tutorial teaches the lower-case lifecycle. Use the Unity-style first-script lesson for new work. |
 | [Examples (coming from Unity)](manual/nord/examples/examples.html) | Examples | Short, copy-and-run code examples for everything a Unity developer does every day, each with the C# version next to the Nord JavaScript version, plus a complete small game. |
 | [1 · Your first script](manual/nord/examples/ex-first-script.html) | Examples | A script with Awake/Start/Update, Inspector fields and logging: Unity C# next to Nord JavaScript. |
-| [2 · Input and movement](manual/nord/examples/ex-input-movement.html) | Examples | Keyboard, axes and actions; move by position or by physics; 2D and 3D. |
+| [2 · Input and movement](manual/nord/examples/ex-input-movement.html) | Examples | Complete Unity-style scripts for 2D transform movement, 2D physics movement and 3D ground-plane movement. |
 | [3 · Finding objects and talking to scripts](manual/nord/examples/ex-find-and-talk.html) | Examples | Find, tags, GetComponent, calling methods on other scripts, parents and children. |
 | [3.5 · Build a clock: objects, hierarchy, materials and your first script](manual/nord/examples/ex-clock.html) | Examples | The classic first Unity exercise in Nord Engine: build a clock from a cylinder and cubes, give it pivots and materials, then write a script that turns the arms to show the real time. Same numbers and colours as the Unity version. |
 | [3.6 · Build a digital clock: primitives and 3D text in the world](manual/nord/examples/ex-digital-clock.html) | Examples | Build a digital clock from primitives, put its numbers on a world-space text object (not a screen label), and write a Unity-style script that shows the real time, a blinking colon and a 12/24 hour switch. |

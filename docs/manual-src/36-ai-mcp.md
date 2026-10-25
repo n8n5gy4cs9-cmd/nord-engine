@@ -6,17 +6,6 @@ order: 36
 summary: Let Claude Code, opencode, Codex or pi build a Nord game for you: install the Nord MCP server, what the tools do, and the 3D Modeler tools with a preview the AI can look at.
 ---
 
-## Use this page
-
-This chapter explains **ai and mcp**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Install (once) | [Read this section](#install-once) |
-| Use | [Read this section](#use) |
-| Safety | [Read this section](#safety) |
-| 3D Modeler tools | [Read this section](#3d-modeler-tools) |
-
 ::: dummies
 This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
 :::

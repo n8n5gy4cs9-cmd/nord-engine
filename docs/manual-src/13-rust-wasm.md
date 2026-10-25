@@ -6,17 +6,6 @@ order: 13
 summary: Rust game runtime (macroquad + rapier) and Rust apps (egui), building and limits.
 ---
 
-## Use this page
-
-This chapter explains **rust / wasm**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| What happens when you build | [Read this section](#what-happens-when-you-build) |
-| What has been tested | [Read this section](#what-has-been-tested) |
-| Layout | [Read this section](#layout) |
-| Scripts | [Read this section](#scripts) |
-
 Choose a Rust tier when you want to write the game or app in Rust. Nord does not contain its own Rust compiler: it runs **`cargo`** (Rust's standard build tool) on your project, then packages the result as WebAssembly so a browser can run it. That means **you must install Rust first**; the steps are in [Before you start](#before-you-start).
 
 ::: dummies

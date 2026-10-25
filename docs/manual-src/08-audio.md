@@ -6,14 +6,6 @@ order: 8
 summary: Sound effects, music, buses, autoplay rules.
 ---
 
-## Use this page
-
-This chapter explains **audio**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Touch-to-start gate (`touchToStart`) {#touch-to-start} | [Read this section](#touch-to-start) |
-
 Add short sounds for actions and music for atmosphere. Keep the files in your project, choose a volume, and let the player enable audio with a click or tap.
 
 ::: dummies

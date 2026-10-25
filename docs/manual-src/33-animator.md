@@ -6,15 +6,6 @@ order: 33
 summary: A Unity-style state machine for sprite animation. Parameters, states, transitions with conditions, Any State, live testing.
 ---
 
-## Use this page
-
-This chapter explains **animator**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Make one | [Read this section](#make-one) |
-| From a script | [Read this section](#from-a-script) |
-
 ::: dummies
 This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
 :::

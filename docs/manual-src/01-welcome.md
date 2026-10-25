@@ -6,16 +6,6 @@ order: 1
 summary: What Nord is, the project types, how to open it, and a map of every chapter.
 ---
 
-## Use this page
-
-This chapter explains **welcome**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| The tiers | [Read this section](#the-tiers) |
-| Open the editor | [Read this section](#open-the-editor) |
-| How this manual is organised | [Read this section](#how-this-manual-is-organised) |
-
 Nord Engine is a game and app editor, in the spirit of Unity or Godot. You build visually (Hierarchy, Inspector, Scene view), add behaviour with ready-made tools, event sheets or scripts in JavaScript (or Rust), and **export a static folder** that runs in any web browser, or wrap it into a desktop app.
 
 ::: dummies

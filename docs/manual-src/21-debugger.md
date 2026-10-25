@@ -6,14 +6,6 @@ order: 21
 summary: Pause, step, breakpoints on events, live instance editing, an expression console and a frame profiler — in any running game.
 ---
 
-## Use this page
-
-This chapter explains **debugger and profiler**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Deep profiling | [Read this section](#deep-profiling) |
-
 The debugger lets you pause a running game, step one frame at a time, inspect every object and see which logic is slow.
 
 ::: dummies

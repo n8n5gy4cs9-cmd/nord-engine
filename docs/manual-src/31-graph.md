@@ -6,17 +6,6 @@ order: 31
 summary: Make gameplay by connecting nodes: events, flow, math, entities, input, UI, audio and scenes. No code needed, and an escape hatch to any code when you need it.
 ---
 
-## Use this page
-
-This chapter explains **node graphs (visual scripting)**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Open the Graph editor | [Read this section](#open-the-graph-editor) |
-| Your first graph in two minutes | [Read this section](#your-first-graph-in-two-minutes) |
-| Reading a graph | [Read this section](#reading-a-graph) |
-| Adding nodes | [Read this section](#adding-nodes) |
-
 A **node graph** is a program you draw. Boxes (*nodes*) do one thing each; wires carry the flow of time and the values between them. Use graphs for game rules, enemy behaviour, UI reactions and scene flow, or mix them with scripts and event sheets. The canvas is litegraph.js (MIT); the nodes and the runner are Nord's own, so a graph can use everything in the engine.
 
 <figure class="shot"><img src="assets/screenshots/graph-editor-overview.png" alt="The Graph editor showing the player graph of the Coin Collector example" loading="lazy"><figcaption>The <b>Graph</b> tab: node palette (left), the canvas (middle), variables, selection info and problems (right). This is the player graph from the <i>Coin Collector</i> example.</figcaption></figure>
@@ -113,7 +102,6 @@ Open **New project ▸ Node graph: coin collector** (or `examples/nodegraph-coin
 | *On Input Action* never fires | The action name must exist in the project's input settings (`jump`, `fire`, …). |
 | An action from a UI button is ignored | Names must match exactly: the button's **Action** and the **On UI Action** node. |
 | Errors in red `graph graphs/x.graph.json` | The message names the node. Fix it; other chains keep running. |
-
 
 
 ## Check yourself

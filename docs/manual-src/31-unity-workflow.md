@@ -6,17 +6,6 @@ order: 31
 summary: Layouts, menus, Scene-view tools, prefabs, materials, Build Settings, Game view, New scene and the first-10-minutes checklist.
 ---
 
-## Use this page
-
-This chapter explains **unity-style workflow**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Layouts and menus | [Read this section](#layouts-and-menus) |
-| The Scene view | [Read this section](#the-scene-view) |
-| Inspector, Hierarchy and prefabs | [Read this section](#inspector-hierarchy-and-prefabs) |
-| Materials and import settings | [Read this section](#materials-and-import-settings) |
-
 ::: dummies
 This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
 :::

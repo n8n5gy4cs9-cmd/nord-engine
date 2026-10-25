@@ -6,17 +6,6 @@ order: 3
 summary: Folder layout, entities, components, prefabs, tags and layers.
 ---
 
-## Use this page
-
-This chapter explains **projects & scenes**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Entities | [Read this section](#entities) |
-| Components | [Read this section](#components) |
-| Scripts | [Read this section](#scripts) |
-| Tags and layers | [Read this section](#tags-and-layers) |
-
 A project keeps your game’s files together. A scene describes the things in one level or screen; an entity is one of those things.
 
 ::: dummies

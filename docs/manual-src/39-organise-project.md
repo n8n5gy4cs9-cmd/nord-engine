@@ -6,17 +6,6 @@ order: 39
 summary: Colour folders, custom folder icons, colour tags and descriptions for any asset, the Notes manager, the Console with tags and search, and the Transform grid. Saved per project.
 ---
 
-## Use this page
-
-This chapter explains **organising your project**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Assets: colours, icons, tags, descriptions | [Read this section](#assets-colours-icons-tags-descriptions) |
-| Notes manager | [Read this section](#notes-manager) |
-| Console (like Console Pro) | [Read this section](#console-like-console-pro) |
-| Inspector: Transform grid | [Read this section](#inspector-transform-grid) |
-
 ::: dummies
 This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
 :::

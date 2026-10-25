@@ -22,17 +22,6 @@ Unity-style means familiar names in **JavaScript**, not C#. `Start()` runs once;
 
 The following material documents the original lower-case API. It is retained so existing projects and tutorials can still be understood.
 
-## Use this page
-
-This chapter explains **scripting**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Lifecycle | [Read this section](#lifecycle) |
-| Attributes | [Read this section](#attributes) |
-| The entity API | [Read this section](#the-entity-api) |
-| Events | [Read this section](#events) |
-
 A script adds behavior to an entity: movement, a reaction to a button, or rules for your game. New to code? Read [Programming for dummy developers](developer-basics.html) first.
 
 ::: dummies

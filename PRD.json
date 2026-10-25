@@ -1829,6 +1829,12 @@
       "status": "done"
     },
     {
+      "id": "M7-35",
+      "milestone": "M7",
+      "title": "Final documentation quality review: simplify chapters, fix beginner examples and improve reference clarity",
+      "status": "done"
+    },
+    {
       "id": "M8-01",
       "milestone": "M8",
       "title": ".dmg packaging + notarisation notes",

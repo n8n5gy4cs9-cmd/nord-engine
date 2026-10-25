@@ -6,17 +6,6 @@ order: 15
 summary: Profiling, pooling, texture and physics budgets.
 ---
 
-## Use this page
-
-This chapter explains **performance & debugging**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Rules of thumb | [Read this section](#rules-of-thumb) |
-| Measuring | [Read this section](#measuring) |
-| Timing facts | [Read this section](#timing-facts) |
-| Debugging checklist | [Read this section](#debugging-checklist) |
-
 When a game is slow, first find what takes time. Look for expensive scripts, too many drawn objects or large assets, then change one thing and compare.
 
 ::: dummies
@@ -65,7 +54,6 @@ Print from anywhere; the line appears in the **editor's Console tab** while you 
 4. **The code path is never reached.** *On Start* fires on the first frame; *On Input Action* needs a key actually bound to that action in the project's input settings; an `if` that is false prints nothing. Add a log line at the very top (`console.log('script started')`) and work forward.
 5. **An error stops it earlier.** Look for a red line above: one failing node or script method stops that chain, not the whole game.
 6. **Old page.** Saving a script hot-reloads it, but a changed graph/scene reloads the game; if you edited files outside the editor, press **Reload** in the toolbar.
-
 
 
 ## Check yourself

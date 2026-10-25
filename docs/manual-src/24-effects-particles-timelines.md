@@ -6,16 +6,6 @@ order: 24
 summary: Blur, glow, vignette and colour effects; a particle editor with live preview; keyframe timelines with easing.
 ---
 
-## Use this page
-
-This chapter explains **effects, particles and timelines**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Effects | [Read this section](#effects) |
-| Particles | [Read this section](#particles) |
-| Timelines | [Read this section](#timelines) |
-
 Effects change how things look, particles make many tiny moving pictures (fire, sparks, snow) and timelines animate properties over time.
 
 ::: dummies

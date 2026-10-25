@@ -6,17 +6,6 @@ order: 23
 summary: Paint pixel art, set origins and image points, build animations from frames or GIFs, and paint tilemaps with auto-tiling.
 ---
 
-## Use this page
-
-This chapter explains **sprites, animation and tilemaps**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| The Sprite tab (pixel editor) | [Read this section](#the-sprite-tab-pixel-editor) |
-| Animations | [Read this section](#animations) |
-| Tilemaps | [Read this section](#tilemaps) |
-| Making a sprite object | [Read this section](#making-a-sprite-object) |
-
 Nord has built-in tools for making art: a pixel editor for sprites, an animation editor for sprite sheets and a tilemap painter for levels. You can also import art made elsewhere ([Assets](assets.html)).
 
 ::: dummies

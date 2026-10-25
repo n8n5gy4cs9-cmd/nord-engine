@@ -6,17 +6,6 @@ order: 11
 summary: Importing, thumbnails, spritesheets, models, audio, fonts, optional packs.
 ---
 
-## Use this page
-
-This chapter explains **assets**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Sidecar metadata | [Read this section](#sidecar-metadata) |
-| Thumbnails | [Read this section](#thumbnails) |
-| Built-in placeholder art | [Read this section](#built-in-placeholder-art) |
-| Optional packs {#optional-packs} | [Read this section](#optional-packs) |
-
 Assets are the pictures, models, sounds and fonts your project uses. Store them inside the project and refer to them with a relative path.
 
 ::: dummies
@@ -75,7 +64,6 @@ Works on the folder tree (left), on files and folders (right) and on the empty b
 * **Folders (and empty background):** New folder, New UI scene (`.ui.json`), New script (`.js`); the new item starts in rename mode.
 * **Background:** also Import files…, Refresh.
 * Click selects (highlighted); drag a file onto a folder in the tree to move it; drop files from Finder to import.
-
 
 
 ## Check yourself

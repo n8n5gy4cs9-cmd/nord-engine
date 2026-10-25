@@ -6,16 +6,6 @@ order: 25
 summary: Extend event sheets with your own plugins, keep data in Array/Dictionary/JSON objects, and translate your game.
 ---
 
-## Use this page
-
-This chapter explains **addons, data objects and languages**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Data objects | [Read this section](#data-objects) |
-| Addons | [Read this section](#addons) |
-| Languages | [Read this section](#languages) |
-
 These tools extend what event sheets can do: keep data, add new kinds of actions, and translate your game.
 
 ::: dummies

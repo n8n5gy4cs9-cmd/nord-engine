@@ -19,32 +19,6 @@
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>Unity-style means familiar names in <strong>JavaScript</strong>, not C#. <code>Start()</code> runs once; <code>Update()</code> runs each frame. <code>Time.deltaTime</code> is the elapsed time for one frame, so multiplying by it makes movement independent of frame rate. Nord&#39;s <code>Input</code> import has a different API; import <code>UnityInput as Input</code> for Unity names.</p>
 </aside><h2 id="native-nordscript-reference">Native NordScript reference<a class="anchor" href="#native-nordscript-reference">#</a></h2>
 <p>The following material documents the original lower-case API. It is retained so existing projects and tutorials can still be understood.</p>
-<h2 id="use-this-page">Use this page<a class="anchor" href="#use-this-page">#</a></h2>
-<p>This chapter explains <strong>scripting</strong>. Open a saved project before following editor steps. Use the topic links below for a specific task; follow <a href="../tutorials/tutorials.html">Tutorials</a> when you want a complete project to build in order.</p>
-<table>
-<thead>
-<tr>
-<th>Find the instructions for</th>
-<th>Go to</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Lifecycle</td>
-<td><a href="#lifecycle">Read this section</a></td>
-</tr>
-<tr>
-<td>Attributes</td>
-<td><a href="#attributes">Read this section</a></td>
-</tr>
-<tr>
-<td>The entity API</td>
-<td><a href="#the-entity-api">Read this section</a></td>
-</tr>
-<tr>
-<td>Events</td>
-<td><a href="#events">Read this section</a></td>
-</tr>
-</tbody></table>
 <p>A script adds behavior to an entity: movement, a reaction to a button, or rules for your game. New to code? Read <a href="../start/developer-basics.html">Programming for dummy developers</a> first.</p>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>Attach the Spinner example below to an entity with a visible picture, press Play, and watch it turn. Change speed in the Inspector to try a different speed. Attributes are settings, not a second script.</p>
 </aside><p>Scripts are ES modules whose default export extends <code>NordScript</code>. The one import is <code>nord</code>:</p>
@@ -192,5 +166,5 @@ export default class Player extends MonoBehaviour {
 <li>For platform or feature limits, check <a href="../appendix/known-issues.html">Known issues</a>.</li>
 </ul>
 <p>Next: <a href="../examples/examples.html">Choose a worked example</a>. Back to: <a href="manual-paths.html">Manual reading paths</a>.</p>
-<div class="pager"><a href="welcome.html"><small>← Previous</small>Welcome</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#recommended-scripting-workflow">Recommended scripting workflow </a><a href="#native-nordscript-reference">Native NordScript reference </a><a href="#use-this-page">Use this page </a><a href="#lifecycle">Lifecycle </a><a href="#attributes">Attributes </a><a href="#the-entity-api">The entity API </a><a href="#events">Events </a><a href="#timers-and-tweens">Timers and tweens </a><a href="#spawning-and-finding">Spawning and finding </a><a href="#hot-reload">Hot reload </a><a href="#debugging">Debugging </a><a href="#unity-style-scripting">Unity-style scripting </a><a href="#scripts-in-rust">Scripts in Rust </a><a href="#restart-the-current-scene-from-saved-data">Restart the current scene from saved data </a><a href="#check-yourself">Check yourself </a></aside></div>
+<div class="pager"><a href="welcome.html"><small>← Previous</small>Welcome</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#recommended-scripting-workflow">Recommended scripting workflow </a><a href="#native-nordscript-reference">Native NordScript reference </a><a href="#lifecycle">Lifecycle </a><a href="#attributes">Attributes </a><a href="#the-entity-api">The entity API </a><a href="#events">Events </a><a href="#timers-and-tweens">Timers and tweens </a><a href="#spawning-and-finding">Spawning and finding </a><a href="#hot-reload">Hot reload </a><a href="#debugging">Debugging </a><a href="#unity-style-scripting">Unity-style scripting </a><a href="#scripts-in-rust">Scripts in Rust </a><a href="#restart-the-current-scene-from-saved-data">Restart the current scene from saved data </a><a href="#check-yourself">Check yourself </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

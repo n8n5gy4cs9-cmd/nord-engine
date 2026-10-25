@@ -6,17 +6,6 @@ order: 29
 summary: Paint side-scroller and top-down maps, browse the Amiga and Kenney sprite bank, edit scripts and physics, test and export. Includes Machine Workshop.
 ---
 
-## Use this page
-
-This chapter explains **2d level creator — sprites, maps and physics**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Find a useful starting point | [Read this section](#find-a-useful-starting-point) |
-| Build a platform or top-down game | [Read this section](#build-a-platform-or-top-down-game) |
-| Moving around | [Read this section](#moving-around) |
-| Layers and reusable items | [Read this section](#layers-and-reusable-items) |
-
 The **2D Level** tab brings the FPS Level workflow to platform games, top-down games and physics puzzles. Start from **2D Platform Workshop**, **2D Top-down Workshop**, or **Machine Workshop** on the welcome screen.
 
 ::: dummies

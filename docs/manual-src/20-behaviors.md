@@ -6,17 +6,6 @@ order: 20
 summary: Attach ready-made movement and gameplay (Platform, 8-Direction, Bullet, Sine, Turret, Pathfinding…) to any entity.
 ---
 
-## Use this page
-
-This chapter explains **behaviors**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Attach one | [Read this section](#attach-one) |
-| The behaviors | [Read this section](#the-behaviors) |
-| In an event sheet | [Read this section](#in-an-event-sheet) |
-| Write your own | [Read this section](#write-your-own) |
-
 A **behavior** is a small bundle of ready-made logic you attach to an entity, like Construct's behaviors. They work from the scene file, from JavaScript, and from event sheets.
 
 <figure class="shot"><img src="assets/screenshots/es-3-ledge.png" alt="The hero jumping onto a ledge, driven by the Platform behavior" loading="lazy"><figcaption>The hero is one entity with the <b>Platform</b> behavior. Slimes patrol with <b>Sine</b>, the star spins with <b>Rotate</b> and can be moved with <b>DragDrop</b>, the corner robot is a <b>Turret</b>.</figcaption></figure>

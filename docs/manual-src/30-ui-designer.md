@@ -6,17 +6,6 @@ order: 30
 summary: Build menus, HUDs and dialogs visually. Layout, text, images and 9-slice, skins, input fields, and how a button reaches your code.
 ---
 
-## Use this page
-
-This chapter explains **ui designer**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Open the Designer | [Read this section](#open-the-designer) |
-| The window | [Read this section](#the-window) |
-| Node types | [Read this section](#node-types) |
-| Layout: anchors and containers | [Read this section](#layout-anchors-and-containers) |
-
 The **UI Designer** is where you build every screen the player clicks: main menu, HUD, pause screen, settings, dialogs. You draw a tree of **nodes**, see the result live, and save it as a `ui/<name>.ui.json` file. Your game loads that file with one line of code. This chapter is the full reference; for a short guided build, follow [T44](tut-t44-ui-designer.html) and [T45](tut-t45-ui-skins-9slice.html).
 
 <figure class="shot"><img src="assets/screenshots/ui-designer-overview.png" alt="UI Designer: node palette and tree on the left, live preview in the middle, Properties on the right" loading="lazy"><figcaption>The UI Designer: <b>Add node</b> palette and <b>Tree</b> (left), the live <b>Preview</b> (middle) and <b>Properties</b> (right). The preview is the real game UI, not a mock-up.</figcaption></figure>

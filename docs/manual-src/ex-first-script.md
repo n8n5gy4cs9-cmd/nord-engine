@@ -20,8 +20,11 @@ public class Spin : MonoBehaviour
 }
 ```
 
+## Before you write the file
+Create a visible sprite using the editor's Create controls, then create a MonoBehaviour script in Assets. Select the sprite in Hierarchy and attach the script with Inspector's + Add script. After replacing the file below and saving, Play should print one message and rotate the sprite.
+
 ## Nord: the Unity style
-`scripts/spin.js`
+**File: `scripts/spin.js`** (new file, the whole file)
 ```js
 import { MonoBehaviour, SerializeField, Time, Debug } from 'nord';
 
@@ -33,23 +36,7 @@ export default class Spin extends MonoBehaviour {
 }
 ```
 
-## Nord: the native style (lower-case)
-
-**File: `scripts/spin.js`** (new file, the whole file; the same script written in the native style)
-```js
-import { NordScript } from 'nord';
-
-export default class Spin extends NordScript {
-  static attributes = { speed: { type: 'number', default: 90, min: 0, max: 720, label: 'Degrees per second' } };
-
-  start() { this.log('Spin ready'); }          // shows as [Spin] Spin ready in the Console
-  update(dt) {                                 // dt = seconds since the last frame
-    const r = this.entity.rot;                 // [x, y, z] degrees
-    this.entity.rot = [r[0], r[1], r[2] + this.attrs.speed * dt];
-  }
-}
-```
-Pick **one style per script**; do not mix `Update` and `update` in the same class. Both styles can be used in the same project.
+The recommended beginner path uses the Unity-style file above. The original lower-case version is retained at the end for readers maintaining older projects.
 
 ## 2D or 3D? Which axis spins
 `Rotate(x, y, z)` adds degrees to each axis. In a **2D** project the object spins around **Z** (what you see on screen). In a **3D** project Z is "roll"; to turn a cube like a turntable use **Y**: `this.Rotate(0, this.speed * Time.deltaTime, 0)`. The script above is otherwise identical in 2D and 3D, and it needs no input actions or physics.
@@ -72,7 +59,7 @@ Pick **one style per script**; do not mix `Update` and `update` in the same clas
 
 ## Inspector fields (attributes)
 
-**File: `scripts/Spin.js`** (the `static attributes` block goes inside the class, above `Start()`)
+**File: `scripts/spin.js`** (the `static attributes` block goes inside the class, above `Start()`)
 ```js
 static attributes = {
   speed:   { type: 'number', default: 5, min: 0, max: 20 },   // slider
@@ -90,3 +77,34 @@ Types: `number int bool string color vec2 vec3 enum entity asset curve array`. R
 ::: tip
 Unity runs `Awake` of *all* objects before any `Start`; Nord too. Put "set up my own data" in `Awake/init` and "find other objects" in `Start/start`.
 :::
+
+
+<details>
+<summary>Old · the same behavior using native NordScript</summary>
+
+## Nord: the native style (lower-case)
+
+**File: `scripts/spin.js`** (new file, the whole file; the same script written in the native style)
+```js
+import { NordScript } from 'nord';
+
+export default class Spin extends NordScript {
+  static attributes = { speed: { type: 'number', default: 90, min: 0, max: 720, label: 'Degrees per second' } };
+
+  start() { this.log('Spin ready'); }          // shows as [Spin] Spin ready in the Console
+  update(dt) {                                 // dt = seconds since the last frame
+    const r = this.entity.rot;                 // [x, y, z] degrees
+    this.entity.rot = [r[0], r[1], r[2] + this.attrs.speed * dt];
+  }
+}
+```
+Pick **one style per script**; do not mix `Update` and `update` in the same class. Both styles can be used in the same project.
+
+
+
+</details>
+
+## Check yourself
+The Console prints Spin ready once per instance at the start. The sprite rotates about Z; for a 3D turntable use Y as described above. Stop Play before saving a different starting transform.
+
+Next: [Input and movement](ex-input-movement.html). Back to: [Examples](examples.html).

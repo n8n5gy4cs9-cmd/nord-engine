@@ -6,17 +6,6 @@ order: 14
 summary: Static web builds, single-file, Mac app, hosting recipes, offline guarantee.
 ---
 
-## Use this page
-
-This chapter explains **export & hosting**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Targets | [Read this section](#targets) |
-| Common options | [Read this section](#common-options) |
-| Output layout | [Read this section](#output-layout) |
-| Hosting {#hosting} | [Read this section](#hosting) |
-
 Export creates a copy for players. A web build contains HTML, runtime code and assets; a desktop bundle adds the application shell.
 
 ::: dummies

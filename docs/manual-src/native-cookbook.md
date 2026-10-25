@@ -66,8 +66,6 @@ this.tween(this.entity.pos, [400, 100, 0], { duration: 1.2, ease: 'backOut' });
 `this.game.timeScale`, `this.game.pause()`, `this.events.on('error', e => …)`, `util-debug.js`.
 
 
-
-
 ## Check yourself
 
 Use the native API reference for the exact service contract. New scripts should start with the Unity scripting cheatsheet.

@@ -15,12 +15,13 @@
 <h3 id="unity">Unity<a class="anchor" href="#unity">#</a></h3>
 <pre class="code" data-lang="cs"><code>PlayerPrefs.SetInt(&quot;best&quot;, 120); int best = PlayerPrefs.GetInt(&quot;best&quot;, 0); PlayerPrefs.Save();</code></pre>
 <h3 id="nord">Nord<a class="anchor" href="#nord">#</a></h3>
-<p><strong>File: your script, for example <code>scripts/Score.js</code></strong> (calls inside any method)</p>
-<pre class="code" data-lang="js"><code>this.save.set('best', 120);                   // anything JSON-able: numbers, strings, arrays, objects
-const best = this.save.get('best', 0);        // second argument = default
-// Unity names also work:
-import { PlayerPrefs } from 'nord';
-PlayerPrefs.SetInt('best', 120); PlayerPrefs.GetInt('best', 0); PlayerPrefs.HasKey('best'); PlayerPrefs.DeleteAll();</code></pre>
+<p>Import PlayerPrefs at the top of your MonoBehaviour file, outside the class. Call its methods from your score/settings methods; see the <a href="../guides/cheat-sheet-presentation.html">complete counter</a> for a runnable whole file.</p>
+<p><strong>File: <code>scripts/Score.js</code></strong> (add to the import list at the top of your existing file)</p>
+<pre class="code" data-lang="js"><code>import { PlayerPrefs } from 'nord';</code></pre>
+<p><strong>File: <code>scripts/Score.js</code></strong> (calls inside your existing score-saving method)</p>
+<pre class="code" data-lang="js"><code>PlayerPrefs.SetInt('best', 120);
+const best = PlayerPrefs.GetInt('best', 0);</code></pre>
+<p>The native Save service can store JSON data with <code>this.save.set(key, value)</code> and read it with <code>this.save.get(key, fallback)</code>. Avoid DeleteAll when you only intend to reset one test key.</p>
 <p>There is no <code>Save()</code> call: writes happen immediately.</p>
 <h2 id="high-score-the-easy-way">High score the easy way<a class="anchor" href="#high-score-the-easy-way">#</a></h2>
 <p><code>GameManager.instance.SaveHighScore()</code> stores the score only if it beats the old one and returns the best:</p>
@@ -46,7 +47,7 @@ async loadGame() {
   p.pos = g.pos; p.getScript(Health).hp = g.hp;
 }</code></pre>
 <ul>
-<li><code>save.slot(n)</code> selects the slot for the following calls (keep using <code>slot(1)</code> the same way everywhere).</li>
+<li><code>save.slot(n)</code> mutates the shared Save object&#39;s active slot. It does not create an independent slot handle; PlayerPrefs reads that active slot too.</li>
 <li><code>save.has(n)</code> tells whether a slot exists; <code>save.delete(n)</code> removes it; <code>save.all()</code> returns the slot&#39;s data object.</li>
 </ul>
 <aside class="box tip"><div class="box-title">Tip</div><p>Remember: loading a scene creates <strong>new</strong> objects. Restore values <em>after</em> <code>await loadScene</code>, from the new scene&#39;s objects.</p>

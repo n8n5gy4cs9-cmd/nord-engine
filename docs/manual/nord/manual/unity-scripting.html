@@ -9,32 +9,6 @@
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="manual-paths.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="../guides/cookbook.html">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
 <div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><details><summary>Getting oriented <small>(4)</small></summary><a href="manual-paths.html">Manual — choose a task</a><a href="editor-tour.html">Editor tour</a><a href="appearance.html">Editor appearance</a><a href="organise-project.html">Organising your project</a></details><details open><summary>Projects, objects and scripts <small>(6)</small></summary><a href="projects-scenes.html">Projects &amp; scenes</a><a href="library.html">The library</a><a href="unity-workflow.html">Unity-style workflow</a><a href="ai-mcp.html">AI and MCP</a><a href="unity-coverage.html">Unity coverage</a><a href="unity-scripting.html" class="cur" aria-current="page">Unity-style scripting</a></details><details><summary>2D and 3D worlds <small>(9)</small></summary><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="assets.html">Assets</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a><a href="modeler.html">3D Modeler</a></details><details><summary>Gameplay, sound and interfaces <small>(12)</small></summary><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="ui-designer.html">UI Designer</a><a href="graph.html">Node graphs (visual scripting)</a><a href="animator.html">Animator</a><a href="multiplayer.html">Multiplayer</a><a href="dev-console.html">In-game Dev Console</a></details><details><summary>Test and publish <small>(8)</small></summary><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Find an API or file setting</a><a href="desktop-apps.html">Desktop apps</a><a href="debugger.html">Debugger and profiler</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="welcome.html">Welcome</a><a href="scripting.html">Scripting</a></details></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Unity-style scripting</h1>
-<h2 id="use-this-page">Use this page<a class="anchor" href="#use-this-page">#</a></h2>
-<p>This chapter explains <strong>unity-style scripting</strong>. Open a saved project before following editor steps. Use the topic links below for a specific task; follow <a href="../tutorials/tutorials.html">Tutorials</a> when you want a complete project to build in order.</p>
-<table>
-<thead>
-<tr>
-<th>Find the instructions for</th>
-<th>Go to</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Create a script (3 ways)</td>
-<td><a href="#create-a-script-3-ways">Read this section</a></td>
-</tr>
-<tr>
-<td>Attach it to an object</td>
-<td><a href="#attach-it-to-an-object">Read this section</a></td>
-</tr>
-<tr>
-<td>MonoBehaviour: the Unity script</td>
-<td><a href="#monobehaviour-the-unity-script">Read this section</a></td>
-</tr>
-<tr>
-<td>Singleton: one object, reachable everywhere</td>
-<td><a href="#singleton-one-object-reachable-everywhere">Read this section</a></td>
-</tr>
-</tbody></table>
 <p>If you know Unity, you can write Nord scripts the way you already do. <span class="c-term">MonoBehaviour</span>, <span class="c-term">Singleton</span>, <span class="c-term">GameManager</span> and friends use Unity&#39;s names and rules (<code>Awake</code>, <code>Start</code>, <code>Update</code>, coroutines, <code>Instantiate</code>, <code>PlayerPrefs</code>…), on top of the normal Nord script system. Everything here is optional: a plain <code>NordScript</code> (lower-case <code>start()</code>/<code>update()</code>) works side by side in the same project.</p>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>A <strong>script</strong> is a file with instructions for one object. A <strong>MonoBehaviour</strong> is the Unity name for &quot;a script that lives on an object and gets Start/Update calls&quot;. A <strong>Singleton</strong> is a script of which there is only ever one, reachable from everywhere by name (<code>Score.instance</code>). A <strong>GameManager</strong> is a ready-made singleton that keeps score, lives and the game state.</p>
 </aside><h2 id="create-a-script-3-ways">Create a script (3 ways)<a class="anchor" href="#create-a-script-3-ways">#</a></h2>
@@ -51,28 +25,27 @@
 <li>Press <span class="c-ui">Play</span>. Errors show in the <span class="c-ui">Console</span> with a clickable file and line.</li>
 </ol>
 <p>A script can be on many objects; each gets its own copy and its own field values. A <span class="c-term">Singleton</span> must be on <strong>one</strong> object only.</p>
-<h2 id="monobehaviour-the-unity-script">MonoBehaviour: the Unity script<a class="anchor" href="#monobehaviour-the-unity-script">#</a></h2>
-<p><span class="c-ui">Assets ▸ Create ▸ MonoBehaviour script</span> gives you this:</p>
-<p><strong>File: <code>scripts/Player.js</code></strong> (this is what <span class="c-ui">Assets ▸ Create ▸ MonoBehaviour script</span> creates)</p>
-<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Time, WaitForSeconds, UnityInput as Input } from 'nord';
+<h2 id="monobehaviour-a-complete-movement-script">MonoBehaviour: a complete movement script<a class="anchor" href="#monobehaviour-a-complete-movement-script">#</a></h2>
+<p>Create a MonoBehaviour file with the Assets menu described above, then replace its contents with this example. Attach it to a visible object in a <strong>2D</strong> scene. It moves left and right with the Horizontal axis; it does not require a physics body.</p>
+<p><strong>File: <code>scripts/Player.js</code></strong> (replace the whole generated file)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Time, Debug, UnityInput as Input } from 'nord';
 
 export default class Player extends MonoBehaviour {
-  static attributes = SerializeField({ speed: 5, jump: { default: 3, min: 0, max: 10 } });
+  static attributes = SerializeField({ speed: 200 });
 
-  Awake() {}                       // once, when the object is created
-  Start() {                        // once, before the first Update
-    this.StartCoroutine(this.Blink());
+  Start() {
+    Debug.Log('Player ready');
   }
-  Update() {                       // every frame
-    this.Translate(Input.GetAxis('Horizontal') * this.speed * Time.deltaTime);
-  }
-  OnTriggerEnter(other) {          // a trigger collider was entered
-    if (other.CompareTag('coin')) this.Destroy(other);
-  }
-  *Blink() {                       // a coroutine
-    while (true) { this.SetActive(false); yield new WaitForSeconds(0.1); this.SetActive(true); yield new WaitForSeconds(0.4); }
+
+  Update() {
+    const distance = Input.GetAxis('Horizontal') * this.speed * Time.deltaTime;
+    this.Translate(distance, 0, 0);
   }
 }</code></pre>
+<p>Press Play and focus Game. A/D or the default horizontal bindings move the object; the Console prints Player ready once. Stop before changing the saved starting position. For 3D, use a speed appropriate to world units and follow <a href="../examples/ex-input-movement.html">Input and movement</a>.</p>
+<blockquote>
+<p><strong>Trap:</strong> do not disable an object and expect its own Update or coroutine to re-enable it later. Keep the controller active, or let another active object own the re-enable operation.</p>
+</blockquote>
 <p><span class="c-ui">Rules:</span> extend <span class="c-api">MonoBehaviour</span>; use the <strong>capitalised</strong> Unity names; never mix them with the lower-case Nord names (<code>start</code>, <code>update</code>) in the same class.</p>
 <h3 id="fields-serializefield">Fields: <code>[SerializeField]</code><a class="anchor" href="#fields-serializefield">#</a></h3>
 <p><code>static attributes = SerializeField({ speed: 5, name: &#39;Bob&#39;, alive: true, color: &#39;#ff0000&#39;, pos: [0, 0, 0] })</code> makes <strong>Inspector fields</strong>. Numbers get drag boxes (add <code>{ default, min, max }</code> for a slider), booleans checkboxes, <code>#rrggbb</code> strings colour pickers, 2/3 numbers vectors. Read them as <code>this.speed</code> anywhere in the script.</p>
@@ -403,5 +376,5 @@ export default class Walker extends MonoBehaviour {
 <li>For platform or feature limits, check <a href="../appendix/known-issues.html">Known issues</a>.</li>
 </ul>
 <p>Next: <a href="../examples/examples.html">Choose a worked example</a>. Back to: <a href="manual-paths.html">Manual reading paths</a>.</p>
-<div class="pager"><a href="unity-coverage.html"><small>← Previous</small>Unity coverage</a><a href="2d.html"><small>Next →</small>2D games</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#use-this-page">Use this page </a><a href="#create-a-script-3-ways">Create a script (3 ways) </a><a href="#attach-it-to-an-object">Attach it to an object </a><a href="#monobehaviour-the-unity-script">MonoBehaviour: the Unity script </a><a href="#singleton-one-object-reachable-everywhere">Singleton: one object, reachable everywhere </a><a href="#gamemanager-score-lives-state">GameManager: score, lives, state </a><a href="#audiomanager">AudioManager </a><a href="#events-and-data">Events and data </a><a href="#unity-to-nord-cheat-sheet">Unity to Nord cheat sheet </a><a href="#troubleshooting">Troubleshooting </a><a href="#check-yourself">Check yourself </a></aside></div>
+<div class="pager"><a href="unity-coverage.html"><small>← Previous</small>Unity coverage</a><a href="2d.html"><small>Next →</small>2D games</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#create-a-script-3-ways">Create a script (3 ways) </a><a href="#attach-it-to-an-object">Attach it to an object </a><a href="#monobehaviour-a-complete-movement-script">MonoBehaviour: a complete movement script </a><a href="#singleton-one-object-reachable-everywhere">Singleton: one object, reachable everywhere </a><a href="#gamemanager-score-lives-state">GameManager: score, lives, state </a><a href="#audiomanager">AudioManager </a><a href="#events-and-data">Events and data </a><a href="#unity-to-nord-cheat-sheet">Unity to Nord cheat sheet </a><a href="#troubleshooting">Troubleshooting </a><a href="#check-yourself">Check yourself </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

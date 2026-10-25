@@ -6,17 +6,6 @@ order: 32
 summary: Full guide to the 3D Modeler: build a model from scratch, open and change the models of your scene with their textures, paint, fix UVs, and save as overwrite, new model, prefab or variant. Every tool explained with screenshots.
 ---
 
-## Use this page
-
-This chapter explains **3d modeler**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Save your model and use it in the game (3 steps) | [Read this section](#save-your-model-and-use-it-in-the-game-3-steps) |
-| Continue editing later (after closing or restarting) | [Read this section](#continue-editing-later-after-closing-or-restarting) |
-| Where the files live (and why `models/`) | [Read this section](#where-the-files-live-and-why-models) |
-| Export (GLB, glTF, OBJ, PNG) for other tools | [Read this section](#export-glb-gltf-obj-png-for-other-tools) |
-
 ::: dummies
 This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
 :::

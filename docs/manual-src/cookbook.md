@@ -38,7 +38,7 @@ New game code uses MonoBehaviour and Unity names in JavaScript. The **Old** grou
 | Symptom | First check | Reference |
 |---|---|---|
 | Nothing happens | Select the object; verify attachment and enabled state in Inspector | [Unity scripting](unity-scripting.html) |
-| Update is never called | Use capitalized Update in MonoBehaviour; lower-case update in NordScript | [Scripting](scripting.html) |
+| Update is never called | Use capitalized Update in MonoBehaviour; lower-case update in NordScript | [Unity scripting](unity-scripting.html) |
 | Input does nothing | Verify the action or axis in the Project tab; focus the running Game view | [Input](input.html) |
 | Spawned object is unavailable | Await Instantiate inside an async method | [Unity API](api-unity.html) |
 | Collision never fires | Check body, collider, trigger flag and matching 2D/3D backend | [Physics](physics.html) |
@@ -48,7 +48,6 @@ New game code uses MonoBehaviour and Unity names in JavaScript. The **Old** grou
 ## Common gameplay recipes
 
 Use [Examples](examples.html) for complete Unity-style files: input and movement, spawning, health, UI, saves and physics. The sidebar groups related pages so you can collapse the topics you do not need.
-
 
 
 ## Keep these distinctions nearby

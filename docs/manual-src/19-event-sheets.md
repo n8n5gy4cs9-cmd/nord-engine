@@ -6,17 +6,6 @@ order: 19
 summary: Build game logic without code — conditions, actions, picking, triggers, loops, variables and functions, the Construct way.
 ---
 
-## Use this page
-
-This chapter explains **event sheets**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Use it | [Read this section](#use-it) |
-| Parameters, highlight and help | [Read this section](#parameters-highlight-and-help) |
-| Objects and picking | [Read this section](#objects-and-picking) |
-| Event flavours | [Read this section](#event-flavours) |
-
 An **event sheet** is a list of events. Each event says *"when these conditions are true, do these actions"*. It is the same idea as Construct 3's event sheets, and it sits **beside** JavaScript scripting — a scene can use scripts, an event sheet, or both.
 
 <figure class="shot"><img src="assets/screenshots/es-4-turret.png" alt="A platformer: hero, slimes, coins, flag and a turret in the corner, all driven by an event sheet" loading="lazy"><figcaption>The bundled <code>event-sheets</code> example. Every rule in it — coins, hurt, turret bullets, winning — is an event. There is not one script.</figcaption></figure>

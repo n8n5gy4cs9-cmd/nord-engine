@@ -6,17 +6,6 @@ order: 18
 summary: Real native apps — files, dialogs, notifications, tray, menus, storage, a local web server — from the same project, in JS or Rust.
 ---
 
-## Use this page
-
-This chapter explains **desktop apps**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Quick start | [Read this section](#quick-start) |
-| Three transports, one API | [Read this section](#three-transports-one-api) |
-| Permissions (`desktop.permissions`) | [Read this section](#permissions-desktop-permissions) |
-| API cheat sheet (`window.nord.desktop`) | [Read this section](#api-cheat-sheet-window-nord-desktop) |
-
 Desktop apps can use native files, dialogs and windows through Nord’s desktop bridge. Begin with a desktop template, then enable only the capabilities your app needs.
 
 ::: dummies

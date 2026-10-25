@@ -6,17 +6,6 @@ order: 27
 summary: The same Nord editor in a browser tab (no install, projects stay in your browser) or on your own Linux server for you and your team.
 ---
 
-## Use this page
-
-This chapter explains **run the editor in a browser or on a server**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Two ways to use it | [Read this section](#two-ways-to-use-it) |
-| Browser only | [Read this section](#browser-only) |
-| On your own server | [Read this section](#on-your-own-server) |
-| When something does not work | [Read this section](#when-something-does-not-work) |
-
 ::: dummies
 This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
 :::

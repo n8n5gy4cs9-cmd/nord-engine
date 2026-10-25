@@ -6,16 +6,6 @@ order: 12
 summary: Scripts, prefabs, shaders, apps and templates you can drop in — and how to add your own.
 ---
 
-## Use this page
-
-This chapter explains **the library**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| Using a library script | [Read this section](#using-a-library-script) |
-| Writing your own entry | [Read this section](#writing-your-own-entry) |
-| Templates | [Read this section](#templates) |
-
 The Library contains ready-made scripts and pieces you can reuse. Search for a feature, insert it and adjust its Inspector settings before writing a replacement.
 
 ::: dummies
