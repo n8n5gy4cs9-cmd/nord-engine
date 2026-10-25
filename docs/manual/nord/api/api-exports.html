@@ -219,14 +219,25 @@ CSS can do (blur, colour grading, vignette, CRT) also work on every other tier t
     const x = ((e.clientX - r.left) / r.width) * (el.width || r.width), y = ((e.clientY - r.top) / r.height) * (el.height || r.height);
     Object.assign(input.pointer, { x, y }); [input.pointer.worldX, input.pointer.worldY] = toWorld(x, y);
   };
-  const pd = (e) =&gt; { pos(e); input.pointer.down = true; input.setKey(`Mouse${e.button ?? 0}`, true); };
-  const pu = (e) =&gt; { pos(e); input.pointer.down = false; input.setKey(`Mouse${e.button ?? 0}`, false); };
+  const canvasXY = (e) =&gt; { const r = el.getBoundingClientRect(); return [((e.clientX - r.left) / r.width) * (el.width || r.width), ((e.clientY - r.top) / r.height) * (el.height || r.height)]; };
+  const touch = (e, phase) =&gt; {
+    if (e.pointerType !== 'touch') return;
+    const [x, y] = canvasXY(e), old = input.touches.get(e.pointerId);
+    if (phase === 'Ended') { input.touches.delete(e.pointerId); return; }
+    input.touches.set(e.pointerId, { id: e.pointerId, x, y, dx: old ? x - old.x : 0, dy: old ? y - old.y : 0, phase: old ? phase : 'Began' });
+  };
+  const pd = (e) =&gt; { pos(e); touch(e, 'Began'); input.pointer.down = true; input.setKey(`Mouse${e.button ?? 0}`, true); };
+  const pu = (e) =&gt; { pos(e); touch(e, 'Ended'); input.pointer.down = false; input.setKey(`Mouse${e.button ?? 0}`, false); };
+  const pm = (e) =&gt; { pos(e); touch(e, 'Moved'); };
+  const wheel = (e) =&gt; { input._wheel[0] += (e.deltaX ?? 0) / 100; input._wheel[1] += (e.deltaY ?? 0) / 100; };
   const blur = () =&gt; input.held.clear();
   win.addEventListener('keydown', kd); win.addEventListener('keyup', ku); win.addEventListener('blur', blur);
-  el.addEventListener('pointerdown', pd); win.addEventListener('pointerup', pu); el.addEventListener('pointermove', pos);
+  el.addEventListener('pointerdown', pd); win.addEventListener('pointerup', pu); win.addEventListener('pointercancel', pu); el.addEventListener('pointermove', pm);
+  el.addEventListener('wheel', wheel, { passive: true });
   return () =&gt; {
     win.removeEventListener('keydown', kd); win.removeEventListener('keyup', ku); win.removeEventListener('blur', blur);
-    el.removeEventListener('pointerdown', pd); win.removeEventListener('pointerup', pu); el.removeEventListener('pointermove', pos);
+    el.removeEventListener('pointerdown', pd); win.removeEventListener('pointerup', pu); win.removeEventListener('pointercancel', pu); el.removeEventListener('pointermove', pm);
+    el.removeEventListener('wheel', wheel);
   };
 }</code></pre><h2 id="export-virtualjoystick"><code>virtualJoystick</code></h2><p>On-screen joystick (touch/mouse). Drives the four direction actions + <code>input.stick</code>.</p>
 <p class="muted">Import from <code>nord</code>. Definition from <code>runtime/core/input.js</code>; names and defaults below are taken directly from the runtime.</p><pre class="code" data-lang="js"><code>export function virtualJoystick(input, parent, { left = 'left', right = 'right', up = 'up', down = 'down', size = 120 } = {}) {

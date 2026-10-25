@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 325/339 tasks (96%)** · updated 2026-10-25
+**Overall: 325/340 tasks (96%)** · updated 2026-10-25
 
 | Milestone | Progress |
 |---|---|
@@ -20,7 +20,7 @@
 | M10 Construct-style editor | 36/36 (100%) |
 | M11 Web editor | 14/16 (88%) |
 | M12 FPS Creator addon | 30/31 (97%) |
-| M13 Unity-style editor (Godotize) | 36/37 (97%) |
+| M13 Unity-style editor (Godotize) | 36/38 (95%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -423,6 +423,7 @@ _Unity-like editor workflow on the existing tools: Scene/Game/Hierarchy/Inspecto
 - [x] **M13-35** Tutorial series T55-T61 (native-code dungeon series + Ember Crypt capstone) with screenshots and tests
 - [x] **M13-36** Examples: Vector Rocks replaces Coin Clicker; dungeon series + Ember Crypt moved to Examples and rewritten Unity-style
 - [x] **M13-37** Docs style rules (DOC_STYLE.md, lint) and a labelling/editor-first pass over every manual page
+- [ ] **M13-38** Unity-style part 2: Transform, Quaternion, component wrappers, Physics2D queries, Input/Time/Scene/Application extras; add unity-extra tests
 
 ## Features (PRD)
 

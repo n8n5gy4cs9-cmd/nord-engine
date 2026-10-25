@@ -31,5 +31,6 @@ export { registerDataType, dataTypes } from './eventsheet/objects.js';
 export { compile as compileExpression } from './eventsheet/expr.js';
 export { Behavior, registerBehavior, behaviors } from './behaviors/index.js';
 export * from './unity.js';
+export * from './unity-extra.js';
 import './behaviors/builtin.js';
 import './behaviors/builtin2.js';

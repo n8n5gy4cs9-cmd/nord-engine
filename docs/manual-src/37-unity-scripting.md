@@ -72,7 +72,8 @@ export default class Player extends MonoBehaviour {
 ### What a MonoBehaviour can do
 | Unity | Nord |
 |---|---|
-| `gameObject`, `transform` | `this.gameObject`, `this.transform` (both the entity) |
+| `gameObject` | `this.gameObject` (the entity) |
+| `transform` | `this.transform`: a **Transform** with `position`, `localPosition`, `rotation`, `eulerAngles`, `localScale`, `forward`, `right`, `up`, `parent`, `GetChild`, `Find`, `Translate`, `Rotate`, `RotateAround`, `LookAt`, `TransformPoint`… (`transform.pos`, `rot`, `scale` still work) |
 | `transform.position` / `localPosition` | `this.position`, `this.localPosition` (a `Vector3`) |
 | `transform.Translate(x,y,z)` / `Rotate` | `this.Translate(x, y, z)`, `this.Rotate(x, y, z)` |
 | `name`, `tag`, `CompareTag("x")` | `this.name`, `this.tag`, `this.CompareTag('x')` |
@@ -162,6 +163,35 @@ A persistent singleton: add `AudioManager` (import from `'nord'` and extend it, 
 * @api[ScriptableObject]: shared JSON data files: `const sword = await ScriptableObject.Load('data/sword.asset.json')`.
 * @api[ObjectPool]: reuse bullets instead of creating them: `const pool = new ObjectPool(this.scene, 'prefabs/bullet.prefab.json'); await pool.Warm(10); const b = await pool.Get({ pos }); pool.Release(b);`.
 
+### More Unity classes (part 2)
+Import from `'nord'`. Full list with what is missing: [Unity coverage](unity-coverage.html).
+
+* **Transform**, **Quaternion** (`Euler`, `AngleAxis`, `LookRotation`, `Slerp`…), **Space**: `this.transform.Translate(Vector3.right.Mul(5), Space.World)`.
+* **Component wrappers** through `GetComponent`: `SpriteRenderer` (`color`, `flipX`, `sortingOrder`), `Rigidbody2D` / `Rigidbody` (`velocity`, `mass`, `drag`, `gravityScale`, `bodyType`, `AddForce`), `BoxCollider2D` / `CircleCollider2D` (`isTrigger`, `size`, `radius`), `Animator` (`SetFloat`, `SetBool`, `SetTrigger`, `Play`), `AudioSource`, `Camera` (`Camera.main`, `orthographicSize`, `ScreenToWorldPoint`), `Light`, `ParticleSystem`, `TextMesh`, `MeshRenderer.material`.
+* **Physics2D** (`Raycast`, `RaycastAll`, `Linecast`, `OverlapCircle(All)`, `OverlapBoxAll`, `OverlapPoint`, `gravity`) and **Physics** (`Raycast`, `OverlapSphere`, `gravity`).
+* `OnTriggerStay` and `OnCollisionStay` are called every frame while two objects touch.
+* `Input.GetKey("space")` (names as well as `KeyCode`), `Input.GetButton("Jump" | "Fire1")`, `Input.mouseScrollDelta`, `Input.touchCount` / `GetTouch`.
+* `Time.smoothDeltaTime`, `SceneManager.LoadSceneAsync` / `GetActiveScene` / `sceneLoaded`, `Application.targetFrameRate` / `persistentDataPath` / `OpenURL`, `Resources.Load`, `JsonUtility`, `PostProcessing.Add('crt', {…})`, `Mathf.PerlinNoise`.
+
+**File: `scripts/Walker.js`** (new file, the whole file; attach it to an object with a sprite and a rigidbody)
+```js
+import { MonoBehaviour, SpriteRenderer, Rigidbody2D, Color, Physics2D, Vector2, UnityInput as Input } from 'nord';
+
+export default class Walker extends MonoBehaviour {
+  Start() {
+    this.sprite = this.GetComponent(SpriteRenderer);       // a wrapper around the sprite component
+    this.body = this.GetComponent(Rigidbody2D);
+    this.sprite.color = new Color(1, 0.8, 0.4, 1);         // tint without touching the texture
+  }
+
+  FixedUpdate() {
+    const hit = Physics2D.Raycast(this.transform.position, this.transform.right, 40);   // 40 px ahead of the sprite's right side
+    const wall = hit.collider !== null;
+    this.body.velocity = wall ? Vector2.zero : new Vector2(Input.GetAxis('Horizontal'), 0).Mul(120);
+  }
+}
+```
+
 ## Unity to Nord cheat sheet
 | Unity | Nord |
 |---|---|
@@ -188,4 +218,4 @@ A persistent singleton: add `AudioManager` (import from `'nord'` and extend it, 
 
 Many runnable recipes next to the C# versions: [Examples](examples.html) (start with [GameManager and Singletons](ex-game-manager.html) and the whole game [Coin Dash](ex-coin-dash.html)).
 
-Reference: [Scripting](scripting.html), [Unity-style editor](unity-workflow.html), [T03 First script](tut-t03-first-script.html). Source: `runtime/core/unity.js`.
+Reference: [Unity coverage](unity-coverage.html) (what works, what is missing), [Scripting](scripting.html), [Unity-style editor](unity-workflow.html), [T03 First script](tut-t03-first-script.html). Source: `runtime/core/unity.js`, `runtime/core/unity-extra.js`.

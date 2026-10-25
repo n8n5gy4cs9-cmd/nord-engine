@@ -9,17 +9,22 @@ export class Input {
     this.cur = new Set();
     this.pointer = { x: 0, y: 0, worldX: 0, worldY: 0, down: false };
     this.stick = [0, 0];
+    this.wheel = [0, 0];        // wheel movement of the last frame (Unity: Input.mouseScrollDelta); fed by attachDom
+    this._wheel = [0, 0];
+    this.touches = new Map();   // active touches by pointer id: { id, x, y, dx, dy, phase } (Unity: Input.touches); fed by attachDom
   }
   /** Clear held keys, edge states, virtual controls and pointer press on scene restart. */
   reset() {
     this.held.clear(); this.virtual.clear(); this.prev.clear(); this.cur.clear();
     this.stick = [0, 0]; this.pointer.down = false;
+    this.wheel = [0, 0]; this._wheel = [0, 0]; this.touches.clear();
   }
   setKey(code, down) { down ? this.held.add(code) : this.held.delete(code); }
   setVirtual(action, on) { on ? this.virtual.add(action) : this.virtual.delete(action); }
   /** Call once per frame before scripts update: snapshots action state so pressed/released work. */
   beginFrame() {
     this.heldPrev = this.heldSnap ?? new Set(); this.heldSnap = new Set(this.held); // raw-key edges for Unity-style GetKeyDown/Up
+    this.wheel = this._wheel; this._wheel = [0, 0];
     this.prev = this.cur;
     this.cur = new Set(this.virtual);
     for (const [a, codes] of Object.entries(this.actions)) if (codes.some((c) => this.held.has(c))) this.cur.add(a);
@@ -60,14 +65,25 @@ export function attachDom(input, el, win = window, toWorld = (x, y) => [x, y]) {
     const x = ((e.clientX - r.left) / r.width) * (el.width || r.width), y = ((e.clientY - r.top) / r.height) * (el.height || r.height);
     Object.assign(input.pointer, { x, y }); [input.pointer.worldX, input.pointer.worldY] = toWorld(x, y);
   };
-  const pd = (e) => { pos(e); input.pointer.down = true; input.setKey(`Mouse${e.button ?? 0}`, true); };
-  const pu = (e) => { pos(e); input.pointer.down = false; input.setKey(`Mouse${e.button ?? 0}`, false); };
+  const canvasXY = (e) => { const r = el.getBoundingClientRect(); return [((e.clientX - r.left) / r.width) * (el.width || r.width), ((e.clientY - r.top) / r.height) * (el.height || r.height)]; };
+  const touch = (e, phase) => {
+    if (e.pointerType !== 'touch') return;
+    const [x, y] = canvasXY(e), old = input.touches.get(e.pointerId);
+    if (phase === 'Ended') { input.touches.delete(e.pointerId); return; }
+    input.touches.set(e.pointerId, { id: e.pointerId, x, y, dx: old ? x - old.x : 0, dy: old ? y - old.y : 0, phase: old ? phase : 'Began' });
+  };
+  const pd = (e) => { pos(e); touch(e, 'Began'); input.pointer.down = true; input.setKey(`Mouse${e.button ?? 0}`, true); };
+  const pu = (e) => { pos(e); touch(e, 'Ended'); input.pointer.down = false; input.setKey(`Mouse${e.button ?? 0}`, false); };
+  const pm = (e) => { pos(e); touch(e, 'Moved'); };
+  const wheel = (e) => { input._wheel[0] += (e.deltaX ?? 0) / 100; input._wheel[1] += (e.deltaY ?? 0) / 100; };
   const blur = () => input.held.clear();
   win.addEventListener('keydown', kd); win.addEventListener('keyup', ku); win.addEventListener('blur', blur);
-  el.addEventListener('pointerdown', pd); win.addEventListener('pointerup', pu); el.addEventListener('pointermove', pos);
+  el.addEventListener('pointerdown', pd); win.addEventListener('pointerup', pu); win.addEventListener('pointercancel', pu); el.addEventListener('pointermove', pm);
+  el.addEventListener('wheel', wheel, { passive: true });
   return () => {
     win.removeEventListener('keydown', kd); win.removeEventListener('keyup', ku); win.removeEventListener('blur', blur);
-    el.removeEventListener('pointerdown', pd); win.removeEventListener('pointerup', pu); el.removeEventListener('pointermove', pos);
+    el.removeEventListener('pointerdown', pd); win.removeEventListener('pointerup', pu); win.removeEventListener('pointercancel', pu); el.removeEventListener('pointermove', pm);
+    el.removeEventListener('wheel', wheel);
   };
 }
 

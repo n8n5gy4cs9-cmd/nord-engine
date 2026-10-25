@@ -9433,6 +9433,7 @@
   "nord/manual/sprites-animation-tilemaps.html",
   "nord/manual/ui-designer.html",
   "nord/manual/ui.html",
+  "nord/manual/unity-coverage.html",
   "nord/manual/unity-scripting.html",
   "nord/manual/unity-workflow.html",
   "nord/manual/web-editor.html",
@@ -9545,6 +9546,7 @@
   "runtime/core/timeline.js",
   "runtime/core/ui.js",
   "runtime/core/uiscene.js",
+  "runtime/core/unity-extra.js",
   "runtime/core/unity.js",
   "runtime/core/util.js"
 ]

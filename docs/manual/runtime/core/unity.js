@@ -9,6 +9,8 @@ import { runtimePlatform, RuntimePlatform, isEditor, isDesktopApp, isMobile, ope
 export { RuntimePlatform };
 
 const game = () => Game.current;
+/** Filled by unity-extra.js (Transform wrapper, component wrappers): lets MonoBehaviour use them without a circular import. */
+export const unityHooks = {};
 
 // ---------- Mathf ----------
 const repeat = (t, len) => clamp(t - Math.floor(t / len) * len, 0, len);
@@ -322,7 +324,8 @@ export class MonoBehaviour extends NordScript {
     }
   }
   get gameObject() { return this.entity; }
-  get transform() { return this.entity; }
+  /** Unity's `transform`: a Transform wrapper (`position`, `rotation`, `localScale`, `Translate`, `forward`…). `pos`, `rot`, `scale`, `find`, `on`, `emit` still work on it. */
+  get transform() { return unityHooks.transform ? unityHooks.transform(this.entity) : this.entity; }
   get tag() { return this.entity.tags[0] ?? 'Untagged'; }
   set tag(v) { this.entity.tags = [v]; }
   get name() { return this.entity.name; }
@@ -360,6 +363,7 @@ export class MonoBehaviour extends NordScript {
 
   // lookup — GetComponent('sprite' | 'Platform' | ScriptClass)
   GetComponent(type, entity = this.entity) {
+    if (unityHooks.getComponent) return unityHooks.getComponent(entity, type);
     if (typeof type === 'function') return entity.getScript(type);
     return entity.getComponent(type) ?? entity.behavior(type) ?? null;
   }
@@ -408,6 +412,19 @@ export class MonoBehaviour extends NordScript {
     this._co = this._co.filter((c) => { c.step(dt); return !c.done; });
     this.#mouse();
     this.Update?.(dt);
+    this.#stay();
+  }
+  /** OnTriggerStay / OnCollisionStay: called every frame while the pair is touching (built from the enter and exit events; only used when defined). */
+  #stay() {
+    const t = this._touch;
+    if (!t) return;
+    for (const o of t.trigger) { if (o.destroyed) t.trigger.delete(o); else this.OnTriggerStay?.(o); }
+    for (const o of t.collision) { if (o.destroyed) t.collision.delete(o); else this.OnCollisionStay?.(o); }
+  }
+  #track(kind, o, on) {
+    if (!this.OnTriggerStay && !this.OnCollisionStay) return;
+    const t = (this._touch ??= { trigger: new Set(), collision: new Set() });
+    if (on) t[kind].add(o); else t[kind].delete(o);
   }
   /** OnMouseEnter/Exit/Over/Down/Up/Drag/UpAsButton — pointer vs. the object's bounding box (only polled when defined). */
   #mouse() {
@@ -428,10 +445,10 @@ export class MonoBehaviour extends NordScript {
   onEnable() { this.OnEnable?.(); }
   onDisable() { this.OnDisable?.(); }
   onDestroy() { this.StopAllCoroutines(); this.CancelInvoke(); this.OnDestroy?.(); }
-  onCollisionEnter(o, c) { this.OnCollisionEnter?.(o, c); }
-  onCollisionExit(o, c) { this.OnCollisionExit?.(o, c); }
-  onTriggerEnter(o, c) { this.OnTriggerEnter?.(o, c); }
-  onTriggerExit(o, c) { this.OnTriggerExit?.(o, c); }
+  onCollisionEnter(o, c) { this.#track('collision', o, true); this.OnCollisionEnter?.(o, c); }
+  onCollisionExit(o, c) { this.#track('collision', o, false); this.OnCollisionExit?.(o, c); }
+  onTriggerEnter(o, c) { this.#track('trigger', o, true); this.OnTriggerEnter?.(o, c); }
+  onTriggerExit(o, c) { this.#track('trigger', o, false); this.OnTriggerExit?.(o, c); }
 }
 
 

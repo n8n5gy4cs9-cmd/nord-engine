@@ -2529,6 +2529,12 @@
       "milestone": "M13",
       "title": "Docs style rules (DOC_STYLE.md, lint) and a labelling/editor-first pass over every manual page",
       "status": "done"
+    },
+    {
+      "id": "M13-38",
+      "milestone": "M13",
+      "title": "Unity-style part 2: Transform, Quaternion, component wrappers, Physics2D queries, Input/Time/Scene/Application extras; add unity-extra tests",
+      "status": "todo"
     }
   ]
 }
