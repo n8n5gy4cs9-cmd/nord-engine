@@ -429,3 +429,45 @@ test('Joint wrappers: AddComponent / GetComponent, connectedBody, limits, motor,
   assert.equal(Arm.GetComponents(HingeJoint2D).length >= 0, true);
   assert.equal(Rigidbody === undefined, false);
 });
+
+// ---------------------------------------------------------------- line / trail / mask / shape wrappers and curves; strip geometry
+import { LineRenderer, TrailRenderer, SpriteMask, SpriteShapeController, SpriteRenderer, AnimationCurve, Keyframe, Gradient, GradientColorKey, GradientAlphaKey, Camera } from './index.js';
+import { strip, widthAt, colorAt, smooth, simplify } from './strip.js';
+
+test('AnimationCurve and Gradient evaluate like Unity', () => {
+  const lin = AnimationCurve.Linear(0, 0, 2, 10); near(lin.Evaluate(1), 5); near(lin.Evaluate(-5), 0); near(lin.Evaluate(9), 10);
+  const ease = AnimationCurve.EaseInOut(0, 0, 1, 1); near(ease.Evaluate(0.5), 0.5); assert.ok(ease.Evaluate(0.1) < 0.1, 'slow start');
+  const c = new AnimationCurve(new Keyframe(0, 1), new Keyframe(1, 0)); c.postWrapMode = 'Loop'; assert.equal(c.length, 2);
+  const g = new Gradient(); g.SetKeys([new GradientColorKey(Color.red, 0), new GradientColorKey(Color.blue, 1)], [new GradientAlphaKey(1, 0), new GradientAlphaKey(0, 1)]);
+  const mid = g.Evaluate(0.5); near(mid.r, 0.5); near(mid.b, 0.5); near(mid.a, 0.5);
+  assert.equal(g.toStops().length, 2);
+});
+
+test('strip geometry: widths taper, colours blend, mitred corners, smoothing and simplify', () => {
+  const pts = [[0, 0, 0], [10, 0, 0], [10, 10, 0]];
+  const s = strip(pts, { widthOf: (t) => 4 - 2 * t });
+  assert.equal(s.left.length, 3); near(Math.hypot(s.left[0][0] - s.right[0][0], s.left[0][1] - s.right[0][1]), 4); near(s.length, 20); near(s.t[2], 1);
+  const corner = Math.hypot(s.left[1][0] - s.right[1][0], s.left[1][1] - s.right[1][1]); assert.ok(corner > 3 * 0.99 && corner < 6, `mitre ${corner}`);
+  near(widthAt({ startWidth: 2, endWidth: 0 }, 0.5), 1); near(widthAt({ startWidth: 2, endWidth: 2, widthCurve: [[0, 0], [1, 1]] }, 0.5), 1); near(widthAt({ startWidth: 1, widthMultiplier: 3 }, 0), 3);
+  const c = colorAt({ startColor: '#ff0000', endColor: '#0000ff00' }, 0.5); near(c[0], 0.5); near(c[2], 0.5); near(c[3], 0.5);
+  assert.equal(smooth([[0, 0, 0], [10, 0, 0], [10, 10, 0], [0, 10, 0]], 4, true).length, 16);
+  assert.equal(simplify([[0, 0, 0], [5, 0.01, 0], [10, 0, 0]], 0.1).length, 2); assert.equal(simplify([[0, 0, 0], [5, 4, 0], [10, 0, 0]], 0.1).length, 3);
+});
+
+test('LineRenderer / TrailRenderer / SpriteMask / SpriteShape wrappers write the component data', async () => {
+  const g = await sceneWith([ent('L', { components: [{ type: 'lineRenderer', points: [[0, 0, 0], [1, 1, 0]] }, { type: 'trailRenderer' }, { type: 'spriteMask' }, { type: 'spriteShape', points: [[0, 0], [10, 0], [5, 8]] }, { type: 'sprite', texture: 't.png' }] })]);
+  const L = g.scene.find('L'), line = LineRenderer.Of(L);
+  assert.equal(line.positionCount, 2); line.positionCount = 4; assert.equal(line.positionCount, 4); line.SetPosition(3, new Vector3(5, 5, 0)); assert.deepEqual(line.GetPosition(3).toArray(), [5, 5, 0]);
+  line.SetPositions([new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector3(2, 0.001, 0), new Vector3(3, 0, 0)]); line.Simplify(0.1); assert.equal(line.positionCount, 2);
+  line.startWidth = 3; line.endWidth = 1; line.startColor = Color.red; line.endColor = Color.blue; line.loop = true; line.numCapVertices = 4;
+  const d = L.getComponent('lineRenderer').data; assert.deepEqual([d.startWidth, d.endWidth, d.startColor, d.endColor, d.loop, d.capVertices], [3, 1, '#ff0000', '#0000ff', true, 4]);
+  const gr = new Gradient(); gr.SetKeys([new GradientColorKey(Color.red, 0), new GradientColorKey(Color.green, 1)], [new GradientAlphaKey(1, 0), new GradientAlphaKey(1, 1)]); line.colorGradient = gr; assert.equal(d.colors.length, 2);
+  line.widthCurve = AnimationCurve.Linear(0, 1, 1, 0); assert.ok(d.widthCurve.length >= 2 && d.widthCurve.at(-1)[1] < 0.01);
+  const trail = TrailRenderer.Of(L); trail.time = 2; trail.emitting = false; assert.equal(L.getComponent('trailRenderer').data.time, 2); assert.equal(trail.positionCount, 0);
+  const mask = SpriteMask.Of(L); mask.shape = 'circle'; mask.radius = 12; mask.size = new Vector2(4, 5); assert.deepEqual(L.getComponent('spriteMask').data.size, [4, 5]);
+  const sr = SpriteRenderer.Of(L); sr.maskInteraction = 'VisibleInsideMask'; assert.equal(L.getComponent('sprite').data.maskInteraction, 'visibleInsideMask'); assert.equal(sr.maskInteraction, 'VisibleInsideMask');
+  const ss = SpriteShapeController.Of(L); assert.equal(ss.spline.GetPointCount(), 3); ss.spline.InsertPointAt(1, new Vector3(5, -3, 0)); assert.equal(ss.spline.GetPointCount(), 4); ss.spline.SetTangentMode(0, 'Continuous'); assert.equal(L.getComponent('spriteShape').data.smooth, true);
+  ss.autoUpdateCollider = true; assert.equal(ss.autoUpdateCollider, true); ss.spline.RemovePointAt(0); assert.equal(ss.spline.GetPointCount(), 3);
+  assert.ok(L.AddComponent(LineRenderer) instanceof LineRenderer);
+  assert.equal(typeof Camera.main, 'object');
+});

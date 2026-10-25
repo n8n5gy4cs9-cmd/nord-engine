@@ -1,5 +1,5 @@
 // Physics Lab 3D: Unity-style 3D physics on Havok. `await __lab.selfTest()` runs the checks that tools/physics-lab-test.mjs asserts.
-import { MonoBehaviour, Physics, Vector3, Quaternion, Rigidbody, RigidbodyConstraints } from 'nord';
+import { MonoBehaviour, Physics, Vector3, Rigidbody, Camera } from 'nord';
 
 /** Wait `s` seconds of GAME time (the render loop only runs while the page is visible). */
 const sleep = (s) => new Promise((res) => { const g = window.__nord, t0 = g.time.elapsed; const t = () => (g.time.elapsed - t0 >= s ? res() : setTimeout(t, 16)); t(); });
@@ -27,6 +27,14 @@ export default class Lab3D extends MonoBehaviour {
     ok('CapsuleCast', Physics.CapsuleCast(v(5, 1, 0), v(5, 3, 0), 0.25, Vector3.forward).collider?.name === 'Capsule');
     ok('OverlapBox / OverlapSphere / Check*', Physics.OverlapBox(v(0, 1.2, 10), v(0.2, 0.2, 0.2)).length === 1 && Physics.OverlapSphere(v(0, 1.2, 20), 0.2).length === 1 && Physics.CheckSphere(v(0, 1.2, 20), 0.1) && !Physics.CheckSphere(v(0, 9, 20), 0.1));
     const results = []; ok('RaycastNonAlloc fills the array', Physics.RaycastNonAlloc(v(0, 1.2, 0), Vector3.forward, results, 50) === 2 && results.length === 2);
+
+    // camera conversions
+    const cam = Camera.main, wp = v(3, 4, 7), sp = cam.WorldToScreenPoint(wp), back = cam.ScreenToWorldPoint(sp);
+    ok('Camera: WorldToScreenPoint / ScreenToWorldPoint round trip', Math.hypot(back.x - 3, back.y - 4, back.z - 7) < 0.001 && sp.z > 0, `${sp.x.toFixed(1)}, ${sp.y.toFixed(1)}, depth ${sp.z.toFixed(2)}`);
+    ok('Camera: behind the camera gives a negative depth', cam.WorldToScreenPoint(v(0, 5, -40)).z < 0);
+    const cp = cam.WorldToScreenPoint(v(0, 1.2, 10)); const picked = Physics.Raycast(cam.ScreenPointToRay(cp), 100);
+    ok('Camera.ScreenPointToRay through the cube hits the cube', picked.collider?.name === 'Cube', picked.collider?.name);
+    ok('Camera matrices', cam.projectionMatrix.m.length === 16 && cam.worldToCameraMatrix.inverse.isIdentity === false);
 
     // hinge door
     await sleep(0.5);

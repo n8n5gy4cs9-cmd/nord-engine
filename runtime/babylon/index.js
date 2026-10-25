@@ -139,6 +139,30 @@ export class Backend {
   setEnabled(e, on) { for (const x of e.all()) { x.native?.setEnabled(x.enabled); this.physics?.enable(x, x.enabled); } }
   destroyNative(e) { this.physics?.forget(e); e.native?.dispose(false, false); e.native = null; }
   step(dt) { this.physics?.step(dt); }
+  // ---- camera maths for Unity's Camera.WorldToScreenPoint / ScreenToWorldPoint / ScreenPointToRay (screen = canvas pixels, origin top-left, like Input.mousePosition) ----
+  /** World point → `{ x, y, z }`: canvas pixels and the distance in front of the camera (negative = behind it). */
+  projectToScreen(p) {
+    const B = this.B, cam = this.scene.activeCamera; if (!cam) return null;
+    const w = this.engine.getRenderWidth(), h = this.engine.getRenderHeight(), world = new B.Vector3(p[0], p[1], p[2]);
+    const s = B.Vector3.Project(world, B.Matrix.IdentityReadOnly, this.scene.getTransformMatrix(), cam.viewport.toGlobal(w, h));
+    return { x: s.x, y: s.y, z: B.Vector3.TransformCoordinates(world, cam.getViewMatrix()).z };
+  }
+  /** The ray through a screen pixel: `{ origin, direction }` (arrays). */
+  screenRay(x, y) {
+    const B = this.B, cam = this.scene.activeCamera; if (!cam) return null;
+    const r = this.scene.createPickingRay(x, y, B.Matrix.IdentityReadOnly, cam);
+    return { origin: r.origin.asArray(), direction: r.direction.asArray() };
+  }
+  /** Screen pixel + depth in front of the camera → world point. */
+  screenToWorld(x, y, depth) {
+    const r = this.screenRay(x, y); if (!r) return null;
+    const cam = this.scene.activeCamera, fwd = cam.getForwardRay(1).direction, eye = cam.globalPosition;
+    // the picking ray starts on the near plane: measure the depth from the eye, along the camera's forward axis
+    const dot = (a) => a[0] * fwd.x + a[1] * fwd.y + a[2] * fwd.z, ahead = dot([r.origin[0] - eye.x, r.origin[1] - eye.y, r.origin[2] - eye.z]), k = (depth - ahead) / (dot(r.direction) || 1);
+    return [r.origin[0] + r.direction[0] * k, r.origin[1] + r.direction[1] * k, r.origin[2] + r.direction[2] * k];
+  }
+  /** View and projection matrices as 16-number arrays. */
+  cameraMatrices() { const cam = this.scene.activeCamera; return cam ? { view: Array.from(cam.getViewMatrix().m), projection: Array.from(cam.getProjectionMatrix().m) } : null; }
   pick(x, y) {
     const r = this.scene.pick(x, y);
     if (!r?.hit) return null;

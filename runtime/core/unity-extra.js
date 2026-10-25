@@ -521,6 +521,9 @@ export class SpriteRenderer extends ComponentBase {
   static Of(e) { return e.getComponent('sprite') || e.getComponent('animatedSprite') ? new this(e) : null; }
   get comp() { return this.entity.getComponent('sprite') ?? this.entity.getComponent('animatedSprite'); }
   get #type() { return this.comp.type; }
+  /** SpriteMask interaction: 'None' | 'VisibleInsideMask' | 'VisibleOutsideMask' (a SpriteMask in the scene shows or hides this sprite where it overlaps). */
+  get maskInteraction() { const v = this.data.maskInteraction ?? 'none'; return v.charAt(0).toUpperCase() + v.slice(1); }
+  set maskInteraction(v) { const s = String(v); this.entity.set(this.#type, 'maskInteraction', s.charAt(0).toLowerCase() + s.slice(1)); }
   /** The texture path (`assets/sprites/hero.png`). The texture must be used by some scene or prefab so it is preloaded. */
   get sprite() { return this.data.texture ?? null; }
   set sprite(path) { this.entity.set(this.#type, 'texture', path); }
@@ -596,18 +599,41 @@ export class Camera extends ComponentBase {
   get aspect() { const d = game()?.project?.display ?? { width: 16, height: 9 }; return d.width / d.height; }
   get backgroundColor() { return Color.FromHex?.(this.data.background ?? game()?.project?.display?.background ?? '#000000') ?? new Color(); }
   set backgroundColor(c) { this.data.background = c.toHex(); this.comp?.cam?.setBackgroundColor?.(c.toHex()); }
-  /** Screen (canvas pixels, like `Input.mousePosition`) → world. 2D only. */
+  get pixelWidth() { return game()?.backend?.canvas?.width ?? game()?.project?.display?.width ?? 0; }
+  get pixelHeight() { return game()?.backend?.canvas?.height ?? game()?.project?.display?.height ?? 0; }
+  get nearClipPlane() { return this.data.near ?? 0.1; }
+  get farClipPlane() { return this.data.far ?? 1000; }
+  /** Screen position (canvas pixels, origin top-left like `Input.mousePosition`; z = distance in front of the camera, 3D) → world position. */
   ScreenToWorldPoint(p) {
-    if (is3D()) { warnOnce('Camera.ScreenToWorldPoint is 2D only; in 3D use physics.raycast from the camera.'); return new Vector3(p.x, p.y, p.z ?? 0); }
-    const w = game()?.backend?.toWorld?.(p.x, p.y) ?? [p.x, p.y];
+    const b = game()?.backend;
+    if (is3D()) { const w = b?.screenToWorld?.(p.x, p.y, p.z ?? 0); return w ? v3(w) : new Vector3(p.x, p.y, p.z ?? 0); }
+    const w = b?.toWorld?.(p.x, p.y) ?? [p.x, p.y];
     return new Vector3(w[0], w[1], p.z ?? 0);
   }
+  /** World position → screen position; z is the distance in front of the camera (negative = behind it). */
   WorldToScreenPoint(p) {
-    const cam = game()?.backend?.scene?.cameras?.main;
-    if (is3D() || !cam?.worldView) { warnOnce('Camera.WorldToScreenPoint is available in 2D only.'); return new Vector3(p.x, p.y, 0); }
+    const b = game()?.backend;
+    if (is3D()) { const s = b?.projectToScreen?.([p.x, p.y, p.z]); return s ? new Vector3(s.x, s.y, s.z) : new Vector3(p.x, p.y, 0); }
+    const cam = b?.scene?.cameras?.main;
+    if (!cam?.worldView) { warnOnce('Camera.WorldToScreenPoint needs a running 2D game.'); return new Vector3(p.x, p.y, 0); }
     return new Vector3((p.x - cam.worldView.x) * cam.zoom, (p.y - cam.worldView.y) * cam.zoom, 0);
   }
-  ViewportToWorldPoint(p) { const d = game()?.project?.display ?? { width: 640, height: 360 }; return this.ScreenToWorldPoint(new Vector3(p.x * d.width, p.y * d.height, p.z ?? 0)); }
+  ViewportToWorldPoint(p) { return this.ScreenToWorldPoint(new Vector3(p.x * this.pixelWidth, p.y * this.pixelHeight, p.z ?? 0)); }
+  WorldToViewportPoint(p) { const s = this.WorldToScreenPoint(p); return new Vector3(s.x / (this.pixelWidth || 1), s.y / (this.pixelHeight || 1), s.z); }
+  ScreenToViewportPoint(p) { return new Vector3(p.x / (this.pixelWidth || 1), p.y / (this.pixelHeight || 1), p.z ?? 0); }
+  ViewportToScreenPoint(p) { return new Vector3(p.x * this.pixelWidth, p.y * this.pixelHeight, p.z ?? 0); }
+  /** The ray through a screen pixel (a Ray: `origin`, `direction`): `Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition))`. */
+  ScreenPointToRay(p) {
+    const r = is3D() ? game()?.backend?.screenRay?.(p.x, p.y) : null;
+    if (r) return new unityHooks.Ray(v3(r.origin), v3(r.direction));
+    const w = this.ScreenToWorldPoint(new Vector3(p.x, p.y, 0));
+    return new unityHooks.Ray(w, Vector3.forward);
+  }
+  ViewportPointToRay(p) { return this.ScreenPointToRay(new Vector3(p.x * this.pixelWidth, p.y * this.pixelHeight, 0)); }
+  /** 4×4 matrices (Matrix4x4) of the active camera. In 2D they are the orthographic ones for the visible area. */
+  get worldToCameraMatrix() { const m = game()?.backend?.cameraMatrices?.(); return m ? unityHooks.Matrix4x4.FromArray(m.view) : unityHooks.Matrix4x4.identity; }
+  get projectionMatrix() { const m = game()?.backend?.cameraMatrices?.(); return m ? unityHooks.Matrix4x4.FromArray(m.projection) : unityHooks.Matrix4x4.identity; }
+  get cameraToWorldMatrix() { return this.worldToCameraMatrix.inverse; }
   Shake(ms = 250, intensity = 0.01) { game()?.camera?.shake?.(ms, intensity); }
   Flash(ms = 250, color = '#ffffff') { game()?.camera?.flash?.(ms, color); }
 }

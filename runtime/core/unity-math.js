@@ -4,7 +4,7 @@
 //
 //   import { Vector4, Matrix4x4, Bounds, Rect, Ray, Plane, Color32 } from 'nord';
 import { clamp, lerp } from './util.js';
-import { Vector2, Vector3, Color, Random } from './unity.js';
+import { Vector2, Vector3, Color, Random, unityHooks } from './unity.js';
 import { Quaternion } from './unity-extra.js';
 
 const D2R = Math.PI / 180;
@@ -430,3 +430,5 @@ Random.ColorHSV = (hMin = 0, hMax = 1, sMin = 0, sMax = 1, vMin = 0, vMax = 1, a
 };
 Object.defineProperty(Random, 'rotation', { configurable: true, get() { const u = Random.value, v = Random.value * 2 * Math.PI, w = Random.value * 2 * Math.PI, a = Math.sqrt(1 - u), b = Math.sqrt(u); return new Quaternion(a * Math.sin(v), a * Math.cos(v), b * Math.sin(w), b * Math.cos(w)); } });
 Object.defineProperty(Random, 'insideUnitCircleNormalized', { configurable: true, get() { return Random.insideUnitCircle.normalized; } });
+
+unityHooks.Ray = Ray; unityHooks.Matrix4x4 = Matrix4x4; // the Camera wrapper (unity-extra.js) makes Rays and matrices without importing this file
