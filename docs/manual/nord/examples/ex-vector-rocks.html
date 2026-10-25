@@ -13,6 +13,56 @@
 <p><img src="../../assets/screenshots/vector-rocks-showcase.png" alt="Vector Rocks: ship with shield and triple shot, rocks, a nova power-up"></p>
 <p><strong>Download:</strong> <a href="../../assets/downloads/vector-rocks-source.zip">the project</a>, also in <code>examples/vector-rocks</code>. Open <code>nord.project.json</code> and press <span class="c-ui">Play</span>.</p>
 <p><strong>Controls:</strong> A / D or ← → turn, W or ↑ thrust, Space fire, Shift hyperspace (a random jump), Enter after Game Over.</p>
+<h2 id="start-from-the-starter-project">Start from the starter project<a class="anchor" href="#start-from-the-starter-project">#</a></h2>
+<p>In Unity you would start from a <strong>starter project</strong>: all the art, sounds, prefabs and the scene already set up, but none of the code. Do that here:</p>
+<p><strong><a href="../../assets/downloads/vector-rocks-starter.zip">Download the starter project</a></strong> (the finished game is the other download above). Unzip it, open <code>nord.project.json</code> and press <span class="c-ui">Play</span>: you see an empty black screen. What is inside:</p>
+<p><img src="../../assets/screenshots/vector-rocks-assets.png" alt="Everything in assets/sprites: the ship, flame, bullet, shield ring, nine rocks and five power-up icons"></p>
+<ul>
+<li><code>assets/sprites/</code>: the <strong>ship</strong>, its <strong>flame</strong>, the <strong>bullet</strong>, the <strong>shield</strong> ring, <strong>nine rocks</strong> (three shapes in each of three sizes) and <strong>five power-up icons</strong>, plus <code>bezel.png</code>, the monitor frame (800 × 600, transparent screen). All are line drawings with a baked phosphor glow, made by <code>tools/gen_vector_rocks_art.py</code>.</li>
+<li><code>assets/particles/</code> and <code>assets/audio/sfx/</code>: spark streaks, the soft dot, a ring, and the laser, explosion, death, power-up, teleport and tick sounds.</li>
+<li><code>prefabs/</code>: <code>bullet</code>, <code>rock-large-0..2</code>, <code>rock-medium-0..2</code>, <code>rock-small-0..2</code>, <code>pu-shield</code>, <code>pu-rapid</code>, <code>pu-triple</code>, <code>pu-nova</code>, <code>pu-life</code>, <code>explosion</code>, <code>nova</code>. Sprites, rigidbodies, circle <strong>trigger</strong> colliders and particles are set up; <strong>the scripts are not attached</strong>.</li>
+<li><code>scenes/main.scene.json</code>: <code>Camera</code>, <code>Game</code>, <code>Ship</code> (with its <code>Flame</code> and <code>Shield</code> children, both switched off), <code>Hud</code>. The <code>crt</code> scanline effect is on. No scripts.</li>
+<li><code>nord.project.json</code>: 800 × 600 display, dark green background, no gravity, the input actions.</li>
+<li><code>scripts/</code>: empty. This is where you write the code below.</li>
+</ul>
+<p>Write the scripts in the order of the sections that follow, and attach each one:</p>
+<table>
+<thead>
+<tr>
+<th>Script</th>
+<th>Attach it to</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Playfield.js</code></td>
+<td>nothing (a helper module the others import)</td>
+</tr>
+<tr>
+<td><code>Ship.js</code></td>
+<td>the <code>Ship</code> object in the scene</td>
+</tr>
+<tr>
+<td><code>Rock.js</code></td>
+<td>the nine <code>rock-*</code> prefabs, with the field <code>size</code> = 0 for small, 1 for medium, 2 for large</td>
+</tr>
+<tr>
+<td><code>Bullet.js</code></td>
+<td>the <code>bullet</code> prefab</td>
+</tr>
+<tr>
+<td><code>PowerUp.js</code></td>
+<td>the five <code>pu-*</code> prefabs, with the field <code>type</code> = <code>shield</code>, <code>rapid</code>, <code>triple</code>, <code>nova</code> or <code>life</code></td>
+</tr>
+<tr>
+<td><code>Game.js</code></td>
+<td>the <code>Game</code> object</td>
+</tr>
+<tr>
+<td><code>Hud.js</code></td>
+<td>the <code>Hud</code> object</td>
+</tr>
+</tbody></table>
+<p>(<span class="c-ui">Inspector ▸ + Add script</span>; for a prefab open it first with <span class="c-ui">Open prefab</span>.)</p>
 <h2 id="the-parts">The parts<a class="anchor" href="#the-parts">#</a></h2>
 <table>
 <thead>
@@ -553,5 +603,5 @@ export default class Hud extends MonoBehaviour {
 <li>Ship it: <code>nord build vector-rocks --minify --zip</code> makes a folder you can put on a web page. See <a href="ex-build-publish.html">Build, publish and ship</a>.</li>
 </ul>
 <p>Back to <a href="examples.html">Examples</a>.</p>
-<div class="pager"><a href="ex-input-editor.html"><small>← Previous</small>43 · Input actions and the Input editor</a><a href="ex-platform.html"><small>Next →</small>45 · Which platform? Editor, Mac, Windows, web, phone</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#the-parts">The parts </a><a href="#1-how-to-make-a-vector-monitor">1 How to make a vector monitor </a><a href="#2-the-screen-and-wrapping">2 The screen, and wrapping </a><a href="#3-the-ship">3 The ship </a><a href="#4-rocks-bullets-power-ups">4 Rocks, bullets, power-ups </a><a href="#5-the-game-waves-lives-heartbeat">5 The game: waves, lives, heartbeat </a><a href="#6-the-monitor-hud-scaler-bezel-and-bloom">6 The monitor: HUD, scaler, bezel and bloom </a><a href="#7-power-ups">7 Power-ups </a><a href="#8-check-yourself">8 Check yourself </a><a href="#9-ideas">9 Ideas </a></aside></div>
+<div class="pager"><a href="ex-input-editor.html"><small>← Previous</small>43 · Input actions and the Input editor</a><a href="ex-platform.html"><small>Next →</small>45 · Which platform? Editor, Mac, Windows, web, phone</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#start-from-the-starter-project">Start from the starter project </a><a href="#the-parts">The parts </a><a href="#1-how-to-make-a-vector-monitor">1 How to make a vector monitor </a><a href="#2-the-screen-and-wrapping">2 The screen, and wrapping </a><a href="#3-the-ship">3 The ship </a><a href="#4-rocks-bullets-power-ups">4 Rocks, bullets, power-ups </a><a href="#5-the-game-waves-lives-heartbeat">5 The game: waves, lives, heartbeat </a><a href="#6-the-monitor-hud-scaler-bezel-and-bloom">6 The monitor: HUD, scaler, bezel and bloom </a><a href="#7-power-ups">7 Power-ups </a><a href="#8-check-yourself">8 Check yourself </a><a href="#9-ideas">9 Ideas </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

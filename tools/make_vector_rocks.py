@@ -19,6 +19,8 @@ def particles(**k):
             "scale": [0.7, 0], "alpha": [1, 0], "emitting": False, "burst": 20}
     base.update(k); return base
 
+KEEP = set()
+
 def build():
     for sub in ('scenes', 'scripts', 'prefabs', 'assets/particles', 'assets/audio/sfx'): (OUT / sub).mkdir(parents=True, exist_ok=True)
     proj = {"format": 1, "name": "Vector Rocks", "id": "com.crowelian.vector-rocks", "type": "2d", "engineVersion": "0.1.0", "startScene": "scenes/main.scene.json",
@@ -61,5 +63,27 @@ def docs():
     with zipfile.ZipFile(ROOT / 'docs/tutorial-downloads/vector-rocks-source.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
         for f in sorted(OUT.rglob('*')):
             if f.is_file(): zf.write(f, 'vector-rocks/' + f.relative_to(OUT).as_posix())
+def strip_scripts(node):
+    if isinstance(node, dict):
+        if 'scripts' in node and isinstance(node['scripts'], list):
+            node['scripts'] = [s for s in node['scripts'] if s['path'].split('/')[-1] in KEEP]
+        for v in node.values(): strip_scripts(v)
+    elif isinstance(node, list):
+        for v in node: strip_scripts(v)
+
+def starter():
+    """The Unity-style starter project: all art, sound, prefabs and scenes set up, but none of the game code."""
+    import zipfile, tempfile
+    dst = pathlib.Path(tempfile.mkdtemp()) / 'vector-rocks-starter'
+    shutil.copytree(OUT, dst)
+    for f in (dst / 'scripts').glob('*.js'):
+        if f.name not in KEEP: f.unlink()
+    for f in list(dst.glob('scenes/*.json')) + list(dst.glob('prefabs/*.json')):
+        d = json.loads(f.read_text()); strip_scripts(d); f.write_text(json.dumps(d, indent=2) + '\n')
+    (dst / 'README.md').write_text('# Vector Rocks starter\n\nAll art, sound, prefabs and scenes are ready; the game scripts are not. Write them following the tutorial page and attach each one to the object the page names.\n')
+    with zipfile.ZipFile(ROOT / 'docs/tutorial-downloads/vector-rocks-starter.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+        for f in sorted(dst.rglob('*')):
+            if f.is_file(): zf.write(f, 'vector-rocks-starter/' + f.relative_to(dst).as_posix())
+
 if __name__ == '__main__':
-    build(); docs(); print('ok')
+    build(); docs(); starter(); print('ok')

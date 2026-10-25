@@ -36,6 +36,21 @@ It is written **Unity-style from the first line to the last**: `MonoBehaviour`, 
 
 **Controls:** WASD or arrows move, Space or J swings the sword, Esc pauses.
 
+## Start from the starter project
+
+Unity projects usually come with a **starter project**: every asset imported, prefabs built, scenes laid out, no game code. Here it is:
+
+**[Download the starter project](assets/downloads/ember-crypt-starter.zip)**. Unzip it, open `nord.project.json`, press @ui[Play]: you see the title scene's pictures with no title text and no working buttons. Inside:
+
+![Every sprite the game uses: hero frames, slime, bat, coin, wall, gate, brazier, rune, key, potion, chest, crate, barrel, spikes and hearts](assets/screenshots/ember-crypt-assets.png)
+
+* `assets/`: all the sprites above, the floor texture, particle textures, 14 sound effects, 4 music tracks and the `.meta.json` files with the hero's clips (`idle`, `walk`, `jump`, `hurt`) and the slime, bat and coin animations.
+* `prefabs/`: all 18 prefabs of section 4, set up with sprites, colliders, rigidbodies and the **library light scripts**, but **without your scripts**.
+* `scenes/title.scene.json` (complete) and `scenes/main.scene.json` (`Camera`, `GameManager`, `Run`, `Level`, `Light2D` with its settings, `Hud`, `Hero` with its `Lantern`): entities and components in place, no scripts attached.
+* `scripts/`: only `map.js` (the dungeon as text, which is data, not code) and the three light library scripts. Everything else you write while reading this page.
+
+Each section below says which object gets which script. In short: `Follow.js`, `Run.js`, `Level.js`, `Hud.js`, `GameManager.js` go on the scene objects of the same name (`Follow` on `Camera`); `Hero.js` and `Health.js` on `Hero`; `Pickup.js` on the four pickup prefabs (with `kind` = `coin`, `key`, `potion`, `chest`); `Door.js`, `Spikes.js`, `Exit.js` on the prefabs of those names; `Enemy.js` on `slime` (speed 55, hp 2, sight 150) and `bat` (speed 95, hp 1, sight 190, zigzag 1); `FloatText.js` on `floattext`; `Slash.js` on `slash`; `Title.js` on the `Title` object of the title scene; `World.js` and `Fx.js` are helper modules.
+
 ## 1 The plan
 
 You are trapped in a crypt of six rooms. The way out is the glowing rune in the far room. Two iron gates stand in the way; each needs a key. Slimes and bats wander and hunt you. You carry a lantern, there are braziers on the walls, and you cannot see further than the light.

@@ -12,6 +12,35 @@ summary: A whole game in Unity-style code: Asteroids with glowing phosphor lines
 
 **Controls:** A / D or ← → turn, W or ↑ thrust, Space fire, Shift hyperspace (a random jump), Enter after Game Over.
 
+## Start from the starter project
+
+In Unity you would start from a **starter project**: all the art, sounds, prefabs and the scene already set up, but none of the code. Do that here:
+
+**[Download the starter project](assets/downloads/vector-rocks-starter.zip)** (the finished game is the other download above). Unzip it, open `nord.project.json` and press @ui[Play]: you see an empty black screen. What is inside:
+
+![Everything in assets/sprites: the ship, flame, bullet, shield ring, nine rocks and five power-up icons](assets/screenshots/vector-rocks-assets.png)
+
+* `assets/sprites/`: the **ship**, its **flame**, the **bullet**, the **shield** ring, **nine rocks** (three shapes in each of three sizes) and **five power-up icons**, plus `bezel.png`, the monitor frame (800 × 600, transparent screen). All are line drawings with a baked phosphor glow, made by `tools/gen_vector_rocks_art.py`.
+* `assets/particles/` and `assets/audio/sfx/`: spark streaks, the soft dot, a ring, and the laser, explosion, death, power-up, teleport and tick sounds.
+* `prefabs/`: `bullet`, `rock-large-0..2`, `rock-medium-0..2`, `rock-small-0..2`, `pu-shield`, `pu-rapid`, `pu-triple`, `pu-nova`, `pu-life`, `explosion`, `nova`. Sprites, rigidbodies, circle **trigger** colliders and particles are set up; **the scripts are not attached**.
+* `scenes/main.scene.json`: `Camera`, `Game`, `Ship` (with its `Flame` and `Shield` children, both switched off), `Hud`. The `crt` scanline effect is on. No scripts.
+* `nord.project.json`: 800 × 600 display, dark green background, no gravity, the input actions.
+* `scripts/`: empty. This is where you write the code below.
+
+Write the scripts in the order of the sections that follow, and attach each one:
+
+| Script | Attach it to |
+|---|---|
+| `Playfield.js` | nothing (a helper module the others import) |
+| `Ship.js` | the `Ship` object in the scene |
+| `Rock.js` | the nine `rock-*` prefabs, with the field `size` = 0 for small, 1 for medium, 2 for large |
+| `Bullet.js` | the `bullet` prefab |
+| `PowerUp.js` | the five `pu-*` prefabs, with the field `type` = `shield`, `rapid`, `triple`, `nova` or `life` |
+| `Game.js` | the `Game` object |
+| `Hud.js` | the `Hud` object |
+
+(@ui[Inspector ▸ + Add script]; for a prefab open it first with @ui[Open prefab].)
+
 ## The parts
 
 | File | Unity equivalent | Job |

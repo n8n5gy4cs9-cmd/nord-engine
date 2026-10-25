@@ -34,6 +34,8 @@ def ent(i, name, x, y, z=0, comps=(), scripts=(), tags=(), layer=0, children=())
             "transform": {"pos": [x, y, z], "rot": [0, 0, 0], "scale": [1, 1, 1]}, "components": list(comps),
             "scripts": [{"path": p, "attributes": a} for p, a in scripts], "children": list(children), "prefab": None}
 
+KEEP = {'map.js', 'light2d.js', 'light2d-source.js', 'light2d-occluder.js'}
+
 def build():
     for sub in ('scenes', 'scripts', 'prefabs'): (OUT / sub).mkdir(parents=True, exist_ok=True)
     proj = {"format": 1, "name": "Ember Crypt", "id": "com.crowelian.ember-crypt", "type": "2d", "engineVersion": "0.1.0",
@@ -116,7 +118,30 @@ def docs():
     with zipfile.ZipFile(ROOT / 'docs/tutorial-downloads/ember-crypt-source.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
         for f in sorted(OUT.rglob('*')):
             if f.is_file(): zf.write(f, 'ember-crypt/' + f.relative_to(OUT).as_posix())
+def strip_scripts(node):
+    if isinstance(node, dict):
+        if 'scripts' in node and isinstance(node['scripts'], list):
+            node['scripts'] = [s for s in node['scripts'] if s['path'].split('/')[-1] in KEEP]
+        for v in node.values(): strip_scripts(v)
+    elif isinstance(node, list):
+        for v in node: strip_scripts(v)
+
+def starter():
+    """The Unity-style starter project: all art, sound, prefabs and scenes set up, but none of the game code."""
+    import zipfile, tempfile
+    dst = pathlib.Path(tempfile.mkdtemp()) / 'ember-crypt-starter'
+    shutil.copytree(OUT, dst)
+    for f in (dst / 'scripts').glob('*.js'):
+        if f.name not in KEEP: f.unlink()
+    for f in list(dst.glob('scenes/*.json')) + list(dst.glob('prefabs/*.json')):
+        d = json.loads(f.read_text()); strip_scripts(d); f.write_text(json.dumps(d, indent=2) + '\n')
+    (dst / 'README.md').write_text('# Ember Crypt starter\n\nAll art, sound, prefabs and scenes are ready; the game scripts are not. Write them following the tutorial page and attach each one to the object the page names.\n')
+    with zipfile.ZipFile(ROOT / 'docs/tutorial-downloads/ember-crypt-starter.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+        for f in sorted(dst.rglob('*')):
+            if f.is_file(): zf.write(f, 'ember-crypt-starter/' + f.relative_to(dst).as_posix())
+
 if __name__ == '__main__':
     build()
     if (SRC / 'docs/page.md').exists(): docs()
+    starter()
     print('ok')
