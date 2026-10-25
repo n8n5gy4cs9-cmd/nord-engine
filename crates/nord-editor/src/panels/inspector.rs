@@ -164,7 +164,7 @@ pub fn field_ui(ui: &mut Ui, cx: &Ctx, ty: &FieldType, v: &mut Value, id: &str) 
                 .iter()
                 .find(|(i, _)| *i == cur)
                 .map_or("(none)".to_string(), |(_, n)| n.clone());
-            egui::ComboBox::from_id_salt(id)
+            let combo = egui::ComboBox::from_id_salt(id)
                 .selected_text(name)
                 .show_ui(ui, |ui| {
                     if ui.selectable_label(cur.is_empty(), "(none)").clicked() {
@@ -178,6 +178,26 @@ pub fn field_ui(ui: &mut Ui, cx: &Ctx, ty: &FieldType, v: &mut Value, id: &str) 
                         }
                     }
                 });
+            // drag an object from the Hierarchy onto the field (Unity)
+            if egui::DragAndDrop::has_payload_of_type::<String>(ui.ctx()) {
+                let r = combo.response.rect;
+                if ui.rect_contains_pointer(r) {
+                    ui.painter().rect_stroke(
+                        r,
+                        2.0,
+                        egui::Stroke::new(1.5_f32, ui.visuals().selection.stroke.color),
+                        egui::StrokeKind::Outside,
+                    );
+                    if ui.input(|i| i.pointer.any_released()) {
+                        if let Some(dropped) = egui::DragAndDrop::payload::<String>(ui.ctx()) {
+                            if cx.entities.iter().any(|(i, _)| *i == *dropped) {
+                                *v = json!(*dropped);
+                                ch = true;
+                            }
+                        }
+                    }
+                }
+            }
         }
         FieldType::Asset(kind) => {
             let cur = v.as_str().unwrap_or("").to_string();
@@ -1725,10 +1745,10 @@ fn collect_scripts(root: &std::path::Path, dir: &std::path::Path, out: &mut Vec<
         let p = e.path();
         let n = e.file_name().to_string_lossy().into_owned();
         if p.v_is_dir() {
-            if !matches!(
-                n.as_str(),
-                ".nord-cache" | "dist" | ".git" | "node_modules" | "target" | "assets"
-            ) {
+            // dot-folders hold editor data (.nord/history snapshots, .nord-cache, .git), never project scripts
+            if !n.starts_with('.')
+                && !matches!(n.as_str(), "dist" | "node_modules" | "target" | "assets")
+            {
                 collect_scripts(root, &p, out);
             }
         } else if n.ends_with(".js") || n.ends_with(".ts") {

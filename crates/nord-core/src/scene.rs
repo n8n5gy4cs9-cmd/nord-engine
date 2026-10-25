@@ -93,6 +93,20 @@ pub struct Entity {
     pub children: Vec<Entity>,
     #[serde(default)]
     pub prefab: Option<PrefabRef>,
+    /// Editor only, off by default: custom Hierarchy row look (row colour, text colour, bold).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hier: Option<HierStyle>,
+}
+
+/// Optional Hierarchy row styling (colours are `#rrggbb`, empty = default).
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
+pub struct HierStyle {
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub bg: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub text: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub bold: bool,
 }
 
 fn is_false(b: &bool) -> bool {
@@ -118,6 +132,7 @@ impl Entity {
             connections: vec![],
             children: vec![],
             prefab: None,
+            hier: None,
         }
     }
 

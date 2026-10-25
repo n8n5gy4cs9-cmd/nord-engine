@@ -310,7 +310,7 @@ export function SerializeField(fields) {
 export const Range = (min, max, def = min) => ({ default: def, min, max });
 /** Dropdown field: `SerializeField({ mode: Enum(['idle', 'chase'], 'idle') })`. */
 export const Enum = (options, def = options[0]) => ({ type: 'enum', options, default: def });
-/** Field that points at another object by name: `SerializeField({ target: EntityRef() })`, read it with `this.Find(this.target)`. */
+/** Field that points at another object (assign it in the Inspector, or give a name): `SerializeField({ target: EntityRef() })`; `this.target` is the object itself, like a Unity GameObject field (`this.Find(this.target)` still works). */
 export const EntityRef = (def = '') => ({ type: 'entity', default: def });
 const asField = (f) => (f && typeof f === 'object' && !Array.isArray(f) ? { ...f } : { default: f });
 /** Unity's `[Header("Movement")]`: a bold heading above the field in the Inspector. */
@@ -342,7 +342,9 @@ export class MonoBehaviour extends NordScript {
     this._co = [];
     this._inv = [];
     for (const k of Object.keys(attrs)) {
-      if (!(k in this)) Object.defineProperty(this, k, { get() { return this.attrs[k]; }, set(v) { this.attrs[k] = v; }, enumerable: true, configurable: true });
+      // an EntityRef field reads as the object itself (Unity: a GameObject reference), not the stored id/name
+      const isRef = this.constructor.attributes?.[k]?.type === 'entity';
+      if (!(k in this)) Object.defineProperty(this, k, { get() { const v = this.attrs[k]; return isRef && typeof v === 'string' ? (v ? this.Find(v) : null) : v; }, set(v) { this.attrs[k] = v; }, enumerable: true, configurable: true });
     }
   }
   get gameObject() { return this.entity; }
@@ -393,7 +395,8 @@ export class MonoBehaviour extends NordScript {
   GetComponentInParent(type) { for (let e = this.entity; e; e = e.parent) { const c = this.GetComponent(type, e); if (c) return c; } return null; }
   GetComponents(type) { return [...this.entity.all()].map((e) => this.GetComponent(type, e)).filter(Boolean); }
   TryGetComponent(type) { return this.GetComponent(type); }
-  Find(name) { return this.scene.find(name); }
+  /** By name, or by entity id: an `EntityRef` field set in the editor holds the id, one written by hand holds the name. */
+  Find(nameOrId) { if (nameOrId && typeof nameOrId === 'object') return nameOrId; return this.scene.find(nameOrId) ?? this.scene.findById(nameOrId); }
   FindWithTag(tag) { return this.scene.findByTag(tag)[0] ?? null; }
   FindGameObjectsWithTag(tag) { return this.scene.findByTag(tag); }
   FindObjectOfType(Class) { for (const e of this.scene.all()) { const s = e.getScript(Class); if (s) return s; } return null; }

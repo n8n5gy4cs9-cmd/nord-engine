@@ -1896,3 +1896,76 @@ fn assets_rename_ends_on_enter_with_the_typed_name_and_on_escape_without() {
     );
     assert!(d.join("assets/player.js").exists());
 }
+
+#[test]
+fn hierarchy_drag_reparents_and_reorders() {
+    let mut st = state_with_scene("hier-drag");
+    for n in ["A", "B", "C"] {
+        st.add_entity(None);
+        let id = st.selection[0].clone();
+        st.edit("n", None, |l| {
+            if let Some(e) = nord_editor::scene_ops::find_mut(l, &id) {
+                e.name = n.into();
+            }
+        });
+    }
+    let mut h = Harness::new_ui_state(|ui, st: &mut EditorState| panels::hierarchy::ui(st, ui), st);
+    loaders(&h);
+    h.run();
+    let btn = egui::PointerButton::Primary;
+    let drag = |h: &mut Harness<'_, EditorState>, from: &str, to: &str, frac: f32| {
+        let rect = |r: egui::accesskit::Rect| {
+            egui::Rect::from_min_max(
+                egui::pos2(r.x0 as f32, r.y0 as f32),
+                egui::pos2(r.x1 as f32, r.y1 as f32),
+            )
+        };
+        let a = rect(h.get_by_label(from).bounding_box().unwrap()).center();
+        let r = rect(h.get_by_label(to).bounding_box().unwrap());
+        let b = egui::pos2(a.x, r.top() + r.height() * frac);
+        let mods = egui::Modifiers::NONE;
+        h.input_mut().events.push(egui::Event::PointerMoved(a));
+        h.run_steps(1);
+        h.input_mut().events.push(egui::Event::PointerButton {
+            pos: a,
+            button: btn,
+            pressed: true,
+            modifiers: mods,
+        });
+        h.run_steps(1);
+        for i in 1..=4 {
+            let p = a + (b - a) * (i as f32 / 4.0);
+            h.input_mut().events.push(egui::Event::PointerMoved(p));
+            h.run_steps(1);
+        }
+        h.input_mut().events.push(egui::Event::PointerButton {
+            pos: b,
+            button: btn,
+            pressed: false,
+            modifiers: mods,
+        });
+        h.run_steps(3);
+    };
+    drag(&mut h, "C", "B", 0.6);
+    let names = |h: &Harness<'_, EditorState>| -> Vec<(String, usize)> {
+        h.state()
+            .scene
+            .as_ref()
+            .unwrap()
+            .entities
+            .iter()
+            .map(|e| (e.name.clone(), e.children.len()))
+            .collect()
+    };
+    assert_eq!(
+        names(&h),
+        vec![("A".into(), 0), ("B".into(), 1)],
+        "C dropped on B must become its child"
+    );
+    drag(&mut h, "B", "A", 0.1);
+    assert_eq!(
+        names(&h)[0].0,
+        "B",
+        "B dropped on A's upper edge goes before A"
+    );
+}

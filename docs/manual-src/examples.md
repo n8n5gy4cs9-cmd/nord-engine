@@ -11,6 +11,71 @@ These pages show **how to do the everyday things** in Nord, written for someone 
 Never used Unity? These pages still work: each example is a small script plus the steps to try it. Start with *1 · Your first script* and follow the numbers.
 :::
 
+## How the Unity-style coding works
+Nord keeps Unity's mental model: a **scene** holds **objects**, an object holds **components**, and a **script** is one more component whose methods the engine calls at the right moment. The difference is the language (JavaScript instead of C#) and that nothing needs compiling: save the file and press @ui[Play].
+
+::: dummies
+Think of a stage play. The **scene** is the stage, each **object** is an actor, and a **script** is the actor's instruction card: "when the curtain rises do this, every second do that". You never call those methods yourself. The engine reads the card and calls them for you.
+:::
+
+### 1. A script is a class with Unity's method names
+A script is a JavaScript class that `extends MonoBehaviour`. You write only the methods you need; the engine calls them by name, exactly like Unity.
+
+**File: `scripts/hello.js`** (new file, the whole file)
+```js
+import { MonoBehaviour, Debug } from 'nord';
+
+export default class Hello extends MonoBehaviour {
+  Start() { Debug.Log('I exist'); }          // once, before the first frame
+  Update() { /* every frame */ }             // like Unity's Update()
+}
+```
+Attach it with @ui[Inspector ▸ + Add script ▸ hello] on an object, press @ui[Play], and **I exist** appears in the Console.
+
+::: dummies
+`class Hello extends MonoBehaviour` means "Hello is a kind of script". `Start` and `Update` are the two cards you will use most: `Start` runs once, `Update` runs again and again, about 60 times a second.
+:::
+
+### 2. `this` is your object, and the components are on it
+Inside a script `this` is the object the script sits on. Move it with `this.transform`, find its other components with `this.GetComponent('sprite')`, and read the time since the last frame with `Time.deltaTime`.
+
+**In the file** `scripts/hello.js` (replace the `Update` line from step 1)
+```js
+Update() { this.transform.Translate(2 * Time.deltaTime, 0, 0); } // 2 units per second to the right
+```
+Add `Time` to the `import` line (`import { MonoBehaviour, Debug, Time } from 'nord';`), press @ui[Play], and the object slides right. Multiplying by `Time.deltaTime` keeps the speed the same on slow and fast computers.
+
+::: dummies
+Why multiply by `Time.deltaTime`? A fast computer draws 144 frames a second and a slow one 30. Without it the object would move 5 times farther on the fast one. `deltaTime` is "how long the last frame took", so speed stays fair.
+:::
+
+### 3. Fields you can edit in the Inspector
+The Unity `[SerializeField]` is a line at the top of the class. Every key becomes a field in the Inspector, and the script reads it as `this.speed`.
+
+**In the file** `scripts/hello.js` (add as the first line inside the class, and use `this.speed` in `Update`)
+```js
+static attributes = SerializeField({ speed: 2 });   // shows as "speed" in the Inspector
+```
+Add `SerializeField` to the `import` line too and replace `2` in `Update` with `this.speed`. Change the number in the Inspector without touching the code; each object that has the script can use its own value.
+
+::: dummies
+Think of a field as a dial on the actor's instruction card. The card (the script) is the same for everyone, but you can turn the dial differently on each object.
+:::
+
+### 4. Objects talk to each other
+`Find`, `GetComponent` and `Instantiate` work the way they do in Unity (see the table below). Collisions and triggers arrive as methods too: write `OnTriggerEnter(other)` and the engine calls it when something enters the trigger.
+
+### 5. Two naming styles, one engine
+`MonoBehaviour` uses Unity's capitalised names (`Start`, `Update`). `NordScript` uses lower-case names (`start`, `update(dt)`). Pick **one style per script**; both can live in the same project. The Unity names are a thin layer over the native ones, so there is no speed penalty.
+
+::: dummies
+You do not need to learn both. If you know Unity, use `MonoBehaviour`. If you have never used Unity, either works; just copy the style of the first example you try.
+:::
+
+**Check yourself:** attach `hello.js` to an object and press @ui[Play]. You should see the Console line **I exist**, and the object slides to the right at the speed you set in the Inspector.
+
+**Next:** [Your first script](ex-first-script.html) shows the same idea in both styles, with Unity C# next to it.
+
 ## The 10-minute map: Unity to Nord
 | In Unity | In Nord |
 |---|---|

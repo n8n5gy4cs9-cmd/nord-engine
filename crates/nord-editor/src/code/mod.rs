@@ -747,10 +747,9 @@ fn walk_text_files(dir: &Path, out: &mut Vec<PathBuf>) {
         let p = e.path();
         let n = e.file_name().to_string_lossy().into_owned();
         if p.v_is_dir() {
-            if !matches!(
-                n.as_str(),
-                ".nord-cache" | "dist" | ".git" | "node_modules" | "target" | "vendor"
-            ) {
+            if !n.starts_with('.')
+                && !matches!(n.as_str(), "dist" | "node_modules" | "target" | "vendor")
+            {
                 walk_text_files(&p, out);
             }
         } else if Lang::from_path(&n) != Lang::Plain || n.ends_with(".txt") {

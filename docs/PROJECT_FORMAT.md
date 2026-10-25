@@ -49,6 +49,7 @@ my-game/
       "layer": 0,
       "static": false,                  // Inspector Static flag (omitted when false): does not move at runtime, `entity.isStatic`
       "locked": false,                  // editor only (omitted when false): not pickable in the Scene view
+      "hier": {"bg": "#e25850", "text": "#ffffff", "bold": true}, // editor only, optional: Hierarchy row look (right-click ▸ Hierarchy style)
       "hidden": false,                  // editor only (omitted when false): not drawn in the Scene view
       "transform": { "pos": [100, 300, 0], "rot": [0, 0, 0], "scale": [1, 1, 1] },
       "components": [

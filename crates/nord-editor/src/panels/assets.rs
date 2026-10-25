@@ -393,6 +393,10 @@ fn background_menu(ui: &mut Ui, dir: &str, out: &mut Option<(Entry, u8)>) {
     item(ui, "New folder", OP_NEW_FOLDER);
     item(ui, "New UI scene (.ui.json)", OP_NEW_UI);
     item(ui, "New script (.js)", OP_NEW_SCRIPT);
+    item(ui, "New material (.mat.json)", OP_NEW_MATERIAL);
+    item(ui, "New MonoBehaviour script (Unity-style)", OP_NEW_MONO);
+    item(ui, "New Singleton script", OP_NEW_SINGLETON);
+    item(ui, "New GameManager script", OP_NEW_MANAGER);
     item(ui, "New graph (.graph.json)", OP_NEW_GRAPH);
     item(
         ui,

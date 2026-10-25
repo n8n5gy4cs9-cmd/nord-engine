@@ -1,0 +1,972 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Unity-style scripting API — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="api.html" class="active" aria-current="page">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">API</div><details open><summary>API</summary><a href="api.html">API reference</a><a href="api-namespaces.html">game.* namespaces</a><a href="api-nordscript.html">NordScript</a><a href="api-entity.html">Entity</a><a href="api-scene.html">Scene</a><a href="api-unity.html" class="cur" aria-current="page">Unity-style scripting API</a><a href="api-game.html">Game</a><a href="api-input.html">Input</a><a href="api-events.html">Events</a><a href="api-save.html">Save</a><a href="api-audio.html">Audio</a><a href="api-ui.html">UI</a><a href="api-scheduler.html">Scheduler</a><a href="api-rng.html">Rng</a><a href="api-pool.html">Pool</a><a href="api-loader.html">Loader</a><a href="api-memorystorage.html">MemoryStorage</a><a href="api-arcadeadapter.html">ArcadeAdapter</a><a href="api-matteradapter.html">MatterAdapter</a><a href="api-havokadapter.html">HavokAdapter</a><a href="api-helpers.html">Math &amp; helpers</a><a href="api-exports.html">All Nord public exports</a><a href="api-desktop.html">Desktop bridge</a><a href="api-rust.html">Rust public API</a></details><details><summary>Components</summary><a href="../components/component-sprite.html">sprite</a><a href="../components/component-animatedSprite.html">animatedSprite</a><a href="../components/component-text.html">text</a><a href="../components/component-tilemap.html">tilemap</a><a href="../components/component-parallax.html">parallax</a><a href="../components/component-particles.html">particles</a><a href="../components/component-camera.html">camera</a><a href="../components/component-light.html">light</a><a href="../components/component-mesh.html">mesh</a><a href="../components/component-model.html">model</a><a href="../components/component-material.html">material</a><a href="../components/component-skybox.html">skybox</a><a href="../components/component-postProcess.html">postProcess</a><a href="../components/component-rigidbody.html">rigidbody</a><a href="../components/component-collider.html">collider</a><a href="../components/component-trigger.html">trigger</a><a href="../components/component-audioSource.html">audioSource</a><a href="../components/component-audioListener.html">audioListener</a><a href="../components/component-uiPanel.html">uiPanel</a><a href="../components/component-uiLabel.html">uiLabel</a><a href="../components/component-uiImage.html">uiImage</a><a href="../components/component-uiBar.html">uiBar</a><a href="../components/component-uiButton.html">uiButton</a><a href="../components/component-path.html">path</a><a href="../components/component-spawner.html">spawner</a><a href="../components/component-graph.html">graph</a><a href="../components/component-animator.html">animator</a><a href="../components/component-netSync.html">netSync</a></details><details><summary>Reference</summary><a href="../reference/project-format.html">Project format</a><a href="../reference/event-reference.html">Event sheet reference</a><a href="../reference/components.html">Component index</a><a href="../reference/cli.html">Command line (nord)</a><a href="../reference/library-catalog.html">Library catalog</a><a href="../reference/templates-examples.html">Templates &amp; examples</a><a href="../reference/rust-tier-spec.html">Rust tier spec</a><a href="../reference/export-targets-spec.html">Export targets spec</a><a href="../reference/hosting-spec.html">Hosting notes</a><a href="../reference/desktop-apps-spec.html">Desktop apps spec</a><a href="../reference/packaging.html">Packaging</a><a href="../reference/engine-docs.html">Phaser &amp; Babylon documentation</a><a href="../../engines/babylon/9.30/index.html">Babylon 9.30.0 API</a><a href="../../engines/phaser/4.2/index.html">Phaser 4.2.1 API</a><a href="../../engines/babylon/guides/index.html">Babylon documentation library</a><a href="../../engines/phaser/4.1-archive/index.html">Phaser documentation archive</a></details><a href="../reference/engine-docs.html">Phaser & Babylon documentation</a></nav><main id="content"><div class="crumb">API / Nord Engine</div><h1>Unity-style scripting API</h1>
+<p>This is the reference for everything a Unity developer finds under <strong>UnityEngine</strong> in Nord. Every name is the Unity name, written in JavaScript: <code>Start()</code>, <code>Update()</code>, <code>transform.Translate(...)</code>, <code>Vector3.Lerp(...)</code>. Learn the ideas first in <a href="../examples/examples.html">How the Unity-style coding works</a>, then come back here for an exact name or signature.</p>
+<p>Everything on this page is imported from <code>&#39;nord&#39;</code>. One name differs: Unity&#39;s <code>Input</code> is exported as <strong><code>UnityInput</code></strong> (Nord already has its own <code>Input</code> class), so import it as <code>UnityInput as Input</code>.</p>
+<p><strong>Example</strong> (not a file: the first line of any script that uses these names):</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Vector3, Quaternion, Mathf, Time, Debug, UnityInput as Input } from 'nord';</code></pre>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Read each class like a Unity manual page: <strong>Properties</strong> are values you read or set (<code>transform.position</code>), <strong>Methods</strong> are things you call (<code>Destroy(obj)</code>), and <strong>Messages</strong> are methods <em>you write</em> and the engine calls (<code>Update</code>, <code>OnTriggerEnter</code>). A member marked <strong>static</strong> is used on the class itself (<code>Mathf.Clamp</code>, <code>Vector3.Distance</code>), not on an object.</p>
+</aside><h2 id="differences-from-c-at-a-glance">Differences from C# at a glance<a class="anchor" href="#differences-from-c-at-a-glance">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity (C#)</th>
+<th>Nord (JavaScript)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>public float speed;</code> / <code>[SerializeField]</code></td>
+<td><code>static attributes = SerializeField({ speed: 5 })</code>, read as <code>this.speed</code></td>
+</tr>
+<tr>
+<td><code>GameObject</code> reference field</td>
+<td><code>EntityRef()</code> field: <code>this.target</code> is the object itself</td>
+</tr>
+<tr>
+<td><code>KeyCode.Space</code></td>
+<td><code>KeyCode.Space</code> is the string <code>&#39;Space&#39;</code>; raw strings (<code>&#39;KeyA&#39;</code>, <code>&#39;Mouse0&#39;</code>) work too</td>
+</tr>
+<tr>
+<td><code>Instantiate(prefab)</code> returns the clone</td>
+<td>returns a <strong>Promise</strong>: <code>const b = await this.Instantiate(&#39;prefabs/bullet.prefab.json&#39;, { pos })</code></td>
+</tr>
+<tr>
+<td><code>SmoothDamp(..., ref velocity)</code></td>
+<td>returns <code>{ value, velocity }</code>; pass the velocity back next frame</td>
+</tr>
+<tr>
+<td><code>Random.Range(0, 10)</code> int / float by argument type</td>
+<td>same rule: two integers give an integer in <code>[0, 10)</code>; use <code>0.5, 1.5</code> for floats</td>
+</tr>
+<tr>
+<td><code>transform.SetParent(...)</code></td>
+<td>not supported at runtime (warns); use <code>Instantiate(path, { parent })</code></td>
+</tr>
+<tr>
+<td><code>Vector3 + Vector3</code> operators</td>
+<td>no operator overloading: <code>a.Add(b)</code>, <code>a.Sub(b)</code>, <code>a.Mul(k)</code></td>
+</tr>
+<tr>
+<td>Coroutine <code>IEnumerator</code></td>
+<td>generator <code>*Fade() { yield new WaitForSeconds(1); }</code></td>
+</tr>
+<tr>
+<td>2D uses X/Y, rotation around Z</td>
+<td>same; in a 3D project use Y for turntable rotation</td>
+</tr>
+</tbody></table>
+<h2 id="monobehaviour">MonoBehaviour<a class="anchor" href="#monobehaviour">#</a></h2>
+<p><code>class MyScript extends MonoBehaviour</code>. The base class of every Unity-style script. A script is a component on an object: one script file, any number of objects.</p>
+<h3 id="properties">Properties<a class="anchor" href="#properties">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gameObject</code></td>
+<td>The object this script is attached to (an <em>entity</em>).</td>
+</tr>
+<tr>
+<td><code>transform</code></td>
+<td>The <a href="#transform">Transform</a> of this object.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>The object&#39;s name.</td>
+</tr>
+<tr>
+<td><code>tag</code></td>
+<td>The first tag of the object (<code>&#39;Untagged&#39;</code> if none); settable.</td>
+</tr>
+<tr>
+<td><code>isActiveAndEnabled</code></td>
+<td><code>true</code> while the object is enabled.</td>
+</tr>
+<tr>
+<td><code>enabledSelf</code></td>
+<td><code>true</code> if the object itself is enabled.</td>
+</tr>
+<tr>
+<td><code>velocity</code></td>
+<td>2D physics velocity as a <code>Vector2</code> (settable).</td>
+</tr>
+<tr>
+<td><code>isGrounded</code></td>
+<td><code>true</code> when the physics body stands on something (2D).</td>
+</tr>
+<tr>
+<td><code>position</code>, <code>localPosition</code>, <code>localScale</code>, <code>eulerAngles</code></td>
+<td>Shortcuts for the same properties on <a href="#transform">Transform</a>, as <code>Vector3</code>.</td>
+</tr>
+<tr>
+<td><code>parent</code>, <code>childCount</code></td>
+<td>The parent object, and the number of children.</td>
+</tr>
+<tr>
+<td><em>each serialized field</em></td>
+<td>A field declared in <code>SerializeField</code> is a property: <code>this.speed</code>. An <code>EntityRef</code> field is the referenced object.</td>
+</tr>
+</tbody></table>
+<h3 id="methods">Methods<a class="anchor" href="#methods">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Signature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GetComponent(type)</code></td>
+<td>A component or script on this object, or <code>null</code>. <code>type</code> is a script class, a Unity name (<code>&#39;Rigidbody2D&#39;</code>, <code>&#39;SpriteRenderer&#39;</code>), a wrapper class, or a Nord component name (<code>&#39;sprite&#39;</code>).</td>
+</tr>
+<tr>
+<td><code>GetComponentInChildren(type)</code>, <code>GetComponentInParent(type)</code>, <code>GetComponents(type)</code>, <code>TryGetComponent(type)</code></td>
+<td>As in Unity.</td>
+</tr>
+<tr>
+<td><code>AddComponent(type, data?)</code></td>
+<td>Add a script class or a component (<code>this.AddComponent(&#39;sprite&#39;, { texture: &#39;a.png&#39; })</code>).</td>
+</tr>
+<tr>
+<td><code>Find(nameOrObject)</code></td>
+<td>The object with that name or id; an object passed in is returned unchanged.</td>
+</tr>
+<tr>
+<td><code>FindWithTag(tag)</code>, <code>FindGameObjectsWithTag(tag)</code></td>
+<td>One / all objects with the tag.</td>
+</tr>
+<tr>
+<td><code>FindObjectOfType(Class)</code>, <code>FindObjectsOfType(Class)</code></td>
+<td>The script instance(s) of that class in the scene.</td>
+</tr>
+<tr>
+<td><code>FindChild(name)</code>, <code>GetChild(index)</code></td>
+<td>A descendant by name; a child by index.</td>
+</tr>
+<tr>
+<td><code>CompareTag(tag)</code></td>
+<td><code>true</code> if the object has the tag.</td>
+</tr>
+<tr>
+<td><code>SetActive(bool)</code></td>
+<td>Enable or disable the object.</td>
+</tr>
+<tr>
+<td><code>Instantiate(pathOrObject, { pos, parent }?)</code></td>
+<td>Create a prefab (path) or clone an object. Returns a Promise.</td>
+</tr>
+<tr>
+<td><code>Destroy(obj?, delay?)</code></td>
+<td>Destroy an object (default: this one), optionally after <code>delay</code> seconds.</td>
+</tr>
+<tr>
+<td><code>Translate(x, y, z)</code>, <code>Rotate(x, y, z)</code>, <code>LookAt(target)</code></td>
+<td>Move, turn (degrees) or face a point/object.</td>
+</tr>
+<tr>
+<td><code>Invoke(method, seconds)</code></td>
+<td>Call the named method once after a delay.</td>
+</tr>
+<tr>
+<td><code>InvokeRepeating(method, first, every)</code></td>
+<td>Call it after <code>first</code> seconds, then every <code>every</code> seconds.</td>
+</tr>
+<tr>
+<td><code>CancelInvoke(method?)</code>, <code>IsInvoking(method)</code></td>
+<td>Stop a pending call (all if no name); ask if one is pending.</td>
+</tr>
+<tr>
+<td><code>StartCoroutine(generator)</code></td>
+<td>Start a <a href="#coroutines">coroutine</a>; returns a handle for <code>StopCoroutine</code>.</td>
+</tr>
+<tr>
+<td><code>StopCoroutine(handle)</code>, <code>StopAllCoroutines()</code></td>
+<td>Stop one or all coroutines of this script.</td>
+</tr>
+<tr>
+<td><code>SendMessage(method, arg?)</code></td>
+<td>Call a method by name on every script of this object.</td>
+</tr>
+<tr>
+<td><code>print(...)</code></td>
+<td>Same as <code>Debug.Log</code>.</td>
+</tr>
+</tbody></table>
+<h3 id="messages">Messages<a class="anchor" href="#messages">#</a></h3>
+<p>You write these; the engine calls them. Write only what you need.</p>
+<table>
+<thead>
+<tr>
+<th>Message</th>
+<th>When it is called</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Awake()</code></td>
+<td>When the object is created, before any <code>Start</code>.</td>
+</tr>
+<tr>
+<td><code>OnEnable()</code> / <code>OnDisable()</code></td>
+<td>When the object becomes active / inactive.</td>
+</tr>
+<tr>
+<td><code>Start()</code></td>
+<td>Once, before the first frame the script runs, after every <code>Awake</code>.</td>
+</tr>
+<tr>
+<td><code>FixedUpdate()</code></td>
+<td>At a fixed 60 times per second; use for physics.</td>
+</tr>
+<tr>
+<td><code>Update()</code></td>
+<td>Every frame.</td>
+</tr>
+<tr>
+<td><code>LateUpdate()</code></td>
+<td>Every frame, after all <code>Update</code> calls.</td>
+</tr>
+<tr>
+<td><code>OnDestroy()</code></td>
+<td>When the object is destroyed (coroutines and <code>Invoke</code>s are cancelled first).</td>
+</tr>
+<tr>
+<td><code>OnTriggerEnter(other)</code>, <code>OnTriggerStay(other)</code>, <code>OnTriggerExit(other)</code></td>
+<td>A trigger collider is entered / touched every frame / left. <code>other</code> is the other object.</td>
+</tr>
+<tr>
+<td><code>OnCollisionEnter(other)</code>, <code>OnCollisionStay(other)</code>, <code>OnCollisionExit(other)</code></td>
+<td>A solid collision starts / continues / ends.</td>
+</tr>
+<tr>
+<td><code>OnMouseEnter()</code>, <code>OnMouseExit()</code>, <code>OnMouseOver()</code>, <code>OnMouseDown()</code>, <code>OnMouseUp()</code>, <code>OnMouseDrag()</code>, <code>OnMouseUpAsButton()</code></td>
+<td>The pointer against the object&#39;s bounding box. Only checked when you define one.</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong> (not a file: a complete script):</p>
+<pre class="code" data-lang="js"><code>export default class Pickup extends MonoBehaviour {
+  static attributes = SerializeField({ points: 10 });
+  OnTriggerEnter(other) {
+    if (!other.hasTag('Player')) return;
+    GameManager.instance.AddScore(this.points);
+    this.Destroy();
+  }
+}</code></pre>
+<h2 id="serializefield-and-inspector-attributes">SerializeField and Inspector attributes<a class="anchor" href="#serializefield-and-inspector-attributes">#</a></h2>
+<p><code>static attributes = SerializeField({ ... })</code> declares the fields that appear in the Inspector. A plain value gives the type (number, string, bool, <code>&#39;#rrggbb&#39;</code> colour, array of 3 numbers = vector).</p>
+<table>
+<thead>
+<tr>
+<th>Helper</th>
+<th>Unity equivalent</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SerializeField({ speed: 5 })</code></td>
+<td><code>[SerializeField] float speed = 5</code></td>
+<td>Declares fields.</td>
+</tr>
+<tr>
+<td><code>Range(min, max, default)</code></td>
+<td><code>[Range(0, 10)]</code></td>
+<td>A slider.</td>
+</tr>
+<tr>
+<td><code>Enum([&#39;a&#39;, &#39;b&#39;], &#39;a&#39;)</code></td>
+<td><code>enum</code> field</td>
+<td>A dropdown.</td>
+</tr>
+<tr>
+<td><code>EntityRef(name?)</code></td>
+<td><code>GameObject</code> / <code>Transform</code> field</td>
+<td>A slot for another object: drag one from the Hierarchy. <code>this.field</code> is the object.</td>
+</tr>
+<tr>
+<td><code>Header(text, field)</code></td>
+<td><code>[Header]</code></td>
+<td>A bold heading above the field.</td>
+</tr>
+<tr>
+<td><code>Tooltip(text, field)</code></td>
+<td><code>[Tooltip]</code></td>
+<td>Hover text.</td>
+</tr>
+<tr>
+<td><code>Space(px, field)</code></td>
+<td><code>[Space]</code></td>
+<td>Extra space above the field.</td>
+</tr>
+<tr>
+<td><code>TextArea(field)</code></td>
+<td><code>[TextArea]</code></td>
+<td>A multi-line text box.</td>
+</tr>
+<tr>
+<td><code>ReadOnly(field)</code></td>
+<td><code>[ReadOnly]</code></td>
+<td>Shown, not editable.</td>
+</tr>
+<tr>
+<td><code>HideInInspector(field)</code></td>
+<td><code>[HideInInspector]</code></td>
+<td>Not shown.</td>
+</tr>
+<tr>
+<td><code>Button(label, method)</code></td>
+<td><code>[ContextMenu]</code> / editor button</td>
+<td>A button that runs the script&#39;s <strong>static</strong> method in the editor.</td>
+</tr>
+</tbody></table>
+<h2 id="transform">Transform<a class="anchor" href="#transform">#</a></h2>
+<p><code>this.transform</code> (or <code>someObject.transform</code>). Position, rotation and scale of an object, and its place in the hierarchy.</p>
+<h3 id="properties">Properties<a class="anchor" href="#properties">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>position</code></td>
+<td>Vector3</td>
+<td>World position.</td>
+</tr>
+<tr>
+<td><code>localPosition</code></td>
+<td>Vector3</td>
+<td>Position relative to the parent.</td>
+</tr>
+<tr>
+<td><code>rotation</code>, <code>localRotation</code></td>
+<td>Quaternion</td>
+<td>World / local rotation.</td>
+</tr>
+<tr>
+<td><code>eulerAngles</code>, <code>localEulerAngles</code></td>
+<td>Vector3</td>
+<td>Rotation in degrees.</td>
+</tr>
+<tr>
+<td><code>localScale</code></td>
+<td>Vector3</td>
+<td>Scale relative to the parent.</td>
+</tr>
+<tr>
+<td><code>lossyScale</code></td>
+<td>Vector3</td>
+<td>Scale including all parents (read-only).</td>
+</tr>
+<tr>
+<td><code>right</code>, <code>up</code>, <code>forward</code></td>
+<td>Vector3</td>
+<td>The object&#39;s own axes in world space (read-only).</td>
+</tr>
+<tr>
+<td><code>parent</code>, <code>root</code></td>
+<td>Transform</td>
+<td>The parent / the top-most parent.</td>
+</tr>
+<tr>
+<td><code>childCount</code></td>
+<td>number</td>
+<td>Number of children.</td>
+</tr>
+<tr>
+<td><code>gameObject</code>, <code>name</code>, <code>tag</code></td>
+<td></td>
+<td>The object, its name and first tag.</td>
+</tr>
+</tbody></table>
+<h3 id="methods">Methods<a class="anchor" href="#methods">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Signature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Translate(x, y, z)</code> / <code>Translate(vector, space?)</code></td>
+<td>Move. <code>Space.Self</code> (default) moves along the object&#39;s axes, <code>Space.World</code> along the world axes.</td>
+</tr>
+<tr>
+<td><code>Rotate(x, y, z)</code> / <code>Rotate(vector)</code></td>
+<td>Add degrees to each axis.</td>
+</tr>
+<tr>
+<td><code>RotateAround(point, axis, angle)</code></td>
+<td>Orbit around a point.</td>
+</tr>
+<tr>
+<td><code>LookAt(target, worldUp?)</code></td>
+<td>Face a Transform, object or point. In 2D this turns around Z.</td>
+</tr>
+<tr>
+<td><code>TransformPoint(p)</code> / <code>InverseTransformPoint(p)</code></td>
+<td>Local to world / world to local position.</td>
+</tr>
+<tr>
+<td><code>TransformDirection(d)</code> / <code>InverseTransformDirection(d)</code></td>
+<td>The same for directions (no scale or position).</td>
+</tr>
+<tr>
+<td><code>GetChild(index)</code>, <code>Find(&quot;Child/Grandchild&quot;)</code></td>
+<td>A child by index / by path.</td>
+</tr>
+<tr>
+<td><code>IsChildOf(t)</code></td>
+<td><code>true</code> if <code>t</code> is a parent or ancestor.</td>
+</tr>
+<tr>
+<td><code>GetSiblingIndex()</code>, <code>SetSiblingIndex(i)</code>, <code>SetAsFirstSibling()</code>, <code>SetAsLastSibling()</code></td>
+<td>Order among the parent&#39;s children.</td>
+</tr>
+<tr>
+<td><code>SetParent(p)</code></td>
+<td>Not supported at run time (logs a warning once).</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong> (not a file: rotate an arm, like the clock tutorial):</p>
+<pre class="code" data-lang="js"><code>Update() {
+  this.arm.transform.localRotation = Quaternion.Euler(0, 0, -6 * Time.time); // 6 degrees per second
+}</code></pre>
+<h2 id="vector2-and-vector3">Vector2 and Vector3<a class="anchor" href="#vector2-and-vector3">#</a></h2>
+<p>Two and three numbers. Create with <code>new Vector3(x, y, z)</code>. There are no operators, so use the methods below; they return a <strong>new</strong> vector.</p>
+<table>
+<thead>
+<tr>
+<th>Static properties</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Vector3.zero</code>, <code>one</code>, <code>up</code>, <code>down</code>, <code>left</code>, <code>right</code>, <code>forward</code>, <code>back</code></td>
+<td>The usual constants. <code>Vector2</code> has <code>zero</code>, <code>one</code>, <code>up</code>, <code>down</code>, <code>left</code>, <code>right</code>.</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Instance</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>x</code>, <code>y</code>, <code>z</code></td>
+<td>The components.</td>
+</tr>
+<tr>
+<td><code>magnitude</code>, <code>sqrMagnitude</code></td>
+<td>Length, and length squared (faster to compare).</td>
+</tr>
+<tr>
+<td><code>normalized</code></td>
+<td>A copy with length 1.</td>
+</tr>
+<tr>
+<td><code>Add(v)</code>, <code>Sub(v)</code>, <code>Mul(k)</code>, <code>Div(k)</code>, <code>Scale(v)</code></td>
+<td><code>+</code>, <code>-</code>, multiply by a number, divide, per-component multiply.</td>
+</tr>
+<tr>
+<td><code>Normalize()</code></td>
+<td>Make this vector length 1 (changes it).</td>
+</tr>
+<tr>
+<td><code>Set(x, y, z)</code>, <code>Clone()</code>, <code>Equals(v)</code>, <code>toArray()</code></td>
+<td>Set components, copy, compare, <code>[x, y, z]</code>.</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Static</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Distance(a, b)</code>, <code>Dot(a, b)</code>, <code>Cross(a, b)</code></td>
+<td>Distance, dot product, cross product (<code>Cross</code> is Vector3 only).</td>
+</tr>
+<tr>
+<td><code>Angle(a, b)</code>, <code>SignedAngle(a, b)</code></td>
+<td>Angle in degrees (<code>SignedAngle</code> is Vector2 only).</td>
+</tr>
+<tr>
+<td><code>Lerp(a, b, t)</code>, <code>LerpUnclamped(a, b, t)</code></td>
+<td>Blend; <code>Lerp</code> clamps <code>t</code> to 0..1.</td>
+</tr>
+<tr>
+<td><code>MoveTowards(a, b, maxDelta)</code></td>
+<td>Step towards <code>b</code> without overshooting.</td>
+</tr>
+<tr>
+<td><code>ClampMagnitude(v, max)</code>, <code>Project(v, normal)</code>, <code>Reflect(dir, normal)</code></td>
+<td>As in Unity (<code>Project</code> is Vector3 only).</td>
+</tr>
+<tr>
+<td><code>Min(a, b)</code>, <code>Max(a, b)</code>, <code>Scale(a, b)</code></td>
+<td>Per component.</td>
+</tr>
+<tr>
+<td><code>From([x, y, z])</code></td>
+<td>Make a vector from an array.</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong> (not a file: move towards a target at a fixed speed):</p>
+<pre class="code" data-lang="js"><code>Update() {
+  const p = this.transform.position, t = this.target.transform.position;
+  this.transform.position = Vector3.MoveTowards(p, t, 3 * Time.deltaTime);
+}</code></pre>
+<h2 id="quaternion">Quaternion<a class="anchor" href="#quaternion">#</a></h2>
+<p>A rotation without gimbal lock. Components <code>x, y, z, w</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Quaternion.identity</code></td>
+<td>No rotation.</td>
+</tr>
+<tr>
+<td><code>Quaternion.Euler(x, y, z)</code></td>
+<td>From degrees (also accepts a Vector3).</td>
+</tr>
+<tr>
+<td><code>Quaternion.AngleAxis(angle, axis)</code></td>
+<td>Rotate <code>angle</code> degrees around <code>axis</code>.</td>
+</tr>
+<tr>
+<td><code>Quaternion.LookRotation(forward, up?)</code></td>
+<td>Look along <code>forward</code>.</td>
+</tr>
+<tr>
+<td><code>Quaternion.FromToRotation(from, to)</code></td>
+<td>The rotation that turns one direction into another.</td>
+</tr>
+<tr>
+<td><code>Quaternion.Lerp(a, b, t)</code>, <code>Slerp(a, b, t)</code></td>
+<td>Blend two rotations.</td>
+</tr>
+<tr>
+<td><code>Quaternion.RotateTowards(from, to, maxDegrees)</code></td>
+<td>Turn by at most <code>maxDegrees</code>.</td>
+</tr>
+<tr>
+<td><code>Quaternion.Angle(a, b)</code>, <code>Dot(a, b)</code>, <code>Inverse(q)</code></td>
+<td>Angle between, dot product, inverse.</td>
+</tr>
+<tr>
+<td><code>q.Multiply(q2 or vector)</code></td>
+<td>Combine rotations, or rotate a vector.</td>
+</tr>
+<tr>
+<td><code>q.eulerAngles</code></td>
+<td>The rotation as degrees (Vector3).</td>
+</tr>
+</tbody></table>
+<h2 id="mathf">Mathf<a class="anchor" href="#mathf">#</a></h2>
+<p>Static maths. Constants: <code>PI</code>, <code>Infinity</code>, <code>NegativeInfinity</code>, <code>Epsilon</code>, <code>Deg2Rad</code>, <code>Rad2Deg</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Members</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Basics</td>
+<td><code>Abs</code>, <code>Min</code>, <code>Max</code>, <code>Sign</code>, <code>Sqrt</code>, <code>Pow</code>, <code>Exp</code>, <code>Log</code>, <code>Log10</code>, <code>Log2</code>, <code>Truncate</code></td>
+</tr>
+<tr>
+<td>Rounding</td>
+<td><code>Floor</code>, <code>Ceil</code>, <code>Round</code>, <code>FloorToInt</code>, <code>CeilToInt</code>, <code>RoundToInt</code></td>
+</tr>
+<tr>
+<td>Trigonometry</td>
+<td><code>Sin</code>, <code>Cos</code>, <code>Tan</code>, <code>Asin</code>, <code>Acos</code>, <code>Atan</code>, <code>Atan2</code>, <code>Sinh</code>, <code>Cosh</code>, <code>Tanh</code></td>
+</tr>
+<tr>
+<td>Limits</td>
+<td><code>Clamp(v, min, max)</code>, <code>Clamp01(v)</code>, <code>Repeat(t, length)</code>, <code>PingPong(t, length)</code></td>
+</tr>
+<tr>
+<td>Blending</td>
+<td><code>Lerp</code>, <code>LerpUnclamped</code>, <code>InverseLerp</code>, <code>SmoothStep</code>, <code>MoveTowards</code>, <code>SmoothDamp</code></td>
+</tr>
+<tr>
+<td>Angles</td>
+<td><code>DeltaAngle</code>, <code>LerpAngle</code>, <code>MoveTowardsAngle</code></td>
+</tr>
+<tr>
+<td>Misc</td>
+<td><code>Approximately(a, b)</code>, <code>PerlinNoise(x, y)</code> (0..1), <code>NextPowerOfTwo</code>, <code>ClosestPowerOfTwo</code>, <code>IsPowerOfTwo</code></td>
+</tr>
+</tbody></table>
+<p><code>Mathf.SmoothDamp(current, target, velocity, smoothTime, maxSpeed?, dt?)</code> returns <code>{ value, velocity }</code> instead of using a <code>ref</code> parameter.</p>
+<h2 id="time">Time<a class="anchor" href="#time">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Time.deltaTime</code></td>
+<td>Seconds since the last frame (scaled by <code>timeScale</code>).</td>
+</tr>
+<tr>
+<td><code>Time.unscaledDeltaTime</code>, <code>Time.smoothDeltaTime</code></td>
+<td>Not scaled; smoothed.</td>
+</tr>
+<tr>
+<td><code>Time.fixedDeltaTime</code></td>
+<td>Always <code>1/60</code>.</td>
+</tr>
+<tr>
+<td><code>Time.time</code>, <code>Time.fixedTime</code></td>
+<td>Seconds since the game started.</td>
+</tr>
+<tr>
+<td><code>Time.realtimeSinceStartup</code>, <code>Time.unscaledTime</code></td>
+<td>Real clock seconds, ignoring pause and scale.</td>
+</tr>
+<tr>
+<td><code>Time.timeScale</code></td>
+<td>Game speed: <code>1</code> normal, <code>0.5</code> slow motion, <code>0</code> frozen (read / write).</td>
+</tr>
+<tr>
+<td><code>Time.frameCount</code></td>
+<td>Frames since start.</td>
+</tr>
+</tbody></table>
+<h2 id="input">Input<a class="anchor" href="#input">#</a></h2>
+<p><code>UnityInput</code> (import it <code>as Input</code>): keyboard, mouse and project actions. Key names are the strings in <code>KeyCode</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GetKey(code)</code>, <code>GetKeyDown(code)</code>, <code>GetKeyUp(code)</code></td>
+<td>Held, pressed this frame, released this frame.</td>
+</tr>
+<tr>
+<td><code>GetButton(action)</code>, <code>GetButtonDown(action)</code>, <code>GetButtonUp(action)</code></td>
+<td>The same for a named action from the Input Manager (<span class="c-ui">Window ▸ Panels ▸ Project</span> ▸ Input Manager).</td>
+</tr>
+<tr>
+<td><code>GetAxis(&#39;Horizontal&#39; / &#39;Vertical&#39; / name)</code>, <code>GetAxisRaw(name)</code></td>
+<td><code>-1..1</code>. A custom <code>name</code> uses the actions <code>nameNegative</code> and <code>namePositive</code>.</td>
+</tr>
+<tr>
+<td><code>GetMouseButton(n)</code>, <code>GetMouseButtonDown(n)</code>, <code>GetMouseButtonUp(n)</code></td>
+<td>Mouse button <code>0</code> left, <code>1</code> right, <code>2</code> middle.</td>
+</tr>
+<tr>
+<td><code>mousePosition</code></td>
+<td>Pointer position as a <code>Vector2</code>.</td>
+</tr>
+<tr>
+<td><code>anyKey</code>, <code>anyKeyDown</code></td>
+<td>Any key held / pressed this frame.</td>
+</tr>
+</tbody></table>
+<p><code>KeyCode</code> has <code>Space</code>, <code>Return</code>, <code>Escape</code>, <code>Tab</code>, <code>Backspace</code>, <code>Delete</code>, <code>LeftShift</code>, <code>RightShift</code>, <code>LeftControl</code>, <code>RightControl</code>, <code>LeftAlt</code>, <code>RightAlt</code>, the four arrows (<code>UpArrow</code>…), <code>A</code>–<code>Z</code>, <code>Alpha0</code>–<code>Alpha9</code>, <code>Keypad0</code>–<code>Keypad9</code>, <code>F1</code>–<code>F12</code>, <code>Mouse0</code>–<code>Mouse2</code>.</p>
+<p><strong>Example</strong> (not a file: jump on the button, move on the axis):</p>
+<pre class="code" data-lang="js"><code>Update() {
+  this.Translate(Input.GetAxis('Horizontal') * 5 * Time.deltaTime, 0, 0);
+  if (Input.GetButtonDown('jump')) this.SetVelocity(this.velocity.x, 8);
+}</code></pre>
+<h2 id="coroutines">Coroutines<a class="anchor" href="#coroutines">#</a></h2>
+<p>A coroutine is a generator method that can wait. Start it with <code>StartCoroutine</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Yield</th>
+<th>Waits</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>yield new WaitForSeconds(s)</code></td>
+<td><code>s</code> seconds of game time.</td>
+</tr>
+<tr>
+<td><code>yield new WaitForSecondsRealtime(s)</code></td>
+<td>Seconds of game time (same as above in the web runtime).</td>
+</tr>
+<tr>
+<td><code>yield new WaitUntil(() =&gt; cond)</code></td>
+<td>Until the function returns <code>true</code>.</td>
+</tr>
+<tr>
+<td><code>yield new WaitWhile(() =&gt; cond)</code></td>
+<td>While the function returns <code>true</code>.</td>
+</tr>
+<tr>
+<td><code>yield new WaitForFixedUpdate()</code>, <code>yield new WaitForEndOfFrame()</code></td>
+<td>One step.</td>
+</tr>
+<tr>
+<td><code>yield null</code></td>
+<td>One frame.</td>
+</tr>
+<tr>
+<td><code>yield this.OtherCoroutine()</code></td>
+<td>Until the nested coroutine finishes.</td>
+</tr>
+</tbody></table>
+<p><strong>Example</strong> (not a file: fade out, then destroy):</p>
+<pre class="code" data-lang="js"><code>Start() { this.StartCoroutine(this.Die()); }
+*Die() {
+  yield new WaitForSeconds(2);
+  this.Destroy();
+}</code></pre>
+<h2 id="physics2d-and-physics">Physics2D and Physics<a class="anchor" href="#physics2d-and-physics">#</a></h2>
+<p>Queries run against the colliders in the scene. Hits are objects <code>{ collider, transform, rigidbody, gameObject, point, normal, distance, fraction }</code>; a miss has <code>collider: null</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Physics2D</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Raycast(origin, direction, distance?)</code>, <code>RaycastAll(...)</code></td>
+<td>First hit / all hits along a ray (Vector2).</td>
+</tr>
+<tr>
+<td><code>Linecast(a, b)</code></td>
+<td>Hit on the line between two points.</td>
+</tr>
+<tr>
+<td><code>OverlapPoint(p)</code>, <code>OverlapCircle(c, r)</code>, <code>OverlapCircleAll(c, r)</code></td>
+<td>Objects under a point / inside a circle.</td>
+</tr>
+<tr>
+<td><code>OverlapBox(c, size)</code>, <code>OverlapBoxAll(c, size)</code>, <code>OverlapAreaAll(a, b)</code></td>
+<td>Objects inside a box or area.</td>
+</tr>
+<tr>
+<td><code>gravity</code></td>
+<td>World gravity as a Vector2 (read / write).</td>
+</tr>
+<tr>
+<td><code>queriesHitTriggers</code></td>
+<td>Whether queries also hit trigger colliders (default <code>true</code>).</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>Physics (3D)</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Raycast(origin, direction, maxDistance?)</code>, <code>Linecast(a, b)</code></td>
+<td>One ray / line test (Vector3).</td>
+</tr>
+<tr>
+<td><code>OverlapSphere(center, radius)</code></td>
+<td>Objects inside a sphere.</td>
+</tr>
+<tr>
+<td><code>gravity</code></td>
+<td>World gravity as a Vector3 (read / write).</td>
+</tr>
+</tbody></table>
+<h2 id="components">Components<a class="anchor" href="#components">#</a></h2>
+<p><code>GetComponent(&#39;SpriteRenderer&#39;)</code> and the other Unity names return a wrapper with Unity&#39;s property names. Each wrapper also has <code>gameObject</code>, <code>transform</code>, <code>tag</code>, <code>CompareTag(tag)</code> and <code>GetComponent(type)</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Main members</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Rigidbody2D</code>, <code>Rigidbody</code></td>
+<td><code>velocity</code>, <code>angularVelocity</code>, <code>bodyType</code>, <code>isKinematic</code>, <code>mass</code>, <code>drag</code> / <code>linearDamping</code>, <code>gravityScale</code>, <code>freezeRotation</code>, <code>simulated</code>, <code>AddForce(force, ForceMode2D.Impulse)</code>, <code>AddTorque</code>, <code>MovePosition(target)</code>, <code>MoveRotation(angle)</code></td>
+</tr>
+<tr>
+<td><code>BoxCollider2D</code>, <code>CircleCollider2D</code>, <code>BoxCollider</code>, <code>SphereCollider</code></td>
+<td><code>isTrigger</code>, <code>size</code>, <code>radius</code>, <code>offset</code></td>
+</tr>
+<tr>
+<td><code>SpriteRenderer</code></td>
+<td><code>sprite</code> (texture path), <code>color</code>, <code>flipX</code>, <code>flipY</code>, <code>enabled</code>, <code>sortingOrder</code>, <code>size</code></td>
+</tr>
+<tr>
+<td><code>Animator</code></td>
+<td><code>SetFloat</code>, <code>SetInteger</code>, <code>SetBool</code>, <code>SetTrigger</code>, <code>ResetTrigger</code>, <code>GetFloat</code>, <code>GetInteger</code>, <code>GetBool</code>, <code>Play(state)</code>, <code>currentState</code>, <code>speed</code></td>
+</tr>
+<tr>
+<td><code>AudioSource</code></td>
+<td><code>clip</code>, <code>volume</code>, <code>loop</code>, <code>Play()</code>, <code>Stop()</code>, <code>isPlaying</code></td>
+</tr>
+<tr>
+<td><code>Camera</code></td>
+<td><code>Camera.main</code>, <code>orthographicSize</code>, <code>zoom</code>, <code>fieldOfView</code>, <code>aspect</code>, <code>backgroundColor</code>, <code>ScreenToWorldPoint(p)</code> and <code>WorldToScreenPoint(p)</code> (2D)</td>
+</tr>
+<tr>
+<td><code>Light</code></td>
+<td><code>intensity</code>, <code>color</code>, <code>shadows</code>, <code>type</code>, <code>enabled</code></td>
+</tr>
+<tr>
+<td><code>ParticleSystem</code></td>
+<td><code>Play()</code>, <code>Stop()</code>, <code>isPlaying</code></td>
+</tr>
+<tr>
+<td><code>TextMesh</code></td>
+<td><code>text</code>, <code>color</code>, <code>fontSize</code></td>
+</tr>
+<tr>
+<td><code>MeshRenderer</code>, <code>Material</code></td>
+<td><code>material</code>, <code>enabled</code>; material <code>color</code>, <code>metallic</code>, <code>roughness</code>, <code>SetColor(name, c)</code>, <code>SetFloat(name, v)</code></td>
+</tr>
+</tbody></table>
+<p><code>ForceMode2D</code> has <code>Force</code> and <code>Impulse</code>; <code>ForceMode</code> also has <code>Acceleration</code> and <code>VelocityChange</code>.</p>
+<h2 id="object-lifetime">Object lifetime<a class="anchor" href="#object-lifetime">#</a></h2>
+<p>Free functions you can also call without <code>this.</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Instantiate(pathOrObject, { pos })</code></td>
+<td>Create a prefab or clone an object (Promise).</td>
+</tr>
+<tr>
+<td><code>Destroy(obj, delay?)</code></td>
+<td>Destroy an object or the object of a script.</td>
+</tr>
+<tr>
+<td><code>DontDestroyOnLoad(obj)</code></td>
+<td>Keep the object when another scene loads.</td>
+</tr>
+<tr>
+<td><code>GameObject.Find(name)</code>, <code>FindWithTag(tag)</code>, <code>FindGameObjectsWithTag(tag)</code></td>
+<td>Look objects up from anywhere.</td>
+</tr>
+<tr>
+<td><code>UnityObject.FindObjectOfType(Class)</code>, <code>FindObjectsOfType(Class)</code></td>
+<td>Look scripts up from anywhere. (Named <code>UnityObject</code> so it does not hide JavaScript&#39;s <code>Object</code>.)</td>
+</tr>
+</tbody></table>
+<h2 id="application-scenemanager-playerprefs">Application, SceneManager, PlayerPrefs<a class="anchor" href="#application-scenemanager-playerprefs">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Members</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SceneManager</code></td>
+<td><code>LoadScene(path)</code>, <code>ReloadScene()</code>, <code>sceneName</code>, plus <code>LoadSceneAsync</code>, <code>GetActiveScene()</code></td>
+</tr>
+<tr>
+<td><code>Application</code></td>
+<td><code>platform</code> (<code>&#39;OSXEditor&#39;</code>, <code>&#39;WebGLPlayer&#39;</code>…), <code>isEditor</code>, <code>isPlaying</code>, <code>isMobilePlatform</code>, <code>isDesktopApp</code>, <code>isWebPlayer</code>, <code>os</code>, <code>Quit()</code>, <code>targetFrameRate</code>, <code>persistentDataPath</code>, <code>OpenURL(url)</code></td>
+</tr>
+<tr>
+<td><code>PlayerPrefs</code></td>
+<td><code>GetInt/GetFloat/GetString(key, default)</code>, <code>SetInt/SetFloat/SetString(key, value)</code>, <code>HasKey(key)</code>, <code>DeleteAll()</code></td>
+</tr>
+<tr>
+<td><code>Screen</code></td>
+<td><code>width</code>, <code>height</code></td>
+</tr>
+<tr>
+<td><code>Cursor</code></td>
+<td><code>lockState = CursorLockMode.Locked</code>, <code>visible</code></td>
+</tr>
+<tr>
+<td><code>Resources</code></td>
+<td><code>Load(path)</code> returns a Promise of a JSON/text file; <code>LoadAsync</code>, <code>UnloadUnusedAssets()</code></td>
+</tr>
+<tr>
+<td><code>JsonUtility</code></td>
+<td><code>ToJson(obj, pretty?)</code>, <code>FromJson(json, Class?)</code>, <code>FromJsonOverwrite(json, obj)</code></td>
+</tr>
+<tr>
+<td><code>LayerMask</code></td>
+<td><code>GetMask(...layers)</code>, <code>NameToLayer</code>, <code>LayerToName</code></td>
+</tr>
+<tr>
+<td><code>Debug</code></td>
+<td><code>Log</code>, <code>LogWarning</code>, <code>LogError</code>, <code>LogFormat</code>, <code>Assert</code>, <code>DrawLine</code>, <code>DrawRay</code> (2D), <code>Break</code></td>
+</tr>
+<tr>
+<td><code>Random</code></td>
+<td><code>Range(a, b)</code>, <code>value</code>, <code>insideUnitCircle</code>, <code>onUnitSphere</code>, <code>insideUnitSphere</code>, <code>Pick(array)</code>, <code>InitState(seed)</code></td>
+</tr>
+<tr>
+<td><code>Color</code></td>
+<td><code>new Color(r, g, b, a)</code> (0..1), <code>Color.red/green/blue/white/black/yellow/cyan/magenta/gray/clear</code>, <code>Color.Lerp</code>, <code>Color.FromHex(&#39;#rrggbb&#39;)</code>, <code>toHex()</code></td>
+</tr>
+</tbody></table>
+<h2 id="ready-made-services">Ready-made services<a class="anchor" href="#ready-made-services">#</a></h2>
+<p>Scripts you attach once; reach them from anywhere with <code>.instance</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Singleton</code></td>
+<td>Base class: <code>class Score extends Singleton {}</code> then <code>Score.instance</code>. A second copy destroys itself; <code>static persistent = true</code> keeps it across scenes; <code>Score.require()</code> throws a clear error when missing.</td>
+</tr>
+<tr>
+<td><code>GameManager</code></td>
+<td><code>score</code>, <code>lives</code>, <code>state</code>; <code>AddScore(n)</code>, <code>SetLives(n)</code>, <code>LoseLife()</code>, <code>SetState(s)</code>, <code>GameOver()</code>, <code>Pause()</code>, <code>Resume()</code>, <code>TogglePause()</code>, <code>LoadScene(path)</code>, <code>Restart()</code>, <code>SaveHighScore()</code>, <code>Get(key)</code> / <code>Set(key, v)</code>. Events: <code>score</code>, <code>lives</code>, <code>state</code>, <code>gameover</code>.</td>
+</tr>
+<tr>
+<td><code>AudioManager</code></td>
+<td><code>PlaySfx(path)</code>, <code>PlayMusic(path)</code>, <code>StopMusic()</code>, <code>SetVolume(bus, v)</code>, <code>Mute(bus, on)</code>.</td>
+</tr>
+<tr>
+<td><code>UnityEvent</code></td>
+<td><code>AddListener(fn)</code> (returns an unsubscribe function), <code>RemoveListener(fn)</code>, <code>RemoveAllListeners()</code>, <code>Invoke(...args)</code>, <code>listenerCount</code>.</td>
+</tr>
+<tr>
+<td><code>EventBus</code></td>
+<td><code>Subscribe(name, fn)</code>, <code>Publish(name, data)</code>: global messages.</td>
+</tr>
+<tr>
+<td><code>ScriptableObject</code></td>
+<td><code>await ScriptableObject.Load(&#39;data/sword.asset.json&#39;)</code>: a shared JSON data file.</td>
+</tr>
+<tr>
+<td><code>ObjectPool</code></td>
+<td><code>new ObjectPool(scene, prefabPath)</code>: <code>Warm(n)</code>, <code>Get({ pos })</code>, <code>Release(obj)</code>, <code>countInactive</code>.</td>
+</tr>
+</tbody></table>
+<p><strong>Check yourself:</strong> open a script of yours and find every Unity name it uses on this page. If a name is <em>not</em> here, it is not part of the Unity layer: look it up in <a href="api-nordscript.html">NordScript</a> or the <a href="api-exports.html">full export list</a>.</p>
+<p><strong>Next:</strong> <a href="../examples/examples.html">Examples</a> shows these classes inside complete scripts.</p>
+<div class="pager"><a href="api-scene.html"><small>← Previous</small>Scene</a><a href="api-game.html"><small>Next →</small>Game</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#differences-from-c-at-a-glance">Differences from C# at a glance </a><a href="#monobehaviour">MonoBehaviour </a><a href="#serializefield-and-inspector-attributes">SerializeField and Inspector attributes </a><a href="#transform">Transform </a><a href="#vector2-and-vector3">Vector2 and Vector3 </a><a href="#quaternion">Quaternion </a><a href="#mathf">Mathf </a><a href="#time">Time </a><a href="#input">Input </a><a href="#coroutines">Coroutines </a><a href="#physics2d-and-physics">Physics2D and Physics </a><a href="#components">Components </a><a href="#object-lifetime">Object lifetime </a><a href="#application-scenemanager-playerprefs">Application, SceneManager, PlayerPrefs </a><a href="#ready-made-services">Ready-made services </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

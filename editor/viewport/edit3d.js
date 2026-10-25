@@ -99,6 +99,9 @@ function flyNavigation() {
     camera.beta = Math.min(Math.max(camera.beta - dy * 0.0035, 0.02), Math.PI - 0.02);
     camera.target.copyFrom(p.subtract(new B.Vector3(Math.cos(camera.alpha) * Math.sin(camera.beta), Math.cos(camera.beta), Math.sin(camera.alpha) * Math.sin(camera.beta)).scale(camera.radius)), false, false, true);
   };
+  // Alt/Cmd are read from the click itself: key events never arrive while the native window or another panel has the keyboard,
+  // so a key-only Alt state left Alt+LMB without a camera button. Capture phase = runs before Babylon's camera input.
+  canvas.addEventListener('pointerdown', (e) => { modKeys(e); }, true);
   canvas.addEventListener('pointerdown', (e) => {
     if (e.button !== 2) return;
     rmb = state.flying = true; zoomDrag = e.altKey; flyRamp = 1;

@@ -67,13 +67,29 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
             // drop on empty space = move to root end
             let (_, resp) = ui.allocate_exact_size(
                 egui::vec2(ui.available_width(), ui.available_height().max(24.0)),
-                Sense::hover(),
+                Sense::click(),
             );
-            if let Some(id) = resp.dnd_release_payload::<String>() {
+            resp.context_menu(|ui| create_menu(st, ui, st.is_3d(), None));
+            // click on empty space = deselect, so "Create" adds to the root
+            if resp.clicked() && !st.selection.is_empty() {
+                st.select(None);
+                st.send_viewport(serde_json::json!({"t":"select","ids":st.selection}));
+            }
+            let dragging_entity = egui::DragAndDrop::has_payload_of_type::<String>(ui.ctx());
+            if let Some(id) = dragging_entity
+                .then(|| resp.dnd_release_payload::<String>())
+                .flatten()
+            {
                 pending = Some(((*id).clone(), Drop::Before(String::new())));
             }
             // assets dragged from the Assets panel become entities
-            if let Some(a) = resp.dnd_release_payload::<crate::panels::inspector::AssetDrag>() {
+            let dragging_asset = egui::DragAndDrop::has_payload_of_type::<
+                crate::panels::inspector::AssetDrag,
+            >(ui.ctx());
+            if let Some(a) = dragging_asset
+                .then(|| resp.dnd_release_payload::<crate::panels::inspector::AssetDrag>())
+                .flatten()
+            {
                 asset_drop = Some(a.0.clone());
             }
         });
@@ -464,58 +480,73 @@ fn row(
         }
         return;
     }
-    let resp = ui
-        .horizontal(|ui| {
-            let mut on = e.enabled;
-            if ui.checkbox(&mut on, "").on_hover_text("Active").changed() {
-                let id = e.id.clone();
-                st.edit("Toggle active", None, |l| {
-                    if let Some(x) = scene_ops::find_mut(l, &id) {
-                        x.enabled = on;
-                    }
-                });
-            }
-            let icon_tint = if e.enabled {
-                icons::kind_color(icon, tint)
-            } else {
-                tint
-            };
-            ui.add(icons::icon(icon, 14.0, icon_tint));
-            let text = if e.prefab.is_some() {
-                egui::RichText::new(label).color(egui::Color32::from_rgb(110, 170, 255))
-            } else {
-                egui::RichText::new(label)
-            };
-            let r = ui
-                .selectable_label(selected, text)
-                .interact(Sense::click_and_drag());
-            // Scene-view visibility (eye) and picking lock (padlock), like Unity; only the toggled state is always shown
-            let (mut hid, mut lock) = (e.hidden, e.locked);
-            ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                if (lock || r.hovered())
-                    && icons::mini_toggle(ui, "lock", "Lock: not pickable in the Scene view", lock)
-                        .clicked()
-                {
-                    lock = !lock;
-                }
-                if (hid || r.hovered())
-                    && icons::mini_toggle(ui, "eye-off", "Hide in the Scene view", hid).clicked()
-                {
-                    hid = !hid;
+    let bg_slot = ui.painter().add(egui::Shape::Noop);
+    let row_out = ui.horizontal(|ui| {
+        let mut on = e.enabled;
+        if ui.checkbox(&mut on, "").on_hover_text("Active").changed() {
+            let id = e.id.clone();
+            st.edit("Toggle active", None, |l| {
+                if let Some(x) = scene_ops::find_mut(l, &id) {
+                    x.enabled = on;
                 }
             });
-            if hid != e.hidden || lock != e.locked {
-                let id = e.id.clone();
-                st.edit("Lock/hide", None, |l| {
-                    if let Some(x) = scene_ops::find_mut(l, &id) {
-                        x.hidden = hid;
-                        x.locked = lock;
-                    }
-                });
+        }
+        let icon_tint = if e.enabled {
+            icons::kind_color(icon, tint)
+        } else {
+            tint
+        };
+        ui.add(icons::icon(icon, 14.0, icon_tint));
+        let style = e.hier.as_ref();
+        let mut text = if e.prefab.is_some() {
+            egui::RichText::new(label).color(egui::Color32::from_rgb(110, 170, 255))
+        } else {
+            egui::RichText::new(label)
+        };
+        if let Some(c) = style.and_then(|h| parse_hex(&h.text)) {
+            text = text.color(c);
+        }
+        if style.is_some_and(|h| h.bold) {
+            text = text.strong();
+        }
+        let r = ui
+            .selectable_label(selected, text)
+            .interact(Sense::click_and_drag());
+        // Scene-view visibility (eye) and picking lock (padlock), like Unity; only the toggled state is always shown
+        let (mut hid, mut lock) = (e.hidden, e.locked);
+        ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+            if (lock || r.hovered())
+                && icons::mini_toggle(ui, "lock", "Lock: not pickable in the Scene view", lock)
+                    .clicked()
+            {
+                lock = !lock;
             }
-            r
-        })
-        .inner;
+            if (hid || r.hovered())
+                && icons::mini_toggle(ui, "eye-off", "Hide in the Scene view", hid).clicked()
+            {
+                hid = !hid;
+            }
+        });
+        if hid != e.hidden || lock != e.locked {
+            let id = e.id.clone();
+            st.edit("Lock/hide", None, |l| {
+                if let Some(x) = scene_ops::find_mut(l, &id) {
+                    x.hidden = hid;
+                    x.locked = lock;
+                }
+            });
+        }
+        r
+    });
+    let resp = row_out.inner;
+    if let Some(c) = e.hier.as_ref().and_then(|h| parse_hex(&h.bg)) {
+        let r =
+            egui::Rect::from_x_y_ranges(ui.max_rect().x_range(), row_out.response.rect.y_range());
+        ui.painter().set(
+            bg_slot,
+            egui::Shape::rect_filled(r, 3.0, c.gamma_multiply(0.45)),
+        );
+    }
     if resp.clicked() {
         *clicked = Some((
             e.id.clone(),
@@ -524,13 +555,26 @@ fn row(
     }
     resp.dnd_set_drag_payload(e.id.clone());
     // an asset dropped on a row sets that entity's sprite / model / audio / material or attaches the script
-    if let Some(a) = resp.dnd_release_payload::<crate::panels::inspector::AssetDrag>() {
+    // NOTE: egui's `dnd_release_payload::<T>` removes the payload even when it is not a `T`, so only ask for the
+    // type that is really being dragged (otherwise an asset check swallows an entity drag and vice versa)
+    let dragging_asset =
+        egui::DragAndDrop::has_payload_of_type::<crate::panels::inspector::AssetDrag>(ui.ctx());
+    if let Some(a) = dragging_asset
+        .then(|| resp.dnd_release_payload::<crate::panels::inspector::AssetDrag>())
+        .flatten()
+    {
         if !st.drop_asset_on_entity(&e.id, &a.0) {
             st.add_asset_entity(&a.0);
         }
     }
-    if let Some(p) = resp.dnd_hover_payload::<String>() {
-        let r = resp.rect;
+    let full =
+        egui::Rect::from_x_y_ranges(ui.max_rect().x_range(), row_out.response.rect.y_range());
+    let over = ui.rect_contains_pointer(full);
+    let hover_id = over
+        .then(|| egui::DragAndDrop::payload::<String>(ui.ctx()))
+        .flatten();
+    if let Some(p) = hover_id {
+        let r = full;
         let y = ui
             .input(|i| i.pointer.interact_pos())
             .map_or(r.center().y, |p| p.y);
@@ -547,7 +591,7 @@ fn row(
                 egui::StrokeKind::Inside,
             );
         }
-        if resp.hovered() && ui.input(|i| i.pointer.any_released()) && *p != e.id {
+        if ui.input(|i| i.pointer.any_released()) && *p != e.id {
             *pending = Some((
                 (*p).clone(),
                 if before {
@@ -597,6 +641,7 @@ fn row(
                 ui.close_menu();
             }
         }
+        ui.menu_button("Hierarchy style", |ui| style_menu(st, ui, e));
         if ui.button("Create empty parent").clicked() {
             st.select(Some(e.id.clone()));
             st.group_selected();
@@ -622,4 +667,69 @@ fn row(
             });
         }
     });
+}
+
+/// `#rrggbb` -> colour (empty or malformed = None, i.e. the default look).
+fn parse_hex(s: &str) -> Option<egui::Color32> {
+    let h = s.strip_prefix('#')?;
+    let v = u32::from_str_radix(h, 16).ok().filter(|_| h.len() == 6)?;
+    Some(egui::Color32::from_rgb(
+        (v >> 16) as u8,
+        (v >> 8) as u8,
+        v as u8,
+    ))
+}
+
+const STYLE_PRESETS: [&str; 8] = [
+    "#e25850", "#e8a23a", "#e6d34a", "#70c048", "#3fb8af", "#5694f0", "#a070e0", "#aaaab2",
+];
+
+/// Optional per-entity Hierarchy look (row colour, text colour, bold), stored in the scene as `hier`. Off by default.
+fn style_menu(st: &mut EditorState, ui: &mut Ui, e: &Entity) {
+    let mut h = e.hier.clone().unwrap_or_default();
+    let before = h.clone();
+    let hex = |c: [u8; 3]| format!("#{:02x}{:02x}{:02x}", c[0], c[1], c[2]);
+    let rgb = |s: &str| parse_hex(s).map_or([128, 128, 128], |c| [c.r(), c.g(), c.b()]);
+    ui.label("Row colour");
+    ui.horizontal(|ui| {
+        for p in STYLE_PRESETS {
+            if let Some(c) = parse_hex(p) {
+                let (r, resp) = ui.allocate_exact_size(egui::vec2(16.0, 16.0), Sense::click());
+                ui.painter().rect_filled(r, 3.0, c);
+                if resp.clicked() {
+                    h.bg = p.into();
+                }
+            }
+        }
+        let mut c = rgb(&h.bg);
+        if ui.color_edit_button_srgb(&mut c).changed() {
+            h.bg = hex(c);
+        }
+        if ui.small_button("None").clicked() {
+            h.bg.clear();
+        }
+    });
+    ui.horizontal(|ui| {
+        ui.label("Text colour");
+        let mut c = rgb(&h.text);
+        if ui.color_edit_button_srgb(&mut c).changed() {
+            h.text = hex(c);
+        }
+        if ui.small_button("Default").clicked() {
+            h.text.clear();
+        }
+    });
+    ui.checkbox(&mut h.bold, "Bold");
+    if ui.button("Clear style").clicked() {
+        h = Default::default();
+    }
+    if h != before {
+        let id = e.id.clone();
+        let none = h == Default::default();
+        st.edit("Hierarchy style", None, |l| {
+            if let Some(x) = scene_ops::find_mut(l, &id) {
+                x.hier = if none { None } else { Some(h) };
+            }
+        });
+    }
 }

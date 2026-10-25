@@ -75,10 +75,21 @@ pub fn reparent(list: &mut Vec<Entity>, id: &str, new_parent: Option<&str>, inde
             return false;
         }
     }
+    // removal shifts later siblings up by one when moving down within the same list
+    let old_parent = parent_of(list, id);
+    let old_idx = match &old_parent {
+        None => list.iter().position(|e| e.id == id),
+        Some(p) => find(list, p).and_then(|p| p.children.iter().position(|e| e.id == id)),
+    };
     let Some(e) = remove(list, id) else {
         return false;
     };
-    // removal may shift the index when moving within the same list
+    let index = match old_idx {
+        Some(o) if old_parent.as_deref() == new_parent && o < index && index != usize::MAX => {
+            index - 1
+        }
+        _ => index,
+    };
     insert(list, new_parent, index, e)
 }
 

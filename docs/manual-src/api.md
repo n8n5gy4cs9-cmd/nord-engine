@@ -4,6 +4,8 @@ section: API
 order: 0
 summary: Nord's complete public scripting surface, components, desktop bridge and engine references.
 ---
+Coming from Unity? Start with the [Unity-style scripting API](api-unity.html).
+
 Use this section when you know what you want to do and need an exact name, signature or setting. For a first project, start with [Getting started](getting-started.html).
 
 ## Nord scripting

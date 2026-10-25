@@ -53,10 +53,7 @@ fn collect_files(root: &Path, dir: &Path, out: &mut Vec<String>) {
         let p = e.path();
         let n = e.file_name().to_string_lossy().into_owned();
         if p.v_is_dir() {
-            if !matches!(
-                n.as_str(),
-                ".nord-cache" | "dist" | ".git" | "node_modules" | "target"
-            ) {
+            if !n.starts_with('.') && !matches!(n.as_str(), "dist" | "node_modules" | "target") {
                 collect_files(root, &p, out);
             }
         } else if !n.ends_with(".meta.json") && out.len() < 20_000 {
