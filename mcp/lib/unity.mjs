@@ -131,11 +131,11 @@ export function unityTools(ctx) {
     return JSON.stringify(csOutline(source ?? fs.readFileSync(unityRoot(p), 'utf8')), null, 2);
   });
 
-  tool('unity_scene_to_nord', 'Convert a Unity .unity scene or .prefab (text YAML) into a Nord scene/prefab skeleton: GameObjects become entities with the hierarchy, position/rotation/scale, tag, layer, active flag, sprite/camera/collider/rigidbody components, and scripts whose GUID resolves to a .cs file become script references with the serialized values. Unity units are converted: 2D positions to pixels (y flipped; default 100 px per unit, set pixelsPerUnit). Conservative: anything it cannot map is listed in "todo". Writes a Nord file in the open project only when out is given (never overwrites); otherwise returns the JSON. Review the result, then finish by hand with scene_update_entity.', obj({ unityProject: { type: 'string', description: 'Absolute path of the Unity project folder' }, file: { type: 'string', description: 'Path of the .unity/.prefab file relative to the Unity project, e.g. Assets/Scenes/Main.unity' }, pixelsPerUnit: { type: 'number', description: 'Pixels per Unity unit for 2D (default 100)' }, out: { type: 'string', description: 'Nord project path to write, e.g. scenes/main.scene.json' } }, ['unityProject', 'file']), ({ unityProject, file, pixelsPerUnit = 100, out }) => {
+  tool('unity_scene_to_nord', 'Convert a Unity .unity scene or .prefab (text YAML) into a Nord scene/prefab skeleton: GameObjects become entities with the hierarchy, position/rotation/scale, tag, layer, active flag, sprite/camera components, colliders (box, circle, capsule, composite; 3D box, sphere, capsule), Rigidbody / Rigidbody2D with constraints, interpolation and collision detection, 2D and 3D joints (hinge, spring, distance, fixed, slider, wheel, target, relative, friction, character, configurable), LineRenderer, TrailRenderer, SpriteMask, and scripts whose GUID resolves to a .cs file become script references with the serialized values. Unity units are converted: 2D positions to pixels (y flipped; default 100 px per unit, set pixelsPerUnit). Conservative: anything it cannot map is listed in "todo". Writes a Nord file in the open project only when out is given (never overwrites); otherwise returns the JSON. Review the result, then finish by hand with scene_update_entity.', obj({ unityProject: { type: 'string', description: 'Absolute path of the Unity project folder' }, file: { type: 'string', description: 'Path of the .unity/.prefab file relative to the Unity project, e.g. Assets/Scenes/Main.unity' }, pixelsPerUnit: { type: 'number', description: 'Pixels per Unity unit for 2D (default 100)' }, out: { type: 'string', description: 'Nord project path to write, e.g. scenes/main.scene.json' } }, ['unityProject', 'file']), ({ unityProject, file, pixelsPerUnit = 100, out }) => {
     const root = unityRoot(unityProject), abs = path.resolve(root, file);
     if (!abs.startsWith(root + path.sep) || !/\.(unity|prefab)$/.test(abs)) throw new Error('file must be a .unity or .prefab inside the Unity project');
     const docs = parseUnityYaml(fs.readFileSync(abs, 'utf8')), byId = new Map(docs.map((d) => [d.fileId, d])), guids = buildGuidMap(root), todo = [];
-    const ppu = pixelsPerUnit, isPrefabFile = abs.endsWith('.prefab');
+    const ppu = pixelsPerUnit, isPrefabFile = abs.endsWith('.prefab'), joints = [], entByGo = new Map();
     const gos = docs.filter((d) => d.classId === 1);
     const transformOf = (go) => (go.props.m_Component || []).map((c) => byId.get(String(c.component?.fileID ?? /fileID:\s*(\d+)/.exec(String(c))?.[1]))).find((d) => d && (d.classId === 4 || d.classId === 224));
     const tOf = new Map(gos.map((g) => [g.fileId, transformOf(g)]));
@@ -147,7 +147,7 @@ export function unityTools(ctx) {
       return [r(Math.atan2(2 * (w * x + y * z), 1 - 2 * (x * x + y * y))), r(Math.asin(Math.max(-1, Math.min(1, 2 * (w * y - z * x))))), r(Math.atan2(2 * (w * z + x * y), 1 - 2 * (y * y + z * z)))];
     };
     const comps = (go) => (go.props.m_Component || []).map((c) => byId.get(String(c.component?.fileID ?? ''))).filter(Boolean);
-    const is2d = docs.some((d) => [212, 50, 61, 58, 60, 70].includes(d.classId) || (d.classId === 20 && d.props.orthographic === 1));
+    const is2d = docs.some((d) => [212, 50, 61, 58, 60, 70, 66, 68, 231, 232, 233, 234, 235, 254, 255, 256, 257].includes(d.classId) || (d.classId === 20 && d.props.orthographic === 1));
     let n = 0; const nextId = () => 'e' + (++n);
     const build = (go) => {
       const t = tOf.get(go.fileId), lp = t?.props.m_LocalPosition ?? {}, ls = t?.props.m_LocalScale ?? {}, lr = t?.props.m_LocalRotation ?? {};
@@ -158,9 +158,43 @@ export function unityTools(ctx) {
           case 4: case 224: break;
           case 212: { const g = p.m_Sprite?.guid, tex = g ? guids.get(g) : null; const col = p.m_Color ?? {}; e.components.push({ type: 'sprite', texture: tex ? 'assets/' + path.basename(tex) : '', tint: '#' + [col.r, col.g, col.b].map((v) => Math.round(num(v, 1) * 255).toString(16).padStart(2, '0')).join(''), flipX: p.m_FlipX === 1 }); if (tex) todo.push(`copy ${tex} to assets/${path.basename(tex)} (Unity pixels-per-unit is in its .meta)`); break; }
           case 20: e.components.push({ type: 'camera', zoom: 1 }); todo.push(`camera "${e.name}": orthographic size ${p['orthographic size'] ?? p.m_OrthographicSize ?? '?'} → Nord shows (viewport height / zoom) pixels; set display size and zoom`); break;
-          case 50: e.components.push({ type: 'rigidbody', gravityScale: num(p.m_GravityScale, 1), mass: num(p.m_Mass, 1), bodyType: [ 'dynamic', 'kinematic', 'static' ][num(p.m_BodyType)] ?? 'dynamic' }); break;
-          case 61: e.components.push({ type: 'collider', shape: 'box', width: Math.round(num(p.m_Size?.x, 1) * ppu), height: Math.round(num(p.m_Size?.y, 1) * ppu), trigger: p.m_IsTrigger === 1 }); break;
-          case 58: e.components.push({ type: 'collider', shape: 'circle', radius: Math.round(num(p.m_Radius, 0.5) * ppu), trigger: p.m_IsTrigger === 1 }); break;
+          case 50: { // Rigidbody2D: body type, mass, drag, gravity, constraints (bit 1 = freeze X, 2 = freeze Y, 4 = freeze rotation), interpolation, collision detection
+            const cs = num(p.m_Constraints);
+            e.components.push({ type: 'rigidbody', mode: ['dynamic', 'kinematic', 'static'][num(p.m_BodyType)] ?? 'dynamic', mass: num(p.m_Mass, 1), drag: num(p.m_LinearDrag ?? p.m_LinearDamping, 0), gravityScale: num(p.m_GravityScale, 1),
+              freezePositionX: !!(cs & 1), freezePositionY: !!(cs & 2), freezeRotationZ: !!(cs & 4), interpolation: ['none', 'interpolate', 'extrapolate'][num(p.m_Interpolate)] ?? 'none', collisionDetection: num(p.m_CollisionDetection) === 1 ? 'continuous' : 'discrete' });
+            break;
+          }
+          case 54: { // Rigidbody (3D): constraints 2/4/8 = freeze position X/Y/Z, 16/32/64 = freeze rotation X/Y/Z
+            const cs = num(p.m_Constraints);
+            e.components.push({ type: 'rigidbody', mode: p.m_IsKinematic === 1 ? 'kinematic' : 'dynamic', mass: num(p.m_Mass, 1), drag: num(p.m_Drag ?? p.m_LinearDamping, 0), angularDrag: num(p.m_AngularDrag, 0.05), gravityScale: p.m_UseGravity === 0 ? 0 : 1,
+              freezePositionX: !!(cs & 2), freezePositionY: !!(cs & 4), freezePositionZ: !!(cs & 8), freezeRotationX: !!(cs & 16), freezeRotationY: !!(cs & 32), freezeRotationZ: !!(cs & 64), interpolation: ['none', 'interpolate', 'extrapolate'][num(p.m_Interpolate)] ?? 'none', collisionDetection: ['discrete', 'continuous', 'continuousDynamic', 'continuousSpeculative'][num(p.m_CollisionDetection)] ?? 'discrete' });
+            break;
+          }
+          case 61: e.components.push({ type: 'collider', shape: 'box', size: [Math.round(num(p.m_Size?.x, 1) * ppu), Math.round(num(p.m_Size?.y, 1) * ppu)], offset: [Math.round(num(p.m_Offset?.x) * ppu), Math.round(-num(p.m_Offset?.y) * ppu)], trigger: p.m_IsTrigger === 1, usedByComposite: p.m_UsedByComposite === 1 }); break;
+          case 58: e.components.push({ type: 'collider', shape: 'circle', radius: Math.round(num(p.m_Radius, 0.5) * ppu), offset: [Math.round(num(p.m_Offset?.x) * ppu), Math.round(-num(p.m_Offset?.y) * ppu)], trigger: p.m_IsTrigger === 1, usedByComposite: p.m_UsedByComposite === 1 }); break;
+          case 70: e.components.push({ type: 'collider', shape: 'capsule', size: [Math.round(num(p.m_Size?.x, 1) * ppu), Math.round(num(p.m_Size?.y, 2) * ppu)], direction: num(p.m_Direction) === 1 ? 'horizontal' : 'vertical', offset: [Math.round(num(p.m_Offset?.x) * ppu), Math.round(-num(p.m_Offset?.y) * ppu)], trigger: p.m_IsTrigger === 1 }); break;
+          case 66: e.components.push({ type: 'collider', shape: 'composite' }); todo.push(`"${e.name}": CompositeCollider2D → shape composite; colliders marked "Used By Composite" on the children have usedByComposite on`); break;
+          case 60: e.components.push({ type: 'collider', shape: 'polygon', points: [], trigger: p.m_IsTrigger === 1 }); todo.push(`"${e.name}": PolygonCollider2D points are not read from the YAML; fill collider.points (Unity units × ${ppu}, y flipped) or use the Sprite outline`); break;
+          case 68: e.components.push({ type: 'collider', shape: 'edge', points: [], trigger: p.m_IsTrigger === 1 }); todo.push(`"${e.name}": EdgeCollider2D points are not read from the YAML; fill collider.points`); break;
+          case 65: e.components.push({ type: 'collider', shape: 'box', size: [num(p.m_Size?.x, 1), num(p.m_Size?.y, 1), num(p.m_Size?.z, 1)], offset: [num(p.m_Center?.x), num(p.m_Center?.y), num(p.m_Center?.z)], trigger: p.m_IsTrigger === 1 }); break;
+          case 135: e.components.push({ type: 'collider', shape: 'sphere', radius: num(p.m_Radius, 0.5), offset: [num(p.m_Center?.x), num(p.m_Center?.y), num(p.m_Center?.z)], trigger: p.m_IsTrigger === 1 }); break;
+          case 136: e.components.push({ type: 'collider', shape: 'capsule', size: [num(p.m_Radius, 0.5) * 2, num(p.m_Height, 2), num(p.m_Radius, 0.5) * 2], radius: num(p.m_Radius, 0.5), offset: [num(p.m_Center?.x), num(p.m_Center?.y), num(p.m_Center?.z)], trigger: p.m_IsTrigger === 1 }); break;
+          case 231: case 232: case 233: case 234: case 235: case 254: case 255: case 256: case 257: { // 2D joints
+            const kind = { 231: 'spring', 232: 'distance', 233: 'hinge', 234: 'slider', 235: 'wheel', 254: 'relative', 255: 'fixed', 256: 'friction', 257: 'target' }[c.classId], a = p.m_Anchor ?? {}, ca = p.m_ConnectedAnchor ?? {};
+            const j = { type: 'joint', kind, anchor: [Math.round(num(a.x) * ppu * 100) / 100, Math.round(-num(a.y) * ppu * 100) / 100, 0], connectedAnchor: [Math.round(num(ca.x) * ppu * 100) / 100, Math.round(-num(ca.y) * ppu * 100) / 100, 0], autoConfigureConnectedAnchor: p.m_AutoConfigureConnectedAnchor !== 0, collideConnected: p.m_EnableCollision === 1,
+              breakForce: Number.isFinite(num(p.m_BreakForce, Infinity)) && num(p.m_BreakForce) > 0 && num(p.m_BreakForce) < 1e30 ? num(p.m_BreakForce) : 0, useLimits: p.m_UseLimits === 1 || p.m_UseAngleLimits === 1, lowerAngle: -num(p.m_AngleLimits?.m_UpperAngle ?? p.m_LowerAngle), upperAngle: -num(p.m_AngleLimits?.m_LowerAngle ?? p.m_UpperAngle),
+              useMotor: p.m_UseMotor === 1, motorSpeed: num(p.m_Motor?.m_MotorSpeed), maxMotorTorque: num(p.m_Motor?.m_MaximumMotorForce, 10000), distance: Math.round(num(p.m_Distance) * ppu * 100) / 100, autoConfigureDistance: p.m_AutoConfigureDistance !== 0, frequency: num(p.m_Frequency, 5), dampingRatio: num(p.m_DampingRatio, 0.5), maxForce: num(p.m_MaxForce, 10000) };
+            joints.push({ comp: j, ref: String(p.m_ConnectedRigidBody?.fileID ?? 0) }); e.components.push(j); break;
+          }
+          case 59: case 138: case 145: case 144: case 153: { // 3D joints
+            const kind = { 59: 'hinge', 138: 'fixed', 145: 'spring', 144: 'ball', 153: 'configurable' }[c.classId], a = p.m_Anchor ?? {}, ax = p.m_Axis ?? {};
+            const j = { type: 'joint', kind, anchor: [num(a.x), num(a.y), num(a.z)], axis: [num(ax.x, 1), num(ax.y), num(ax.z)], autoConfigureConnectedAnchor: p.m_AutoConfigureConnectedAnchor !== 0, collideConnected: p.m_EnableCollision === 1,
+              useLimits: p.m_UseLimits === 1, lowerAngle: num(p.m_Limits?.min), upperAngle: num(p.m_Limits?.max), useMotor: p.m_UseMotor === 1, motorSpeed: num(p.m_Motor?.targetVelocity), maxMotorTorque: num(p.m_Motor?.force, 10000), distance: num(p.m_MaxDistance), frequency: num(p.m_Spring, 5), dampingRatio: num(p.m_Damper, 0.5) };
+            joints.push({ comp: j, ref: String(p.m_ConnectedBody?.fileID ?? 0) }); e.components.push(j); if (kind === 'configurable') todo.push(`"${e.name}": ConfigurableJoint motions / limits are not read; set joint.xMotion … angularZMotion and the limits`); break;
+          }
+          case 120: e.components.push({ type: 'lineRenderer', points: [], startWidth: num(p.m_Parameters?.widthMultiplier, 1), endWidth: num(p.m_Parameters?.widthMultiplier, 1), loop: p.m_Loop === 1, useWorldSpace: p.m_UseWorldSpace === 1 }); todo.push(`"${e.name}": LineRenderer positions, width curve and gradient are not read from the YAML; fill lineRenderer.points / widthCurve / colors`); break;
+          case 96: e.components.push({ type: 'trailRenderer', time: num(p.m_Time, 1), minVertexDistance: Math.round(num(p.m_MinVertexDistance, 0.1) * ppu * 100) / 100 }); todo.push(`"${e.name}": TrailRenderer width curve and gradient are not read from the YAML`); break;
+          case 331: e.components.push({ type: 'spriteMask', shape: 'texture' }); todo.push(`"${e.name}": SpriteMask → spriteMask (set texture or shape); SpriteRenderers need maskInteraction (visibleInsideMask / visibleOutsideMask)`); break;
           case 114: {
             const g = p.m_Script?.guid, cs = g ? guids.get(g) : null;
             if (!cs) { todo.push(`"${e.name}": MonoBehaviour with unknown script (package script or missing .cs)`); break; }
@@ -170,12 +204,17 @@ export function unityTools(ctx) {
           default: todo.push(`"${e.name}": Unity component class ${c.classId} (${c.type}) has no automatic mapping`);
         }
       }
+      entByGo.set(go.fileId, e);
       const kids = (t?.props.m_Children || []).map((ch) => goOfTransform.get(String(ch.fileID ?? /fileID:\s*(\d+)/.exec(String(ch))?.[1]))).filter(Boolean);
       for (const id of kids) { const kg = byId.get(id); if (kg) e.children.push(build(kg)); }
       return e;
     };
     const rootGos = gos.filter((g) => { const t = tOf.get(g.fileId); const f = t?.props.m_Father; return !f || !f.fileID || String(f.fileID) === '0'; });
     const entities = rootGos.map(build);
+    for (const { comp, ref } of joints) { // the other body: the entity that owns the referenced Rigidbody
+      const target = ref !== '0' ? entByGo.get(String(byId.get(ref)?.props.m_GameObject?.fileID ?? '')) : null;
+      if (target) comp.connectedBody = target.id; else if (ref !== '0') todo.push(`joint on a body: connectedBody ${ref} was not found in this file`);
+    }
     for (const pi of docs.filter((d) => d.classId === 1001)) {
       const src = guids.get(/"guid":"([0-9a-f]{32})"/.exec(JSON.stringify(pi.props.m_SourcePrefab ?? {}))?.[1] ?? '') ?? 'unknown prefab';
       todo.push(`prefab instance of ${src}: create a Nord prefab from it (run this tool on the .prefab) and instance it with scene_add_entity prefab:{path} (overrides listed in the Unity file)`);

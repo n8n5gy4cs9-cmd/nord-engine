@@ -388,6 +388,12 @@ mod tests {
     use serde_json::json;
 
     #[test]
+    fn scene_view_drags_during_play_become_live_edits() {
+        let js = transform_js("abc", Some([1.0, 2.0, 0.0]), None, Some([2.0, 2.0, 1.0]));
+        assert!(js.contains("findById(\"abc\")") && js.contains("e.pos=[1.0,2.0,0.0];") && js.contains("e.scale=[2.0,2.0,1.0];") && !js.contains("e.rot"));
+    }
+
+    #[test]
     fn live_values_apply_to_existing_fields_only() {
         let mut e = Entity::new("Coin");
         e.components.push(Component {

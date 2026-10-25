@@ -82,6 +82,7 @@ pub fn asset_matches(kind: &str, a: &Asset) -> bool {
         "model" => a.kind == AssetType::Model,
         "prefab" => a.kind == AssetType::Prefab,
         "material" => a.kind == AssetType::Material,
+        "text" => matches!(a.kind, AssetType::Other | AssetType::Json),
         "json" => matches!(
             a.kind,
             AssetType::Json | AssetType::Prefab | AssetType::Scene
@@ -1420,6 +1421,10 @@ pub fn ui(st: &mut EditorState, ui: &mut Ui) {
                                 if ui.button(schema::label_of(k)).clicked() {
                                     let mut fields = Map::new();
                                     schema::merge_defaults(&schema::component_fields(k), &mut fields);
+                                    if k == "rigidbody" && !is3d {
+                                        // 2D bodies have always kept their rotation fixed unless told otherwise: keep that for new ones
+                                        fields.insert("freezeRotationZ".into(), json!(true));
+                                    }
                                     e.components.push(Component {
                                         kind: k.to_string(),
                                         fields,

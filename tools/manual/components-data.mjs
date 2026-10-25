@@ -98,15 +98,55 @@ export const COMPONENTS = {
   rigidbody: {
     tier: 'both', summary: 'Makes the entity a physics body. Add a `collider` for its shape.',
     dummies: 'Tells physics "this thing is real": it can fall, bounce and be pushed.',
-    notes: ['`mode`: `dynamic` (simulated), `static` (never moves), `kinematic` (moved by your velocity, pushes others).', '2D engine is chosen in `nord.project.json` → `physics.engine` (`arcade` default, or `matter`); 3D uses Havok. Rotation is locked by default in 2D (`fixedRotation: true`).', 'Extra keys: `maxVelocity`, `fixedRotation`, `friction`.'],
-    example: { type: 'rigidbody', mode: 'dynamic', mass: 1, drag: 0.1 },
+    notes: ['`mode`: `dynamic` (simulated), `static` (never moves), `kinematic` (moved by your velocity, pushes others).', '2D engine is chosen in `nord.project.json` → `physics.engine` (`arcade` default, or `matter`); 3D uses Havok. Rotation is locked by default in 2D (`fixedRotation: true`).', 'Extra keys: `maxVelocity`, `friction`, `angularDrag`.', 'Constraints (Unity\'s Rigidbody constraints): `freezePositionX/Y/Z` and `freezeRotationX/Y/Z`. In 2D only `freezeRotationZ` matters; a 2D body without the key keeps the old behaviour (rotation fixed).', '`interpolation` (`interpolate` / `extrapolate`) draws the body between two physics steps so fast movement looks smooth on high-refresh screens (2D). `collisionDetection` `continuous` stops fast bodies from jumping through thin colliders.'],
+    example: { type: 'rigidbody', mode: 'dynamic', mass: 1, drag: 0.1, freezeRotationZ: true, collisionDetection: 'continuous' },
     js: "this.physics.setVelocity(this.entity, 200, null);  // 2D: null keeps the axis\nthis.physics.applyImpulse(this.entity, 0, -400);",
   },
   collider: {
     tier: 'both', summary: 'Collision shape. Without an explicit `size` it is taken from the sprite/mesh bounds.',
     dummies: 'The invisible outline physics uses to know where your object ends.',
-    notes: ['2D shapes: box, circle. 3D: box, sphere, capsule (and cylinder). `offset` shifts the shape. `trigger: true` detects overlaps without blocking.'],
-    example: { type: 'collider', shape: 'box', size: [16, 24] },
+    notes: ['2D shapes: `box`, `circle`, `capsule` (`size` + `direction`), `polygon` (`points`, concave outlines are fine), `edge` (an open poly-line of `points`) and `composite`. 3D: `box`, `sphere`, `capsule`, `cylinder`. `offset` shifts the shape. `trigger: true` detects overlaps without blocking.', 'A `composite` collider merges the colliders that have `usedByComposite: true` on itself and its children into one body (tile walls without seams). Capsule, polygon, edge and composite need `physics.engine: "matter"` for real collisions (arcade uses their bounding box); queries (`Physics2D.Raycast`, `OverlapCollider`, …) are exact on every engine.'],
+    example: { type: 'collider', shape: 'capsule', size: [20, 48], direction: 'vertical' },
+  },
+  joint: {
+    tier: 'both', summary: 'A Unity-style joint between this body and `connectedBody` (or the world): hinge, spring, distance, fixed, slider, wheel, target, relative, friction (2D, Matter) and hinge, fixed, spring, distance, ball (CharacterJoint), configurable (3D, Havok).',
+    dummies: 'A hinge on a door, a rope, a spring: two bodies that stay tied together in a chosen way.',
+    notes: ['`connectedBody` is another entity (empty = joined to the world). `anchor` is a point in this entity\'s own space, `connectedAnchor` in the other body\'s; with `autoConfigureConnectedAnchor` the second anchor is placed so the joint starts relaxed.', '`collideConnected: false` (default) lets the two bodies overlap. `breakForce` > 0 breaks the joint and calls `onJointBreak` on the scripts (2D).', 'hinge: `useLimits` + `lowerAngle` / `upperAngle`, `useMotor` + `motorSpeed` (degrees/s) + `maxMotorTorque`. spring / distance: `distance`, `autoConfigureDistance`, `frequency`, `dampingRatio`. slider / wheel: `angle`, translation limits. target: pulls the anchor to `target`. 3D `axis` is the hinge axis in this entity\'s space.', 'Script access: `entity.AddComponent(HingeJoint2D)`, `GetComponent(SpringJoint2D)` … see the Unity API reference.'],
+    set: ['useMotor', 'motorSpeed', 'useLimits', 'lowerAngle', 'upperAngle', 'breakForce', 'target', '(other fields rebuild the joint)'],
+    example: { type: 'joint', kind: 'hinge', connectedBody: 'anchor-id', anchor: [0, -40, 0], useMotor: true, motorSpeed: 90 },
+  },
+  lineRenderer: {
+    tier: 'both', summary: 'A poly-line drawn as a ribbon with a width and a colour gradient (Unity\'s LineRenderer).',
+    dummies: 'A rope, laser or ray drawn between points. You choose the points, thickness and colours.',
+    notes: ['`points` are [x, y, z]; `useWorldSpace: false` (default) means they move with the entity. Width goes from `startWidth` to `endWidth`, shaped by `widthCurve` ([[t, multiplier]…]). Colour goes from `startColor` to `endColor`, or `colors: [[t, "#rrggbb", alpha]…]`.', '`cornerVertices` / `capVertices` > 0 round the joints and the ends. 3D ribbons turn towards the camera.'],
+    set: ['(any field redraws the line)'], example: { type: 'lineRenderer', points: [[0, 0, 0], [80, -30, 0], [160, 0, 0]], startWidth: 8, endWidth: 2, startColor: '#ffd166', endColor: '#ef476f' },
+    js: "const line = this.entity.getComponent('lineRenderer');\nthis.entity.set('lineRenderer', 'points', [[0, 0, 0], [mouse.x, mouse.y, 0]]);",
+  },
+  trailRenderer: {
+    tier: 'both', summary: 'Leaves a fading trail behind a moving entity (Unity\'s TrailRenderer).',
+    dummies: 'The glowing streak behind a comet or a sword swing.',
+    notes: ['`time` is how long a point lives (seconds), `minVertexDistance` how far the entity must move before a new point is added. Width and colour use the same keys as `lineRenderer`: the head is `startWidth` / `startColor`, the tail `endWidth` / `endColor`.', '`emitting: false` stops adding points; `autodestruct` removes the entity when the trail has faded.'],
+    handle: ['clear()', 'positionCount', 'emitting'], set: ['emitting', '(other fields)'],
+    example: { type: 'trailRenderer', time: 0.6, startWidth: 12, endWidth: 0, startColor: '#ffffff', endColor: '#4cc9f000' },
+  },
+  spriteMask: {
+    tier: '2d', summary: 'Shows or hides sprites inside its shape (Unity\'s SpriteMask).',
+    dummies: 'A window cut in a wall: sprites set to "visible inside mask" only show through the window.',
+    notes: ['`shape`: `rect`, `circle` or `texture` (the opaque part of the image). Sprites and animated sprites opt in with `maskInteraction`: `visibleInsideMask` or `visibleOutsideMask`. All masks in the scene act together (a sprite is visible where any mask covers it).', 'The masked sprite is redrawn on a canvas whenever it or a mask moves, so use it for a few objects, not hundreds.'],
+    example: { type: 'spriteMask', shape: 'circle', radius: 40 },
+  },
+  spriteShape: {
+    tier: '2d', summary: 'A filled shape with an edge line from a list of points (Unity\'s SpriteShape: hills, platforms, pools).',
+    dummies: 'Draw a hill by clicking points; the engine fills it and outlines the top.',
+    notes: ['`points` are the outline; `closed: true` fills it. `smooth` rounds the outline (`splineDetail` points per segment). `fillColor`, `edgeColor`, `edgeWidth` style it.', '`generateCollider` adds a polygon (closed) or edge (open) collider that follows the outline: use `physics.engine: "matter"` for collisions.'],
+    set: ['(any field redraws)'], example: { type: 'spriteShape', points: [[-120, 40], [-40, -30], [60, -20], [130, 40]], closed: true, smooth: true, fillColor: '#3a5f2c', edgeColor: '#7bc043', edgeWidth: 6, generateCollider: true },
+  },
+  shadertoy: {
+    tier: 'both', summary: 'Runs a shader written for shadertoy.com (GLSL ES 3.00 `mainImage`) as a picture in the scene or on a mesh.',
+    dummies: 'Paste a Shadertoy shader and see it animate inside your game.',
+    notes: ['`file` is a `.glsl` asset (or `code` holds the text). Inputs `iResolution`, `iTime`, `iMouse`, `iFrame`, `iDate`, `iChannel0..3`, Buffer A–D and a Common tab work like on Shadertoy; see the Shadertoy page in Examples for channels (texture, buffer, keyboard, audio, cubemap, screen).', '2D: the picture is `size` world units big (`fullscreen: true` fixes it to the camera, `layer` sets the depth). 3D: a plane of `size` units (`target: material` puts it on this entity\'s own mesh). `resolutionScale` renders at a fraction of the size for speed.', 'Scene post effect: `game.effects.add(\'scene\', \'shadertoy\', { file, channels: [{ type: \'screen\' }] })`.'],
+    set: ['speed', 'paused', 'uniforms'], example: { type: 'shadertoy', file: 'assets/shaders/plasma.glsl', size: [320, 180], resolutionScale: 0.75 },
+    js: "const st = this.entity.getComponent('shadertoy');\nawait st.ready;\nst.st.setUniform('uSpeed', 2.0);   // a `uniform float uSpeed;` the shader declares",
   },
   trigger: {
     tier: 'both', summary: 'Shorthand for a collider with `trigger: true` — an invisible zone that fires `onTriggerEnter` / `onTriggerExit`.',
@@ -162,4 +202,4 @@ export const COMPONENTS = {
     example: { type: 'animator', controller: 'anim/player.animator.json', params: { speed: 0 } },
   },
 };
-export const COMPONENT_ORDER = ['sprite', 'animatedSprite', 'text', 'tilemap', 'parallax', 'particles', 'camera', 'light', 'mesh', 'model', 'material', 'skybox', 'postProcess', 'rigidbody', 'collider', 'trigger', 'audioSource', 'audioListener', 'uiPanel', 'uiLabel', 'uiImage', 'uiBar', 'uiButton', 'path', 'spawner', 'graph', 'animator', 'netSync'];
+export const COMPONENT_ORDER = ['sprite', 'animatedSprite', 'text', 'tilemap', 'parallax', 'particles', 'camera', 'light', 'mesh', 'model', 'material', 'skybox', 'postProcess', 'rigidbody', 'collider', 'joint', 'trigger', 'lineRenderer', 'trailRenderer', 'spriteMask', 'spriteShape', 'shadertoy', 'audioSource', 'audioListener', 'uiPanel', 'uiLabel', 'uiImage', 'uiBar', 'uiButton', 'path', 'spawner', 'graph', 'animator', 'netSync'];

@@ -134,7 +134,7 @@ pub fn label_of(name: &str) -> String {
     out
 }
 
-pub const COMPONENT_TYPES: [&str; 28] = [
+pub const COMPONENT_TYPES: [&str; 34] = [
     "sprite",
     "animatedSprite",
     "text",
@@ -163,6 +163,12 @@ pub const COMPONENT_TYPES: [&str; 28] = [
     "parallax",
     "skybox",
     "postProcess",
+    "joint",
+    "lineRenderer",
+    "trailRenderer",
+    "spriteMask",
+    "spriteShape",
+    "shadertoy",
 ];
 
 /// Add Component popup groups, in display order.
@@ -173,11 +179,12 @@ pub const COMPONENT_CATEGORIES: &[&str] =
 pub fn category_of(kind: &str) -> &'static str {
     match kind {
         "sprite" | "animatedSprite" | "text" | "tilemap" | "camera" | "light" | "mesh"
-        | "model" | "material" | "skybox" | "parallax" => "Rendering",
-        "rigidbody" | "collider" | "trigger" => "Physics",
+        | "model" | "material" | "skybox" | "parallax" | "lineRenderer" | "trailRenderer"
+        | "spriteMask" | "spriteShape" => "Rendering",
+        "rigidbody" | "collider" | "trigger" | "joint" => "Physics",
         "audioSource" | "audioListener" => "Audio",
         k if k.starts_with("ui") => "UI",
-        "particles" | "postProcess" => "Effects",
+        "particles" | "postProcess" | "shadertoy" => "Effects",
         _ => "Gameplay",
     }
 }
@@ -186,8 +193,8 @@ const UI_POS: &str = "x:number y:number anchor:enum(tl|t|tr|l|c|r|bl|b|br)=\"tl\
 
 pub fn component_fields(kind: &str) -> Vec<Field> {
     let s = match kind {
-        "sprite" => "texture:asset(image) frame:int tint:color alpha:number=1 flipX:bool flipY:bool lit:bool=true",
-        "animatedSprite" => "texture:asset(image) anim:string autoplay:bool=true speed:number=1 flipX:bool flipY:bool",
+        "sprite" => "texture:asset(image) frame:int tint:color alpha:number=1 flipX:bool flipY:bool lit:bool=true maskInteraction:enum(none|visibleInsideMask|visibleOutsideMask)=\"none\"",
+        "animatedSprite" => "texture:asset(image) anim:string autoplay:bool=true speed:number=1 flipX:bool flipY:bool maskInteraction:enum(none|visibleInsideMask|visibleOutsideMask)=\"none\"",
         "text" => "text:string size:int=16 color:color font:string align:enum(left|center|right) bold:bool stroke:color strokeThickness:int wrapWidth:int",
         "tilemap" => "map:asset(json) tileset:asset(image) tilesetName:string collides:bool",
         "particles" => "texture:asset(image) lifespan:number=1000 speed:number=100 angle:number gravityY:number scale:number=1 alpha:number=1 tint:color frequency:number=50 quantity:int=1 burst:bool emitting:bool=true blend:enum(normal|add|multiply|screen)",
@@ -196,8 +203,14 @@ pub fn component_fields(kind: &str) -> Vec<Field> {
         "mesh" => "shape:enum(box|sphere|cylinder|plane|ground|capsule|torus)=\"box\" size:vec3 segments:int=24 castShadow:bool=true receiveShadow:bool=true",
         "model" => "path:asset(model) animation:string speed:number=1 shadow:bool unique:bool",
         "material" => "asset:asset(material) color:color metallic:number roughness:number=0.8 texture:asset(image) normalMap:asset(image) emissive:color emissiveMap:asset(image) alpha:number=1 uvScale:vec2=[1,1] uvOffset:vec2 doubleSided:bool unlit:bool",
-        "rigidbody" => "mode:enum(dynamic|static|kinematic)=\"dynamic\" mass:number=1 drag:number=0.1 gravityScale:number=1 bounce:number",
-        "collider" => "shape:enum(box|circle|sphere|capsule)=\"box\" size:vec3 radius:number offset:vec3 trigger:bool",
+        "rigidbody" => "mode:enum(dynamic|static|kinematic)=\"dynamic\" mass:number=1 drag:number=0.1 gravityScale:number=1 bounce:number freezePositionX:bool freezePositionY:bool freezePositionZ:bool freezeRotationX:bool freezeRotationY:bool freezeRotationZ:bool interpolation:enum(none|interpolate|extrapolate)=\"none\" collisionDetection:enum(discrete|continuous|continuousDynamic|continuousSpeculative)=\"discrete\"",
+        "collider" => "shape:enum(box|circle|sphere|capsule|cylinder|polygon|edge|composite)=\"box\" size:vec3 radius:number offset:vec3 trigger:bool points:array<vec2> direction:enum(vertical|horizontal)=\"vertical\" usedByComposite:bool edgeRadius:number",
+        "joint" => "kind:enum(hinge|spring|distance|fixed|slider|wheel|target|relative|friction|ball|configurable)=\"hinge\" connectedBody:entity anchor:vec3 connectedAnchor:vec3 autoConfigureConnectedAnchor:bool=true collideConnected:bool breakForce:number axis:vec3 distance:number autoConfigureDistance:bool=true maxDistanceOnly:bool frequency:number=5 dampingRatio:number=0.5 useLimits:bool lowerAngle:number upperAngle:number lowerTranslation:number upperTranslation:number useMotor:bool motorSpeed:number maxMotorTorque:number=10000 angle:number target:vec3 autoConfigureTarget:bool=true maxForce:number=10000",
+        "lineRenderer" => "points:array<vec3> loop:bool useWorldSpace:bool startWidth:number=1 endWidth:number=1 widthCurve:curve startColor:color endColor:color alpha:number=1 cornerVertices:int capVertices:int blend:enum(normal|add|multiply|screen)=\"normal\"",
+        "trailRenderer" => "time:number=1 minVertexDistance:number=4 startWidth:number=10 endWidth:number startColor:color endColor:color alpha:number=1 emitting:bool=true autodestruct:bool cornerVertices:int capVertices:int blend:enum(normal|add|multiply|screen)=\"normal\"",
+        "spriteMask" => "shape:enum(rect|circle|texture)=\"rect\" size:vec2=[64,64] radius:number=32 texture:asset(image) offset:vec2",
+        "spriteShape" => "points:array<vec2> closed:bool=true smooth:bool splineDetail:int=8 fillColor:color edgeColor:color edgeWidth:number generateCollider:bool",
+        "shadertoy" => "file:asset(text) code:string size:vec2=[256,256] resolution:vec2 resolutionScale:number=1 speed:number=1 paused:bool transparent:bool fullscreen:bool target:enum(plane|material)=\"plane\" billboard:bool blend:enum(normal|add|multiply|screen)=\"normal\"",
         "trigger" => "shape:enum(box|circle|sphere)=\"box\" size:vec3 radius:number offset:vec3",
         "audioSource" => "clip:asset(audio) volume:number=1 loop:bool autoplay:bool bus:enum(sfx|music|ui)=\"sfx\"",
         "audioListener" => "",
@@ -636,6 +649,26 @@ pub fn merge_defaults(fields: &[Field], into: &mut Map<String, Value>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn unity_physics_and_render_components_have_fields() {
+        let joint = component_fields("joint");
+        assert!(matches!(&joint[0].ty, FieldType::Enum(o) if o.len() == 11 && o[0] == "hinge"));
+        assert!(joint.iter().any(|f| f.name == "connectedBody" && f.ty == FieldType::Entity));
+        let col = component_fields("collider");
+        assert!(matches!(&col[0].ty, FieldType::Enum(o) if o.iter().any(|x| x == "composite") && o.iter().any(|x| x == "polygon")));
+        assert!(col.iter().any(|f| f.name == "points" && f.ty == FieldType::Array(Box::new(FieldType::Vec2))));
+        let rb = component_fields("rigidbody");
+        for n in ["freezePositionX", "freezeRotationZ", "interpolation", "collisionDetection"] {
+            assert!(rb.iter().any(|f| f.name == n), "{n}");
+        }
+        assert_eq!(category_of("joint"), "Physics");
+        assert_eq!(category_of("lineRenderer"), "Rendering");
+        assert_eq!(category_of("shadertoy"), "Effects");
+        for k in ["trailRenderer", "spriteMask", "spriteShape"] {
+            assert!(!component_fields(k).is_empty(), "{k}");
+        }
+    }
 
     #[test]
     fn dsl_covers_all_components() {
