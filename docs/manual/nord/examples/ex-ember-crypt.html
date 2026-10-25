@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>55 · Ember Crypt: a complete game, from art to export — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html" class="cur" aria-current="page">55 · Ember Crypt: a complete game, from art to export</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>55 · Ember Crypt: a complete game, from art to export</h1>
+<p>This is the capstone of the dungeon series. <a href="ex-dungeon-1-hero.html">Pages 49 to 54</a> built a plain dungeon out of coloured squares. Here we build a <strong>finished game that looks good</strong>: pixel-art tiles, an animated hero with a sword, slimes and bats that really see you (and lose you behind walls), keys and gates, braziers and a lantern that cast real shadows, floating damage numbers, hit-stop, screen shake, particles, sound and music, a title screen, a pause menu, game over and victory screens and a high score that survives a restart.</p>
+<p>It is written <strong>Unity-style from the first line to the last</strong>: <code>MonoBehaviour</code>, prefabs, <code>Instantiate</code>, <code>GameManager</code>, <code>Singleton</code>, <code>UnityEvent</code>, coroutines, triggers, <code>PlayerPrefs</code>, <code>SceneManager</code>. It is also a map of the engine: almost every idea from the Examples pages appears once, in one project.</p>
+<table>
+<thead>
+<tr>
+<th>Idea</th>
+<th>Page it comes from</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Scripts, input, movement</td>
+<td><a href="ex-first-script.html">Your first script</a>, <a href="ex-input-movement.html">Input and movement</a></td>
+</tr>
+<tr>
+<td>Prefabs, spawning, overrides</td>
+<td><a href="ex-spawn-destroy.html">Spawning, prefabs and Destroy</a></td>
+</tr>
+<tr>
+<td>Collisions and triggers</td>
+<td><a href="ex-collisions.html">Collisions, triggers and raycasts</a></td>
+</tr>
+<tr>
+<td>Enemy AI</td>
+<td><a href="ex-ai-states.html">Enemy AI and state machines</a></td>
+</tr>
+<tr>
+<td>Health and damage</td>
+<td><a href="ex-health-damage.html">Health, damage and death</a></td>
+</tr>
+<tr>
+<td>Keys and pickups</td>
+<td><a href="ex-inventory-quests.html">Inventory, items and quests</a></td>
+</tr>
+<tr>
+<td>Floating text, particles, hit-stop, shake</td>
+<td><a href="ex-juice-effects.html">Juice</a></td>
+</tr>
+<tr>
+<td>2D lights and shadows</td>
+<td><a href="ex-lights-2d.html">2D lights and shadows</a></td>
+</tr>
+<tr>
+<td>Animation</td>
+<td><a href="ex-animation.html">Animation</a></td>
+</tr>
+<tr>
+<td>HUD, panels, buttons</td>
+<td><a href="ex-ui-hud.html">UI: HUD, buttons and menus</a></td>
+</tr>
+<tr>
+<td>Sound and music</td>
+<td><a href="ex-audio.html">Audio</a></td>
+</tr>
+<tr>
+<td>Saving a best score</td>
+<td><a href="ex-save-load.html">Saving and loading</a></td>
+</tr>
+<tr>
+<td>Scenes: title and game</td>
+<td><a href="ex-scenes.html">Scenes and persistent objects</a></td>
+</tr>
+<tr>
+<td>The GameManager</td>
+<td><a href="ex-game-manager.html">GameManager and Singletons</a></td>
+</tr>
+<tr>
+<td>Shipping</td>
+<td><a href="ex-build-publish.html">Build, publish and ship</a></td>
+</tr>
+</tbody></table>
+<p><strong>Prerequisites:</strong> the dungeon series, or at least <a href="ex-dungeon-1-hero.html">pages 49 to 52</a>. Allow three to four hours; every file is printed in full and explained.</p>
+<p><img src="../../assets/screenshots/ember-crypt-title.png" alt="The title screen"></p>
+<p><img src="../../assets/screenshots/ember-crypt-start.png" alt="Exploring the crypt by lantern light"></p>
+<p><strong>Download:</strong> <a href="../../assets/downloads/ember-crypt-source.zip">the finished game</a>, also in <code>examples/ember-crypt</code> of the engine. Unzip, open <code>nord.project.json</code> in Nord and press <span class="c-ui">Play</span>.</p>
+<p><strong>Controls:</strong> WASD or arrows move, Space or J swings the sword, Esc pauses.</p>
+<h2 id="1-the-plan">1 The plan<a class="anchor" href="#1-the-plan">#</a></h2>
+<p>You are trapped in a crypt of six rooms. The way out is the glowing rune in the far room. Two iron gates stand in the way; each needs a key. Slimes and bats wander and hunt you. You carry a lantern, there are braziers on the walls, and you cannot see further than the light.</p>
+<p>Good games are small parts that do not know each other. Here they are:</p>
+<table>
+<thead>
+<tr>
+<th>Script</th>
+<th>On</th>
+<th>Job</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>map.js</code>, <code>World.js</code></td>
+<td>nothing</td>
+<td>the dungeon as text; questions about it (what is at x, y? can A see B?)</td>
+</tr>
+<tr>
+<td><code>Fx.js</code></td>
+<td>nothing</td>
+<td>static helpers: floating text, bursts, hit-stop</td>
+</tr>
+<tr>
+<td><code>Level.js</code></td>
+<td><code>Level</code></td>
+<td>reads the map, instantiates prefabs</td>
+</tr>
+<tr>
+<td><code>GameManager.js</code></td>
+<td><code>GameManager</code></td>
+<td>the engine&#39;s manager: <strong>lives are the hero&#39;s hearts</strong></td>
+</tr>
+<tr>
+<td><code>Run.js</code></td>
+<td><code>Run</code></td>
+<td>a Singleton: coins, keys, clock, how a run ends</td>
+</tr>
+<tr>
+<td><code>Hero.js</code>, <code>Health.js</code></td>
+<td><code>Hero</code></td>
+<td>steering, animation, sword; grace time and shake</td>
+</tr>
+<tr>
+<td><code>Enemy.js</code></td>
+<td>slime and bat prefabs</td>
+<td>wander, see, chase, take damage, die</td>
+</tr>
+<tr>
+<td><code>Pickup.js</code>, <code>Door.js</code>, <code>Spikes.js</code>, <code>Exit.js</code></td>
+<td>the matching prefabs</td>
+<td>one behaviour each</td>
+</tr>
+<tr>
+<td><code>FloatText.js</code>, <code>Slash.js</code></td>
+<td>effect prefabs</td>
+<td>move and fade themselves, then <code>Destroy</code></td>
+</tr>
+<tr>
+<td><code>Follow.js</code></td>
+<td><code>Camera</code></td>
+<td>smooth camera</td>
+</tr>
+<tr>
+<td><code>light2d*.js</code></td>
+<td><code>Light2D</code>, lights, walls</td>
+<td>darkness and shadows (library scripts)</td>
+</tr>
+<tr>
+<td><code>Hud.js</code>, <code>Title.js</code></td>
+<td><code>Hud</code>, <code>Title</code></td>
+<td>screens</td>
+</tr>
+</tbody></table>
+<p>They talk the way Unity scripts do: <strong>singletons</strong> (<code>Run.instance</code>, <code>GameManager.instance</code>), <strong>method calls</strong> through <code>GetComponent</code>, a <strong><code>UnityEvent</code></strong> (<code>Run.instance.onChanged</code>) and the global <strong><code>EventBus</code></strong> (<code>level</code>, <code>lives</code>, <code>gameover</code>).</p>
+<h2 id="2-the-project">2 The project<a class="anchor" href="#2-the-project">#</a></h2>
+<p><code>nord.project.json</code> differs from a default project in these places:</p>
+<pre class="code" data-lang="json"><code>&quot;startScene&quot;: &quot;scenes/title.scene.json&quot;,
+&quot;display&quot;: { &quot;width&quot;: 640, &quot;height&quot;: 360, &quot;scale&quot;: &quot;fit&quot;, &quot;pixelArt&quot;: true, &quot;background&quot;: &quot;#07080c&quot; },
+&quot;physics&quot;: { &quot;engine&quot;: &quot;arcade&quot;, &quot;gravity&quot;: [0, 0, 0] },
+&quot;input&quot;: { &quot;actions&quot;: { &quot;attack&quot;: [&quot;Space&quot;, &quot;KeyJ&quot;, &quot;Mouse0&quot;], &quot;interact&quot;: [&quot;KeyE&quot;, &quot;Enter&quot;] } }</code></pre>
+<p><code>pixelArt: true</code> turns off smoothing so 16 and 32 pixel art stays razor sharp (Unity: <em>Filter Mode: Point</em>). The game starts at the title scene, which loads the game scene when you press Play.</p>
+<p>The art is the pixel art bundled with Nord: <code>hero.png</code> (a sheet of 32 × 32 frames with the clips <code>idle</code>, <code>walk</code>, <code>jump</code>, <code>hurt</code>), the slime and bat sheets, wall and floor textures, an iron gate, a brazier, a rune, items (key, potion, chest, crate, barrel, spikes, hearts), sound effects and music. Copy <code>assets/</code> from the download. Each sheet has a <code>.png.meta.json</code> next to it with its frame size and clip names, written by the <strong>Sprite editor</strong> (<a href="ex-animation.html">Animation</a>): <code>&quot;walk&quot;: { &quot;frames&quot;: [2, 3, 4, 5], &quot;fps&quot;: 10, &quot;loop&quot;: true }</code>.</p>
+<h2 id="3-the-dungeon-as-text">3 The dungeon as text<a class="anchor" href="#3-the-dungeon-as-text">#</a></h2>
+<p><code>scripts/map.js</code>: <code>#</code> wall, <code>.</code> floor, <code>P</code> the hero&#39;s start, <code>o</code> coin, <code>k</code> key, <code>D</code> a gate tile (a gate is two tiles wide), <code>+</code> potion, <code>B</code> brazier, <code>c</code> crate or barrel, <code>^</code> spikes, <code>C</code> chest, <code>s</code> slime, <code>b</code> bat, <code>X</code> the exit rune.</p>
+<pre class="code" data-lang="js"><code>/** The dungeon. # wall, . floor, P hero start, o coin, k key, D door (2 tiles), + potion, B brazier, c crate or barrel,
+ *  ^ spikes, C chest, s slime, b bat, X exit. 40 x 22 tiles of 32 px. */
+export const MAP = [
+  '########################################',
+  '########################################',
+  '##........####.........B#####.........##',
+  '##.P....+.####.s......o.#####......ok.##',
+  '##......c..^..............D^....o.....##',
+  '##....##....^.....###.....D...........##',
+  '##..c...o.####.c.......c#####..o...b..##',
+  '##.B......####..o....os.#####.......B.##',
+  '#####..#######..........#########..#####',
+  '#####..###########..#############DD#####',
+  '#####..###########..#############.^#####',
+  '#####..###########..#############^.#####',
+  '##.B........######..##########........##',
+  '##....b...o.####..........####.o..c+..##',
+  '##.o........####.+..b...o.####........##',
+  '##..c.##......^...........####........##',
+  '##..................##..C.####.....c..##',
+  '##.......s..####..........####.s...X..##',
+  '##..o.....k.####.oc.....s.####......o.##',
+  '##..........####.........B####B.......##',
+  '########################################',
+  '########################################',
+];</code></pre>
+<p><code>scripts/World.js</code> asks the map questions (a static helper class, like a Unity utility):</p>
+<pre class="code" data-lang="js"><code>import { MAP } from './map.js';
+
+/** Questions about the dungeon map. A static helper class: no entity, no state. */
+export default class World {
+  static TILE = 32;
+
+  /** The map character at a world point. Outside the map everything is wall. */
+  static TileAt(x, y) { return MAP[Math.floor(y / World.TILE)]?.[Math.floor(x / World.TILE)] ?? '#'; }
+
+  /** True when no wall lies on the straight line between two points (line of sight). Samples every 8 px, finer than a tile. */
+  static LineClear(ax, ay, bx, by) {
+    const steps = Math.ceil(Math.hypot(bx - ax, by - ay) / 8);
+    for (let i = 1; i &lt; steps; i++) {
+      const t = i / steps;
+      if (World.TileAt(ax + (bx - ax) * t, ay + (by - ay) * t) === '#') return false;
+    }
+    return true;
+  }
+}</code></pre>
+<ul>
+<li><code>TileAt</code> converts a world position to a tile by dividing by 32. Outside the map everything is <code>#</code>, so nothing can see or walk beyond the edge.</li>
+<li><code>LineClear</code> is <strong>line of sight</strong>: it walks the straight line between two points in 8 pixel steps (finer than a tile, so no corner slips through) and answers false at the first wall. It is a map lookup, not a physics raycast, so it is cheap enough for every enemy every step.</li>
+</ul>
+<h2 id="4-prefabs">4 Prefabs<a class="anchor" href="#4-prefabs">#</a></h2>
+<p>Everything that appears in the level is a <strong>prefab</strong>: a saved entity with its components and scripts. Make these in the editor (select an object ▸ <span class="c-ui">right-click ▸ Create prefab</span>); the download has them all in <code>prefabs/</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Prefab</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>floor</code></td>
+<td>one sprite, <code>floor.png</code> 1280 × 800</td>
+</tr>
+<tr>
+<td><code>wall-tile</code></td>
+<td>only a picture: sprite <code>wall.png</code> 32 × 32</td>
+</tr>
+<tr>
+<td><code>wall-body</code></td>
+<td>no picture: static rigidbody + box collider + <code>light2d-occluder.js</code>, tag <code>solid</code></td>
+</tr>
+<tr>
+<td><code>crate</code>, <code>barrel</code></td>
+<td>sprite, static rigidbody, box collider 24 × 24, occluder, tag <code>solid</code></td>
+</tr>
+<tr>
+<td><code>coin</code></td>
+<td>animated sprite <code>coin.png</code> (clip <code>spin</code>), static rigidbody, <strong>trigger</strong> collider, <code>Pickup.js</code> with <code>kind: coin</code>, tag <code>Coin</code></td>
+</tr>
+<tr>
+<td><code>key</code>, <code>potion</code>, <code>chest</code></td>
+<td>a sprite, a trigger collider, <code>Pickup.js</code> with the matching <code>kind</code></td>
+</tr>
+<tr>
+<td><code>door</code></td>
+<td>sprite <code>gate.png</code>, static rigidbody, box collider, <code>Door.js</code>, occluder, tags <code>Door</code>, <code>solid</code></td>
+</tr>
+<tr>
+<td><code>spikes</code></td>
+<td>sprite, <code>Spikes.js</code></td>
+</tr>
+<tr>
+<td><code>brazier</code></td>
+<td>sprite + <code>light2d-source.js</code> (orange, flicker 0.3)</td>
+</tr>
+<tr>
+<td><code>exit</code></td>
+<td>rune sprite, <code>Exit.js</code>, <code>light2d-source.js</code> (cyan)</td>
+</tr>
+<tr>
+<td><code>slime</code>, <code>bat</code></td>
+<td>animated sprite, dynamic rigidbody, box collider, <code>Enemy.js</code>, tag <code>Enemy</code>. Slime: <code>speed 55, hp 2, sight 150</code>. Bat: <code>speed 95, hp 1, sight 190, zigzag 1</code></td>
+</tr>
+<tr>
+<td><code>floattext</code></td>
+<td>a text component, <code>FloatText.js</code></td>
+</tr>
+<tr>
+<td><code>burst</code></td>
+<td>a particles component, no emitting, <code>burst: 14</code></td>
+</tr>
+<tr>
+<td><code>slash</code></td>
+<td>a translucent circle sprite, <code>Slash.js</code></td>
+</tr>
+</tbody></table>
+<p>Notice the <strong>wall is two prefabs</strong>: <code>wall-tile</code> is only a picture (hundreds of them) and <code>wall-body</code> is only a collider and shadow caster (a few dozen long strips). Looks and physics have different needs. And notice <strong>slime and bat are the same script</strong> with different numbers: in Unity that is a <em>prefab variant</em>. Pickups are one script with a <code>kind</code> field. One script, many prefabs.</p>
+<h2 id="5-building-the-level">5 Building the level<a class="anchor" href="#5-building-the-level">#</a></h2>
+<p><code>scripts/Level.js</code> is part 3&#39;s loader with a table from letter to prefab:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Instantiate, EventBus } from 'nord';
+import { MAP } from './map.js';
+
+// map character -&gt; prefab. One line per kind of thing: adding a new object is one line here and one prefab.
+const PREFAB = { o: 'coin', k: 'key', '+': 'potion', C: 'chest', B: 'brazier', '^': 'spikes', s: 'slime', b: 'bat', X: 'exit', D: 'door' };
+
+export default class Level extends MonoBehaviour {
+  static attributes = SerializeField({ tile: 32 });
+
+  async Start() {
+    const t = this.tile;
+    const width = MAP[0].length * t, height = MAP.length * t;
+    await Instantiate('prefabs/floor.prefab.json', { pos: [width / 2, 400, -5] });
+
+    let coins = 0;
+    for (let row = 0; row &lt; MAP.length; row++) {
+      let col = 0;
+      while (col &lt; MAP[row].length) {
+        const ch = MAP[row][col];
+        const x = col * t + t / 2, y = row * t + t / 2;
+        if (ch === '#') {
+          let end = col;
+          while (MAP[row][end + 1] === '#') end++;
+          const w = (end - col + 1) * t;
+          await Instantiate('prefabs/wall-body.prefab.json', {        // one collider and one shadow caster for the whole run
+            pos: [col * t + w / 2, y, 0], overrides: { components: { 1: { size: [w, t] } } },
+          });
+          for (let c = col; c &lt;= end; c++) await Instantiate('prefabs/wall-tile.prefab.json', { pos: [c * t + t / 2, y, 1] });   // but one picture per tile
+          col = end + 1;
+          continue;
+        }
+        if (ch === 'P') this.Find('Hero').pos = [x, y, 3];
+        else if (ch === 'c') await Instantiate(`prefabs/${(col + row) % 2 ? 'crate' : 'barrel'}.prefab.json`, { pos: [x, y, 2] });
+        else if (PREFAB[ch]) { if (ch === 'o') coins++; await Instantiate(`prefabs/${PREFAB[ch]}.prefab.json`, { pos: [x, y, 2] }); }
+        col++;
+      }
+    }
+    EventBus.Publish('level', { width, height, coins });
+  }
+}</code></pre>
+<ul>
+<li><code>PREFAB</code> maps a letter to a prefab name. Adding a new kind of object is one line here and one prefab file.</li>
+<li><code>overrides: { components: { 1: { size: [w, t] } } }</code> makes the long wall strips: component 1 of <code>wall-body</code> is its collider.</li>
+<li>The <code>Hero</code> already exists in the scene; the loader moves it to the <code>P</code>.</li>
+<li>At the end it announces the level&#39;s size (for the camera) and how many coins there are.</li>
+</ul>
+<h2 id="6-the-scene">6 The scene<a class="anchor" href="#6-the-scene">#</a></h2>
+<p><code>scenes/main.scene.json</code> needs only eight entities; the Level builds everything else:</p>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Components</th>
+<th>Scripts</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Camera</code></td>
+<td>camera</td>
+<td><code>Follow.js</code></td>
+</tr>
+<tr>
+<td><code>GameManager</code></td>
+<td>none</td>
+<td><code>GameManager.js</code> (<code>startLives</code> 5)</td>
+</tr>
+<tr>
+<td><code>Run</code></td>
+<td>none</td>
+<td><code>Run.js</code></td>
+</tr>
+<tr>
+<td><code>Level</code></td>
+<td>none</td>
+<td><code>Level.js</code></td>
+</tr>
+<tr>
+<td><code>Light2D</code></td>
+<td>none</td>
+<td><code>light2d.js</code> (ambient <code>#0a0b12</code>, scale 7.5, shadows on)</td>
+</tr>
+<tr>
+<td><code>Hud</code></td>
+<td>none</td>
+<td><code>Hud.js</code></td>
+</tr>
+<tr>
+<td><code>Hero</code> (tag <code>Hero</code>)</td>
+<td>animated sprite <code>hero.png</code> (clip <code>idle</code>), rigidbody dynamic, collider box 14 × 16</td>
+<td><code>Hero.js</code>, <code>Health.js</code></td>
+</tr>
+<tr>
+<td><code>Lantern</code> (child of <code>Hero</code>)</td>
+<td>none</td>
+<td><code>light2d-source.js</code> (colour <code>#ffb86b</code>, radius 200)</td>
+</tr>
+</tbody></table>
+<p>The hero&#39;s collider (14 × 16) is smaller than its 32 × 32 picture: it fits corridors easily and its head can overlap a wall&#39;s top edge, which looks natural from above. <code>Follow.js</code> is part 3&#39;s camera script.</p>
+<h2 id="7-the-hero">7 The hero<a class="anchor" href="#7-the-hero">#</a></h2>
+<p><code>scripts/Hero.js</code> steers, animates and swings the sword:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Instantiate, Destroy, UnityInput as Input, KeyCode, GameManager, EventBus, Time, Vector2, Vector3 } from 'nord';
+import Enemy from './Enemy.js';
+
+export default class Hero extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 120, knockbackSpeed: 220, reach: 34, swingDelay: 0.35 });
+
+  Start() {
+    this.animator = this.GetComponent('animatedSprite');
+    this.facing = new Vector2(0, 1);
+    this.kick = Vector2.zero;
+    this.stun = 0;
+    this.nextSwing = 0;
+    this.moving = false;
+    this.off = EventBus.Subscribe('gameover', () =&gt; this.animator.play('hurt'));
+  }
+
+  get dead() { return GameManager.instance.state === 'gameover'; }
+
+  /** Called by Health when we are hit: fly away from the attacker for a moment. */
+  Knockback(from) {
+    const away = new Vector2(this.position.x - from.pos[0], this.position.y - from.pos[1]).normalized;
+    this.kick = away.Mul(this.knockbackSpeed);
+    this.stun = 0.15;
+  }
+
+  FixedUpdate() {
+    if (this.dead) { this.velocity = Vector2.zero; return; }
+    if (this.stun &gt; 0) { this.stun -= Time.fixedDeltaTime; this.velocity = this.kick; return; }
+    const move = Vector2.ClampMagnitude(new Vector2(Input.GetAxis('Horizontal'), Input.GetAxis('Vertical')), 1);
+    this.velocity = new Vector2(move.x, -move.y).Mul(this.speed);
+    this.moving = move.sqrMagnitude &gt; 0;
+    if (this.moving) {
+      this.facing = new Vector2(move.x, -move.y).normalized;
+      this.animator.setFlip(move.x &lt; 0);                             // the art faces forward: mirror it to look left
+    }
+  }
+
+  Update() {
+    if (this.dead) return;
+    const want = this.stun &gt; 0 ? 'hurt' : this.moving ? 'walk' : 'idle';
+    if (this.animator.current !== want) this.animator.play(want);    // only restart an animation when it changes
+    if (Time.time &gt;= this.nextSwing &amp;&amp; (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.J) || Input.GetMouseButtonDown(0))) this.Swing();
+  }
+
+  Swing() {
+    this.nextSwing = Time.time + this.swingDelay;
+    this.audio.play('assets/audio/sfx/swing.wav', { volume: 0.7 });
+    const p = this.position;
+    Instantiate('prefabs/slash.prefab.json', { pos: [p.x + this.facing.x * 20, p.y + this.facing.y * 20, 6] });
+    for (const e of this.FindGameObjectsWithTag('Enemy')) {
+      const to = new Vector2(e.pos[0] - p.x, e.pos[1] - p.y);
+      const inFront = Vector2.Dot(to.normalized, this.facing) &gt; -0.1;   // the angle between &quot;where it is&quot; and &quot;where I look&quot;
+      if (to.magnitude &lt; this.reach &amp;&amp; inFront) e.getScript(Enemy).TakeDamage(1, this.entity);
+    }
+  }
+
+  OnDestroy() { this.off?.(); }
+}</code></pre>
+<ul>
+<li><code>this.GetComponent(&#39;animatedSprite&#39;)</code> is the Animator. <code>animator.play(&#39;walk&#39;)</code> starts a clip and <code>animator.current</code> names the playing one. <strong>Only call <code>play</code> when the wanted clip changes</strong>, or the animation restarts every frame and freezes on its first frame. That one comparison is the most common animation fix.</li>
+<li><code>animator.setFlip(true)</code> mirrors the picture. The art faces forward, so we mirror it when going left.</li>
+<li><strong>Facing</strong> is the last non-zero move direction as a unit <code>Vector2</code>. The sword uses it.</li>
+<li><strong>The sword.</strong> <code>Swing()</code> sets the cooldown with <code>Time.time</code>, plays a sound, spawns the crescent prefab and damages every <code>Enemy</code> that is closer than <code>reach</code> and <strong>in front</strong>. &quot;In front&quot; is a dot product: <code>Vector2.Dot(to.normalized, this.facing)</code> is the cosine of the angle between &quot;where the enemy is&quot; and &quot;where I look&quot;; above −0.1 means roughly the front half-plane. The hero calls <code>TakeDamage</code> on the enemy: a plain method call.</li>
+<li>The y of <code>facing</code> is <code>-move.y</code>: input is Unity-style (up is +), the screen is not.</li>
+</ul>
+<h2 id="8-health">8 Health<a class="anchor" href="#8-health">#</a></h2>
+<p><code>scripts/Health.js</code> wraps the GameManager&#39;s lives with what a finished game needs:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, GameManager, Time } from 'nord';
+import Hero from './Hero.js';
+
+/** Grace time, blinking, shake and sound around the GameManager's lives. Enemies call TakeDamage(); nothing else knows about hearts. */
+export default class Health extends MonoBehaviour {
+  static attributes = SerializeField({ grace: 1 });
+
+  Awake() { this.protectedFor = 0; }
+
+  TakeDamage(from) {
+    if (this.protectedFor &gt; 0 || GameManager.instance.state === 'gameover') return;
+    this.protectedFor = this.grace;
+    this.audio.play('assets/audio/sfx/hurt.wav');
+    this.game.camera.shake(160, 0.01);
+    GameManager.instance.LoseLife();
+    this.GetComponent(Hero).Knockback(from);
+  }
+
+  Update() {
+    this.protectedFor = Math.max(0, this.protectedFor - Time.deltaTime);
+    const blink = this.protectedFor &gt; 0 &amp;&amp; Math.floor(this.protectedFor * 12) % 2 === 0;
+    this.entity.native?.setAlpha(blink ? 0.3 : 1);                   // the engine's own game object: an escape hatch
+  }
+}</code></pre>
+<ul>
+<li><strong>Grace period</strong>: after a hit the hero is protected for <code>grace</code> seconds; <code>Math.floor(protectedFor * 12) % 2</code> blinks it about six times a second.</li>
+<li><code>this.game.camera.shake(160, 0.01)</code> shakes the camera for 160 ms (Unity: a Cinemachine impulse).</li>
+<li><code>GameManager.instance.LoseLife()</code> emits <code>lives</code> (the HUD redraws the hearts) and, at zero, <code>gameover</code>.</li>
+<li><code>this.GetComponent(Hero).Knockback(from)</code> pushes the hero away.</li>
+<li><code>this.entity.native</code> is the engine&#39;s own game object: the escape hatch for what components do not expose, here the sprite&#39;s alpha.</li>
+</ul>
+<h2 id="9-enemies-that-see-you">9 Enemies that see you<a class="anchor" href="#9-enemies-that-see-you">#</a></h2>
+<p><code>scripts/Enemy.js</code> runs both slimes and bats:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Instantiate, Destroy, Random, Time, Vector2, Vector3, WaitForSeconds } from 'nord';
+import World from './World.js';
+import Fx from './Fx.js';
+import Health from './Health.js';
+
+/** Slime and bat are the same script on two prefabs with different numbers (Unity: a prefab variant). */
+export default class Enemy extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 55, hp: 2, sight: 150, reach: 20, zigzag: 0 });
+
+  Start() {
+    this.hero = this.Find('Hero');
+    this.animator = this.GetComponent('animatedSprite');
+    this.health = this.hp;
+    this.dir = Vector2.zero;
+    this.stun = 0;
+    this.kick = Vector2.zero;
+    this.t = Random.value * 6;
+    this.StartCoroutine(this.Wander());
+  }
+
+  *Wander() {
+    while (true) {
+      const a = Random.value * Math.PI * 2;
+      this.dir = Random.value &lt; 0.3 ? Vector2.zero : new Vector2(Math.cos(a), Math.sin(a));
+      yield new WaitForSeconds(Random.Range(1.0, 2.5));
+    }
+  }
+
+  get distance() { return Vector3.Distance(this.position, Vector3.From(this.hero.pos)); }
+
+  FixedUpdate() {
+    if (!this.hero || this.hero.destroyed) return;
+    this.t += Time.fixedDeltaTime;
+    if (this.stun &gt; 0) { this.stun -= Time.fixedDeltaTime; this.velocity = this.kick; return; }
+    const p = this.position;
+    const sees = this.distance &lt; this.sight &amp;&amp; World.LineClear(p.x, p.y, this.hero.pos[0], this.hero.pos[1]);   // close AND no wall in between
+    let dir = this.dir;
+    if (sees) dir = new Vector2(this.hero.pos[0] - p.x, this.hero.pos[1] - p.y).normalized;
+    const wobble = Math.sin(this.t * 7) * this.zigzag * 0.8;         // the bat swerves: add a bit of the perpendicular
+    const v = new Vector2(dir.x - dir.y * wobble, dir.y + dir.x * wobble).Mul(this.speed * (sees ? 1 : 0.45));
+    this.velocity = v;
+    if (dir.x !== 0) this.animator.setFlip(dir.x &lt; 0);
+  }
+
+  Update() {
+    if (this.hero &amp;&amp; !this.hero.destroyed &amp;&amp; this.distance &lt; this.reach) this.hero.getScript(Health).TakeDamage(this.entity);
+  }
+
+  TakeDamage(amount, from) {
+    this.health -= amount;
+    const p = this.position;
+    this.kick = new Vector2(p.x - from.pos[0], p.y - from.pos[1]).normalized.Mul(260);
+    this.stun = 0.18;
+    Fx.FloatText(p.x, p.y, amount, '#ffe27a');
+    this.audio.play('assets/audio/sfx/hit.wav', { volume: 0.8 });
+    Fx.HitStop(55);
+    Fx.Burst(p.x, p.y, { tint: '#ffffff', tintEnd: '#9bd1ff', burst: 6, lifespan: 250 });
+    if (this.health &lt;= 0) this.Die();
+  }
+
+  Die() {
+    const p = this.position;
+    Fx.Burst(p.x, p.y, { texture: 'assets/particles/smoke.png', tint: '#d8e4ff', tintEnd: '#2a2f45', burst: 12, lifespan: 600 });
+    this.audio.play('assets/audio/sfx/death.wav', { volume: 0.6 });
+    if (Random.value &lt; 0.6) Instantiate('prefabs/coin.prefab.json', { pos: [p.x, p.y, 2] });   // sometimes drops a coin
+    Destroy(this.entity);
+  }
+}</code></pre>
+<ul>
+<li><strong>Seeing</strong>: <code>sees</code> is true only when the hero is closer than <code>sight</code> <strong>and</strong> <code>World.LineClear</code> finds no wall in between. Behind a wall you vanish from their eyes. In <a href="ex-dungeon-5-enemies.html">part 5</a> enemies saw through walls; this is the fix, one extra condition.</li>
+<li><strong>Chasing and wandering</strong>: they run at you when they see you; otherwise the <code>Wander</code> coroutine picks a random direction every second or two, at 45% speed.</li>
+<li><strong>The bat&#39;s swerve</strong>: <code>zigzag</code> adds a sideways push that oscillates with a sine of time. Rotating a unit vector 90° is <code>(−y, x)</code>; adding a bit of it bends the path.</li>
+<li><strong>Taking damage</strong>: subtract hit points, push back (a stun time in which it cannot steer), float the damage number, play a sound, freeze the game for 55 ms, burst some particles. All one-liners from <code>Fx</code>, next.</li>
+<li><strong>Dying</strong>: smoke, a sound, sometimes (60%) a coin prefab, then <code>Destroy(this.entity)</code>.</li>
+</ul>
+<h2 id="10-juice">10 Juice<a class="anchor" href="#10-juice">#</a></h2>
+<p>Hitting something should feel good (<a href="ex-juice-effects.html">Juice</a>). <code>scripts/Fx.js</code> collects three tricks as static functions:</p>
+<pre class="code" data-lang="js"><code>import { Instantiate, Destroy, Time } from 'nord';
+
+/** Small visual effects, all made from prefabs. A static helper class like Unity's &quot;effects manager&quot;. */
+export default class Fx {
+  /** A number or word that floats up and fades (the FloatText script on the prefab does the moving). */
+  static FloatText(x, y, text, color = '#ffffff') {
+    return Instantiate('prefabs/floattext.prefab.json', { pos: [x, y - 10, 5], overrides: { components: { 0: { text: String(text), color } } } });
+  }
+
+  /** A one-shot burst of particles. Settings override the burst prefab. */
+  static Burst(x, y, settings = {}) {
+    const o = { tint: '#ffd27a', tintEnd: '#ff5a1f', burst: 14, lifespan: 450, ...settings };
+    return Instantiate('prefabs/burst.prefab.json', { pos: [x, y, 6], overrides: { components: { 0: o } } }).then((fx) =&gt; Destroy(fx, o.lifespan / 1000 + 0.3));
+  }
+
+  /** Freeze the game for a blink on a heavy hit. Real time: the game clock is the thing we slow down. */
+  static HitStop(ms = 60) {
+    Time.timeScale = 0.05;
+    setTimeout(() =&gt; { Time.timeScale = 1; }, ms);
+  }
+}</code></pre>
+<ul>
+<li><code>FloatText</code> instantiates the <code>floattext</code> prefab on <strong>layer 1</strong> (above the darkness, so it stays readable) with the text and colour as <strong>overrides</strong>. The prefab&#39;s own script moves it:</li>
+</ul>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Destroy, Time, Mathf, Vector3 } from 'nord';
+
+/** Lives on the floattext prefab: rises 22 pixels while fading out, then removes itself. */
+export default class FloatText extends MonoBehaviour {
+  Start() { this.age = 0; this.y0 = this.position.y; }
+
+  Update() {
+    this.age += Time.deltaTime;
+    const k = Mathf.Clamp01(this.age / 0.8);
+    this.position = new Vector3(this.position.x, this.y0 - 22 * (1 - (1 - k) * (1 - k)), this.position.z);
+    this.entity.native?.setAlpha(1 - k);
+    if (k &gt;= 1) Destroy(this.entity);
+  }
+}</code></pre>
+<ul>
+<li><code>Burst</code> instantiates the <code>burst</code> prefab (a particles component that explodes once) with overrides for colour and count, and destroys it after the particles&#39; lifetime. <code>Destroy(object, seconds)</code> is the delayed destroy you know.</li>
+<li><code>HitStop</code> slows the game to 5% for a few milliseconds with <code>Time.timeScale</code>. It resets with the browser&#39;s <code>setTimeout</code>, <strong>not</strong> a game timer: the game clock is exactly what we slowed, so a 55 ms game timer would take 1.1 s of real time. A classic trap.</li>
+</ul>
+<p>The sword&#39;s crescent is another self-removing prefab:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Destroy, Time, Mathf } from 'nord';
+
+/** The sword's white crescent: a translucent circle that grows and fades in 0.18 seconds. */
+export default class Slash extends MonoBehaviour {
+  Start() { this.age = 0; }
+
+  Update() {
+    this.age += Time.deltaTime;
+    const k = Mathf.Clamp01(this.age / 0.18);
+    const s = Mathf.Lerp(0.6, 1.5, k);
+    this.entity.scale = [s, s, 1];
+    this.entity.native?.setAlpha(0.7 * (1 - k));
+    if (k &gt;= 1) Destroy(this.entity);
+  }
+}</code></pre>
+<p>A sound, a number, a spark, a freeze, a shake: that is what makes a swing feel heavy.</p>
+<h2 id="11-pickups-gates-and-the-rules">11 Pickups, gates and the rules<a class="anchor" href="#11-pickups-gates-and-the-rules">#</a></h2>
+<p>Four pickups share <code>scripts/Pickup.js</code> with a <code>kind</code> field:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Destroy, Random, Time, Vector3 } from 'nord';
+import Run from './Run.js';
+import Fx from './Fx.js';
+
+const TEXT = { coin: ['+1', '#ffd34d'], key: ['Key', '#ffffff'], potion: ['+1 ♥', '#ff7b8a'], chest: ['+5', '#ffd34d'] };
+const SOUND = { coin: 'coin', key: 'pickup', potion: 'heal', chest: 'chest' };
+
+export default class Pickup extends MonoBehaviour {
+  static attributes = SerializeField({ kind: 'coin' });              // coin, key, potion or chest
+
+  Start() { this.y0 = this.position.y; this.t = Random.value * 6; this.taken = false; }
+
+  Update() {
+    this.t += Time.deltaTime;
+    const p = this.position;
+    this.position = new Vector3(p.x, this.y0 + Math.sin(this.t * 4) * 1.5, p.z);
+  }
+
+  OnTriggerEnter(other) {
+    if (this.taken || !other.hasTag('Hero')) return;
+    this.taken = true;
+    const p = this.position, [text, color] = TEXT[this.kind], run = Run.instance;
+    Fx.FloatText(p.x, p.y, text, color);
+    this.audio.play(`assets/audio/sfx/${SOUND[this.kind]}.wav`, { volume: 0.7 });
+    if (this.kind === 'coin') run.AddCoin();
+    else if (this.kind === 'key') run.AddKey();
+    else if (this.kind === 'potion') run.Heal();
+    else if (this.kind === 'chest') { run.AddCoin(5); Fx.Burst(p.x, p.y, { burst: 18 }); }
+    Destroy(this.entity);
+  }
+}</code></pre>
+<p>It does what is common (bob, detect the hero, text, sound) and tells the <strong>Run</strong> what happened. <code>scripts/Run.js</code> is a <code>Singleton</code> with the rules and the clock:</p>
+<pre class="code" data-lang="js"><code>import { Singleton, GameManager, UnityEvent, EventBus, PlayerPrefs, Time } from 'nord';
+
+/** The rules of one run: what the hero carries, the clock, and how it ends. Lives live in the GameManager. */
+export default class Run extends Singleton {
+  Awake() {
+    const gm = GameManager.instance;                                  // every run starts with full hearts, even after a trip to the title screen
+    gm.score = 0; gm.lives = gm.attrs.startLives; gm.state = 'playing';
+    this.coins = 0;
+    this.keys = 0;
+    this.elapsed = 0;
+    this.ended = false;
+    this.best = PlayerPrefs.GetInt('ember.best', 0);
+    this.onChanged = new UnityEvent();                               // public UnityEvent onChanged;
+    this.onEnded = new UnityEvent();
+  }
+
+  Start() {
+    this.off = EventBus.Subscribe('gameover', () =&gt; this.End(false)); // the GameManager says so when the last heart is gone
+    this.audio.music('assets/audio/music/music_adventure.mp3', { volume: 0.35 });
+  }
+
+  AddCoin(n = 1) { this.coins += n; this.onChanged.Invoke(); }
+  AddKey() { this.keys++; this.onChanged.Invoke(); }
+
+  /** Doors call this: spends a key if there is one. */
+  UseKey() {
+    if (this.keys &lt;= 0) return false;
+    this.keys--;
+    this.onChanged.Invoke();
+    return true;
+  }
+
+  Heal() { const gm = GameManager.instance; gm.SetLives(Math.min(gm.attrs.startLives, gm.lives + 1)); }
+
+  Update() {
+    if (this.ended) return;
+    this.elapsed += Time.deltaTime;
+    this.tick = (this.tick ?? 0) - Time.deltaTime;
+    if (this.tick &lt;= 0) { this.tick = 0.25; this.onChanged.Invoke(); }
+  }
+
+  End(win) {
+    if (this.ended) return;
+    this.ended = true;
+    const score = this.coins * 10 + (win ? Math.max(0, 300 - Math.floor(this.elapsed)) * 5 : 0);   // a faster win is worth more
+    const record = win &amp;&amp; score &gt; this.best;
+    if (record) { this.best = score; PlayerPrefs.SetInt('ember.best', score); }
+    this.audio.stopMusic();
+    this.audio.play(`assets/audio/music/${win ? 'jingle_victory' : 'jingle_game_over'}.mp3`, { volume: 0.7 });
+    this.onEnded.Invoke({ win, score, best: this.best, record, coins: this.coins, time: this.elapsed });
+  }
+
+  OnDestroy() { this.off?.(); }
+}</code></pre>
+<ul>
+<li><code>Run.instance.AddCoin()</code> and friends: <strong>singleton calls</strong>, the way Unity GameManagers work. <code>UseKey()</code> returns whether a key was spent: when code needs an answer, a method call beats an event.</li>
+<li><code>onChanged</code> and <code>onEnded</code> are <code>UnityEvent</code>s: <code>AddListener(fn)</code> (it returns a function that removes the listener) and <code>Invoke(data)</code>. The HUD listens; the Run does not know it exists.</li>
+<li>A run ends on <code>gameover</code> (the GameManager says the last heart is gone) or when the hero reaches the rune (<code>End(true)</code>). <code>End</code> computes the score (10 per coin and a speed bonus of 5 per second under five minutes), saves the best score with <code>PlayerPrefs.SetInt</code> and invokes <code>onEnded</code>. The guard <code>if (this.ended) return</code> prevents a double ending.</li>
+<li><code>Awake</code> resets the GameManager, so a run after a trip to the title screen starts with full hearts. The music starts in <code>Start</code>.</li>
+</ul>
+<blockquote>
+<p><strong>Why <code>this.elapsed</code> and not <code>this.time</code>?</strong> Scripts already have a <code>this.time</code>. Assigning to it throws <em>Cannot set property time … which has only a getter</em>. Do not name fields <code>entity</code>, <code>scene</code>, <code>game</code>, <code>attrs</code>, <code>input</code>, <code>audio</code>, <code>time</code>, <code>events</code>, <code>ui</code>, <code>physics</code>, <code>save</code> or <code>rng</code>.</p>
+</blockquote>
+<p>Gates are <code>scripts/Door.js</code>:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Destroy, Time, Vector3 } from 'nord';
+import Run from './Run.js';
+import Fx from './Fx.js';
+
+export default class Door extends MonoBehaviour {
+  Start() { this.hero = this.Find('Hero'); this.nag = 0; this.opened = false; }
+
+  Update() {
+    if (this.opened) return;                                         // a neighbour tile already used the key this frame
+    this.nag -= Time.deltaTime;
+    if (Vector3.Distance(this.position, Vector3.From(this.hero.pos)) &gt; 30) return;
+    if (Run.instance.UseKey()) this.Open();
+    else if (this.nag &lt;= 0) {
+      this.nag = 1.5;
+      Fx.FloatText(this.position.x, this.position.y, 'Locked', '#ff8a8a');
+      this.audio.play('assets/audio/sfx/error.wav', { volume: 0.5 });
+    }
+  }
+
+  /** One key opens the whole gate: this tile and its neighbours within 40 pixels. */
+  Open() {
+    this.audio.play('assets/audio/sfx/door.wav');
+    for (const d of this.FindGameObjectsWithTag('Door')) {
+      if (Vector3.Distance(this.position, Vector3.From(d.pos)) &lt; 40) {
+        Fx.Burst(d.pos[0], d.pos[1], { texture: 'assets/particles/smoke.png', tint: '#bbbbbb', tintEnd: '#333333', burst: 8 });
+        d.getScript(Door).opened = true;
+        Destroy(d);
+      }
+    }
+  }
+}</code></pre>
+<p>Each gate tile checks whether the hero is within 30 pixels. If the Run spent a key, <code>Open()</code> destroys this tile <strong>and its neighbours within 40 pixels</strong>, so one key opens both tiles of a two-wide corridor. The <code>opened</code> flag matters: both tiles run <code>Update</code> in the same frame, and without it the second tile would spend a second key. Without a key the gate shows &quot;Locked&quot; (at most every 1.5 s) and plays an error sound.</p>
+<p>The last two behaviours are tiny:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Vector3 } from 'nord';
+import Health from './Health.js';
+
+export default class Spikes extends MonoBehaviour {
+  Start() { this.hero = this.Find('Hero'); }
+  Update() {
+    if (Vector3.Distance(this.position, Vector3.From(this.hero.pos)) &lt; 14) this.hero.getScript(Health).TakeDamage(this.entity);
+  }
+}</code></pre>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Time, Vector3 } from 'nord';
+import Run from './Run.js';
+
+export default class Exit extends MonoBehaviour {
+  Start() { this.hero = this.Find('Hero'); this.done = false; }
+
+  Update() {
+    this.Rotate(0, 0, 30 * Time.deltaTime);                          // the rune slowly turns
+    if (!this.done &amp;&amp; Vector3.Distance(this.position, Vector3.From(this.hero.pos)) &lt; 16) { this.done = true; Run.instance.End(true); }
+  }
+}</code></pre>
+<h2 id="12-light">12 Light<a class="anchor" href="#12-light">#</a></h2>
+<p>The lights are part 6 again: <code>Light2D</code> with the system script, <code>Lantern</code> as a child of the hero, <strong>braziers</strong> with <code>light2d-source</code> and walls, crates and gates with the occluder (all in their prefabs). Details that make it look good:</p>
+<ul>
+<li>The darkness <code>ambient</code> is <code>#0a0b12</code>: almost black, with a hint of blue so the dark has a colour.</li>
+<li>The lantern flickers 0.07, a tiny breathing; the braziers 0.3, wild.</li>
+<li>The exit rune has a <strong>cyan</strong> light. Warm light in the rooms and cold light at the exit tells the player where to go without an arrow.</li>
+<li>Wall pictures are on layer 0, so walls are darkened like the floor, and the occluders give them real shadows.</li>
+</ul>
+<p><img src="../../assets/screenshots/ember-crypt-gate.png" alt="Gates, spikes and shadows"></p>
+<h2 id="13-the-hud-pause-and-end-screens">13 The HUD, pause and end screens<a class="anchor" href="#13-the-hud-pause-and-end-screens">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager, EventBus, SceneManager } from 'nord';
+import Run from './Run.js';
+
+export default class Hud extends MonoBehaviour {
+  Start() {
+    this.hearts = [];
+    this.coin = this.ui.label('', { screen: 'hud', x: 12, y: 34, size: 18, color: '#ffd34d' });
+    this.keys = this.ui.label('', { screen: 'hud', x: 12, y: 58, size: 18, color: '#ffffff' });
+    this.clock = this.ui.label('', { screen: 'hud', anchor: 'tr', x: 12, y: 8, size: 18, color: '#cfd8ff' });
+    const run = Run.instance;
+    this.offs = [
+      EventBus.Subscribe('lives', () =&gt; this.DrawHearts()),
+      run.onChanged.AddListener(() =&gt; this.Refresh()),
+      run.onEnded.AddListener((r) =&gt; this.Finish(r)),
+    ];
+    this.DrawHearts();
+    this.Refresh();
+    this.onKey = (e) =&gt; { if (e.code === 'Escape' &amp;&amp; !this.over) this.TogglePause(); };
+    window.addEventListener('keydown', this.onKey);
+  }
+
+  Refresh() {
+    const run = Run.instance, t = run.elapsed;
+    this.coin.set(`● ${run.coins}`);
+    this.keys.set(run.keys ? `🗝 ${run.keys}` : '');
+    this.clock.set(`${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`);
+  }
+
+  DrawHearts() {
+    const { lives, attrs } = GameManager.instance;
+    this.hearts.forEach((h) =&gt; h.remove());
+    this.hearts = Array.from({ length: attrs.startLives }, (_, i) =&gt;
+      this.ui.image(`assets/sprites/items/heart_${i &lt; lives ? 'full' : 'empty'}.png`, { screen: 'hud', x: 10 + i * 22, y: 8, w: 20, h: 20, style: { 'image-rendering': 'pixelated' } }));
+  }
+
+  TogglePause() {
+    if (this.pauseUi) { this.pauseUi.forEach((p) =&gt; p.remove()); this.pauseUi = null; GameManager.instance.Resume(); return; }
+    GameManager.instance.Pause();
+    this.pauseUi = [this.ui.label('Paused', { screen: 'hud', anchor: 'c', size: 44, color: '#ffb86b' }),
+      this.ui.label('Esc to continue', { screen: 'hud', anchor: 'c', y: 40, size: 18 })];
+  }
+
+  Finish({ win, score, best, record, coins, time }) {
+    this.over = true;
+    const color = win ? '#a3e6a0' : '#ff7b8a';
+    this.ui.panel({ screen: 'hud', anchor: 'c', w: 360, h: 190, style: { background: 'rgba(5,6,10,0.82)', borderRadius: '10px' } });
+    this.ui.label(win ? 'You escaped the crypt!' : 'The crypt keeps you…', { screen: 'hud', anchor: 'c', y: -62, size: 30, color });
+    this.ui.label(`Score ${score}${record ? '  — new best!' : `   Best ${best}`}`, { screen: 'hud', anchor: 'c', y: -22, size: 20, color: '#ffd34d' });
+    this.ui.label(`${coins} coins   ${Math.floor(time)} s`, { screen: 'hud', anchor: 'c', y: 8, size: 16 });
+    this.ui.button('Play again', () =&gt; GameManager.instance.Restart(), { screen: 'hud', anchor: 'c', x: -70, y: 56 });
+    this.ui.button('Title', () =&gt; SceneManager.LoadScene('scenes/title.scene.json'), { screen: 'hud', anchor: 'c', x: 70, y: 56 });
+  }
+
+  OnDestroy() {
+    window.removeEventListener('keydown', this.onKey);
+    this.hearts.forEach((h) =&gt; h.remove());
+    [this.coin, this.keys, this.clock].forEach((l) =&gt; l?.remove());
+    this.pauseUi?.forEach((p) =&gt; p.remove());
+    this.offs?.forEach((off) =&gt; off?.());
+  }
+}</code></pre>
+<ul>
+<li><strong>Hearts</strong> are images redrawn on every <code>lives</code> event: full and empty hearts, <code>image-rendering: pixelated</code> to stay crisp.</li>
+<li><strong>The clock</strong> formats <code>Run.instance.elapsed</code>.</li>
+<li><strong>Pause</strong>: Esc calls <code>GameManager.instance.Pause()</code> (<code>game.pause()</code> plus the state <code>paused</code>); Esc again calls <code>Resume()</code>. We listen to the browser&#39;s <code>keydown</code> directly because <strong>nothing updates while the game is paused</strong>, so <code>Input.GetKeyDown</code> would never fire. Remove the listener in <code>OnDestroy</code>.</li>
+<li><strong>The end panel</strong> appears when <code>Run.onEnded</code> fires. Buttons take callbacks: <code>GameManager.instance.Restart()</code> rebuilds the scene; <code>SceneManager.LoadScene(&#39;scenes/title.scene.json&#39;)</code> returns to the title.</li>
+</ul>
+<p><img src="../../assets/screenshots/ember-crypt-win.png" alt="The victory screen"></p>
+<p><img src="../../assets/screenshots/ember-crypt-over.png" alt="Game over"></p>
+<h2 id="14-the-title-scene">14 The title scene<a class="anchor" href="#14-the-title-scene">#</a></h2>
+<p><code>scenes/title.scene.json</code> holds a camera, a dark floor, an <code>Embers</code> entity (a particles component that keeps emitting), the hero, a brazier, a slime and an entity <code>Title</code> running:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, PlayerPrefs, SceneManager } from 'nord';
+
+export default class Title extends MonoBehaviour {
+  Start() {
+    const best = PlayerPrefs.GetInt('ember.best', 0);
+    this.audio.music('assets/audio/music/music_menu_chill.mp3', { volume: 0.5 });
+    this.widgets = [                                                 // keep them: UI outlives the scene unless we remove it
+      this.ui.label('EMBER CRYPT', { screen: 'hud', anchor: 'c', y: -100, size: 60, color: '#ffb86b' }),
+      this.ui.label('Find two keys. Open two gates. Escape.', { screen: 'hud', anchor: 'c', y: -52, size: 18, color: '#cfd8ff' }),
+      this.ui.button('Play', () =&gt; SceneManager.LoadScene('scenes/main.scene.json'), { screen: 'hud', anchor: 'c', y: 20 }),
+      this.ui.label('WASD / arrows move   Space or J attacks   Esc pauses', { screen: 'hud', anchor: 'c', y: 138, size: 14, color: '#8d93b3' }),
+    ];
+    if (best) this.widgets.push(this.ui.label(`Best score ${best}`, { screen: 'hud', anchor: 'c', y: 62, size: 16, color: '#ffd34d' }));
+  }
+
+  OnDestroy() { this.widgets?.forEach((w) =&gt; w.remove()); }
+}</code></pre>
+<p><code>PlayerPrefs.GetInt(&#39;ember.best&#39;, 0)</code> reads the saved score. <code>SceneManager.LoadScene</code> is Unity&#39;s. Every widget is kept in <code>this.widgets</code> and removed in <code>OnDestroy</code>, because <strong>UI outlives a scene change</strong>: forget it and the title text stays on top of your game.</p>
+<h2 id="15-check-yourself">15 Check yourself<a class="anchor" href="#15-check-yourself">#</a></h2>
+<ul>
+<li>The title shows with embers drifting up. <strong>Play</strong> starts the game and the music.</li>
+<li>Walk: the hero animates and mirrors; the camera follows; walls cast shadows.</li>
+<li>Swing at a slime: a sound, a yellow <code>1</code>, a freeze, sparks. The second hit kills it and it sometimes drops a coin.</li>
+<li>Stand behind a wall: the slime stops hunting and wanders.</li>
+<li>Touch spikes or an enemy: a heart disappears, you flash and are pushed away. A red potion refills one.</li>
+<li>A gate says &quot;Locked&quot; until you hold a key, then opens in a puff of smoke. Reach the cyan rune: the victory screen shows your score and, the first time, &quot;new best&quot;.</li>
+<li>Lose all five hearts: game over; <strong>Play again</strong> restarts with full hearts.</li>
+<li>Close the game and open it again: the title remembers your best score.</li>
+</ul>
+<p>The project has an automated test, <code>node tools/ember-crypt-test.mjs</code>, that does all of this in a headless browser and made the screenshots on this page.</p>
+<h2 id="16-ship-it">16 Ship it<a class="anchor" href="#16-ship-it">#</a></h2>
+<pre class="code" data-lang="bash"><code>nord check ember-crypt
+nord build ember-crypt --minify --zip -o ember-crypt-web
+nord build ember-crypt --single-file -o ember-crypt-one</code></pre>
+<p>Upload the folder to any web host, or send the single <code>index.html</code>. See <a href="../tutorials/tut-t51-hosting-presets.html">Ship it with a hosting preset</a> for itch.io and GitHub Pages.</p>
+<h2 id="17-where-to-go-next">17 Where to go next<a class="anchor" href="#17-where-to-go-next">#</a></h2>
+<p>Each is one small separate script, because that is how the game was built:</p>
+<ul>
+<li><strong>More enemies.</strong> A <em>spitter</em> that shoots: a <code>projectile</code> prefab and a copy of <code>Enemy.js</code> that stops at <code>sight</code> and fires every second.</li>
+<li><strong>A real inventory.</strong> Keys are a counter now. <a href="ex-inventory-quests.html">Inventory, items and quests</a> shows items with names and icons.</li>
+<li><strong>Dialogue.</strong> An old man at the start who explains the keys: <a href="ex-dialogue-npc.html">Talking to NPCs</a>.</li>
+<li><strong>A second level.</strong> Make <code>map.js</code> an array of maps and load the next when the rune is touched (<a href="ex-scenes.html">Scenes and persistent objects</a>).</li>
+<li><strong>Touch controls.</strong> A virtual joystick and an attack button: <a href="ex-mobile-touch.html">Touch, mobile and responsive games</a>.</li>
+<li><strong>Options.</strong> Volume sliders and key rebinding: <a href="ex-settings-menu.html">Options menu</a>.</li>
+<li><strong>Another whole game.</strong> <a href="ex-vector-rocks.html">Vector Rocks</a>, Asteroids on a green vector monitor.</li>
+</ul>
+<h2 id="what-you-learned">What you learned<a class="anchor" href="#what-you-learned">#</a></h2>
+<ul>
+<li>Describe the world as data, build it from prefabs, let small scripts talk through singletons, method calls and events.</li>
+<li>Prefab variants (slime and bat) are the same script with different numbers.</li>
+<li>A dot product makes &quot;in front&quot;; a map lookup makes &quot;can see&quot;.</li>
+<li>Juice is four small effects: a number, a spark, a freeze, a shake.</li>
+<li>Light is three library scripts and a child entity; colour tells the player where to go.</li>
+<li>Always clean up in <code>OnDestroy</code>: labels, widgets, listeners.</li>
+<li>Games ship as a folder, a single file or a zip.</li>
+</ul>
+<div class="pager"><a href="ex-dungeon-6-light.html"><small>← Previous</small>54 · Dungeon 6: Light and shipping</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-the-plan">1 The plan </a><a href="#2-the-project">2 The project </a><a href="#3-the-dungeon-as-text">3 The dungeon as text </a><a href="#4-prefabs">4 Prefabs </a><a href="#5-building-the-level">5 Building the level </a><a href="#6-the-scene">6 The scene </a><a href="#7-the-hero">7 The hero </a><a href="#8-health">8 Health </a><a href="#9-enemies-that-see-you">9 Enemies that see you </a><a href="#10-juice">10 Juice </a><a href="#11-pickups-gates-and-the-rules">11 Pickups, gates and the rules </a><a href="#12-light">12 Light </a><a href="#13-the-hud-pause-and-end-screens">13 The HUD, pause and end screens </a><a href="#14-the-title-scene">14 The title scene </a><a href="#15-check-yourself">15 Check yourself </a><a href="#16-ship-it">16 Ship it </a><a href="#17-where-to-go-next">17 Where to go next </a><a href="#what-you-learned">What you learned </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

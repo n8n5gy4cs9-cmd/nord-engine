@@ -1,0 +1,65 @@
+{
+  "format": 1,
+  "root": {
+    "id": "vr00001",
+    "name": "PowerUp",
+    "enabled": true,
+    "tags": [
+      "PowerUp"
+    ],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        2
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "sprite",
+        "texture": "assets/sprites/pu_rapid.png",
+        "size": [
+          40,
+          40
+        ],
+        "tint": "#ffffff",
+        "alpha": 1
+      },
+      {
+        "type": "rigidbody",
+        "mode": "dynamic"
+      },
+      {
+        "type": "collider",
+        "shape": "circle",
+        "radius": 18,
+        "size": [
+          36,
+          36
+        ],
+        "trigger": true
+      }
+    ],
+    "scripts": [
+      {
+        "path": "scripts/PowerUp.js",
+        "attributes": {
+          "type": "rapid"
+        }
+      }
+    ],
+    "children": [],
+    "prefab": null
+  }
+}

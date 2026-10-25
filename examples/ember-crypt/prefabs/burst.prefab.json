@@ -1,0 +1,53 @@
+{
+  "format": 1,
+  "root": {
+    "id": "ec00001",
+    "name": "Burst",
+    "enabled": true,
+    "tags": [],
+    "layer": 1,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        6
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "particles",
+        "texture": "assets/particles/spark.png",
+        "tint": "#ffd27a",
+        "tintEnd": "#ff5a1f",
+        "burst": 14,
+        "emitting": false,
+        "lifespan": 450,
+        "speed": [
+          40,
+          140
+        ],
+        "scale": [
+          0.5,
+          0
+        ],
+        "alpha": [
+          1,
+          0
+        ]
+      }
+    ],
+    "scripts": [],
+    "children": [],
+    "prefab": null
+  }
+}

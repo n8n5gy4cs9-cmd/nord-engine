@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>52 · Dungeon 4: Coins and score — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html" class="cur" aria-current="page">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html">55 · Ember Crypt: a complete game, from art to export</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>52 · Dungeon 4: Coins and score</h1>
+<p>Part 4 of the Unity-style dungeon series, continuing from <a href="ex-dungeon-3-camera.html">part 3, camera and a bigger level</a>. Allow 40 minutes.</p>
+<p><strong>What you will build:</strong> twelve coins hidden in the dungeon, a counter on the screen and a &quot;You found all the coins!&quot; message with <em>Press E to play again</em>.</p>
+<p><img src="../../assets/screenshots/series-dungeon-4-win.png" alt="All coins collected"></p>
+<p><strong>Download:</strong> <a href="../../assets/downloads/series-dungeon-part4-source.zip">Part 4 project</a>, also in <code>examples/series-dungeon/part4</code>.</p>
+<h2 id="1-coins-in-the-map">1 Coins in the map<a class="anchor" href="#1-coins-in-the-map">#</a></h2>
+<p>Add the letter <code>o</code> to <code>map.js</code> wherever a coin should lie (the download has twelve):</p>
+<pre class="code" data-lang="js"><code>export const MAP = [
+  '########################################',
+  '########################################',
+  '##........####..........#####.........##',
+  '##........####........o.#####......o..##',
+  '##...............................##...##',
+  '##....##..........###.................##',
+  '##......o.####..........#####..o......##',
+  '##........####..o.......#####.........##',
+  '#####..#######..........#########..#####',
+  '#####..###########..#############..#####',
+  '#####..###########..#############..#####',
+  '#####..###########..#############..#####',
+  '##..........######..##########........##',
+  '##........o.####..........####.o......##',
+  '##.o........####........o.####........##',
+  '##....##..........................##..##',
+  '##..................##................##',
+  '##..........####..........####........##',
+  '##..o.......####.o........####......o.##',
+  '##..........####..........####........##',
+  '########################################',
+  '########################################',
+];</code></pre>
+<h2 id="2-triggers-and-the-coin-prefab">2 Triggers and the Coin prefab<a class="anchor" href="#2-triggers-and-the-coin-prefab">#</a></h2>
+<p>A <strong>trigger</strong> is a collider that does not block anything but tells you when something enters. The coin prefab (<code>prefabs/coin.prefab.json</code>) is a sprite (the round <code>circle.png</code>, tinted gold, 14 × 14), a <strong>static rigidbody</strong>, a <strong>box collider with <code>trigger: true</code></strong> (16 × 16), the tag <code>Coin</code> and the script:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager, Destroy, Random, Time, Vector3 } from 'nord';
+
+export default class Coin extends MonoBehaviour {
+  Start() {
+    this.y0 = this.position.y;
+    this.t = Random.value * 6;                                       // every coin bobs out of step with the others
+    this.taken = false;
+  }
+
+  Update() {
+    this.t += Time.deltaTime;
+    const p = this.position;
+    this.position = new Vector3(p.x, this.y0 + Math.sin(this.t * 4) * 2, p.z);
+  }
+
+  OnTriggerEnter(other) {                                            // Unity: OnTriggerEnter2D(Collider2D other)
+    if (this.taken || !other.hasTag('Hero')) return;                 // other.CompareTag(&quot;Hero&quot;)
+    this.taken = true;                                               // Destroy() happens at the end of the frame
+    GameManager.instance.AddScore(1);
+    Destroy(this.entity);
+  }
+}</code></pre>
+<ul>
+<li><code>OnTriggerEnter(other)</code> is <code>OnTriggerEnter2D(Collider2D other)</code>. <code>other</code> is the entity that came in; <code>other.hasTag(&#39;Hero&#39;)</code> is <code>other.CompareTag(&quot;Hero&quot;)</code>.</li>
+<li><code>GameManager.instance.AddScore(1)</code>: see next section.</li>
+<li><code>Destroy(this.entity)</code> removes the coin <strong>at the end of the frame</strong>; <code>taken</code> stops a second overlap in the same frame from counting twice.</li>
+<li><code>Random.value * 6</code> starts each coin&#39;s bobbing at a different time, so they do not move in lockstep. (<code>Random.Range(0, 6)</code> with two whole numbers would be an <em>integer</em>, like C#.)</li>
+</ul>
+<h2 id="3-the-gamemanager">3 The GameManager<a class="anchor" href="#3-the-gamemanager">#</a></h2>
+<p>Nord has the Unity singleton you always write by hand. Create <code>scripts/GameManager.js</code>:</p>
+<pre class="code" data-lang="js"><code>import { GameManager } from 'nord';
+
+// The engine's GameManager (score, lives, state, Restart) as a script you can attach to an object.
+export default class Manager extends GameManager {}</code></pre>
+<p>Add an empty entity <code>GameManager</code> with that script. It keeps <code>score</code>, <code>lives</code> and <code>state</code>, offers <code>AddScore</code>, <code>LoseLife</code>, <code>SetState</code>, <code>Restart</code>, and announces changes on the global bus: <code>score</code>, <code>lives</code>, <code>state</code>, <code>gameover</code>. Anywhere in your code: <code>GameManager.instance.AddScore(1)</code>. (More in <a href="ex-game-manager.html">GameManager and Singletons</a>.)</p>
+<blockquote>
+<p><strong>Why does the coin not draw the score itself?</strong> It does not know that a HUD exists. It only says &quot;+1&quot; to the manager; the manager shouts &quot;score changed&quot;; whoever is interested (the HUD, a sound, an achievement) subscribes. Add features later without opening old files.</p>
+</blockquote>
+<h2 id="4-spawning-the-coins">4 Spawning the coins<a class="anchor" href="#4-spawning-the-coins">#</a></h2>
+<p><code>level.js</code> grows by two lines (the rest is part 3). The loop counts the coins and creates them from the prefab:</p>
+<pre class="code" data-lang="js"><code>else if (ch === 'o') { coins++; await Instantiate('prefabs/coin.prefab.json', { pos: [x, y, 1] }); }</code></pre>
+<p>and the announcement carries the total: <code>EventBus.Publish(&#39;level&#39;, { width, height, coins });</code>. The complete file is in the download.</p>
+<h2 id="5-the-hud">5 The HUD<a class="anchor" href="#5-the-hud">#</a></h2>
+<p>A HUD is a screen layer of HTML elements. <code>this.ui.label(text, options)</code> makes a label; <code>screen: &#39;hud&#39;</code> puts it on the always-visible layer; <code>x</code>/<code>y</code> are pixels from the top-left; <code>anchor: &#39;c&#39;</code> centres a label and <code>x</code>/<code>y</code> become offsets from the centre. Create an empty entity <code>Hud</code> with:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager, EventBus, UnityInput as Input, KeyCode } from 'nord';
+
+export default class Hud extends MonoBehaviour {
+  Start() {
+    this.total = 0;
+    this.score = this.ui.label('', { screen: 'hud', x: 12, y: 8, size: 22, color: '#ebcb8b' });
+    this.offs = [
+      EventBus.Subscribe('level', ({ coins }) =&gt; { this.total = coins; this.Refresh(); }),
+      EventBus.Subscribe('score', () =&gt; this.Refresh()),
+    ];
+    this.Refresh();
+  }
+
+  Refresh() {
+    const gm = GameManager.instance;
+    this.score.set(`● ${gm.score} / ${this.total}`);
+    if (this.total &gt; 0 &amp;&amp; gm.score === this.total &amp;&amp; gm.state === 'playing') this.Win();
+  }
+
+  Win() {
+    GameManager.instance.SetState('won');
+    this.ui.label('You found all the coins!', { screen: 'hud', anchor: 'c', size: 34, color: '#a3be8c' });
+    this.ui.label('Press E to play again', { screen: 'hud', anchor: 'c', y: 44, size: 20 });
+  }
+
+  Update() {
+    if (GameManager.instance.state === 'won' &amp;&amp; Input.GetKeyDown(KeyCode.E)) GameManager.instance.Restart();
+  }
+
+  OnDestroy() { this.score?.remove(); this.offs?.forEach((off) =&gt; off()); }
+}</code></pre>
+<ul>
+<li>The HUD subscribes to <code>level</code> (the total) and <code>score</code>. <code>EventBus.Subscribe</code> returns an unsubscribe function; <code>OnDestroy</code> calls them all and removes the label. When you restart, scripts are destroyed and recreated; a script that forgets this leaves a ghost label and a ghost listener.</li>
+<li><code>Win()</code> sets the manager&#39;s state to <code>won</code> and shows two labels.</li>
+<li><code>Input.GetKeyDown(KeyCode.E)</code> is true for exactly one frame; <code>GameManager.instance.Restart()</code> resets score and lives and reloads the scene: all coins return.</li>
+</ul>
+<p>Press <span class="c-ui">Play</span>: the counter increases as coins vanish. Take the last one and the message appears. Press E: the level resets.</p>
+<p><img src="../../assets/screenshots/series-dungeon-4-coin.png" alt="The first coin picked up"></p>
+<h2 id="6-check-yourself">6 Check yourself<a class="anchor" href="#6-check-yourself">#</a></h2>
+<ul>
+<li>The counter starts at <code>● 0 / 12</code>. The total comes from the level: add a coin to the map and it says 13.</li>
+<li>Walk through a coin diagonally past a wall corner: it still counts.</li>
+<li>Restart five times: no errors in the Console, no doubled labels.</li>
+</ul>
+<p>If the counter shows <code>0 / 0</code>, the HUD missed the <code>level</code> event: check that <code>Level</code> is above <code>Hud</code> in the Hierarchy.</p>
+<h2 id="what-you-learned">What you learned<a class="anchor" href="#what-you-learned">#</a></h2>
+<ul>
+<li>Triggers: <code>OnTriggerEnter</code>, tags, <code>CompareTag</code>.</li>
+<li>The built-in <code>GameManager</code> singleton and its events.</li>
+<li><code>EventBus</code> keeps scripts independent.</li>
+<li><code>this.ui</code> makes HUD labels; always remove them in <code>OnDestroy</code>.</li>
+</ul>
+<p>Next: <a href="ex-dungeon-5-enemies.html">Part 5, enemies and health</a>.</p>
+<div class="pager"><a href="ex-dungeon-3-camera.html"><small>← Previous</small>51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-5-enemies.html"><small>Next →</small>53 · Dungeon 5: Enemies and health</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-coins-in-the-map">1 Coins in the map </a><a href="#2-triggers-and-the-coin-prefab">2 Triggers and the Coin prefab </a><a href="#3-the-gamemanager">3 The GameManager </a><a href="#4-spawning-the-coins">4 Spawning the coins </a><a href="#5-the-hud">5 The HUD </a><a href="#6-check-yourself">6 Check yourself </a><a href="#what-you-learned">What you learned </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

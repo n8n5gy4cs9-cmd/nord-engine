@@ -1,0 +1,59 @@
+{
+  "format": 1,
+  "root": {
+    "id": "ec00001",
+    "name": "Coin",
+    "enabled": true,
+    "tags": [
+      "Coin"
+    ],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        2
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "animatedSprite",
+        "texture": "assets/sprites/coin.png",
+        "anim": "spin"
+      },
+      {
+        "type": "rigidbody",
+        "mode": "static"
+      },
+      {
+        "type": "collider",
+        "shape": "box",
+        "size": [
+          14,
+          14
+        ],
+        "trigger": true
+      }
+    ],
+    "scripts": [
+      {
+        "path": "scripts/Pickup.js",
+        "attributes": {
+          "kind": "coin"
+        }
+      }
+    ],
+    "children": [],
+    "prefab": null
+  }
+}

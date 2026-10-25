@@ -1,33 +1,31 @@
-import { NordScript } from 'nord';
-import { floatText, burst } from './fx.js';
+import { MonoBehaviour, SerializeField, Destroy, Random, Time, Vector3 } from 'nord';
+import Run from './Run.js';
+import Fx from './Fx.js';
 
 const TEXT = { coin: ['+1', '#ffd34d'], key: ['Key', '#ffffff'], potion: ['+1 ♥', '#ff7b8a'], chest: ['+5', '#ffd34d'] };
 const SOUND = { coin: 'coin', key: 'pickup', potion: 'heal', chest: 'chest' };
 
-export default class Pickup extends NordScript {
-  static attributes = { kind: { type: 'enum', options: ['coin', 'key', 'potion', 'chest'], default: 'coin' } };
+export default class Pickup extends MonoBehaviour {
+  static attributes = SerializeField({ kind: 'coin' });              // coin, key, potion or chest
 
-  start() {
-    this.y0 = this.entity.pos[1];
-    this.t = this.rng.range(0, 6);
-    this.taken = false;
+  Start() { this.y0 = this.position.y; this.t = Random.value * 6; this.taken = false; }
+
+  Update() {
+    this.t += Time.deltaTime;
+    const p = this.position;
+    this.position = new Vector3(p.x, this.y0 + Math.sin(this.t * 4) * 1.5, p.z);
   }
 
-  update(dt) {
-    this.t += dt;
-    const p = this.entity.pos;
-    this.entity.pos = [p[0], this.y0 + Math.sin(this.t * 4) * 1.5, p[2]];
-  }
-
-  onTriggerEnter(other) {
-    if (this.taken || !other.hasTag('hero')) return;
+  OnTriggerEnter(other) {
+    if (this.taken || !other.hasTag('Hero')) return;
     this.taken = true;
-    const { kind } = this.attrs, [x, y] = this.entity.pos;
-    const [text, color] = TEXT[kind];
-    floatText(this.scene, x, y, text, color);
-    this.audio.play(`assets/audio/sfx/${SOUND[kind]}.wav`, { volume: 0.7 });
-    if (kind === 'chest') burst(this.scene, x, y, { count: 18 });
-    this.events.emit('pickup', { kind });
-    this.entity.destroy();
+    const p = this.position, [text, color] = TEXT[this.kind], run = Run.instance;
+    Fx.FloatText(p.x, p.y, text, color);
+    this.audio.play(`assets/audio/sfx/${SOUND[this.kind]}.wav`, { volume: 0.7 });
+    if (this.kind === 'coin') run.AddCoin();
+    else if (this.kind === 'key') run.AddKey();
+    else if (this.kind === 'potion') run.Heal();
+    else if (this.kind === 'chest') { run.AddCoin(5); Fx.Burst(p.x, p.y, { burst: 18 }); }
+    Destroy(this.entity);
   }
 }

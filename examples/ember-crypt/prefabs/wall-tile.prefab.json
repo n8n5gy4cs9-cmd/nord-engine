@@ -1,0 +1,42 @@
+{
+  "format": 1,
+  "root": {
+    "id": "ec00001",
+    "name": "WallTile",
+    "enabled": true,
+    "tags": [],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        1
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "sprite",
+        "texture": "assets/sprites/wall.png",
+        "size": [
+          32,
+          32
+        ],
+        "tint": "#ffffff",
+        "alpha": 1
+      }
+    ],
+    "scripts": [],
+    "children": [],
+    "prefab": null
+  }
+}

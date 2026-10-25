@@ -1,0 +1,55 @@
+{
+  "format": 1,
+  "root": {
+    "id": "ec00001",
+    "name": "Brazier",
+    "enabled": true,
+    "tags": [],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        2
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "sprite",
+        "texture": "assets/sprites/brazier.png",
+        "size": [
+          26,
+          26
+        ],
+        "tint": "#ffffff",
+        "alpha": 1
+      }
+    ],
+    "scripts": [
+      {
+        "path": "scripts/light2d-source.js",
+        "attributes": {
+          "color": "#ff9a45",
+          "radius": 120,
+          "intensity": 0.8,
+          "falloff": 1.3,
+          "softness": 4,
+          "flicker": 0.3,
+          "shadows": true
+        }
+      }
+    ],
+    "children": [],
+    "prefab": null
+  }
+}

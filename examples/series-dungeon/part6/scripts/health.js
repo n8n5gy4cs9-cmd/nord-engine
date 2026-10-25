@@ -1,30 +1,22 @@
-import { NordScript } from 'nord';
+import { MonoBehaviour, SerializeField, GameManager, Time } from 'nord';
+import Hero from './hero.js';
 
-export default class Health extends NordScript {
-  static attributes = {
-    max: { type: 'number', default: 3, min: 1 },
-    grace: { type: 'number', default: 1, min: 0, label: 'Invulnerable seconds after a hit' },
-  };
+/** Grace time and blinking around the GameManager's lives. Enemies call TakeDamage(); nothing else knows about hearts. */
+export default class Health extends MonoBehaviour {
+  static attributes = SerializeField({ grace: 1 });
 
-  start() {
-    this.hp = this.attrs.max;
-    this.grace = 0;
-    this.entity.on('hit', (e) => this.hit(e));
-    this.events.emit('health', { hp: this.hp, max: this.attrs.max });
+  Awake() { this.protectedFor = 0; }
+
+  TakeDamage(from) {
+    if (this.protectedFor > 0 || GameManager.instance.state === 'gameover') return;   // still protected, or already dead
+    this.protectedFor = this.grace;
+    GameManager.instance.LoseLife();                                 // emits 'lives', and 'gameover' at 0
+    this.GetComponent(Hero).Knockback(from);                         // GetComponent<Hero>().Knockback(from)
   }
 
-  hit({ from }) {
-    if (this.hp <= 0 || this.grace > 0) return;                     // already dead, or still protected
-    this.hp--;
-    this.grace = this.attrs.grace;
-    this.events.emit('health', { hp: this.hp, max: this.attrs.max });
-    this.entity.emit('hurt', { from });                             // the hero script reacts with knockback
-    if (this.hp <= 0) this.events.emit('died');
-  }
-
-  update(dt) {
-    this.grace = Math.max(0, this.grace - dt);
-    const blink = this.grace > 0 && Math.floor(this.grace * 10) % 2 === 0;
-    this.entity.set('sprite', 'alpha', blink ? 0.35 : 1);
+  Update() {
+    this.protectedFor = Math.max(0, this.protectedFor - Time.deltaTime);
+    const blink = this.protectedFor > 0 && Math.floor(this.protectedFor * 10) % 2 === 0;
+    this.entity.set('sprite', 'alpha', blink ? 0.35 : 1);            // a field of the sprite component
   }
 }

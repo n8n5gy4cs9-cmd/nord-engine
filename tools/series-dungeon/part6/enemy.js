@@ -1,41 +1,35 @@
-import { NordScript } from 'nord';
+import { MonoBehaviour, SerializeField, Random, Vector2, Vector3, WaitForSeconds } from 'nord';
+import Health from './health.js';
 
-export default class Enemy extends NordScript {
-  static attributes = {
-    speed: { type: 'number', default: 80, min: 0 },
-    sight: { type: 'number', default: 170, min: 0, label: 'Sees the hero within (px)' },
-    reach: { type: 'number', default: 24, min: 0, label: 'Touch distance (px)' },
-  };
+export default class Enemy extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 80, sight: 170, reach: 24 });
 
-  start() {
-    this.hero = this.scene.find('Hero');
-    this.dir = [0, 0];
-    this.think = this.rng.range(0, 1);
+  Start() {
+    this.hero = this.Find('Hero');
+    this.dir = Vector2.zero;
+    this.StartCoroutine(this.Wander());                              // a coroutine: "do this, wait, do that" without timers
   }
 
-  distance() {
-    return Math.hypot(this.hero.pos[0] - this.entity.pos[0], this.hero.pos[1] - this.entity.pos[1]);
-  }
-
-  fixedUpdate(dt) {
-    if (!this.hero || this.hero.destroyed) return;
-    const d = this.distance();
-    if (d < this.attrs.sight) {                                     // chase
-      this.dir = [(this.hero.pos[0] - this.entity.pos[0]) / d, (this.hero.pos[1] - this.entity.pos[1]) / d];
-      this.think = 0.3;
-    } else {                                                        // wander: pick a new direction every second or two
-      this.think -= dt;
-      if (this.think <= 0) {
-        const a = this.rng.range(0, Math.PI * 2);
-        this.dir = this.rng.next() < 0.3 ? [0, 0] : [Math.cos(a), Math.sin(a)];
-        this.think = this.rng.range(1, 2.5);
-      }
+  /** Every second or two pick a new direction, and sometimes stand still. */
+  *Wander() {
+    while (true) {
+      const a = Random.value * Math.PI * 2;
+      this.dir = Random.value < 0.3 ? Vector2.zero : new Vector2(Math.cos(a), Math.sin(a));
+      yield new WaitForSeconds(Random.Range(1.0, 2.5));
     }
-    const s = this.attrs.speed * (d < this.attrs.sight ? 1 : 0.4);
-    this.physics.setVelocity(this.entity, this.dir[0] * s, this.dir[1] * s);
   }
 
-  update() {
-    if (this.hero && !this.hero.destroyed && this.distance() < this.attrs.reach) this.hero.emit('hit', { from: this.entity });
+  get distance() { return Vector3.Distance(this.position, Vector3.From(this.hero.pos)); }
+
+  FixedUpdate() {
+    if (!this.hero || this.hero.destroyed) return;
+    const chasing = this.distance < this.sight;
+    const toHero = Vector2.From(this.hero.pos).Sub(Vector2.From(this.entity.pos));
+    const dir = chasing ? toHero.normalized : this.dir;              // a unit vector: direction without speed
+    this.velocity = dir.Mul(this.speed * (chasing ? 1 : 0.4));
+  }
+
+  Update() {
+    if (this.hero && !this.hero.destroyed && this.distance < this.reach) this.hero.getScript(Health).TakeDamage(this.entity);
   }
 }

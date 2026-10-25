@@ -1,28 +1,23 @@
-import { NordScript } from 'nord';
+import { MonoBehaviour, SerializeField, EventBus, Mathf, Time, Vector3 } from 'nord';
 
-export default class Follow extends NordScript {
-  static attributes = {
-    target: { type: 'string', default: 'Hero', label: 'Name of the entity to follow' },
-    stiffness: { type: 'number', default: 8, min: 0, label: 'Follow speed (0 = snap)' },
-    viewport: { type: 'vec2', default: [640, 360] },
-  };
+export default class Follow extends MonoBehaviour {
+  static attributes = SerializeField({ target: 'Hero', stiffness: 8, viewport: [640, 360] });
 
-  start() {
-    this.target = this.scene.find(this.attrs.target);
-    this.bounds = null;
-    this.off = this.events.on('level', (size) => { this.bounds = size; this.snap = true; });
+  Start() {
+    this.hero = this.Find(this.target);
+    this.off = EventBus.Subscribe('level', (size) => { this.bounds = size; this.snap = true; });
   }
 
-  lateUpdate(dt) {
-    if (!this.target || !this.bounds) return;
-    const [hw, hh] = [this.attrs.viewport[0] / 2, this.attrs.viewport[1] / 2];
-    const goalX = Math.max(hw, Math.min(this.bounds.width - hw, this.target.pos[0]));
-    const goalY = Math.max(hh, Math.min(this.bounds.height - hh, this.target.pos[1]));
-    const [x, y, z] = this.entity.pos;
-    const k = this.snap || !this.attrs.stiffness ? 1 : 1 - Math.exp(-this.attrs.stiffness * dt);
+  LateUpdate() {
+    if (!this.hero || !this.bounds) return;
+    const [hw, hh] = [this.viewport[0] / 2, this.viewport[1] / 2];
+    const goalX = Mathf.Clamp(this.hero.pos[0], hw, this.bounds.width - hw);
+    const goalY = Mathf.Clamp(this.hero.pos[1], hh, this.bounds.height - hh);
+    const k = this.snap || this.stiffness === 0 ? 1 : 1 - Math.exp(-this.stiffness * Time.deltaTime);
     this.snap = false;
-    this.entity.pos = [x + (goalX - x) * k, y + (goalY - y) * k, z];
+    const p = this.position;
+    this.position = new Vector3(Mathf.Lerp(p.x, goalX, k), Mathf.Lerp(p.y, goalY, k), p.z);
   }
 
-  onDestroy() { this.off?.(); }
+  OnDestroy() { this.off?.(); }
 }

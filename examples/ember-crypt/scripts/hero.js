@@ -1,74 +1,58 @@
-import { NordScript } from 'nord';
+import { MonoBehaviour, SerializeField, Instantiate, Destroy, UnityInput as Input, KeyCode, GameManager, EventBus, Time, Vector2, Vector3 } from 'nord';
+import Enemy from './Enemy.js';
 
-export default class Hero extends NordScript {
-  static attributes = {
-    speed: { type: 'number', default: 120, min: 0, label: 'Speed (px/s)' },
-    knockback: { type: 'number', default: 220, min: 0 },
-    reach: { type: 'number', default: 34, min: 0, label: 'Sword reach (px)' },
-    cooldown: { type: 'number', default: 0.35, min: 0, label: 'Seconds between swings' },
-  };
+export default class Hero extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 120, knockbackSpeed: 220, reach: 34, swingDelay: 0.35 });
 
-  start() {
-    this.sprite = this.entity.getComponent('animatedSprite');
-    this.facing = [0, 1];
-    this.kick = [0, 0];
+  Start() {
+    this.animator = this.GetComponent('animatedSprite');
+    this.facing = new Vector2(0, 1);
+    this.kick = Vector2.zero;
     this.stun = 0;
-    this.wait = 0;
-    this.dead = false;
-    this.entity.on('hurt', ({ from }) => {
-      const dx = this.entity.pos[0] - from.pos[0], dy = this.entity.pos[1] - from.pos[1];
-      const d = Math.hypot(dx, dy) || 1;
-      this.kick = [dx / d * this.attrs.knockback, dy / d * this.attrs.knockback];
-      this.stun = 0.15;
-    });
-    this.off = this.events.on('died', () => { this.dead = true; this.sprite.play('hurt'); });
+    this.nextSwing = 0;
+    this.moving = false;
+    this.off = EventBus.Subscribe('gameover', () => this.animator.play('hurt'));
   }
 
-  fixedUpdate(dt) {
-    if (this.dead) { this.physics.setVelocity(this.entity, 0, 0); return; }
-    if (this.stun > 0) {
-      this.stun -= dt;
-      this.physics.setVelocity(this.entity, this.kick[0], this.kick[1]);
-      return;
-    }
-    const [x, y] = this.input.vec('left', 'right', 'up', 'down');
-    this.physics.setVelocity(this.entity, x * this.attrs.speed, y * this.attrs.speed);
-    this.moving = x !== 0 || y !== 0;
+  get dead() { return GameManager.instance.state === 'gameover'; }
+
+  /** Called by Health when we are hit: fly away from the attacker for a moment. */
+  Knockback(from) {
+    const away = new Vector2(this.position.x - from.pos[0], this.position.y - from.pos[1]).normalized;
+    this.kick = away.Mul(this.knockbackSpeed);
+    this.stun = 0.15;
+  }
+
+  FixedUpdate() {
+    if (this.dead) { this.velocity = Vector2.zero; return; }
+    if (this.stun > 0) { this.stun -= Time.fixedDeltaTime; this.velocity = this.kick; return; }
+    const move = Vector2.ClampMagnitude(new Vector2(Input.GetAxis('Horizontal'), Input.GetAxis('Vertical')), 1);
+    this.velocity = new Vector2(move.x, -move.y).Mul(this.speed);
+    this.moving = move.sqrMagnitude > 0;
     if (this.moving) {
-      const len = Math.hypot(x, y);
-      this.facing = [x / len, y / len];
-      this.sprite.setFlip(x < 0);                                   // the art looks right; mirror it to look left
+      this.facing = new Vector2(move.x, -move.y).normalized;
+      this.animator.setFlip(move.x < 0);                             // the art faces forward: mirror it to look left
     }
   }
 
-  update(dt) {
+  Update() {
     if (this.dead) return;
-    this.wait -= dt;
     const want = this.stun > 0 ? 'hurt' : this.moving ? 'walk' : 'idle';
-    if (this.sprite.current !== want) this.sprite.play(want);       // only restart an animation when it changes
-    if (this.wait <= 0 && this.input.pressed('attack')) this.swing();
+    if (this.animator.current !== want) this.animator.play(want);    // only restart an animation when it changes
+    if (Time.time >= this.nextSwing && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.J) || Input.GetMouseButtonDown(0))) this.Swing();
   }
 
-  swing() {
-    this.wait = this.attrs.cooldown;
+  Swing() {
+    this.nextSwing = Time.time + this.swingDelay;
     this.audio.play('assets/audio/sfx/swing.wav', { volume: 0.7 });
-    const [fx, fy] = this.facing, [hx, hy] = this.entity.pos;
-    this.slash(hx + fx * 20, hy + fy * 20);
-    for (const enemy of this.scene.findByTag('enemy')) {
-      const dx = enemy.pos[0] - hx, dy = enemy.pos[1] - hy, d = Math.hypot(dx, dy);
-      if (d < this.attrs.reach && (dx * fx + dy * fy) / (d || 1) > -0.1) enemy.emit('damage', { amount: 1, from: this.entity });   // in range and in front
+    const p = this.position;
+    Instantiate('prefabs/slash.prefab.json', { pos: [p.x + this.facing.x * 20, p.y + this.facing.y * 20, 6] });
+    for (const e of this.FindGameObjectsWithTag('Enemy')) {
+      const to = new Vector2(e.pos[0] - p.x, e.pos[1] - p.y);
+      const inFront = Vector2.Dot(to.normalized, this.facing) > -0.1;   // the angle between "where it is" and "where I look"
+      if (to.magnitude < this.reach && inFront) e.getScript(Enemy).TakeDamage(1, this.entity);
     }
   }
 
-  /** The white crescent: a translucent circle that grows and fades. */
-  async slash(x, y) {
-    const e = await this.scene.spawnData({
-      name: 'Slash', tags: [], layer: 1, transform: { pos: [x, y, 6], rot: [0, 0, 0], scale: [1, 1, 1] },
-      components: [{ type: 'sprite', texture: 'assets/sprites/circle.png', size: [24, 24], tint: '#fff2c9', alpha: 0.7 }], scripts: [], children: [],
-    });
-    const s = { k: 0.6, a: 0.7 };
-    this.tween(s, { k: 1.5, a: 0 }, { duration: 0.18, onUpdate: () => { if (!e.destroyed) { e.scale = [s.k, s.k, 1]; e.native.setAlpha(s.a); } }, onComplete: () => e.destroy() });
-  }
-
-  onDestroy() { this.off?.(); }
+  OnDestroy() { this.off?.(); }
 }

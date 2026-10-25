@@ -62,10 +62,210 @@
       "components": [],
       "scripts": [
         {
-          "path": "scripts/title.js",
+          "path": "scripts/Title.js",
           "attributes": {}
         }
       ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ec00003",
+      "name": "Floor",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          400,
+          -5
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/floor.png",
+          "size": [
+            1280,
+            800
+          ],
+          "tint": "#3a3a4a",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ec00004",
+      "name": "Embers",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          370,
+          1
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "particles",
+          "texture": "assets/particles/spark.png",
+          "tint": "#ffb86b",
+          "tintEnd": "#ff4a1c",
+          "frequency": 70,
+          "lifespan": 3200,
+          "speed": [
+            15,
+            40
+          ],
+          "angle": [
+            255,
+            285
+          ],
+          "emitRadius": 280,
+          "scale": [
+            0.5,
+            0
+          ],
+          "alpha": [
+            1,
+            0
+          ]
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ec00005",
+      "name": "Hero",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          250,
+          246,
+          3
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/hero.png",
+          "anim": "idle"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ec00006",
+      "name": "Slime",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          392,
+          252,
+          3
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "animatedSprite",
+          "texture": "assets/sprites/enemy_slime.png",
+          "anim": "idle"
+        }
+      ],
+      "scripts": [],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ec00007",
+      "name": "Brazier",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          320,
+          244,
+          3
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [
+        {
+          "type": "sprite",
+          "texture": "assets/sprites/brazier.png",
+          "size": [
+            40,
+            40
+          ],
+          "tint": "#ffffff",
+          "alpha": 1
+        }
+      ],
+      "scripts": [],
       "children": [],
       "prefab": null
     }

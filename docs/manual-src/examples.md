@@ -92,8 +92,17 @@ Never used Unity? These pages still work: each example is a small script plus th
 ## More Unity-style
 42. [Unity helpers cookbook](ex-unity-helpers.html): Random, Color, KeyCode, mouse events, free Instantiate/Destroy.
 43. [Input actions and the Input editor](ex-input-editor.html)
-44. [Tutorial: Coin Clicker in pure Unity style](ex-tutorial-clicker.html)
+44. [Vector Rocks: Asteroids on a green vector monitor](ex-vector-rocks.html): a whole game with phosphor glow, a monitor bezel, waves and five power-ups.
 45. [Which platform? Editor, Mac, Windows, web, phone](ex-platform.html): `Application.platform`, `isEditor`, `os`, `Cursor`.
 46. [Pathfinding and NavMesh: moving around obstacles](ex-pathfinding.html): grid A*, waypoint paths, `NavMeshAgent` mapped to Nord.
 47. [Cutscenes and the Timeline](ex-cutscenes.html): `PlayableDirector` mapped to the Timeline tab, events, skipping.
 48. [2D lights and shadows](ex-lights-2d.html): URP 2D Lights mapped to the `light2d` library scripts, flashlight, stealth.
+
+### Build a whole game, step by step (Unity style)
+49. [Dungeon 1: A hero that moves](ex-dungeon-1-hero.html): project, scene, `Input.GetAxis`, `Time.deltaTime`.
+50. [Dungeon 2: Walls](ex-dungeon-2-walls.html): a level from a text map, prefabs, `Rigidbody2D.velocity`.
+51. [Dungeon 3: Camera and a bigger level](ex-dungeon-3-camera.html): `LateUpdate` follow camera, `EventBus`, merging tiles.
+52. [Dungeon 4: Coins and score](ex-dungeon-4-coins.html): triggers, the `GameManager`, a HUD, restart.
+53. [Dungeon 5: Enemies and health](ex-dungeon-5-enemies.html): coroutines, `GetComponent`, grace time, knockback, game over.
+54. [Dungeon 6: Light and shipping](ex-dungeon-6-light.html): 2D light and shadows, building for the web.
+55. [Ember Crypt: a complete game](ex-ember-crypt.html): pixel art, sword, line of sight, keys and gates, juice, title, pause, saved high score.

@@ -1,0 +1,47 @@
+{
+  "format": 1,
+  "root": {
+    "id": "ec00001",
+    "name": "Slash",
+    "enabled": true,
+    "tags": [],
+    "layer": 1,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        6
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "sprite",
+        "texture": "assets/sprites/circle.png",
+        "size": [
+          24,
+          24
+        ],
+        "tint": "#fff2c9",
+        "alpha": 0.7
+      }
+    ],
+    "scripts": [
+      {
+        "path": "scripts/Slash.js",
+        "attributes": {}
+      }
+    ],
+    "children": [],
+    "prefab": null
+  }
+}

@@ -44,6 +44,41 @@
       "prefab": null
     },
     {
+      "id": "sd00007",
+      "name": "GameManager",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/GameManager.js",
+          "attributes": {
+            "startLives": 3
+          }
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
       "id": "sd00002",
       "name": "Level",
       "enabled": true,
@@ -116,7 +151,7 @@
       "name": "Hero",
       "enabled": true,
       "tags": [
-        "hero"
+        "Hero"
       ],
       "layer": 0,
       "transform": {

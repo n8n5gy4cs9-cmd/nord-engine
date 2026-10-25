@@ -80,7 +80,7 @@
       "name": "Hero",
       "enabled": true,
       "tags": [
-        "hero"
+        "Hero"
       ],
       "layer": 0,
       "transform": {

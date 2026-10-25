@@ -1,4 +1,4 @@
-/** The dungeon. # wall, . floor, P hero start, o coin, k key, D door (2 tiles), + potion, B brazier, c crate,
+/** The dungeon. # wall, . floor, P hero start, o coin, k key, D door (2 tiles), + potion, B brazier, c crate or barrel,
  *  ^ spikes, C chest, s slime, b bat, X exit. 40 x 22 tiles of 32 px. */
 export const MAP = [
   '########################################',

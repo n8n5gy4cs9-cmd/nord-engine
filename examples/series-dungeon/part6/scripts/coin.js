@@ -1,22 +1,22 @@
-import { NordScript } from 'nord';
+import { MonoBehaviour, GameManager, Destroy, Random, Time, Vector3 } from 'nord';
 
-export default class Coin extends NordScript {
-  start() {
-    this.y0 = this.entity.pos[1];
-    this.t = this.rng.range(0, 6);                                  // every coin bobs out of step with the others
+export default class Coin extends MonoBehaviour {
+  Start() {
+    this.y0 = this.position.y;
+    this.t = Random.value * 6;                                       // every coin bobs out of step with the others
     this.taken = false;
   }
 
-  update(dt) {
-    this.t += dt;
-    const p = this.entity.pos;
-    this.entity.pos = [p[0], this.y0 + Math.sin(this.t * 4) * 2, p[2]];
+  Update() {
+    this.t += Time.deltaTime;
+    const p = this.position;
+    this.position = new Vector3(p.x, this.y0 + Math.sin(this.t * 4) * 2, p.z);
   }
 
-  onTriggerEnter(other) {
-    if (this.taken || !other.hasTag('hero')) return;
-    this.taken = true;                                              // destroy() is deferred to the end of the frame
-    this.events.emit('coin');
-    this.entity.destroy();
+  OnTriggerEnter(other) {                                            // Unity: OnTriggerEnter2D(Collider2D other)
+    if (this.taken || !other.hasTag('Hero')) return;                 // other.CompareTag("Hero")
+    this.taken = true;                                               // Destroy() happens at the end of the frame
+    GameManager.instance.AddScore(1);
+    Destroy(this.entity);
   }
 }

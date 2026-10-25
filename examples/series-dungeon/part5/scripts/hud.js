@@ -1,36 +1,37 @@
-import { NordScript } from 'nord';
+import { MonoBehaviour, GameManager, EventBus, UnityInput as Input, KeyCode } from 'nord';
 
-export default class Hud extends NordScript {
-  start() {
-    this.count = 0;
+export default class Hud extends MonoBehaviour {
+  Start() {
     this.total = 0;
-    this.over = false;
     this.score = this.ui.label('', { screen: 'hud', x: 12, y: 8, size: 22, color: '#ebcb8b' });
     this.hearts = this.ui.label('', { screen: 'hud', anchor: 'tr', x: 12, y: 8, size: 26, color: '#bf616a' });
     this.offs = [
-      this.events.on('level', ({ coins }) => { this.total = coins; this.refresh(); }),
-      this.events.on('coin', () => { this.count++; this.refresh(); }),
-      this.events.on('health', ({ hp, max }) => this.hearts.set('♥'.repeat(hp) + '♡'.repeat(max - hp))),
-      this.events.on('died', () => this.finish('Game over', '#bf616a')),
+      EventBus.Subscribe('level', ({ coins }) => { this.total = coins; this.Refresh(); }),
+      EventBus.Subscribe('score', () => this.Refresh()),
+      EventBus.Subscribe('lives', () => this.Refresh()),
+      EventBus.Subscribe('gameover', () => this.Finish('Game over', '#bf616a')),
     ];
-    this.refresh();
+    this.Refresh();
   }
 
-  refresh() {
-    this.score.set(`● ${this.count} / ${this.total}`);
-    if (this.total > 0 && this.count === this.total) this.finish('You found all the coins!', '#a3be8c');
+  Refresh() {
+    const gm = GameManager.instance, max = gm.attrs.startLives;
+    this.score.set(`● ${gm.score} / ${this.total}`);
+    this.hearts.set('♥'.repeat(gm.lives) + '♡'.repeat(max - gm.lives));
+    if (this.total > 0 && gm.score === this.total && gm.state === 'playing') this.Finish('You found all the coins!', '#a3be8c', true);
   }
 
-  finish(text, color) {
-    if (this.over) return;
+  Finish(text, color, won = false) {
+    if (this.over) return;                                           // win and die in the same second: show one ending
     this.over = true;
+    if (won) GameManager.instance.SetState('won');
     this.ui.label(text, { screen: 'hud', anchor: 'c', size: 34, color });
     this.ui.label('Press E to play again', { screen: 'hud', anchor: 'c', y: 44, size: 20 });
   }
 
-  update() {
-    if (this.over && this.input.pressed('interact')) this.game.restart();
+  Update() {
+    if (this.over && Input.GetKeyDown(KeyCode.E)) GameManager.instance.Restart();
   }
 
-  onDestroy() { this.score?.remove(); this.hearts?.remove(); this.offs?.forEach((off) => off()); }
+  OnDestroy() { this.score?.remove(); this.hearts?.remove(); this.offs?.forEach((off) => off()); }
 }

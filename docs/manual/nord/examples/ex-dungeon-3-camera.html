@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>51 · Dungeon 3: Camera and a bigger level — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html" class="cur" aria-current="page">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html">55 · Ember Crypt: a complete game, from art to export</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>51 · Dungeon 3: Camera and a bigger level</h1>
+<p>Part 3 of the Unity-style dungeon series, continuing from <a href="ex-dungeon-2-walls.html">part 2, walls</a>. Allow 40 minutes.</p>
+<p><strong>What you will build:</strong> a 40 × 22 tile dungeon with six rooms and corridors, much bigger than the screen, a camera that follows the hero smoothly and never shows the void outside the level, and a loader that creates far fewer objects.</p>
+<p><img src="../../assets/screenshots/series-dungeon-3-follow.png" alt="The camera follows the hero through the dungeon"></p>
+<p><strong>Download:</strong> <a href="../../assets/downloads/series-dungeon-part3-source.zip">Part 3 project</a>, also in <code>examples/series-dungeon/part3</code>.</p>
+<h2 id="1-a-bigger-map">1 A bigger map<a class="anchor" href="#1-a-bigger-map">#</a></h2>
+<p>Replace <code>map.js</code> with the dungeon of this part (forty columns, twenty-two rows, 1280 × 704 pixels):</p>
+<pre class="code" data-lang="js"><code>export const MAP = [
+  '########################################',
+  '########################################',
+  '##........####..........#####.........##',
+  '##........####..........#####.........##',
+  '##...............................##...##',
+  '##....##..........###.................##',
+  '##........####..........#####.........##',
+  '##........####..........#####.........##',
+  '#####..#######..........#########..#####',
+  '#####..###########..#############..#####',
+  '#####..###########..#############..#####',
+  '#####..###########..#############..#####',
+  '##..........######..##########........##',
+  '##..........####..........####........##',
+  '##..........####..........####........##',
+  '##....##..........................##..##',
+  '##..................##................##',
+  '##..........####..........####........##',
+  '##..........####..........####........##',
+  '##..........####..........####........##',
+  '########################################',
+  '########################################',
+];</code></pre>
+<p>Play it: the hero walks in a world three times wider than the screen and… walks off the screen. We need a camera script.</p>
+<h2 id="2-the-camera-is-just-a-gameobject">2 The camera is just a GameObject<a class="anchor" href="#2-the-camera-is-just-a-gameobject">#</a></h2>
+<p>The <code>camera</code> component shows the part of the world around the entity&#39;s position. To follow something, <strong>move the camera entity</strong>: no special feature is needed. Create <code>scripts/follow.js</code> and put it on <code>Camera</code>:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, EventBus, Mathf, Time, Vector3 } from 'nord';
+
+export default class Follow extends MonoBehaviour {
+  static attributes = SerializeField({ target: 'Hero', stiffness: 8, viewport: [640, 360] });
+
+  Start() {
+    this.hero = this.Find(this.target);
+    // The level announces its size when it has built itself. EventBus is a global publish/subscribe board.
+    this.off = EventBus.Subscribe('level', (size) =&gt; { this.bounds = size; this.snap = true; });
+  }
+
+  LateUpdate() {                                                         // after every Update(): the hero has already moved this frame
+    if (!this.hero || !this.bounds) return;
+    const [hw, hh] = [this.viewport[0] / 2, this.viewport[1] / 2];
+    const goalX = Mathf.Clamp(this.hero.pos[0], hw, this.bounds.width - hw);
+    const goalY = Mathf.Clamp(this.hero.pos[1], hh, this.bounds.height - hh);
+    const k = this.snap || this.stiffness === 0 ? 1 : 1 - Math.exp(-this.stiffness * Time.deltaTime);   // the same at 30 and 144 fps
+    this.snap = false;
+    const p = this.position;
+    this.position = new Vector3(Mathf.Lerp(p.x, goalX, k), Mathf.Lerp(p.y, goalY, k), p.z);
+  }
+
+  OnDestroy() { this.off?.(); }
+}</code></pre>
+<ul>
+<li><code>LateUpdate</code> runs after every <code>Update</code> and <code>FixedUpdate</code> of the frame. The camera must read the hero&#39;s position after the hero has moved, otherwise it follows the previous frame and the picture shakes. This is why Unity camera scripts live in <code>LateUpdate</code>.</li>
+<li><strong>Bounds.</strong> The camera centre may go at most half a screen away from each map edge: <code>Mathf.Clamp(hero.x, hw, width − hw)</code>. Otherwise we would see the empty space outside the level.</li>
+<li><strong>Smoothing.</strong> <code>Mathf.Lerp(current, goal, k)</code> moves a fraction <code>k</code> of the remaining distance each frame.</li>
+</ul>
+<blockquote>
+<p><strong>Why <code>1 - Math.exp(-stiffness * Time.deltaTime)</code> and not just <code>stiffness * Time.deltaTime</code>?</strong> With the plain product the camera follows differently at 30 and 144 fps, and above <code>1 / deltaTime</code> it overshoots. The exponential form gives the same result at any frame rate and never exceeds 1. Copy this one-liner into every game; the Unity function that does it for you is <code>Mathf.SmoothDamp</code>.</p>
+</blockquote>
+<h2 id="3-telling-the-camera-how-big-the-level-is">3 Telling the camera how big the level is<a class="anchor" href="#3-telling-the-camera-how-big-the-level-is">#</a></h2>
+<p>The camera needs the map size, which only the <code>Level</code> knows. Do not make the camera import the level: scripts should not be glued together. Use the global <strong>EventBus</strong> (a publish/subscribe board). At the end of <code>Level.Start</code>:</p>
+<pre class="code" data-lang="js"><code>EventBus.Publish('level', { width, height });</code></pre>
+<p>and the camera subscribes in its <code>Start</code>:</p>
+<pre class="code" data-lang="js"><code>this.off = EventBus.Subscribe('level', (size) =&gt; { this.bounds = size; this.snap = true; });</code></pre>
+<p><code>Subscribe</code> returns a function that unsubscribes; <code>OnDestroy</code> calls it (<code>this.off?.()</code>). <code>snap = true</code> makes the first frame jump to the hero instead of sweeping across the map. In C# this is <code>public static event Action&lt;Size&gt; OnLevel;</code> with <code>+=</code> and <code>-=</code>.</p>
+<h2 id="4-merge-the-walls">4 Merge the walls<a class="anchor" href="#4-merge-the-walls">#</a></h2>
+<p>The level of part 2 made one wall object per <code>#</code>. This map has 449 wall tiles. Our loader now merges <strong>horizontal runs</strong> into one wide wall:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Instantiate, EventBus } from 'nord';
+import { MAP } from './map.js';
+
+export default class Level extends MonoBehaviour {
+  static attributes = SerializeField({ tile: 32 });
+
+  async Start() {
+    const t = this.tile;
+    const width = MAP[0].length * t, height = MAP.length * t;
+    await Instantiate('prefabs/floor.prefab.json', { pos: [width / 2, height / 2, -5], overrides: { components: { 0: { size: [width, height] } } } });
+
+    for (let row = 0; row &lt; MAP.length; row++) {
+      let col = 0;
+      while (col &lt; MAP[row].length) {
+        const ch = MAP[row][col];
+        if (ch === '#') {
+          let end = col;                                                 // extend the run while the next tile is a wall too
+          while (MAP[row][end + 1] === '#') end++;
+          const w = (end - col + 1) * t;
+          await Instantiate('prefabs/wall.prefab.json', {
+            pos: [col * t + w / 2, row * t + t / 2, 1],
+            overrides: { components: { 0: { size: [w, t] }, 2: { size: [w, t] } } },   // component 0 = sprite, 2 = collider
+          });
+          col = end + 1;
+          continue;
+        }
+        if (ch === 'P') this.Find('Hero').pos = [col * t + t / 2, row * t + t / 2, 2];
+        col++;
+      }
+    }
+    EventBus.Publish('level', { width, height });
+  }
+}</code></pre>
+<ul>
+<li><code>let end = col; while (MAP[row][end + 1] === &#39;#&#39;) end++;</code> finds where the run ends. At the end of a row <code>MAP[row][end + 1]</code> is <code>undefined</code>, which is not <code>&#39;#&#39;</code>, so the loop stops by itself.</li>
+<li>A run of <code>n</code> tiles becomes one wall <code>n * t</code> wide, centred at <code>col * t + w / 2</code>. The overrides change <strong>both</strong> the sprite (component 0) and the collider (component 2) of the prefab: <code>components: { 0: { size }, 2: { size } }</code>.</li>
+<li><code>continue</code> skips the rest of the loop body; <code>col = end + 1</code> jumps past the run.</li>
+</ul>
+<p>The test script of this series counts: <strong>74 wall objects instead of 449</strong>. Fewer objects means fewer colliders to test every physics step, fewer sprites to draw and a smaller scene. It is the same trick a real engine uses and calls <em>tile merging</em>. As an exercise, merge vertically too.</p>
+<h2 id="5-check-yourself">5 Check yourself<a class="anchor" href="#5-check-yourself">#</a></h2>
+<ul>
+<li>Walk through the dungeon. The camera glides after you.</li>
+<li>In the top-left room the camera shows nothing left of or above the map.</li>
+<li><code>stiffness</code> 0 in the Inspector: rigid camera. 2: a lazy cameraman.</li>
+</ul>
+<p><img src="../../assets/screenshots/series-dungeon-3-start.png" alt="The start of part 3"></p>
+<h2 id="what-you-learned">What you learned<a class="anchor" href="#what-you-learned">#</a></h2>
+<ul>
+<li>A camera is a GameObject; follow in <code>LateUpdate</code>.</li>
+<li><code>1 − exp(−k·dt)</code> is frame-rate independent smoothing.</li>
+<li><code>EventBus.Publish</code> / <code>Subscribe</code> decouples scripts.</li>
+<li>Merge neighbouring tiles into one object.</li>
+</ul>
+<p>Next: <a href="ex-dungeon-4-coins.html">Part 4, coins and score</a>.</p>
+<div class="pager"><a href="ex-dungeon-2-walls.html"><small>← Previous</small>50 · Dungeon 2: Walls</a><a href="ex-dungeon-4-coins.html"><small>Next →</small>52 · Dungeon 4: Coins and score</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-a-bigger-map">1 A bigger map </a><a href="#2-the-camera-is-just-a-gameobject">2 The camera is just a GameObject </a><a href="#3-telling-the-camera-how-big-the-level-is">3 Telling the camera how big the level is </a><a href="#4-merge-the-walls">4 Merge the walls </a><a href="#5-check-yourself">5 Check yourself </a><a href="#what-you-learned">What you learned </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

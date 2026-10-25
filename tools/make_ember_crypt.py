@@ -35,7 +35,7 @@ def ent(i, name, x, y, z=0, comps=(), scripts=(), tags=(), layer=0, children=())
             "scripts": [{"path": p, "attributes": a} for p, a in scripts], "children": list(children), "prefab": None}
 
 def build():
-    (OUT / 'scenes').mkdir(parents=True, exist_ok=True); (OUT / 'scripts').mkdir(exist_ok=True)
+    for sub in ('scenes', 'scripts', 'prefabs'): (OUT / sub).mkdir(parents=True, exist_ok=True)
     proj = {"format": 1, "name": "Ember Crypt", "id": "com.crowelian.ember-crypt", "type": "2d", "engineVersion": "0.1.0",
             "startScene": "scenes/title.scene.json",
             "display": {"width": 640, "height": 360, "scale": "fit", "pixelArt": True, "background": "#07080c"},
@@ -44,21 +44,55 @@ def build():
                                   "attack": ["Space", "KeyJ", "Mouse0"], "interact": ["KeyE", "Enter"]}}}
     (OUT / 'nord.project.json').write_text(json.dumps(proj, indent=2) + '\n')
     cam = [{"type": "camera", "zoom": 1}]
-    title = [ent(1, 'Camera', 320, 180, 10, cam), ent(2, 'Title', 0, 0, 0, [], [("scripts/title.js", {})])]
+    img = lambda tex, w, h, tint="#ffffff": {"type": "sprite", "texture": f"assets/{tex}", "size": [w, h], "tint": tint, "alpha": 1}
+    body = lambda m: {"type": "rigidbody", "mode": m}
+    box = lambda w, h, trig=False: {"type": "collider", "shape": "box", "size": [w, h], **({"trigger": True} if trig else {})}
+    occ = ("scripts/light2d-occluder.js", {"static": True})
+    light = lambda color, r, i, fl, sh=True: ("scripts/light2d-source.js", {"color": color, "radius": r, "intensity": i, "falloff": 1.3, "softness": 4, "flicker": fl, "shadows": sh})
+    P = {
+        'floor': ent(1, 'Floor', 0, 0, -5, [img('sprites/floor.png', 1280, 800)]),
+        'wall-tile': ent(1, 'WallTile', 0, 0, 1, [img('sprites/wall.png', 32, 32)]),
+        'wall-body': ent(1, 'Wall', 0, 0, 0, [body('static'), box(32, 32)], [occ], ['solid']),
+        'crate': ent(1, 'Crate', 0, 0, 2, [img('sprites/items/crate.png', 26, 26), body('static'), box(24, 24)], [occ], ['solid']),
+        'barrel': ent(1, 'Barrel', 0, 0, 2, [img('sprites/items/barrel.png', 26, 26), body('static'), box(24, 24)], [occ], ['solid']),
+        'coin': ent(1, 'Coin', 0, 0, 2, [{"type": "animatedSprite", "texture": "assets/sprites/coin.png", "anim": "spin"}, body('static'), box(14, 14, True)], [("scripts/Pickup.js", {"kind": "coin"})], ['Coin']),
+        'key': ent(1, 'Key', 0, 0, 2, [img('sprites/items/key.png', 20, 20), body('static'), box(16, 16, True)], [("scripts/Pickup.js", {"kind": "key"})]),
+        'potion': ent(1, 'Potion', 0, 0, 2, [img('sprites/items/potion_red.png', 20, 20), body('static'), box(16, 16, True)], [("scripts/Pickup.js", {"kind": "potion"})]),
+        'chest': ent(1, 'Chest', 0, 0, 2, [img('sprites/items/chest_closed.png', 28, 28), body('static'), box(24, 24, True)], [("scripts/Pickup.js", {"kind": "chest"})]),
+        'door': ent(1, 'Door', 0, 0, 2, [img('sprites/gate.png', 32, 32), body('static'), box(32, 32)], [("scripts/Door.js", {}), occ], ['Door', 'solid']),
+        'spikes': ent(1, 'Spikes', 0, 0, 1, [img('sprites/items/spikes.png', 28, 28)], [("scripts/Spikes.js", {})]),
+        'brazier': ent(1, 'Brazier', 0, 0, 2, [img('sprites/brazier.png', 26, 26)], [light('#ff9a45', 120, 0.8, 0.3)]),
+        'exit': ent(1, 'Exit', 0, 0, 1, [img('sprites/rune.png', 40, 40)], [("scripts/Exit.js", {}), light('#7fd6ff', 110, 0.9, 0.1, True)]),
+        'slime': ent(1, 'Slime', 0, 0, 3, [{"type": "animatedSprite", "texture": "assets/sprites/enemy_slime.png", "anim": "idle"}, body('dynamic'), box(18, 12)],
+                     [("scripts/Enemy.js", {"speed": 55, "hp": 2, "sight": 150, "zigzag": 0})], ['Enemy']),
+        'bat': ent(1, 'Bat', 0, 0, 4, [{"type": "animatedSprite", "texture": "assets/sprites/enemy_bat.png", "anim": "fly"}, body('dynamic'), box(14, 10)],
+                   [("scripts/Enemy.js", {"speed": 95, "hp": 1, "sight": 190, "zigzag": 1})], ['Enemy']),
+        'floattext': ent(1, 'FloatText', 0, 0, 5, [{"type": "text", "text": "1", "size": 12, "color": "#ffffff", "bold": True, "stroke": "#000000", "strokeThickness": 3}], [("scripts/FloatText.js", {})], layer=1),
+        'burst': ent(1, 'Burst', 0, 0, 6, [{"type": "particles", "texture": "assets/particles/spark.png", "tint": "#ffd27a", "tintEnd": "#ff5a1f", "burst": 14, "emitting": False,
+                                           "lifespan": 450, "speed": [40, 140], "scale": [0.5, 0], "alpha": [1, 0]}], layer=1),
+        'slash': ent(1, 'Slash', 0, 0, 6, [{"type": "sprite", "texture": "assets/sprites/circle.png", "size": [24, 24], "tint": "#fff2c9", "alpha": 0.7}], [("scripts/Slash.js", {})], layer=1),
+    }
+    for name, root in P.items(): (OUT / f'prefabs/{name}.prefab.json').write_text(json.dumps({"format": 1, "root": root}, indent=2) + '\n')
+    title = [ent(1, 'Camera', 320, 180, 10, cam), ent(2, 'Title', 0, 0, 0, [], [("scripts/Title.js", {})]),
+             ent(3, 'Floor', 320, 400, -5, [img('sprites/floor.png', 1280, 800, '#3a3a4a')]),
+             ent(4, 'Embers', 320, 370, 1, [{"type": "particles", "texture": "assets/particles/spark.png", "tint": "#ffb86b", "tintEnd": "#ff4a1c", "frequency": 70, "lifespan": 3200,
+                                            "speed": [15, 40], "angle": [255, 285], "emitRadius": 280, "scale": [0.5, 0], "alpha": [1, 0]}]),
+             ent(5, 'Hero', 250, 246, 3, [{"type": "animatedSprite", "texture": "assets/sprites/hero.png", "anim": "idle"}]),
+             ent(6, 'Slime', 392, 252, 3, [{"type": "animatedSprite", "texture": "assets/sprites/enemy_slime.png", "anim": "idle"}]),
+             ent(7, 'Brazier', 320, 244, 3, [img('sprites/brazier.png', 40, 40)])]
     game = [
-        ent(1, 'Camera', 320, 180, 10, cam, [("scripts/follow.js", {"target": "Hero"})]),
-        ent(2, 'Game', 0, 0, 0, [], [("scripts/state.js", {})]),
-        ent(3, 'Level', 0, 0, 0, [], [("scripts/level.js", {"tile": 32})]),
-        ent(4, 'Light2D', 0, 0, 0, [], [("scripts/light2d.js", {"ambient": "#0a0b12", "scale": 7.5, "shadows": True, "softShadows": 40})]),
-        ent(5, 'Hud', 0, 0, 0, [], [("scripts/hud.js", {})]),
-        ent(6, 'Hero', 112, 112, 3,
-            [{"type": "animatedSprite", "texture": "assets/sprites/hero.png", "anim": "idle"}, {"type": "rigidbody", "mode": "dynamic"},
-             {"type": "collider", "shape": "box", "size": [14, 16]}],
-            [("scripts/hero.js", {}), ("scripts/health.js", {"max": 5})], ['hero'],
-            children=[ent(7, 'Lantern', 0, 0, 0, [], [("scripts/light2d-source.js", {"color": "#ffb86b", "radius": 200, "intensity": 0.95, "falloff": 1.3, "softness": 5, "flicker": 0.07})])])]
+        ent(1, 'Camera', 320, 180, 10, cam, [("scripts/Follow.js", {"target": "Hero"})]),
+        ent(2, 'GameManager', 0, 0, 0, [], [("scripts/GameManager.js", {"startLives": 5})]),
+        ent(3, 'Run', 0, 0, 0, [], [("scripts/Run.js", {})]),
+        ent(4, 'Level', 0, 0, 0, [], [("scripts/Level.js", {"tile": 32})]),
+        ent(5, 'Light2D', 0, 0, 0, [], [("scripts/light2d.js", {"ambient": "#0a0b12", "scale": 7.5, "shadows": True, "softShadows": 40})]),
+        ent(6, 'Hud', 0, 0, 0, [], [("scripts/Hud.js", {})]),
+        ent(7, 'Hero', 112, 112, 3, [{"type": "animatedSprite", "texture": "assets/sprites/hero.png", "anim": "idle"}, body('dynamic'), box(14, 16)],
+            [("scripts/Hero.js", {}), ("scripts/Health.js", {"grace": 1})], ['Hero'],
+            children=[ent(8, 'Lantern', 0, 0, 0, [], [light('#ffb86b', 200, 0.95, 0.07)[0:0] or ("scripts/light2d-source.js", {"color": "#ffb86b", "radius": 200, "intensity": 0.95, "falloff": 1.3, "softness": 5, "flicker": 0.07})])])]
     for name, ents in (('title', title), ('main', game)):
         (OUT / f'scenes/{name}.scene.json').write_text(json.dumps({"format": 1, "name": name, "settings": {}, "entities": ents}, indent=2) + '\n')
-    (OUT / 'scripts/map.js').write_text('/** The dungeon. # wall, . floor, P hero start, o coin, k key, D door (2 tiles), + potion, B brazier, c crate,\n *  ^ spikes, C chest, s slime, b bat, X exit. 40 x 22 tiles of 32 px. */\nexport const MAP = [\n' + ''.join(f"  '{r}',\n" for r in MAP) + '];\n')
+    (OUT / 'scripts/map.js').write_text('/** The dungeon. # wall, . floor, P hero start, o coin, k key, D door (2 tiles), + potion, B brazier, c crate or barrel,\n *  ^ spikes, C chest, s slime, b bat, X exit. 40 x 22 tiles of 32 px. */\nexport const MAP = [\n' + ''.join(f"  '{r}',\n" for r in MAP) + '];\n')
     for f in SRC.glob('*.js'): shutil.copy(f, OUT / 'scripts' / f.name)
     L = ROOT / 'examples/light2d/assets/sprites'; A = ROOT / 'assets'
     files = {'sprites/hero.png': L / 'hero.png', 'sprites/hero.png.meta.json': L / 'hero.png.meta.json', 'sprites/wall.png': L / 'wall.png',
@@ -73,16 +107,16 @@ def build():
     for rel, src in files.items():
         d = OUT / 'assets' / rel; d.parent.mkdir(parents=True, exist_ok=True); shutil.copy(src, d)
     shutil.copy(ROOT / 'examples/topdown/index.html', OUT / 'index.html')
-    (OUT / 'README.md').write_text('# Ember Crypt\n\nThe finished game of tutorial T61. Controls: WASD / arrows move, Space or J attacks, E confirms, Esc pauses.\nArt: Nord Engine bundled pixel art. Generated by `python3 tools/make_ember_crypt.py` (scripts in `tools/ember-crypt/`).\n')
+    (OUT / 'README.md').write_text('# Ember Crypt\n\nThe finished game of example page 55, written Unity-style. Controls: WASD / arrows move, Space or J attacks, E confirms, Esc pauses.\nArt: Nord Engine bundled pixel art. Generated by `python3 tools/make_ember_crypt.py` (scripts in `tools/ember-crypt/`).\n')
 def docs():
-    text = (SRC / 'docs/t61.md').read_text()
+    text = (SRC / 'docs/page.md').read_text()
     text = re.sub(r'@@code (\S+)@@', lambda m: '```js\n' + (SRC / m.group(1) if (SRC / m.group(1)).exists() else OUT / 'scripts' / m.group(1)).read_text().rstrip() + '\n```', text)
-    (ROOT / 'docs/manual-src/tut-t61-ember-crypt.md').write_text(text)
+    (ROOT / 'docs/manual-src/ex-ember-crypt.md').write_text(text)
     (ROOT / 'docs/tutorial-downloads').mkdir(exist_ok=True)
     with zipfile.ZipFile(ROOT / 'docs/tutorial-downloads/ember-crypt-source.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
         for f in sorted(OUT.rglob('*')):
             if f.is_file(): zf.write(f, 'ember-crypt/' + f.relative_to(OUT).as_posix())
 if __name__ == '__main__':
     build()
-    if (SRC / 'docs/t61.md').exists(): docs()
+    if (SRC / 'docs/page.md').exists(): docs()
     print('ok')

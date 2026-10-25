@@ -1,18 +1,15 @@
-import { NordScript } from 'nord';
+import { MonoBehaviour, SerializeField, UnityInput as Input, Time, Mathf, Vector2, Vector3 } from 'nord';
 
-export default class Hero extends NordScript {
-  static attributes = {
-    speed: { type: 'number', default: 160, min: 0, label: 'Speed (px/s)' },
-  };
+export default class Hero extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 160 });               // [SerializeField] float speed = 160;
 
-  update(dt) {
-    const [x, y] = this.input.vec('left', 'right', 'up', 'down');   // each -1..1, diagonals already normalised
-    const p = this.entity.pos;
-    const s = this.attrs.speed * dt;                                // pixels to move this frame
-    this.entity.pos = [
-      Math.max(12, Math.min(628, p[0] + x * s)),                    // keep the 24 px hero on the 640 x 360 screen
-      Math.max(12, Math.min(348, p[1] + y * s)),
-      p[2],
-    ];
+  Update() {
+    // Input.GetAxis gives -1..1 from A/D, W/S, the arrows and a gamepad stick. ClampMagnitude stops diagonals from being 41% faster.
+    const move = Vector2.ClampMagnitude(new Vector2(Input.GetAxis('Horizontal'), Input.GetAxis('Vertical')), 1);
+    const p = this.position;
+    this.position = new Vector3(
+      Mathf.Clamp(p.x + move.x * this.speed * Time.deltaTime, 12, 628),    // keep the 24 px hero on the 640 x 360 screen
+      Mathf.Clamp(p.y - move.y * this.speed * Time.deltaTime, 12, 348),    // minus: Unity's y points up, Nord's screen y points down
+      p.z);
   }
 }

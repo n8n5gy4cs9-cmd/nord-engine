@@ -93,4 +93,4 @@ export default class Follow extends MonoBehaviour {
 | `Vector2.Perpendicular(v)` | same |
 | `Quaternion.Euler(0,0,90)` | none: rotations are Euler degrees, `this.eulerAngles = new Vector3(0, 0, 90)` |
 
-Next: [the Input editor](ex-input-editor.html), [a full tutorial](ex-tutorial-clicker.html). Reference: [Unity-style scripting](unity-scripting.html).
+Next: [the Input editor](ex-input-editor.html), [a whole game: Vector Rocks](ex-vector-rocks.html). Reference: [Unity-style scripting](unity-scripting.html).

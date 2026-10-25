@@ -34,7 +34,7 @@
       ],
       "scripts": [
         {
-          "path": "scripts/follow.js",
+          "path": "scripts/Follow.js",
           "attributes": {
             "target": "Hero"
           }
@@ -45,7 +45,7 @@
     },
     {
       "id": "ec00002",
-      "name": "Game",
+      "name": "GameManager",
       "enabled": true,
       "tags": [],
       "layer": 0,
@@ -69,8 +69,10 @@
       "components": [],
       "scripts": [
         {
-          "path": "scripts/state.js",
-          "attributes": {}
+          "path": "scripts/GameManager.js",
+          "attributes": {
+            "startLives": 5
+          }
         }
       ],
       "children": [],
@@ -78,6 +80,39 @@
     },
     {
       "id": "ec00003",
+      "name": "Run",
+      "enabled": true,
+      "tags": [],
+      "layer": 0,
+      "transform": {
+        "pos": [
+          0,
+          0,
+          0
+        ],
+        "rot": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "components": [],
+      "scripts": [
+        {
+          "path": "scripts/Run.js",
+          "attributes": {}
+        }
+      ],
+      "children": [],
+      "prefab": null
+    },
+    {
+      "id": "ec00004",
       "name": "Level",
       "enabled": true,
       "tags": [],
@@ -102,7 +137,7 @@
       "components": [],
       "scripts": [
         {
-          "path": "scripts/level.js",
+          "path": "scripts/Level.js",
           "attributes": {
             "tile": 32
           }
@@ -112,7 +147,7 @@
       "prefab": null
     },
     {
-      "id": "ec00004",
+      "id": "ec00005",
       "name": "Light2D",
       "enabled": true,
       "tags": [],
@@ -150,7 +185,7 @@
       "prefab": null
     },
     {
-      "id": "ec00005",
+      "id": "ec00006",
       "name": "Hud",
       "enabled": true,
       "tags": [],
@@ -175,7 +210,7 @@
       "components": [],
       "scripts": [
         {
-          "path": "scripts/hud.js",
+          "path": "scripts/Hud.js",
           "attributes": {}
         }
       ],
@@ -183,11 +218,11 @@
       "prefab": null
     },
     {
-      "id": "ec00006",
+      "id": "ec00007",
       "name": "Hero",
       "enabled": true,
       "tags": [
-        "hero"
+        "Hero"
       ],
       "layer": 0,
       "transform": {
@@ -228,19 +263,19 @@
       ],
       "scripts": [
         {
-          "path": "scripts/hero.js",
+          "path": "scripts/Hero.js",
           "attributes": {}
         },
         {
-          "path": "scripts/health.js",
+          "path": "scripts/Health.js",
           "attributes": {
-            "max": 5
+            "grace": 1
           }
         }
       ],
       "children": [
         {
-          "id": "ec00007",
+          "id": "ec00008",
           "name": "Lantern",
           "enabled": true,
           "tags": [],

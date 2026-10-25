@@ -1,0 +1,65 @@
+{
+  "format": 1,
+  "root": {
+    "id": "vr00001",
+    "name": "Rock",
+    "enabled": true,
+    "tags": [
+      "Rock"
+    ],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        1
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "sprite",
+        "texture": "assets/sprites/rock_m2.png",
+        "size": [
+          72,
+          72
+        ],
+        "tint": "#ffffff",
+        "alpha": 1
+      },
+      {
+        "type": "rigidbody",
+        "mode": "dynamic"
+      },
+      {
+        "type": "collider",
+        "shape": "circle",
+        "radius": 26,
+        "size": [
+          52,
+          52
+        ],
+        "trigger": true
+      }
+    ],
+    "scripts": [
+      {
+        "path": "scripts/Rock.js",
+        "attributes": {
+          "size": 1
+        }
+      }
+    ],
+    "children": [],
+    "prefab": null
+  }
+}

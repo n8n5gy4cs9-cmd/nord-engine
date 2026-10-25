@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>53 · Dungeon 5: Enemies and health — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html" class="cur" aria-current="page">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html">55 · Ember Crypt: a complete game, from art to export</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>53 · Dungeon 5: Enemies and health</h1>
+<p>Part 5 of the Unity-style dungeon series, continuing from <a href="ex-dungeon-4-coins.html">part 4, coins and score</a>. Allow 50 minutes.</p>
+<p><strong>What you will build:</strong> six red enemies that wander, hunt you when you come near and hurt you on contact (with protection time and knockback), three hearts on the HUD and a game-over screen.</p>
+<p><img src="../../assets/screenshots/series-dungeon-5-chase.png" alt="An enemy chases the hero"></p>
+<p><strong>Download:</strong> <a href="../../assets/downloads/series-dungeon-part5-source.zip">Part 5 project</a>, also in <code>examples/series-dungeon/part5</code>.</p>
+<h2 id="1-the-enemy-prefab">1 The enemy prefab<a class="anchor" href="#1-the-enemy-prefab">#</a></h2>
+<p>The letter <code>e</code> in <code>map.js</code> marks an enemy. Make <code>prefabs/enemy.prefab.json</code>: a red square sprite (22 × 22, <code>#bf616a</code>), a <strong>dynamic rigidbody</strong>, a box collider 22 × 22, the tag <code>Enemy</code> and the script <code>enemy.js</code>. In <code>level.js</code> add one branch next to the coin one:</p>
+<pre class="code" data-lang="js"><code>else if (ch === 'e') await Instantiate('prefabs/enemy.prefab.json', { pos: [x, y, 2] });</code></pre>
+<h2 id="2-the-enemy-brain">2 The enemy brain<a class="anchor" href="#2-the-enemy-brain">#</a></h2>
+<p>Two moods: if the hero is near, <strong>chase</strong>; if not, <strong>wander</strong>. The wandering is a <strong>coroutine</strong>: &quot;pick a direction, wait one or two seconds, pick another&quot; without a single timer variable.</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Random, Vector2, Vector3, WaitForSeconds } from 'nord';
+import Health from './health.js';
+
+export default class Enemy extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 80, sight: 170, reach: 24 });
+
+  Start() {
+    this.hero = this.Find('Hero');
+    this.dir = Vector2.zero;
+    this.StartCoroutine(this.Wander());                              // a coroutine: &quot;do this, wait, do that&quot; without timers
+  }
+
+  /** Every second or two pick a new direction, and sometimes stand still. */
+  *Wander() {
+    while (true) {
+      const a = Random.value * Math.PI * 2;
+      this.dir = Random.value &lt; 0.3 ? Vector2.zero : new Vector2(Math.cos(a), Math.sin(a));
+      yield new WaitForSeconds(Random.Range(1.0, 2.5));
+    }
+  }
+
+  get distance() { return Vector3.Distance(this.position, Vector3.From(this.hero.pos)); }
+
+  FixedUpdate() {
+    if (!this.hero || this.hero.destroyed) return;
+    const chasing = this.distance &lt; this.sight;
+    const toHero = Vector2.From(this.hero.pos).Sub(Vector2.From(this.entity.pos));
+    const dir = chasing ? toHero.normalized : this.dir;              // a unit vector: direction without speed
+    this.velocity = dir.Mul(this.speed * (chasing ? 1 : 0.4));
+  }
+
+  Update() {
+    if (this.hero &amp;&amp; !this.hero.destroyed &amp;&amp; this.distance &lt; this.reach) this.hero.getScript(Health).TakeDamage(this.entity);
+  }
+}</code></pre>
+<ul>
+<li><code>*Wander()</code> is a generator, <code>yield new WaitForSeconds(…)</code> is the same as in Unity. <code>this.StartCoroutine(this.Wander())</code> starts it. It stops by itself when the enemy is destroyed.</li>
+<li><code>Random.Range(1.0, 2.5)</code> is a float because 2.5 is not a whole number (two whole numbers would give an integer, as in C#).</li>
+<li><strong>Chasing.</strong> <code>toHero.normalized</code> is a <strong>unit vector</strong> (direction without speed). Multiply it by the speed. Wandering uses 40% of the speed so the enemy looks relaxed.</li>
+<li><code>this.velocity = …</code> is <code>rb.velocity</code>, so walls stop enemies too.</li>
+<li><code>Update</code> checks the distance to the hero; inside <code>reach</code> it calls <code>TakeDamage</code> on the hero&#39;s <strong>Health</strong>. That is a plain method call through <code>GetComponent</code>, the way you do it in Unity.</li>
+</ul>
+<blockquote>
+<p><strong>Isn&#39;t it unfair that they see through walls?</strong> Yes. We accept it here; part 6 makes the dark hide them, and <a href="ex-ember-crypt.html">Ember Crypt</a> gives them real line of sight.</p>
+</blockquote>
+<h2 id="3-lives-health-and-knockback">3 Lives, Health and knockback<a class="anchor" href="#3-lives-health-and-knockback">#</a></h2>
+<p>The hero&#39;s hearts are the <strong>GameManager&#39;s lives</strong> (<code>startLives: 3</code> in the scene). A small <code>Health</code> script adds what a game needs around them: a <em>grace period</em> and blinking. Add <code>health.js</code> to the Hero:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, GameManager, Time } from 'nord';
+import Hero from './hero.js';
+
+/** Grace time and blinking around the GameManager's lives. Enemies call TakeDamage(); nothing else knows about hearts. */
+export default class Health extends MonoBehaviour {
+  static attributes = SerializeField({ grace: 1 });
+
+  Awake() { this.protectedFor = 0; }
+
+  TakeDamage(from) {
+    if (this.protectedFor &gt; 0 || GameManager.instance.state === 'gameover') return;   // still protected, or already dead
+    this.protectedFor = this.grace;
+    GameManager.instance.LoseLife();                                 // emits 'lives', and 'gameover' at 0
+    this.GetComponent(Hero).Knockback(from);                         // GetComponent&lt;Hero&gt;().Knockback(from)
+  }
+
+  Update() {
+    this.protectedFor = Math.max(0, this.protectedFor - Time.deltaTime);
+    const blink = this.protectedFor &gt; 0 &amp;&amp; Math.floor(this.protectedFor * 10) % 2 === 0;
+    this.entity.set('sprite', 'alpha', blink ? 0.35 : 1);            // a field of the sprite component
+  }
+}</code></pre>
+<ul>
+<li><strong>Grace.</strong> After a hit the hero is protected for <code>grace</code> seconds; without it an enemy touching the hero would take a heart every frame.</li>
+<li><code>GameManager.instance.LoseLife()</code> emits <code>lives</code>, and at zero <code>gameover</code>. Health does not know about hearts or HUDs.</li>
+<li><code>this.GetComponent(Hero).Knockback(from)</code> is <code>GetComponent&lt;Hero&gt;().Knockback(from)</code>.</li>
+<li>The blink toggles the sprite&#39;s alpha ten times a second: <code>entity.set(&#39;sprite&#39;, &#39;alpha&#39;, value)</code> changes a field of the sprite component.</li>
+</ul>
+<p>The hero reacts to the knockback:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, UnityInput as Input, GameManager, Time, Vector2 } from 'nord';
+
+export default class Hero extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 160, knockbackSpeed: 260 });
+
+  Start() { this.stun = 0; this.kick = Vector2.zero; }
+
+  /** Called by Health when we are hit: fly away from the attacker for a moment. */
+  Knockback(from) {
+    const away = new Vector2(this.position.x - from.pos[0], this.position.y - from.pos[1]).normalized;
+    this.kick = away.Mul(this.knockbackSpeed);
+    this.stun = 0.15;                                                // no steering while we fly backwards
+  }
+
+  FixedUpdate() {
+    if (GameManager.instance.state === 'gameover') { this.velocity = Vector2.zero; return; }
+    if (this.stun &gt; 0) { this.stun -= Time.fixedDeltaTime; this.velocity = this.kick; return; }
+    const move = Vector2.ClampMagnitude(new Vector2(Input.GetAxis('Horizontal'), Input.GetAxis('Vertical')), 1);
+    this.velocity = new Vector2(move.x, -move.y).Mul(this.speed);
+  }
+}</code></pre>
+<ul>
+<li>The direction away from the attacker is <code>hero − attacker</code>, normalised; multiply by <code>knockbackSpeed</code>.</li>
+<li>While <code>stun &gt; 0</code> the player cannot steer; the push velocity is applied instead. 0.15 seconds is long enough to feel and short enough not to annoy.</li>
+<li>After the last heart (<code>state === &#39;gameover&#39;</code>) the hero stops.</li>
+</ul>
+<h2 id="4-hearts-and-game-over">4 Hearts and game over<a class="anchor" href="#4-hearts-and-game-over">#</a></h2>
+<p>The HUD draws hearts from the manager&#39;s lives and has one <code>Finish</code> for both endings:</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, GameManager, EventBus, UnityInput as Input, KeyCode } from 'nord';
+
+export default class Hud extends MonoBehaviour {
+  Start() {
+    this.total = 0;
+    this.score = this.ui.label('', { screen: 'hud', x: 12, y: 8, size: 22, color: '#ebcb8b' });
+    this.hearts = this.ui.label('', { screen: 'hud', anchor: 'tr', x: 12, y: 8, size: 26, color: '#bf616a' });
+    this.offs = [
+      EventBus.Subscribe('level', ({ coins }) =&gt; { this.total = coins; this.Refresh(); }),
+      EventBus.Subscribe('score', () =&gt; this.Refresh()),
+      EventBus.Subscribe('lives', () =&gt; this.Refresh()),
+      EventBus.Subscribe('gameover', () =&gt; this.Finish('Game over', '#bf616a')),
+    ];
+    this.Refresh();
+  }
+
+  Refresh() {
+    const gm = GameManager.instance, max = gm.attrs.startLives;
+    this.score.set(`● ${gm.score} / ${this.total}`);
+    this.hearts.set('♥'.repeat(gm.lives) + '♡'.repeat(max - gm.lives));
+    if (this.total &gt; 0 &amp;&amp; gm.score === this.total &amp;&amp; gm.state === 'playing') this.Finish('You found all the coins!', '#a3be8c', true);
+  }
+
+  Finish(text, color, won = false) {
+    if (this.over) return;                                           // win and die in the same second: show one ending
+    this.over = true;
+    if (won) GameManager.instance.SetState('won');
+    this.ui.label(text, { screen: 'hud', anchor: 'c', size: 34, color });
+    this.ui.label('Press E to play again', { screen: 'hud', anchor: 'c', y: 44, size: 20 });
+  }
+
+  Update() {
+    if (this.over &amp;&amp; Input.GetKeyDown(KeyCode.E)) GameManager.instance.Restart();
+  }
+
+  OnDestroy() { this.score?.remove(); this.hearts?.remove(); this.offs?.forEach((off) =&gt; off()); }
+}</code></pre>
+<p><code>&#39;♥&#39;.repeat(gm.lives) + &#39;♡&#39;.repeat(max − gm.lives)</code> builds the hearts. <code>GameManager.instance.attrs.startLives</code> is the maximum. <code>Finish</code> has a guard (<code>this.over</code>) so that winning and dying in the same second shows one ending only.</p>
+<p>Press <span class="c-ui">Play</span>. Walk near an enemy: it comes for you, a heart disappears, you are pushed back and blink for a second. Lose all three: <em>Game over</em>, E restarts.</p>
+<p><img src="../../assets/screenshots/series-dungeon-5-over.png" alt="Game over"></p>
+<h2 id="5-check-yourself">5 Check yourself<a class="anchor" href="#5-check-yourself">#</a></h2>
+<ul>
+<li>Stand still next to an enemy: you lose one heart per second, not per frame.</li>
+<li>Collect the last coin and die in the same second: only one message.</li>
+<li>Restart three times: hearts are full each time, no doubled labels.</li>
+</ul>
+<p>If an enemy never hurts you, check that the hero is named <code>Hero</code> (the enemy finds it by name) and has <code>Health</code>.</p>
+<h2 id="what-you-learned">What you learned<a class="anchor" href="#what-you-learned">#</a></h2>
+<ul>
+<li>A simple enemy: a coroutine for wandering, a unit vector for chasing.</li>
+<li><code>GetComponent(Class)</code> and plain method calls between scripts.</li>
+<li>The GameManager&#39;s lives as hearts; grace time prevents damage every frame.</li>
+<li>One script, one job: Health knows grace, not enemies or HUDs.</li>
+</ul>
+<p>Next: <a href="ex-dungeon-6-light.html">Part 6, light and shipping</a>.</p>
+<div class="pager"><a href="ex-dungeon-4-coins.html"><small>← Previous</small>52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-6-light.html"><small>Next →</small>54 · Dungeon 6: Light and shipping</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-the-enemy-prefab">1 The enemy prefab </a><a href="#2-the-enemy-brain">2 The enemy brain </a><a href="#3-lives-health-and-knockback">3 Lives, Health and knockback </a><a href="#4-hearts-and-game-over">4 Hearts and game over </a><a href="#5-check-yourself">5 Check yourself </a><a href="#what-you-learned">What you learned </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

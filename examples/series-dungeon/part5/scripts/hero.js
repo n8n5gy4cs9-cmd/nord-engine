@@ -1,34 +1,21 @@
-import { NordScript } from 'nord';
+import { MonoBehaviour, SerializeField, UnityInput as Input, GameManager, Time, Vector2 } from 'nord';
 
-export default class Hero extends NordScript {
-  static attributes = {
-    speed: { type: 'number', default: 160, min: 0, label: 'Speed (px/s)' },
-    knockback: { type: 'number', default: 260, min: 0 },
-  };
+export default class Hero extends MonoBehaviour {
+  static attributes = SerializeField({ speed: 160, knockbackSpeed: 260 });
 
-  start() {
-    this.kick = [0, 0];
-    this.stun = 0;
-    this.dead = false;
-    this.entity.on('hurt', ({ from }) => {
-      const dx = this.entity.pos[0] - from.pos[0], dy = this.entity.pos[1] - from.pos[1];
-      const d = Math.hypot(dx, dy) || 1;
-      this.kick = [dx / d * this.attrs.knockback, dy / d * this.attrs.knockback];
-      this.stun = 0.15;                                             // no steering while we fly backwards
-    });
-    this.off = this.events.on('died', () => { this.dead = true; });
+  Start() { this.stun = 0; this.kick = Vector2.zero; }
+
+  /** Called by Health when we are hit: fly away from the attacker for a moment. */
+  Knockback(from) {
+    const away = new Vector2(this.position.x - from.pos[0], this.position.y - from.pos[1]).normalized;
+    this.kick = away.Mul(this.knockbackSpeed);
+    this.stun = 0.15;                                                // no steering while we fly backwards
   }
 
-  fixedUpdate(dt) {
-    if (this.dead) { this.physics.setVelocity(this.entity, 0, 0); return; }
-    if (this.stun > 0) {
-      this.stun -= dt;
-      this.physics.setVelocity(this.entity, this.kick[0], this.kick[1]);
-      return;
-    }
-    const [x, y] = this.input.vec('left', 'right', 'up', 'down');
-    this.physics.setVelocity(this.entity, x * this.attrs.speed, y * this.attrs.speed);
+  FixedUpdate() {
+    if (GameManager.instance.state === 'gameover') { this.velocity = Vector2.zero; return; }
+    if (this.stun > 0) { this.stun -= Time.fixedDeltaTime; this.velocity = this.kick; return; }
+    const move = Vector2.ClampMagnitude(new Vector2(Input.GetAxis('Horizontal'), Input.GetAxis('Vertical')), 1);
+    this.velocity = new Vector2(move.x, -move.y).Mul(this.speed);
   }
-
-  onDestroy() { this.off?.(); }
 }

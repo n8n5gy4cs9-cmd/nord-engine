@@ -1,0 +1,62 @@
+{
+  "format": 1,
+  "root": {
+    "id": "ec00001",
+    "name": "Chest",
+    "enabled": true,
+    "tags": [],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        2
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "sprite",
+        "texture": "assets/sprites/items/chest_closed.png",
+        "size": [
+          28,
+          28
+        ],
+        "tint": "#ffffff",
+        "alpha": 1
+      },
+      {
+        "type": "rigidbody",
+        "mode": "static"
+      },
+      {
+        "type": "collider",
+        "shape": "box",
+        "size": [
+          24,
+          24
+        ],
+        "trigger": true
+      }
+    ],
+    "scripts": [
+      {
+        "path": "scripts/Pickup.js",
+        "attributes": {
+          "kind": "chest"
+        }
+      }
+    ],
+    "children": [],
+    "prefab": null
+  }
+}

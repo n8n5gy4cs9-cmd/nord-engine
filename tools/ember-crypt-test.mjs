@@ -17,8 +17,13 @@ const hold = async (p, key, ms) => { await p.keyboard.down(key); await wait(p, m
 const shot = (p, name) => p.screenshot({ path: `${OUT}/ember-crypt-${name}.png` });
 const find = (ch) => { const r = []; MAP.forEach((row, y) => [...row].forEach((c, x) => c === ch && r.push([x, y]))); return r; };
 const text = (p) => p.locator('body').innerText();
-const startGame = async (p) => { await p.click('text=Play'); await wait(p, 2500); };
-const rel = async (p) => { await p.evaluate(() => window.__nord.restart?.()); };
+const startGame = async (p) => {
+  await p.click('text=Play');
+  const want = find('o').length, t0 = Date.now();                    // the level builds itself over many frames: wait until every coin exists
+  while ((await count(p, 'Coin')) !== want && Date.now() - t0 < 20000) await wait(p, 200);
+  await wait(p, 600);
+};
+const hurt = (p) => g(p, () => { const h = window.__nord.scene.find('Hero'); h.scripts.find((s) => s.constructor.name === 'Health').TakeDamage(h); });
 
 fs.mkdirSync(OUT, { recursive: true });
 let failed = 0;
@@ -35,8 +40,8 @@ await run('title', async (p) => { await wait(p, 1500); await shot(p, 'title'); a
 await run('explore + sword', async (p) => {
   await startGame(p);
   await shot(p, 'start');
-  assert.equal(await count(p, 'enemy'), 8);
-  assert.equal(await count(p, 'coin'), find('o').length);
+  assert.equal(await count(p, 'Enemy'), 8);
+  assert.equal(await count(p, 'Coin'), find('o').length);
   await hold(p, 'KeyD', 800);
   assert.ok((await pos(p))[0] > 112 + 60, 'hero walks');
   // sword: stand next to the first slime, face it, swing
@@ -44,29 +49,29 @@ await run('explore + sword', async (p) => {
   await tp(p, sx - 1, sy); await wait(p, 100);
   await g(p, () => { for (const e of window.__nord.scene.findByTag('enemy')) e.native.setAlpha(1); });
   await p.keyboard.down('KeyD'); await wait(p, 60); await p.keyboard.up('KeyD');
-  const before = await count(p, 'enemy');
-  for (let i = 0; i < 6 && (await count(p, 'enemy')) === before; i++) {
+  const before = await count(p, 'Enemy');
+  for (let i = 0; i < 6 && (await count(p, 'Enemy')) === before; i++) {
     await tp(p, sx - 1, sy); await hold(p, 'KeyD', 40); await p.keyboard.down('Space'); await wait(p, 120); await p.keyboard.up('Space'); await wait(p, 500);
   }
-  assert.ok((await count(p, 'enemy')) < before, 'sword kills a slime in two hits');
+  assert.ok((await count(p, 'Enemy')) < before, 'sword kills a slime in two hits');
   await shot(p, 'fight');
 });
 
 await run('keys, gates and the exit', async (p) => {
   await startGame(p);
-  const [[gx, gy]] = find('D'); const doors = await count(p, 'door');
+  const [[gx, gy]] = find('D'); const doors = await count(p, 'Door');
   assert.equal(doors, 4);
   await tp(p, gx - 1, gy); await hold(p, 'KeyD', 250); await wait(p, 400);
-  assert.equal(await count(p, 'door'), 4, 'a locked gate stays closed');
+  assert.equal(await count(p, 'Door'), 4, 'a locked gate stays closed');
   const keys = find('k');
   await tp(p, ...keys[0]); await wait(p, 300);
   await tp(p, gx - 1, gy); await hold(p, 'KeyD', 250); await wait(p, 400);
-  assert.equal(await count(p, 'door'), 2, 'one key opens one gate (two tiles)');
+  assert.equal(await count(p, 'Door'), 2, 'one key opens one gate (two tiles)');
   await shot(p, 'gate');
   await tp(p, ...keys[1]); await wait(p, 300);
   const [[hx, hy]] = find('D').slice(2);
   await tp(p, hx, hy - 1); await hold(p, 'KeyS', 250); await wait(p, 400);
-  assert.equal(await count(p, 'door'), 0, 'second key opens the second gate');
+  assert.equal(await count(p, 'Door'), 0, 'second key opens the second gate');
   const [ex, ey] = find('X')[0];
   await tp(p, ex, ey); await wait(p, 1200);
   assert.match(await text(p), /escaped the crypt/);
@@ -79,8 +84,8 @@ await run('keys, gates and the exit', async (p) => {
 await run('pickups, potion and dark', async (p) => {
   await startGame(p);
   const coins = find('o'); await tp(p, ...coins[0]); await wait(p, 300);
-  assert.equal(await count(p, 'coin'), coins.length - 1);
-  await g(p, () => window.__nord.scene.find('Hero').emit('hit', { from: window.__nord.scene.find('Hero') }));
+  assert.equal(await count(p, 'Coin'), coins.length - 1);
+  await hurt(p);
   await wait(p, 200);
   const hearts = () => g(p, () => document.querySelectorAll('img[src*="heart_full"]').length);
   assert.equal(await hearts(), 4, 'a hit costs a heart');
@@ -92,7 +97,7 @@ await run('pickups, potion and dark', async (p) => {
 
 await run('death', async (p) => {
   await startGame(p);
-  for (let i = 0; i < 12; i++) { await g(p, () => { const h = window.__nord.scene.find('Hero'); h.emit('hit', { from: h }); }); await wait(p, 1100); if (/keeps you/.test(await text(p))) break; }
+  for (let i = 0; i < 12; i++) { await hurt(p); await wait(p, 1100); if (/keeps you/.test(await text(p))) break; }
   assert.match(await text(p), /keeps you/);
   await shot(p, 'over');
   await p.click('text=Play again'); await wait(p, 2500);

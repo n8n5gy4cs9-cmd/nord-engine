@@ -13,7 +13,7 @@ def ent(i, name, x, y, z=0, comps=(), scripts=(), tags=()):
             "components": list(comps), "scripts": [{"path": p, "attributes": a} for p, a in scripts], "children": [], "prefab": None}
 sq = lambda w, h, c: {"type": "sprite", "texture": "assets/sprites/square.png", "size": [w, h], "tint": c, "alpha": 1}
 body = lambda mode: {"type": "rigidbody", "mode": mode}
-box = lambda w, h, **k: {"type": "collider", "shape": "box", "size": [w, h], **k}
+box = lambda w, h, trigger=False: {"type": "collider", "shape": "box", "size": [w, h], **({"trigger": True} if trigger else {})}
 
 def project(name, part, w=640, h=360):
     return {"format": 1, "name": name, "id": f"com.crowelian.series-dungeon-{part}", "type": "2d", "engineVersion": "0.1.0",
@@ -23,11 +23,14 @@ def project(name, part, w=640, h=360):
             "input": {"actions": {"left": ["KeyA", "ArrowLeft"], "right": ["KeyD", "ArrowRight"], "up": ["KeyW", "ArrowUp"],
                                   "down": ["KeyS", "ArrowDown"], "interact": ["KeyE", "Enter"]}}}
 
-def write_part(n, name, entities):
+def write_part(n, name, entities, prefabs=None):
     d = OUT / f'part{n}'
     (d / 'scenes').mkdir(parents=True, exist_ok=True); (d / 'scripts').mkdir(exist_ok=True); (d / 'assets/sprites').mkdir(parents=True, exist_ok=True)
     (d / 'nord.project.json').write_text(json.dumps(project(name, n), indent=2) + '\n')
     (d / 'scenes/main.scene.json').write_text(json.dumps({"format": 1, "name": "main", "settings": {}, "entities": entities}, indent=2) + '\n')
+    if prefabs:
+        (d / 'prefabs').mkdir(exist_ok=True)
+        for pname, root in prefabs.items(): (d / f'prefabs/{pname}.prefab.json').write_text(json.dumps({'format': 1, 'root': root}, indent=2) + '\n')
     for s in ('square.png', 'circle.png'):
         shutil.copy(ROOT / 'examples/topdown/assets/sprites' / s, d / 'assets/sprites' / s)
     src = SRC / f'part{n}'
@@ -61,46 +64,47 @@ if __name__ == '__main__':
     write_part(1, 'Nord Dungeon 1: A hero that moves', [
         ent(1, 'Camera', 320, 180, 10, [{"type": "camera", "zoom": 1}]),
         ent(2, 'Floor', 320, 180, -5, [sq(640, 360, '#2e3440')]),
-        ent(3, 'Hero', 320, 180, 2, [sq(24, 24, '#88c0d0')], [("scripts/hero.js", {"speed": 160})], ['hero'])])
+        ent(3, 'Hero', 320, 180, 2, [sq(24, 24, '#88c0d0')], [("scripts/hero.js", {"speed": 160})], ['Hero'])])
     # part 2
     (SRC / 'part2').mkdir(parents=True, exist_ok=True)
     m2 = ['####################', '#P.......#.........#', '#.........#........#', '#....##...#...###..#', '#....##........#...#', '#..........##..#...#',
           '#...###....##......#', '#.....#............#', '#.....#....####....#', '#..................#', '####################']
     assert all(len(r) == 20 for r in m2)
     (SRC / 'part2/map.js').write_text('export const MAP = [\n' + ''.join(f"  '{r}',\n" for r in m2) + '];\n')
-    write_part(2, 'Nord Dungeon 2: Walls', [
-        ent(1, 'Camera', 320, 176, 10, [{"type": "camera", "zoom": 1}]),
-        ent(2, 'Level', 0, 0, 0, [], [("scripts/level.js", {"tile": 32})]),
-        ent(3, 'Hero', 48, 48, 2, [sq(24, 24, '#88c0d0'), body('dynamic'), box(24, 24)], [("scripts/hero.js", {"speed": 160})], ['hero'])])
     for n, keep in ((3, ''), (4, 'o'), (5, 'oe'), (6, 'oe')):
         (SRC / f'part{n}').mkdir(parents=True, exist_ok=True)
         (SRC / f'part{n}/map.js').write_text(map_js(keep))
-    hero = lambda attrs, extra=(): ent(3, 'Hero', 96, 96, 2, [sq(24, 24, '#88c0d0'), body('dynamic'), box(24, 24)], [("scripts/hero.js", attrs)] + list(extra), ['hero'])
     cam = [{"type": "camera", "zoom": 1}]
-    write_part(3, 'Nord Dungeon 3: Camera and a bigger level', [
-        ent(1, 'Camera', 320, 180, 10, cam, [("scripts/follow.js", {"target": "Hero"})]),
-        ent(2, 'Level', 0, 0, 0, [], [("scripts/level.js", {"tile": 32})]), hero({"speed": 170})])
-    write_part(4, 'Nord Dungeon 4: Coins and score', [
-        ent(1, 'Camera', 320, 180, 10, cam, [("scripts/follow.js", {"target": "Hero"})]),
-        ent(2, 'Level', 0, 0, 0, [], [("scripts/level.js", {"tile": 32})]),
-        ent(4, 'Hud', 0, 0, 0, [], [("scripts/hud.js", {})]), hero({"speed": 170})])
-    write_part(5, 'Nord Dungeon 5: Enemies and health', [
-        ent(1, 'Camera', 320, 180, 10, cam, [("scripts/follow.js", {"target": "Hero"})]),
-        ent(2, 'Level', 0, 0, 0, [], [("scripts/level.js", {"tile": 32})]),
-        ent(4, 'Hud', 0, 0, 0, [], [("scripts/hud.js", {})]), hero({"speed": 170}, [("scripts/health.js", {"max": 3})])])
-    write_part(6, 'Nord Dungeon 6: Light and shipping', [
-        ent(1, 'Camera', 320, 180, 10, cam, [("scripts/follow.js", {"target": "Hero"})]),
-        ent(2, 'Level', 0, 0, 0, [], [("scripts/level.js", {"tile": 32})]),
+    sprite = lambda tex, w, h, c: {"type": "sprite", "texture": f"assets/sprites/{tex}.png", "size": [w, h], "tint": c, "alpha": 1}
+    floor_pf = ent(1, 'Floor', 0, 0, -5, [sprite('square', 640, 352, '#2e3440')])
+    wall_pf = lambda occ=False: ent(1, 'Wall', 0, 0, 1, [sprite('square', 32, 32, '#4c566a'), body('static'), box(32, 32)],
+                                    [("scripts/light2d-occluder.js", {"static": True})] if occ else [], ['solid'])
+    coin_pf = ent(1, 'Coin', 0, 0, 1, [sprite('circle', 14, 14, '#ebcb8b'), body('static'), box(16, 16, trigger=True)], [("scripts/coin.js", {})], ['coin'])
+    enemy_pf = ent(1, 'Enemy', 0, 0, 2, [sprite('square', 22, 22, '#bf616a'), body('dynamic'), box(22, 22)], [("scripts/enemy.js", {})], ['enemy'])
+    hero = lambda x, y, attrs, extra=(): ent(3, 'Hero', x, y, 2, [sprite('square', 24, 24, '#88c0d0'), body('dynamic'), box(24, 24)], [("scripts/hero.js", attrs)] + list(extra), ['Hero'])
+    gm = lambda lives=3: ent(7, 'GameManager', 0, 0, 0, [], [("scripts/GameManager.js", {"startLives": lives})])
+    write_part(2, 'Nord Dungeon 2: Walls', [
+        ent(1, 'Camera', 320, 176, 10, cam), ent(2, 'Level', 0, 0, 0, [], [("scripts/level.js", {"tile": 32})]), hero(48, 48, {"speed": 160})],
+        {'wall': wall_pf(), 'floor': floor_pf})
+    follow = lambda: ent(1, 'Camera', 320, 180, 10, cam, [("scripts/follow.js", {"target": "Hero"})])
+    level = lambda: ent(2, 'Level', 0, 0, 0, [], [("scripts/level.js", {"tile": 32})])
+    write_part(3, 'Nord Dungeon 3: Camera and a bigger level', [follow(), level(), hero(96, 96, {"speed": 170})], {'wall': wall_pf(), 'floor': floor_pf})
+    write_part(4, 'Nord Dungeon 4: Coins and score', [follow(), gm(), level(), ent(4, 'Hud', 0, 0, 0, [], [("scripts/hud.js", {})]), hero(96, 96, {"speed": 170})],
+               {'wall': wall_pf(), 'floor': floor_pf, 'coin': coin_pf})
+    write_part(5, 'Nord Dungeon 5: Enemies and health', [follow(), gm(), level(), ent(4, 'Hud', 0, 0, 0, [], [("scripts/hud.js", {})]),
+               hero(96, 96, {"speed": 170}, [("scripts/health.js", {"grace": 1})])], {'wall': wall_pf(), 'floor': floor_pf, 'coin': coin_pf, 'enemy': enemy_pf})
+    write_part(6, 'Nord Dungeon 6: Light and shipping', [follow(), gm(), level(),
         ent(5, 'Light2D', 0, 0, 0, [], [("scripts/light2d.js", {"ambient": "#0a0c12", "scale": 7.5, "shadows": True, "softShadows": 40})]),
         ent(4, 'Hud', 0, 0, 0, [], [("scripts/hud.js", {})]),
-        {**hero({"speed": 170}, [("scripts/health.js", {"max": 3})]), "children": [
-            ent(6, 'Lantern', 0, 0, 0, [], [("scripts/light2d-source.js", {"color": "#ffb86b", "radius": 190, "intensity": 0.9, "falloff": 1.4, "softness": 5, "flicker": 0.08})])]}])
+        {**hero(96, 96, {"speed": 170}, [("scripts/health.js", {"grace": 1})]), "children": [
+            ent(6, 'Lantern', 0, 0, 0, [], [("scripts/light2d-source.js", {"color": "#ffb86b", "radius": 190, "intensity": 0.9, "falloff": 1.4, "softness": 5, "flicker": 0.08})])]}],
+        {'wall': wall_pf(True), 'floor': floor_pf, 'coin': coin_pf, 'enemy': enemy_pf})
     # ---- tutorial pages + downloads ----
     import re, zipfile
-    names = {55: 'tut-t55-series-dungeon-1', 56: 'tut-t56-series-dungeon-2', 57: 'tut-t57-series-dungeon-3', 58: 'tut-t58-series-dungeon-4',
-             59: 'tut-t59-series-dungeon-5', 60: 'tut-t60-series-dungeon-6'}
+    names = {49: 'ex-dungeon-1-hero', 50: 'ex-dungeon-2-walls', 51: 'ex-dungeon-3-camera', 52: 'ex-dungeon-4-coins', 53: 'ex-dungeon-5-enemies', 54: 'ex-dungeon-6-light'}
     for t, stem in names.items():
-        text = (SRC / f'docs/t{t}.md').read_text()
+        if not (SRC / f'docs/e{t}.md').exists(): continue
+        text = (SRC / f'docs/e{t}.md').read_text()
         text = re.sub(r'@@code (\S+)@@', lambda m: '```js\n' + (SRC / m.group(1)).read_text().rstrip() + '\n```', text)
         (ROOT / f'docs/manual-src/{stem}.md').write_text(text)
     (ROOT / 'docs/tutorial-downloads').mkdir(exist_ok=True)

@@ -1,0 +1,61 @@
+{
+  "format": 1,
+  "root": {
+    "id": "ec00001",
+    "name": "Slime",
+    "enabled": true,
+    "tags": [
+      "Enemy"
+    ],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0,
+        0,
+        3
+      ],
+      "rot": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "components": [
+      {
+        "type": "animatedSprite",
+        "texture": "assets/sprites/enemy_slime.png",
+        "anim": "idle"
+      },
+      {
+        "type": "rigidbody",
+        "mode": "dynamic"
+      },
+      {
+        "type": "collider",
+        "shape": "box",
+        "size": [
+          18,
+          12
+        ]
+      }
+    ],
+    "scripts": [
+      {
+        "path": "scripts/Enemy.js",
+        "attributes": {
+          "speed": 55,
+          "hp": 2,
+          "sight": 150,
+          "zigzag": 0
+        }
+      }
+    ],
+    "children": [],
+    "prefab": null
+  }
+}
