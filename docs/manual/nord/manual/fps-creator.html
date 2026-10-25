@@ -9,6 +9,149 @@
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="manual-paths.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="../guides/cookbook.html">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
 <div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><details><summary>Getting oriented <small>(4)</small></summary><a href="manual-paths.html">Manual — choose a task</a><a href="editor-tour.html">Editor tour</a><a href="appearance.html">Editor appearance</a><a href="organise-project.html">Organising your project</a></details><details><summary>Projects, objects and scripts <small>(6)</small></summary><a href="projects-scenes.html">Projects &amp; scenes</a><a href="library.html">The library</a><a href="unity-workflow.html">Unity-style workflow</a><a href="ai-mcp.html">AI and MCP</a><a href="unity-coverage.html">Unity coverage</a><a href="unity-scripting.html">Unity-style scripting</a></details><details open><summary>2D and 3D worlds <small>(9)</small></summary><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="assets.html">Assets</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="fps-creator.html" class="cur" aria-current="page">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a><a href="modeler.html">3D Modeler</a></details><details><summary>Gameplay, sound and interfaces <small>(12)</small></summary><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="ui-designer.html">UI Designer</a><a href="graph.html">Node graphs (visual scripting)</a><a href="animator.html">Animator</a><a href="multiplayer.html">Multiplayer</a><a href="dev-console.html">In-game Dev Console</a></details><details><summary>Test and publish <small>(8)</small></summary><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Find an API or file setting</a><a href="desktop-apps.html">Desktop apps</a><a href="debugger.html">Debugger and profiler</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="welcome.html">Welcome</a><a href="scripting.html">Scripting</a></details></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>FPS Creator — build first-person levels</h1>
+<h2 id="fps-level-to-scene">How does an FPS level reach the real scene?<a class="anchor" href="#fps-level-to-scene">#</a></h2>
+<aside class="box tip"><div class="box-title">Tip</div><p><strong>The FPS map stays a separate file.</strong> Save your map as <code>levels/first_room.fpsl.json</code>. In the normal scene, select <strong>FPS Level</strong> and set its script&#39;s <strong>Level file</strong> to that path. Save the scene. Main Play and export load that map through the scene&#39;s FPS host script.</p>
+</aside><div class="handoff-flow" aria-label="FPS map data is referenced by the FPS Level host script inside the project's starting scene">
+<div><b>1 · BUILD AND SAVE</b><strong>FPS Level Creator</strong><code>levels/<wbr>first_room.fpsl.json</code><span>Rooms, walls, lights, enemies and rules.</span></div>
+<div><b>2 · LINK THE MAP</b><strong>Scene → FPS Level host</strong><code>scripts/<wbr>fpsc/<wbr>level-script.js → Level file</code><span>The host loads your saved map at runtime.</span></div>
+<div><b>3 · PLAY THE PROJECT</b><strong>Starting scene</strong><code>nord.project.json → startScene</code><span>Main Play/export use the saved host and its map path.</span></div>
+</div><aside class="box dummies"><div class="box-title">For dummy developers</div><p>Think of the scene&#39;s FPS Level object as a projector. <strong>Level file</strong> tells the projector which map to show. Saving or opening a different map in the Creator does not automatically change that projector setting. This differs from 2D Level Creator, which compiles a whole ordinary scene when you Save.</p>
+</aside><p><a href="#first-playable-fps-level">Follow the complete first-room tutorial</a>, or jump to <a href="#connect-fps-host">connecting the host scene</a>. The existing detailed reference remains below the tutorial.</p>
+<h2 id="first-playable-fps-level">Tutorial: build a room and run it as your game<a class="anchor" href="#first-playable-fps-level">#</a></h2>
+<p><strong>Goal:</strong> make a small editable FPS map, save it as <code>first_room</code>, link it to the actual starting scene, and run/export it. No JavaScript is required. This exercise uses the <strong>FPS Creator (level editor)</strong> template in its own project folder.</p>
+<h3 id="1-open-a-working-starter">1. Open a working starter<a class="anchor" href="#1-open-a-working-starter">#</a></h3>
+<ol>
+<li>Create the project from <strong>FPS Creator (level editor)</strong>, then open its <span class="c-ui">FPS Level</span> tab.</li>
+<li>Click the FPS editor&#39;s <span class="c-ui">New</span>. Save any work you want to keep before discarding current edits.</li>
+<li>Inspect the starter. New provides a small working arrangement with rooms, a <strong>Player Start</strong>, lights and sample items; it is not a blank general-purpose scene. Use <strong>Home</strong> to fit the map.</li>
+</ol>
+<aside class="box tip"><div class="box-title">Tip</div><p><strong>Checkpoint:</strong> the 2D map and 3D preview show the same layout. Keep the Player Start and at least one light while learning. They let you test geometry without first designing a controller or lighting system.</p>
+</aside><h3 id="2-draw-a-small-room-or-extension">2. Draw a small room or extension<a class="anchor" href="#2-draw-a-small-room-or-extension">#</a></h3>
+<ol>
+<li>Open <span class="c-ui">Build</span>. In its room options, keep <strong>Floor</strong>, <strong>Ceiling</strong> and <strong>Walls (active piece)</strong> enabled.</li>
+<li>Press <strong>R</strong> for the Room tool. Drag a rectangle on the grid—for example, a small room adjoining one side of the existing room.</li>
+<li>Release the mouse. Floor/ceiling cells and perimeter walls appear. Inspect the new space in the live 3D preview.</li>
+<li>Undo and redraw if the rectangle is wrong. Use middle/right drag to pan and the wheel to zoom; editing is easier when you can see the room&#39;s shared wall clearly.</li>
+</ol>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Rooms occupy <strong>cells</strong>. Walls and doors occupy <strong>edges between cells</strong>. Click the wall edge when placing a door; clicking the middle of the room is a different target.</p>
+</aside><h3 id="3-connect-rooms-with-a-door">3. Connect rooms with a door<a class="anchor" href="#3-connect-rooms-with-a-door">#</a></h3>
+<ol>
+<li>In <span class="c-ui">Build</span>, choose <strong>Door (slides up)</strong> in the wall-piece palette. Press <strong>W</strong> for the Wall tool.</li>
+<li>Click an edge in the wall shared by your rooms. The selected door piece replaces the wall piece there; the 3D preview shows the opening and door.</li>
+<li>Press <strong>V</strong>, select the door edge, and inspect its Door settings. For the first test, leave it unlocked and able to open normally. Add key/switch conditions only after you can walk through it.</li>
+<li>Make sure the door actually joins two walkable floor cells. A door in the outer perimeter can lead into empty space rather than another room.</li>
+</ol>
+<p><img src="../../assets/screenshots/ed-fpsc-room-drawn.png" alt="A real pointer-drawn room extension and a door placed on its shared wall in FPS Level"></p>
+<h3 id="4-place-one-useful-item">4. Place one useful item<a class="anchor" href="#4-place-one-useful-item">#</a></h3>
+<ol>
+<li>Open <span class="c-ui">Items</span>. Choose a health pickup or lamp and click inside your new room. Use <strong>A</strong> for the Add tool if needed; the item appears in the map/preview.</li>
+<li>Press <strong>V</strong>, select it and move it clear of the doorway and walls. Use <strong>Q/E</strong> to rotate a directional item.</li>
+<li>Keep a reachable <strong>Player Start</strong> inside the original room. Start with one clear route from it through the door to your new item.</li>
+</ol>
+<p>For an enemy, place a ready-made guard away from the player. Select it and press <strong>P</strong> to add patrol points; press Esc when finished. The <a href="#scripts-attach-behaviour">existing patrol and script reference</a> explains more advanced behavior.</p>
+<h3 id="5-test-this-map-not-the-project">5. Test this map, not the project<a class="anchor" href="#5-test-this-map-not-the-project">#</a></h3>
+<ol>
+<li>Click <span class="c-ui">▶ Test</span> inside FPS Level. Click the game&#39;s capture prompt, then use WASD and the mouse to look/move. Press <strong>E</strong> to use the door.</li>
+<li>Walk from Player Start through the doorway to the new room. Check collision, lighting and item placement.</li>
+<li>Stop with <strong>Shift+Esc</strong>, the top-right <strong>Close test</strong> button, or <strong>Esc → Quit</strong>. You return to the same editable map.</li>
+</ol>
+<aside class="box warn"><div class="box-title">Careful</div><p><strong>Test includes unsaved edits.</strong> It does not save the map, change the scene&#39;s Level file, or change the project start scene. A successful Test is only the first checkpoint.</p>
+</aside><h3 id="6-save-a-named-map">6. Save a named map<a class="anchor" href="#6-save-a-named-map">#</a></h3>
+<ol>
+<li>In the FPS editor&#39;s top bar, click <span class="c-ui">Save as…</span>.</li>
+<li>Enter <strong><code>levels/first_room.fpsl.json</code></strong> and click the dialog&#39;s <strong>Save</strong> button. Unlike the 2D Creator&#39;s basename dialog, this dialog accepts a path inside the project.</li>
+<li>Check that the top bar shows <code>levels/first_room.fpsl.json</code>. Later FPS <strong>Save</strong> clicks update that map.</li>
+</ol>
+<p><img src="../../assets/screenshots/ed-fpsc-first-room.png" alt="The real FPS editor after Save as created first_room.fpsl.json from its working starter"></p>
+<aside class="box tip"><div class="box-title">Tip</div><p><strong>Checkpoint:</strong> your map exists on disk. It is now ready for a scene to load, but the template&#39;s scene may still reference <code>levels/level1.fpsl.json</code>. Link the new path next.</p>
+</aside><h3 id="connect-fps-host">7. Connect the map to the real scene<a class="anchor" href="#connect-fps-host">#</a></h3>
+<ol>
+<li>Stop FPS Test and main Play. Switch to the normal <span class="c-ui">Scene</span> tab.</li>
+<li>In <span class="c-ui">Assets</span>, open <strong>scenes</strong> and double-click <strong><code>main.scene.json</code></strong> from this FPS template.</li>
+<li>In the normal <span class="c-ui">Hierarchy</span>, select <strong>FPS Level</strong>. Its <span class="c-ui">Inspector</span> shows the attached <strong><code>scripts/fpsc/level-script.js</code></strong> script.</li>
+<li>Set that script&#39;s <strong>Level file</strong> to <strong><code>levels/first_room.fpsl.json</code></strong>. Use the path relative to the project folder.</li>
+<li>Save the <strong>scene</strong> through the normal editor&#39;s Save control. You have now saved both pieces: the map in FPS Level, and the reference in the ordinary scene.</li>
+</ol>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code> (check this entry inside the FPS Level entity&#39;s <code>scripts</code> array; preserve the entity and all other entries):</p>
+<pre class="code" data-lang="json"><code>{
+  &quot;path&quot;: &quot;scripts/fpsc/level-script.js&quot;,
+  &quot;attributes&quot;: {
+    &quot;level&quot;: &quot;levels/first_room.fpsl.json&quot;,
+    &quot;autostart&quot;: false
+  }
+}</code></pre>
+<p>The visible Inspector label is <strong>Level file</strong>; the stored JSON key is <strong><code>level</code></strong>. The map is loaded by this host script. It does not become a collection of ordinary wall entities in the scene Hierarchy.</p>
+<aside class="box warn"><div class="box-title">Careful</div><p><strong>Do not delete the FPS Level host because the scene looks empty.</strong> The host creates the FPS runtime from the saved map. Build its rooms in FPS Level; use the normal Scene/Inspector to choose which map the host loads.</p>
+</aside><h3 id="8-check-the-starting-scene-and-run-normal-play">8. Check the starting scene and run normal Play<a class="anchor" href="#8-check-the-starting-scene-and-run-normal-play">#</a></h3>
+<ol>
+<li>In the <span class="c-ui">Project</span> tab, expand <strong>Project properties</strong>. Set <strong>Start scene</strong> to <strong><code>scenes/main.scene.json</code></strong> for this template and click <strong>Apply project properties</strong> if you changed it.</li>
+<li>Press the normal editor&#39;s <strong>Play</strong> button. Click the capture prompt and walk the same route through your new room.</li>
+<li>If you see Outpost Zero instead, recheck the host&#39;s <strong>Level file</strong>: that usually means it still points at <code>levels/level1.fpsl.json</code>. If an earlier edit is missing, save the map again.</li>
+</ol>
+<p><strong>In the file</strong> <code>nord.project.json</code> (check this field; do not replace the whole manifest):</p>
+<pre class="code" data-lang="json"><code>{ &quot;startScene&quot;: &quot;scenes/main.scene.json&quot; }</code></pre>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>There are two references to check: the <strong>project</strong> chooses a <code>.scene.json</code>, then that <strong>scene&#39;s host</strong> chooses a <code>.fpsl.json</code>. Main Play follows both links. Opening a map in FPS Level changes neither link by itself.</p>
+</aside><h3 id="9-continue-building-and-export">9. Continue building and export<a class="anchor" href="#9-continue-building-and-export">#</a></h3>
+<ol>
+<li>Return to <strong>FPS Level ▸ Open…</strong> and reopen <strong><code>first_room.fpsl.json</code></strong>. Add one unmistakable change, such as moving the health pickup.</li>
+<li>Use the FPS editor&#39;s <strong>Save</strong>, then run normal Play again. The host should load the changed file without needing a new host object.</li>
+<li>Stop, save the scene if its reference changed, and use <span class="c-ui">File ▸ Export…</span> for a normal web-folder export. Test the exported game through a web server. The map and custom project content must be included; use the <a href="export.html">export guide</a>.</li>
+</ol>
+<p>For another FPS map, Save as a new <code>.fpsl.json</code>. To make that map the initial one, change the host&#39;s Level file. To continue between maps during gameplay, use the documented <strong>Next level</strong> / Level exit settings with project-relative map paths; see the Level and rules reference below.</p>
+<h3 id="tutorial-checkpoint">Tutorial checkpoint<a class="anchor" href="#tutorial-checkpoint">#</a></h3>
+<ul>
+<li>FPS Level <strong>Save</strong> writes <code>levels/first_room.fpsl.json</code>.</li>
+<li>The saved scene&#39;s <strong>FPS Level</strong> script names that path in <strong>Level file</strong>.</li>
+<li>The project starts at the scene containing that host.</li>
+<li>Normal Play and the exported game show the new room, not just FPS Test.</li>
+</ul>
+<h2 id="fps-handoff-troubleshooting">FPS Test works, but main Play shows the wrong map<a class="anchor" href="#fps-handoff-troubleshooting">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Check</th>
+<th>Correct action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Test is correct; main Play loads Outpost Zero</td>
+<td>Host still names <code>level1.fpsl.json</code></td>
+<td>Set <strong>Level file</strong> to your new map and save the scene</td>
+</tr>
+<tr>
+<td>Main Play loads an earlier version</td>
+<td>Map edits were never saved</td>
+<td>Save from FPS Level, then restart main Play</td>
+</tr>
+<tr>
+<td>Scene view has no individual room walls</td>
+<td>The map is runtime data, not ordinary scene wall entities</td>
+<td>Keep the host; edit rooms in FPS Level</td>
+</tr>
+<tr>
+<td>Changing Start scene to a <code>.fpsl.json</code> fails</td>
+<td>Project start expects a <code>.scene.json</code></td>
+<td>Keep the host scene as start; set the map on its script</td>
+</tr>
+<tr>
+<td>You saved the scene but lost room edits</td>
+<td>Map and scene have separate Save actions</td>
+<td>Save the map in FPS Level too</td>
+</tr>
+<tr>
+<td>You cannot move the mouse in the test</td>
+<td>Capture prompt or pause state</td>
+<td>Click to capture; Esc releases; Resume recaptures</td>
+</tr>
+<tr>
+<td>Host reports a missing level</td>
+<td>Incorrect relative path or unsaved file</td>
+<td>Compare the Creator&#39;s path, disk file and Level file value</td>
+</tr>
+</tbody></table>
+<h2 id="existing-tools-and-reference">Existing tools and reference<a class="anchor" href="#existing-tools-and-reference">#</a></h2>
+<p>The original quick start and detailed tool reference follow. Use them for wall shapes, storeys, doors, custom scripts, no-code rules and assets.</p>
 <p><strong>FPS Creator</strong> is an addon for Nord that turns the editor into a <em>level editor on steroids</em> for first-person shooters (and adventures): you draw rooms on a grid, drop in doors, windows, lights, enemies and pickups, attach scripts, press <strong>F5</strong> and play. It is inspired by the classic FPS Creator workflow, but everything is original and works offline. Nothing in the normal editor changes — you opt in per project.</p>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>Think of it as a toy box. The <strong>map</strong> (left) is a top-down plan, the <strong>3D view</strong> (right) shows what you built, and the <strong>Items</strong> tab holds ready-made guards, zombies, health packs and lamps. Click an item, click the map: done. Press <strong>F5</strong> to walk around in your level.</p>
 </aside><figure class="shot"><img src="../../assets/screenshots/ed-fpsc-editor.png" alt="The FPS level editor with the 2D map on the left, the live 3D preview in the middle and the inspector with scripts and rules on the right" loading="lazy"><figcaption>The FPS Level tab: item palette (left), map and live 3D preview (centre), inspector with scripts and no-code rules (right). The selected lab terminal opens the boss gate with its rules.</figcaption></figure><h2 id="start-in-one-minute">Start in one minute<a class="anchor" href="#start-in-one-minute">#</a></h2>
@@ -366,9 +509,11 @@ Targets are entity names, <code>#tags</code> (groups) or door names. The ✓ che
 </ul>
 <h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
 <ul>
+<li>Confirm the Creator map path, the host script&#39;s Level file, and the project&#39;s Start scene agree with the tutorial.</li>
+<li>Save the map and the host scene separately; test the same route in FPS Test, normal Play, and the exported game.</li>
 <li>Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.</li>
 <li>If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.</li>
 <li>For platform or feature limits, check <a href="../appendix/known-issues.html">Known issues</a>.</li>
 </ul>
-<div class="pager"><a href="sprites-animation-tilemaps.html"><small>← Previous</small>Sprites, animation and tilemaps</a><a href="level-creator-2d.html"><small>Next →</small>2D Level Creator — sprites, maps and physics</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#start-in-one-minute">Start in one minute </a><a href="#open-edit-and-switch-level-files">Open, edit and switch level files </a><a href="#the-editor-window">The editor window </a><a href="#ready-made-things">Ready-made things </a><a href="#doors-keys-and-switches">Doors, keys and switches </a><a href="#scripts-attach-behaviour">Scripts: attach behaviour </a><a href="#rules-logic-without-code">Rules: logic without code </a><a href="#add-your-own-assets">Add your own assets </a><a href="#use-scripts-from-fps-creator-fpi">Use scripts from FPS Creator (.fpi) </a><a href="#test-test-from-here-and-the-main-play-button">Test, Test from here, and the main Play button </a><a href="#save-run-the-project-export-and-upgrade">Save, run the project, export and upgrade </a><a href="#troubleshooting">Troubleshooting </a><a href="#find-objects-and-refine-patrols">Find objects and refine patrols </a><a href="#build-a-complete-small-level">Build a complete small level </a><a href="#where-your-work-lives">Where your work lives </a><a href="#limits-to-plan-around">Limits to plan around </a><a href="#diagonal-rounded-and-circular-rooms">Diagonal, rounded and circular rooms </a><a href="#turn-an-edited-item-into-a-reusable-variant">Turn an edited item into a reusable variant </a><a href="#aiming-down-the-sights-right-mouse-button">Aiming down the sights (right mouse button) </a><a href="#hotel-meridian-a-three-storey-example">Hotel Meridian: a three-storey example </a><a href="#check-yourself">Check yourself </a></aside></div>
+<div class="pager"><a href="sprites-animation-tilemaps.html"><small>← Previous</small>Sprites, animation and tilemaps</a><a href="level-creator-2d.html"><small>Next →</small>2D Level Creator — sprites, maps and physics</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#fps-level-to-scene">How does an FPS level reach the real scene? </a><a href="#first-playable-fps-level">Tutorial: build a room and run it as your game </a><a href="#fps-handoff-troubleshooting">FPS Test works, but main Play shows the wrong map </a><a href="#existing-tools-and-reference">Existing tools and reference </a><a href="#start-in-one-minute">Start in one minute </a><a href="#open-edit-and-switch-level-files">Open, edit and switch level files </a><a href="#the-editor-window">The editor window </a><a href="#ready-made-things">Ready-made things </a><a href="#doors-keys-and-switches">Doors, keys and switches </a><a href="#scripts-attach-behaviour">Scripts: attach behaviour </a><a href="#rules-logic-without-code">Rules: logic without code </a><a href="#add-your-own-assets">Add your own assets </a><a href="#use-scripts-from-fps-creator-fpi">Use scripts from FPS Creator (.fpi) </a><a href="#test-test-from-here-and-the-main-play-button">Test, Test from here, and the main Play button </a><a href="#save-run-the-project-export-and-upgrade">Save, run the project, export and upgrade </a><a href="#troubleshooting">Troubleshooting </a><a href="#find-objects-and-refine-patrols">Find objects and refine patrols </a><a href="#build-a-complete-small-level">Build a complete small level </a><a href="#where-your-work-lives">Where your work lives </a><a href="#limits-to-plan-around">Limits to plan around </a><a href="#diagonal-rounded-and-circular-rooms">Diagonal, rounded and circular rooms </a><a href="#turn-an-edited-item-into-a-reusable-variant">Turn an edited item into a reusable variant </a><a href="#aiming-down-the-sights-right-mouse-button">Aiming down the sights (right mouse button) </a><a href="#hotel-meridian-a-three-storey-example">Hotel Meridian: a three-storey example </a><a href="#check-yourself">Check yourself </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

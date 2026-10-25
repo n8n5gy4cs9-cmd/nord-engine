@@ -6,6 +6,161 @@ order: 28
 summary: A grid level editor with walls, doors, windows, stairs, lights, ready-made enemies, pickups, scripts and no-code rules. Build, play-test with F5, ship with your game.
 ---
 
+## How does an FPS level reach the real scene? {#fps-level-to-scene}
+
+::: tip
+**The FPS map stays a separate file.** Save your map as `levels/first_room.fpsl.json`. In the normal scene, select **FPS Level** and set its script's **Level file** to that path. Save the scene. Main Play and export load that map through the scene's FPS host script.
+:::
+
+<div class="handoff-flow" aria-label="FPS map data is referenced by the FPS Level host script inside the project's starting scene">
+<div><b>1 · BUILD AND SAVE</b><strong>FPS Level Creator</strong><code>levels/<wbr>first_room.fpsl.json</code><span>Rooms, walls, lights, enemies and rules.</span></div>
+<div><b>2 · LINK THE MAP</b><strong>Scene → FPS Level host</strong><code>scripts/<wbr>fpsc/<wbr>level-script.js → Level file</code><span>The host loads your saved map at runtime.</span></div>
+<div><b>3 · PLAY THE PROJECT</b><strong>Starting scene</strong><code>nord.project.json → startScene</code><span>Main Play/export use the saved host and its map path.</span></div>
+</div>
+
+::: dummies
+Think of the scene's FPS Level object as a projector. **Level file** tells the projector which map to show. Saving or opening a different map in the Creator does not automatically change that projector setting. This differs from 2D Level Creator, which compiles a whole ordinary scene when you Save.
+:::
+
+[Follow the complete first-room tutorial](#first-playable-fps-level), or jump to [connecting the host scene](#connect-fps-host). The existing detailed reference remains below the tutorial.
+
+## Tutorial: build a room and run it as your game {#first-playable-fps-level}
+
+**Goal:** make a small editable FPS map, save it as `first_room`, link it to the actual starting scene, and run/export it. No JavaScript is required. This exercise uses the **FPS Creator (level editor)** template in its own project folder.
+
+### 1. Open a working starter
+
+1. Create the project from **FPS Creator (level editor)**, then open its @ui[FPS Level] tab.
+2. Click the FPS editor's @ui[New]. Save any work you want to keep before discarding current edits.
+3. Inspect the starter. New provides a small working arrangement with rooms, a **Player Start**, lights and sample items; it is not a blank general-purpose scene. Use **Home** to fit the map.
+
+::: tip
+**Checkpoint:** the 2D map and 3D preview show the same layout. Keep the Player Start and at least one light while learning. They let you test geometry without first designing a controller or lighting system.
+:::
+
+### 2. Draw a small room or extension
+
+1. Open @ui[Build]. In its room options, keep **Floor**, **Ceiling** and **Walls (active piece)** enabled.
+2. Press **R** for the Room tool. Drag a rectangle on the grid—for example, a small room adjoining one side of the existing room.
+3. Release the mouse. Floor/ceiling cells and perimeter walls appear. Inspect the new space in the live 3D preview.
+4. Undo and redraw if the rectangle is wrong. Use middle/right drag to pan and the wheel to zoom; editing is easier when you can see the room's shared wall clearly.
+
+::: dummies
+Rooms occupy **cells**. Walls and doors occupy **edges between cells**. Click the wall edge when placing a door; clicking the middle of the room is a different target.
+:::
+
+### 3. Connect rooms with a door
+
+1. In @ui[Build], choose **Door (slides up)** in the wall-piece palette. Press **W** for the Wall tool.
+2. Click an edge in the wall shared by your rooms. The selected door piece replaces the wall piece there; the 3D preview shows the opening and door.
+3. Press **V**, select the door edge, and inspect its Door settings. For the first test, leave it unlocked and able to open normally. Add key/switch conditions only after you can walk through it.
+4. Make sure the door actually joins two walkable floor cells. A door in the outer perimeter can lead into empty space rather than another room.
+
+![A real pointer-drawn room extension and a door placed on its shared wall in FPS Level](assets/screenshots/ed-fpsc-room-drawn.png)
+
+### 4. Place one useful item
+
+1. Open @ui[Items]. Choose a health pickup or lamp and click inside your new room. Use **A** for the Add tool if needed; the item appears in the map/preview.
+2. Press **V**, select it and move it clear of the doorway and walls. Use **Q/E** to rotate a directional item.
+3. Keep a reachable **Player Start** inside the original room. Start with one clear route from it through the door to your new item.
+
+For an enemy, place a ready-made guard away from the player. Select it and press **P** to add patrol points; press Esc when finished. The [existing patrol and script reference](#scripts-attach-behaviour) explains more advanced behavior.
+
+### 5. Test this map, not the project
+
+1. Click @ui[▶ Test] inside FPS Level. Click the game's capture prompt, then use WASD and the mouse to look/move. Press **E** to use the door.
+2. Walk from Player Start through the doorway to the new room. Check collision, lighting and item placement.
+3. Stop with **Shift+Esc**, the top-right **Close test** button, or **Esc → Quit**. You return to the same editable map.
+
+::: warn
+**Test includes unsaved edits.** It does not save the map, change the scene's Level file, or change the project start scene. A successful Test is only the first checkpoint.
+:::
+
+### 6. Save a named map
+
+1. In the FPS editor's top bar, click @ui[Save as…].
+2. Enter **`levels/first_room.fpsl.json`** and click the dialog's **Save** button. Unlike the 2D Creator's basename dialog, this dialog accepts a path inside the project.
+3. Check that the top bar shows `levels/first_room.fpsl.json`. Later FPS **Save** clicks update that map.
+
+![The real FPS editor after Save as created first_room.fpsl.json from its working starter](assets/screenshots/ed-fpsc-first-room.png)
+
+::: tip
+**Checkpoint:** your map exists on disk. It is now ready for a scene to load, but the template's scene may still reference `levels/level1.fpsl.json`. Link the new path next.
+:::
+
+### 7. Connect the map to the real scene {#connect-fps-host}
+
+1. Stop FPS Test and main Play. Switch to the normal @ui[Scene] tab.
+2. In @ui[Assets], open **scenes** and double-click **`main.scene.json`** from this FPS template.
+3. In the normal @ui[Hierarchy], select **FPS Level**. Its @ui[Inspector] shows the attached **`scripts/fpsc/level-script.js`** script.
+4. Set that script's **Level file** to **`levels/first_room.fpsl.json`**. Use the path relative to the project folder.
+5. Save the **scene** through the normal editor's Save control. You have now saved both pieces: the map in FPS Level, and the reference in the ordinary scene.
+
+**In the file** `scenes/main.scene.json` (check this entry inside the FPS Level entity's `scripts` array; preserve the entity and all other entries):
+```json
+{
+  "path": "scripts/fpsc/level-script.js",
+  "attributes": {
+    "level": "levels/first_room.fpsl.json",
+    "autostart": false
+  }
+}
+```
+
+The visible Inspector label is **Level file**; the stored JSON key is **`level`**. The map is loaded by this host script. It does not become a collection of ordinary wall entities in the scene Hierarchy.
+
+::: warn
+**Do not delete the FPS Level host because the scene looks empty.** The host creates the FPS runtime from the saved map. Build its rooms in FPS Level; use the normal Scene/Inspector to choose which map the host loads.
+:::
+
+### 8. Check the starting scene and run normal Play
+
+1. In the @ui[Project] tab, expand **Project properties**. Set **Start scene** to **`scenes/main.scene.json`** for this template and click **Apply project properties** if you changed it.
+2. Press the normal editor's **Play** button. Click the capture prompt and walk the same route through your new room.
+3. If you see Outpost Zero instead, recheck the host's **Level file**: that usually means it still points at `levels/level1.fpsl.json`. If an earlier edit is missing, save the map again.
+
+**In the file** `nord.project.json` (check this field; do not replace the whole manifest):
+```json
+{ "startScene": "scenes/main.scene.json" }
+```
+
+::: dummies
+There are two references to check: the **project** chooses a `.scene.json`, then that **scene's host** chooses a `.fpsl.json`. Main Play follows both links. Opening a map in FPS Level changes neither link by itself.
+:::
+
+### 9. Continue building and export
+
+1. Return to **FPS Level ▸ Open…** and reopen **`first_room.fpsl.json`**. Add one unmistakable change, such as moving the health pickup.
+2. Use the FPS editor's **Save**, then run normal Play again. The host should load the changed file without needing a new host object.
+3. Stop, save the scene if its reference changed, and use @ui[File ▸ Export…] for a normal web-folder export. Test the exported game through a web server. The map and custom project content must be included; use the [export guide](export.html).
+
+For another FPS map, Save as a new `.fpsl.json`. To make that map the initial one, change the host's Level file. To continue between maps during gameplay, use the documented **Next level** / Level exit settings with project-relative map paths; see the Level and rules reference below.
+
+### Tutorial checkpoint
+
+- FPS Level **Save** writes `levels/first_room.fpsl.json`.
+- The saved scene's **FPS Level** script names that path in **Level file**.
+- The project starts at the scene containing that host.
+- Normal Play and the exported game show the new room, not just FPS Test.
+
+## FPS Test works, but main Play shows the wrong map {#fps-handoff-troubleshooting}
+
+| Symptom | Check | Correct action |
+|---|---|---|
+| Test is correct; main Play loads Outpost Zero | Host still names `level1.fpsl.json` | Set **Level file** to your new map and save the scene |
+| Main Play loads an earlier version | Map edits were never saved | Save from FPS Level, then restart main Play |
+| Scene view has no individual room walls | The map is runtime data, not ordinary scene wall entities | Keep the host; edit rooms in FPS Level |
+| Changing Start scene to a `.fpsl.json` fails | Project start expects a `.scene.json` | Keep the host scene as start; set the map on its script |
+| You saved the scene but lost room edits | Map and scene have separate Save actions | Save the map in FPS Level too |
+| You cannot move the mouse in the test | Capture prompt or pause state | Click to capture; Esc releases; Resume recaptures |
+| Host reports a missing level | Incorrect relative path or unsaved file | Compare the Creator's path, disk file and Level file value |
+
+## Existing tools and reference
+
+The original quick start and detailed tool reference follow. Use them for wall shapes, storeys, doors, custom scripts, no-code rules and assets.
+
+
+
 **FPS Creator** is an addon for Nord that turns the editor into a *level editor on steroids* for first-person shooters (and adventures): you draw rooms on a grid, drop in doors, windows, lights, enemies and pickups, attach scripts, press **F5** and play. It is inspired by the classic FPS Creator workflow, but everything is original and works offline. Nothing in the normal editor changes — you opt in per project.
 
 ::: dummies
@@ -312,6 +467,8 @@ Things to copy into your own levels:
 
 ## Check yourself
 
+- Confirm the Creator map path, the host script's Level file, and the project's Start scene agree with the tutorial.
+- Save the map and the host scene separately; test the same route in FPS Test, normal Play, and the exported game.
 - Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
 - If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
 - For platform or feature limits, check [Known issues](known-issues.html).

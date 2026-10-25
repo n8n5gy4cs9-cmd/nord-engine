@@ -9,6 +9,192 @@
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="manual-paths.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="../guides/cookbook.html">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
 <div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><details><summary>Getting oriented <small>(4)</small></summary><a href="manual-paths.html">Manual — choose a task</a><a href="editor-tour.html">Editor tour</a><a href="appearance.html">Editor appearance</a><a href="organise-project.html">Organising your project</a></details><details><summary>Projects, objects and scripts <small>(6)</small></summary><a href="projects-scenes.html">Projects &amp; scenes</a><a href="library.html">The library</a><a href="unity-workflow.html">Unity-style workflow</a><a href="ai-mcp.html">AI and MCP</a><a href="unity-coverage.html">Unity coverage</a><a href="unity-scripting.html">Unity-style scripting</a></details><details open><summary>2D and 3D worlds <small>(9)</small></summary><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="assets.html">Assets</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html" class="cur" aria-current="page">2D Level Creator — sprites, maps and physics</a><a href="modeler.html">3D Modeler</a></details><details><summary>Gameplay, sound and interfaces <small>(12)</small></summary><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="ui-designer.html">UI Designer</a><a href="graph.html">Node graphs (visual scripting)</a><a href="animator.html">Animator</a><a href="multiplayer.html">Multiplayer</a><a href="dev-console.html">In-game Dev Console</a></details><details><summary>Test and publish <small>(8)</small></summary><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Find an API or file setting</a><a href="desktop-apps.html">Desktop apps</a><a href="debugger.html">Debugger and profiler</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="welcome.html">Welcome</a><a href="scripting.html">Scripting</a></details></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>2D Level Creator — sprites, maps and physics</h1>
+<h2 id="level-to-scene">Where does my 2D level go?<a class="anchor" href="#level-to-scene">#</a></h2>
+<aside class="box tip"><div class="box-title">Tip</div><p><strong>Save creates the real scene for you.</strong> In 2D Level Creator, saving a level named <code>first_steps</code> writes <strong>both</strong> <code>levels/first_steps.level2d.json</code> and <code>scenes/first_steps.scene.json</code>. Then <strong>Use as game start</strong> selects that generated scene for the main Play button and export. You do not drag the <code>.level2d.json</code> into an empty scene.</p>
+</aside><div class="handoff-flow" aria-label="2D authoring level is compiled into a normal scene, which the project selects as its start scene">
+<div><b>1 · EDIT</b><strong>2D Level Creator</strong><code>levels/<wbr>first_steps.level2d.json</code><span>Your editable map, layers, objects and scripts.</span></div>
+<div><b>2 · SAVE</b><strong>A normal Nord scene</strong><code>scenes/<wbr>first_steps.scene.json</code><span>The generated tiles, Player, Camera and object components.</span></div>
+<div><b>3 · USE AS GAME START</b><strong>Main Play and export</strong><code>nord.project.json → startScene</code><span>The project runs that saved scene.</span></div>
+</div><aside class="box dummies"><div class="box-title">For dummy developers</div><p>The level file is your editable recipe. Save cooks that recipe into a normal scene. The project&#39;s <strong>Start scene</strong> setting tells Play which cooked scene to open. <strong>Test</strong>, <strong>Save</strong>, and <strong>Use as game start</strong> are three different actions; testing alone does not publish or select anything.</p>
+</aside><p><a href="#first-playable-2d-level">Follow the complete walkthrough below</a>, or jump to <a href="#open-generated-scene">opening the generated scene</a>. The existing tool reference follows the walkthrough.</p>
+<h2 id="first-playable-2d-level">Tutorial: your first playable 2D level<a class="anchor" href="#first-playable-2d-level">#</a></h2>
+<p><strong>Goal:</strong> paint a small platform level, save it as <code>first_steps</code>, see its ordinary scene, and run it through the project&#39;s normal Play button. No JavaScript is required.</p>
+<h3 id="1-start-with-a-working-player">1. Start with a working player<a class="anchor" href="#1-start-with-a-working-player">#</a></h3>
+<ol>
+<li>From the project hub, create a project using <strong>2D Platform Workshop</strong>. Keep it in its own project folder. The editor opens the <strong>2D Level</strong> tab with a working map.</li>
+<li>To make a fresh practice level, use <span class="c-ui">2D Level ▸ New</span>, select <strong>Side-scroller workshop</strong>, and confirm with <strong>OK</strong>. Save any previous work before replacing it.</li>
+<li>Keep the starter&#39;s existing <strong>Player</strong>, floor, pickups and exit for this exercise. You should see their pictures on the map. Press <strong>Home</strong> if the map is outside the view.</li>
+</ol>
+<aside class="box tip"><div class="box-title">Tip</div><p><strong>Checkpoint:</strong> you already have a playable foundation. The starter&#39;s Player has the controller, tags and body setup it needs. First change the environment around that player; creating a second Player is unnecessary.</p>
+</aside><h3 id="2-paint-a-small-platform">2. Paint a small platform<a class="anchor" href="#2-paint-a-small-platform">#</a></h3>
+<ol>
+<li>In <span class="c-ui">Level</span>, select the <strong>World</strong> layer. Keep it visible and unlocked, with <strong>Parallax</strong> set to <code>1</code> for colliding terrain.</li>
+<li>Switch to <span class="c-ui">Build</span>, choose a terrain tile, and enable <strong>Solid tiles</strong> in the toolbar. Press <strong>B</strong> for Brush.</li>
+<li>Paint a short ledge above the existing floor, leaving space for the Player to stand and jump. Use <strong>R Rectangle</strong> for a larger block. Use <strong>X</strong> to erase a mistake, or undo it.</li>
+<li>Keep a continuous floor below the Player. The painted tile pictures should now appear on the map; solid tiles will act as obstacles in the game.</li>
+</ol>
+<aside class="box warn"><div class="box-title">Careful</div><p><strong>A visible tile is not automatically solid.</strong> Check <strong>Solid tiles</strong> while painting and keep colliding tiles on a layer with Parallax <code>1</code>. A decorative background layer is a different job.</p>
+</aside><h3 id="3-place-a-pickup-and-check-the-player">3. Place a pickup and check the player<a class="anchor" href="#3-place-a-pickup-and-check-the-player">#</a></h3>
+<ol>
+<li>Open <span class="c-ui">Items</span>. Choose a ready-made pickup card from the project&#39;s item bank, then use <strong>B Brush</strong> to click once above the floor. The new object appears at that position with its existing behavior.</li>
+<li>Press <strong>V</strong> and select the placed object. Its Inspector shows its position, body and scripts. Move it somewhere reachable without putting it inside a solid tile.</li>
+<li>Select the starter Player. Keep its name <strong>Player</strong> and its <code>player</code> tag. Those are used by the camera and interactions.</li>
+</ol>
+<p>If you use <strong>Create an item from a sprite</strong> instead of a ready-made card, choose the appropriate <strong>Placement role</strong> before placing it. A decorative picture has different behavior from a Pickup or Player start. The ready-made item cards are the easiest route for this first exercise.</p>
+<h3 id="4-test-the-unsaved-map">4. Test the unsaved map<a class="anchor" href="#4-test-the-unsaved-map">#</a></h3>
+<ol>
+<li>Click <span class="c-ui">▶ Test · F5</span> inside the 2D Level toolbar. The game opens over the level editor.</li>
+<li>Focus the test, move with A/D or the arrows, and jump with Space. Try the new ledge and pickup.</li>
+<li>Click <strong>Stop · Shift+Esc</strong>, or press Shift+Esc, to return to building. Adjust the map and test again until the player can move and land correctly.</li>
+</ol>
+<aside class="box tip"><div class="box-title">Tip</div><p><strong>Checkpoint:</strong> your new ledge appears and blocks the Player in Test. This proves the map works in the Creator preview. It does <strong>not</strong> prove that main Play has selected this map yet.</p>
+</aside><h3 id="5-save-the-level-and-generate-the-scene">5. Save the level AND generate the scene<a class="anchor" href="#5-save-the-level-and-generate-the-scene">#</a></h3>
+<ol>
+<li>In the Creator&#39;s own top bar, click <span class="c-ui">Save as…</span>.</li>
+<li>Enter <strong><code>first_steps</code></strong> and confirm with <strong>OK</strong>. Enter the basename only: no <code>levels/</code> prefix and no extension.</li>
+<li>Read the status line at the bottom. It should report both <strong><code>levels/first_steps.level2d.json</code></strong> and <strong><code>scenes/first_steps.scene.json</code></strong> as saved. Future <strong>Save</strong> clicks update this pair.</li>
+</ol>
+<p><img src="../../assets/screenshots/ed-level2d-handoff-name.png" alt="Save as dialog in the real 2D Level Creator with first_steps entered as the filename"></p>
+<p><img src="../../assets/screenshots/ed-level2d-handoff-save.png" alt="The Creator after saving, with the status line naming both the authoring level and generated scene"></p>
+<table>
+<thead>
+<tr>
+<th>File just created</th>
+<th>Open it to do what?</th>
+<th>Which file should you keep editing?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>levels/first_steps.level2d.json</code></td>
+<td>Reopen the editable map in <strong>2D Level ▸ Open…</strong></td>
+<td>This is your authoring source</td>
+</tr>
+<tr>
+<td><code>scenes/first_steps.scene.json</code></td>
+<td>Inspect the generated ordinary scene in Nord&#39;s <strong>Scene</strong> tab</td>
+<td>Treat it as generated output while using the Creator</td>
+</tr>
+</tbody></table>
+<p>Saving also copies the referenced bank assets and required scripts into your project. A successful save message is the handoff from the Creator to normal Nord files.</p>
+<h3 id="6-tell-the-real-game-to-use-this-scene">6. Tell the real game to use this scene<a class="anchor" href="#6-tell-the-real-game-to-use-this-scene">#</a></h3>
+<ol>
+<li>Still in <strong>2D Level</strong>, click <span class="c-ui">Use as game start</span>.</li>
+<li>Read the confirmation: it saves the level and scene and updates the project&#39;s starting scene, display, physics and movement keys. Confirm with <strong>OK</strong> for this workshop project.</li>
+<li>Check the status line for <strong>game start updated</strong>. This is the step that connects your map to the project&#39;s normal starting point.</li>
+</ol>
+<p><img src="../../assets/screenshots/ed-level2d-handoff-start.png" alt="Use as game start confirmation explaining the saved scene and project-wide settings"></p>
+<p><strong>In the file</strong> <code>nord.project.json</code> (check this one field; keep the rest of the manifest):</p>
+<pre class="code" data-lang="json"><code>{ &quot;startScene&quot;: &quot;scenes/first_steps.scene.json&quot; }</code></pre>
+<aside class="box warn"><div class="box-title">Careful</div><p><strong>This changes project-wide settings too.</strong> Display size, physics and input are applied from the level. Use a separate workshop project while learning. For an existing game, review those settings before replacing them; all its scenes share the project configuration.</p>
+</aside><h3 id="open-generated-scene">7. Open the generated scene in the real Scene tab<a class="anchor" href="#open-generated-scene">#</a></h3>
+<ol>
+<li>Stop the Creator test and main Play, if either is running.</li>
+<li>In Nord&#39;s normal <span class="c-ui">Assets</span> panel, open the project&#39;s <strong>scenes</strong> folder and double-click <strong><code>first_steps.scene.json</code></strong>. The ordinary Scene tab opens that file.</li>
+<li>Inspect <span class="c-ui">Hierarchy</span>. You should find ordinary scene entities, including <strong>Player</strong>, <strong>Camera</strong>, and generated tile/object entities. This is already the “real scene”—it is not a picture of the Creator map.</li>
+<li>In the normal <span class="c-ui">Project</span> tab, expand <strong>Project properties</strong> and check <strong>Start scene</strong>. It should name <code>scenes/first_steps.scene.json</code>. If the field still shows an older setting, reopen the project first to refresh it. If you deliberately need to change it, select that path and click <strong>Apply project properties</strong>.</li>
+<li>Press the normal editor&#39;s <strong>Play</strong> button. The saved <code>first_steps</code> map should run, including your ledge and pickup.</li>
+</ol>
+<p>If the new scene is not listed or main Play still uses an older project setting, stop and reopen the project, then check the same paths again. Do not solve a file-selection problem by copying the tiles manually into another scene.</p>
+<p><img src="../../assets/screenshots/ed-level2d-handoff-game.png" alt="The saved first_steps scene running through the normal game entry, showing the Player, floor, pickup line and added tile"></p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>Opening a scene for editing and choosing the project&#39;s Start scene are separate choices. The Scene tab says “this is what I am looking at.” <strong>Start scene</strong> says “this is where the whole game starts.” They can point at different files.</p>
+</aside><h3 id="8-make-a-change-and-export">8. Make a change and export<a class="anchor" href="#8-make-a-change-and-export">#</a></h3>
+<ol>
+<li>Return to <strong>2D Level ▸ Open…</strong> and open <strong><code>first_steps.level2d.json</code></strong>. Change one visible tile or pickup position.</li>
+<li>Click the Creator&#39;s <strong>Save</strong>. That regenerates <code>scenes/first_steps.scene.json</code> from the updated authoring file. Test with normal Play again; the saved change should now appear there too.</li>
+<li>Stop, save any other edited project files, then use <span class="c-ui">File ▸ Export…</span> for a normal web-folder export. Open the exported game through a web server and verify the same starting map. See <a href="export.html">Export</a> for hosting details.</li>
+</ol>
+<aside class="box warn"><div class="box-title">Careful</div><p><strong>Do not use the generated scene as a second independent source.</strong> Manual edits to <code>scenes/first_steps.scene.json</code> can be overwritten by the next Creator Save. Make map/object/script changes in the Creator&#39;s authoring file when you want them to survive recompilation. There is no automatic merge into an unrelated scene you already made.</p>
+</aside><h3 id="tutorial-checkpoint">Tutorial checkpoint<a class="anchor" href="#tutorial-checkpoint">#</a></h3>
+<ul>
+<li>The Creator status line names <strong>two</strong> saved files with the same basename.</li>
+<li>The normal Scene tab can open <code>scenes/first_steps.scene.json</code> and shows generated entities.</li>
+<li><code>nord.project.json</code> starts at that scene, and normal Play shows your latest saved edit.</li>
+<li>You can reopen <code>levels/first_steps.level2d.json</code> to continue authoring.</li>
+</ul>
+<h2 id="level-in-existing-game">Already have a title scene or custom game logic?<a class="anchor" href="#level-in-existing-game">#</a></h2>
+<p>Keep the authoring level and generated gameplay scene <strong>inside the same 2D project</strong> as your menu, assets and scripts. You do not have to make the gameplay scene the permanent project start if the game should begin with a title screen.</p>
+<table>
+<thead>
+<tr>
+<th>What you want</th>
+<th>Use this workflow</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Game starts directly in the new map</td>
+<td>Follow <strong>Use as game start</strong> above</td>
+</tr>
+<tr>
+<td>Game starts at a title/menu scene, then opens the map</td>
+<td>Keep the title as the project&#39;s Start scene; its Play action loads <code>scenes/first_steps.scene.json</code></td>
+</tr>
+<tr>
+<td>Custom level-wide HUD or controller</td>
+<td>In Creator <strong>Level ▸ Level controller</strong>, choose your project script; Save preserves that authoring choice in the generated scene</td>
+</tr>
+<tr>
+<td>Custom pickup or enemy behavior</td>
+<td>Attach/configure scripts on objects in the Creator, then Save</td>
+</tr>
+<tr>
+<td>Manually add entities to a generated scene</td>
+<td>Know that a later Creator Save can overwrite those edits; prefer authoring-owned objects/scripts</td>
+</tr>
+</tbody></table>
+<p>For a scripted transition, import <code>SceneManager</code> from <code>nord</code> and call <code>await SceneManager.LoadScene(&#39;scenes/first_steps.scene.json&#39;)</code> inside an async menu action. <a href="../examples/ex-scenes.html">Scenes and persistent objects</a> supplies the complete workflow. The title and gameplay scene share project-wide physics and input, so review those settings before applying another level&#39;s defaults.</p>
+<aside class="box tip"><div class="box-title">Tip</div><p><strong>A useful mental model:</strong> one project can hold a title scene and several generated level scenes. You choose which scene starts first, then scene-loading logic chooses what comes next. The Creator builds each level scene; it does not automatically add it as a child of your title scene.</p>
+</aside><h2 id="level-handoff-troubleshooting">Test works, but the real scene is wrong<a class="anchor" href="#level-handoff-troubleshooting">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>What you see</th>
+<th>Likely missing step</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Test shows the new level, main Play shows the old one</td>
+<td>Start scene still points at the previous scene</td>
+<td>Use <strong>Use as game start</strong>, then check Project properties</td>
+</tr>
+<tr>
+<td>Main Play shows an earlier version of the right map</td>
+<td>Unsaved Creator changes</td>
+<td>Stop Test and click Creator <strong>Save</strong></td>
+</tr>
+<tr>
+<td>You saved <code>first_steps</code> but still have <code>main.scene.json</code> open</td>
+<td>Save does not automatically replace the document you are viewing</td>
+<td>Open <code>scenes/first_steps.scene.json</code> in Assets</td>
+</tr>
+<tr>
+<td>You drag <code>.level2d.json</code> and nothing useful happens</td>
+<td>It is an authoring file, not a scene entity</td>
+<td>Open it through Creator <strong>Open…</strong>, then Save and open its generated scene</td>
+</tr>
+<tr>
+<td>Two files have similar names</td>
+<td>Authoring map versus generated scene</td>
+<td><code>.level2d.json</code> is edited in the Creator; <code>.scene.json</code> runs as a normal scene</td>
+</tr>
+<tr>
+<td>Scene edits vanish after a Creator Save</td>
+<td>The generated scene was edited independently</td>
+<td>Put persistent map/object changes in the authoring level</td>
+</tr>
+<tr>
+<td>Player falls through art</td>
+<td>Decoration or non-solid terrain</td>
+<td>Check collision, Solid tiles, layer Parallax and body setup</td>
+</tr>
+<tr>
+<td>No Player/camera behavior</td>
+<td>Player role, name or tag was changed</td>
+<td>Start from the workshop Player; keep <strong>Player</strong> and <code>player</code></td>
+</tr>
+</tbody></table>
+<h2 id="existing-tools-and-reference">Existing tools and reference<a class="anchor" href="#existing-tools-and-reference">#</a></h2>
+<p>The sections below remain the general reference for the Creator, sprites, layers, physics and project files.</p>
 <p>The <strong>2D Level</strong> tab brings the FPS Level workflow to platform games, top-down games and physics puzzles. Start from <strong>2D Platform Workshop</strong>, <strong>2D Top-down Workshop</strong>, or <strong>Machine Workshop</strong> on the welcome screen.</p>
 <aside class="box dummies"><div class="box-title">For dummy developers</div><p>A tile is a picture stamped on the grid. An object is a picture you can move independently and give scripts or a physics body. The Inspector changes how that object behaves. You can make a small game by painting solid ground, placing a player and pickups, and adding an exit.</p>
 </aside><figure class="shot"><img src="../../assets/screenshots/ed-level2d-bank.png" alt="2D Level Creator with the sprite palette, level map and physics object Inspector" loading="lazy"><figcaption>Build and Items share the sprite bank. The Inspector edits object values and scripts.</figcaption></figure><h2 id="find-a-useful-starting-point">Find a useful starting point<a class="anchor" href="#find-a-useful-starting-point">#</a></h2>
@@ -91,10 +277,13 @@
 </aside><p>The editor currently supports finite orthogonal maps. It has no isometric/hex maps, automatic terrain rules, polygon/joint editor or Tiled/LDtk importer. Drag-and-drop feel in the native editor window has had less testing than the browser version.</p>
 <h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
 <ul>
+<li>Find your matching <code>.level2d.json</code> and generated <code>.scene.json</code>; both have the intended basename.</li>
+<li>Confirm Project properties points at the intended starting scene, or that your menu loads the generated gameplay scene.</li>
+<li>Change one Creator tile, Save, then prove it appears in normal Play and the exported game.</li>
 <li>Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.</li>
 <li>If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.</li>
 <li>For platform or feature limits, check <a href="../appendix/known-issues.html">Known issues</a>.</li>
 </ul>
 <p>Next: <a href="../examples/examples.html">Choose a worked example</a>. Back to: <a href="manual-paths.html">Manual reading paths</a>.</p>
-<div class="pager"><a href="fps-creator.html"><small>← Previous</small>FPS Creator — build first-person levels</a><a href="modeler.html"><small>Next →</small>3D Modeler</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#find-a-useful-starting-point">Find a useful starting point </a><a href="#build-a-platform-or-top-down-game">Build a platform or top-down game </a><a href="#moving-around">Moving around </a><a href="#layers-and-reusable-items">Layers and reusable items </a><a href="#side-view-physics-and-machine-workshop">Side-view physics and Machine Workshop </a><a href="#import-your-own-art">Import your own art </a><a href="#save-and-export-the-correct-level">Save and export the correct level </a><a href="#check-yourself">Check yourself </a></aside></div>
+<div class="pager"><a href="fps-creator.html"><small>← Previous</small>FPS Creator — build first-person levels</a><a href="modeler.html"><small>Next →</small>3D Modeler</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#level-to-scene">Where does my 2D level go? </a><a href="#first-playable-2d-level">Tutorial: your first playable 2D level </a><a href="#level-in-existing-game">Already have a title scene or custom game logic? </a><a href="#level-handoff-troubleshooting">Test works, but the real scene is wrong </a><a href="#existing-tools-and-reference">Existing tools and reference </a><a href="#find-a-useful-starting-point">Find a useful starting point </a><a href="#build-a-platform-or-top-down-game">Build a platform or top-down game </a><a href="#moving-around">Moving around </a><a href="#layers-and-reusable-items">Layers and reusable items </a><a href="#side-view-physics-and-machine-workshop">Side-view physics and Machine Workshop </a><a href="#import-your-own-art">Import your own art </a><a href="#save-and-export-the-correct-level">Save and export the correct level </a><a href="#check-yourself">Check yourself </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>
