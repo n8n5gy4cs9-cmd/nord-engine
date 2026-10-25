@@ -1,0 +1,8 @@
+# Builds the Windows nord-player template with the MinGW cross toolchain (same ABI as ./build-win.sh gnu).
+# Repo is mounted read-only at /src, the result (nord-player.exe + DLLs) goes to /out.
+FROM rust:1-bookworm
+RUN apt-get update && apt-get install -y --no-install-recommends mingw-w64 && rm -rf /var/lib/apt/lists/* && rustup target add x86_64-pc-windows-gnu
+ENV CARGO_TARGET_DIR=/work/target CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER=x86_64-w64-mingw32-gcc
+CMD cd /src && cargo build --release --locked --target x86_64-pc-windows-gnu -p nord-player --features shell \
+ && cp /work/target/x86_64-pc-windows-gnu/release/nord-player.exe /out/ \
+ && cp /work/target/x86_64-pc-windows-gnu/release/*.dll /out/ 2>/dev/null || true

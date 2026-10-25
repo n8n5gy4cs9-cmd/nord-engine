@@ -1,10 +1,14 @@
 //! Export dialog: runs `nord_export::build` on a worker thread, logs the report to the console, can open the output folder.
 use crate::state::{EditorState, LogLevel};
+use nord_export::templates::{self, DesktopOpts, Platform, Status};
 use nord_export::{Host, Opts, Target};
 use std::{
     path::PathBuf,
     sync::mpsc::{channel, Receiver},
 };
+
+/// App path + notes for the Console, or a one-line error.
+type DesktopResult = Result<(PathBuf, Vec<String>), String>;
 
 pub struct ExportUi {
     pub open: bool,
@@ -21,6 +25,13 @@ pub struct ExportUi {
     pub out: String,
     /// next `start` builds the Android/iOS (Capacitor) project instead of the web folder
     pub mobile: bool,
+    /// Desktop app section: platform, archive (.dmg on Mac / .zip / .tar.gz), app name, icon, output folder (empty = `<project>/dist-desktop`)
+    pub d_platform: Platform,
+    pub d_archive: bool,
+    pub d_name: String,
+    pub d_icon: String,
+    pub d_out: String,
+    desk: Option<Receiver<DesktopResult>>,
     running: Option<Receiver<Result<(String, PathBuf), String>>>,
     last_out: Option<PathBuf>,
     status: String,
@@ -40,6 +51,12 @@ impl Default for ExportUi {
             compile_events: true,
             out: String::new(),
             mobile: false,
+            d_platform: Platform::host().unwrap_or(Platform::WindowsX64),
+            d_archive: false,
+            d_name: String::new(),
+            d_icon: String::new(),
+            d_out: String::new(),
+            desk: None,
             running: None,
             last_out: None,
             status: String::new(),
@@ -118,9 +135,75 @@ pub fn start(st: &mut EditorState) {
     st.export_ui.status = "Building…".into();
 }
 
+/// Mac is only offered when a Mac template exists (or this is that Mac and has its own player).
+fn platform_ready(p: Platform, engine: Option<&std::path::Path>) -> bool {
+    matches!(templates::status(p), Status::Installed(..))
+        || (Platform::host() == Some(p)
+            && engine.is_some_and(|e| nord_export::mac::find_player(e).is_some()))
+}
+
+/// Desktop export: web build into a temp folder, then wrap it with the template of the chosen platform (background thread).
+pub fn start_desktop(st: &mut EditorState) {
+    let (Some(root), Some(engine)) = (st.root.clone(), crate::platform::engine_root()) else {
+        st.export_ui.status = "No project open or engine folder not found (set NORD_ROOT)".into();
+        return;
+    };
+    let e = &st.export_ui;
+    let o = DesktopOpts {
+        platform: e.d_platform,
+        name: Some(e.d_name.trim().to_string()).filter(|n| !n.is_empty()),
+        out_dir: if e.d_out.trim().is_empty() {
+            root.join("dist-desktop")
+        } else {
+            PathBuf::from(e.d_out.trim())
+        },
+        icon: Some(PathBuf::from(e.d_icon.trim()))
+            .filter(|p| !e.d_icon.trim().is_empty() && p.exists()),
+        archive: e.d_archive,
+    };
+    let (tx, rx) = channel();
+    crate::platform::run_export(move || {
+        let tmp = std::env::temp_dir().join(format!("nord-desktop-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&tmp);
+        let r = nord_export::build(
+            &root,
+            &engine,
+            &Opts {
+                out: Some(tmp.clone()),
+                ..Default::default()
+            },
+        )
+        .and_then(|_| templates::export_desktop(&tmp, &engine, &o))
+        .map_err(|e| friendly(&format!("{e:#}")));
+        let _ = std::fs::remove_dir_all(&tmp);
+        let _ = tx.send(r);
+    });
+    st.export_ui.desk = Some(rx);
+    st.log(
+        LogLevel::Build,
+        format!(
+            "Desktop export for {}: building the web game first…",
+            st.export_ui.d_platform.label()
+        ),
+    );
+    st.export_ui.status = "Building desktop app…".into();
+}
+
+/// One-line messages for the common failures.
+fn friendly(e: &str) -> String {
+    let first = e.lines().next().unwrap_or(e);
+    if e.contains("Permission denied") || e.contains("os error 13") {
+        "No write permission for the output folder: pick another one.".into()
+    } else if e.contains("codesign failed") {
+        "codesign is not available or failed: the app is unsigned. Right-click ▸ Open the first time.".into()
+    } else {
+        first.to_string()
+    }
+}
+
 impl ExportUi {
     pub fn is_running(&self) -> bool {
-        self.running.is_some()
+        self.running.is_some() || self.desk.is_some()
     }
 }
 
@@ -156,10 +239,33 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
             ctx.request_repaint_after(std::time::Duration::from_millis(200));
         }
     }
+    if let Some(rx) = &st.export_ui.desk {
+        if let Ok(r) = rx.try_recv() {
+            st.export_ui.desk = None;
+            match r {
+                Ok((app, notes)) => {
+                    for n in notes {
+                        st.log(LogLevel::Build, n);
+                    }
+                    st.log(LogLevel::Build, format!("Desktop app → {}", app.display()));
+                    st.export_ui.status = format!("Done → {}", app.display());
+                    st.export_ui.last_out = app.parent().map(|p| p.to_path_buf());
+                }
+                Err(e) => {
+                    st.log(LogLevel::Error, format!("Desktop export failed: {e}"));
+                    st.export_ui.status = format!("Failed: {e}");
+                }
+            }
+        } else {
+            ctx.request_repaint_after(std::time::Duration::from_millis(200));
+        }
+    }
     if !st.export_ui.open {
         return;
     }
     let mut open = true;
+    let mut go_desktop = false;
+    let mut open_templates = false;
     let busy = st.export_ui.running.is_some();
     let mut go = false;
     egui::Window::new("Export")
@@ -198,6 +304,49 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
                     }
                 });
             ui.separator();
+            ui.collapsing("Desktop app (Mac / Windows / Linux)", |ui| {
+                let engine = crate::platform::engine_root();
+                egui::ComboBox::from_label("Platform")
+                    .selected_text(e.d_platform.label())
+                    .show_ui(ui, |ui| {
+                        for p in Platform::ALL {
+                            let ok = !p.is_mac() || platform_ready(p, engine.as_deref());
+                            ui.add_enabled_ui(ok, |ui| {
+                                ui.selectable_value(&mut e.d_platform, p, p.label())
+                            })
+                            .response
+                            .on_disabled_hover_text("No Mac template installed: Project ▸ Export templates…");
+                        }
+                    });
+                let kind = if e.d_platform.is_mac() {
+                    "Make .dmg (Mac only) and .zip"
+                } else if e.d_platform.is_windows() {
+                    "Make .zip"
+                } else {
+                    "Make .tar.gz"
+                };
+                ui.checkbox(&mut e.d_archive, kind);
+                egui::Grid::new("export-desktop").num_columns(2).show(ui, |ui| {
+                    ui.label("App name");
+                    ui.add(egui::TextEdit::singleline(&mut e.d_name).hint_text("project name"));
+                    ui.end_row();
+                    ui.label("Icon (PNG)");
+                    ui.add(egui::TextEdit::singleline(&mut e.d_icon).hint_text("icon.png in the project, else the Nord logo"));
+                    ui.end_row();
+                    ui.label("Output folder");
+                    ui.add(egui::TextEdit::singleline(&mut e.d_out).hint_text("<project>/dist-desktop"));
+                    ui.end_row();
+                });
+                ui.horizontal(|ui| {
+                    if ui.add_enabled(!busy, egui::Button::new("Export desktop app")).clicked() {
+                        go_desktop = true;
+                    }
+                    if ui.button("Export templates…").clicked() {
+                        open_templates = true;
+                    }
+                });
+            });
+            ui.separator();
             ui.horizontal(|ui| {
                 if ui.add_enabled(!busy, egui::Button::new("Export")).clicked() {
                     go = true;
@@ -216,6 +365,12 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
         });
     if go {
         start(st);
+    }
+    if go_desktop {
+        start_desktop(st);
+    }
+    if open_templates {
+        st.templates_ui.open = true;
     }
     if !open {
         st.export_ui.open = false;

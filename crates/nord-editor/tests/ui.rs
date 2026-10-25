@@ -2154,3 +2154,45 @@ fn outside_scene_change_reloads_quietly_or_asks_when_dirty() {
         .iter()
         .any(|e| e.id == "ext-B"));
 }
+
+#[test]
+fn desktop_export_makes_a_mac_app_from_a_template() {
+    let mut st = state_with_scene("desktop");
+    let root = st.root.clone().unwrap();
+    let fake = root.join("fake-player");
+    std::fs::write(&fake, b"#!/bin/sh\n").unwrap();
+    nord_export::templates::install_files(nord_export::templates::Platform::MacArm64, &fake, &[])
+        .unwrap();
+    let out = root.join("out-desktop");
+    st.export_ui.d_platform = nord_export::templates::Platform::MacArm64;
+    st.export_ui.d_out = out.display().to_string();
+    nord_editor::panels::export::start_desktop(&mut st);
+    let mut h = Harness::builder()
+        .with_size(egui::vec2(700.0, 500.0))
+        .build_state(
+            |ctx, st: &mut EditorState| nord_editor::panels::export::window(st, ctx),
+            st,
+        );
+    for _ in 0..400 {
+        h.step();
+        if h.state()
+            .console
+            .iter()
+            .any(|l| l.text.starts_with("Desktop app"))
+        {
+            break;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(50));
+    }
+    let app = std::fs::read_dir(&out)
+        .unwrap()
+        .flatten()
+        .map(|e| e.path())
+        .find(|p| p.extension().is_some_and(|e| e == "app"))
+        .expect("no .app written");
+    assert!(
+        app.join("Contents/MacOS/NordPlayer").exists()
+            && app.join("Contents/Resources/game/index.html").exists()
+            && app.join("Contents/Info.plist").exists()
+    );
+}

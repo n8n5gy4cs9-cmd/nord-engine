@@ -307,6 +307,8 @@ Verified: node unit tests, the file API/CLI, Nord boot of the template, 18 gamep
 </li>
 <li><p><code>unity_scene_to_nord</code> is a conservative YAML reader tested on a small synthetic project (<code>mcp/fixtures/unity-sample</code>), not on large real Unity projects; nested prefab overrides are only listed in <code>todo</code>.</p>
 </li>
+<li><p><strong>Desktop export (2026-10-25):</strong> verified on a Mac only: <code>examples/clock</code> wrapped by the Mac path, signed and opened. Windows and Linux bundles are assembled by the same code but were not run on a real Windows / Linux host. The <code>.nordtemplates</code> CI job and the Colima/Docker Dockerfiles (<code>docker/</code>, MinGW for Windows, x64 Linux under emulation on Apple silicon) were never run; the Windows DLL set copied from the cross build is a guess. Download needs <code>curl</code> and a published release of this exact version. Mac apps made on Windows / Linux are unsigned.</p>
+</li>
 <li><p><strong>Game view keyboard focus (2026-10-24, unverified by hand):</strong> editor shortcuts are muted while <code>game_focused</code>; it relies on the game page&#39;s <code>focus</code>/<code>blur</code>/<code>pointerdown</code> events reaching the editor over <code>/api/ipc</code>. If Q/W/E still switch tools while playing, check that the Game page really receives focus on the native webview (click it once) and report which platform.</p>
 </li>
 </ul>

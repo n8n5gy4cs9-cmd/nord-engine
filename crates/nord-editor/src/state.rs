@@ -67,6 +67,8 @@ pub struct Settings {
     pub button_scale: f32,
     /// Material preview ball / thumbnails: flat colour only (no texture, normal or emissive maps) for slow machines
     pub plain_material_previews: bool,
+    /// Developer: show "Build templates" (Colima/Docker) in Export templates
+    pub dev_build_templates: bool,
     pub code_font_size: f32,
     pub code_word_wrap: bool,
     /// Line-height multiplier relative to the code font size.
@@ -124,6 +126,7 @@ impl Default for Settings {
             font_scale: 1.0,
             button_scale: 1.0,
             plain_material_previews: false,
+            dev_build_templates: false,
             code_font_size: 13.0,
             code_word_wrap: false,
             code_line_height: 1.6,
@@ -333,6 +336,7 @@ pub enum Action {
     ResetSettings,
     Export,
     DesktopSettings,
+    ExportTemplates,
     /// install / upgrade the FPS Creator runtime in the open project
     FpsInstall,
     About,
@@ -476,6 +480,7 @@ pub struct EditorState {
     pub lan_open: bool,
     pub settings_open: bool,
     pub export_ui: crate::panels::export::ExportUi,
+    pub templates_ui: crate::panels::templates::TemplatesUi,
     pub desktop_ui: crate::panels::desktop::DesktopUi,
     pub about_open: bool,
     pub apply_theme: bool,
@@ -588,6 +593,7 @@ impl EditorState {
             lan_open: false,
             settings_open: false,
             export_ui: Default::default(),
+            templates_ui: Default::default(),
             desktop_ui: Default::default(),
             about_open: false,
             apply_theme: true,

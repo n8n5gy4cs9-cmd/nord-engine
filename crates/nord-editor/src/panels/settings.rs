@@ -123,6 +123,10 @@ pub fn window(st: &mut EditorState, ctx: &Context) {
                 ui.checkbox(&mut s.plain_material_previews, "Flat colour only (faster)")
                     .on_hover_text("Off (default): the preview ball and Assets thumbnails show the texture, normal map and emissive map. On: colour, metallic and roughness only.");
                 ui.end_row();
+                ui.label("Developer");
+                ui.checkbox(&mut s.dev_build_templates, "Build templates locally (Colima/Docker)")
+                    .on_hover_text("Shows a Build templates button in Project ▸ Export templates… so this computer can compile the Windows / Linux players itself.");
+                ui.end_row();
                 ui.label("Code font size");
                 ui.add(egui::Slider::new(&mut s.code_font_size, 9.0..=24.0));
                 ui.end_row();

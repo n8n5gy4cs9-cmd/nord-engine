@@ -140,6 +140,7 @@ pub const COMMANDS: &[(&str, CmdFn)] = &[
         Action::ResetSettings
     }),
     ("Project: Export…", || Action::Export),
+    ("Project: Export templates…", || Action::ExportTemplates),
     ("Project: Desktop app permissions…", || {
         Action::DesktopSettings
     }),

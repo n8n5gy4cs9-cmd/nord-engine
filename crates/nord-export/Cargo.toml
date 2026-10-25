@@ -9,6 +9,8 @@ license.workspace = true
 nord-core = { path = "../nord-core" }
 anyhow.workspace = true
 serde_json.workspace = true
+serde.workspace = true
 base64 = "0.22"
 zip = { version = "2", default-features = false, features = ["deflate"] }
 image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
+sha2 = "0.10"

@@ -43,6 +43,9 @@ cargo build --workspace && cargo test --workspace && cargo clippy --workspace --
 **Prompt:** *"Read HANDOFF.md and godotize-nordengine-tasks.md, then do the open checking tasks G8-3/G8-4/G8-5 (M13-13): run the native editor on macOS and verify asset drag, shortcut rebinding, live highlights, Window/menu overlays; run the Playwright suites T36/T38/T40–T43; walk KNOWN_ISSUES. Commit small to main."**
 All G0–G10 feature tasks are done (see Current status, M13 in task.md). Showcase: `examples/neon-harbor` / tutorial T48.
 
+## Session note v0.4.0 (2026-10-25)
+Desktop export + export templates + optional Colima template build (M9-17). Code: `crates/nord-export/src/{templates,localbuild}.rs`, `nord-editor/src/panels/{export,templates}.rs`, `docker/`, CI job `templates`. Verified on Mac only (see KNOWN_ISSUES). One test: `desktop_export_makes_a_mac_app_from_a_template`.
+
 ## NEXT SESSIONS — M8 (start here; M11 web editor is also done except owner checks)
 Prompt: *"Read HANDOFF.md and do M8"*. Branch rule: owner says `main`; if the harness forces a session branch, push that branch and tell the owner (or merge to main at the end).
 After each task: `node tools/tasks.mjs done ID`, CHANGELOG line, relevant docs; if you touched runtime JSDoc, `schema.rs`, CLI docs, library, templates or `docs/*.md`, run `node tools/build-manual.mjs` and commit `docs/manual/`.

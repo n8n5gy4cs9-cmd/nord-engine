@@ -74,6 +74,22 @@ pub fn pick_folder(title: &str) -> Option<PathBuf> {
     }
 }
 
+/// Single-file picker filtered by extension (native only).
+pub fn pick_file(title: &str, ext: &str) -> Option<PathBuf> {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        rfd::FileDialog::new()
+            .set_title(title)
+            .add_filter(ext, &[ext])
+            .pick_file()
+    }
+    #[cfg(target_arch = "wasm32")]
+    {
+        let _ = (title, ext);
+        None
+    }
+}
+
 /// Multi-file picker (browser: async, see [`WebEvent::ImportFiles`]).
 pub fn pick_files() -> Option<Vec<PathBuf>> {
     #[cfg(not(target_arch = "wasm32"))]

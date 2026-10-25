@@ -31,6 +31,14 @@ plus all examples, assets, templates and export/runtime sources. The complete Wi
 * **Windows** → `register.reg` (HKCU). Edit the `C:\Path\To\…` install path, double-click to register file types and URL schemes. An installer should do this itself.
 * Version shown in the bundle comes from `nord.json.version` (falls back to the engine version). Icon: `--icon`, else `icon.png` in the project, else the Nord logo.
 
+## Desktop apps from the editor (templates)
+**File ▸ Export… ▸ Desktop app** wraps the game with a *template*: the prebuilt `nord-player` for one platform. Templates live in `<config>/templates/<version>/<platform>/` (config = `~/.config/nord`, `%APPDATA%\NordEngine`, or `$NORD_CONFIG_DIR`) with a `manifest.json` (engine version, sha256; checked before use, a version mismatch is refused).
+Manage them in **Project ▸ Export templates…**: Install from file (`.nordtemplates`), Download (GitHub release `vX.Y.Z`), Remove, Open folder. Without a template your own OS uses the player bundled with the editor. A tag `vX.Y.Z` makes CI attach one `.nordtemplates` per platform (`nord template-pack`).
+- Mac `.app` from Windows / Linux: plain folder + `Info.plist` + icns, **not signed**. On a Mac: right-click ▸ Open once, or `codesign --force --deep --sign - App.app`.
+- Zips keep the executable bit; `.tar.gz` comes from `tar`.
+- Optional (Settings ▸ Developer ▸ *Build templates locally*): the templates window builds the Linux / Windows players in a container with Colima + Docker (Mac: `brew install colima docker`) or Podman, from `docker/Dockerfile.<platform>`. First run: 5-10 GB and 10-30 minutes. Mac players need a Mac or CI.
+- Design follows the idea of Godot's export templates and Unity's build-support modules; no code was copied from either.
+
 ## macOS: signing, notarisation, dmg
 `nord bundle-mac` / `build.sh` sign **ad-hoc** (`codesign -s -`): fine on your own Mac; a downloaded copy needs right-click → Open. To distribute:
 1. Join the Apple Developer Program; create a *Developer ID Application* certificate (Xcode → Settings → Accounts → Manage Certificates).

@@ -857,6 +857,7 @@ impl App {
                 st.toast("Settings and layout reset to defaults");
             }
             Action::Export => st.export_ui.open = true,
+            Action::ExportTemplates => st.templates_ui.open = true,
             Action::BuildSettings => st.build_ui.open = true,
             Action::NewScene => {
                 st.fun_ui.new_scene_open = true;
@@ -1179,6 +1180,7 @@ impl App {
                     act(ui, "Build Rust", Action::Build("rust build".into()), st);
                 }
                 act(ui, "Export…", Action::Export, st);
+                act(ui, "Export templates…", Action::ExportTemplates, st);
                 act(ui, "Desktop app permissions…", Action::DesktopSettings, st);
                 act(ui, "Add / upgrade FPS Creator…", Action::FpsInstall, st);
             });
@@ -1814,6 +1816,7 @@ impl App {
             || self.st.palette.mode != PMode::Closed
             || self.st.settings_open
             || self.st.export_ui.open
+            || self.st.templates_ui.open
             || self.st.build_ui.open
             || self.st.fun_ui.new_scene_open
             || self.st.about_open
@@ -2012,6 +2015,7 @@ impl App {
         panels::settings::window(&mut self.st, ctx);
         panels::preview::window(&mut self.st, ctx);
         panels::export::window(&mut self.st, ctx);
+        panels::templates::window(&mut self.st, ctx);
         panels::build::window(&mut self.st, ctx);
         panels::fun::windows(&mut self.st, ctx);
         panels::desktop::window(&mut self.st, ctx);

@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 333/348 tasks (96%)** · updated 2026-10-25
+**Overall: 334/349 tasks (96%)** · updated 2026-10-25
 
 | Milestone | Progress |
 |---|---|
@@ -16,7 +16,7 @@
 | M6 Library | 51/51 (100%) |
 | M7 Docs | 31/31 (100%) |
 | M8 Polish & portability | 27/32 (84%) |
-| M9 Desktop apps | 16/16 (100%) |
+| M9 Desktop apps | 17/17 (100%) |
 | M10 Construct-style editor | 36/36 (100%) |
 | M11 Web editor | 14/16 (88%) |
 | M12 FPS Creator addon | 30/31 (97%) |
@@ -287,6 +287,7 @@ _real native desktop apps (Rust backend): files, dialogs, notifications, tray, w
 - [x] **M9-14** Accessibility & real-app UX: IME/text input, high-DPI, dark mode follow, keyboard navigation, undo/redo helpers, i18n (locale/formatting), drag-reorder lists, virtualised tables
 - [x] **M9-15** Templates + examples: desktop notes app (files+store+notifications), file organiser (fs+dialogs), clipboard manager (tray+global shortcut), markdown editor — JS and Rust variants; e2e where headless-possible
 - [x] **M9-16** Tests & CI: capability unit tests, fs sandbox escape tests, per-OS CI matrix (macos-14, windows, ubuntu) building/launching sample apps headless; document unverified parts honestly
+- [x] **M9-17** Desktop export from the editor + export templates (Mac/Windows/Linux) + optional Colima template build
 
 ## M10 — Construct-style editor
 _features cloned from Construct 3's editor (construct.net/en/make-games/games-editor): event sheets, behaviors, layout/animation/tilemap tools, effects, debugger, project tools. Spec: docs/CONSTRUCT_PARITY.md_

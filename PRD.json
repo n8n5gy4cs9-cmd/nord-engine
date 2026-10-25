@@ -779,6 +779,12 @@
       "status": "done"
     },
     {
+      "id": "M9-17",
+      "milestone": "M9",
+      "title": "Desktop export from the editor + export templates (Mac/Windows/Linux) + optional Colima template build",
+      "status": "done"
+    },
+    {
       "id": "M0-01",
       "milestone": "M0",
       "title": "Write PRD.md, ARCHITECTURE, DECISIONS, specs (format, scripting, export, editor UI)",

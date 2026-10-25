@@ -68,6 +68,13 @@ nord bundle-mac my-game --name "My Game" --icon icon.png --dmg
 Wraps the web build in `NordPlayer` (a wry+tao window shell) and generates the icon set; ad-hoc code signing happens on macOS. Window size, fullscreen and persistent storage follow the project settings.
 `export.mac.bundleId` and `export.mac.icon` live in `nord.project.json`.
 
+## Desktop apps {#desktop}
+1. Open **Project ▸ Export templates…** and install the template for each OS you want (@ui[Install from file…] with a `.nordtemplates` file, or @ui[Download]). Your own OS needs none.
+2. Open @ui[File ▸ Export…], expand **Desktop app**, choose the platform, tick **Make .dmg / .zip / .tar.gz** if you want an archive, and press @ui[Export desktop app].
+3. The Console says where the app is; @ui[Open folder] shows it. Check yourself: a Mac gives `<Name>.app`, Windows `<Name>/<Name>.exe` (+ zip), Linux `<name>/<name>` (+ tar.gz).
+
+Apps are not signed for stores. A Mac app made on Windows or Linux is unsigned: right-click ▸ Open the first time. More in `docs/PACKAGING.md`.
+
 ## The offline guarantee
 Every build is scanned for external `http(s)://` references and **fails** if your own files contain one (`nord check-offline <dir>`). Allow a host on purpose with a `.offline-allow` file.
 

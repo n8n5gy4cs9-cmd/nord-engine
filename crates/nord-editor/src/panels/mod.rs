@@ -26,6 +26,7 @@ pub mod project;
 pub mod remote;
 pub mod settings;
 pub mod sprite;
+pub mod templates;
 pub mod timeline;
 pub mod toolbar;
 pub mod uidesigner;

@@ -149,6 +149,16 @@ enum Cmd {
         #[arg(long)]
         dmg: bool,
     },
+    /// Pack a built nord-player into a `.nordtemplates` file (CI uploads one per platform to the release)
+    TemplatePack {
+        /// mac-arm64 | mac-x64 | windows-x64 | linux-x64 | linux-arm64
+        #[arg(long)]
+        platform: String,
+        #[arg(long)]
+        player: PathBuf,
+        #[arg(short, long, default_value = ".")]
+        out: PathBuf,
+    },
     /// Wrap a web build (or project) into a Windows / Linux desktop bundle (folder + zip / tar.gz) with the prebuilt nord-player
     BundlePortable {
         #[arg(default_value = ".")]
@@ -450,6 +460,29 @@ fn main() -> anyhow::Result<()> {
                 },
             )?;
             println!("App: {}", app.display());
+        }
+        Cmd::TemplatePack {
+            platform,
+            player,
+            out,
+        } => {
+            let p = nord_export::templates::Platform::from_id(&platform)
+                .with_context(|| format!("unknown platform '{platform}'"))?;
+            let dll_dir = player.parent().map(|d| d.to_path_buf()).unwrap_or_default();
+            let extra: Vec<PathBuf> = if p.is_windows() {
+                std::fs::read_dir(&dll_dir)?
+                    .flatten()
+                    .map(|e| e.path())
+                    .filter(|f| f.extension().is_some_and(|e| e == "dll"))
+                    .collect()
+            } else {
+                vec![]
+            };
+            std::fs::create_dir_all(&out)?;
+            println!(
+                "{}",
+                nord_export::templates::pack(p, &player, &extra, &out)?.display()
+            );
         }
         Cmd::BundlePortable {
             input,
