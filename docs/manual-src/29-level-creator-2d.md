@@ -1,9 +1,21 @@
 ---
 title: 2D Level Creator — sprites, maps and physics
 section: Manual
+group: 2D and 3D worlds
 order: 29
 summary: Paint side-scroller and top-down maps, browse the Amiga and Kenney sprite bank, edit scripts and physics, test and export. Includes Machine Workshop.
 ---
+
+## Use this page
+
+This chapter explains **2d level creator — sprites, maps and physics**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Find a useful starting point | [Read this section](#find-a-useful-starting-point) |
+| Build a platform or top-down game | [Read this section](#build-a-platform-or-top-down-game) |
+| Moving around | [Read this section](#moving-around) |
+| Layers and reusable items | [Read this section](#layers-and-reusable-items) |
 
 The **2D Level** tab brings the FPS Level workflow to platform games, top-down games and physics puzzles. Start from **2D Platform Workshop**, **2D Top-down Workshop**, or **Machine Workshop** on the welcome screen.
 
@@ -81,3 +93,12 @@ The authoring JSON is the source of truth. If you edit its compiled scene in the
 :::
 
 The editor currently supports finite orthogonal maps. It has no isometric/hex maps, automatic terrain rules, polygon/joint editor or Tiled/LDtk importer. Drag-and-drop feel in the native editor window has had less testing than the browser version.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

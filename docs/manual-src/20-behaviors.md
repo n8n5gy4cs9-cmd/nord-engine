@@ -1,9 +1,21 @@
 ---
 title: Behaviors
 section: Manual
+group: Gameplay, sound and interfaces
 order: 20
 summary: Attach ready-made movement and gameplay (Platform, 8-Direction, Bullet, Sine, Turret, Pathfinding…) to any entity.
 ---
+
+## Use this page
+
+This chapter explains **behaviors**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Attach one | [Read this section](#attach-one) |
+| The behaviors | [Read this section](#the-behaviors) |
+| In an event sheet | [Read this section](#in-an-event-sheet) |
+| Write your own | [Read this section](#write-your-own) |
 
 A **behavior** is a small bundle of ready-made logic you attach to an entity, like Construct's behaviors. They work from the scene file, from JavaScript, and from event sheets.
 
@@ -64,3 +76,12 @@ class Spin extends Behavior {
 registerBehavior('Spin', Spin, { actions: { 'set-speed': { params: ['value'], run: (b, p) => { b.props.speed = p.value; } } }, expressions: { Speed: (b) => b.props.speed } });
 ```
 Registered behaviors immediately appear in event sheets with their actions and expressions.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

@@ -207,6 +207,29 @@ impl ExportUi {
     }
 }
 
+/// A coloured, framed block with a big heading, so web / desktop / result are clearly separate.
+fn section(
+    ui: &mut egui::Ui,
+    color: egui::Color32,
+    title: &str,
+    hint: &str,
+    add: impl FnOnce(&mut egui::Ui),
+) {
+    egui::Frame::group(ui.style())
+        .stroke(egui::Stroke::new(1.5, color))
+        .inner_margin(egui::Margin::same(10))
+        .show(ui, |ui| {
+            ui.set_width(ui.available_width());
+            ui.label(egui::RichText::new(title).size(17.0).strong().color(color));
+            if !hint.is_empty() {
+                ui.weak(hint);
+            }
+            ui.add_space(2.0);
+            ui.add(egui::Separator::default().spacing(6.0));
+            add(ui);
+        });
+}
+
 pub fn window(st: &mut EditorState, ctx: &egui::Context) {
     if let Some(rx) = &st.export_ui.running {
         if let Ok(r) = rx.try_recv() {
@@ -270,42 +293,58 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
     let mut go = false;
     egui::Window::new("Export")
         .open(&mut open)
-        .default_width(420.0)
+        .default_width(480.0)
         .show(ctx, |ui| {
             let e = &mut st.export_ui;
-            egui::Grid::new("export").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
-                ui.label("Target");
-                egui::ComboBox::from_id_salt("export-target")
-                    .selected_text(match e.target {
-                        Target::Auto => "Auto (from project type)",
-                        t => t.as_str(),
-                    })
+            ui.label(egui::RichText::new("Export").size(22.0).strong());
+            ui.weak("Pick what you want to make. Each box below is one kind of export with its own button.");
+            ui.add_space(6.0);
+            section(ui, egui::Color32::from_rgb(90, 150, 230), "WEB EXPORT", "A folder (or .zip) that runs in a browser: itch.io, GitHub Pages, any web server.", |ui| {
+                ui.label(egui::RichText::new("Export settings").strong());
+                egui::Grid::new("export").num_columns(2).spacing([12.0, 6.0]).show(ui, |ui| {
+                    ui.label("Target");
+                    egui::ComboBox::from_id_salt("export-target")
+                        .selected_text(match e.target {
+                            Target::Auto => "Auto (from project type)",
+                            t => t.as_str(),
+                        })
+                        .show_ui(ui, |ui| {
+                            for t in [Target::Auto, Target::Html, Target::Web2d, Target::Web3d, Target::Web3dPc] {
+                                ui.selectable_value(&mut e.target, t, t.as_str());
+                            }
+                        });
+                    ui.end_row();
+                    ui.label("Output folder");
+                    ui.add(egui::TextEdit::singleline(&mut e.out).hint_text("<project>/dist"));
+                    ui.end_row();
+                });
+                ui.add_space(4.0);
+                ui.label(egui::RichText::new("Options").strong());
+                ui.checkbox(&mut e.minify, "Minify JS + JSON");
+                ui.checkbox(&mut e.single_file, "Single file (one index.html, works from file://)");
+                ui.checkbox(&mut e.optimize, "Optimise assets (lossless PNG, WAV→MP3 if ffmpeg is installed)");
+                ui.checkbox(&mut e.zip, "Also write a .zip (itch.io style upload)");
+                ui.add_enabled(!e.single_file, egui::Checkbox::new(&mut e.compile_events, "Compile event sheets to JavaScript (needs Node; faster start, no expression parsing)"));
+                ui.add_enabled(!e.single_file, egui::Checkbox::new(&mut e.pwa, "Installable offline web app (PWA: manifest + service worker)"));
+                ui.add_space(4.0);
+                ui.label(egui::RichText::new("Hosting").strong());
+                egui::ComboBox::from_label("Hosting preset")
+                    .selected_text(e.host.label())
                     .show_ui(ui, |ui| {
-                        for t in [Target::Auto, Target::Html, Target::Web2d, Target::Web3d, Target::Web3dPc] {
-                            ui.selectable_value(&mut e.target, t, t.as_str());
+                        for h in Host::ALL {
+                            ui.selectable_value(&mut e.host, h, h.label());
                         }
                     });
-                ui.end_row();
-                ui.label("Output folder");
-                ui.add(egui::TextEdit::singleline(&mut e.out).hint_text("<project>/dist"));
-                ui.end_row();
+            ui.add_space(4.0);
+                if ui.add_enabled(!busy, egui::Button::new(egui::RichText::new("Export web game").strong()).fill(egui::Color32::from_rgb(40, 90, 160))).clicked() {
+                    go = true;
+                }
+                ui.weak("Static output: works on any web server, itch.io, GitHub Pages (see docs/HOSTING.md).");
             });
-            ui.checkbox(&mut e.minify, "Minify JS + JSON");
-            ui.checkbox(&mut e.single_file, "Single file (one index.html, works from file://)");
-            ui.checkbox(&mut e.optimize, "Optimise assets (lossless PNG, WAV→MP3 if ffmpeg is installed)");
-            ui.checkbox(&mut e.zip, "Also write a .zip (itch.io style upload)");
-            ui.add_enabled(!e.single_file, egui::Checkbox::new(&mut e.compile_events, "Compile event sheets to JavaScript (needs Node; faster start, no expression parsing)"));
-            ui.add_enabled(!e.single_file, egui::Checkbox::new(&mut e.pwa, "Installable offline web app (PWA: manifest + service worker)"));
-            egui::ComboBox::from_label("Hosting preset")
-                .selected_text(e.host.label())
-                .show_ui(ui, |ui| {
-                    for h in Host::ALL {
-                        ui.selectable_value(&mut e.host, h, h.label());
-                    }
-                });
-            ui.separator();
-            ui.collapsing("Desktop app (Mac / Windows / Linux)", |ui| {
+            ui.add_space(8.0);
+            section(ui, egui::Color32::from_rgb(80, 200, 130), "DESKTOP EXPORT", "A real app for Mac, Windows or Linux (the web game inside a native window). Needs an export template for the OS: Project ▸ Export templates…", |ui| {
                 let engine = crate::platform::engine_root();
+                ui.label(egui::RichText::new("Desktop export settings").strong());
                 egui::ComboBox::from_label("Platform")
                     .selected_text(e.d_platform.label())
                     .show_ui(ui, |ui| {
@@ -337,8 +376,9 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
                     ui.add(egui::TextEdit::singleline(&mut e.d_out).hint_text("<project>/dist-desktop"));
                     ui.end_row();
                 });
+                ui.add_space(4.0);
                 ui.horizontal(|ui| {
-                    if ui.add_enabled(!busy, egui::Button::new("Export desktop app")).clicked() {
+                    if ui.add_enabled(!busy, egui::Button::new(egui::RichText::new("Export desktop app").strong()).fill(egui::Color32::from_rgb(35, 110, 70))).clicked() {
                         go_desktop = true;
                     }
                     if ui.button("Export templates…").clicked() {
@@ -346,22 +386,20 @@ pub fn window(st: &mut EditorState, ctx: &egui::Context) {
                     }
                 });
             });
-            ui.separator();
-            ui.horizontal(|ui| {
-                if ui.add_enabled(!busy, egui::Button::new("Export")).clicked() {
-                    go = true;
-                }
-                if let Some(p) = e.last_out.clone() {
-                    if ui.button("Open folder").clicked() {
-                        open_folder(&p);
+            ui.add_space(8.0);
+            section(ui, egui::Color32::from_gray(150), "RESULT", "", |ui| {
+                ui.horizontal(|ui| {
+                    if let Some(p) = e.last_out.clone() {
+                        if ui.button("Open folder").clicked() {
+                            open_folder(&p);
+                        }
                     }
-                }
-                if busy {
-                    ui.spinner();
-                }
+                    if busy {
+                        ui.spinner();
+                    }
+                });
+                ui.weak(if e.status.is_empty() { "Nothing exported yet." } else { e.status.as_str() });
             });
-            ui.weak(&e.status);
-            ui.weak("Static output: works on any web server, itch.io, GitHub Pages (see docs/HOSTING.md).");
         });
     if go {
         start(st);

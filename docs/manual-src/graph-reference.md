@@ -5,6 +5,11 @@ order: 4
 summary: Pins, events, flow, the full node list, the runner and the component.
 ---
 
+::: dummies
+Choose the row that matches your current task. Names in code are case-sensitive. Follow the linked manual chapter for setup steps before using this quick reference.
+:::
+
+
 A **graph** is a program drawn as boxes (nodes) and wires. It is saved as `graphs/<name>.graph.json` by the **Graph** tab and run by the engine with no code. Decision: ADR-032. The canvas is **litegraph.js** (MIT, `vendor/litegraph`); the node library and the runner are Nord's own (`runtime/core/graph/`), so a graph can reach everything in the engine: entities, components, input, physics, audio, save data, UI scenes, events, scenes, and — through the *Advanced* nodes — any property, method or JavaScript.
 
 ## Concepts
@@ -260,3 +265,10 @@ Canvas: litegraph.js © Javi Agenjo, MIT (`vendor/litegraph/LICENSE`). Graph mod
 ## Subgraphs and the live flow highlight
 * **Run Graph File** (`flow/call-graph`) runs another graph file as a subgraph: the values on its `a` and `b` pins become the variables `a` and `b` inside; a **Return** node (`flow/return`) hands two values back through the call node's `a` / `b` outputs. The editor's **Make subgraph** button builds such a file from the selected nodes (exactly one flow link in, at most one out, at most two values each way) and replaces them with the call node.
 * **Live flow highlight:** while a Graph editor page is open it sends a heartbeat to `/api/graph-trace`. The running game (served by `nord serve` / the editor, `window.__nordServed`) polls that endpoint once a second; only when someone is watching does it batch the ids of executed nodes and post them to `/__edit/cmd` (`{t:"graph-trace", nodes:{ "<graph file>": [ids] }}`), and the editor flashes those nodes green. Shipped games never poll.
+
+
+## Check yourself
+
+Confirm the result in your saved project. Check Console errors and compare exact names with the linked reference if the result differs.
+
+Next: [Unity scripting cheatsheet](cheat-sheet-unity.html). Back to: [Cheatsheets](cookbook.html).

@@ -1,9 +1,20 @@
 ---
 title: Effects, particles and timelines
 section: Manual
+group: Gameplay, sound and interfaces
 order: 24
 summary: Blur, glow, vignette and colour effects; a particle editor with live preview; keyframe timelines with easing.
 ---
+
+## Use this page
+
+This chapter explains **effects, particles and timelines**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Effects | [Read this section](#effects) |
+| Particles | [Read this section](#particles) |
+| Timelines | [Read this section](#timelines) |
 
 Effects change how things look, particles make many tiny moving pictures (fire, sparks, snow) and timelines animate properties over time.
 
@@ -23,3 +34,12 @@ Start from a **preset** (fire, smoke, sparks, explosion, rain, snow, magic, hit,
 <figure class="shot"><img src="assets/screenshots/ed-timeline.png" alt="A timeline with two tracks, keyframes and an event marker" loading="lazy"><figcaption>A timeline: one track per property, diamonds are keyframes, the purple marker fires an event.</figcaption></figure>
 
 A **timeline** animates properties over time. Make one, add **tracks** (an object + a property such as `y`, `angle` or `opacity`) and **click a track strip to add a keyframe**. Drag keyframes to move them, right-click deletes. Each keyframe has a value and an **ease into it** (a named easing such as `backOut`, or your own cubic-bezier curve with a preview). **Event markers** fire *Timeline → On event* in your event sheet. Play it with *Timeline → Play* in an event, or `scene.timelines.play("intro")` in code; *On finished* tells you when it ends.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

@@ -1,9 +1,23 @@
 ---
 title: Animator
 section: Manual
+group: Gameplay, sound and interfaces
 order: 33
 summary: A Unity-style state machine for sprite animation. Parameters, states, transitions with conditions, Any State, live testing.
 ---
+
+## Use this page
+
+This chapter explains **animator**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Make one | [Read this section](#make-one) |
+| From a script | [Read this section](#from-a-script) |
+
+::: dummies
+This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
+:::
 
 The **Animator** switches the animation of a sprite for you. Instead of writing `if (moving) play('run')` in every script, you draw states (Idle, Run, Jump) and the arrows between them, and the game follows the arrows while your script only sets a few values like `speed` or `jump`.
 
@@ -33,3 +47,12 @@ The orange state is the default (the one the sprite starts in). A transition wit
 :::
 
 Full format and rules: `docs/ANIMATOR.md`.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

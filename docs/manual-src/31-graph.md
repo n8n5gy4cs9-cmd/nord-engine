@@ -1,9 +1,21 @@
 ---
 title: Node graphs (visual scripting)
 section: Manual
+group: Gameplay, sound and interfaces
 order: 31
 summary: Make gameplay by connecting nodes: events, flow, math, entities, input, UI, audio and scenes. No code needed, and an escape hatch to any code when you need it.
 ---
+
+## Use this page
+
+This chapter explains **node graphs (visual scripting)**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Open the Graph editor | [Read this section](#open-the-graph-editor) |
+| Your first graph in two minutes | [Read this section](#your-first-graph-in-two-minutes) |
+| Reading a graph | [Read this section](#reading-a-graph) |
+| Adding nodes | [Read this section](#adding-nodes) |
 
 A **node graph** is a program you draw. Boxes (*nodes*) do one thing each; wires carry the flow of time and the values between them. Use graphs for game rules, enemy behaviour, UI reactions and scene flow, or mix them with scripts and event sheets. The canvas is litegraph.js (MIT); the nodes and the runner are Nord's own, so a graph can use everything in the engine.
 
@@ -102,3 +114,12 @@ Open **New project ▸ Node graph: coin collector** (or `examples/nodegraph-coin
 | An action from a UI button is ignored | Names must match exactly: the button's **Action** and the **On UI Action** node. |
 | Errors in red `graph graphs/x.graph.json` | The message names the node. Fix it; other chains keep running. |
 
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

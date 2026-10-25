@@ -1,9 +1,21 @@
 ---
 title: Export & hosting
 section: Manual
+group: Test and publish
 order: 14
 summary: Static web builds, single-file, Mac app, hosting recipes, offline guarantee.
 ---
+
+## Use this page
+
+This chapter explains **export & hosting**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Targets | [Read this section](#targets) |
+| Common options | [Read this section](#common-options) |
+| Output layout | [Read this section](#output-layout) |
+| Hosting {#hosting} | [Read this section](#hosting) |
 
 Export creates a copy for players. A web build contains HTML, runtime code and assets; a desktop bundle adds the application shell.
 
@@ -81,3 +93,12 @@ Every build is scanned for external `http(s)://` references and **fails** if you
 ::: warn
 **Limits today:** texture-atlas packing and lossy PNG quantisation are not implemented, so large textures stay large (see [Performance](performance.html)). The macOS app shell is built and tested on macOS CI; Windows and Linux bundles are produced by CI with less real-world testing. Details: [Known issues](known-issues.html).
 :::
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

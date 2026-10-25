@@ -1,9 +1,21 @@
 ---
 title: Multiplayer
 section: Manual
+group: Gameplay, sound and interfaces
 order: 34
 summary: Host and join a room, send messages, call functions on other players (RPC), spawn and sync entities, and test with fake lag. Peer to peer, no server.
 ---
+
+## Use this page
+
+This chapter explains **multiplayer**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Connect | [Read this section](#connect) |
+| Messages and RPC | [Read this section](#messages-and-rpc) |
+| Spawn and sync | [Read this section](#spawn-and-sync) |
+| Test it | [Read this section](#test-it) |
 
 Nord games can be played by several people at once. Players connect **directly** to each other (WebRTC data channels), with a tiny signalling relay built into `nord serve`. No cloud, no account. It works between devices on the same network (`nord serve --lan` lets a phone join a PC).
 
@@ -54,3 +66,12 @@ Guests receive the entity automatically (also guests who join later). When a pla
 ::: warn
 No authoritative server, prediction or rollback: this is for friends on a network, jams and prototypes. Static hosts such as itch.io have no signalling relay, so set `game.net.signalling` to your own. Details: `docs/MULTIPLAYER.md`. Guided build: [T53](tut-t53-multiplayer.html).
 :::
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

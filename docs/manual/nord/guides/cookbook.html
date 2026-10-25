@@ -1,15 +1,110 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>Cookbook — Nord Engine Docs</title>
+<title>Cheatsheets — find an answer — Nord Engine Docs</title>
 <script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
 <link rel="stylesheet" href="../../assets/manual.css"></head>
 <body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
 <div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
-<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
-<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="cookbook.html" class="active" aria-current="page">Guides</a><a href="../api/api.html">API</a></nav></header>
-<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Guides</div><details open><summary>Guides</summary><a href="cookbook.html" class="cur" aria-current="page">Cookbook</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a><a href="cheat-sheet-nordjs.html">Cheat sheet — nord.js</a><a href="cheat-sheet-export.html">Cheat sheet — export</a><a href="ui-scenes.html">UI scenes reference</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="shortcuts.html">Keyboard shortcuts</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a></details><details><summary>Appendix</summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details></nav><main id="content"><div class="crumb">Guides / Nord Engine</div><h1>Cookbook</h1>
-<p>Each recipe is plain Nord API — no Phaser/Babylon calls.</p>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="cookbook.html" class="active" aria-current="page">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Cheatsheets</div><details open><summary>Cheatsheets <small>(11)</small></summary><a href="cookbook.html" class="cur" aria-current="page">Cheatsheets — find an answer</a><a href="mobile-controls.html">Mobile and on-screen touch controls</a><a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a><a href="cheat-sheet-nordjs.html">Cheat sheet — nord.js</a><a href="cheat-sheet-export.html">Cheat sheet — export</a><a href="ui-scenes.html">UI scenes reference</a><a href="cheat-sheet-cli.html">Cheat sheet — command line</a><a href="glossary.html">Glossary</a><a href="graph-reference.html">Node graph reference</a><a href="shortcuts.html">Keyboard shortcuts</a><a href="cheat-sheet-fps-level.html">FPS Level — quick reference</a></details><details><summary>Appendix <small>(4)</small></summary><a href="../appendix/appendix.html">Appendix</a><a href="../appendix/decisions.html">Design decisions</a><a href="../appendix/known-issues.html">Known issues</a><a href="../appendix/changelog.html">Changelog</a></details></nav><main id="content"><div class="crumb">Cheatsheets / Nord Engine</div><h1>Cheatsheets — find an answer</h1>
+<p>Keep these pages open while working. Choose the task first, then use the matching reference when you need details.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>A tutorial teaches a project in order. A cheatsheet is a short reminder for a task you already started. Start with one row, try it, and compare the result before adding more code.</p>
+</aside><h2 id="choose-a-cheatsheet">Choose a cheatsheet<a class="anchor" href="#choose-a-cheatsheet">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Cheatsheet</th>
+<th>Expected result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Write new Unity-style JavaScript</td>
+<td><a href="cheat-sheet-unity.html">Unity scripting</a></td>
+<td>A complete attached script with a working Update</td>
+</tr>
+<tr>
+<td>Read an older tutorial</td>
+<td><a href="cheat-sheet-nordjs.html">Native nord.js</a></td>
+<td>Recognize lower-case lifecycle and services</td>
+</tr>
+<tr>
+<td>Run a command</td>
+<td><a href="cheat-sheet-cli.html">Command line</a></td>
+<td>Know the project folder, command and output</td>
+</tr>
+<tr>
+<td>Share a game</td>
+<td><a href="cheat-sheet-export.html">Export</a></td>
+<td>Produce the right build and check it</td>
+</tr>
+<tr>
+<td>Edit an FPS level</td>
+<td><a href="cheat-sheet-fps-level.html">FPS Level</a></td>
+<td>Recall tools, test controls and saving</td>
+</tr>
+<tr>
+<td>Find a keyboard action</td>
+<td><a href="shortcuts.html">Shortcuts</a></td>
+<td>Find the action and verify its configured binding</td>
+</tr>
+<tr>
+<td>Recall a graph node</td>
+<td><a href="graph-reference.html">Graph reference</a></td>
+<td>Choose the node with the correct inputs</td>
+</tr>
+</tbody></table>
+<h2 id="debug-a-script-quickly">Debug a script quickly<a class="anchor" href="#debug-a-script-quickly">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>First check</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Nothing happens</td>
+<td>Select the object; verify attachment and enabled state in Inspector</td>
+<td><a href="../manual/unity-scripting.html">Unity scripting</a></td>
+</tr>
+<tr>
+<td>Update is never called</td>
+<td>Use capitalized Update in MonoBehaviour; lower-case update in NordScript</td>
+<td><a href="../manual/scripting.html">Scripting</a></td>
+</tr>
+<tr>
+<td>Input does nothing</td>
+<td>Verify the action or axis in the Project tab; focus the running Game view</td>
+<td><a href="../manual/input.html">Input</a></td>
+</tr>
+<tr>
+<td>Spawned object is unavailable</td>
+<td>Await Instantiate inside an async method</td>
+<td><a href="../api/api-unity.html">Unity API</a></td>
+</tr>
+<tr>
+<td>Collision never fires</td>
+<td>Check body, collider, trigger flag and matching 2D/3D backend</td>
+<td><a href="../manual/physics.html">Physics</a></td>
+</tr>
+<tr>
+<td>Changes disappear on Stop</td>
+<td>Play edits affect the running game; edit the saved scene after stopping</td>
+<td><a href="../manual/unity-workflow.html">Unity workflow</a></td>
+</tr>
+<tr>
+<td>Export is blank</td>
+<td>Check Console, missing files and whether the output needs a web server</td>
+<td><a href="../manual/export.html">Export</a></td>
+</tr>
+</tbody></table>
+<h2 id="common-gameplay-recipes">Common gameplay recipes<a class="anchor" href="#common-gameplay-recipes">#</a></h2>
+<p>Use <a href="../examples/examples.html">Examples</a> for complete Unity-style files: input and movement, spawning, health, UI, saves and physics. The sidebar groups related pages so you can collapse the topics you do not need.</p>
+<details>
+<summary>Existing native Nord service recipes (advanced reference)</summary><p>Each recipe is plain Nord API — no Phaser/Babylon calls.</p>
 <h2 id="movement-amp-feel">Movement &amp; feel<a class="anchor" href="#movement-amp-feel">#</a></h2>
 <p><strong>Coyote time + jump buffer</strong> — use <code>platformer2d.js</code> (<code>coyoteTime</code>, <code>jumpBuffer</code>), or in your own script: remember <code>this.lastGrounded = time.elapsed</code> while grounded and allow a jump if <code>elapsed - lastGrounded &lt; 0.1</code>.</p>
 <p><strong>Smooth camera</strong> — <code>camera</code> component with <code>follow</code> and <code>lerp: 0.1</code>; add <code>deadzone: [60, 40]</code>.</p>
@@ -45,5 +140,8 @@ this.tween(this.entity.pos, [400, 100, 0], { duration: 1.2, ease: 'backOut' });<
 <strong>Interact with what you look at</strong> — <code>interact-ray.js</code> casts from the camera.</p>
 <h2 id="debug">Debug<a class="anchor" href="#debug">#</a></h2>
 <p><code>this.game.timeScale</code>, <code>this.game.pause()</code>, <code>this.events.on(&#39;error&#39;, e =&gt; …)</code>, <code>util-debug.js</code>.</p>
-<div class="pager"><span></span><a href="mobile-controls.html"><small>Next →</small>Mobile and on-screen touch controls</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#movement-amp-feel">Movement feel </a><a href="#audio-on-first-touch">Audio on first touch </a><a href="#spawning">Spawning </a><a href="#timers-amp-tweens">Timers tweens </a><a href="#data">Data </a><a href="#ui">UI </a><a href="#3d">3D </a><a href="#debug">Debug </a></aside></div>
+</details><h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<p>Choose one task, perform its action and confirm the expected result. If a call is unfamiliar, open its API reference before copying it into a different lifecycle style.</p>
+<p>Next: <a href="cheat-sheet-unity.html">Unity scripting cheatsheet</a>. Back to: <a href="../manual/manual-paths.html">Manual reading paths</a>.</p>
+<div class="pager"><span></span><a href="mobile-controls.html"><small>Next →</small>Mobile and on-screen touch controls</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#choose-a-cheatsheet">Choose a cheatsheet </a><a href="#debug-a-script-quickly">Debug a script quickly </a><a href="#common-gameplay-recipes">Common gameplay recipes </a><a href="#movement-amp-feel">Movement feel </a><a href="#audio-on-first-touch">Audio on first touch </a><a href="#spawning">Spawning </a><a href="#timers-amp-tweens">Timers tweens </a><a href="#data">Data </a><a href="#ui">UI </a><a href="#3d">3D </a><a href="#debug">Debug </a><a href="#check-yourself">Check yourself </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

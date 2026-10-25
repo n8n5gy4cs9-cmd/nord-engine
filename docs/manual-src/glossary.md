@@ -29,3 +29,10 @@ Keep this open in a tab while you read — each term has a one-line "kitchen" ve
 | **Export** | Packing the game into a folder others can play. |
 | **WASM / WebAssembly** | A fast compiled format browsers can run (used for Rust and 3D physics). |
 | **Escape hatch** | `entity.native`: direct access to the raw Phaser/Babylon object. |
+
+
+## Check yourself
+
+Confirm the result in your saved project. Check Console errors and compare exact names with the linked reference if the result differs.
+
+Next: [Unity scripting cheatsheet](cheat-sheet-unity.html). Back to: [Cheatsheets](cookbook.html).

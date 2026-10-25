@@ -1,9 +1,21 @@
 ---
 title: Unity-style scripting
 section: Manual
+group: Projects, objects and scripts
 order: 37
 summary: MonoBehaviour, Singleton, GameManager, AudioManager, coroutines, Invoke, UnityEvent, ScriptableObject and ObjectPool: how to create them, attach them, and every method, with Unity names and step-by-step examples.
 ---
+
+## Use this page
+
+This chapter explains **unity-style scripting**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Create a script (3 ways) | [Read this section](#create-a-script-3-ways) |
+| Attach it to an object | [Read this section](#attach-it-to-an-object) |
+| MonoBehaviour: the Unity script | [Read this section](#monobehaviour-the-unity-script) |
+| Singleton: one object, reachable everywhere | [Read this section](#singleton-one-object-reachable-everywhere) |
 
 If you know Unity, you can write Nord scripts the way you already do. @term[MonoBehaviour], @term[Singleton], @term[GameManager] and friends use Unity's names and rules (`Awake`, `Start`, `Update`, coroutines, `Instantiate`, `PlayerPrefs`…), on top of the normal Nord script system. Everything here is optional: a plain `NordScript` (lower-case `start()`/`update()`) works side by side in the same project.
 
@@ -222,3 +234,12 @@ export default class Walker extends MonoBehaviour {
 Many runnable recipes next to the C# versions: [Examples](examples.html) (start with [GameManager and Singletons](ex-game-manager.html) and the whole game [Coin Dash](ex-coin-dash.html)).
 
 Reference: [Unity coverage](unity-coverage.html) (what works, what is missing), [Scripting](scripting.html), [Unity-style editor](unity-workflow.html), [T03 First script](tut-t03-first-script.html). Source: `runtime/core/unity.js`, `runtime/core/unity-extra.js`.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

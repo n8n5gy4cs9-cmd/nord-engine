@@ -5,6 +5,11 @@ order: 2
 summary: One page of everything a script can do.
 ---
 
+::: dummies
+This page is the native, lower-case NordScript API used by older projects. For new scripts, use the Unity scripting cheatsheet. Do not mix start/update with Start/Update in one class.
+:::
+
+
 **Example** (not a file; the one import line every script starts with):
 ```js
 import { NordScript, clamp, lerp, remap, vec, ease, Rng, Pool, Events } from 'nord';
@@ -37,3 +42,10 @@ export default class X extends NordScript {
 | Random | `this.rng.range(a,b)`, `int`, `pick(arr)`, `chance(p)`, `shuffle(arr)` |
 | Pause/slow | `game.pause()`, `game.resume()`, `game.timeScale = 0.5` |
 Details: [API reference](api-namespaces.html).
+
+
+## Check yourself
+
+Confirm the result in your saved project. Check Console errors and compare exact names with the linked reference if the result differs.
+
+Next: [Unity scripting cheatsheet](cheat-sheet-unity.html). Back to: [Cheatsheets](cookbook.html).

@@ -1,9 +1,25 @@
 ---
 title: Run the editor in a browser or on a server
 section: Manual
+group: Test and publish
 order: 27
 summary: The same Nord editor in a browser tab (no install, projects stay in your browser) or on your own Linux server for you and your team.
 ---
+
+## Use this page
+
+This chapter explains **run the editor in a browser or on a server**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Two ways to use it | [Read this section](#two-ways-to-use-it) |
+| Browser only | [Read this section](#browser-only) |
+| On your own server | [Read this section](#on-your-own-server) |
+| When something does not work | [Read this section](#when-something-does-not-work) |
+
+::: dummies
+This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
+:::
 
 The Nord editor you know from the desktop also runs as a web page. Nothing in the desktop app changes: the web editor is an additional way to run the same editor, with the same project format, the same panels and the same exports.
 
@@ -59,3 +75,12 @@ Packaging: `deploy/web-editor/Dockerfile` + `docker-compose.yml` (container limi
 - *Play stays empty:* the service worker could not register. It needs `https://` or `http://localhost`; private windows of some browsers block it.
 - *"Engine files are not available":* the page was served without `engine/` (rebuild with `tools/build-web-editor.sh`).
 - *"Another session is editing this project":* close the other tab, wait a minute, reopen.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

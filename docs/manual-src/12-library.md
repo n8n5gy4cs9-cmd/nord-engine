@@ -1,9 +1,20 @@
 ---
 title: The library
 section: Manual
+group: Projects, objects and scripts
 order: 12
 summary: Scripts, prefabs, shaders, apps and templates you can drop in — and how to add your own.
 ---
+
+## Use this page
+
+This chapter explains **the library**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Using a library script | [Read this section](#using-a-library-script) |
+| Writing your own entry | [Read this section](#writing-your-own-entry) |
+| Templates | [Read this section](#templates) |
 
 The Library contains ready-made scripts and pieces you can reuse. Search for a feature, insert it and adjust its Inspector settings before writing a replacement.
 
@@ -45,3 +56,12 @@ Put `// Ported from <repo>/<path> (<licence>)` in the header when you adapt outs
 
 ## Templates
 `nord new my-game -t <id>` or the hub. Templates are generated from `tools/examples/<id>/` by `node tools/gen_examples.mjs` — edit the generator sources, not the output.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

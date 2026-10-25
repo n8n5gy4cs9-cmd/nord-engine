@@ -2,7 +2,7 @@
 const html = document.documentElement;
 const LS = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch { /* private mode */ } } };
 
-// ---- For dummies toggle (persisted; default off)
+// ---- For dummies toggle (persisted; default on)
 const tog = document.getElementById('dummies-toggle');
 const paint = () => { const on = html.classList.contains('dummies-on'); tog.setAttribute('aria-pressed', on); tog.querySelector('b').textContent = on ? 'on' : 'off'; };
 tog.addEventListener('click', () => { html.classList.toggle('dummies-on'); LS.set('nord.manual.dummies', html.classList.contains('dummies-on') ? '1' : '0'); paint(); });
@@ -13,9 +13,10 @@ const headerSize = new ResizeObserver(() => html.style.setProperty('--header-hei
 headerSize.observe(document.querySelector('header'));
 const menu = document.getElementById('nav-toggle');
 menu.addEventListener('click', () => { const open = document.body.classList.toggle('nav-open'); menu.setAttribute('aria-expanded', String(open)); });
-const themeButton = document.getElementById('theme-toggle');
-themeButton.addEventListener('click', () => { html.dataset.theme = html.dataset.theme === 'light' ? 'dark' : 'light'; LS.set('nord.manual.theme', html.dataset.theme); themeButton.textContent = html.dataset.theme === 'light' ? 'Dark mode' : 'Light mode'; });
-themeButton.textContent = html.dataset.theme === 'light' ? 'Dark mode' : 'Light mode';
+const themeSelect = document.getElementById('theme-select');
+if (![...themeSelect.options].some(o => o.value === html.dataset.theme)) html.dataset.theme = 'dark';
+themeSelect.value = html.dataset.theme;
+themeSelect.addEventListener('change', () => { html.dataset.theme = themeSelect.value; LS.set('nord.manual.theme', themeSelect.value); });
 async function copyCode(button, code) {
   try {
     if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(code);

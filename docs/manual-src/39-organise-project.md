@@ -1,9 +1,25 @@
 ---
 title: Organising your project
 section: Manual
+group: Getting oriented
 order: 39
 summary: Colour folders, custom folder icons, colour tags and descriptions for any asset, the Notes manager, the Console with tags and search, and the Transform grid. Saved per project.
 ---
+
+## Use this page
+
+This chapter explains **organising your project**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Assets: colours, icons, tags, descriptions | [Read this section](#assets-colours-icons-tags-descriptions) |
+| Notes manager | [Read this section](#notes-manager) |
+| Console (like Console Pro) | [Read this section](#console-like-console-pro) |
+| Inspector: Transform grid | [Read this section](#inspector-transform-grid) |
+
+::: dummies
+This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
+:::
 
 ## Assets: colours, icons, tags, descriptions
 Right-click any folder or asset in the @ui[Assets] tab. Everything is saved **per project** in `.nord/asset-meta.json` (commit it to share with your team).
@@ -36,3 +52,12 @@ Renaming, moving and deleting keep the colours, icons, tags and descriptions in 
 
 ## Inspector: Transform grid
 The Transform section is a grid: **Position / Rotation / Scale** rows, and the columns are the axes with coloured letters, X red, Y green, Z blue, so values line up like in Unity. The same coloured letters are used in every vector field of the Inspector. Icon buttons such as @ui[Show in Assets] are centred on their row.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

@@ -1,9 +1,21 @@
 ---
 title: Editor tour
 section: Manual
+group: Getting oriented
 order: 2
 summary: Panels, viewport, inspector, code editor, console, shortcuts.
 ---
+
+## Use this page
+
+This chapter explains **editor tour**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Appearance and project hub | [Read this section](#appearance-and-project-hub) |
+| Panels | [Read this section](#panels) |
+| Play, stop, reload | [Read this section](#play-stop-reload) |
+| Undo and project safety | [Read this section](#undo-and-project-safety) |
 
 The editor lets you choose an object, change its settings and try the result. Start with Hierarchy, Inspector and the Play button; learn the other panels when you need them.
 
@@ -117,3 +129,12 @@ The welcome screen filters both starter templates and samples with **Featured**,
 * **F1** while the pointer is over a component header (or script) in the Inspector opens that component's manual page in your browser; each component also has a **Docs (F1)** button.
 * Double-click a `.ui.json` in Assets to open it in the [UI Designer](ui-designer.html), a `.graph.json` in the [Graph editor](graph.html).
 
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

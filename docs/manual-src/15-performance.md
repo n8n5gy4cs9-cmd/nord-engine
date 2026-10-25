@@ -1,9 +1,21 @@
 ---
 title: Performance & debugging
 section: Manual
+group: Test and publish
 order: 15
 summary: Profiling, pooling, texture and physics budgets.
 ---
+
+## Use this page
+
+This chapter explains **performance & debugging**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Rules of thumb | [Read this section](#rules-of-thumb) |
+| Measuring | [Read this section](#measuring) |
+| Timing facts | [Read this section](#timing-facts) |
+| Debugging checklist | [Read this section](#debugging-checklist) |
 
 When a game is slow, first find what takes time. Look for expensive scripts, too many drawn objects or large assets, then change one thing and compare.
 
@@ -54,3 +66,12 @@ Print from anywhere; the line appears in the **editor's Console tab** while you 
 5. **An error stops it earlier.** Look for a red line above: one failing node or script method stops that chain, not the whole game.
 6. **Old page.** Saving a script hot-reloads it, but a changed graph/scene reloads the game; if you edited files outside the editor, press **Reload** in the toolbar.
 
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

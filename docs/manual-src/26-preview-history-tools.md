@@ -1,9 +1,21 @@
 ---
 title: Preview, history and project tools
 section: Manual
+group: Test and publish
 order: 26
 summary: Test on your phone, undo a bad afternoon with version history, rename safely, and export an installable web app.
 ---
+
+## Use this page
+
+This chapter explains **preview, history and project tools**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Phone preview | [Read this section](#phone-preview) |
+| Debugger and profiler | [Read this section](#debugger-and-profiler) |
+| Version history | [Read this section](#version-history) |
+| Project tab | [Read this section](#project-tab) |
 
 These are the helpers around your game: testing on a phone, undoing a bad afternoon, renaming safely and exporting an installable app.
 
@@ -28,3 +40,12 @@ Nord takes snapshots of your project's source files (scenes, event sheets, scrip
 
 ## Export as an installable web app
 In *Export…* tick **Installable offline web app** (or `nord build --pwa`): the build gets a manifest and a service worker, so players can add it to their home screen and play offline. Event sheets are compiled to JavaScript in the build (`--no-compile-events` turns that off).
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

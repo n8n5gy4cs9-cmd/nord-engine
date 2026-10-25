@@ -12,7 +12,8 @@ Use this section when you know what you want to do and need an exact name, signa
 
 | What you need | Reference |
 |---|---|
-| Write behavior on an entity | [NordScript](api-nordscript.html) |
+| Write new game behavior | [MonoBehaviour and Unity API](api-unity.html) |
+| Maintain native-style scripts | [NordScript](api-nordscript.html) |
 | Move, find or change an entity | [Entity](api-entity.html) |
 | Spawn a prefab or change scenes | [Scene](api-scene.html), [Game](api-game.html) |
 | Read controls | [Input](api-input.html) |
@@ -31,10 +32,16 @@ Use this section when you know what you want to do and need an exact name, signa
 [Desktop API](api-desktop.html) covers the typed JavaScript bridge, including files, dialogs, storage and windows. [Rust API](api-rust.html) lists public Rust declarations, alongside [the Rust guide](rust-wasm.html).
 
 ## Phaser and Babylon
-[Engine documentation](engine-docs.html) includes version-matched public declarations for the engines Nord uses, the supplied Phaser documentation snapshot and cloned Babylon guides. These pages are labelled **underlying engine** APIs.
+[Engine API downloads](engine-docs.html) provides separate ZIPs for **Phaser 4.2.1** and **Babylon.js 9.30.0**, plus official online manuals and exact-version source links. Upstream API pages are available only inside those ZIPs; site search focuses on Nord.
 
 For most game code, use Nord components and `this.game` services. The engine reference helps with escape-hatch objects and features that have no Nord wrapper. An upstream method is not automatically available as a Nord method.
 
 ::: dummies
 A **signature** tells you the inputs a function accepts. `play(path, options)` means give it a file path, and optionally settings. A **return value** is what the function gives back. If it returns a Promise, use `await` in an `async` function to wait for the result. Types describe values: `number` is a number; `string` is text; `boolean` is true or false.
 :::
+
+## Check yourself
+
+Match your import and lifecycle style to the reference you chose. Check the component tier before using a 2D method in 3D.
+
+Next: [Unity API](api-unity.html). Back to: [Getting started](getting-started.html).

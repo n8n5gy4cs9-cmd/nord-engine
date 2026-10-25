@@ -1,9 +1,25 @@
 ---
 title: AI and MCP
 section: Manual
+group: Projects, objects and scripts
 order: 36
 summary: Let Claude Code, opencode, Codex or pi build a Nord game for you: install the Nord MCP server, what the tools do, and the 3D Modeler tools with a preview the AI can look at.
 ---
+
+## Use this page
+
+This chapter explains **ai and mcp**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Install (once) | [Read this section](#install-once) |
+| Use | [Read this section](#use) |
+| Safety | [Read this section](#safety) |
+| 3D Modeler tools | [Read this section](#3d-modeler-tools) |
+
+::: dummies
+This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
+:::
 
 Nord ships an **MCP server** (`mcp/nord-mcp.mjs`, Node 18+, no installs) so an AI coding agent can create a project, edit scenes and scripts, validate, build and play-test it, and model 3D props. It starts with built-in guidance (`nord_guide`) that reads the engine's own docs, so the AI learns the real API instead of guessing.
 
@@ -28,3 +44,12 @@ The `modeler_*` tools edit the same files as the **3D Modeler** tab (`models/<na
 
 ## Keeping it current
 The guide text and `docs/MCP.md` are part of the engine and updated together with it (a test fails when the generated reference is stale).
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

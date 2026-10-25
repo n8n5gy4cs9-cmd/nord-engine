@@ -1,9 +1,21 @@
 ---
 title: Desktop apps
 section: Manual
+group: Test and publish
 order: 18
 summary: Real native apps — files, dialogs, notifications, tray, menus, storage, a local web server — from the same project, in JS or Rust.
 ---
+
+## Use this page
+
+This chapter explains **desktop apps**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Quick start | [Read this section](#quick-start) |
+| Three transports, one API | [Read this section](#three-transports-one-api) |
+| Permissions (`desktop.permissions`) | [Read this section](#permissions-desktop-permissions) |
+| API cheat sheet (`window.nord.desktop`) | [Read this section](#api-cheat-sheet-window-nord-desktop) |
 
 Desktop apps can use native files, dialogs and windows through Nord’s desktop bridge. Begin with a desktop template, then enable only the capabilities your app needs.
 
@@ -98,3 +110,12 @@ Code editor (CodeMirror: tabs, file tree, highlighting, find/replace, multi-curs
 ::: tip
 Native menus, tray, global shortcuts and the dock badge have had less testing on real Mac and Windows machines than on Linux. The Linux build (webkit2gtk) runs the full IPC test in CI. See `docs/KNOWN_ISSUES.md`.
 :::
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

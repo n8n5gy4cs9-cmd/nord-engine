@@ -1,9 +1,21 @@
 ---
 title: Sprites, animation and tilemaps
 section: Manual
+group: 2D and 3D worlds
 order: 23
 summary: Paint pixel art, set origins and image points, build animations from frames or GIFs, and paint tilemaps with auto-tiling.
 ---
+
+## Use this page
+
+This chapter explains **sprites, animation and tilemaps**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| The Sprite tab (pixel editor) | [Read this section](#the-sprite-tab-pixel-editor) |
+| Animations | [Read this section](#animations) |
+| Tilemaps | [Read this section](#tilemaps) |
+| Making a sprite object | [Read this section](#making-a-sprite-object) |
 
 Nord has built-in tools for making art: a pixel editor for sprites, an animation editor for sprite sheets and a tilemap painter for levels. You can also import art made elsewhere ([Assets](assets.html)).
 
@@ -37,3 +49,12 @@ Pick a spritesheet, make named animations (`idle`, `walk`…), and list their fr
 ## Making a sprite object
 
 **Hierarchy ▸ Create ▸ Sprite** adds an object with a plain white square. Colour (`tint`), alpha and flips are Inspector fields and never change the picture. To draw on it, press **Open in Sprite editor** in the Sprite component: paint, then Save under a name (it goes to `assets/sprites/`, the folder is made for you) and the object switches to your new picture, in scenes and in prefabs. Open the component's button (or double-click the PNG in Assets) any time to keep editing; Save overwrites it for everyone using it. The default white square is never edited. The **Settings** tab sets filter (nearest for pixel art), wrap (repeat or clamp), pixels per unit and frame slicing.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

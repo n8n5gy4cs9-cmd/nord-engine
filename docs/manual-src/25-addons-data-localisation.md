@@ -1,9 +1,20 @@
 ---
 title: Addons, data objects and languages
 section: Manual
+group: Gameplay, sound and interfaces
 order: 25
 summary: Extend event sheets with your own plugins, keep data in Array/Dictionary/JSON objects, and translate your game.
 ---
+
+## Use this page
+
+This chapter explains **addons, data objects and languages**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Data objects | [Read this section](#data-objects) |
+| Addons | [Read this section](#addons) |
+| Languages | [Read this section](#languages) |
 
 These tools extend what event sheets can do: keep data, add new kinds of actions, and translate your game.
 
@@ -23,3 +34,12 @@ Details: `docs/ADDONS.md`.
 
 ## Languages
 Put your texts in `nord.project.json` → `strings` (`{ "en": { "play": "Play" }, "fi": { "play": "Pelaa" } }`). Give a text or button a **`textKey`** instead of fixed text and it follows the language. *Localisation → Set language* switches it (and the choice is remembered); `Localisation.Text("hello", "Ada")` fills `{0}` placeholders. The **Menu starter** template shows a language switch end to end. Accessibility helpers: *Accessibility → Set colour-blind mode* previews your colours for protanopia/deuteranopia/tritanopia, and *Set UI scale* enlarges the interface.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

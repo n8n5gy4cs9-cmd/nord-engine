@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { API_HELP } from './manual/api-help.mjs';
-import { engineDocs } from './manual/engine-docs.mjs';
+import { engineDownloads } from './manual/engine-downloads.mjs';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { COMPONENTS, COMPONENT_ORDER } from './manual/components-data.mjs';
@@ -112,11 +112,11 @@ const plain = (html) => html.replace(/<pre[\s\S]*?<\/pre>/g, ' ').replace(/<[^>]
 
 // ---------- pages ---------------------------------------------------------------------------------------------------------
 const pages = []; // { file, title, section, order, html (body), group }
-const add = (p) => pages.push({ order: 50, ...p });
+const add = (p) => pages.push({ order: 50, ...p, section: p.section === 'Guides' ? 'Cheatsheets' : p.section });
 
 for (const f of fs.readdirSync(SRC).filter((x) => x.endsWith('.md') && !x.startsWith('_')).sort()) {
   const [meta, body] = frontMatter(fs.readFileSync(path.join(SRC, f), 'utf8'));
-  add({ file: f.replace(/^\d+-/, '').replace(/\.md$/, '.html'), title: meta.title ?? f, section: meta.section ?? 'Manual', order: Number(meta.order ?? 50), html: renderMd(body), summary: meta.summary ?? '' });
+  add({ file: f.replace(/^\d+-/, '').replace(/\.md$/, '.html'), title: meta.title ?? f, section: meta.section ?? 'Manual', order: Number(meta.order ?? 50), html: renderMd(body), summary: meta.summary ?? '', group: meta.group ?? '' });
 }
 
 // ---- repo docs rendered as-is (no drift): [source file, output, title, section, order, summary, extra markdown]
@@ -163,7 +163,7 @@ function componentPage(type) {
   h += fields.length ? `<table><thead><tr><th>Field</th><th>Type</th><th>Default</th></tr></thead><tbody>${fields.map((f) => `<tr><td><code>${f.name}</code></td><td><code>${esc(f.type)}</code></td><td>${f.def ? `<code>${esc(f.def)}</code>` : '—'}</td></tr>`).join('')}</tbody></table>\n` : '<p>No fields.</p>\n';
   h += `<p class="muted">Field list comes from the editor's inspector schema. Types: see <a href="project-format.html#attribute-types">attribute types</a>.</p>\n`;
   if (c.notes?.length) h += `<h2 id="notes">Notes</h2>\n<ul>${c.notes.map((n) => `<li>${renderMd(n).replace(/^<p>|<\/p>\n?$/g, '')}</li>`).join('')}</ul>\n`;
-  h += `<h2 id="json">In a scene</h2>\n<pre class="code" data-lang="json"><code>${esc(JSON.stringify(c.example, null, 2))}</code></pre>\n`;
+  h += `<h2 id="json">In a scene</h2><p>In the Inspector, use <b>+ Add component</b> and choose this component. Set its fields above; the selected object now has this behavior.</p><p><b>In the file</b> <code>scenes/main.scene.json</code> (one entry in the selected entity’s components array):</p>\n<pre class="code" data-lang="json"><code>${esc(JSON.stringify(c.example, null, 2))}</code></pre>\n`;
   if (c.handle?.length || c.set?.length || c.js) {
     h += `<h2 id="script">From a script</h2>\n<p>Get the runtime component with <code>this.entity.getComponent('${type}')</code>.</p>\n`;
     if (c.handle?.length) h += `<ul>${c.handle.map((x) => `<li><code>${esc(x.split(' — ')[0])}</code>${x.includes(' — ') ? ` — ${esc(x.split(' — ').slice(1).join(' — '))}` : ''}</li>`).join('')}</ul>\n`;
@@ -316,7 +316,7 @@ const NS = read('docs/manual-src/_namespaces.json');
   }
   add({ file: 'api-rust.html', title: 'Rust public API', section: 'API', order: 27, html: rh, summary: 'Script Ctx World Registry Input assets physics App desktop Rust declarations' });
 }
-engineDocs({ root, add, renderMd, esc, slug });
+const engineArchives = engineDownloads({ root, add, renderMd, esc, slug });
 
 
 // ---- generated: event sheet + behavior reference (from the live ACE registries, so it cannot drift)
@@ -395,14 +395,14 @@ engineDocs({ root, add, renderMd, esc, slug });
 
   const sc = read('crates/nord-editor/src/panels/settings.rs');
   const rows = [...sc.matchAll(/\("([^"]+)", "([^"]+)"\),/g)].map((m) => `<tr><td><kbd>${esc(m[1])}</kbd></td><td>${esc(m[2])}</td></tr>`).join('');
-  add({ file: 'shortcuts.html', title: 'Keyboard shortcuts', section: 'Guides', order: 5, summary: 'Editor shortcuts (macOS).',
+  add({ file: 'shortcuts.html', title: 'Keyboard shortcuts', section: 'Cheatsheets', order: 5, summary: 'Editor shortcuts (macOS).',
     html: `<p class="lead">Editor shortcuts on macOS (Ctrl replaces Cmd on other platforms). Also listed in <b>Settings (Cmd+,)</b>.</p><table><thead><tr><th>Keys</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table>` });
 }
 
 // ---------- layout --------------------------------------------------------------------------------------------------------
-const SECTION_ORDER = ['Start here', 'Manual', 'Tutorials', 'Examples', 'Guides', 'API', 'Components', 'Reference', 'Appendix', 'Engine docs'];
+const SECTION_ORDER = ['Start here', 'Manual', 'Tutorials', 'Examples', 'Cheatsheets', 'API', 'Components', 'Reference', 'Appendix', 'Engine docs'];
 const SECTION_DIR = {
-  'Start here': 'nord/start', Manual: 'nord/manual', Tutorials: 'nord/tutorials', Examples: 'nord/examples', Guides: 'nord/guides',
+  'Start here': 'nord/start', Manual: 'nord/manual', Tutorials: 'nord/tutorials', Examples: 'nord/examples', Cheatsheets: 'nord/guides',
   API: 'nord/api', Components: 'nord/components', Reference: 'nord/reference', Appendix: 'nord/appendix',
 };
 for (const p of pages) {
@@ -413,14 +413,19 @@ pages.sort((a, b) => SECTION_ORDER.indexOf(a.section) - SECTION_ORDER.indexOf(b.
 const bySection = new Map();
 for (const p of pages) { if (!bySection.has(p.section)) bySection.set(p.section, []); bySection.get(p.section).push(p); }
 for (const s of bySection.keys()) if (!SECTION_ORDER.includes(s)) throw new Error(`unknown section '${s}'`);
-const area = p => ['API', 'Components', 'Reference', 'Engine docs'].includes(p.section) ? 'API' : p.section === 'Appendix' ? 'Guides' : p.section;
-const tabs = [['Start here', 'getting-started.html'], ['Manual', 'welcome.html'], ['Tutorials', 'tutorials.html'], ['Examples', 'examples.html'], ['Guides', 'cookbook.html'], ['API', 'api.html']];
+const area = p => ['API', 'Components', 'Reference', 'Engine docs'].includes(p.section) ? 'API' : p.section === 'Appendix' ? 'Cheatsheets' : p.section;
+const tabs = [['Start here', 'getting-started.html'], ['Manual', 'manual-paths.html'], ['Tutorials', 'tutorials.html'], ['Examples', 'examples.html'], ['Cheatsheets', 'cookbook.html'], ['API', 'api.html']];
 const nav = cur => {
   const sections = [...bySection].filter(([s]) => area({ section: s }) === area(cur));
   return `<a class="nav-home" href="index.html">Documentation home</a><div class="nav-label">${esc(area(cur))}</div>` + sections.map(([s, ps]) => {
     if (s === 'Engine docs') return '<a href="engine-docs.html">Phaser & Babylon documentation</a>';
-    const links = ps.map(p => `<a href="${p.file}"${p === cur ? ' class="cur" aria-current="page"' : ''}>${esc(p.title)}</a>`).join('');
-    return sections.length > 1 ? `<details${s === cur.section ? ' open' : ''}><summary>${esc(s)}</summary>${links}</details>` : links;
+    const groups = new Map();
+    for (const p of ps) {
+      const group = p.group || (s === 'Examples' ? (p.order >= 57 ? 'Unity API · map and recipes' : p.order >= 49 ? 'Dungeon · complete game series' : p.order >= 30 ? 'Production · tools and systems' : p.order >= 10 ? 'Gameplay · reusable recipes' : 'Start coding · fundamentals') : s);
+      if (!groups.has(group)) groups.set(group, []);
+      groups.get(group).push(p);
+    }
+    return [...groups].map(([group, entries]) => `<details${entries.includes(cur) ? ' open' : ''}><summary>${esc(group)} <small>(${entries.length})</small></summary>${entries.map(p => `<a href="${p.file}"${p === cur ? ' class="cur" aria-current="page"' : ''}>${esc(p.title)}</a>`).join('')}</details>`).join('');
   }).join('');
 };
 const layout = (p, body) => {
@@ -436,7 +441,7 @@ const layout = (p, body) => {
 <link rel="stylesheet" href="assets/manual.css"></head>
 <body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="index.html"><img src="assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
 <div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
-<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections">${tabs.map(([name, href]) => `<a href="${href}"${area(p) === name ? ' class="active" aria-current="page"' : ''}>${name}</a>`).join('')}</nav></header>
 <div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation">${nav(p)}</nav><main id="content"><div class="crumb">${esc(p.section)} / Nord Engine</div><h1>${esc(p.title)}</h1>
 ${body}${pager}<footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b>${headings.map(([id, title]) => `<a href="#${id}">${esc(title)}</a>`).join('')}</aside></div>
@@ -478,11 +483,12 @@ const searchGroup = p => p.file.startsWith('engines/phaser/4.2/') ? 'phaser'
       : p.file.startsWith('engines/babylon/guides/') ? 'babylon-guides' : 'nord';
 let searchCount = 0;
 for (const p of all) {
-  const body = p === home ? homeBody : p.html;
+  let body = p === home ? homeBody : p.html;
+  if (!body.includes('box dummies')) body = `<aside class="box dummies"><div class="box-title">For dummies</div><p>${esc(p.summary || p.title)} Use the contents list to find a topic. Code names are case-sensitive; component settings belong to the selected object in the Inspector. Start with <a href="getting-started.html">Getting started</a> if you have not opened a project yet.</p></aside>` + body;
   emit(p.file, localLinks(layout(p, body), p.file));
   if (p !== home) {
     const search = searchGroups.get(searchGroup(p));
-    search.push({ f: p.file, t: p.title, s: p.section, x: plain(body).slice(0, 6000) });
+    search.push({ f: p.file, t: p.title, s: p.section, x: plain(body) });
     for (const m of p.searchMembers ?? []) search.push({ f: p.file + '#' + m.id, t: p.title + '.' + m.name, s: p.section, x: m.text.slice(0, 1200) });
     searchCount += 1 + (p.searchMembers?.length ?? 0);
   }
@@ -500,7 +506,7 @@ copy(path.join(root, 'assets/brand/logo-256.png'), 'assets/logo.png');
 copy(path.join(root, 'assets/docs/editor-layout.svg'), 'assets/editor-layout.svg');
 copy(path.join(root, 'vendor/codemirror/cm.bundle.js'), 'assets/cm.bundle.js');
 for (const [source, name] of [['inter/inter-latin-400-normal.woff2', 'inter.woff2'], ['plus-jakarta-sans/plus-jakarta-sans-latin-700-normal.woff2', 'jakarta.woff2'], ['jetbrains-mono/jetbrains-mono-latin-400-normal.woff2', 'mono.woff2']]) copy(path.join(root, 'vendor/fonts', source), `assets/${name}`);
-copyTree(path.join(root, 'vendor/engine-docs'), 'assets/engine-docs');
+for (const [file, bytes] of engineArchives) emit(file, bytes);
 if (fs.existsSync(path.join(root, 'docs/tutorial-downloads'))) copyTree(path.join(root, 'docs/tutorial-downloads'), 'assets/downloads');
 for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png', ...fs.readdirSync(path.join(root, 'docs/screenshots')).filter((f) => /^(es|ed|ui|graph|mod|ex|vector-rocks|ember-crypt|series-dungeon)-.*\.png$/.test(f))]) copy(path.join(root, 'docs/screenshots', file), `assets/screenshots/${file}`);
 for (const [source, name] of [['notepaint/assets/ui/tools.png', 'notepaint-tools.png'], ['star-not/assets/sprites/space.png', 'star-not-space.png'], ['star-not/assets/ui/portraits.png', 'star-not-ui.png']]) copy(path.join(root, 'examples', source), `assets/tutorials/${name}`);
@@ -540,7 +546,7 @@ for (const p of all) {
     if (f && !files.has(target)) { console.error(`broken link in ${p.file}: ${f}`); bad++; }
     else if (hash && hash.length > 1 && target.endsWith('.html') && !ids(target).has(hash.slice(1))) { console.error(`broken anchor in ${p.file}: ${f}${hash}`); bad++; }
   }
-  if (p.section !== 'Engine docs' && /https?:\/\/(?!github\.com\/n8n5gy4cs9-cmd|localhost)/.test(html.replace(/<pre[\s\S]*?<\/pre>/g, '').replace(/<code>[\s\S]*?<\/code>/g, ''))) { console.error(`external URL in ${p.file} (docs must be offline)`); bad++; }
+  if (!['engine-docs.html', 'phaser-api-index.html', 'babylon-api-index.html', 'phaser-archive.html', 'babylon-guides.html', 'babylon-guide-index.html'].includes(p.legacyFile) && p.section !== 'Engine docs' && /https?:\/\/(?!github\.com\/n8n5gy4cs9-cmd|localhost)/.test(html.replace(/<pre[\s\S]*?<\/pre>/g, '').replace(/<code>[\s\S]*?<\/code>/g, ''))) { console.error(`external URL in ${p.file} (docs must be offline)`); bad++; }
 }
 if (check) { // run every nord-live snippet against the real core runtime
   const core = await import(path.join(root, 'runtime/core/index.js'));

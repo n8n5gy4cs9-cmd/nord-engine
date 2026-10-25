@@ -1,9 +1,21 @@
 ---
 title: Physics
 section: Manual
+group: 2D and 3D worlds
 order: 7
 summary: 2D arcade/matter, 3D Havok, bodies, triggers, raycasts.
 ---
+
+## Use this page
+
+This chapter explains **physics**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Setting up a body | [Read this section](#setting-up-a-body) |
+| Moving things | [Read this section](#moving-things) |
+| Events | [Read this section](#events) |
+| Queries | [Read this section](#queries) |
 
 Physics makes objects fall, collide and react to pushes. Choose the system for your project, then give objects bodies and collision shapes.
 
@@ -64,3 +76,12 @@ In 3D, `contact` is `{ point, normal, impulse }`.
 ::: warn
 In 3D, Havok `isGrounded`/`raycast` with `ignore` only skips the first hit (Havok returns the closest hit), and script-set transforms zero a dynamic body's velocity (rotation does not). Havok needs its `.wasm` served as `application/wasm` (see [Hosting](export.html#hosting)).
 :::
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

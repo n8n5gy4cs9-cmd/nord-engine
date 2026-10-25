@@ -4,6 +4,11 @@ section: Guides
 order: 4
 summary: How to start the nord command on macOS, Windows and Linux, and every command with its common options.
 ---
+
+::: dummies
+Choose the row that matches your current task. Names in code are case-sensitive. Follow the linked manual chapter for setup steps before using this quick reference.
+:::
+
 `nord` is Nord's optional **command-line tool**. It does the same project jobs as the editor without a window, which suits scripts, build servers and people who like terminals. You never need it to make a game. This page lists every command.
 
 ## How to run `nord`
@@ -124,3 +129,10 @@ Targets for `-t`: `auto` (default, from the project type), `html`, `web-2d`, `we
 | A blank page from a folder build | Serve it (`nord serve`, or any web server) or build with `--single-file`. |
 
 More detail for each command is in the generated [command reference](cli.html).
+
+
+## Check yourself
+
+Confirm the result in your saved project. Check Console errors and compare exact names with the linked reference if the result differs.
+
+Next: [Unity scripting cheatsheet](cheat-sheet-unity.html). Back to: [Cheatsheets](cookbook.html).

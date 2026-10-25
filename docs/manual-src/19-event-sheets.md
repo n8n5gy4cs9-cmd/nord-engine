@@ -1,9 +1,21 @@
 ---
 title: Event sheets
 section: Manual
+group: Gameplay, sound and interfaces
 order: 19
 summary: Build game logic without code — conditions, actions, picking, triggers, loops, variables and functions, the Construct way.
 ---
+
+## Use this page
+
+This chapter explains **event sheets**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Use it | [Read this section](#use-it) |
+| Parameters, highlight and help | [Read this section](#parameters-highlight-and-help) |
+| Objects and picking | [Read this section](#objects-and-picking) |
+| Event flavours | [Read this section](#event-flavours) |
 
 An **event sheet** is a list of events. Each event says *"when these conditions are true, do these actions"*. It is the same idea as Construct 3's event sheets, and it sits **beside** JavaScript scripting — a scene can use scripts, an event sheet, or both.
 
@@ -88,3 +100,12 @@ Everything in a parameter is an expression: `+ - * / % ^`, `= != < <= > >=`, `&`
 Scripts still work exactly as before. From a script you can fire sheet triggers or read variables: `this.scene.eventSheet.getVar('coins')`, `eventSheet.fire('Object.on-created', { entity })`.
 
 The complete list of conditions, actions and expressions is the generated **[Event sheet reference](event-reference.html)**. Build a whole game step by step in **[T24 A platformer from events](tut-t24-event-sheet-platformer.html)**.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

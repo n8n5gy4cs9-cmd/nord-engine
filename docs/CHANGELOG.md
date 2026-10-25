@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.4.1 — 2026-10-25
+- Export window reorganised: big title, framed coloured sections **WEB EXPORT** (own button) / **DESKTOP EXPORT** (own button) / **RESULT**, named sub-headings (Export settings, Options, Hosting).
+
 ## 0.4.0 — 2026-10-25
 - **Desktop export from the editor** (File ▸ Export… ▸ *Desktop app*): pick Mac / Windows / Linux, optional .dmg / .zip / .tar.gz, app name, icon, output folder. Runs the web export into a temp folder and wraps it with the existing `bundle_mac` / `portable::bundle` on a background thread; progress and one-line errors go to the Console.
 - **Export templates** (`nord_export::templates`, Project ▸ Export templates…): the prebuilt `nord-player` per `mac-arm64 / mac-x64 / windows-x64 / linux-x64 / linux-arm64` in `<config>/templates/<version>/<platform>/` with `manifest.json` (engine version + sha256, verified before every use). Install from a `.nordtemplates` file, Download (GitHub release of this exact version), Remove, Open folder. Any editor can now build all three OSes; Mac apps made off a Mac are unsigned. New CLI `nord template-pack`; CI job `templates` builds and attaches the five `.nordtemplates` on a `vX.Y.Z` tag.

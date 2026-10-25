@@ -354,3 +354,10 @@ Scripts you attach once; reach them from anywhere with `.instance`.
 **Check yourself:** open a script of yours and find every Unity name it uses on this page. If a name is *not* here, it is not part of the Unity layer: look it up in [NordScript](api-nordscript.html) or the [full export list](api-exports.html).
 
 **Next:** [Examples](examples.html) shows these classes inside complete scripts.
+
+
+## Check yourself
+
+Confirm the result in your saved project. Check Console errors and compare exact names with the linked reference if the result differs.
+
+Next: [Unity scripting cheatsheet](cheat-sheet-unity.html). Back to: [Cheatsheets](cookbook.html).

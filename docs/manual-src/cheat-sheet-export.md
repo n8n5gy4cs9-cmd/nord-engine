@@ -4,6 +4,11 @@ section: Guides
 order: 3
 summary: Build, bundle and host commands on one page.
 ---
+
+::: dummies
+Save the editable project first. An export is the playable result; it does not replace your source project. Run commands from the project folder, and check the built result before uploading it.
+:::
+
 | Goal | Command |
 |---|---|
 | Check project | `nord check .` |
@@ -18,3 +23,10 @@ summary: Build, bundle and host commands on one page.
 | Offline scan | `nord check-offline dist` |
 | Toolchain advice | `nord doctor` |
 Details: [Export & hosting](export.html), [CLI](cli.html).
+
+
+## Check yourself
+
+Confirm the result in your saved project. Check Console errors and compare exact names with the linked reference if the result differs.
+
+Next: [Unity scripting cheatsheet](cheat-sheet-unity.html). Back to: [Cheatsheets](cookbook.html).

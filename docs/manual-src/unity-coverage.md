@@ -5,6 +5,11 @@ order: 37
 summary: What of Unity's scripting API works in Nord, what works with limits, and what is missing. Honest list with counts.
 
 ---
+
+::: dummies
+Choose the row that matches your current task. Names in code are case-sensitive. Follow the linked manual chapter for setup steps before using this quick reference.
+:::
+
 Short answer: **not 100%, but almost all of what a gameplay programmer uses**. Scripts, input (old and new system), time, prefabs, coroutines, triggers, physics 2D and 3D with joints, line and trail renderers, masks, saving and scenes are covered; the gaps are NavMesh, Cinemachine, Terrain, editor scripting and a few smaller classes (see "Nice to have" below). This page is the honest list. `✔` works with the Unity name, `◐` works with limits, `✘` not available in Unity style (the **Native way** column says what to use instead; native code always works next to Unity-style code).
 
 Status of this page: updated for version 0.3.0. The unit tests are `runtime/core/unity-extra.test.mjs` (maths, tree, input, queries, joints, renderers; `node --test runtime/core/*.test.mjs`) and the browser checks of the three Lab projects ([Physics Lab](ex-physics-lab.html)).
@@ -166,3 +171,10 @@ The full table with what to do today is on [Unity API in Nord: the map](ex-unity
 6. `Cinemachine`, UI Toolkit, `EventSystem`, Addressables, Rule Tiles, `Gizmos`.
 
 If you need something marked ✘ today, use the native API (`entity.native`, `this.physics`, `this.game.backend`) from the same script; both styles can live in one file.
+
+
+## Check yourself
+
+Confirm the result in your saved project. Check Console errors and compare exact names with the linked reference if the result differs.
+
+Next: [Unity scripting cheatsheet](cheat-sheet-unity.html). Back to: [Cheatsheets](cookbook.html).

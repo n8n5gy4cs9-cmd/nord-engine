@@ -1,9 +1,18 @@
 ---
 title: Debugger and profiler
 section: Manual
+group: Test and publish
 order: 21
 summary: Pause, step, breakpoints on events, live instance editing, an expression console and a frame profiler — in any running game.
 ---
+
+## Use this page
+
+This chapter explains **debugger and profiler**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Deep profiling | [Read this section](#deep-profiling) |
 
 The debugger lets you pause a running game, step one frame at a time, inspect every object and see which logic is slow.
 
@@ -30,3 +39,12 @@ The **details** tab (and the editor's **Window ▸ Profiler**) goes further than
 - **● Record** keeps up to a minute of frames; **Save profile** writes `profiles/profile-N.json` in the editor (a download in the browser overlay). Format and limits: `docs/PROFILER.md`. Guided practice: [T52](tut-t52-profiler.html).
 
 From code: `const d = game.enableDebug(); d.pause(); d.step(); d.toggleBreakpoint('2.0'); d.evaluate('score * 2'); d.stats();`. Events are identified by their position in the sheet (`2.0` = the first sub-event of the third entry).
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

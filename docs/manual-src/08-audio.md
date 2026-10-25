@@ -1,9 +1,18 @@
 ---
 title: Audio
 section: Manual
+group: Gameplay, sound and interfaces
 order: 8
 summary: Sound effects, music, buses, autoplay rules.
 ---
+
+## Use this page
+
+This chapter explains **audio**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Touch-to-start gate (`touchToStart`) {#touch-to-start} | [Read this section](#touch-to-start) |
 
 Add short sounds for actions and music for atmosphere. Keep the files in your project, choose a volume, and let the player enable audio with a click or tap.
 
@@ -95,3 +104,12 @@ Returns `{ active, destroy() }`. `active` is `true` until the first gesture. Wit
 * Skip it when you jump straight into gameplay (a `?start=` or `?nogate` URL switch is handy for automated tests, which cannot see the overlay's first click). Example: `if (!new URLSearchParams(location.search).has('nogate')) this.startGate = touchToStart(this.game, { title: 'MY GAME' });`
 * In automated browser tests, click once on the page (`page.mouse.click`) when `[data-nord-start-gate]` exists.
 * It is not installed by default; games that do not call it are unchanged.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

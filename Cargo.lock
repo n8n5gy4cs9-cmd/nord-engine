@@ -3360,7 +3360,7 @@ checksum = "2bf50223579dc7cdcfb3bfcacf7069ff68243f8c363f62ffa99cf000a6b9c451"
 
 [[package]]
 name = "nord-cli"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "anyhow",
  "clap",
@@ -3374,7 +3374,7 @@ dependencies = [
 
 [[package]]
 name = "nord-core"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "image",
  "serde",
@@ -3386,7 +3386,7 @@ dependencies = [
 
 [[package]]
 name = "nord-desktop"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "arboard",
  "keyring",
@@ -3405,7 +3405,7 @@ dependencies = [
 
 [[package]]
 name = "nord-editor"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "anyhow",
  "block2 0.6.2",
@@ -3437,7 +3437,7 @@ dependencies = [
 
 [[package]]
 name = "nord-editor-server"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "anyhow",
  "argon2",
@@ -3458,7 +3458,7 @@ dependencies = [
 
 [[package]]
 name = "nord-editor-web"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "console_error_panic_hook",
  "eframe",
@@ -3470,7 +3470,7 @@ dependencies = [
 
 [[package]]
 name = "nord-export"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -3484,7 +3484,7 @@ dependencies = [
 
 [[package]]
 name = "nord-player"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "anyhow",
  "global-hotkey",
@@ -3499,7 +3499,7 @@ dependencies = [
 
 [[package]]
 name = "nord-serve"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "anyhow",
  "axum",

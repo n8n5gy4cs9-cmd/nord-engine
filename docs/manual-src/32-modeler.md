@@ -1,9 +1,25 @@
 ---
 title: 3D Modeler
 section: Manual
+group: 2D and 3D worlds
 order: 32
 summary: Full guide to the 3D Modeler: build a model from scratch, open and change the models of your scene with their textures, paint, fix UVs, and save as overwrite, new model, prefab or variant. Every tool explained with screenshots.
 ---
+
+## Use this page
+
+This chapter explains **3d modeler**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Save your model and use it in the game (3 steps) | [Read this section](#save-your-model-and-use-it-in-the-game-3-steps) |
+| Continue editing later (after closing or restarting) | [Read this section](#continue-editing-later-after-closing-or-restarting) |
+| Where the files live (and why `models/`) | [Read this section](#where-the-files-live-and-why-models) |
+| Export (GLB, glTF, OBJ, PNG) for other tools | [Read this section](#export-glb-gltf-obj-png-for-other-tools) |
+
+::: dummies
+This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
+:::
 
 The **3D Modeler** tab (Window ▸ Editors ▸ 3D Modeler) is for *props and small fixes*: build a crate from a cube, nudge vertices, repaint a texture, fix a UV, change a model that is already in your scene. It is not a replacement for Blender. Everything is saved in the project's `models/` folder.
 
@@ -257,3 +273,10 @@ A model from the Modeler needs **no extra component** to be lit: it is an ordina
 4. **Too many lights:** if more than *Lights per object* (Project ▸ Quality) reach the model, the weakest are dropped from it. See *Many lights* in the 3D chapter.
 5. **Scene view:** the Scene view shows the scene's own lights only with **Gizmos ▸ Scene lighting** on; with it off, you see neutral editor light.
 6. The light is **enabled** (its entity checkbox) and **Ambient light** is not hiding the effect: a bright ambient makes a point light hard to see, so lower `ambientIntensity` to compare.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).

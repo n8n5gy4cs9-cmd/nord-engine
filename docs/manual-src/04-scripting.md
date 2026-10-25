@@ -1,9 +1,37 @@
 ---
 title: Scripting
 section: Manual
+group: Projects, objects and scripts
 order: 4
 summary: NordScript lifecycle, attributes, events, timers, tweens, hot reload, debugging.
 ---
+
+Start new game scripts with [Unity-style scripting](unity-scripting.html): use `MonoBehaviour`, `Awake`, `Start`, and `Update`. The lower-case `NordScript` API below remains supported and explains code in older tutorials. Keep one lifecycle style within a class.
+
+## Recommended scripting workflow
+
+1. In the @ui[Assets] tab, right-click the scripts folder and choose @ui[New MonoBehaviour script (Unity-style)]. The new JavaScript file opens in @ui[Code].
+2. Select the object in @ui[Hierarchy]. In @ui[Inspector], use @ui[+ Add script] and select that file. The script is now attached to the object.
+3. Follow [Unity-style scripting](unity-scripting.html) for fields and lifecycle, and [Unity API reference](api-unity.html) for exact signatures. Press @ui[Play] and read the @ui[Console] if the result differs.
+
+::: dummies
+Unity-style means familiar names in **JavaScript**, not C#. `Start()` runs once; `Update()` runs each frame. `Time.deltaTime` is the elapsed time for one frame, so multiplying by it makes movement independent of frame rate. Nord's `Input` import has a different API; import `UnityInput as Input` for Unity names.
+:::
+
+## Native NordScript reference
+
+The following material documents the original lower-case API. It is retained so existing projects and tutorials can still be understood.
+
+## Use this page
+
+This chapter explains **scripting**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Lifecycle | [Read this section](#lifecycle) |
+| Attributes | [Read this section](#attributes) |
+| The entity API | [Read this section](#the-entity-api) |
+| Events | [Read this section](#events) |
 
 A script adds behavior to an entity: movement, a reaction to a button, or rules for your game. New to code? Read [Programming for dummy developers](developer-basics.html) first.
 
@@ -151,3 +179,12 @@ this.ui.button('Restart', () => { this.game.restart(); return; });
 ```
 
 Keep run state in script instances and clean up custom listeners, UI, native objects and audio in `onDestroy()`. Save storage and asset/script module caches survive. Restart does not undo external server state or reload edited source modules; use Stop/Play for source changes. Existing copied projects need **Upgrade runtime**. T39 demonstrates a complete scene-based restart; T40 and T41 show HTML apps resetting their own rule state and server rounds.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

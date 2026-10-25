@@ -1,9 +1,21 @@
 ---
 title: Input
 section: Manual
+group: Gameplay, sound and interfaces
 order: 10
 summary: Actions, keyboard, mouse, touch, gamepad, rebinding.
 ---
+
+## Use this page
+
+This chapter explains **input**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Input Manager (per project) | [Read this section](#input-manager-per-project) |
+| Rebinding | [Read this section](#rebinding) |
+| Touch | [Read this section](#touch) |
+| Mobile and on-screen controls | [Read this section](#mobile-and-on-screen-controls) |
 
 Input connects a player’s keys, pointer, touch or gamepad to game actions. Give actions names such as left and jump so game code can stay simple.
 
@@ -86,3 +98,12 @@ if (Application.os === 'mac') { /* the machine, whatever the shell: 'mac' | 'win
 if (Application.isMobilePlatform) showTouchControls();
 ```
 `isEditor`, `isDesktopApp`, `isWebPlayer`, `isMobilePlatform` are plain booleans. Use it to hide a Quit button on the web, show touch controls on phones, enable cheats only in the editor, or choose Cmd vs Ctrl labels with `Application.os`. Also `Cursor.lockState = CursorLockMode.Locked` (lock the mouse) and `Cursor.visible = false`.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

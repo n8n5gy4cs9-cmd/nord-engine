@@ -1,9 +1,21 @@
 ---
 title: FPS Creator — build first-person levels
 section: Manual
+group: 2D and 3D worlds
 order: 28
 summary: A grid level editor with walls, doors, windows, stairs, lights, ready-made enemies, pickups, scripts and no-code rules. Build, play-test with F5, ship with your game.
 ---
+
+## Use this page
+
+This chapter explains **fps creator — build first-person levels**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Start in one minute | [Read this section](#start-in-one-minute) |
+| Open, edit and switch level files | [Read this section](#open-edit-and-switch-level-files) |
+| The editor window | [Read this section](#the-editor-window) |
+| Ready-made things | [Read this section](#ready-made-things) |
 
 **FPS Creator** is an addon for Nord that turns the editor into a *level editor on steroids* for first-person shooters (and adventures): you draw rooms on a grid, drop in doors, windows, lights, enemies and pickups, attach scripts, press **F5** and play. It is inspired by the classic FPS Creator workflow, but everything is original and works offline. Nothing in the normal editor changes — you opt in per project.
 
@@ -307,3 +319,10 @@ Things to copy into your own levels:
 * **Make shafts safe:** railings round the hole, a low wall at the stair's high end, and walls round the empty cell above it.
 * **Back texture:** set *Back texture* so the street side is brick and the inside plaster.
 * **Objective chain:** red key (boiler room) → locked Suite 204 → yellow key → basement service door → exit.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).

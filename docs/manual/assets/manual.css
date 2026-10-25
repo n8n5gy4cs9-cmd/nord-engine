@@ -62,3 +62,10 @@ ul.cards{list-style:none;padding:0;display:grid;grid-template-columns:repeat(2,m
 .f{color:#ebcb8b;font-weight:700}.v{color:#a3be8c;font-weight:700}.k{color:#b48ead;font-weight:700}.ui{color:#88c0d0;font-weight:700}
 
 .c-ui{color:var(--accent);font-weight:600}.c-api{color:var(--good);font-weight:600;font-family:var(--mono);font-size:.92em}.c-key{color:var(--warn);font-weight:600;border:1px solid var(--border);border-radius:4px;padding:0 5px;background:var(--panel2);font-size:.92em}.c-term{color:var(--purple);font-weight:600}.c-bad{color:var(--bad);font-weight:600}
+
+/* Reading palettes share the same semantic colors and controls. */
+html[data-theme=nord]{--bg:#2e3440;--panel:#353d4b;--panel2:#414d60;--fg:#eceff4;--muted:#bdc9da;--accent:#88c0d0;--border:#59677c;--code:#252c37}
+html[data-theme=sepia]{color-scheme:light;--bg:#f5ecd9;--panel:#fff7e7;--panel2:#ecdfc6;--fg:#3e3228;--muted:#6f5d49;--accent:#84511d;--border:#c5b394;--code:#eee2ca;--good:#38653c;--warn:#825000;--bad:#a32626;--purple:#744a87}
+html[data-theme=forest]{--bg:#12221d;--panel:#1b3028;--panel2:#294337;--fg:#e4f3e9;--muted:#aac7b7;--accent:#94dfb6;--border:#426552;--code:#10251b}
+html[data-theme=contrast]{--bg:#000;--panel:#080808;--panel2:#202020;--fg:#fff;--muted:#ddd;--accent:#8cdbff;--border:#aaa;--code:#000;--good:#a1ffb1;--warn:#ffe16e;--purple:#e1b0ff}
+select{font:inherit;color:var(--fg);background:var(--panel);border:1px solid var(--border);border-radius:5px;padding:5px}select:focus-visible{outline:3px solid var(--accent)}.theme-label{white-space:nowrap;font-size:.85rem}.sidebar summary{padding:9px 4px;font-weight:700;cursor:pointer}.sidebar details>a{margin-left:10px;border-left:1px solid var(--border)}

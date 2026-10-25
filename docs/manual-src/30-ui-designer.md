@@ -1,9 +1,21 @@
 ---
 title: UI Designer
 section: Manual
+group: Gameplay, sound and interfaces
 order: 30
 summary: Build menus, HUDs and dialogs visually. Layout, text, images and 9-slice, skins, input fields, and how a button reaches your code.
 ---
+
+## Use this page
+
+This chapter explains **ui designer**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Open the Designer | [Read this section](#open-the-designer) |
+| The window | [Read this section](#the-window) |
+| Node types | [Read this section](#node-types) |
+| Layout: anchors and containers | [Read this section](#layout-anchors-and-containers) |
 
 The **UI Designer** is where you build every screen the player clicks: main menu, HUD, pause screen, settings, dialogs. You draw a tree of **nodes**, see the result live, and save it as a `ui/<name>.ui.json` file. Your game loads that file with one line of code. This chapter is the full reference; for a short guided build, follow [T44](tut-t44-ui-designer.html) and [T45](tut-t45-ui-skins-9slice.html).
 
@@ -179,3 +191,12 @@ Details are in the [UI scenes reference](ui-scenes.html).
 
 ## See also
 [UI scenes reference](ui-scenes.html) · [T44 Menus and HUDs](tut-t44-ui-designer.html) · [T45 Skins and 9-slice](tut-t45-ui-skins-9slice.html) · [Node graphs](graph.html) · [UI & HUD basics](ui.html)
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

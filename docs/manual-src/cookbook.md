@@ -1,9 +1,46 @@
 ---
-title: Cookbook
+title: Cheatsheets — find an answer
 section: Guides
 order: 1
-summary: Short recipes for common game problems, in Nord format.
+summary: Quick lookup tables for scripting, editor tasks, debugging and publishing.
 ---
+Keep these pages open while working. Choose the task first, then use the matching reference when you need details.
+
+::: dummies
+A tutorial teaches a project in order. A cheatsheet is a short reminder for a task you already started. Start with one row, try it, and compare the result before adding more code.
+:::
+
+## Choose a cheatsheet
+
+| Task | Cheatsheet | Expected result |
+|---|---|---|
+| Write new Unity-style JavaScript | [Unity scripting](cheat-sheet-unity.html) | A complete attached script with a working Update |
+| Read an older tutorial | [Native nord.js](cheat-sheet-nordjs.html) | Recognize lower-case lifecycle and services |
+| Run a command | [Command line](cheat-sheet-cli.html) | Know the project folder, command and output |
+| Share a game | [Export](cheat-sheet-export.html) | Produce the right build and check it |
+| Edit an FPS level | [FPS Level](cheat-sheet-fps-level.html) | Recall tools, test controls and saving |
+| Find a keyboard action | [Shortcuts](shortcuts.html) | Find the action and verify its configured binding |
+| Recall a graph node | [Graph reference](graph-reference.html) | Choose the node with the correct inputs |
+
+## Debug a script quickly
+
+| Symptom | First check | Reference |
+|---|---|---|
+| Nothing happens | Select the object; verify attachment and enabled state in Inspector | [Unity scripting](unity-scripting.html) |
+| Update is never called | Use capitalized Update in MonoBehaviour; lower-case update in NordScript | [Scripting](scripting.html) |
+| Input does nothing | Verify the action or axis in the Project tab; focus the running Game view | [Input](input.html) |
+| Spawned object is unavailable | Await Instantiate inside an async method | [Unity API](api-unity.html) |
+| Collision never fires | Check body, collider, trigger flag and matching 2D/3D backend | [Physics](physics.html) |
+| Changes disappear on Stop | Play edits affect the running game; edit the saved scene after stopping | [Unity workflow](unity-workflow.html) |
+| Export is blank | Check Console, missing files and whether the output needs a web server | [Export](export.html) |
+
+## Common gameplay recipes
+
+Use [Examples](examples.html) for complete Unity-style files: input and movement, spawning, health, UI, saves and physics. The sidebar groups related pages so you can collapse the topics you do not need.
+
+<details>
+<summary>Existing native Nord service recipes (advanced reference)</summary>
+
 Each recipe is plain Nord API — no Phaser/Babylon calls.
 
 ## Movement & feel
@@ -63,3 +100,11 @@ this.tween(this.entity.pos, [400, 100, 0], { duration: 1.2, ease: 'backOut' });
 
 ## Debug
 `this.game.timeScale`, `this.game.pause()`, `this.events.on('error', e => …)`, `util-debug.js`.
+
+
+</details>
+
+## Check yourself
+Choose one task, perform its action and confirm the expected result. If a call is unfamiliar, open its API reference before copying it into a different lifecycle style.
+
+Next: [Unity scripting cheatsheet](cheat-sheet-unity.html). Back to: [Manual reading paths](manual-paths.html).

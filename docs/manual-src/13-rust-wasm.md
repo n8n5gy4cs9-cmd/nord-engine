@@ -1,9 +1,21 @@
 ---
 title: Rust / WASM
 section: Manual
+group: Test and publish
 order: 13
 summary: Rust game runtime (macroquad + rapier) and Rust apps (egui), building and limits.
 ---
+
+## Use this page
+
+This chapter explains **rust / wasm**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| What happens when you build | [Read this section](#what-happens-when-you-build) |
+| What has been tested | [Read this section](#what-has-been-tested) |
+| Layout | [Read this section](#layout) |
+| Scripts | [Read this section](#scripts) |
 
 Choose a Rust tier when you want to write the game or app in Rust. Nord does not contain its own Rust compiler: it runs **`cargo`** (Rust's standard build tool) on your project, then packages the result as WebAssembly so a browser can run it. That means **you must install Rust first**; the steps are in [Before you start](#before-you-start).
 
@@ -121,3 +133,12 @@ sprite, animatedSprite, text, tilemap (+ collider runs), parallax, particles (CP
 ::: tip
 Desktop apps in Rust: `nord_app_wasm::desktop::Desktop` gives files, dialogs, notifications, clipboard, storage with the same permission manifest as JS apps (web builds fall back gracefully). See [Desktop apps](desktop-apps.html).
 :::
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

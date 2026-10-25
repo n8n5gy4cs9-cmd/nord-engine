@@ -5,6 +5,11 @@ order: 29
 summary: Build, select, patrol, test, stop, customise shortcuts, save and export first-person levels.
 ---
 
+::: dummies
+Choose the row that matches your current task. Names in code are case-sensitive. Follow the linked manual chapter for setup steps before using this quick reference.
+:::
+
+
 Start with the **FPS Creator** template and open **FPS Level**. The [full illustrated guide](fps-creator.html) explains the panels, ready-made content, scripts, rules, files and export. [T27](tut-t27-fps-level.html) walks through a playable level.
 
 | Task | Control |
@@ -65,3 +70,10 @@ Save the level → set the scene’s **Level file** → save the scene → verif
 * **Capture mouse:** click Click to play; Esc releases/pauses, Resume recaptures. Restart `./run.sh` after updating the native editor.
 
 See [Open, edit and switch level files](fps-creator.html#open-edit-and-switch-level-files) for the complete workflow and screenshot.
+
+
+## Check yourself
+
+Confirm the result in your saved project. Check Console errors and compare exact names with the linked reference if the result differs.
+
+Next: [Unity scripting cheatsheet](cheat-sheet-unity.html). Back to: [Cheatsheets](cookbook.html).

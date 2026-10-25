@@ -1,9 +1,25 @@
 ---
 title: Unity-style workflow
 section: Manual
+group: Projects, objects and scripts
 order: 31
 summary: Layouts, menus, Scene-view tools, prefabs, materials, Build Settings, Game view, New scene and the first-10-minutes checklist.
 ---
+
+## Use this page
+
+This chapter explains **unity-style workflow**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Layouts and menus | [Read this section](#layouts-and-menus) |
+| The Scene view | [Read this section](#the-scene-view) |
+| Inspector, Hierarchy and prefabs | [Read this section](#inspector-hierarchy-and-prefabs) |
+| Materials and import settings | [Read this section](#materials-and-import-settings) |
+
+::: dummies
+This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
+:::
 
 Nord Engine edits the way Unity does: Hierarchy, Inspector, Project, a Scene view and a Game view, with prefabs, material assets and Build Settings. This chapter is the quick tour. Screenshots show the native editor panels; the Scene and Game views are native web views that appear in the same places in the real window.
 
@@ -71,3 +87,10 @@ The Game view toolbar has a **Resolution** drop-down (phone, 16:9, 4:3, portrait
 
 ## Writing scripts the Unity way
 See *Unity-style scripting* in [Scripting](scripting.html): `MonoBehaviour`, `Singleton`, `GameManager`, coroutines, `Mathf`, `Vector3`, `Time`, `Input.GetAxis` and more, with ready-made script templates in Assets ▸ Create.
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).

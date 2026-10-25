@@ -1,9 +1,21 @@
 ---
 title: Projects & scenes
 section: Manual
+group: Projects, objects and scripts
 order: 3
 summary: Folder layout, entities, components, prefabs, tags and layers.
 ---
+
+## Use this page
+
+This chapter explains **projects & scenes**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Entities | [Read this section](#entities) |
+| Components | [Read this section](#components) |
+| Scripts | [Read this section](#scripts) |
+| Tags and layers | [Read this section](#tags-and-layers) |
 
 A project keeps your game’s files together. A scene describes the things in one level or screen; an entity is one of those things.
 
@@ -59,3 +71,12 @@ Scene `settings` hold ambient colour, skybox and gravity overrides.
 ::: tip
 Hand-editing JSON is fine — `nord check` validates ids, tags and missing files, and the editor shows the same problems.
 :::
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

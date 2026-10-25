@@ -96,3 +96,10 @@ Use responsive screen sizing, large enough hit targets, and `touch-action: none`
 The controls drive Nord input actions, not a Phaser or Babylon object. The same module can drive a 2D controller, a 3D controller or a custom NordScript. Steering rules still belong to that controller: a boat or spaceship might turn, while a platformer moves horizontally.
 
 The editor's Library also includes **ui-joystick.js** for joystick-only insertion. Use the ready-made helper before building a new input system.
+
+
+## Check yourself
+
+Confirm the result in your saved project. Check Console errors and compare exact names with the linked reference if the result differs.
+
+Next: [Unity scripting cheatsheet](cheat-sheet-unity.html). Back to: [Cheatsheets](cookbook.html).

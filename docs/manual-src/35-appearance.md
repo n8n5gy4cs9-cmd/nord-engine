@@ -1,9 +1,24 @@
 ---
 title: Editor appearance
 section: Manual
+group: Getting oriented
 order: 35
 summary: Themes, font pairs, interface/text/button size with reset, and the built-in theme editor for your own themes. Everything is saved when you close the app.
 ---
+
+## Use this page
+
+This chapter explains **editor appearance**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| Themes and fonts | [Read this section](#themes-and-fonts) |
+| Size: interface, text, buttons | [Read this section](#size-interface-text-buttons) |
+| Theme editor (make your own theme) | [Read this section](#theme-editor-make-your-own-theme) |
+
+::: dummies
+This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
+:::
 
 **Settings** (Cmd/Ctrl+,) ▸ the top of the page controls how the editor looks. Every change is applied immediately and saved to `editor.json` in Nord's config folder, so the editor looks the same the next time you start it.
 
@@ -31,3 +46,12 @@ Built-in themes are never changed: custom themes are separate entries stored in 
 ::: tip
 Missing symbols? The editor falls back to a bundled symbol font for arrows, bullets and similar characters in every skin, and menus use real icons instead of text glyphs.
 :::
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).

@@ -1,9 +1,21 @@
 ---
 title: Welcome
 section: Manual
+group: Getting oriented
 order: 1
 summary: What Nord is, the project types, how to open it, and a map of every chapter.
 ---
+
+## Use this page
+
+This chapter explains **welcome**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
+
+| Find the instructions for | Go to |
+|---|---|
+| The tiers | [Read this section](#the-tiers) |
+| Open the editor | [Read this section](#open-the-editor) |
+| How this manual is organised | [Read this section](#how-this-manual-is-organised) |
+
 Nord Engine is a game and app editor, in the spirit of Unity or Godot. You build visually (Hierarchy, Inspector, Scene view), add behaviour with ready-made tools, event sheets or scripts in JavaScript (or Rust), and **export a static folder** that runs in any web browser, or wrap it into a desktop app.
 
 ::: dummies
@@ -66,3 +78,12 @@ Other sections of this site:
 ::: dummies
 Every concept page can hide a purple **For dummies** box like this one. Plain-language explanations are shown by default; the top-bar switch hides them once you know the ropes.
 :::
+
+
+## Check yourself
+
+- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
+- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
+- For platform or feature limits, check [Known issues](known-issues.html).
+
+Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).
