@@ -159,7 +159,24 @@ They are all in `Ship.Collect(type)`: five lines. To add a sixth, make a prefab,
 
 ![A nova clears the sky](assets/screenshots/vector-rocks-nova.png)
 
-## 8 Check yourself
+
+## 8 Every monitor effect we tried
+
+The same frozen frame, one effect at a time (the test script switches them on one by one and took these):
+
+| | |
+|---|---|
+| ![none](assets/screenshots/vector-rocks-fx-none.png) **No effect.** Only the baked glow of the sprites and the green text shadow. | ![bloom](assets/screenshots/vector-rocks-fx-bloom.png) **Bloom** (the `backdropFilter` layer). Light bleeds out of the lines. Used. |
+| ![crt](assets/screenshots/vector-rocks-fx-crt.png) **`crt` scene effect.** Scanlines and a slight darkening. Used. | ![both](assets/screenshots/vector-rocks-fx-both.png) **Bloom + crt**: what the game ships with. |
+| ![vignette](assets/screenshots/vector-rocks-fx-vignette.png) **`vignette` scene effect** at strength 0.6. Darkens the corners; far too strong for a bright playfield, and the bezel already has an inner shadow. Not used. | ![barrel](assets/screenshots/vector-rocks-fx-barrel.png) **`barrel`** (curved glass). It warps only the game picture, not the bezel or the HUD, and objects that wrap around the screen edge visibly bend. Looks wrong for Asteroids. Not used. |
+| ![glow](assets/screenshots/vector-rocks-fx-glow.png) **`glow` scene effect.** Phaser's glow filter outlines objects; on thin glowing lines it adds nothing visible over the baked halo. Not used. | **`pixelate`, `blur`, `hue`, `sepia`, …** The other stock effects. `blur` softens everything (a cheap "out of focus tube"); `hue` could turn the green monitor amber. Try `game.effects.add(scene, 'hue', { degrees: 60 })`. |
+
+Scene effects live in the scene's `settings.effects` or are added from code with `this.game.effects.add(this.scene, 'crt', { intensity: 0.5 })` (it returns a handle with `set`, `setEnabled` and `remove`). The full list with parameters is in [Effects, particles and timelines](effects-particles-timelines.html). Two more things for monitor looks:
+
+* **`library/shaders/crt.glsl`** is a hand-written full-screen CRT shader (barrel distortion, scanlines, RGB shift) for Phaser PostFX or a Babylon post-process. Using a custom GLSL shader needs engine-native code (a `PostFXPipeline` or `PostProcess`), so this tutorial sticks to the stock `crt` effect, which works without it.
+* **Phosphor persistence** (moving lines leaving a fading trail) is not a stock effect. The bullets fake it with a small particle trail that fades in a quarter of a second; a full-screen persistence buffer would need a custom render texture and is beyond a MonoBehaviour tutorial.
+
+## 9 Check yourself
 
 * The title of the game is the screen itself: green rocks drift on black, the ship waits in the middle.
 * Turn and thrust: the ship keeps drifting after you let go. Fly off one edge and come back on the other.
@@ -172,7 +189,7 @@ The project has an automated test, `node tools/vector-rocks-test.mjs`: it flies,
 
 ![Game over](assets/screenshots/vector-rocks-over.png)
 
-## 9 Ideas
+## 10 Ideas
 
 * A **flying saucer** that crosses the screen and shoots (a new prefab and a script like `Rock` that aims with `Vector2.Distance` and `Mathf.Atan2`).
 * Rocks that **wobble** their outline by drawing a new random polygon each wave: see the art script.

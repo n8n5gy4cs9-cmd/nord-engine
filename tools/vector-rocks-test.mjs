@@ -71,6 +71,23 @@ const { errors } = await withPage(`${ROOT}/examples/vector-rocks`, async (p) => 
   await ev(p, () => { const S = window.__nord.scene.find('Ship').scripts[0]; S.tripleLeft = 8; S.shieldLeft = 8; });
   await hold(p, 'Space', 160);
   await shot(p, 'showcase');
+  // the effect comparison for the page: the same frozen frame with each monitor effect on its own
+  const fxShot = async (name, effects, bloom) => {
+    await ev(p, ([effects, bloom]) => {
+      const g = window.__nord; g.pause(); g.effects.clear('scene'); if (effects.length) g.effects.addAll('scene', effects);
+      for (const el of document.querySelectorAll('.nord-panel')) { if (el.dataset.bf === undefined && el.style.backdropFilter) el.dataset.bf = el.style.backdropFilter; if (el.dataset.bf) el.style.backdropFilter = bloom ? el.dataset.bf : 'none'; }
+    }, [effects, bloom]);
+    await wait(p, 1400);
+    await p.screenshot({ path: `${OUT}/vector-rocks-fx-${name}.png`, clip: { x: 120, y: 60, width: 330, height: 260 } });
+  };
+  await fxShot('none', [], false);
+  await fxShot('bloom', [], true);
+  await fxShot('crt', [{ type: 'crt', intensity: 0.35 }], false);
+  await fxShot('both', [{ type: 'crt', intensity: 0.35 }], true);
+  await fxShot('vignette', [{ type: 'vignette', strength: 0.6, radius: 0.5 }], false);
+  await fxShot('barrel', [{ type: 'barrel', amount: 0.5 }], false);
+  await fxShot('glow', [{ type: 'glow', color: '#3dff7a', outerStrength: 6, innerStrength: 1 }], false);
+  await look(p, false); await ev(p, () => window.__nord.resume());
   const before = (await gameState(p)).lives; await spawnPU(p, 'life'); await wait(p, 400);
   assert.equal((await gameState(p)).lives, before + 1, 'extra life');
   const rocksBefore = await count(p, 'Rock'); await spawnPU(p, 'nova'); await wait(p, 900);
