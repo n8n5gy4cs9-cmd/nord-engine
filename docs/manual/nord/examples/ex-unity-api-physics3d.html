@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>62 · Unity API: Physics 3D, joints and the camera — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-clock.html">3.5 · Build a clock: objects, hierarchy, materials and your first script</a><a href="ex-digital-clock.html">3.6 · Build a digital clock: primitives and 3D text in the world</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-music-player.html">9.5 · A music player and sound effects</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html">55 · Ember Crypt: a complete game, from art to export</a><a href="ex-shadertoy.html">56 · Shadertoy: use any shader from shadertoy.com</a><a href="ex-unity-api.html">57 · Unity API in Nord: the map</a><a href="ex-unity-api-scripting.html">58 · Unity API: scripting and objects</a><a href="ex-unity-api-math.html">59 · Unity API: math types</a><a href="ex-unity-api-input.html">60 · Unity API: input</a><a href="ex-unity-api-physics2d.html">61 · Unity API: Physics 2D</a><a href="ex-unity-api-physics3d.html" class="cur" aria-current="page">62 · Unity API: Physics 3D, joints and the camera</a><a href="ex-unity-api-rendering.html">63 · Unity API: LineRenderer, TrailRenderer, SpriteMask and SpriteShape</a><a href="ex-physics-lab.html">64 · Physics Lab: a bench for the Unity physics layer</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>62 · Unity API: Physics 3D, joints and the camera</h1>
+<p><strong>Goal:</strong> use <code>Physics</code> (3D), <code>Rigidbody</code>, 3D joints and the camera conversions with Unity&#39;s names. 3D physics is Havok; the queries below read the collider data directly, so they cover every collider (also several hits per ray) in the same frame.</p>
+<p><img src="../../assets/screenshots/ex-physics-lab-3d.png" alt="The 3D Physics Lab: a hinged door, a fixed pair, a spring, a Shadertoy plane and a trail"></p>
+<h2 id="colliders">Colliders<a class="anchor" href="#colliders">#</a></h2>
+<p><span class="c-ui">Inspector ▸ + Add component ▸ collider</span>: <code>shape</code> is <code>box</code>, <code>sphere</code>, <code>capsule</code> or <code>cylinder</code>. <code>size</code> is the box (or the capsule&#39;s height in <code>size[1]</code>), <code>radius</code> the sphere / capsule radius, <code>offset</code> shifts it. Without a <code>size</code> the collider is taken from the mesh. Classes: <code>BoxCollider</code>, <code>SphereCollider</code>, <code>CapsuleCollider</code> (<code>height</code>, <code>radius</code>).</p>
+<h2 id="rigidbody">Rigidbody<a class="anchor" href="#rigidbody">#</a></h2>
+<p>Same members as <code>Rigidbody2D</code>, in 3D:</p>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>mass</code>, <code>drag</code>, <code>angularDrag</code>, <code>useGravity</code>, <code>isKinematic</code>, <code>velocity</code>, <code>angularVelocity</code> (rad/s, <code>Vector3</code>), <code>AddForce(force, ForceMode.Impulse/VelocityChange/Acceleration/Force)</code>, <code>AddTorque</code>, <code>AddExplosionForce(force, position, radius, upwards)</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><strong><code>constraints</code></strong> = <code>RigidbodyConstraints.FreezePositionX/Y/Z</code>, <code>FreezeRotationX/Y/Z</code>, <code>FreezePosition</code>, <code>FreezeRotation</code>, <code>FreezeAll</code></td>
+<td>each axis is held: the body does not move or turn about it. Inspector: <code>freezePositionX…Z</code>, <code>freezeRotationX…Z</code>.</td>
+</tr>
+<tr>
+<td><strong><code>collisionDetectionMode</code></strong> <code>Continuous</code>, <code>ContinuousDynamic</code>, <code>ContinuousSpeculative</code></td>
+<td>the physics step is cut into smaller pieces while such a body is fast (up to 8×), so a bullet cannot pass a thin wall</td>
+</tr>
+<tr>
+<td><code>interpolation</code></td>
+<td>stored but without a visual effect in 3D (Havok steps inside the render loop)</td>
+</tr>
+</tbody></table>
+<p><strong>File: <code>scripts/Crate.js</code></strong> (new file, the whole file: a crate that slides on one axis)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Rigidbody, RigidbodyConstraints, Vector3 } from 'nord';
+
+export default class Crate extends MonoBehaviour {
+  Start() {
+    const rb = this.GetComponent(Rigidbody);
+    rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+    rb.collisionDetectionMode = 'Continuous';
+    rb.velocity = new Vector3(5, 0, 0);          // sideways speed is removed: it can only fall (a lift)
+  }
+}</code></pre>
+<h2 id="queries">Queries<a class="anchor" href="#queries">#</a></h2>
+<p>All take a <code>layerMask</code> (default: all layers) and <code>queryTriggerInteraction</code> (<code>QueryTriggerInteraction.Ignore</code> / <code>Collide</code> / <code>UseGlobal</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Physics.Raycast(origin, direction, maxDistance, mask)</code> or <code>Raycast(ray, maxDistance)</code></td>
+<td>one hit with <code>collider</code> (the entity; <code>null</code> for a miss), <code>point</code>, <code>normal</code>, <code>distance</code>, <code>transform</code>, <code>rigidbody</code>. A ray that starts inside a solid collider does not hit it (as in Unity).</td>
+</tr>
+<tr>
+<td><code>Physics.Linecast(a, b)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><strong><code>RaycastAll(...)</code></strong>, <strong><code>RaycastNonAlloc(origin, direction, results, maxDistance)</code></strong> → count</td>
+<td>every hit, sorted</td>
+</tr>
+<tr>
+<td><strong><code>SphereCast(origin, radius, direction, maxDistance)</code></strong>, <code>SphereCastAll</code>, <code>SphereCastNonAlloc</code></td>
+<td>a fat ray</td>
+</tr>
+<tr>
+<td><strong><code>BoxCast(center, halfExtents, direction, orientation, maxDistance)</code></strong>, <code>BoxCastAll</code>, <code>BoxCastNonAlloc</code></td>
+<td>a swept rotated box</td>
+</tr>
+<tr>
+<td><strong><code>CapsuleCast(p1, p2, radius, direction, maxDistance)</code></strong>, <code>CapsuleCastAll</code>, <code>CapsuleCastNonAlloc</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>OverlapSphere(center, radius)</code>, <strong><code>OverlapBox(center, halfExtents, orientation)</code></strong>, <code>OverlapCapsule(p1, p2, radius)</code> and <code>…NonAlloc</code></td>
+<td>arrays of the entities (use <code>.name</code>, <code>.GetComponent</code>, <code>.CompareTag</code>)</td>
+</tr>
+<tr>
+<td><code>CheckSphere</code>, <code>CheckBox</code>, <code>CheckCapsule</code></td>
+<td>a boolean</td>
+</tr>
+<tr>
+<td><code>ClosestPoint(point, collider)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><strong><code>IgnoreCollision(a, b, ignore)</code></strong>, <code>GetIgnoreCollision</code>, <code>IgnoreLayerCollision(la, lb, ignore)</code></td>
+<td>the pair (or all objects on two layers) pass through each other</td>
+</tr>
+</tbody></table>
+<p>Hits carry <code>distance</code> along the ray. A thick cast reports <code>distance</code> where its <strong>shape</strong> first touches (the centre of the sphere is <code>centroid</code>).</p>
+<p><strong>File: <code>scripts/Ground.js</code></strong> (new file, the whole file: slope-aware ground check)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Physics, Vector3 } from 'nord';
+
+export default class Ground extends MonoBehaviour {
+  Update() {
+    const p = this.transform.position;
+    const hit = Physics.SphereCast(new Vector3(p.x, p.y + 0.5, p.z), 0.3, Vector3.down, 1.0);   // a fat ray finds ledges a thin one misses
+    this.grounded = !!hit.collider;
+    if (this.grounded) this.slope = Vector3.Angle(hit.normal, Vector3.up);
+    for (const e of Physics.OverlapSphere(p, 3)) if (e.CompareTag('pickup')) this.log('near', e.name);
+  }
+}</code></pre>
+<h2 id="joints">Joints<a class="anchor" href="#joints">#</a></h2>
+<p><span class="c-ui">Inspector ▸ + Add component ▸ joint</span>. Pick <code>kind</code>, <code>connectedBody</code>, <code>anchor</code> (in this object&#39;s space) and, for hinges, <code>axis</code>. Every Unity 3D joint is one Havok constraint with the right axes locked:</p>
+<table>
+<thead>
+<tr>
+<th>Unity class</th>
+<th><code>kind</code></th>
+<th>Properties</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>HingeJoint</code></td>
+<td><code>hinge</code></td>
+<td><code>axis</code>, <code>useLimits</code>, <code>limits {min, max}</code> (degrees), <code>useMotor</code>, <code>motor {targetVelocity (deg/s), force}</code></td>
+</tr>
+<tr>
+<td><code>FixedJoint</code></td>
+<td><code>fixed</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SpringJoint</code></td>
+<td><code>spring</code></td>
+<td><code>spring</code> (frequency Hz), <code>damper</code> (damping ratio), <code>minDistance</code>, <code>maxDistance</code></td>
+</tr>
+<tr>
+<td><code>CharacterJoint</code></td>
+<td><code>ball</code></td>
+<td><code>lowTwistLimit.limit</code>, <code>highTwistLimit.limit</code>, <code>swing1Limit.limit</code>, <code>swing2Limit.limit</code> (degrees)</td>
+</tr>
+<tr>
+<td><code>ConfigurableJoint</code></td>
+<td><code>configurable</code></td>
+<td><code>xMotion/yMotion/zMotion</code>, <code>angularXMotion/angularYMotion/angularZMotion</code> (<code>ConfigurableJointMotion.Locked/Limited/Free</code>), <code>linearLimit.limit</code>, <code>lowAngularXLimit</code>, <code>highAngularXLimit</code>, <code>angularYLimit</code>, <code>angularZLimit</code></td>
+</tr>
+</tbody></table>
+<p><strong>File: <code>scripts/Hinge.js</code></strong> (new file, the whole file: a door that swings about its left edge)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, HingeJoint, Vector3, Rigidbody } from 'nord';
+
+export default class Hinge extends MonoBehaviour {
+  Start() {
+    const j = this.AddComponent(HingeJoint);
+    j.connectedBody = this.entity.scene.find('Post').GetComponent(Rigidbody);
+    j.anchor = new Vector3(-1.5, 0, 0);          // the door is 3 wide: its left edge
+    j.axis = new Vector3(0, 1, 0);               // turn about the vertical axis
+    j.useLimits = true;
+    j.limits = { min: -110, max: 0 };
+  }
+}</code></pre>
+<p><code>enableCollision</code> (default off: the two bodies pass through each other), <code>connectedAnchor</code> with <code>autoConfigureConnectedAnchor</code>. 3D joints do not report a break force (see the <a href="ex-unity-api.html">nice-to-have list</a>).</p>
+<h2 id="the-camera-camera-main">The camera: <code>Camera.main</code><a class="anchor" href="#the-camera-camera-main">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord (3D)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>WorldToScreenPoint(p)</code></td>
+<td><code>Vector3(x, y, depth)</code>: <code>x, y</code> are canvas pixels (origin <strong>top-left</strong>, like <code>Input.mousePosition</code>), <code>depth</code> is the distance in front of the camera (negative behind it).</td>
+</tr>
+<tr>
+<td><code>ScreenToWorldPoint(Vector3(x, y, depth))</code></td>
+<td>the world point <code>depth</code> in front of the camera.</td>
+</tr>
+<tr>
+<td><code>WorldToViewportPoint</code>, <code>ViewportToWorldPoint</code>, <code>ScreenToViewportPoint</code>, <code>ViewportToScreenPoint</code></td>
+<td>0..1 viewport coordinates</td>
+</tr>
+<tr>
+<td><strong><code>ScreenPointToRay(p)</code></strong>, <code>ViewportPointToRay(p)</code></td>
+<td>a <code>Ray</code> (works with <code>Physics.Raycast(ray, distance)</code>)</td>
+</tr>
+<tr>
+<td><code>worldToCameraMatrix</code>, <code>projectionMatrix</code>, <code>cameraToWorldMatrix</code></td>
+<td><code>Matrix4x4</code></td>
+</tr>
+<tr>
+<td><code>pixelWidth</code>, <code>pixelHeight</code>, <code>nearClipPlane</code>, <code>farClipPlane</code>, <code>fieldOfView</code></td>
+<td></td>
+</tr>
+</tbody></table>
+<p><strong>File: <code>scripts/Picker.js</code></strong> (new file, the whole file: click an object in 3D)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Camera, Physics, UnityInput as Input } from 'nord';
+
+export default class Picker extends MonoBehaviour {
+  Update() {
+    if (!Input.GetMouseButtonDown(0)) return;
+    const ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    const hit = Physics.Raycast(ray, 100);
+    if (hit.collider) this.log('clicked', hit.collider.name, 'at', hit.point.toString());
+  }
+}</code></pre>
+<p>In 2D the same members work with <code>ScreenToWorldPoint</code> returning world pixels (z is ignored) and <code>ScreenPointToRay</code> returning a ray at that point.</p>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<ul>
+<li>Open <code>examples/physics-lab-3d</code>, run <code>await __lab.selfTest()</code> in the browser console: 22 checks (RaycastAll, SphereCast, BoxCast, CapsuleCast, overlaps, camera round trip, hinge, fixed, spring, constraints, IgnoreCollision, layers, continuous detection, motor) pass.</li>
+<li>A <code>SphereCast</code> reports a hit where a <code>Raycast</code> along the same line misses: the thick shape touches the ledge.</li>
+</ul>
+<p>Next: <a href="ex-unity-api-rendering.html">Lines, trails, masks and shapes</a>. Back to: <a href="ex-unity-api-physics2d.html">Physics 2D</a>.</p>
+<div class="pager"><a href="ex-unity-api-physics2d.html"><small>← Previous</small>61 · Unity API: Physics 2D</a><a href="ex-unity-api-rendering.html"><small>Next →</small>63 · Unity API: LineRenderer, TrailRenderer, SpriteMask and SpriteShape</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#colliders">Colliders </a><a href="#rigidbody">Rigidbody </a><a href="#queries">Queries </a><a href="#joints">Joints </a><a href="#the-camera-camera-main">The camera: Camera.main </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

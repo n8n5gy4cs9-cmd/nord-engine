@@ -486,7 +486,19 @@ export class MonoBehaviour extends NordScript {
   onCollisionExit(o, c) { this.#track('collision', o, false); this.OnCollisionExit?.(o, c); }
   onTriggerEnter(o, c) { this.#track('trigger', o, true); this.OnTriggerEnter?.(o, c); }
   onTriggerExit(o, c) { this.#track('trigger', o, false); this.OnTriggerExit?.(o, c); }
+  // events added by unity-lifecycle.js / the physics adapters: the Nord names call the Unity names
+  onBecameVisible() { this.OnBecameVisible?.(); }
+  onBecameInvisible() { this.OnBecameInvisible?.(); }
+  onApplicationFocus(has) { this.OnApplicationFocus?.(has); }
+  onApplicationPause(paused) { this.OnApplicationPause?.(paused); }
+  onApplicationQuit() { this.OnApplicationQuit?.(); }
+  onValidate() { this.OnValidate?.(); }
+  onTransformParentChanged() { this.OnTransformParentChanged?.(); }
+  onTransformChildrenChanged() { this.OnTransformChildrenChanged?.(); }
+  onJointBreak(info) { this.OnJointBreak?.(info); this.OnJointBreak2D?.(info); }
 }
+// these aliases exist on every MonoBehaviour: unity-lifecycle.js only watches visibility for scripts that really define a handler
+for (const k of ['onBecameVisible', 'onBecameInvisible', 'onValidate']) MonoBehaviour.prototype[k].__alias = true;
 
 
 // ---------- free functions (Unity lets you call these without `this.`) ----------

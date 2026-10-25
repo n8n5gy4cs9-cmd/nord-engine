@@ -1,6 +1,6 @@
 // Physics Lab: a bench for the Unity-style physics layer (shapes, joints, constraints, queries, ignore pairs, interpolation, continuous detection).
 // Everything is readable from the browser console as window.__lab; `await __lab.selfTest()` runs the checks that tools/physics-lab-test.mjs asserts.
-import { MonoBehaviour, Physics2D, Vector2, Rigidbody2D, RigidbodyConstraints2D } from 'nord';
+import { MonoBehaviour, Physics2D, Vector2, Rigidbody2D, RigidbodyConstraints2D, Awaitable } from 'nord';
 
 const wait = () => new Promise((r) => setTimeout(r, 0));
 export default class Lab extends MonoBehaviour {

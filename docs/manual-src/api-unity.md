@@ -26,7 +26,7 @@ Read each class like a Unity manual page: **Properties** are values you read or 
 | `Instantiate(prefab)` returns the clone | returns a **Promise**: `const b = await this.Instantiate('prefabs/bullet.prefab.json', { pos })` |
 | `SmoothDamp(..., ref velocity)` | returns `{ value, velocity }`; pass the velocity back next frame |
 | `Random.Range(0, 10)` int / float by argument type | same rule: two integers give an integer in `[0, 10)`; use `0.5, 1.5` for floats |
-| `transform.SetParent(...)` | not supported at runtime (warns); use `Instantiate(path, { parent })` |
+| `transform.SetParent(parent, worldPositionStays)` | works at run time (2D and 3D); see [Scripting and objects](ex-unity-api-scripting.html) |
 | `Vector3 + Vector3` operators | no operator overloading: `a.Add(b)`, `a.Sub(b)`, `a.Mul(k)` |
 | Coroutine `IEnumerator` | generator `*Fade() { yield new WaitForSeconds(1); }` |
 | 2D uses X/Y, rotation around Z | same; in a 3D project use Y for turntable rotation |
@@ -146,7 +146,7 @@ export default class Pickup extends MonoBehaviour {
 | `GetChild(index)`, `Find("Child/Grandchild")` | A child by index / by path. |
 | `IsChildOf(t)` | `true` if `t` is a parent or ancestor. |
 | `GetSiblingIndex()`, `SetSiblingIndex(i)`, `SetAsFirstSibling()`, `SetAsLastSibling()` | Order among the parent's children. |
-| `SetParent(p)` | Not supported at run time (logs a warning once). |
+| `SetParent(p, worldPositionStays = true)` | Moves the object under `p` (a Transform, GameObject or `null` for the scene root). `DetachChildren()` makes all children roots. |
 
 **Example** (not a file: rotate an arm, like the clock tutorial):
 ```js
@@ -280,10 +280,11 @@ Queries run against the colliders in the scene. Hits are objects `{ collider, tr
 
 | Physics2D | Description |
 |---|---|
-| `Raycast(origin, direction, distance?)`, `RaycastAll(...)` | First hit / all hits along a ray (Vector2). |
+| `Raycast(origin, direction, distance?, layerMask?)`, `RaycastAll`, `RaycastNonAlloc` | First hit / all hits / fill an array (Vector2). Exact for box, circle, capsule, polygon, edge and composite colliders. |
 | `Linecast(a, b)` | Hit on the line between two points. |
-| `OverlapPoint(p)`, `OverlapCircle(c, r)`, `OverlapCircleAll(c, r)` | Objects under a point / inside a circle. |
-| `OverlapBox(c, size)`, `OverlapBoxAll(c, size)`, `OverlapAreaAll(a, b)` | Objects inside a box or area. |
+| `CircleCast`, `BoxCast`, `CapsuleCast` (+ `All`, `NonAlloc`) | A shape swept along a direction. |
+| `OverlapPoint(p)`, `OverlapCircle(c, r)`, `OverlapBox(c, size, angle)`, `OverlapArea(a, b)`, `OverlapCapsule(...)` | The first object found (or `null`); `…All` gives an array, `…NonAlloc` fills one. |
+| `OverlapCollider`, `Distance(a, b)`, `ClosestPoint`, `IsTouching`, `IgnoreCollision`, `IgnoreLayerCollision` | See [Physics 2D](ex-unity-api-physics2d.html). |
 | `gravity` | World gravity as a Vector2 (read / write). |
 | `queriesHitTriggers` | Whether queries also hit trigger colliders (default `true`). |
 

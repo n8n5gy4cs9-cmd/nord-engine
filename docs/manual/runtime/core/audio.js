@@ -129,6 +129,12 @@ export class Audio {
   get musicPath() { return this._music?.path ?? null; }
 
   volume(bus, v) { if (v === undefined) return this.vol[bus]; this.vol[bus] = clamp(v, 0, 1); this.#apply(bus); this.#persist(); }
+  /** An AnalyserNode on the master bus (created on first use, null until the audio context exists): spectrum / waveform for visualisers and Shadertoy `audio` inputs. */
+  analyser(fftSize = 1024) {
+    if (this._an) return this._an;
+    const m = this.buses?.master; if (!m || !this.ctx) return null;
+    const a = this.ctx.createAnalyser(); a.fftSize = fftSize; a.smoothingTimeConstant = 0.8; m.connect(a); return (this._an = a);
+  }
   mute(bus = 'master', on = true) { this.muted[bus] = on; this.#apply(bus); this.#persist(); }
   isMuted(bus = 'master') { return this.muted[bus]; }
   /** Pause/resume the whole context (used when the game is paused or tab hidden). */

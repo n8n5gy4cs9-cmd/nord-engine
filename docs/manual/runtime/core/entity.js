@@ -2,6 +2,7 @@
 import { Events } from './events.js';
 import { resolveAttributes } from './script.js';
 import { createBehavior } from './behaviors/index.js';
+import { prepareScript, sceneHooks } from './unity-lifecycle.js';
 
 /** type -> { create(entity, data, comp), update?(comp, dt), destroy?(comp), set?(comp, key, value) } — filled by backends. */
 export const components = new Map();
@@ -99,6 +100,7 @@ export class Entity {
   }
   getScript(Class) { return this.scripts.find((s) => s instanceof Class) ?? null; }
   addScript(Class, attrs = {}) {
+    if (!prepareScript(this, Class, (en, need) => sceneHooks.ensureRequired?.(en, need))) return null;
     const s = new Class(this, resolveAttributes(Class, attrs));
     this.scripts.push(s);
     s.init?.();
@@ -122,6 +124,8 @@ export class Entity {
     }
   }
 
+  /** Re-parent at runtime (Unity's `transform.SetParent(parent, worldPositionStays)`); `null` = scene root. */
+  setParent(parent, keepWorld = true) { return this.scene.reparent(this, parent, keepWorld); }
   destroy() { this.scene.destroyEntity(this); }
   clone() { return this.scene.spawnData(this.toJSON(true), this.parent); }
 

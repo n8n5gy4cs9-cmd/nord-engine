@@ -471,3 +471,15 @@ test('LineRenderer / TrailRenderer / SpriteMask / SpriteShape wrappers write the
   assert.ok(L.AddComponent(LineRenderer) instanceof LineRenderer);
   assert.equal(typeof Camera.main, 'object');
 });
+
+test('Unity-named events (OnValidate, OnBecameVisible, OnTransformParentChanged, OnJointBreak) reach MonoBehaviour handlers', async () => {
+  const log = [];
+  class Ev extends MonoBehaviour { OnValidate() { log.push('validate'); } OnBecameVisible() { log.push('visible'); } OnTransformParentChanged() { log.push('parent'); } OnJointBreak(i) { log.push(`break ${i.reactionForce}`); } }
+  files['mod:ev.js'] = Ev;
+  files.s = { name: 's', entities: [ent('Host', {}), ent('E', { scripts: [{ path: 'ev.js' }] })] };
+  const g = mk(); g.backend = { isVisible: () => true, setEnabled() {}, syncTransform() {} }; const s = await g.loadScene('s');
+  const E = s.find('E'); g.tick(1 / 60);
+  assert.deepEqual(log, ['validate', 'visible']);
+  E.setParent(s.find('Host')); assert.equal(log.at(-1), 'parent');
+  E.callScripts('onJointBreak', { reactionForce: 5 }); assert.equal(log.at(-1), 'break 5');
+});

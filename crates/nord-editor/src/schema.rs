@@ -654,12 +654,23 @@ mod tests {
     fn unity_physics_and_render_components_have_fields() {
         let joint = component_fields("joint");
         assert!(matches!(&joint[0].ty, FieldType::Enum(o) if o.len() == 11 && o[0] == "hinge"));
-        assert!(joint.iter().any(|f| f.name == "connectedBody" && f.ty == FieldType::Entity));
+        assert!(joint
+            .iter()
+            .any(|f| f.name == "connectedBody" && f.ty == FieldType::Entity));
         let col = component_fields("collider");
-        assert!(matches!(&col[0].ty, FieldType::Enum(o) if o.iter().any(|x| x == "composite") && o.iter().any(|x| x == "polygon")));
-        assert!(col.iter().any(|f| f.name == "points" && f.ty == FieldType::Array(Box::new(FieldType::Vec2))));
+        assert!(
+            matches!(&col[0].ty, FieldType::Enum(o) if o.iter().any(|x| x == "composite") && o.iter().any(|x| x == "polygon"))
+        );
+        assert!(col
+            .iter()
+            .any(|f| f.name == "points" && f.ty == FieldType::Array(Box::new(FieldType::Vec2))));
         let rb = component_fields("rigidbody");
-        for n in ["freezePositionX", "freezeRotationZ", "interpolation", "collisionDetection"] {
+        for n in [
+            "freezePositionX",
+            "freezeRotationZ",
+            "interpolation",
+            "collisionDetection",
+        ] {
             assert!(rb.iter().any(|f| f.name == n), "{n}");
         }
         assert_eq!(category_of("joint"), "Physics");

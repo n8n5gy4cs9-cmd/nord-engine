@@ -2,6 +2,7 @@
 import { Entity } from './entity.js';
 import { Scheduler } from './util.js';
 import { resolveAttributes } from './script.js';
+import { prepareScript, sceneHooks } from './unity-lifecycle.js';
 
 export const FIXED_DT = 1 / 60;
 const MAX_STEPS = 5;
@@ -32,6 +33,7 @@ export class Scene {
     this.roots = [];
     this.scheduler = new Scheduler();
     this.running = false;
+    this.alpha = 1;
     this.systems = []; // per-scene systems (event sheet runner): update/start/end/onDispatch/onCreated/onDestroyed
     this.#pending = [];
     this.#dead = new Set();
@@ -77,7 +79,7 @@ export class Scene {
     for (const sd of e._scriptData) {
       if (!sd.path) continue; // a script added from code (entity.addScript) has no file: it cannot be rebuilt from data
       const Class = await this.game.loadScript(sd.path);
-      if (!Class) continue;
+      if (!Class || !prepareScript(e, Class, (en, need) => sceneHooks.ensureRequired?.(en, need))) continue;
       const s = new Class(e, resolveAttributes(Class, sd.attributes, (m) => this.game.warn(m)));
       s._path = sd.path;
       e.scripts.push(s);
@@ -160,6 +162,7 @@ export class Scene {
       this.backend?.step?.(FIXED_DT, this);
     }
     if (this.#acc > FIXED_DT * MAX_STEPS) this.#acc = 0;
+    this.alpha = this.#acc / FIXED_DT; // how far the frame is between two physics steps (0..1): rigidbody interpolation uses it
     lap('fixed+physics');
     this.scheduler.update(dt);
     for (const s of this.systems) { try { s.update?.(dt); } catch (err) { this.game.reportError(err, s, 'update'); } }
@@ -184,6 +187,29 @@ export class Scene {
     for (const root of p) for (const e of root.all()) { for (const s of e.scripts) { try { s.init?.(); this.#restore(s); } catch (err) { this.game.reportError(err, s, 'init'); } } }
     for (const root of p) for (const e of root.all()) this.#startEntity(e);
     for (const root of p) for (const e of root.all()) for (const s of this.systems) s.onCreated?.(e);
+  }
+
+  /**
+   * Move `e` under `newParent` (null = scene root) while the game runs. `keepWorld` (Unity's worldPositionStays, default true) keeps its place on screen:
+   * the local transform is recomputed; false keeps the local numbers instead. Calls onTransformParentChanged / onTransformChildrenChanged on the scripts.
+   * Backends do the maths (`beforeReparent` captures the world transform, `afterReparent` applies it under the new parent).
+   */
+  reparent(e, newParent = null, keepWorld = true) {
+    if (e.destroyed || newParent?.destroyed) return false;
+    for (let p = newParent; p; p = p.parent) if (p === e) { this.game.warn(`[nord] SetParent: ${e.name} cannot become a child of its own descendant ${newParent.name}`); return false; }
+    const old = e.parent;
+    if (old === newParent) return true;
+    const token = this.backend?.beforeReparent?.(e, keepWorld);
+    const from = old ? old.children : this.roots, i = from.indexOf(e);
+    if (i >= 0) from.splice(i, 1);
+    (newParent ? newParent.children : this.roots).push(e);
+    e.parent = newParent;
+    this.backend?.afterReparent?.(e, token, keepWorld);
+    this.backend?.setEnabled?.(e, e.enabled);
+    e.callScripts('onTransformParentChanged');
+    old?.callScripts('onTransformChildrenChanged');
+    newParent?.callScripts('onTransformChildrenChanged');
+    return true;
   }
 
   destroyEntity(e) { if (!e.destroyed) { e.destroyed = true; this.#dead.add(e); } }

@@ -2534,6 +2534,54 @@
       "id": "M13-38",
       "milestone": "M13",
       "title": "Unity-style part 2: Transform, Quaternion, component wrappers, Physics2D queries, Input/Time/Scene/Application extras; add unity-extra tests",
+      "status": "done"
+    },
+    {
+      "id": "M13-39",
+      "milestone": "M13",
+      "title": "Unity maths and scripting part 3: Vector4/Matrix4x4/Bounds/Rect/Ray/Plane/Color32, SetParent, OnBecameVisible, RequireComponent, Awaitable, PlayerPrefs (unity-math.js, unity-lifecycle.js)",
+      "status": "done"
+    },
+    {
+      "id": "M13-40",
+      "milestone": "M13",
+      "title": "Unity input part 2: mouse and project axes, touches, sensors, location, New Input System with .inputactions (unity-input.js)",
+      "status": "done"
+    },
+    {
+      "id": "M13-41",
+      "milestone": "M13",
+      "title": "Unity physics part 2: capsule/polygon/edge/composite colliders, constraints, interpolation, continuous detection, casts and overlaps (geometry.js, unity-physics.js), IgnoreCollision, 2D and 3D joints (Matter, Havok)",
+      "status": "done"
+    },
+    {
+      "id": "M13-42",
+      "milestone": "M13",
+      "title": "Renderers: LineRenderer, TrailRenderer, SpriteMask, SpriteShape (2D and 3D lines), 3D Camera conversions, AnimationCurve and Gradient",
+      "status": "done"
+    },
+    {
+      "id": "M13-43",
+      "milestone": "M13",
+      "title": "Shadertoy support: WebGL2 host (Buffer A-D, textures, keyboard, audio, screen), shadertoy component (Phaser + Babylon) and scene post effect",
+      "status": "done"
+    },
+    {
+      "id": "M13-44",
+      "milestone": "M13",
+      "title": "Editor: Stop returns to the view that was active at Play; Scene-view gizmo drags during Play are live-only (never saved)",
+      "status": "done"
+    },
+    {
+      "id": "M13-45",
+      "milestone": "M13",
+      "title": "Docs: Shadertoy tutorial, Unity API section (pages 56-64), coverage 49% -> 68%, Physics Lab / Shadertoy Lab example projects and tests",
+      "status": "done"
+    },
+    {
+      "id": "M13-46",
+      "milestone": "M13",
+      "title": "Verify in the native editor window: Stop returns to Scene/Game view, gizmo drag in Play, new component schemas in the Inspector, Add component menu",
       "status": "todo"
     }
   ]

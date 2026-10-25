@@ -174,3 +174,14 @@ You do not need to learn both. If you know Unity, use `MonoBehaviour`. If you ha
 53. [Dungeon 5: Enemies and health](ex-dungeon-5-enemies.html): coroutines, `GetComponent`, grace time, knockback, game over.
 54. [Dungeon 6: Light and shipping](ex-dungeon-6-light.html): 2D light and shadows, building for the web.
 55. [Ember Crypt: a complete game](ex-ember-crypt.html): pixel art, sword, line of sight, keys and gates, juice, title, pause, saved high score.
+
+### Unity API in Nord: every command, and Shadertoy
+56. [**Shadertoy: use any shader from shadertoy.com**](ex-shadertoy.html): paste a shader, use it as a background, on a 3D plane, or as a post effect; textures, Buffer A–D, keyboard, audio, mouse.
+57. [**Unity API in Nord: the map**](ex-unity-api.html): where every Unity command lives, and the honest "not built yet" list.
+58. [Scripting and objects](ex-unity-api-scripting.html): OnBecameVisible, SetParent, RequireComponent, Awaitable, PlayerPrefs.
+59. [Math types](ex-unity-api-math.html): Vector4, Matrix4x4, Bounds, Rect, Ray, Plane, Color32, AnimationCurve, Gradient.
+60. [Input](ex-unity-api-input.html): axes, touches, sensors, the New Input System and `.inputactions` files.
+61. [Physics 2D](ex-unity-api-physics2d.html): constraints, capsule/polygon/composite colliders, casts, joints.
+62. [Physics 3D, joints and the camera](ex-unity-api-physics3d.html): SphereCast, BoxCast, overlaps, joints, ScreenPointToRay.
+63. [Lines, trails, masks and shapes](ex-unity-api-rendering.html): LineRenderer, TrailRenderer, SpriteMask, SpriteShape.
+64. [Physics Lab](ex-physics-lab.html): three test projects, how to run their checks, and play-mode editing.

@@ -96,3 +96,7 @@ Attributes may add `description` (tooltip); ranged numbers get a slider. Entitie
 * `entity.getComponent('animator')`: `setBool/setInt/setFloat(name, v)`, `setTrigger(name)`, `resetTrigger(name)`, `get(name)`, `play(state)`, `state` (docs/ANIMATOR.md). Core: `AnimatorController`, `validateAnimator`.
 * `game.net`: `host/join/leave`, `send(name, data, {to})`, `on(...)`, `rpc/call/callHost`, `spawn/despawn`, `isAuthority(entity)`, `hostId`, `simulate({latency,jitter,loss})`, `stats()`, `Multiplayer.link(a, b)` (docs/MULTIPLAYER.md). Component `netSync`.
 * `game.enableDebug()`: `record(on)`, `exportProfile()`, `stats()` now include `phases`, `scripts`, `components`, `spikes`, `net` (docs/PROFILER.md).
+
+
+## Unity API (0.3.0)
+The Unity-style layer is documented in the manual (Examples 56–64: Shadertoy, the Unity API map, scripting, maths, input, physics 2D, physics 3D and joints, renderers, Physics Lab) and in `docs/manual-src/unity-coverage.md`. Sources: `runtime/core/unity.js`, `unity-extra.js`, `unity-math.js`, `unity-lifecycle.js`, `unity-input.js`, `unity-physics.js`, `unity-joints.js`, `unity-render.js`, `geometry.js`, `strip.js`, `shadertoy.js`.

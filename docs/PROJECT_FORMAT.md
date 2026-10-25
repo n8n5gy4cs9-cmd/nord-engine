@@ -108,3 +108,7 @@ Sidecar `assets/foo.png.meta.json` only when non-default: `{ "type":"spritesheet
 
 ## `quality` (optional, 3D)
 `{ "level": "low|medium|high|ultra", "shadows": "off|hard|soft", "shadowResolution": 1024, "maxLights": 8, "antialiasing": true, "renderScale": 1, "postProcessing": true }`. `level` is a preset; the other keys override single values. Edited in Project ▸ Quality and lighting. Scene settings `ambient` (colour) and `ambientIntensity` (0 = off) are the environment light.
+
+
+## Components added in 0.3.0
+`rigidbody` gains `freezePositionX/Y/Z`, `freezeRotationX/Y/Z` (2D uses `freezeRotationZ`; a 2D body without the key keeps its rotation fixed), `interpolation` (`none|interpolate|extrapolate`), `collisionDetection` (`discrete|continuous|continuousDynamic|continuousSpeculative`), `friction`, `angularDrag`. `collider.shape` adds `capsule|polygon|edge|composite|cylinder` with `points` (`[[x, y]…]`), `direction`, `usedByComposite`, `edgeRadius`. `sprite` / `animatedSprite` gain `maskInteraction`. New components: `joint` (`kind`, `connectedBody`, `anchor`, `connectedAnchor`, limits, motor, spring fields), `lineRenderer`, `trailRenderer`, `spriteMask`, `spriteShape`, `shadertoy` (`file` / `code`, `channels`, `buffers`, `size`, `resolutionScale`, …). `nord.project.json` ▸ `input` gains `axes` and `smoothAxes`. Field lists: manual pages *Components*, generated from `crates/nord-editor/src/schema.rs`.

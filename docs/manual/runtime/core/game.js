@@ -14,6 +14,7 @@ import { Timelines } from './timeline.js';
 import { loadAddons } from './addons.js';
 import { Multiplayer } from './multiplayer.js';
 import { installEditorHooks } from './platform.js';
+import { LifecycleSystem, installApplicationEvents } from './unity-lifecycle.js';
 
 export class Game {
   /**
@@ -41,6 +42,7 @@ export class Game {
     this.audio = null; this.ui = null; this.physics = null;
     this.scene = null;
     this.errors = [];
+    installApplicationEvents(this);
     this._scripts = new Map();
     this._scenePath = null;
   }
@@ -134,6 +136,7 @@ export class Game {
     }
     this.effects.addAll('scene', scene.settings.effects);
     for (const e of scene.all()) if (e._effectData?.length) this.effects.addAll(e, e._effectData);
+    scene.systems.push(new LifecycleSystem(scene));
     if (scene.settings.timelines) scene.systems.push(scene.timelines = new Timelines(scene, scene.settings.timelines));
     const sheet = scene.settings.eventSheet ?? scene.data.eventSheet;
     if (sheet) scene.systems.push(scene.eventSheet = await EventSheet.load(scene, sheet));

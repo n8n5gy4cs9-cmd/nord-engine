@@ -171,7 +171,7 @@ Import from `'nord'`. Full list with what is missing: [Unity coverage](unity-cov
 
 * **Transform**, **Quaternion** (`Euler`, `AngleAxis`, `LookRotation`, `Slerp`…), **Space**: `this.transform.Translate(Vector3.right.Mul(5), Space.World)`.
 * **Component wrappers** through `GetComponent`: `SpriteRenderer` (`color`, `flipX`, `sortingOrder`), `Rigidbody2D` / `Rigidbody` (`velocity`, `mass`, `drag`, `gravityScale`, `bodyType`, `AddForce`), `BoxCollider2D` / `CircleCollider2D` (`isTrigger`, `size`, `radius`), `Animator` (`SetFloat`, `SetBool`, `SetTrigger`, `Play`), `AudioSource`, `Camera` (`Camera.main`, `orthographicSize`, `ScreenToWorldPoint`), `Light`, `ParticleSystem`, `TextMesh`, `MeshRenderer.material`.
-* **Physics2D** (`Raycast`, `RaycastAll`, `Linecast`, `OverlapCircle(All)`, `OverlapBoxAll`, `OverlapPoint`, `gravity`) and **Physics** (`Raycast`, `OverlapSphere`, `gravity`).
+* **Physics2D** (every cast and overlap, `Distance`, `IgnoreCollision`, joints, capsule / polygon / composite colliders) and **Physics** (`Raycast`, `SphereCast`, `BoxCast`, `OverlapBox`, joints …): see the Unity API pages, starting with [Unity API in Nord](ex-unity-api.html).
 * `OnTriggerStay` and `OnCollisionStay` are called every frame while two objects touch.
 * `Input.GetKey("space")` (names as well as `KeyCode`), `Input.GetButton("Jump" | "Fire1")`, `Input.mouseScrollDelta`, `Input.touchCount` / `GetTouch`.
 * `Time.smoothDeltaTime`, `SceneManager.LoadSceneAsync` / `GetActiveScene` / `sceneLoaded`, `Application.targetFrameRate` / `persistentDataPath` / `OpenURL`, `Resources.Load`, `JsonUtility`, `PostProcessing.Add('crt', {…})`, `Mathf.PerlinNoise`.

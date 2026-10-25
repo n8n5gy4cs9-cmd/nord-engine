@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 325/340 tasks (96%)** · updated 2026-10-25
+**Overall: 333/348 tasks (96%)** · updated 2026-10-25
 
 | Milestone | Progress |
 |---|---|
@@ -20,7 +20,7 @@
 | M10 Construct-style editor | 36/36 (100%) |
 | M11 Web editor | 14/16 (88%) |
 | M12 FPS Creator addon | 30/31 (97%) |
-| M13 Unity-style editor (Godotize) | 36/38 (95%) |
+| M13 Unity-style editor (Godotize) | 44/46 (96%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -423,7 +423,15 @@ _Unity-like editor workflow on the existing tools: Scene/Game/Hierarchy/Inspecto
 - [x] **M13-35** Tutorial series T55-T61 (native-code dungeon series + Ember Crypt capstone) with screenshots and tests
 - [x] **M13-36** Examples: Vector Rocks replaces Coin Clicker; dungeon series + Ember Crypt moved to Examples and rewritten Unity-style
 - [x] **M13-37** Docs style rules (DOC_STYLE.md, lint) and a labelling/editor-first pass over every manual page
-- [ ] **M13-38** Unity-style part 2: Transform, Quaternion, component wrappers, Physics2D queries, Input/Time/Scene/Application extras; add unity-extra tests
+- [x] **M13-38** Unity-style part 2: Transform, Quaternion, component wrappers, Physics2D queries, Input/Time/Scene/Application extras; add unity-extra tests
+- [x] **M13-39** Unity maths and scripting part 3: Vector4/Matrix4x4/Bounds/Rect/Ray/Plane/Color32, SetParent, OnBecameVisible, RequireComponent, Awaitable, PlayerPrefs (unity-math.js, unity-lifecycle.js)
+- [x] **M13-40** Unity input part 2: mouse and project axes, touches, sensors, location, New Input System with .inputactions (unity-input.js)
+- [x] **M13-41** Unity physics part 2: capsule/polygon/edge/composite colliders, constraints, interpolation, continuous detection, casts and overlaps (geometry.js, unity-physics.js), IgnoreCollision, 2D and 3D joints (Matter, Havok)
+- [x] **M13-42** Renderers: LineRenderer, TrailRenderer, SpriteMask, SpriteShape (2D and 3D lines), 3D Camera conversions, AnimationCurve and Gradient
+- [x] **M13-43** Shadertoy support: WebGL2 host (Buffer A-D, textures, keyboard, audio, screen), shadertoy component (Phaser + Babylon) and scene post effect
+- [x] **M13-44** Editor: Stop returns to the view that was active at Play; Scene-view gizmo drags during Play are live-only (never saved)
+- [x] **M13-45** Docs: Shadertoy tutorial, Unity API section (pages 56-64), coverage 49% -> 68%, Physics Lab / Shadertoy Lab example projects and tests
+- [ ] **M13-46** Verify in the native editor window: Stop returns to Scene/Game view, gizmo drag in Play, new component schemas in the Inspector, Add component menu
 
 ## Features (PRD)
 

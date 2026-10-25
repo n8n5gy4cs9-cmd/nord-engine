@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>60 · Unity API: input — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-clock.html">3.5 · Build a clock: objects, hierarchy, materials and your first script</a><a href="ex-digital-clock.html">3.6 · Build a digital clock: primitives and 3D text in the world</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-music-player.html">9.5 · A music player and sound effects</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html">55 · Ember Crypt: a complete game, from art to export</a><a href="ex-shadertoy.html">56 · Shadertoy: use any shader from shadertoy.com</a><a href="ex-unity-api.html">57 · Unity API in Nord: the map</a><a href="ex-unity-api-scripting.html">58 · Unity API: scripting and objects</a><a href="ex-unity-api-math.html">59 · Unity API: math types</a><a href="ex-unity-api-input.html" class="cur" aria-current="page">60 · Unity API: input</a><a href="ex-unity-api-physics2d.html">61 · Unity API: Physics 2D</a><a href="ex-unity-api-physics3d.html">62 · Unity API: Physics 3D, joints and the camera</a><a href="ex-unity-api-rendering.html">63 · Unity API: LineRenderer, TrailRenderer, SpriteMask and SpriteShape</a><a href="ex-physics-lab.html">64 · Physics Lab: a bench for the Unity physics layer</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>60 · Unity API: input</h1>
+<p><strong>Goal:</strong> use both Unity input systems. The classic <code>Input</code> class is for quick scripts, the New Input System for rebindable, multi-device games. They read the same keyboard, mouse, touch and gamepad of the Nord engine, so you can mix them.</p>
+<p><strong>Example</strong> (not a file: the import line of a script that uses everything on this page)</p>
+<pre class="code" data-lang="js"><code>import { UnityInput as Input, KeyCode, InputAction, InputActionAsset, PlayerInput, Keyboard, Mouse, Gamepad, Touchscreen, TouchPhase } from 'nord';</code></pre>
+<h2 id="the-classic-input-class">The classic Input class<a class="anchor" href="#the-classic-input-class">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Input.GetKey/GetKeyDown/GetKeyUp(KeyCode.Space)</code> or <code>(&quot;space&quot;)</code></td>
+<td>yes, key names and <code>KeyCode</code>. New in <code>KeyCode</code>: <code>JoystickButton0…19</code>, <code>Mouse3…6</code>, <code>Insert</code>, <code>Home</code>, <code>End</code>, <code>PageUp/Down</code>, <code>LeftCommand</code>, punctuation (<code>Comma</code>, <code>Period</code>, <code>Minus</code>, <code>Equals</code>, <code>Slash</code> …), the keypad.</td>
+</tr>
+<tr>
+<td><code>Input.GetButton/GetButtonDown/GetButtonUp(&quot;Jump&quot;)</code></td>
+<td>project actions first, then Unity&#39;s defaults (<code>Jump</code> = Space, <code>Fire1</code> = left mouse or Ctrl, <code>Submit</code>, <code>Cancel</code>).</td>
+</tr>
+<tr>
+<td><code>Input.GetAxis(&quot;Horizontal&quot; / &quot;Vertical&quot;)</code>, <code>GetAxisRaw</code></td>
+<td>A/D, arrows and the gamepad stick.</td>
+</tr>
+<tr>
+<td><strong><code>Input.GetAxis(&quot;Mouse X&quot; / &quot;Mouse Y&quot; / &quot;Mouse ScrollWheel&quot;)</code></strong></td>
+<td>mouse movement of this frame × 0.1 (Y up like Unity), wheel × 0.1. With the pointer locked (<code>Cursor.lockState = CursorLockMode.Locked</code>) it keeps counting at the edge of the screen: use that for mouse-look.</td>
+</tr>
+<tr>
+<td><strong>project axes</strong></td>
+<td><code>nord.project.json</code> ▸ <code>input.axes</code> (see below).</td>
+</tr>
+<tr>
+<td><code>Input.mousePosition</code>, <code>mouseScrollDelta</code>, <code>GetMouseButton*</code></td>
+<td>yes (pixels, origin top-left like the 2D world).</td>
+</tr>
+<tr>
+<td><strong><code>Input.inputString</code></strong></td>
+<td>the characters typed this frame (<code>\b</code> for Backspace, <code>\n</code> for Enter).</td>
+</tr>
+<tr>
+<td><code>Input.anyKey</code>, <code>anyKeyDown</code>, <code>ResetInputAxes()</code></td>
+<td>yes.</td>
+</tr>
+<tr>
+<td><code>Input.GetJoystickNames()</code></td>
+<td>names of the connected gamepads.</td>
+</tr>
+</tbody></table>
+<h3 id="smooth-axes-unity-39-s-gravity-and-sensitivity">Smooth axes (Unity&#39;s gravity and sensitivity)<a class="anchor" href="#smooth-axes-unity-39-s-gravity-and-sensitivity">#</a></h3>
+<p><span class="c-ui">Project ▸ Project properties</span> has no panel for input axes yet, so this is edited in the project file. By default <code>GetAxis</code> is instant (the value jumps to -1, 0, 1), which feels crisp for games with stopping control. Switch on Unity&#39;s ramp-up and ramp-down for the keyboard axes with one line:</p>
+<p><strong>File: <code>nord.project.json</code></strong> (inside <code>input</code>)</p>
+<pre class="code" data-lang="json"><code>&quot;input&quot;: {
+  &quot;smoothAxes&quot;: true,
+  &quot;axes&quot;: {
+    &quot;Strafe&quot;: { &quot;negative&quot;: &quot;KeyQ&quot;, &quot;positive&quot;: &quot;KeyE&quot;, &quot;sensitivity&quot;: 5, &quot;gravity&quot;: 8, &quot;dead&quot;: 0.001, &quot;snap&quot;: true },
+    &quot;Throttle&quot;: { &quot;negative&quot;: &quot;KeyS&quot;, &quot;positive&quot;: &quot;KeyW&quot;, &quot;joyAxis&quot;: 3, &quot;invert&quot;: false }
+  }
+}</code></pre>
+<p><code>sensitivity</code> (units per second towards the key), <code>gravity</code> (back to zero), <code>dead</code> (below this the value is 0), <code>snap</code> (pressing the opposite key resets to 0 first), <code>joyAxis</code> (gamepad axis index), <code>invert</code>. A project axis defined here works with <code>Input.GetAxis(&quot;Strafe&quot;)</code>. <code>Input.smoothAxes = true</code> in a script does the same at run time.</p>
+<h2 id="touches">Touches<a class="anchor" href="#touches">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Input.touchCount</code>, <code>Input.touches</code>, <code>Input.GetTouch(i)</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>touch.fingerId</code>, <code>position</code>, <code>rawPosition</code>, <code>deltaPosition</code>, <code>deltaTime</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>touch.phase</code></td>
+<td><code>TouchPhase.Began</code>, <code>Moved</code>, <code>Stationary</code>, <code>Ended</code>, <code>Canceled</code>. A lifted finger is reported once as <code>Ended</code>, then gone.</td>
+</tr>
+<tr>
+<td><strong><code>touch.pressure</code></strong>, <code>maximumPossiblePressure</code>, <strong><code>radius</code></strong>, <code>radiusVariance</code>, <code>altitudeAngle</code>, <code>azimuthAngle</code>, <code>type</code></td>
+<td>pressure and radius come from the device when it reports them (otherwise 1 / 0).</td>
+</tr>
+<tr>
+<td><strong><code>touch.tapCount</code></strong></td>
+<td>1, 2, 3 … for quick repeated taps near the same place (within 350 ms and 40 px).</td>
+</tr>
+</tbody></table>
+<p><strong>File: <code>scripts/Tap.js</code></strong> (new file, the whole file)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, UnityInput as Input, TouchPhase } from 'nord';
+
+export default class Tap extends MonoBehaviour {
+  Update() {
+    for (const t of Input.touches) {
+      if (t.phase === TouchPhase.Ended &amp;&amp; t.tapCount === 2) this.log('double tap at', t.position.toString());
+      if (t.phase === TouchPhase.Moved) this.transform.Translate(t.deltaPosition.x, t.deltaPosition.y, 0);
+    }
+  }
+}</code></pre>
+<h2 id="accelerometer-gyroscope-compass-location">Accelerometer, gyroscope, compass, location<a class="anchor" href="#accelerometer-gyroscope-compass-location">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Input.acceleration</code></td>
+<td>in g, Unity axes: a phone lying face up reads <code>(0, 0, -1)</code>.</td>
+</tr>
+<tr>
+<td><code>Input.gyro.enabled = true</code>, <code>attitude</code>, <code>rotationRate</code>, <code>rotationRateUnbiased</code>, <code>userAcceleration</code>, <code>gravity</code></td>
+<td>the browser&#39;s <code>deviceorientation</code> / <code>devicemotion</code>. Set <code>enabled</code> first.</td>
+</tr>
+<tr>
+<td><code>Input.compass.enabled = true</code>, <code>magneticHeading</code>, <code>trueHeading</code>, <code>headingAccuracy</code></td>
+<td>degrees from north.</td>
+</tr>
+<tr>
+<td><code>Input.location.Start()</code>, <code>status</code>, <code>lastData.latitude/longitude/altitude/horizontalAccuracy/timestamp</code>, <code>Stop()</code></td>
+<td>the browser&#39;s geolocation (asks the user). <code>status</code> is <code>Stopped</code>, <code>Initializing</code>, <code>Running</code> or <code>Failed</code>.</td>
+</tr>
+<tr>
+<td><code>Input.deviceOrientation</code></td>
+<td>from the screen orientation.</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Trap:</strong> On iPhone the browser asks for sensor permission and only after a tap. Nord asks on the first tap on the game after your script touched <code>acceleration</code> or <code>gyro</code>. Desktop computers have no sensors: the values stay at zero. Test with a phone on your network (<code>nord serve --lan</code>).</p>
+</blockquote>
+<p><strong>File: <code>scripts/Tilt.js</code></strong> (new file, the whole file: steer by tilting the phone)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, UnityInput as Input, Time } from 'nord';
+
+export default class Tilt extends MonoBehaviour {
+  Start() { Input.gyro.enabled = true; }
+  Update() {
+    const a = Input.acceleration;                           // read it every frame
+    this.transform.Translate(a.x * 300 * Time.deltaTime, 0, 0);
+    this.transform.rotation = Input.gyro.attitude;          // 3D: follow the phone's rotation
+  }
+}</code></pre>
+<h2 id="the-new-input-system">The New Input System<a class="anchor" href="#the-new-input-system">#</a></h2>
+<p>The names are Unity&#39;s: actions, maps, assets, bindings with paths like <code>&lt;Keyboard&gt;/space</code>, composites, processors, <code>PlayerInput</code>.</p>
+<h3 id="one-action-in-code">One action, in code<a class="anchor" href="#one-action-in-code">#</a></h3>
+<p><strong>File: <code>scripts/Jumper.js</code></strong> (new file, the whole file)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, InputAction, Rigidbody2D, Vector2 } from 'nord';
+
+export default class Jumper extends MonoBehaviour {
+  Awake() {
+    this.jump = new InputAction('Jump', 'Button', '&lt;Keyboard&gt;/space');   // name, type, first binding
+    this.jump.AddBinding('&lt;Gamepad&gt;/buttonSouth');                        // a second way to trigger it
+    this.move = new InputAction('Move', 'Value');
+    this.move.AddCompositeBinding('2DVector')                            // WASD as a Vector2
+      .With('Up', '&lt;Keyboard&gt;/w').With('Down', '&lt;Keyboard&gt;/s').With('Left', '&lt;Keyboard&gt;/a').With('Right', '&lt;Keyboard&gt;/d');
+    this.move.AddBinding('&lt;Gamepad&gt;/leftStick');                          // the stick works too
+    this.jump.performed.AddListener((ctx) =&gt; this.log('jump!', ctx.phase));
+  }
+  OnEnable()  { this.jump.Enable(); this.move.Enable(); }
+  OnDisable() { this.jump.Disable(); this.move.Disable(); }
+  FixedUpdate() {
+    const v = this.move.ReadValue();                                      // Vector2, normalised diagonal
+    this.GetComponent(Rigidbody2D).velocity = new Vector2(v.x * 200, this.GetComponent(Rigidbody2D).velocity.y);
+    if (this.jump.WasPressedThisFrame()) this.GetComponent(Rigidbody2D).AddForce(new Vector2(0, -400), 1);
+  }
+}</code></pre>
+<p>In 2D the y axis points down, so a &quot;jump&quot; is a negative y force and <code>Up</code> on a stick is <code>+y</code> in the action value (Unity&#39;s convention): flip the sign when you apply it to a 2D body.</p>
+<table>
+<thead>
+<tr>
+<th><code>InputAction</code></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>new InputAction(name, type, binding)</code>; type <code>&#39;Value&#39;</code>, <code>&#39;Button&#39;</code> or <code>&#39;PassThrough&#39;</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>AddBinding(path, interactions, processors)</code>, <code>AddCompositeBinding(&quot;2DVector&quot; / &quot;1DAxis&quot; / &quot;3DVector&quot; / &quot;ButtonWithOneModifier&quot; / &quot;ButtonWithTwoModifiers&quot;)</code> + <code>.With(part, path)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Enable()</code>, <code>Disable()</code>, <code>enabled</code>, <code>phase</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ReadValue()</code> (number or <code>Vector2</code>), <code>ReadValueAsButton()</code>, <code>IsPressed()</code>, <code>WasPressedThisFrame()</code>, <code>WasReleasedThisFrame()</code>, <code>WasPerformedThisFrame()</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>started</code>, <code>performed</code>, <code>canceled</code></td>
+<td>events: <code>.AddListener(ctx =&gt; …)</code>. <code>ctx</code> has <code>action</code>, <code>phase</code>, <code>ReadValue()</code>, <code>ReadValueAsButton()</code>, <code>time</code>, <code>startTime</code>, <code>duration</code>, <code>control.path</code></td>
+</tr>
+</tbody></table>
+<p>Control paths: <code>&lt;Keyboard&gt;/space</code> <code>w</code> <code>leftShift</code> <code>upArrow</code> <code>f5</code> <code>anyKey</code> · <code>&lt;Mouse&gt;/leftButton</code> <code>rightButton</code> <code>middleButton</code> <code>position</code> <code>delta</code> <code>scroll</code> · <code>&lt;Gamepad&gt;/buttonSouth</code> <code>buttonEast</code> <code>buttonWest</code> <code>buttonNorth</code> <code>leftShoulder</code> <code>rightShoulder</code> <code>leftTrigger</code> <code>rightTrigger</code> <code>start</code> <code>select</code> <code>leftStick</code> <code>rightStick</code> <code>dpad</code> (and <code>leftStick/x</code>, <code>leftStick/up</code> …) · <code>&lt;Pointer&gt;/position</code>, <code>&lt;Touchscreen&gt;/primaryTouch/position</code>, <code>/press</code>. Processors (separated by <code>;</code>): <code>invert</code>, <code>invertVector2(invertX=false)</code>, <code>scale(factor=2)</code>, <code>scaleVector2(x=2,y=2)</code>, <code>clamp(min=0,max=1)</code>, <code>normalize</code>, <code>normalizeVector2</code>, <code>axisDeadzone</code>, <code>stickDeadzone</code>.</p>
+<h3 id="unity-39-s-inputactions-file">Unity&#39;s <code>.inputactions</code> file<a class="anchor" href="#unity-39-s-inputactions-file">#</a></h3>
+<p>Make the actions in Unity&#39;s <em>Input Actions</em> editor, copy the <code>.inputactions</code> file (JSON) into your project, load it:</p>
+<p><strong>File: <code>scripts/Controls.js</code></strong> (new file, the whole file)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, InputActionAsset, PlayerInput, InputSystem } from 'nord';
+
+export default class Controls extends MonoBehaviour {
+  async Awake() {
+    const asset = await InputSystem.LoadActionAsset('input/PlayerControls.inputactions');
+    this.player = new PlayerInput(this.entity, asset, { defaultActionMap: 'Player', notificationBehavior: 'SendMessages' });
+  }
+  // PlayerInput (SendMessages) calls On&lt;ActionName&gt;(InputValue) on the scripts of this object when the action is performed
+  OnMove(value)  { this.dir = value.Get(); }          // Vector2
+  OnFire(value)  { this.log('fire', value.isPressed); }
+  OnInteract()   { this.player.SwitchCurrentActionMap('UI'); }
+}</code></pre>
+<p><code>InputActionAsset.FindActionMap(&quot;Player&quot;)</code>, <code>FindAction(&quot;Player/Move&quot;)</code>, <code>Enable()</code>, <code>Disable()</code>, <code>onActionTriggered(fn)</code>. <code>PlayerInput</code>: <code>SwitchCurrentActionMap(name)</code>, <code>ActivateInput()</code>, <code>DeactivateInput()</code>, notification behaviours <code>SendMessages</code>, <code>BroadcastMessages</code>, <code>InvokeCSharpEvents</code> (<code>player.onActionTriggered.AddListener</code>), <code>InvokeUnityEvents</code>. Composite parts written by Unity (<code>up</code>, <code>down</code>, <code>left</code>, <code>right</code>) are read case-insensitively.</p>
+<h3 id="direct-device-access">Direct device access<a class="anchor" href="#direct-device-access">#</a></h3>
+<p><strong>File: <code>scripts/Devices.js</code></strong> (new file, the whole file)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Keyboard, Mouse, Gamepad } from 'nord';
+
+export default class Devices extends MonoBehaviour {
+  Update() {
+    if (Keyboard.current.spaceKey.wasPressedThisFrame) this.log('space');
+    if (Keyboard.current['leftShift'].isPressed) this.log('shift held');
+    if (Mouse.current.leftButton.wasPressedThisFrame) this.log('click at', Mouse.current.position.ReadValue().toString());
+    const pad = Gamepad.current;                                   // null when no pad is connected
+    if (pad &amp;&amp; pad.buttonSouth.isPressed) this.log('stick', pad.leftStick.ReadValue().toString());
+  }
+}</code></pre>
+<p>Keys are <code>Keyboard.current.&lt;name&gt;Key</code> (<code>aKey</code>, <code>digit1Key</code>, <code>escapeKey</code>) or <code>Keyboard.current[&#39;name&#39;]</code>. Controls have <code>isPressed</code>, <code>wasPressedThisFrame</code>, <code>wasReleasedThisFrame</code>, <code>ReadValue()</code>. <code>Touchscreen.current.touches</code> and <code>primaryTouch</code> exist.</p>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<ul>
+<li><code>node --test runtime/core/unity-extra.test.mjs</code> covers axes, touches, the 2DVector composite, an <code>.inputactions</code> file with <code>PlayerInput</code> messages and <code>Keyboard.current</code>.</li>
+<li>The new-system actions need <code>Enable()</code>: a disabled action reads zero and fires nothing.</li>
+<li>On a phone (<code>nord serve --lan</code>) the sensors move; on a desktop they read zero.</li>
+</ul>
+<p>Next: <a href="ex-unity-api-physics2d.html">Physics 2D</a>. Back to: <a href="ex-unity-api-math.html">Math types</a>.</p>
+<div class="pager"><a href="ex-unity-api-math.html"><small>← Previous</small>59 · Unity API: math types</a><a href="ex-unity-api-physics2d.html"><small>Next →</small>61 · Unity API: Physics 2D</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#the-classic-input-class">The classic Input class </a><a href="#touches">Touches </a><a href="#accelerometer-gyroscope-compass-location">Accelerometer, gyroscope, compass, location </a><a href="#the-new-input-system">The New Input System </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

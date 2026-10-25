@@ -13,7 +13,8 @@
 export const sceneHooks = { ensureRequired: null };
 
 // ---------------------------------------------------------------- scene system: visibility + OnValidate
-const WANTS_VIS = (e) => e.scripts.some((s) => typeof s.onBecameVisible === 'function' || typeof s.onBecameInvisible === 'function');
+const defines = (s, nord, unity) => !!s[unity] || (typeof s[nord] === 'function' && !s[nord].__alias);
+const WANTS_VIS = (e) => e.scripts.some((s) => defines(s, 'onBecameVisible', 'OnBecameVisible') || defines(s, 'onBecameInvisible', 'OnBecameInvisible'));
 
 /** Scene system (registered by Game.loadScene): OnBecameVisible/Invisible, OnValidate. */
 export class LifecycleSystem {
@@ -22,7 +23,7 @@ export class LifecycleSystem {
     for (const s of e.scripts) {
       if (this.valid.has(s)) continue;
       this.valid.add(s);
-      if (typeof s.onValidate === 'function') { try { s.onValidate(); } catch (err) { this.scene.game.reportError(err, s, 'onValidate'); } }
+      if (defines(s, 'onValidate', 'OnValidate')) { try { s.onValidate(); } catch (err) { this.scene.game.reportError(err, s, 'onValidate'); } }
     }
   }
   start() { for (const e of this.scene.all()) this.#validate(e); }

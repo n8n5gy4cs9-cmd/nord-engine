@@ -139,6 +139,13 @@ export class Backend {
   setEnabled(e, on) { for (const x of e.all()) { x.native?.setEnabled(x.enabled); this.physics?.enable(x, x.enabled); } }
   destroyNative(e) { this.physics?.forget(e); e.native?.dispose(false, false); e.native = null; }
   step(dt) { this.physics?.step(dt); }
+  /** Does the active camera see any mesh of this entity? (OnBecameVisible / OnBecameInvisible) */
+  isVisible(e) {
+    const planes = this.scene.frustumPlanes; if (!planes) return false;
+    const meshes = e.__meshes ?? [];
+    if (!meshes.length) return true; // nothing to see: treated as visible
+    return meshes.some((m) => m.isEnabled() && m.isVisible && m.isInFrustum(planes));
+  }
   // ---- camera maths for Unity's Camera.WorldToScreenPoint / ScreenToWorldPoint / ScreenPointToRay (screen = canvas pixels, origin top-left, like Input.mousePosition) ----
   /** World point → `{ x, y, z }`: canvas pixels and the distance in front of the camera (negative = behind it). */
   projectToScreen(p) {

@@ -7,7 +7,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const MIME = { html: 'text/html', js: 'text/javascript', mjs: 'text/javascript', json: 'application/json', png: 'image/png', wav: 'audio/wav', mp3: 'audio/mpeg', css: 'text/css', wasm: 'application/wasm', glb: 'model/gltf-binary', ttf: 'font/ttf', otf: 'font/otf', svg: 'image/svg+xml' };
+const MIME = { html: 'text/html', js: 'text/javascript', mjs: 'text/javascript', json: 'application/json', png: 'image/png', wav: 'audio/wav', mp3: 'audio/mpeg', css: 'text/css', wasm: 'application/wasm', glb: 'model/gltf-binary', ttf: 'font/ttf', otf: 'font/otf', svg: 'image/svg+xml', glsl: 'text/plain', inputactions: 'application/json' };
 
 export function loadPlaywright() {
   for (const base of [ROOT, process.env.NODE_PATH, '/opt/node22/lib/node_modules', '/opt/node-tools/node_modules'].filter(Boolean)) {

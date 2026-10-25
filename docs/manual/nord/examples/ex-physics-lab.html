@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>64 · Physics Lab: a bench for the Unity physics layer — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-clock.html">3.5 · Build a clock: objects, hierarchy, materials and your first script</a><a href="ex-digital-clock.html">3.6 · Build a digital clock: primitives and 3D text in the world</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-music-player.html">9.5 · A music player and sound effects</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html">55 · Ember Crypt: a complete game, from art to export</a><a href="ex-shadertoy.html">56 · Shadertoy: use any shader from shadertoy.com</a><a href="ex-unity-api.html">57 · Unity API in Nord: the map</a><a href="ex-unity-api-scripting.html">58 · Unity API: scripting and objects</a><a href="ex-unity-api-math.html">59 · Unity API: math types</a><a href="ex-unity-api-input.html">60 · Unity API: input</a><a href="ex-unity-api-physics2d.html">61 · Unity API: Physics 2D</a><a href="ex-unity-api-physics3d.html">62 · Unity API: Physics 3D, joints and the camera</a><a href="ex-unity-api-rendering.html">63 · Unity API: LineRenderer, TrailRenderer, SpriteMask and SpriteShape</a><a href="ex-physics-lab.html" class="cur" aria-current="page">64 · Physics Lab: a bench for the Unity physics layer</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>64 · Physics Lab: a bench for the Unity physics layer</h1>
+<p><strong>Goal:</strong> have three small projects that exercise everything on the Unity-API pages, and know how to run their checks.</p>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>What it is</th>
+<th>Folder</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Physics Lab</strong> (2D)</td>
+<td>circle, capsule, concave polygon, composite walls, a hinged pendulum, a spring, a ramp, a trigger</td>
+<td><code>examples/physics-lab</code></td>
+</tr>
+<tr>
+<td><strong>Physics Lab 3D</strong></td>
+<td>a hinged door, a fixed pair, a spring weight, boxes and a capsule for the casts</td>
+<td><code>examples/physics-lab-3d</code></td>
+</tr>
+<tr>
+<td><strong>Shadertoy Lab</strong></td>
+<td>five shaders: plasma background, tunnel, paint (Buffer A), keyboard, audio spectrum, and the CRT post effect</td>
+<td><code>examples/shadertoy-lab</code></td>
+</tr>
+</tbody></table>
+<h2 id="open-and-run">Open and run<a class="anchor" href="#open-and-run">#</a></h2>
+<p><strong>Terminal</strong> (in the Nord folder):</p>
+<pre class="code" data-lang="bash"><code>./target/debug/nord serve examples/physics-lab</code></pre>
+<p>Open the printed address. Add <code>?debug</code> to the address to see the collider outlines (matter), and <code>?physics=arcade</code> to switch the 2D engine (the Lab then skips the matter-only checks). The same projects open in the editor: <span class="c-ui">New project ▸ Open</span> <code>examples/physics-lab</code>, then <span class="c-ui">Play</span>.</p>
+<h2 id="run-the-self-test">Run the self-test<a class="anchor" href="#run-the-self-test">#</a></h2>
+<p>Every Lab has a script <code>scripts/lab.js</code> that publishes itself as <code>window.__lab</code>. Press F12 (or use the Console of the in-app browser) and run:</p>
+<p><strong>Example</strong> (not a file: type it into the browser console of the game page)</p>
+<pre class="code" data-lang="js"><code>const results = await __lab.selfTest();
+results.filter((r) =&gt; !r.ok)       // empty = everything passed</code></pre>
+<p>The game pauses itself, steps the world by hand and returns <code>{ name, ok, info }</code> for each check. The test scripts <code>tools/physics-lab-test.mjs</code> and <code>tools/shadertoy-lab-test.mjs</code> run exactly this in headless Chromium and assert that nothing failed (they need Playwright, see <code>docs/TESTING.md</code>; the checks themselves need only a browser).</p>
+<blockquote>
+<p><strong>Trap:</strong> A browser tab that is not on screen stops drawing frames, so game time stops too. The test waits in <strong>game time</strong>; keep the tab visible while it runs.</p>
+</blockquote>
+<h2 id="what-the-2d-checks-prove-matter">What the 2D checks prove (matter)<a class="anchor" href="#what-the-2d-checks-prove-matter">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>What it proves</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>capsule rests on the floor</td>
+<td>capsule colliders have round ends and do not tunnel</td>
+</tr>
+<tr>
+<td>L polygon stays finite</td>
+<td>a concave outline works as several convex pieces</td>
+</tr>
+<tr>
+<td>composite: left / right hit, gap open, children have no body</td>
+<td><code>composite</code> merges the children into one solid with the gap kept</td>
+</tr>
+<tr>
+<td>hinge keeps its rod length</td>
+<td>joints with a lever arm are stable (parallel-axis inertia)</td>
+</tr>
+<tr>
+<td>spring settles near its rest length</td>
+<td><code>frequency</code> / <code>dampingRatio</code> give a spring that holds</td>
+</tr>
+<tr>
+<td><code>IgnoreCollision</code> passes through the floor</td>
+<td>Matter drops the pair before it is solved</td>
+</tr>
+<tr>
+<td><code>freezePositionX</code>, <code>constraints</code> setter</td>
+<td>axis constraints hold, also when set from a script</td>
+</tr>
+<tr>
+<td>continuous detection stops at a thin wall (discrete one tunnels)</td>
+<td>the sweep check in front of a fast body</td>
+</tr>
+<tr>
+<td>interpolation draws between two steps</td>
+<td>the container is drawn between the last two steps and restored before the next</td>
+</tr>
+<tr>
+<td><code>Raycast</code> sees the capsule, <code>OverlapPoint</code> inside it</td>
+<td>the queries read the real shapes</td>
+</tr>
+</tbody></table>
+<h2 id="what-the-3d-checks-prove-havok">What the 3D checks prove (Havok)<a class="anchor" href="#what-the-3d-checks-prove-havok">#</a></h2>
+<p>Queries (<code>RaycastAll</code>, <code>SphereCast</code>, <code>BoxCast</code>, <code>CapsuleCast</code>, overlaps, <code>Check*</code>, <code>RaycastNonAlloc</code>), camera round trip and ray picking, a hinged door that keeps its radius, a fixed pair that falls together, a spring weight that hangs, <code>freezePositionX</code> + <code>freezeRotationY</code>, <code>IgnoreCollision</code>, <code>IgnoreLayerCollision</code>, continuous detection and the hinge motor.</p>
+<h2 id="what-the-shadertoy-checks-prove">What the Shadertoy checks prove<a class="anchor" href="#what-the-shadertoy-checks-prove">#</a></h2>
+<p>Five shaders compile and run, the tunnel draws colour, Buffer A keeps what the mouse painted in a float buffer, the keyboard texture is uploaded, <code>setUniform</code> accepts any name, the scene post effect adds an overlay canvas and removes it again.</p>
+<h2 id="play-mode-in-the-editor">Play mode in the editor<a class="anchor" href="#play-mode-in-the-editor">#</a></h2>
+<p>These projects are also a good place to try the Unity-style play mode of the editor:</p>
+<ul>
+<li><strong>Play and Stop return you to where you were.</strong> Press Play with the Scene view in front: the Game view comes up. Press Stop: the Scene view is back. Start from the Game view and Stop leaves you in the Game view.</li>
+<li><strong>Edit while playing, nothing is saved.</strong> While the game runs the Hierarchy and Inspector show the live objects. Change a position, a scale or any field of a component or script: the running game changes at once. Drag an object with the Scene-view gizmo: it moves in the game. When you press Stop, all of it is thrown away and the scene file is exactly as before.</li>
+</ul>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<ul>
+<li><code>await __lab.selfTest()</code> returns no failed entries on both Phaser engines (arcade shows fewer checks) and on Havok.</li>
+<li>Dragging the pendulum&#39;s bob in the Scene view while playing swings it; after Stop it hangs where the file says.</li>
+</ul>
+<p>Next: <a href="ex-unity-api.html">Unity API map</a>. Back to: <a href="ex-unity-api-physics3d.html">Physics 3D and joints</a>.</p>
+<div class="pager"><a href="ex-unity-api-rendering.html"><small>← Previous</small>63 · Unity API: LineRenderer, TrailRenderer, SpriteMask and SpriteShape</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#open-and-run">Open and run </a><a href="#run-the-self-test">Run the self-test </a><a href="#what-the-2d-checks-prove-matter">What the 2D checks prove (matter) </a><a href="#what-the-3d-checks-prove-havok">What the 3D checks prove (Havok) </a><a href="#what-the-shadertoy-checks-prove">What the Shadertoy checks prove </a><a href="#play-mode-in-the-editor">Play mode in the editor </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

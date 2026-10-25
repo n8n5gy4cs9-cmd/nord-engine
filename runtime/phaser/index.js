@@ -85,6 +85,19 @@ class Backend {
   frameSize(path) { const m = this.metaOf(path); if (m?.frameWidth) return [m.frameWidth, m.frameHeight ?? m.frameWidth]; const s = this.scene.textures.exists(path) ? this.scene.textures.get(path).getSourceImage() : null; return s ? [s.width, s.height] : [1, 1]; }
   init() { /* hook for subclasses/tests */ }
   createEffect(target, type, params) { return createEffect(this, target, type, params); }
+  /** Does the camera see any picture of this entity? (OnBecameVisible / OnBecameInvisible). An entity without pictures counts by its position. */
+  isVisible(e) {
+    const view = this.scene.cameras.main.worldView, G = globalThis.Phaser.Geom.Intersects;
+    let any = false;
+    for (const c of e.components) for (const v of c.visuals ?? []) {
+      any = true;
+      if (v.visible === false || v.alpha === 0) continue;
+      const b = v.getBounds?.();
+      if (b && G.RectangleToRectangle(b, view)) return true;
+    }
+    if (any) return false;
+    const w = this.world(e); return w.x >= view.x && w.x <= view.right && w.y >= view.y && w.y <= view.bottom;
+  }
   /** Run `fn` after Phaser has drawn a frame (the canvas still holds the picture, so it can be read as a texture). Returns an unsubscribe function. */
   onAfterRender(fn) { this.phaser.events.on('postrender', fn); return () => this.phaser.events.off('postrender', fn); }
   texKey(path) { return path; }

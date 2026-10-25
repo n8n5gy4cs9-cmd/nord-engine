@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>63 · Unity API: LineRenderer, TrailRenderer, SpriteMask and SpriteShape — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-clock.html">3.5 · Build a clock: objects, hierarchy, materials and your first script</a><a href="ex-digital-clock.html">3.6 · Build a digital clock: primitives and 3D text in the world</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-music-player.html">9.5 · A music player and sound effects</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html">55 · Ember Crypt: a complete game, from art to export</a><a href="ex-shadertoy.html">56 · Shadertoy: use any shader from shadertoy.com</a><a href="ex-unity-api.html">57 · Unity API in Nord: the map</a><a href="ex-unity-api-scripting.html">58 · Unity API: scripting and objects</a><a href="ex-unity-api-math.html">59 · Unity API: math types</a><a href="ex-unity-api-input.html">60 · Unity API: input</a><a href="ex-unity-api-physics2d.html">61 · Unity API: Physics 2D</a><a href="ex-unity-api-physics3d.html">62 · Unity API: Physics 3D, joints and the camera</a><a href="ex-unity-api-rendering.html" class="cur" aria-current="page">63 · Unity API: LineRenderer, TrailRenderer, SpriteMask and SpriteShape</a><a href="ex-physics-lab.html">64 · Physics Lab: a bench for the Unity physics layer</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>63 · Unity API: LineRenderer, TrailRenderer, SpriteMask and SpriteShape</h1>
+<p><strong>Goal:</strong> draw lines, trails, masked pictures and filled shapes with Unity&#39;s renderer components and API.</p>
+<p>All of them are components (<span class="c-ui">Inspector ▸ + Add component ▸ lineRenderer / trailRenderer / spriteMask / spriteShape</span>) and Unity classes of the same name.</p>
+<h2 id="linerenderer">LineRenderer<a class="anchor" href="#linerenderer">#</a></h2>
+<p><img src="../../assets/screenshots/ex-render-mask-line.png" alt="A tapered gradient line, a masked sprite and a SpriteShape"></p>
+<p><span class="c-ui">Inspector ▸ + Add component ▸ lineRenderer</span> on an object. A poly-line drawn as a ribbon. In 2D it is a quad strip with a width and a colour gradient; in 3D a ribbon that turns towards the camera.</p>
+<p><strong>In the file</strong> (an entity in <code>scenes/main.scene.json</code>):</p>
+<pre class="code" data-lang="json"><code>{ &quot;type&quot;: &quot;lineRenderer&quot;, &quot;points&quot;: [[0, 0, 0], [60, -40, 0], [120, 0, 0], [180, 40, 0]],
+  &quot;startWidth&quot;: 14, &quot;endWidth&quot;: 2, &quot;startColor&quot;: &quot;#ffd166&quot;, &quot;endColor&quot;: &quot;#ef476f&quot;,
+  &quot;cornerVertices&quot;: 4, &quot;capVertices&quot;: 4 }</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>points</code></td>
+<td><code>[x, y, z]</code> list. <code>useWorldSpace: false</code> (default) = relative to the object; <code>true</code> = world coordinates.</td>
+</tr>
+<tr>
+<td><code>startWidth</code>, <code>endWidth</code>, <code>widthCurve</code> (<code>[[t, multiplier]…]</code>), <code>widthMultiplier</code></td>
+<td>width along the line</td>
+</tr>
+<tr>
+<td><code>startColor</code>, <code>endColor</code>, or <code>colors</code> = <code>[[t, &quot;#rrggbb&quot;, alpha]…]</code>, <code>alpha</code></td>
+<td>colour along the line</td>
+</tr>
+<tr>
+<td><code>loop</code></td>
+<td>close the line</td>
+</tr>
+<tr>
+<td><code>cornerVertices</code>, <code>capVertices</code></td>
+<td><code>&gt; 0</code> rounds the joints and the ends</td>
+</tr>
+<tr>
+<td><code>blend</code></td>
+<td><code>normal</code>, <code>add</code>, <code>multiply</code>, <code>screen</code> (2D)</td>
+</tr>
+</tbody></table>
+<p><strong>File: <code>scripts/Laser.js</code></strong> (new file, the whole file: a laser from the object to the mouse that stops at walls)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, LineRenderer, Physics2D, Vector2, Vector3, Color, Gradient, GradientColorKey, GradientAlphaKey, AnimationCurve, UnityInput as Input } from 'nord';
+
+export default class Laser extends MonoBehaviour {
+  Start() {
+    this.line = this.AddComponent(LineRenderer);
+    this.line.useWorldSpace = true;
+    this.line.startWidth = 6; this.line.endWidth = 1;
+    this.line.numCapVertices = 4;
+    const g = new Gradient();
+    g.SetKeys([new GradientColorKey(Color.red, 0), new GradientColorKey(Color.yellow, 1)], [new GradientAlphaKey(1, 0), new GradientAlphaKey(0, 1)]);
+    this.line.colorGradient = g;                      // red to yellow, fading out
+    this.line.widthCurve = AnimationCurve.Linear(0, 1, 1, 0.2);
+  }
+  Update() {
+    const from = this.transform.position, to = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+    const hit = Physics2D.Linecast(new Vector2(from.x, from.y), to);
+    const end = hit.collider ? hit.point : to;
+    this.line.positionCount = 2;
+    this.line.SetPosition(0, new Vector3(from.x, from.y, 0));
+    this.line.SetPosition(1, new Vector3(end.x, end.y, 0));
+  }
+}</code></pre>
+<p>Unity members: <code>positionCount</code>, <code>SetPosition</code>, <code>GetPosition</code>, <code>SetPositions</code>, <code>GetPositions</code>, <code>startWidth</code>, <code>endWidth</code>, <code>widthMultiplier</code>, <code>widthCurve</code>, <code>startColor</code>, <code>endColor</code>, <code>colorGradient</code>, <code>loop</code>, <code>useWorldSpace</code>, <code>numCornerVertices</code>, <code>numCapVertices</code>, <code>Simplify(tolerance)</code>, <code>sortingOrder</code>, <code>enabled</code>.</p>
+<blockquote>
+<p><strong>Trap:</strong> Textured lines (<code>textureMode</code>) and <code>alignment</code> are stored but not drawn: lines are solid colours (use a gradient for dashes of colour).</p>
+</blockquote>
+<h2 id="trailrenderer">TrailRenderer<a class="anchor" href="#trailrenderer">#</a></h2>
+<p><img src="../../assets/screenshots/ex-render-3d-line-trail.png" alt="A 3D trail and a Shadertoy plane"></p>
+<p>Leaves a fading ribbon behind a moving object.</p>
+<p><strong>In the file:</strong></p>
+<pre class="code" data-lang="json"><code>{ &quot;type&quot;: &quot;trailRenderer&quot;, &quot;time&quot;: 0.6, &quot;minVertexDistance&quot;: 4, &quot;startWidth&quot;: 12, &quot;endWidth&quot;: 0, &quot;startColor&quot;: &quot;#ffffff&quot;, &quot;endColor&quot;: &quot;#4cc9f000&quot; }</code></pre>
+<p><code>time</code> = seconds a point lives, <code>minVertexDistance</code> = how far the object moves before a new point, <code>emitting</code>, <code>autodestruct</code>. Width and colour fields are the same as the line&#39;s, with <code>t = 0</code> at the head and <code>t = 1</code> at the oldest point. Script: <code>time</code>, <code>emitting</code>, <code>minVertexDistance</code>, <code>autodestruct</code>, <code>Clear()</code>, <code>AddPosition(v)</code>, <code>GetPosition(i)</code>, <code>positionCount</code>, widths and colours like <code>LineRenderer</code>.</p>
+<p><strong>File: <code>scripts/Streak.js</code></strong> (new file, the whole file: a trail only while dashing)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, TrailRenderer, Color, UnityInput as Input, KeyCode } from 'nord';
+
+export default class Streak extends MonoBehaviour {
+  Start() {
+    this.trail = this.GetComponent(TrailRenderer);
+    this.trail.startColor = Color.white; this.trail.endColor = new Color(0.3, 0.8, 0.95, 0);
+    this.trail.emitting = false;
+  }
+  Update() { this.trail.emitting = Input.GetKey(KeyCode.LeftShift); }
+}</code></pre>
+<h2 id="spritemask">SpriteMask<a class="anchor" href="#spritemask">#</a></h2>
+<p>Shows or hides sprites where they overlap a shape: a spotlight, a window, a reveal, a fog of war.</p>
+<ol>
+<li><span class="c-ui">Hierarchy ▸ + Create ▸ Empty</span> named <code>Window</code>, <span class="c-ui">Inspector ▸ + Add component ▸ spriteMask</span>, <code>shape</code> = <code>circle</code>, <code>radius</code> = 40.</li>
+<li>Select a sprite object. In its <code>sprite</code> component set <strong><code>maskInteraction</code></strong> to <code>visibleInsideMask</code> (only the part inside the circle shows) or <code>visibleOutsideMask</code> (the circle is a hole).</li>
+<li>Press <span class="c-ui">Play</span> and move <code>Window</code>: the picture is revealed only under it.</li>
+</ol>
+<p><strong>In the file</strong> (the two entities):</p>
+<pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Window&quot;, &quot;transform&quot;: { &quot;pos&quot;: [200, 150, 0] }, &quot;components&quot;: [ { &quot;type&quot;: &quot;spriteMask&quot;, &quot;shape&quot;: &quot;circle&quot;, &quot;radius&quot;: 40 } ] },
+{ &quot;name&quot;: &quot;Wall&quot;,   &quot;transform&quot;: { &quot;pos&quot;: [200, 150, 0] }, &quot;components&quot;: [ { &quot;type&quot;: &quot;sprite&quot;, &quot;texture&quot;: &quot;assets/sprites/wall.png&quot;, &quot;maskInteraction&quot;: &quot;visibleInsideMask&quot; } ] }</code></pre>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>shape</code></td>
+<td><code>rect</code> (<code>size</code>), <code>circle</code> (<code>radius</code>), <code>texture</code> (the opaque pixels of <code>texture</code>)</td>
+</tr>
+<tr>
+<td><code>offset</code></td>
+<td>shifts the shape inside the object</td>
+</tr>
+<tr>
+<td><code>maskInteraction</code> on <code>sprite</code> / <code>animatedSprite</code></td>
+<td><code>none</code>, <code>visibleInsideMask</code>, <code>visibleOutsideMask</code></td>
+</tr>
+</tbody></table>
+<p>All masks in a scene act together (a sprite is visible where any mask covers it). Script: <code>SpriteMask.Of(entity)</code> / <code>GetComponent(SpriteMask)</code> with <code>shape</code>, <code>size</code>, <code>radius</code>, <code>sprite</code>, <code>alphaCutoff</code>; <code>SpriteRenderer.maskInteraction = &#39;VisibleInsideMask&#39;</code>.</p>
+<blockquote>
+<p><strong>Trap:</strong> The masked sprite is redrawn on a canvas when it, or a mask, moves. A few dozen masked sprites are fine; masking a big particle field is not. 3D has no sprite masks (the component does nothing there and warns once).</p>
+</blockquote>
+<h2 id="spriteshape-spline-terrain">SpriteShape (spline terrain)<a class="anchor" href="#spriteshape-spline-terrain">#</a></h2>
+<p>A filled shape from a list of points, with an outline, and optionally a collider that follows it: hills, pools, platforms.</p>
+<p><strong>In the file:</strong></p>
+<pre class="code" data-lang="json"><code>{ &quot;type&quot;: &quot;spriteShape&quot;, &quot;points&quot;: [[-80, 20], [-30, -50], [40, -40], [90, 30], [0, 60]], &quot;closed&quot;: true, &quot;smooth&quot;: true, &quot;splineDetail&quot;: 8,
+  &quot;fillColor&quot;: &quot;#3a5f2c&quot;, &quot;edgeColor&quot;: &quot;#7bc043&quot;, &quot;edgeWidth&quot;: 8, &quot;generateCollider&quot;: true }</code></pre>
+<p><img src="../../assets/screenshots/ex-render-shape.png" alt="A smooth green SpriteShape"></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>points</code></td>
+<td>the outline (2D)</td>
+</tr>
+<tr>
+<td><code>closed</code></td>
+<td><code>true</code> = filled polygon, <code>false</code> = an open line (an edge)</td>
+</tr>
+<tr>
+<td><code>smooth</code>, <code>splineDetail</code></td>
+<td>round the outline through the points (Catmull-Rom, <code>splineDetail</code> points per segment)</td>
+</tr>
+<tr>
+<td><code>fillColor</code>, <code>edgeColor</code>, <code>edgeWidth</code></td>
+<td>looks</td>
+</tr>
+<tr>
+<td><code>generateCollider</code></td>
+<td>adds a <code>polygon</code> collider (closed) or <code>edge</code> collider (open) that follows the outline. Use <code>physics.engine: &quot;matter&quot;</code> for collisions.</td>
+</tr>
+</tbody></table>
+<p><strong>File: <code>scripts/Hills.js</code></strong> (new file, the whole file: grow a hill by script)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SpriteShapeController, Vector3, Color } from 'nord';
+
+export default class Hills extends MonoBehaviour {
+  Start() {
+    const shape = this.GetComponent(SpriteShapeController);
+    shape.spline.Clear();
+    for (let i = 0; i &lt;= 8; i++) shape.spline.InsertPointAt(i, new Vector3(i * 60, -Math.sin(i / 8 * Math.PI) * 80, 0));
+    shape.spline.SetTangentMode(0, 'Continuous');       // smooth
+    shape.autoUpdateCollider = true;
+    shape.fillColor = new Color(0.2, 0.4, 0.2);
+    shape.RefreshSpriteShape();
+  }
+}</code></pre>
+<p><code>spline.GetPointCount()</code>, <code>GetPosition(i)</code>, <code>SetPosition(i, v)</code>, <code>InsertPointAt</code>, <code>RemovePointAt</code>, <code>Clear</code>, <code>SetTangentMode</code>, <code>isOpenEnded</code>; <code>splineDetail</code>, <code>autoUpdateCollider</code>, <code>edgeWidth</code>.</p>
+<h2 id="camera-curves-and-gradients">Camera, curves and gradients<a class="anchor" href="#camera-curves-and-gradients">#</a></h2>
+<p><code>Camera.main.WorldToScreenPoint</code>, <code>ScreenPointToRay</code> and friends are on the <a href="ex-unity-api-physics3d.html">3D page</a>; <code>AnimationCurve</code>, <code>Gradient</code> and the colour types are on the <a href="ex-unity-api-math.html">math page</a>. For custom surfaces and full-screen effects use <a href="ex-shadertoy.html">Shadertoy</a> in place of <code>Shader</code> and <code>Material</code>.</p>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<ul>
+<li>A <code>LineRenderer</code> with two points and <code>startWidth</code> 14 / <code>endWidth</code> 2 shows a tapered gradient line (screenshots above).</li>
+<li>A sprite with <code>maskInteraction: visibleInsideMask</code> shows normally while the scene has no <code>spriteMask</code>; as soon as there is one, only the part inside it is visible (<code>visibleOutsideMask</code>: only the part outside).</li>
+<li><code>node --test runtime/core/unity-extra.test.mjs</code> covers the strip geometry (widths, mitres, smoothing, simplify) and the wrapper properties.</li>
+</ul>
+<p>Next: <a href="ex-physics-lab.html">Physics Lab</a>. Back to: <a href="ex-unity-api-physics3d.html">Physics 3D and joints</a>.</p>
+<div class="pager"><a href="ex-unity-api-physics3d.html"><small>← Previous</small>62 · Unity API: Physics 3D, joints and the camera</a><a href="ex-physics-lab.html"><small>Next →</small>64 · Physics Lab: a bench for the Unity physics layer</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#linerenderer">LineRenderer </a><a href="#trailrenderer">TrailRenderer </a><a href="#spritemask">SpriteMask </a><a href="#spriteshape-spline-terrain">SpriteShape (spline terrain) </a><a href="#camera-curves-and-gradients">Camera, curves and gradients </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

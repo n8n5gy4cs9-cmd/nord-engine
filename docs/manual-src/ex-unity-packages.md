@@ -18,7 +18,7 @@ summary: Cinemachine, TextMeshPro, Input System, DOTween, NavMesh, Timeline, Add
 | **2D Physics / 3D Physics** | arcade / matter (2D), Havok (3D) | [Physics recipes](ex-physics-recipes.html) |
 | **Particle System / VFX Graph** | `particles` component + particle editor, `fx-particle-presets.js` | CPU particles (2D Phaser / 3D Babylon) |
 | **Post-processing, URP volumes** | scene effects (2D) and the `postProcess` component (3D): bloom, vignette, tonemap, grain, colour grading | [Effects](effects-particles-timelines.html) |
-| **Shader Graph / HLSL** | GLSL snippets in `library/shaders/` and material properties | outline, toon, dissolve, water… |
+| **Shader Graph / HLSL / custom shaders** | **Shadertoy shaders**: paste any shadertoy.com shader into a `shadertoy` component or a scene post effect; GLSL snippets in `library/shaders/` and material properties for normal surfaces | [Shadertoy](ex-shadertoy.html) |
 | **Lighting / light probes** | `light` component; 2D: [2D lights and shadows](ex-lights-2d.html) (`light2d.js`, `light2d-source.js`) | no baked lightmaps |
 | **Addressables / Resources** | files loaded on demand: `scene.spawn(path)`, `game.loadJSON(path)`, `loadScene(path)` | everything is a file path; the build includes the project folder |
 | **ScriptableObject** | JSON + `ScriptableObject.Load` | [Data assets](ex-data-assets.html) |

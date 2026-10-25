@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>61 · Unity API: Physics 2D — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-clock.html">3.5 · Build a clock: objects, hierarchy, materials and your first script</a><a href="ex-digital-clock.html">3.6 · Build a digital clock: primitives and 3D text in the world</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-music-player.html">9.5 · A music player and sound effects</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html">55 · Ember Crypt: a complete game, from art to export</a><a href="ex-shadertoy.html">56 · Shadertoy: use any shader from shadertoy.com</a><a href="ex-unity-api.html">57 · Unity API in Nord: the map</a><a href="ex-unity-api-scripting.html">58 · Unity API: scripting and objects</a><a href="ex-unity-api-math.html">59 · Unity API: math types</a><a href="ex-unity-api-input.html">60 · Unity API: input</a><a href="ex-unity-api-physics2d.html" class="cur" aria-current="page">61 · Unity API: Physics 2D</a><a href="ex-unity-api-physics3d.html">62 · Unity API: Physics 3D, joints and the camera</a><a href="ex-unity-api-rendering.html">63 · Unity API: LineRenderer, TrailRenderer, SpriteMask and SpriteShape</a><a href="ex-physics-lab.html">64 · Physics Lab: a bench for the Unity physics layer</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>61 · Unity API: Physics 2D</h1>
+<p><strong>Goal:</strong> use <code>Rigidbody2D</code>, the 2D colliders, <code>Physics2D</code> queries and joints with Unity&#39;s names and behaviour.</p>
+<p><img src="../../assets/screenshots/ex-physics-lab-2d.png" alt="The 2D shapes of the Physics Lab: circle, capsule, concave polygon, pendulum, spring, composite blocks, trigger and a ramp"></p>
+<h2 id="pick-the-physics-engine">Pick the physics engine<a class="anchor" href="#pick-the-physics-engine">#</a></h2>
+<p>The 2D engine is a project setting (<span class="c-ui">Project ▸ Project properties ▸ Physics ▸ engine</span>): <strong>arcade</strong> (fast boxes and circles, no rotation) or <strong>matter</strong> (rotation, any shape, joints).</p>
+<p><strong>In the file</strong> <code>nord.project.json</code>:</p>
+<pre class="code" data-lang="json"><code>&quot;physics&quot;: { &quot;engine&quot;: &quot;matter&quot;, &quot;gravity&quot;: [0, 900, 0] }</code></pre>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>arcade</th>
+<th>matter</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>box, circle colliders</td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>capsule, polygon (also concave), edge, composite</td>
+<td>uses the bounding box (a warning in the Console)</td>
+<td><strong>exact</strong></td>
+</tr>
+<tr>
+<td>rotation, <code>AddTorque</code>, <code>angularVelocity</code></td>
+<td>no</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>joints</td>
+<td>position only: hinge/fixed (a pin), spring, distance, target</td>
+<td>all nine</td>
+</tr>
+<tr>
+<td>axis constraints, interpolation, <code>Continuous</code></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>IgnoreCollision</code>, <code>IgnoreLayerCollision</code></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>Physics2D.Raycast</code>, <code>CircleCast</code>, <code>Overlap*</code>, <code>Distance</code></td>
+<td><strong>exact on both</strong></td>
+<td><strong>exact on both</strong></td>
+</tr>
+</tbody></table>
+<p>The query functions do not use the physics engine, they read the collider data: they give the same answer on arcade and matter, for every shape, in the same frame.</p>
+<h2 id="colliders">Colliders<a class="anchor" href="#colliders">#</a></h2>
+<p><span class="c-ui">Inspector ▸ + Add component ▸ collider</span>, then choose the <strong>shape</strong>.</p>
+<table>
+<thead>
+<tr>
+<th><code>shape</code></th>
+<th>Fields</th>
+<th>Unity class</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>box</code></td>
+<td><code>size</code> <code>[w, h]</code>, <code>offset</code></td>
+<td><code>BoxCollider2D</code></td>
+</tr>
+<tr>
+<td><code>circle</code></td>
+<td><code>radius</code>, <code>offset</code></td>
+<td><code>CircleCollider2D</code></td>
+</tr>
+<tr>
+<td><code>capsule</code></td>
+<td><code>size</code> <code>[w, h]</code>, <code>direction</code> <code>vertical</code> / <code>horizontal</code>, <code>offset</code></td>
+<td><code>CapsuleCollider2D</code></td>
+</tr>
+<tr>
+<td><code>polygon</code></td>
+<td><code>points</code> (any outline, concave is split into convex pieces)</td>
+<td><code>PolygonCollider2D</code></td>
+</tr>
+<tr>
+<td><code>edge</code></td>
+<td><code>points</code> (an open line, <code>edgeRadius</code> thickness)</td>
+<td><code>EdgeCollider2D</code></td>
+</tr>
+<tr>
+<td><code>composite</code></td>
+<td>merges every collider with <code>usedByComposite: true</code> on this object and its children into one body</td>
+<td><code>CompositeCollider2D</code></td>
+</tr>
+<tr>
+<td>any</td>
+<td><code>trigger</code> (overlaps without blocking)</td>
+<td><code>isTrigger</code></td>
+</tr>
+</tbody></table>
+<p><strong>In the file</strong> (an entity in <code>scenes/main.scene.json</code>: a wall made of two boxes that act as one solid):</p>
+<pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Walls&quot;, &quot;components&quot;: [ { &quot;type&quot;: &quot;rigidbody&quot;, &quot;mode&quot;: &quot;static&quot; }, { &quot;type&quot;: &quot;collider&quot;, &quot;shape&quot;: &quot;composite&quot; } ],
+  &quot;children&quot;: [
+    { &quot;name&quot;: &quot;Left&quot;,  &quot;transform&quot;: { &quot;pos&quot;: [-60, 0, 0] }, &quot;components&quot;: [ { &quot;type&quot;: &quot;collider&quot;, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: [40, 40], &quot;usedByComposite&quot;: true } ] },
+    { &quot;name&quot;: &quot;Right&quot;, &quot;transform&quot;: { &quot;pos&quot;: [ 60, 0, 0] }, &quot;components&quot;: [ { &quot;type&quot;: &quot;collider&quot;, &quot;shape&quot;: &quot;box&quot;, &quot;size&quot;: [40, 40], &quot;usedByComposite&quot;: true } ] } ] }</code></pre>
+<p>The two children have no body of their own: the parent is one solid with a gap between the boxes, and a ray from outside reports <code>Walls</code> once.</p>
+<p>From scripts: <code>AddComponent(CapsuleCollider2D)</code>, <code>PolygonCollider2D</code> (<code>points</code>, <code>pointCount</code>, <code>SetPath</code>, <code>CreatePrimitive(sides)</code>), <code>EdgeCollider2D</code> (<code>points</code>, <code>edgeRadius</code>), <code>CompositeCollider2D</code>, plus on every collider <code>usedByComposite</code>, <code>bounds</code> (a <code>Bounds</code>), <code>OverlapPoint(p)</code>, <code>Distance(other)</code>, <code>ClosestPoint(p)</code>, <code>IsTouching(other)</code>, <code>OverlapCollider(filter, results)</code>, <code>Cast(direction, results, distance)</code>.</p>
+<blockquote>
+<p><strong>Trap:</strong> A polygon drawn clockwise or counter-clockwise both work. Self-crossing outlines do not: split them in two colliders.</p>
+</blockquote>
+<h2 id="rigidbody2d">Rigidbody2D<a class="anchor" href="#rigidbody2d">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>bodyType</code> <code>Dynamic/Kinematic/Static</code>, <code>mass</code>, <code>drag</code> / <code>linearDamping</code>, <code>angularDrag</code>, <code>gravityScale</code>, <code>simulated</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>velocity</code>, <code>angularVelocity</code> (degrees/second), <code>position</code>, <code>rotation</code>, <code>MovePosition</code>, <code>AddForce(force, ForceMode2D.Force/Impulse)</code>, <code>AddTorque</code>, <code>AddForceAtPosition</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><strong><code>constraints</code></strong> = <code>RigidbodyConstraints2D.FreezePositionX / FreezePositionY / FreezeRotation / FreezePosition / FreezeAll</code> (add with `</td>
+<td>`)</td>
+</tr>
+<tr>
+<td><strong><code>interpolation</code></strong> = <code>&#39;None&#39;</code>, <code>&#39;Interpolate&#39;</code>, <code>&#39;Extrapolate&#39;</code></td>
+<td>the picture is drawn between the last two 60 Hz physics steps: smooth on 120/144 Hz screens</td>
+</tr>
+<tr>
+<td><strong><code>collisionDetectionMode</code></strong> = <code>&#39;Discrete&#39;</code> or <code>&#39;Continuous&#39;</code></td>
+<td>fast bodies are checked along their path so they cannot jump through thin walls</td>
+</tr>
+<tr>
+<td><strong><code>AddExplosionForce(force, position, radius, upwards)</code></strong></td>
+<td>pushes away, falling off to zero at <code>radius</code></td>
+</tr>
+<tr>
+<td><code>sharedMaterial = { friction, bounciness }</code></td>
+<td>copies the numbers to the body</td>
+</tr>
+<tr>
+<td><code>GetPointVelocity</code>, <code>Cast</code>, <code>OverlapCollider</code>, <code>IsTouching</code>, <code>IsTouchingLayers</code></td>
+<td>yes</td>
+</tr>
+</tbody></table>
+<p><strong>File: <code>scripts/Bullet.js</code></strong> (new file, the whole file: a bullet that cannot tunnel)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Rigidbody2D, RigidbodyConstraints2D, Vector2 } from 'nord';
+
+export default class Bullet extends MonoBehaviour {
+  Start() {
+    const rb = this.GetComponent(Rigidbody2D);
+    rb.collisionDetectionMode = 'Continuous';       // 3000 px/s against a 4 px wall: still hits
+    rb.interpolation = 'Interpolate';
+    rb.gravityScale = 0;
+    rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+    rb.velocity = new Vector2(3000, 0);
+  }
+}</code></pre>
+<blockquote>
+<p><strong>Trap:</strong> Continuous detection is for <em>small fast</em> bodies against <em>thin</em> colliders. It sweeps the body&#39;s shape along this step&#39;s movement and stops it at the first thing in the way (with <code>bounce</code> it bounces there). It does not make slow bodies more exact.</p>
+</blockquote>
+<h2 id="queries">Queries<a class="anchor" href="#queries">#</a></h2>
+<p>Every query works in world pixels and returns what Unity returns. Anything with <code>All</code> returns an array sorted by distance; <code>NonAlloc</code> fills the array you give and returns the count.</p>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Raycast(origin, direction, distance, layerMask)</code></td>
+<td>one hit: <code>collider</code> (the entity, <code>null</code> for a miss), <code>point</code>, <code>normal</code>, <code>distance</code>, <code>fraction</code>, <code>transform</code>, <code>rigidbody</code>, <code>centroid</code></td>
+</tr>
+<tr>
+<td><code>RaycastAll</code>, <code>RaycastNonAlloc(origin, direction, results, distance, mask)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Linecast(start, end, mask)</code>, <code>LinecastAll</code>, <code>LinecastNonAlloc</code></td>
+<td></td>
+</tr>
+<tr>
+<td><strong><code>CircleCast(origin, radius, direction, distance, mask)</code></strong> and <code>All</code> / <code>NonAlloc</code></td>
+<td>a swept circle; <code>centroid</code> = where the circle was at the hit</td>
+</tr>
+<tr>
+<td><strong><code>BoxCast(origin, size, angle, direction, distance, mask)</code></strong></td>
+<td>a swept rotated box</td>
+</tr>
+<tr>
+<td><strong><code>CapsuleCast(origin, size, CapsuleDirection2D.Vertical, angle, direction, distance, mask)</code></strong></td>
+<td>a swept capsule</td>
+</tr>
+<tr>
+<td><code>OverlapPoint(p)</code>, <code>OverlapCircle(p, r)</code>, <code>OverlapBox(p, size, angle)</code>, <code>OverlapArea(a, b)</code>, <code>OverlapCapsule(p, size, dir, angle)</code></td>
+<td>the <strong>first</strong> collider&#39;s object or <code>null</code>. With <code>All</code> an array, with <code>NonAlloc</code> the count.</td>
+</tr>
+<tr>
+<td><code>OverlapCollider(collider, filter, results)</code></td>
+<td>everything touching a collider</td>
+</tr>
+<tr>
+<td><code>Distance(colA, colB)</code></td>
+<td><code>{ distance (negative = overlapping), isOverlapped, normal, pointA, pointB }</code></td>
+</tr>
+<tr>
+<td><code>ClosestPoint(position, collider)</code>, <code>IsTouching(a, b)</code>, <code>IsTouchingLayers(collider, mask)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><strong><code>IgnoreCollision(a, b, ignore)</code></strong>, <code>GetIgnoreCollision</code>, <code>IgnoreLayerCollision(la, lb, ignore)</code>, <code>GetIgnoreLayerCollision</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>queriesHitTriggers</code>, <code>queriesStartInColliders</code></td>
+<td><code>true</code> by default</td>
+</tr>
+</tbody></table>
+<p>A ray that starts inside a collider hits it at distance 0 with the normal pointing back along the ray (Unity&#39;s <code>queriesStartInColliders</code>). A cast that starts overlapping reports distance 0 as well. <code>ContactFilter2D</code> (<code>SetLayerMask</code>, <code>useTriggers</code>) is accepted by <code>OverlapCollider</code> and by <code>Raycast(origin, dir, filter, results, distance)</code>.</p>
+<p><strong>File: <code>scripts/Scanner.js</code></strong> (new file, the whole file: step height and wall check for a 2D character)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Physics2D, Vector2, CapsuleDirection2D, LayerMask } from 'nord';
+
+export default class Scanner extends MonoBehaviour {
+  Update() {
+    const p = this.transform.position, here = new Vector2(p.x, p.y), ground = LayerMask.GetMask(0);
+    const down = Physics2D.Raycast(here, Vector2.up, 40, ground);            // 2D: y grows downward, so &quot;down&quot; is Vector2.up
+    const wall = Physics2D.CapsuleCast(here, new Vector2(20, 48), CapsuleDirection2D.Vertical, 0, Vector2.right, 6, ground);
+    this.grounded = !!down.collider;
+    this.blocked = !!wall.collider;
+    for (const e of Physics2D.OverlapCircleAll(here, 80)) if (e.CompareTag('enemy')) this.log('enemy near', e.name);
+  }
+}</code></pre>
+<blockquote>
+<p><strong>Trap:</strong> In 2D the y axis points <strong>down</strong>. <code>Vector2.up</code> is <code>(0, 1)</code>: it points down the screen, which is why the ground check above uses it. Use <code>Vector2.down</code> for &quot;towards the top&quot;.</p>
+</blockquote>
+<h2 id="joints">Joints<a class="anchor" href="#joints">#</a></h2>
+<p><span class="c-ui">Inspector ▸ + Add component ▸ joint</span>, choose <code>kind</code>, set <code>connectedBody</code> (pick the other entity) and <code>anchor</code>. Or from a script:</p>
+<p><strong>File: <code>scripts/Door.js</code></strong> (new file, the whole file: a swinging door on a motor)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, HingeJoint2D, SpringJoint2D, Rigidbody2D, Vector2 } from 'nord';
+
+export default class Door extends MonoBehaviour {
+  Start() {
+    const hinge = this.AddComponent(HingeJoint2D);
+    hinge.connectedBody = this.entity.parent.GetComponent(Rigidbody2D);     // the frame
+    hinge.anchor = new Vector2(-40, 0);                                      // the edge of the door
+    hinge.useLimits = true;
+    hinge.limits = { min: -90, max: 0 };                                    // degrees
+    hinge.useMotor = true;
+    hinge.motor = { motorSpeed: 45, maxMotorTorque: 1000 };
+  }
+}</code></pre>
+<table>
+<thead>
+<tr>
+<th>Unity class</th>
+<th><code>kind</code></th>
+<th>Properties</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>HingeJoint2D</code></td>
+<td><code>hinge</code></td>
+<td><code>useLimits</code>, <code>limits {min,max}</code> (degrees), <code>useMotor</code>, <code>motor {motorSpeed, maxMotorTorque}</code>, <code>jointAngle</code></td>
+</tr>
+<tr>
+<td><code>SpringJoint2D</code></td>
+<td><code>spring</code></td>
+<td><code>distance</code>, <code>autoConfigureDistance</code>, <code>frequency</code>, <code>dampingRatio</code></td>
+</tr>
+<tr>
+<td><code>DistanceJoint2D</code></td>
+<td><code>distance</code></td>
+<td><code>distance</code>, <code>maxDistanceOnly</code></td>
+</tr>
+<tr>
+<td><code>FixedJoint2D</code></td>
+<td><code>fixed</code></td>
+<td><code>frequency</code>, <code>dampingRatio</code> (0 = rigid)</td>
+</tr>
+<tr>
+<td><code>SliderJoint2D</code></td>
+<td><code>slider</code></td>
+<td><code>angle</code>, <code>useLimits</code>, <code>limits {min,max}</code>, <code>useMotor</code>, <code>motor</code>, <code>jointTranslation</code></td>
+</tr>
+<tr>
+<td><code>WheelJoint2D</code></td>
+<td><code>wheel</code></td>
+<td><code>suspension {frequency, dampingRatio, angle}</code>, <code>useMotor</code>, <code>motor</code></td>
+</tr>
+<tr>
+<td><code>TargetJoint2D</code></td>
+<td><code>target</code></td>
+<td><code>target</code> (a world point: <code>j.target = mouseWorld</code>), <code>maxForce</code>, <code>frequency</code>, <code>dampingRatio</code></td>
+</tr>
+<tr>
+<td><code>RelativeJoint2D</code></td>
+<td><code>relative</code></td>
+<td><code>linearOffset</code>, <code>angularOffset</code>, <code>maxForce</code></td>
+</tr>
+<tr>
+<td><code>FrictionJoint2D</code></td>
+<td><code>friction</code></td>
+<td><code>maxForce</code>, <code>maxTorque</code></td>
+</tr>
+</tbody></table>
+<p>All joints: <code>connectedBody</code> (empty = the world), <code>anchor</code>, <code>connectedAnchor</code>, <code>autoConfigureConnectedAnchor</code>, <code>enableCollision</code>, <code>breakForce</code> (then <code>OnJointBreak(info)</code> runs on the scripts and the joint is removed). With <code>autoConfigureConnectedAnchor</code> the second anchor is placed so the joint starts relaxed, exactly as in Unity (including: a spring with it on starts at length 0 unless you turn it off).</p>
+<blockquote>
+<p><strong>Trap:</strong> Joints with a long lever (an anchor far from the body&#39;s centre) on a light body are hard for the Matter solver. Nord adds the body&#39;s moment of inertia about the pivot (parallel-axis theorem) so a hinged board swings like a pendulum instead of exploding; give such bodies a realistic <code>mass</code>.</p>
+</blockquote>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<ul>
+<li>Open <code>examples/physics-lab</code> and run <code>await __lab.selfTest()</code> in the browser console: 17 checks (shapes, composite, hinge, spring, IgnoreCollision, constraints, continuous detection, interpolation, queries) pass on matter; add <code>?physics=arcade</code> for the arcade subset.</li>
+<li>Compare a <code>Physics2D.Raycast</code> against the debug drawing (<code>?debug</code>): the green outlines are the colliders the queries use.</li>
+</ul>
+<p>Next: <a href="ex-unity-api-physics3d.html">Physics 3D and joints</a>. Back to: <a href="ex-unity-api-input.html">Input</a>.</p>
+<div class="pager"><a href="ex-unity-api-input.html"><small>← Previous</small>60 · Unity API: input</a><a href="ex-unity-api-physics3d.html"><small>Next →</small>62 · Unity API: Physics 3D, joints and the camera</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#pick-the-physics-engine">Pick the physics engine </a><a href="#colliders">Colliders </a><a href="#rigidbody2d">Rigidbody2D </a><a href="#queries">Queries </a><a href="#joints">Joints </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

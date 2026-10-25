@@ -90,4 +90,4 @@ With MCP the prompts `convert-unity-project` and `convert-unity-tutorial` give t
 - [ ] Build and run the exported game ([Build](ex-build-publish.html)).
 
 ## What is not converted
-Shaders and Shader Graph (rebuild with the effects library), custom editors, `NavMesh` bake data, terrain, baked lighting, `Animation` clips from `.anim` (recreate in the Animation editor), and anything from a paid asset package: check the package licence before copying its art or code.
+Shaders and Shader Graph (rebuild as a Shadertoy shader: [Shadertoy](ex-shadertoy.html), or with the effects library), custom editors, `NavMesh` bake data, terrain, baked lighting, `Animation` clips from `.anim` (recreate in the Animation editor), and anything from a paid asset package: check the package licence before copying its art or code.

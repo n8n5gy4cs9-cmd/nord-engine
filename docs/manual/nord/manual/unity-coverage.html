@@ -9,10 +9,10 @@
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="welcome.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
 <div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="assets.html">Assets</a><a href="library.html">The library</a><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="debugger.html">Debugger and profiler</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a><a href="ui-designer.html">UI Designer</a><a href="graph.html">Node graphs (visual scripting)</a><a href="unity-workflow.html">Unity-style workflow</a><a href="modeler.html">3D Modeler</a><a href="animator.html">Animator</a><a href="multiplayer.html">Multiplayer</a><a href="appearance.html">Editor appearance</a><a href="ai-mcp.html">AI and MCP</a><a href="unity-coverage.html" class="cur" aria-current="page">Unity coverage</a><a href="unity-scripting.html">Unity-style scripting</a><a href="dev-console.html">In-game Dev Console</a><a href="organise-project.html">Organising your project</a></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Unity coverage</h1>
-<p>Short answer: <strong>not 100%</strong>. The everyday gameplay API (scripts, input, time, prefabs, coroutines, triggers, GameManager, UI labels, save, scenes) is covered; large parts of the <em>rest</em> of Unity (joints, NavMesh, Cinemachine, LineRenderer, custom shaders, Terrain, editor scripting) have no Unity-style entry point yet. This page is the honest list. <code>✔</code> works with the Unity name, <code>◐</code> works with limits, <code>✘</code> not available in Unity style (the <strong>Native way</strong> column says what to use instead; native code always works next to Unity-style code).</p>
-<p>Status of this page: written 2026-10-25 from reading the engine (<code>runtime/core/unity.js</code>, <code>runtime/core/unity-extra.js</code>, <code>runtime/phaser</code>, <code>runtime/babylon</code>). The newest additions (Transform, component wrappers, Physics2D queries, Quaternion) were written <strong>without running new tests</strong> (only the 91 existing unit tests were run to check nothing broke); treat them as unverified until <code>runtime/core/unity-extra.test.mjs</code> exists.</p>
+<p>Short answer: <strong>not 100%, but almost all of what a gameplay programmer uses</strong>. Scripts, input (old and new system), time, prefabs, coroutines, triggers, physics 2D and 3D with joints, line and trail renderers, masks, saving and scenes are covered; the gaps are NavMesh, Cinemachine, Terrain, editor scripting and a few smaller classes (see &quot;Nice to have&quot; below). This page is the honest list. <code>✔</code> works with the Unity name, <code>◐</code> works with limits, <code>✘</code> not available in Unity style (the <strong>Native way</strong> column says what to use instead; native code always works next to Unity-style code).</p>
+<p>Status of this page: updated for version 0.3.0. The unit tests are <code>runtime/core/unity-extra.test.mjs</code> (maths, tree, input, queries, joints, renderers; <code>node --test runtime/core/*.test.mjs</code>) and the browser checks of the three Lab projects (<a href="../examples/ex-physics-lab.html">Physics Lab</a>).</p>
 <h2 id="counts">Counts<a class="anchor" href="#counts">#</a></h2>
-<p>The tables below have <strong>92 rows</strong> (each row is one Unity feature or a small group of closely related members that most gameplay scripts use): <strong>✔ 45, ◐ 23, ✘ 24</strong>. That is <strong>49% fully</strong> and <strong>74% fully or partly</strong>. It counts rows, not lines of code or how often each feature is used: the missing rows are the less common ones, but a game that needs joints, NavMesh or a custom shader will hit a gap at once.</p>
+<p>The tables below have <strong>98 rows</strong> (each row is one Unity feature or a small group of closely related members that most gameplay scripts use): <strong>✔ 67, ◐ 19, ✘ 12</strong>. That is <strong>68% fully</strong> and <strong>88% fully or partly</strong>. It counts rows, not lines of code or how often each feature is used. Version 0.3.0 raised it from 49% to 68%; the remaining rows are the ones in the &quot;nice to have&quot; list below.</p>
 <h2 id="monobehaviour-and-gameobject">MonoBehaviour and GameObject<a class="anchor" href="#monobehaviour-and-gameobject">#</a></h2>
 <table>
 <thead>
@@ -54,18 +54,23 @@
 </tr>
 <tr>
 <td><code>OnBecameVisible/Invisible</code></td>
-<td>✘</td>
-<td>compare position with the camera view yourself</td>
+<td>✔</td>
+<td>the camera starts or stops seeing the object&#39;s pictures / meshes; see <a href="../examples/ex-unity-api-scripting.html">Scripting and objects</a></td>
 </tr>
 <tr>
 <td><code>OnApplicationFocus/Pause/Quit</code></td>
-<td>✘</td>
-<td><code>window</code> events</td>
+<td>✔</td>
+<td>window focus, tab hidden, page closed / <code>Application.Quit()</code></td>
 </tr>
 <tr>
-<td><code>OnValidate</code>, <code>Reset</code>, <code>OnDrawGizmos</code></td>
+<td><code>OnValidate</code>, <code>OnTransformParentChanged</code>, <code>OnTransformChildrenChanged</code></td>
+<td>✔</td>
+<td><code>OnValidate</code> runs after the fields were set</td>
+</tr>
+<tr>
+<td><code>Reset</code>, <code>OnDrawGizmos</code>, <code>OnDrawGizmosSelected</code></td>
 <td>✘</td>
-<td>editor only</td>
+<td>editor only: draw with <code>Debug.DrawLine</code> (2D) or a <code>lineRenderer</code></td>
 </tr>
 <tr>
 <td><code>[SerializeField]</code>, <code>[Range]</code>, <code>Enum</code>, <code>EntityRef</code></td>
@@ -83,9 +88,14 @@
 <td><code>Button(&#39;Label&#39;, &#39;method&#39;)</code> runs a <strong>static</strong> method with an editor context (<code>ctx.entity</code>, <code>CreateChild</code>, …); edits the scene as one undo step. See <a href="../examples/ex-clock.html">Build a clock</a></td>
 </tr>
 <tr>
-<td><code>[RequireComponent]</code>, <code>[CreateAssetMenu]</code>, <code>[DisallowMultipleComponent]</code></td>
+<td><code>[RequireComponent]</code>, <code>[DisallowMultipleComponent]</code></td>
+<td>✔</td>
+<td><code>static RequireComponent = [Rigidbody2D, &#39;collider&#39;]</code>, <code>static DisallowMultipleComponent = true</code></td>
+</tr>
+<tr>
+<td><code>[CreateAssetMenu]</code></td>
 <td>✘</td>
-<td></td>
+<td>editor only</td>
 </tr>
 <tr>
 <td><code>gameObject</code>, <code>transform</code>, <code>tag</code>, <code>name</code></td>
@@ -148,9 +158,9 @@
 <td><code>WaitForSecondsRealtime</code> waits scaled time</td>
 </tr>
 <tr>
-<td><code>async/await</code> as <code>Awaitable</code></td>
-<td>◐</td>
-<td>plain <code>await</code> of Promises</td>
+<td><code>Awaitable</code> (<code>NextFrameAsync</code>, <code>WaitForSecondsAsync</code>, <code>FixedUpdateAsync</code>, <code>EndOfFrameAsync</code>, <code>FromAsyncOperation</code>)</td>
+<td>✔</td>
+<td>game time; no threads in the browser (<code>MainThreadAsync</code> / <code>BackgroundThreadAsync</code> return at once)</td>
 </tr>
 </tbody></table>
 <h2 id="transform">Transform<a class="anchor" href="#transform">#</a></h2>
@@ -193,9 +203,9 @@
 <td>changes the list order, not the draw order (use <code>position.z</code>)</td>
 </tr>
 <tr>
-<td><code>SetParent</code>, <code>DetachChildren</code></td>
-<td>✘</td>
-<td>the scene tree is fixed at creation: <code>Instantiate(path, { parent })</code> or build it in the editor</td>
+<td><code>SetParent(parent, worldPositionStays)</code>, <code>DetachChildren</code></td>
+<td>✔</td>
+<td>at run time, 2D and 3D; the local transform is recomputed so the object does not jump</td>
 </tr>
 <tr>
 <td><code>Quaternion</code> (<code>Euler</code>, <code>AngleAxis</code>, <code>LookRotation</code>, <code>Slerp</code>, <code>Lerp</code>, <code>FromToRotation</code>, <code>Inverse</code>, <code>RotateTowards</code>, <code>*</code> vector)</td>
@@ -218,9 +228,14 @@
 <td>JS has no operator overloading, so <code>a + b</code> is <code>a.Add(b)</code></td>
 </tr>
 <tr>
-<td><code>Vector4</code>, <code>Matrix4x4</code>, <code>Bounds</code>, <code>Rect</code>, <code>Ray</code></td>
-<td>✘</td>
-<td>arrays and plain objects</td>
+<td><code>Vector4</code>, <code>Matrix4x4</code>, <code>Bounds</code>, <code>Rect</code>, <code>RectInt</code>, <code>Ray</code>, <code>Ray2D</code>, <code>Plane</code>, <code>Vector2Int</code>, <code>Vector3Int</code></td>
+<td>✔</td>
+<td><a href="../examples/ex-unity-api-math.html">Math types</a></td>
+</tr>
+<tr>
+<td><code>AnimationCurve</code>, <code>Keyframe</code>, <code>Gradient</code></td>
+<td>✔</td>
+<td></td>
 </tr>
 <tr>
 <td><code>Mathf.*</code> (Lerp, Clamp, SmoothDamp, Repeat, PingPong, DeltaAngle, PerlinNoise, NextPowerOfTwo, …)</td>
@@ -228,14 +243,14 @@
 <td></td>
 </tr>
 <tr>
-<td><code>Color</code> (named colours, <code>Lerp</code>, <code>FromHex</code>), <code>Color32</code></td>
-<td>◐</td>
-<td><code>Color32</code> ✘</td>
+<td><code>Color</code> (named colours, <code>Lerp</code>, <code>FromHex</code>, <code>HSVToRGB</code>, <code>RGBToHSV</code>), <code>Color32</code></td>
+<td>✔</td>
+<td></td>
 </tr>
 <tr>
-<td><code>Random.Range/value/insideUnitCircle/onUnitSphere/InitState</code>, <code>Random.ColorHSV</code></td>
-<td>◐</td>
-<td><code>ColorHSV</code> ✘; two whole numbers give an integer like C#</td>
+<td><code>Random.Range/value/insideUnitCircle/onUnitSphere/InitState/ColorHSV/rotation</code></td>
+<td>✔</td>
+<td>two whole numbers give an integer like C#</td>
 </tr>
 <tr>
 <td><code>Time.deltaTime</code>, <code>fixedDeltaTime</code>, <code>time</code>, <code>timeScale</code>, <code>unscaledDeltaTime</code>, <code>frameCount</code>, <code>smoothDeltaTime</code>, <code>realtimeSinceStartup</code></td>
@@ -284,18 +299,23 @@
 </tr>
 <tr>
 <td><code>Input.touchCount</code>, <code>GetTouch</code>, <code>touches</code></td>
-<td>◐</td>
-<td>position and phase; no pressure, radius or tap count</td>
+<td>✔</td>
+<td>phases <code>Began/Moved/Stationary/Ended/Canceled</code>, pressure, radius, <code>tapCount</code></td>
 </tr>
 <tr>
-<td><code>Input.GetAxis(&quot;Mouse X&quot;)</code>, <code>acceleration</code>, <code>compass</code>, <code>gyro</code></td>
-<td>✘</td>
-<td></td>
+<td><code>Input.GetAxis(&quot;Mouse X&quot; / &quot;Mouse Y&quot; / &quot;Mouse ScrollWheel&quot;)</code>, project axes with sensitivity and gravity, <code>inputString</code></td>
+<td>✔</td>
+<td>smoothing is optional (<code>input.smoothAxes</code>)</td>
 </tr>
 <tr>
-<td>New Input System (<code>InputAction</code>, <code>PlayerInput</code>)</td>
-<td>✘</td>
-<td>project <strong>actions</strong> (<code>this.input.down(&#39;jump&#39;)</code>) are the equivalent</td>
+<td><code>Input.acceleration</code>, <code>gyro</code>, <code>compass</code>, <code>location</code>, <code>deviceOrientation</code></td>
+<td>✔</td>
+<td>browser sensors; zero on a desktop. See <a href="../examples/ex-unity-api-input.html">Input</a></td>
+</tr>
+<tr>
+<td>New Input System: <code>InputAction</code>, <code>InputActionMap</code>, <code>InputActionAsset</code> (Unity <code>.inputactions</code> JSON), <code>PlayerInput</code>, <code>Keyboard/Mouse/Gamepad/Touchscreen.current</code></td>
+<td>✔</td>
+<td>bindings, composites, processors; interactions other than the default are ignored</td>
 </tr>
 <tr>
 <td><code>Cursor.lockState</code>, <code>Cursor.visible</code></td>
@@ -318,14 +338,14 @@
 <td>arcade and matter 2D; <code>AddForce</code> approximates by velocity change; Havok 3D basics</td>
 </tr>
 <tr>
-<td><code>Rigidbody.AddExplosionForce</code>, <code>constraints</code> axes, <code>interpolation</code>, <code>collisionDetectionMode</code></td>
-<td>✘</td>
-<td></td>
+<td><code>Rigidbody.AddExplosionForce</code>, <code>constraints</code>, <code>interpolation</code>, <code>collisionDetectionMode</code></td>
+<td>✔</td>
+<td>2D: all three; 3D: constraints and detection (<code>interpolation</code> has no visual effect in 3D)</td>
 </tr>
 <tr>
-<td><code>Collider2D</code> family: <code>isTrigger</code>, <code>size</code>, <code>radius</code>, <code>offset</code>, <code>attachedRigidbody</code>, <code>bounds</code></td>
+<td><code>Collider2D</code> family: <code>isTrigger</code>, <code>size</code>, <code>radius</code>, <code>offset</code>, <code>attachedRigidbody</code>, <code>bounds</code>, <code>usedByComposite</code></td>
 <td>✔</td>
-<td>box and circle (capsule, polygon, composite ✘)</td>
+<td>box, circle, <strong>capsule, polygon, edge, composite</strong> (exact on matter; arcade uses the bounding box); 3D box, sphere, capsule, cylinder</td>
 </tr>
 <tr>
 <td><code>PhysicsMaterial2D</code> (friction, bounciness)</td>
@@ -333,29 +353,29 @@
 <td>rigidbody fields <code>bounce</code>, <code>friction</code></td>
 </tr>
 <tr>
-<td><code>Physics2D.Raycast/RaycastAll/Linecast/OverlapCircle(All)/OverlapBox(All)/OverlapPoint/OverlapArea(All)/gravity</code></td>
+<td><code>Physics2D.Raycast/RaycastAll/RaycastNonAlloc/Linecast/Overlap*(All, NonAlloc)/OverlapCollider/Distance/ClosestPoint/IsTouching/gravity</code>, <code>ContactFilter2D</code></td>
 <td>✔</td>
-<td>box and circle colliders, rotation ignored</td>
+<td>exact for every shape, rotation included</td>
 </tr>
 <tr>
-<td><code>Physics2D.CircleCast/BoxCast/CapsuleCast</code>, <code>IgnoreCollision</code>, <code>IgnoreLayerCollision</code>, layer collision matrix</td>
-<td>✘</td>
+<td><code>Physics2D.CircleCast/BoxCast/CapsuleCast</code> (+ <code>All</code>, <code>NonAlloc</code>), <code>IgnoreCollision</code>, <code>IgnoreLayerCollision</code></td>
+<td>✔</td>
 <td></td>
 </tr>
 <tr>
-<td><code>Physics.Raycast/Linecast/OverlapSphere/gravity</code> (3D)</td>
-<td>◐</td>
-<td>Raycast exact (Havok); OverlapSphere approximate</td>
+<td><code>Physics.Raycast/RaycastAll/RaycastNonAlloc/Linecast/OverlapSphere/OverlapBox/OverlapCapsule/Check*/ClosestPoint/IgnoreCollision/gravity</code> (3D)</td>
+<td>✔</td>
+<td>Havok does the plain ray; everything else reads the collider shapes</td>
 </tr>
 <tr>
-<td><code>Physics.SphereCast/BoxCast/RaycastNonAlloc/OverlapBox</code> (3D)</td>
-<td>✘</td>
+<td><code>Physics.SphereCast/BoxCast/CapsuleCast</code> (+ <code>All</code>, <code>NonAlloc</code>) (3D)</td>
+<td>✔</td>
 <td></td>
 </tr>
 <tr>
-<td>Joints (<code>HingeJoint2D</code>, <code>SpringJoint2D</code>, <code>FixedJoint</code>, …)</td>
-<td>✘</td>
-<td>matter constraints or Havok constraints natively</td>
+<td>Joints: <code>HingeJoint2D</code>, <code>SpringJoint2D</code>, <code>DistanceJoint2D</code>, <code>FixedJoint2D</code>, <code>SliderJoint2D</code>, <code>WheelJoint2D</code>, <code>TargetJoint2D</code>, <code>RelativeJoint2D</code>, <code>FrictionJoint2D</code>, <code>HingeJoint</code>, <code>FixedJoint</code>, <code>SpringJoint</code>, <code>CharacterJoint</code>, <code>ConfigurableJoint</code></td>
+<td>✔</td>
+<td>2D on matter (arcade: pin, spring, distance, target only); 3D on Havok; <code>breakForce</code> in 2D only</td>
 </tr>
 <tr>
 <td><code>CharacterController</code>, <code>NavMeshAgent</code></td>
@@ -403,9 +423,9 @@
 <td>buses <code>master/music/sfx/ui</code> via <code>this.audio.volume(bus, v)</code></td>
 </tr>
 <tr>
-<td><code>Camera.main</code>, <code>orthographicSize</code>, <code>fieldOfView</code>, <code>backgroundColor</code>, <code>ScreenToWorldPoint</code>, <code>WorldToScreenPoint</code></td>
-<td>◐</td>
-<td>2D exact; 3D conversions ✘ (use a physics ray)</td>
+<td><code>Camera.main</code>, <code>orthographicSize</code>, <code>fieldOfView</code>, <code>backgroundColor</code>, <code>ScreenToWorldPoint</code>, <code>WorldToScreenPoint</code>, <code>ScreenPointToRay</code>, <code>ViewportToWorldPoint</code>, matrices</td>
+<td>✔</td>
+<td>2D and 3D; screen = canvas pixels, origin top-left</td>
 </tr>
 <tr>
 <td><code>Camera</code> shake / flash (Cinemachine impulse)</td>
@@ -438,9 +458,9 @@
 <td>PBR basics only</td>
 </tr>
 <tr>
-<td><code>Shader</code> / <code>Shader Graph</code> / custom <code>Material</code> properties, <code>MaterialPropertyBlock</code></td>
-<td>✘</td>
-<td>custom GLSL needs a native Babylon <code>ShaderMaterial</code> / Phaser <code>PostFXPipeline</code></td>
+<td><code>Shader</code> / <code>Shader Graph</code> / <code>MaterialPropertyBlock</code></td>
+<td>◐</td>
+<td>replaced by <strong>Shadertoy</strong> shaders (<a href="../examples/ex-shadertoy.html">Shadertoy</a>): components, 3D materials and a post effect; the PBR <code>material</code> component for normal surfaces</td>
 </tr>
 <tr>
 <td>Post-processing <code>Volume</code></td>
@@ -448,9 +468,9 @@
 <td><code>PostProcessing.Add(&#39;crt&#39;, {…})</code> over the stock effects (blur, glow, vignette, crt, pixelate, hue…)</td>
 </tr>
 <tr>
-<td><code>LineRenderer</code>, <code>TrailRenderer</code>, <code>Sprite Mask</code>, <code>SpriteShape</code></td>
-<td>✘</td>
-<td>baked sprites, particle trails</td>
+<td><code>LineRenderer</code>, <code>TrailRenderer</code>, <code>SpriteMask</code>, <code>SpriteShapeController</code></td>
+<td>✔</td>
+<td><a href="../examples/ex-unity-api-rendering.html">Lines, trails, masks and shapes</a>; textured lines are not drawn</td>
 </tr>
 <tr>
 <td><code>Tilemap</code> (<code>SetTile</code>, <code>GetTile</code>), Rule Tiles</td>
@@ -518,9 +538,9 @@
 <td><code>persistentDataPath</code> is a <code>nord://</code> label (browser storage)</td>
 </tr>
 <tr>
-<td><code>PlayerPrefs</code> (Int/Float/String, HasKey, DeleteAll)</td>
+<td><code>PlayerPrefs</code> (Int/Float/String, HasKey, DeleteKey, DeleteAll, Save)</td>
 <td>✔</td>
-<td><code>Save</code>, <code>DeleteKey</code> ✘ (writes are immediate)</td>
+<td>writes are immediate, <code>Save</code> does nothing</td>
 </tr>
 <tr>
 <td><code>JsonUtility.ToJson/FromJson/FromJsonOverwrite</code></td>
@@ -560,16 +580,16 @@
 </tbody></table>
 <h2 id="singletons-and-services-nord-adds-these-in-unity-style">Singletons and services (Nord adds these in Unity style)<a class="anchor" href="#singletons-and-services-nord-adds-these-in-unity-style">#</a></h2>
 <p>| <code>GameManager</code> (score, lives, state, Pause, Restart, SaveHighScore), <code>Singleton</code>, <code>AudioManager</code>, <code>ObjectPool</code> | ✔ | |</p>
-<h2 id="what-quot-100-quot-would-still-need-and-what-we-recommend">What &quot;100%&quot; would still need (and what we recommend)<a class="anchor" href="#what-quot-100-quot-would-still-need-and-what-we-recommend">#</a></h2>
+<h2 id="nice-to-have-not-built-in-the-order-we-would-build-them">Nice to have (not built, in the order we would build them)<a class="anchor" href="#nice-to-have-not-built-in-the-order-we-would-build-them">#</a></h2>
+<p>The full table with what to do today is on <a href="../examples/ex-unity-api.html">Unity API in Nord: the map</a>. In short:</p>
 <ol>
-<li><strong>Joints, <code>CharacterController</code>, <code>NavMeshAgent</code></strong>: real engine features first, then a facade. Largest gap for physics-heavy games.</li>
-<li><strong>Custom shaders and materials</strong> (<code>Shader</code>, <code>Material.SetTexture</code>, <code>MaterialPropertyBlock</code>): needs a Babylon/Phaser-neutral material layer.</li>
-<li><strong><code>LineRenderer</code> / <code>TrailRenderer</code></strong>: easy to add in the Phaser backend (graphics) and Babylon (lines).</li>
-<li><strong>Tilemap runtime API</strong> (<code>SetTile</code>/<code>GetTile</code>): the component stores data; a mutation API is missing.</li>
-<li><strong><code>Transform.SetParent</code></strong>: needs runtime re-parenting in <code>Scene</code> and both backends.</li>
-<li><strong>3D camera conversions</strong> and <code>Physics.SphereCast</code>.</li>
-<li><strong>Verification:</strong> write <code>runtime/core/unity-extra.test.mjs</code> and an e2e script for the wrappers (<code>Rigidbody2D</code> rebuild, <code>Physics2D.Raycast</code>, <code>Camera.ScreenToWorldPoint</code>, touch and wheel input).</li>
+<li><code>NavMeshAgent</code> / <code>NavMesh</code>, <code>CharacterController</code> (use <a href="../examples/ex-pathfinding.html">Pathfinding</a> and a rigidbody controller).</li>
+<li>3D <code>Rigidbody.interpolation</code> on screen, <code>Physics.ComputePenetration</code>, contact lists, 3D joint <code>breakForce</code>.</li>
+<li>Layer names (<code>LayerMask.NameToLayer</code>), <code>PhysicsMaterial2D</code> assets.</li>
+<li><code>MeshCollider</code>, <code>WheelCollider</code>, <code>ConstantForce</code>, <code>Terrain</code>, <code>ProBuilder</code>, <code>Cloth</code>.</li>
+<li>Animator blend trees and layers, <code>AudioMixer</code>, spatial audio, <code>ParticleSystem</code> modules.</li>
+<li><code>Cinemachine</code>, UI Toolkit, <code>EventSystem</code>, Addressables, Rule Tiles, <code>Gizmos</code>.</li>
 </ol>
 <p>If you need something marked ✘ today, use the native API (<code>entity.native</code>, <code>this.physics</code>, <code>this.game.backend</code>) from the same script; both styles can live in one file.</p>
-<div class="pager"><a href="ai-mcp.html"><small>← Previous</small>AI and MCP</a><a href="unity-scripting.html"><small>Next →</small>Unity-style scripting</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#counts">Counts </a><a href="#monobehaviour-and-gameobject">MonoBehaviour and GameObject </a><a href="#transform">Transform </a><a href="#math-time-random">Math, time, random </a><a href="#input">Input </a><a href="#physics-2d-3d">Physics 2D / 3D </a><a href="#rendering-and-components">Rendering and components </a><a href="#ui">UI </a><a href="#application-scenes-data">Application, scenes, data </a><a href="#singletons-and-services-nord-adds-these-in-unity-style">Singletons and services (Nord adds these in Unity style) </a><a href="#what-quot-100-quot-would-still-need-and-what-we-recommend">What 100% would still need (and what we recommend) </a></aside></div>
+<div class="pager"><a href="ai-mcp.html"><small>← Previous</small>AI and MCP</a><a href="unity-scripting.html"><small>Next →</small>Unity-style scripting</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#counts">Counts </a><a href="#monobehaviour-and-gameobject">MonoBehaviour and GameObject </a><a href="#transform">Transform </a><a href="#math-time-random">Math, time, random </a><a href="#input">Input </a><a href="#physics-2d-3d">Physics 2D / 3D </a><a href="#rendering-and-components">Rendering and components </a><a href="#ui">UI </a><a href="#application-scenes-data">Application, scenes, data </a><a href="#singletons-and-services-nord-adds-these-in-unity-style">Singletons and services (Nord adds these in Unity style) </a><a href="#nice-to-have-not-built-in-the-order-we-would-build-them">Nice to have (not built, in the order we would build them) </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

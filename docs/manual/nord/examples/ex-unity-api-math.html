@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>59 · Unity API: math types — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-clock.html">3.5 · Build a clock: objects, hierarchy, materials and your first script</a><a href="ex-digital-clock.html">3.6 · Build a digital clock: primitives and 3D text in the world</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-music-player.html">9.5 · A music player and sound effects</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html">55 · Ember Crypt: a complete game, from art to export</a><a href="ex-shadertoy.html">56 · Shadertoy: use any shader from shadertoy.com</a><a href="ex-unity-api.html">57 · Unity API in Nord: the map</a><a href="ex-unity-api-scripting.html">58 · Unity API: scripting and objects</a><a href="ex-unity-api-math.html" class="cur" aria-current="page">59 · Unity API: math types</a><a href="ex-unity-api-input.html">60 · Unity API: input</a><a href="ex-unity-api-physics2d.html">61 · Unity API: Physics 2D</a><a href="ex-unity-api-physics3d.html">62 · Unity API: Physics 3D, joints and the camera</a><a href="ex-unity-api-rendering.html">63 · Unity API: LineRenderer, TrailRenderer, SpriteMask and SpriteShape</a><a href="ex-physics-lab.html">64 · Physics Lab: a bench for the Unity physics layer</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>59 · Unity API: math types</h1>
+<p><strong>Goal:</strong> use Unity&#39;s maths types in Nord scripts, with the same members and the same results. They are plain classes (no engine needed): <code>import { Matrix4x4, Bounds, … } from &#39;nord&#39;</code>.</p>
+<p>The common ones (<code>Vector2</code>, <code>Vector3</code>, <code>Quaternion</code>, <code>Mathf</code>) are in the <a href="../api/api-unity.html">Unity-style scripting API</a>. This page covers the rest.</p>
+<blockquote>
+<p><strong>Trap:</strong> JavaScript cannot overload operators. Where Unity writes <code>a * b</code>, write <code>a.Mul(b)</code> (vectors, matrices) or <code>Matrix4x4.Multiply(a, b)</code>. <code>a + b</code> is <code>a.Add(b)</code>. Matrices store 16 numbers in column-major order like Unity, and <code>m.m03</code> etc. are Unity&#39;s field names (<code>m</code><em>row</em><code>column</code>).</p>
+</blockquote>
+<h2 id="vector4-vector2int-vector3int">Vector4, Vector2Int, Vector3Int<a class="anchor" href="#vector4-vector2int-vector3int">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Members</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Vector4</code></td>
+<td><code>x y z w</code>, <code>zero</code>, <code>one</code>, <code>Dot</code>, <code>Distance</code>, <code>Lerp</code>, <code>LerpUnclamped</code>, <code>MoveTowards</code>, <code>Scale</code>, <code>Project</code>, <code>Min</code>, <code>Max</code>, <code>magnitude</code>, <code>sqrMagnitude</code>, <code>normalized</code>, <code>Normalize()</code>, <code>Add/Sub/Mul/Div</code>, <code>Set</code>, <code>toVector3()</code>, <code>Vector4.From(v)</code></td>
+</tr>
+<tr>
+<td><code>Vector2Int</code>, <code>Vector3Int</code></td>
+<td>integer vectors (<code>x y (z)</code> are truncated): <code>zero</code>, <code>one</code>, <code>up/down/left/right</code>, <code>Distance</code>, <code>FloorToInt</code>, <code>CeilToInt</code>, <code>RoundToInt</code>, <code>Add/Sub/Mul/Scale</code>, <code>magnitude</code>, <code>toVector2()</code> / <code>toVector3()</code></td>
+</tr>
+</tbody></table>
+<h2 id="matrix4x4">Matrix4x4<a class="anchor" href="#matrix4x4">#</a></h2>
+<p><strong>File: <code>scripts/Matrices.js</code></strong> (new file, the whole file)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Matrix4x4, Vector3, Quaternion } from 'nord';
+
+export default class Matrices extends MonoBehaviour {
+  Start() {
+    // Translation · Rotation · Scale: scale first, then rotate, then move
+    const m = Matrix4x4.TRS(new Vector3(1, 2, 3), Quaternion.Euler(0, 90, 0), new Vector3(2, 2, 2));
+    const p = m.MultiplyPoint3x4(new Vector3(1, 0, 0));       // (1, 2, 1)
+    this.log('point', p.toString(), 'scale', m.lossyScale.toString(), 'back', m.inverse.MultiplyPoint3x4(p).toString());
+
+    const proj = Matrix4x4.Perspective(60, 16 / 9, 0.1, 100); // OpenGL convention, like Unity
+    const ndc = proj.MultiplyPoint(new Vector3(0, 0, -10));   // divides by w
+    this.log('depth in clip space', ndc.z);
+  }
+}</code></pre>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Matrix4x4.identity</code>, <code>zero</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>TRS(pos, rot, scale)</code>, <code>Translate(v)</code>, <code>Rotate(q)</code>, <code>Scale(v)</code></td>
+<td>build</td>
+</tr>
+<tr>
+<td><code>Perspective(fov, aspect, near, far)</code>, <code>Ortho(l, r, b, t, near, far)</code>, <code>Frustum(...)</code>, <code>LookAt(from, to, up)</code></td>
+<td>projection and view (OpenGL convention: the camera looks down −Z, clip z −1..1)</td>
+</tr>
+<tr>
+<td><code>Multiply(a, b)</code>, <code>a.Mul(b)</code>, <code>a.Mul(vector4)</code></td>
+<td>matrix × matrix, matrix × Vector4</td>
+</tr>
+<tr>
+<td><code>MultiplyPoint(p)</code>, <code>MultiplyPoint3x4(p)</code>, <code>MultiplyVector(v)</code></td>
+<td>with the perspective divide / affine only / direction only</td>
+</tr>
+<tr>
+<td><code>inverse</code>, <code>transpose</code>, <code>determinant</code>, <code>isIdentity</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>GetPosition()</code>, <code>rotation</code>, <code>lossyScale</code>, <code>ValidTRS()</code></td>
+<td>decompose</td>
+</tr>
+<tr>
+<td><code>GetColumn(i)</code>, <code>GetRow(i)</code>, <code>SetColumn</code>, <code>SetRow</code>, <code>Get(row, col)</code>, <code>Set(row, col, v)</code>, <code>m00 … m33</code></td>
+<td>elements</td>
+</tr>
+<tr>
+<td><code>TransformPlane(plane)</code></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>A singular matrix has an <code>inverse</code> of all zeros (as in Unity).</p>
+<h2 id="bounds-rect-rectint">Bounds, Rect, RectInt<a class="anchor" href="#bounds-rect-rectint">#</a></h2>
+<p><strong>File: <code>scripts/Areas.js</code></strong> (new file, the whole file)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Bounds, Rect, Ray, Vector3, Vector2 } from 'nord';
+
+export default class Areas extends MonoBehaviour {
+  Start() {
+    const b = new Bounds(Vector3.zero, new Vector3(2, 2, 2));          // centre, size
+    b.Encapsulate(new Vector3(5, 0, 0));                               // grow to include a point
+    this.log(b.size.toString(), b.Contains(new Vector3(1, 0, 0)));     // (6, 2, 2) true
+    const hit = b.IntersectRayDetail(new Ray(new Vector3(-9, 0, 0), Vector3.right));
+    this.log(hit.hit, hit.distance);                                   // true 8  (IntersectRay(ray, out distance) as one result)
+
+    const r = new Rect(0, 0, 10, 10);
+    this.log(r.Contains(new Vector2(5, 5)), r.Overlaps(Rect.MinMaxRect(9, 9, 20, 20)));  // true true
+  }
+}</code></pre>
+<table>
+<thead>
+<tr>
+<th><code>Bounds</code></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>new Bounds(center, size)</code>, <code>center</code>, <code>size</code>, <code>extents</code>, <code>min</code>, <code>max</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Encapsulate(point or bounds)</code>, <code>Expand(number or Vector3)</code>, <code>SetMinMax(min, max)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Contains(p)</code>, <code>Intersects(b)</code>, <code>IntersectRay(ray)</code>, <code>IntersectRayDetail(ray)</code> → <code>{ hit, distance }</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>SqrDistance(p)</code>, <code>ClosestPoint(p)</code></td>
+<td></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><code>Rect</code> / <code>RectInt</code></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>new Rect(x, y, w, h)</code> or <code>new Rect(position, size)</code>, <code>Rect.MinMaxRect(xMin, yMin, xMax, yMax)</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>x y width height xMin xMax yMin yMax min max center position size</code></td>
+<td>settable like Unity</td>
+</tr>
+<tr>
+<td><code>Contains(p)</code> (left/top edge in, right/bottom edge out), <code>Overlaps(rect, allowInverse)</code>, <code>Rect.PointToNormalized</code>, <code>Rect.NormalizedToPoint</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>RectInt</code>: <code>allPositionsWithin()</code> (a generator), <code>Contains</code>, <code>Overlaps</code>, <code>xMin …</code></td>
+<td></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Trap:</strong> <code>collider.bounds</code> gives a <code>Bounds</code> in world space. In 2D its <code>z</code> is 0 and its size on z is 0.</p>
+</blockquote>
+<h2 id="ray-ray2d-plane">Ray, Ray2D, Plane<a class="anchor" href="#ray-ray2d-plane">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Members</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Ray(origin, direction)</code></td>
+<td><code>origin</code>, <code>direction</code> (always normalised), <code>GetPoint(distance)</code>. <code>Camera.ScreenPointToRay(p)</code> returns one.</td>
+</tr>
+<tr>
+<td><code>Ray2D</code></td>
+<td>the same with <code>Vector2</code>.</td>
+</tr>
+<tr>
+<td><code>Plane(normal, point)</code>, <code>Plane(normal, distance)</code>, <code>Plane(a, b, c)</code> (three points)</td>
+<td><code>normal</code>, <code>distance</code>, <code>GetDistanceToPoint</code>, <code>GetSide</code>, <code>SameSide</code>, <code>ClosestPointOnPlane</code>, <code>Raycast(ray)</code> → <code>{ hit, enter }</code> (<code>enter</code> = distance along the ray), <code>flipped</code>, <code>Flip()</code>, <code>Translate</code>, <code>Set3Points</code>, <code>SetNormalAndPosition</code></td>
+</tr>
+</tbody></table>
+<p><strong>File: <code>scripts/Aim.js</code></strong> (new file, the whole file: where does the mouse touch the ground plane?)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Plane, Vector3, Camera, UnityInput as Input } from 'nord';
+
+export default class Aim extends MonoBehaviour {
+  Update() {
+    const ray = Camera.main.ScreenPointToRay(Input.mousePosition);   // 3D project
+    const ground = new Plane(Vector3.up, Vector3.zero);
+    const r = ground.Raycast(ray);
+    if (r.hit) this.transform.position = ray.GetPoint(r.enter);
+  }
+}</code></pre>
+<h2 id="color-color32-random-colorhsv">Color, Color32, Random.ColorHSV<a class="anchor" href="#color-color32-random-colorhsv">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Color32(r, g, b, a)</code></td>
+<td>four bytes 0–255 (values are rounded and clamped). <code>Color32.From(color)</code>, <code>color32.toColor()</code>, <code>Color32.Lerp</code>, <code>toHex()</code>.</td>
+</tr>
+<tr>
+<td><code>Color.HSVToRGB(h, s, v)</code>, <code>Color.RGBToHSV(c)</code> → <code>{ h, s, v }</code></td>
+<td>all 0..1</td>
+</tr>
+<tr>
+<td><code>color.grayscale</code>, <code>Color.orange</code>, <code>Color.purple</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>Random.ColorHSV()</code> or <code>Random.ColorHSV(hueMin, hueMax, satMin, satMax, valMin, valMax, alphaMin, alphaMax)</code></td>
+<td>a random colour; the limits default to the whole range</td>
+</tr>
+<tr>
+<td><code>Random.rotation</code>, <code>Random.insideUnitCircleNormalized</code></td>
+<td></td>
+</tr>
+</tbody></table>
+<p><strong>File: <code>scripts/Confetti.js</code></strong> (new file, the whole file)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, Random, Color32 } from 'nord';
+
+export default class Confetti extends MonoBehaviour {
+  Start() {
+    const c = Random.ColorHSV(0, 1, 0.6, 1, 0.8, 1);          // bright, saturated colours only
+    this.entity.set('sprite', 'tint', c.toHex());
+    this.log(Color32.From(c).toString());                      // RGBA(212, 40, 91, 255)
+  }
+}</code></pre>
+<h2 id="animationcurve-and-gradient">AnimationCurve and Gradient<a class="anchor" href="#animationcurve-and-gradient">#</a></h2>
+<p><code>AnimationCurve</code> and <code>Gradient</code> are what Unity components use for width curves, colour over time and easing.</p>
+<p><strong>File: <code>scripts/Curves.js</code></strong> (new file, the whole file)</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, AnimationCurve, Keyframe, Gradient, GradientColorKey, GradientAlphaKey, Color } from 'nord';
+
+export default class Curves extends MonoBehaviour {
+  Start() {
+    const curve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 1));
+    this.log(curve.Evaluate(0.5));                                       // 0.5 (smooth Hermite between the keys)
+    this.log(AnimationCurve.EaseInOut(0, 0, 1, 1).Evaluate(0.1));        // slow start: 0.028
+    const g = new Gradient();
+    g.SetKeys([new GradientColorKey(Color.red, 0), new GradientColorKey(Color.blue, 1)], [new GradientAlphaKey(1, 0), new GradientAlphaKey(0, 1)]);
+    this.log(g.Evaluate(0.5).toHex(), g.Evaluate(0.5).a);                // #800080 0.5
+  }
+}</code></pre>
+<p><code>AnimationCurve</code>: <code>keys</code>, <code>AddKey</code>, <code>RemoveKey</code>, <code>MoveKey</code>, <code>Evaluate(t)</code>, <code>preWrapMode</code> / <code>postWrapMode</code> (<code>&#39;Clamp&#39;</code>, <code>&#39;Loop&#39;</code>, <code>&#39;PingPong&#39;</code>), <code>Linear(...)</code>, <code>EaseInOut(...)</code>, <code>Constant(...)</code>. <code>Gradient</code>: <code>SetKeys</code>, <code>Evaluate(t)</code>, <code>colorKeys</code>, <code>alphaKeys</code>, <code>mode</code> (<code>&#39;Blend&#39;</code> or <code>&#39;Fixed&#39;</code>).</p>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<ul>
+<li><code>node --test runtime/core/unity-extra.test.mjs</code> runs the examples of this page as assertions (matrix inverse, bounds, plane raycast, Color32, gradients).</li>
+<li>Results match the Unity documentation: <code>Matrix4x4.TRS</code> then <code>MultiplyPoint3x4</code>, <code>Bounds.Encapsulate</code>, <code>Plane.Raycast</code>.</li>
+</ul>
+<p>Next: <a href="ex-unity-api-input.html">Input</a>. Back to: <a href="ex-unity-api-scripting.html">Scripting and objects</a>.</p>
+<div class="pager"><a href="ex-unity-api-scripting.html"><small>← Previous</small>58 · Unity API: scripting and objects</a><a href="ex-unity-api-input.html"><small>Next →</small>60 · Unity API: input</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#vector4-vector2int-vector3int">Vector4, Vector2Int, Vector3Int </a><a href="#matrix4x4">Matrix4x4 </a><a href="#bounds-rect-rectint">Bounds, Rect, RectInt </a><a href="#ray-ray2d-plane">Ray, Ray2D, Plane </a><a href="#color-color32-random-colorhsv">Color, Color32, Random.ColorHSV </a><a href="#animationcurve-and-gradient">AnimationCurve and Gradient </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

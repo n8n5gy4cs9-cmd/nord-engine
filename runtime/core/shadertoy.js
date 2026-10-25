@@ -1,4 +1,4 @@
-// Shadertoy host: runs shaders written for https://www.shadertoy.com/ (GLSL ES 3.00 `mainImage`) on a WebGL2 canvas that the backends show in the game.
+// Shadertoy host: runs shaders written for shadertoy.com (GLSL ES 3.00 `mainImage`) on a WebGL2 canvas that the backends show in the game.
 //
 //   const st = new Shadertoy({ code: 'void mainImage(out vec4 c, in vec2 p){ c = vec4(p/iResolution.xy, .5+.5*sin(iTime), 1.); }', width: 640, height: 360 });
 //   await st.ready; st.render(dt);       // st.canvas is a normal <canvas>: draw it, use it as a texture, put it in the page
@@ -233,15 +233,33 @@ export class Shadertoy {
   }
 }
 
-/** Accept pasted Shadertoy code as it comes from the site: `mainImage` only, optional `Common` / Buffer tabs by comment marker. */
+/**
+ * Accept pasted Shadertoy code as it comes from the site and cut it into its tabs. Markers are comment lines:
+ *   // ===== Common =====            // ===== Buffer A | iChannel0: buffer A | iChannel1: texture assets/noise.png =====            // ===== Image | iChannel0: buffer A =====
+ * Channel words: `buffer A..D`, `keyboard`, `audio`, `screen`, `texture <path>` (add `nearest` / `clamp` / `mipmap` as extra words), `cubemap <6 paths separated by spaces>`.
+ * Returns { common, code, channels (Image), buffers: { A: { code, channels } } }.
+ */
 export function splitTabs(source) {
-  const out = { common: '', buffers: {}, code: '' };
-  const re = /^\/\/\s*=+\s*(Common|Buffer\s*([A-D])|Image)\s*=+\s*$/gim;
+  const out = { common: '', buffers: {}, code: '', channels: [] };
+  const re = /^\/\/\s*=+\s*(Common|Buffer\s*[A-D]|Image)\s*((?:\|[^\n=]*)?)=+\s*$/gim;
   const marks = [...source.matchAll(re)];
   if (!marks.length) { out.code = source; return out; }
+  const chan = (spec) => {
+    const channels = [null, null, null, null];
+    for (const part of spec.split('|').map((x) => x.trim()).filter(Boolean)) {
+      const m = /^iChannel([0-3])\s*:\s*(\w+)\s*(.*)$/i.exec(part); if (!m) continue;
+      const kind = m[2].toLowerCase(), rest = m[3].trim().split(/\s+/).filter(Boolean), words = new Set(rest.map((w) => w.toLowerCase()));
+      const opts = { filter: words.has('nearest') ? 'nearest' : words.has('mipmap') ? 'mipmap' : 'linear', wrap: words.has('clamp') ? 'clamp' : words.has('mirror') ? 'mirror' : 'repeat' };
+      const paths = rest.filter((w) => !['nearest', 'linear', 'mipmap', 'clamp', 'repeat', 'mirror'].includes(w.toLowerCase()));
+      channels[+m[1]] = kind === 'buffer' ? { type: 'buffer', id: (paths[0] ?? 'A').toUpperCase() } : kind === 'texture' ? { type: 'texture', src: paths[0], ...opts } : kind === 'cubemap' ? { type: 'cubemap', src: paths } : { type: kind };
+    }
+    return channels;
+  };
   marks.forEach((m, i) => {
-    const body = source.slice(m.index + m[0].length, marks[i + 1]?.index ?? source.length).trim();
-    if (/^common/i.test(m[1])) out.common = body; else if (/^image/i.test(m[1])) out.code = body; else out.buffers[m[2].toUpperCase()] = { code: body };
+    const body = source.slice(m.index + m[0].length, marks[i + 1]?.index ?? source.length).trim(), name = m[1].replace(/\s+/g, ' ');
+    if (/^common/i.test(name)) out.common = body;
+    else if (/^image/i.test(name)) { out.code = body; out.channels = chan(m[2]); }
+    else out.buffers[name.slice(-1).toUpperCase()] = { code: body, channels: chan(m[2]) };
   });
   return out;
 }
@@ -255,10 +273,10 @@ export async function createShadertoy(game, d, extra = {}) {
   const main = splitTabs(await text(d.code, d.file));
   const buffers = {};
   for (const [name, b] of Object.entries(d.buffers ?? {})) buffers[name] = { code: await text(b.code, b.file), channels: b.channels ?? [] };
-  for (const [name, b] of Object.entries(main.buffers)) buffers[name] = { channels: [], ...b, ...(buffers[name] ?? {}) };
+  for (const [name, b] of Object.entries(main.buffers)) buffers[name] = { ...b, ...(buffers[name] ?? {}), channels: buffers[name]?.channels?.length ? buffers[name].channels : b.channels };
   const loadImage = (path) => new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error(`[nord] Shadertoy: cannot load ${path}`)); im.src = game.loader.url(path); });
   const st = new Shadertoy({
-    code: main.code, common: d.common ?? main.common, buffers, channels: d.channels ?? [], width: extra.width, height: extra.height, scale: d.resolutionScale ?? 1,
+    code: main.code, common: d.common ?? main.common, buffers, channels: d.channels ?? main.channels, width: extra.width, height: extra.height, scale: d.resolutionScale ?? 1,
     transparent: !!d.transparent, canvas: extra.canvas, loadImage, audio: () => game.audio?.analyser?.(), screen: extra.screen,
   });
   for (const [k, v] of Object.entries(d.uniforms ?? {})) st.setUniform(k, v);
