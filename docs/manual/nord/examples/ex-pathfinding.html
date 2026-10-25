@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>46 · Pathfinding and NavMesh: moving around obstacles — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-tutorial-clicker.html">44 · Tutorial: Coin Clicker in pure Unity style</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html" class="cur" aria-current="page">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>46 · Pathfinding and NavMesh: moving around obstacles</h1>
+<p><strong>Goal:</strong> an enemy or unit that walks around walls to reach a target, the way a <code>NavMeshAgent</code> does in Unity.</p>
+<p>Nord has <strong>no baked NavMesh</strong>. You pick the cheapest tool that fits your game:</p>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tile or grid game (top-down, tactics, roguelike)</td>
+<td><strong>A*</strong> on the grid: <code>findPath</code> from the library script <code>ai-astar.js</code></td>
+</tr>
+<tr>
+<td>Fixed routes (tower defence creeps, patrols, trains)</td>
+<td>a <strong>path</strong> component + the library script <code>ai-waypoints.js</code></td>
+</tr>
+<tr>
+<td>Open space with a few obstacles</td>
+<td>steer straight at the target, see <code>ai-chase.js</code></td>
+</tr>
+<tr>
+<td>3D level</td>
+<td>pathfind on a coarse 2D grid of the floor (x/z) and move along the cells</td>
+</tr>
+</tbody></table>
+<h2 id="unity-c">Unity (C#)<a class="anchor" href="#unity-c">#</a></h2>
+<pre class="code" data-lang="cs"><code>NavMeshAgent agent;
+void Start() { agent = GetComponent&lt;NavMeshAgent&gt;(); }
+void Update() { if (Input.GetMouseButtonDown(0)) agent.SetDestination(clickPoint); }</code></pre>
+<h2 id="nord-grid-a">Nord: grid A*<a class="anchor" href="#nord-grid-a">#</a></h2>
+<ol>
+<li><span class="c-ui">Library</span> tab ▸ category <em>ai</em> ▸ <em>A* pathfinding (grid)</em> ▸ insert. It copies <code>scripts/ai-astar.js</code> into your project.</li>
+<li>Tag your wall objects <code>solid</code> (Inspector ▸ Tags) and put the script on the unit. Press <span class="c-ui">Play</span> and click: the unit walks around the walls.</li>
+</ol>
+<p><code>findPath(blocked, start, goal, { w, h, diagonal })</code> is a plain function. It returns the cells from start to goal (inclusive) as <code>[[x, y], …]</code>, or <code>null</code> when no route exists. <code>blocked(x, y)</code> says whether a cell is impassable; the goal cell itself is always allowed, so you can path <em>to</em> an enemy standing in a cell.</p>
+<p>Use it from your own script (<code>scripts/agent.js</code>):</p>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, SerializeField, Time } from 'nord';
+import { findPath } from './ai-astar.js';
+
+export default class Agent extends MonoBehaviour {
+  static attributes = SerializeField({ tile: 16, speed: 90, gridW: 40, gridH: 23 });
+
+  Start() {
+    const t = this.tile;
+    // walls: every object tagged &quot;solid&quot;, turned into a set of &quot;x,y&quot; cells
+    this.walls = new Set(this.scene.findByTag('solid').map((e) =&gt; `${Math.floor(e.pos[0] / t)},${Math.floor(e.pos[1] / t)}`));
+    this.path = [];
+    this.step = 0;
+  }
+
+  /** Like agent.SetDestination(worldX, worldY). Returns false when there is no route. */
+  SetDestination(wx, wy) {
+    const t = this.tile, p = this.entity.pos;
+    const path = findPath((x, y) =&gt; this.walls.has(`${x},${y}`),
+      [Math.floor(p[0] / t), Math.floor(p[1] / t)], [Math.floor(wx / t), Math.floor(wy / t)],
+      { w: this.gridW, h: this.gridH, diagonal: false });
+    if (!path) return false;
+    this.path = path;
+    this.step = 1;                       // cell 0 is where we already stand
+    return true;
+  }
+
+  Update() {
+    if (this.step &gt;= this.path.length) return;
+    const t = this.tile, [cx, cy] = this.path[this.step];
+    const tx = (cx + 0.5) * t, ty = (cy + 0.5) * t;          // centre of the next cell
+    const [x, y, z] = this.entity.pos;
+    const d = Math.hypot(tx - x, ty - y), s = Math.min(d, this.speed * Time.deltaTime);
+    this.entity.pos = [x + ((tx - x) / (d || 1)) * s, y + ((ty - y) / (d || 1)) * s, z];
+    if (d &lt;= s + 0.01 &amp;&amp; ++this.step &gt;= this.path.length) this.entity.emit('arrived');
+  }
+}</code></pre>
+<p>Call <code>SetDestination</code> from anywhere: <code>this.entity.getScript(Agent).SetDestination(player.pos[0], player.pos[1])</code>. Listen for the end with <code>entity.on(&#39;arrived&#39;, …)</code>.</p>
+<h2 id="chasing-a-moving-target">Chasing a moving target<a class="anchor" href="#chasing-a-moving-target">#</a></h2>
+<p>Do not recompute every frame. Recompute twice a second, or when the target changed cell:</p>
+<pre class="code" data-lang="js"><code>Start() { this.every(0.5, () =&gt; { const p = this.scene.find('Player'); if (p) this.SetDestination(p.pos[0], p.pos[1]); }); }</code></pre>
+<p><code>this.every(seconds, fn)</code> is the repeating timer from the <a href="ex-time-coroutines.html">Time page</a>.</p>
+<h2 id="nord-fixed-routes">Nord: fixed routes<a class="anchor" href="#nord-fixed-routes">#</a></h2>
+<p>Add a <strong>path</strong> component (points, loop on or off) to any object and attach <code>ai-waypoints.js</code> to the mover. Modes <code>once</code>, <code>loop</code>, <code>pingpong</code>; it emits <code>pathEnd</code> when a <code>once</code> route finishes. This is how the <a href="ex-genres.html">tower defence example</a> moves its creeps.</p>
+<h2 id="dynamic-obstacles">Dynamic obstacles<a class="anchor" href="#dynamic-obstacles">#</a></h2>
+<p>The wall set is built once in <code>Start</code>. When a door opens or a block is destroyed, rebuild the set (or <code>delete</code> the cell) and call <code>SetDestination</code> again.</p>
+<h2 id="traps">Traps<a class="anchor" href="#traps">#</a></h2>
+<ul>
+<li>Grid cells are whole numbers: keep one <code>tile</code> size for the walls, the agent and the click conversion.</li>
+<li>Large grids cost time. A 64 x 64 grid is instant; 1000 x 1000 several times a second is not. Path only when needed and keep <code>w</code>/<code>h</code> as small as the map.</li>
+<li><code>findPath</code> returns <code>null</code> for unreachable goals. Handle it (play a &quot;no&quot; sound, pick another goal) instead of assuming a path.</li>
+<li>Tagged objects far from the grid origin: subtract the map offset before dividing by <code>tile</code>.</li>
+</ul>
+<p>Next: <a href="ex-ai-states.html">Enemy AI</a>. Back to <a href="examples.html">Examples</a>.</p>
+<div class="pager"><a href="ex-platform.html"><small>← Previous</small>45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-cutscenes.html"><small>Next →</small>47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#unity-c">Unity (C#) </a><a href="#nord-grid-a">Nord: grid A* </a><a href="#chasing-a-moving-target">Chasing a moving target </a><a href="#nord-fixed-routes">Nord: fixed routes </a><a href="#dynamic-obstacles">Dynamic obstacles </a><a href="#traps">Traps </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

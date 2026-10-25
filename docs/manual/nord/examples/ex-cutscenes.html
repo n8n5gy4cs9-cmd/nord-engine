@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector) — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-tutorial-clicker.html">44 · Tutorial: Coin Clicker in pure Unity style</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html" class="cur" aria-current="page">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</h1>
+<p><strong>Goal:</strong> a short intro where the title slides in, then the menu appears. Same idea as a Unity <code>PlayableDirector</code> playing a Timeline asset.</p>
+<h2 id="make-it-in-the-editor">Make it in the editor<a class="anchor" href="#make-it-in-the-editor">#</a></h2>
+<ol>
+<li>Open the <span class="c-ui">Timeline</span> tab and create a timeline named <code>intro</code>. Set <strong>duration</strong> to 3 seconds.</li>
+<li>Add a <strong>track</strong>: object <code>Title</code>, property <code>y</code>. Click the strip at 0 s and at 1 s to add keyframes; set the values (-50, then 100) and give the second one the ease <code>backOut</code>.</li>
+<li>Add an <strong>event marker</strong> at 2.5 s and name it <code>show-menu</code>.</li>
+</ol>
+<p>Tracks can animate <code>x y z angle scaleX scaleY opacity</code>, an instance variable (<code>var:name</code>) or a numeric component field (<code>comp:sprite.tint</code>). A track&#39;s target can be an object name, a tag or a family, so one track can move all enemies tagged <code>wave1</code>. The result is stored in the scene under <code>settings.timelines</code>.</p>
+<h2 id="unity-c">Unity (C#)<a class="anchor" href="#unity-c">#</a></h2>
+<pre class="code" data-lang="cs"><code>public PlayableDirector director;
+void Start() { director.Play(); director.stopped += _ =&gt; ShowMenu(); }</code></pre>
+<h2 id="nord">Nord<a class="anchor" href="#nord">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour } from 'nord';
+
+export default class Intro extends MonoBehaviour {
+  Start() {
+    this.game.events.on('Timeline.on-event', (e) =&gt; { if (e.name === 'show-menu') this.ShowMenu(); });
+    this.game.events.on('Timeline.on-finished', (e) =&gt; { if (e.timeline === 'intro') this.StartGame(); });
+    this.scene.timelines.play('intro');                       // speed and start time: play('intro', { speed: 2, from: 1 })
+  }
+  ShowMenu() { this.scene.find('Menu').enabled = true; }
+  StartGame() { this.game.loadScene('scenes/level1.scene.json'); }
+}</code></pre>
+<p>Control it while it runs: <code>scene.timelines.pause(name)</code>, <code>resume(name)</code>, <code>stop(name)</code>, <code>seek(name, seconds)</code>, <code>isPlaying(name)</code>, <code>time(name)</code>, <code>progress(name)</code> (0 to 1). A looping timeline never fires <em>finished</em>, only the markers.</p>
+<p>Without code: an event sheet has the <strong>Timeline</strong> plugin with <em>Play, Pause, Resume, Stop, Set time</em>, the triggers <em>On finished</em> and <em>On event</em>, and the expressions <code>Timeline.Time(name)</code> and <code>Timeline.Progress(name)</code>.</p>
+<h2 id="skippable-cutscene">Skippable cutscene<a class="anchor" href="#skippable-cutscene">#</a></h2>
+<pre class="code" data-lang="js"><code>Update() {
+  if (Input.GetKeyDown('Escape') &amp;&amp; this.scene.timelines.isPlaying('intro')) {
+    this.scene.timelines.seek('intro', 3);                    // jump to the end values; finished fires on the next frame
+  }
+}</code></pre>
+<p>(<code>Input</code> comes from <code>import { MonoBehaviour, UnityInput as Input } from &#39;nord&#39;;</code>.)</p>
+<h2 id="camera-moves">Camera moves<a class="anchor" href="#camera-moves">#</a></h2>
+<p>Put the camera in the scene as an object with a <code>camera</code> component and add <code>x</code>/<code>y</code> (2D) or <code>x</code>/<code>y</code>/<code>z</code> tracks to it. For a letterbox bar and a fade, add <code>opacity</code> tracks on two UI objects. Pause player input while it runs: <code>GameManager.instance.SetState(&#39;cutscene&#39;)</code> and check the state in the player script.</p>
+<h2 id="traps">Traps<a class="anchor" href="#traps">#</a></h2>
+<ul>
+<li><code>scene.timelines</code> exists only in scenes that define at least one timeline. Check <code>this.scene.timelines?.has(&#39;intro&#39;)</code> if a script runs in many scenes.</li>
+<li>The scrub slider in the Timeline tab previews values only. Press <span class="c-ui">Play</span> to see the objects move.</li>
+<li>Track targets are looked up by name, tag or family every frame: renaming an object silently disconnects its track.</li>
+<li>Timelines run on game time. If you freeze the game with <code>Time.timeScale = 0</code> the cutscene freezes too.</li>
+</ul>
+<p>Back to <a href="../manual/effects-particles-timelines.html">Effects and timelines</a>, <a href="examples.html">Examples</a>.</p>
+<div class="pager"><a href="ex-pathfinding.html"><small>← Previous</small>46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-lights-2d.html"><small>Next →</small>48 · 2D lights and shadows (URP 2D Lights)</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#make-it-in-the-editor">Make it in the editor </a><a href="#unity-c">Unity (C#) </a><a href="#nord">Nord </a><a href="#skippable-cutscene">Skippable cutscene </a><a href="#camera-moves">Camera moves </a><a href="#traps">Traps </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

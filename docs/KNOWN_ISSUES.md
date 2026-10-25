@@ -3,7 +3,10 @@
 Format: `BUG-nnn [open|fixed] title — repro / notes`. Unverified-but-plausible risks are listed under "Unverified".
 
 ## Open
-_(none yet)_
+Smoke pass 2026-10-25 (macOS, Playwright 1.64 + Chromium 1248, Node 26): `cargo test --workspace` 253/253, `node --test runtime/core/*.test.mjs` 91/91, `node tools/smoke-examples.mjs` 73 ok + 14 expected non-ok (6 `app-*` desktop apps need `nord serve` for `/__desktop/events`; `html-lite` and the 7 `rust-*` need their own runner and pass under `node tools/e2e.mjs <id>`), `node tools/e2e.mjs` 33 ok, 3 fail:
+- BUG-013 [open] `edit-viewport-3d`: model thumbnail PNG is not written to `.nord-cache/thumbs/` in headless Chromium on macOS (picking, gizmo, snap, focus pass). Cause not investigated (WebGL readback in headless?).
+- BUG-014 [open] `desktop-bridge-http`: over the HTTP transport `dialog.confirm` resolves `undefined`; the suite expects `false`/`'unsupported'`/boolean. Harmless (falsy) but the contract and the server disagree.
+- BUG-015 [open, test only] `desktop-app-code-editor`: the suite types `Control+s`/`Control+End`; on macOS the editor binds Cmd, so the save assertion fails. Make the test use `Meta`/`ControlOrMeta`.
 
 ## Fixed
 - BUG-015 [fixed] Full-tutorial audit edge cases: Paper Worlds portfolio export changed `<`/dollar replacement tokens; rapid 3D requests could race library readiness or retain stale scenes; off-road racer drag accelerated a stationary car; same-frame shooter death/boss hits could yield conflicting results; Ready could reset a live battle. Lossless embedding, shared load promises/scene request ownership, zero-speed drag, exclusive outcome checks and live-round rematch rejection now have focused regressions. Hardware/native verification limits below still apply.

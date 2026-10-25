@@ -94,3 +94,6 @@ Never used Unity? These pages still work: each example is a small script plus th
 43. [Input actions and the Input editor](ex-input-editor.html)
 44. [Tutorial: Coin Clicker in pure Unity style](ex-tutorial-clicker.html)
 45. [Which platform? Editor, Mac, Windows, web, phone](ex-platform.html): `Application.platform`, `isEditor`, `os`, `Cursor`.
+46. [Pathfinding and NavMesh: moving around obstacles](ex-pathfinding.html): grid A*, waypoint paths, `NavMeshAgent` mapped to Nord.
+47. [Cutscenes and the Timeline](ex-cutscenes.html): `PlayableDirector` mapped to the Timeline tab, events, skipping.
+48. [2D lights and shadows](ex-lights-2d.html): URP 2D Lights mapped to the `light2d` library scripts, flashlight, stealth.

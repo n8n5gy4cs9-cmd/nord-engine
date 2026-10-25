@@ -3,7 +3,7 @@
   "tagline": "Rust-based game/app engine + editor that exports static HTML web games and a native Mac app",
   "author": "Crowelian 2026 + Sonnet",
   "version": "0.0.1",
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "branch": "main",
   "statusValues": [
     "todo",
@@ -2498,6 +2498,12 @@
       "id": "M13-32",
       "milestone": "M13",
       "title": "Game view keyboard focus + Esc unlocks mouse + Application.platform/isEditor + Cursor",
+      "status": "done"
+    },
+    {
+      "id": "M13-33",
+      "milestone": "M13",
+      "title": "Examples pages 46-48: pathfinding/NavMesh, cutscenes/Timeline, 2D lights; smoke pass of all 87 examples + manual check",
       "status": "done"
     }
   ]

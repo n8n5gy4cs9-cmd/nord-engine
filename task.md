@@ -3,7 +3,7 @@
 > **GENERATED** from `PRD.json` — do not hand-edit. Use `node tools/tasks.mjs done <ID>`.
 > Legend: `[x]` done · `[~]` in progress · `[!]` blocked · `[ ]` todo. Credit: Crowelian 2026 + Sonnet.
 
-**Overall: 320/334 tasks (96%)** · updated 2026-10-24
+**Overall: 321/335 tasks (96%)** · updated 2026-10-25
 
 | Milestone | Progress |
 |---|---|
@@ -20,7 +20,7 @@
 | M10 Construct-style editor | 36/36 (100%) |
 | M11 Web editor | 14/16 (88%) |
 | M12 FPS Creator addon | 30/31 (97%) |
-| M13 Unity-style editor (Godotize) | 31/32 (97%) |
+| M13 Unity-style editor (Godotize) | 32/33 (97%) |
 
 ## Next up
 - **M12-13** OWNER: verify the FPS Level tab + play-test on macOS/Windows with a real GPU (pointer lock in the embedded webview, performance, feel of movement/combat); decide on gamepad/touch controls and shadowed dynamic lights
@@ -418,6 +418,7 @@ _Unity-like editor workflow on the existing tools: Scene/Game/Hierarchy/Inspecto
 - [x] **M13-30** More Unity helpers (KeyCode, Random, Color, OnMouse*, free Instantiate/Destroy…) + smoke tests
 - [x] **M13-31** Per-project Input editor (Project tab) + basic input map for new projects
 - [x] **M13-32** Game view keyboard focus + Esc unlocks mouse + Application.platform/isEditor + Cursor
+- [x] **M13-33** Examples pages 46-48: pathfinding/NavMesh, cutscenes/Timeline, 2D lights; smoke pass of all 87 examples + manual check
 
 ## Features (PRD)
 

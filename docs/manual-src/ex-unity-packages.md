@@ -11,15 +11,15 @@ summary: Cinemachine, TextMeshPro, Input System, DOTween, NavMesh, Timeline, Add
 | **TextMeshPro** | `text` component (world text), `ui.label`, UI Designer labels (rich text, outline, bold, fonts) | many bundled fonts, including pixel fonts ([UI](ex-ui-hud.html)) |
 | **Input System** | project **actions** (`input.actions`), gamepad, touch (`ui-joystick.js`) | rebinding at runtime: [Options menu](ex-settings-menu.html) |
 | **DOTween / LeanTween** | `this.tween(target, to, opts)`, `util-tween.js`, `tween-fade` snippet | easing names, yoyo, repeat, delay |
-| **NavMesh / A\*** | `ai-astar.js` (grid), `click-move.js`, `ai-waypoints.js`, `ai-patrol.js` | no navmesh baking: grid or waypoints |
-| **Timeline** | **Timeline** tab (tracks, keyframes) and scene `timelines` | cutscenes, camera moves ([Effects](effects-particles-timelines.html)) |
+| **NavMesh / A\*** | [Pathfinding](ex-pathfinding.html): `ai-astar.js` (grid), `click-move.js`, `ai-waypoints.js`, `ai-patrol.js` | no navmesh baking: grid or waypoints |
+| **Timeline** | [Cutscenes](ex-cutscenes.html): **Timeline** tab (tracks, keyframes) and scene `timelines` | cutscenes, camera moves ([Effects](effects-particles-timelines.html)) |
 | **Animation / Animator** | Animation tab (clips), **Animator** tab (state machine), `animatedSprite`, `model.play` | [Animation](ex-animation.html) |
 | **2D Tilemap, Rule Tiles** | `tilemap` + tilemap painter with terrain auto-tiling; `proc-autotile.js` | [Tilemaps](ex-tilemap-levels.html) |
 | **2D Physics / 3D Physics** | arcade / matter (2D), Havok (3D) | [Physics recipes](ex-physics-recipes.html) |
 | **Particle System / VFX Graph** | `particles` component + particle editor, `fx-particle-presets.js` | CPU particles (2D Phaser / 3D Babylon) |
 | **Post-processing, URP volumes** | scene effects (2D) and the `postProcess` component (3D): bloom, vignette, tonemap, grain, colour grading | [Effects](effects-particles-timelines.html) |
 | **Shader Graph / HLSL** | GLSL snippets in `library/shaders/` and material properties | outline, toon, dissolve, water… |
-| **Lighting / light probes** | `light` component (+ `light2d.js`, `light2d-source.js` for 2D lights) | no baked lightmaps |
+| **Lighting / light probes** | `light` component; 2D: [2D lights and shadows](ex-lights-2d.html) (`light2d.js`, `light2d-source.js`) | no baked lightmaps |
 | **Addressables / Resources** | files loaded on demand: `scene.spawn(path)`, `game.loadJSON(path)`, `loadScene(path)` | everything is a file path; the build includes the project folder |
 | **ScriptableObject** | JSON + `ScriptableObject.Load` | [Data assets](ex-data-assets.html) |
 | **Localization package** | `strings` tables + `textKey` + `game.i18n` | [Options menu](ex-settings-menu.html) |

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>48 · 2D lights and shadows (URP 2D Lights) — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><button id="theme-toggle">Light mode</button><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/welcome.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Guides</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-tutorial-clicker.html">44 · Tutorial: Coin Clicker in pure Unity style</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html" class="cur" aria-current="page">48 · 2D lights and shadows (URP 2D Lights)</a></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>48 · 2D lights and shadows (URP 2D Lights)</h1>
+<p><strong>Goal:</strong> a dark dungeon where the hero carries a lantern, braziers flicker, walls and crates cast shadows and enemies in the dark can hide. In Unity this is the URP <strong>2D Renderer</strong> with <code>Light2D</code> and <code>ShadowCaster2D</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Unity</th>
+<th>Nord (library, category <em>fx</em>)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2D Renderer + Global Light 2D</td>
+<td><code>light2d.js</code>, the lighting system. <strong>One</strong> per scene</td>
+</tr>
+<tr>
+<td>Point / Spot Light 2D</td>
+<td><code>light2d-source.js</code></td>
+</tr>
+<tr>
+<td>Shadow Caster 2D</td>
+<td><code>light2d-occluder.js</code></td>
+</tr>
+<tr>
+<td>Sample the light level in code</td>
+<td><code>game.light2d.lightAt(x, y)</code></td>
+</tr>
+</tbody></table>
+<p>The 3D equivalent is the <code>light</code> component (<a href="ex-camera-3d.html">3D camera and light</a>); the scripts here are for 2D projects only.</p>
+<h2 id="set-it-up">Set it up<a class="anchor" href="#set-it-up">#</a></h2>
+<ol>
+<li><span class="c-ui">Library</span> tab ▸ <em>fx</em>: insert <strong>2D lighting &amp; shadows (system)</strong> on an empty object, for example <code>Light2D</code>. Set <code>ambient</code> to the darkness colour (a dark blue like <code>#14172b</code> works well) and <code>shadows</code> on.</li>
+<li>Insert <strong>2D light source</strong> on any object that should glow (a torch sprite, the hero). Set <code>color</code>, <code>radius</code>, <code>intensity</code>, <code>falloff</code>.</li>
+<li>Insert <strong>2D shadow caster</strong> on walls, pillars and crates. The size comes from the sprite or collider; set <code>shape: circle</code> and <code>radius</code> for round things, and tick <code>static</code> on walls that never move (faster).</li>
+<li><span class="c-ui">Play</span>. Sprites on layer 1 and above, and the HUD, stay bright.</li>
+</ol>
+<p>The finished example is <code>examples/light2d</code> (Crypt of Embers): braziers, a flashlight cone, a hero lantern and shadow-casting pillars.</p>
+<h2 id="light-source-options">Light source options<a class="anchor" href="#light-source-options">#</a></h2>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>color</code>, <code>intensity</code>, <code>radius</code>, <code>falloff</code></td>
+<td>tint, strength, reach in world units, how fast it fades (higher = tighter glow)</td>
+</tr>
+<tr>
+<td><code>shadows</code>, <code>softness</code></td>
+<td>cast shadows or not (off is cheaper), edge blur</td>
+</tr>
+<tr>
+<td><code>angle</code>, <code>aim</code>, <code>direction</code>, <code>turn</code></td>
+<td>a cone instead of a circle (<code>angle</code> below 360): flashlight; <code>aim</code> can follow the pointer, the movement or the entity&#39;s rotation</td>
+</tr>
+<tr>
+<td><code>flicker</code>, <code>flickerSpeed</code></td>
+<td>fire and bad-bulb effects</td>
+</tr>
+<tr>
+<td><code>on</code>, <code>offset</code></td>
+<td>switched on/off, position relative to the object</td>
+</tr>
+</tbody></table>
+<h2 id="switch-a-light-from-a-script">Switch a light from a script<a class="anchor" href="#switch-a-light-from-a-script">#</a></h2>
+<pre class="code" data-lang="js"><code>import { MonoBehaviour, UnityInput as Input } from 'nord';
+import LightSource2D from './light2d-source.js';
+
+export default class Lantern extends MonoBehaviour {
+  Start() { this.light = this.entity.getScript(LightSource2D); }
+  Update() {
+    if (!this.light) return;
+    if (Input.GetKeyDown('KeyF')) this.light.on = !this.light.on;       // flashlight toggle
+  }
+  OnLowOil() { this.light.radius = 60; this.light.setColor('#ff5533'); }
+}</code></pre>
+<p>Runtime fields: <code>on</code>, <code>intensity</code>, <code>radius</code>, <code>angle</code>, <code>color</code>, <code>setColor(&#39;#rrggbb&#39;)</code>.</p>
+<h2 id="stealth-is-the-player-in-the-dark">Stealth: is the player in the dark?<a class="anchor" href="#stealth-is-the-player-in-the-dark">#</a></h2>
+<pre class="code" data-lang="js"><code>import { light2d } from './light2d.js';
+
+Update() {
+  const p = this.entity.worldPos;
+  const lit = light2d(this.game).lightAt(p[0], p[1]);        // 0 = dark, about 1 = fully lit, shadows respected
+  this.hidden = lit &lt; 0.15;
+}</code></pre>
+<p><code>light2d(game).sample(x, y)</code> also gives the direction towards the light (<code>dx</code>, <code>dy</code>), useful for &quot;shadow creatures flee the light&quot;. The Crypt of Embers example hurts the hero when a shade stands in the dark and burns shades with the flashlight beam.</p>
+<h2 id="traps">Traps<a class="anchor" href="#traps">#</a></h2>
+<ul>
+<li>Only <strong>one</strong> <code>light2d.js</code> system per scene. Sources and occluders can start in any order.</li>
+<li>Many shadow-casting lights are expensive: give cheap decorative glows <code>shadows: false</code> (the oil flasks in the example do) and keep <code>static</code> on for walls.</li>
+<li>The lightmap is small (<code>scale</code> attribute): bigger <code>scale</code> means blockier light, smaller means smoother and slower.</li>
+<li>It lights the whole 2D world as a darkening layer. UI Designer screens and objects on layer 1+ are not darkened, put &quot;always visible&quot; things there.</li>
+</ul>
+<p>Back to <a href="examples.html">Examples</a>, <a href="../manual/effects-particles-timelines.html">Effects</a>.</p>
+<div class="pager"><a href="ex-cutscenes.html"><small>← Previous</small>47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><span></span></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#set-it-up">Set it up </a><a href="#light-source-options">Light source options </a><a href="#switch-a-light-from-a-script">Switch a light from a script </a><a href="#stealth-is-the-player-in-the-dark">Stealth: is the player in the dark? </a><a href="#traps">Traps </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>
