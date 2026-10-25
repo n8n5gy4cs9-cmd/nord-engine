@@ -1,8 +1,8 @@
 ---
-title: Cheat sheet — nord.js
+title: Native NordScript cheatsheet
 section: Guides
 order: 2
-summary: One page of everything a script can do.
+summary: Quick lookup for the original lower-case scripting lifecycle and Nord services.
 ---
 
 ::: dummies
@@ -10,7 +10,7 @@ This page is the native, lower-case NordScript API used by older projects. For n
 :::
 
 
-**Example** (not a file; the one import line every script starts with):
+**Example** (not a file; a native-style script skeleton; Unity-style scripts use MonoBehaviour instead):
 ```js
 import { NordScript, clamp, lerp, remap, vec, ease, Rng, Pool, Events } from 'nord';
 

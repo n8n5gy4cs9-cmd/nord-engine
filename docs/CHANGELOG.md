@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.4.1 — 2026-10-25
+- Documentation: task-based Manual reading paths and chapter groups; collapsible Examples categories including Unity API; Guides renamed Cheatsheets with Unity scripting and troubleshooting tables; six reading themes; colored category headers with larger text and theme-specific contrast; full-page and section search. Preserve existing tutorials, code and screenshots. Phaser 4.2.1 / Babylon 9.30.0 upstream APIs now ship only as downloadable ZIPs with licences, pinned sources and clearly labelled online manuals. Rebuilt and checked links, live snippets, archives and real-browser offline/mobile behavior. Engine source unchanged by this documentation work.
 - Export window reorganised: big title, framed coloured sections **WEB EXPORT** (own button) / **DESKTOP EXPORT** (own button) / **RESULT**, named sub-headings (Export settings, Options, Hosting).
 
 ## 0.4.0 — 2026-10-25

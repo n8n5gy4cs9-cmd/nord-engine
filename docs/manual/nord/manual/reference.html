@@ -1,90 +1,90 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>Reference overview — Nord Engine Docs</title>
+<title>Find an API or file setting — Nord Engine Docs</title>
 <script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
 <link rel="stylesheet" href="../../assets/manual.css"></head>
 <body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
 <div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
 <button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
 <nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="manual-paths.html" class="active" aria-current="page">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="../examples/examples.html">Examples</a><a href="../guides/cookbook.html">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
-<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><details><summary>Getting oriented <small>(5)</small></summary><a href="manual-paths.html">Manual — choose a task</a><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="appearance.html">Editor appearance</a><a href="organise-project.html">Organising your project</a></details><details><summary>Projects, objects and scripts <small>(6)</small></summary><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="library.html">The library</a><a href="unity-workflow.html">Unity-style workflow</a><a href="ai-mcp.html">AI and MCP</a><a href="unity-scripting.html">Unity-style scripting</a></details><details><summary>2D and 3D worlds <small>(9)</small></summary><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="assets.html">Assets</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a><a href="modeler.html">3D Modeler</a></details><details><summary>Gameplay, sound and interfaces <small>(11)</small></summary><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="ui-designer.html">UI Designer</a><a href="graph.html">Node graphs (visual scripting)</a><a href="animator.html">Animator</a><a href="multiplayer.html">Multiplayer</a></details><details open><summary>Test and publish <small>(8)</small></summary><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html" class="cur" aria-current="page">Reference overview</a><a href="desktop-apps.html">Desktop apps</a><a href="debugger.html">Debugger and profiler</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a></details><details><summary>Manual <small>(2)</small></summary><a href="unity-coverage.html">Unity coverage</a><a href="dev-console.html">In-game Dev Console</a></details></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Reference overview</h1>
-<h2 id="use-this-page">Use this page<a class="anchor" href="#use-this-page">#</a></h2>
-<p>This chapter explains <strong>reference overview</strong>. Open a saved project before following editor steps. Use the topic links below for a specific task; follow <a href="../tutorials/tutorials.html">Tutorials</a> when you want a complete project to build in order.</p>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Manual</div><details><summary>Manual <small>(2)</small></summary><a href="unity-coverage.html">Unity coverage</a><a href="dev-console.html">In-game Dev Console</a></details><details><summary>Getting oriented <small>(5)</small></summary><a href="manual-paths.html">Manual — choose a task</a><a href="welcome.html">Welcome</a><a href="editor-tour.html">Editor tour</a><a href="appearance.html">Editor appearance</a><a href="organise-project.html">Organising your project</a></details><details><summary>Projects, objects and scripts <small>(6)</small></summary><a href="projects-scenes.html">Projects &amp; scenes</a><a href="scripting.html">Scripting</a><a href="library.html">The library</a><a href="unity-workflow.html">Unity-style workflow</a><a href="ai-mcp.html">AI and MCP</a><a href="unity-scripting.html">Unity-style scripting</a></details><details><summary>2D and 3D worlds <small>(9)</small></summary><a href="2d.html">2D games</a><a href="3d.html">3D games</a><a href="physics.html">Physics</a><a href="assets.html">Assets</a><a href="layout-editor.html">Layout, layers and objects</a><a href="sprites-animation-tilemaps.html">Sprites, animation and tilemaps</a><a href="fps-creator.html">FPS Creator — build first-person levels</a><a href="level-creator-2d.html">2D Level Creator — sprites, maps and physics</a><a href="modeler.html">3D Modeler</a></details><details><summary>Gameplay, sound and interfaces <small>(11)</small></summary><a href="audio.html">Audio</a><a href="ui.html">UI &amp; HUD</a><a href="input.html">Input</a><a href="event-sheets.html">Event sheets</a><a href="behaviors.html">Behaviors</a><a href="effects-particles-timelines.html">Effects, particles and timelines</a><a href="addons-data-localisation.html">Addons, data objects and languages</a><a href="ui-designer.html">UI Designer</a><a href="graph.html">Node graphs (visual scripting)</a><a href="animator.html">Animator</a><a href="multiplayer.html">Multiplayer</a></details><details open><summary>Test and publish <small>(8)</small></summary><a href="rust-wasm.html">Rust / WASM</a><a href="export.html">Export &amp; hosting</a><a href="performance.html">Performance &amp; debugging</a><a href="reference.html" class="cur" aria-current="page">Find an API or file setting</a><a href="desktop-apps.html">Desktop apps</a><a href="debugger.html">Debugger and profiler</a><a href="preview-history-tools.html">Preview, history and project tools</a><a href="web-editor.html">Run the editor in a browser or on a server</a></details></nav><main id="content"><div class="crumb">Manual / Nord Engine</div><h1>Find an API or file setting</h1>
+<p>Use the API section when you need an exact name or setting. Use Examples when you need a complete script that shows how the parts work together.</p>
+<aside class="box dummies"><div class="box-title">For dummy developers</div><p>An API is the set of names your code can call. An object can have a component such as a sprite or collider, and a script can ask for that component. A file format describes how the editor saves the same information on disk.</p>
+</aside><h2 id="choose-the-right-reference">Choose the right reference<a class="anchor" href="#choose-the-right-reference">#</a></h2>
 <table>
 <thead>
 <tr>
-<th>Find the instructions for</th>
-<th>Go to</th>
+<th>You are working on</th>
+<th>Open</th>
+<th>What it contains</th>
 </tr>
 </thead>
 <tbody><tr>
-<td>The one import</td>
-<td><a href="#the-one-import">Read this section</a></td>
+<td>New JavaScript gameplay</td>
+<td><a href="../api/api-unity.html">Unity scripting API</a></td>
+<td>MonoBehaviour, lifecycle, objects, maths, input and physics helpers</td>
 </tr>
 <tr>
-<td>Escape hatch</td>
-<td><a href="#escape-hatch">Read this section</a></td>
-</tr>
-</tbody></table>
-<aside class="box dummies"><div class="box-title">For dummy developers</div><p>This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An <strong>entity</strong> is an object in your scene; a <strong>component</strong> adds a capability; a <strong>script</strong> adds your own rules.</p>
-</aside><p>Everything below is generated from the source or kept next to it, so it matches the code.</p>
-<table>
-<thead>
-<tr>
-<th>I want to know…</th>
-<th>Go to</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>What <code>this.entity</code>, <code>this.game</code>, <code>this.audio</code>… are</td>
-<td><a href="../api/api-namespaces.html">game.* namespaces</a></td>
+<td>Porting a Unity behavior</td>
+<td><a href="../examples/ex-unity-api.html">Unity API map</a>, <a href="unity-coverage.html">Coverage</a></td>
+<td>Implemented groups, recipes and known gaps</td>
 </tr>
 <tr>
-<td>A class&#39;s methods (Entity, Scene, Game, Input, Events, Save, Audio, UI, Scheduler, Rng, Pool, physics adapters)</td>
-<td>the <strong>API</strong> section in the sidebar</td>
+<td>Existing lower-case scripts</td>
+<td><a href="../api/api-nordscript.html">NordScript</a>, <a href="../guides/cheat-sheet-nordjs.html">Native cheatsheet</a></td>
+<td>Original lifecycle and service access</td>
 </tr>
 <tr>
-<td>Math/easing helpers</td>
-<td><a href="../api/api-helpers.html">Math &amp; helpers</a></td>
+<td>Imports</td>
+<td><a href="../api/api-exports.html">Public exports</a></td>
+<td>Names actually exported from Nord&#39;s core sources</td>
 </tr>
 <tr>
-<td>A component&#39;s fields</td>
-<td><a href="../reference/components.html">Component index</a></td>
+<td>Inspector fields</td>
+<td><a href="../reference/components.html">Components</a></td>
+<td>Fields, types, defaults, supported live changes and scene examples</td>
 </tr>
 <tr>
-<td><code>nord</code> commands</td>
-<td><a href="../reference/cli.html">Command line</a></td>
-</tr>
-<tr>
-<td>JSON file formats</td>
+<td>Project or scene JSON</td>
 <td><a href="../reference/project-format.html">Project format</a></td>
+<td>On-disk data structures</td>
 </tr>
 <tr>
-<td>Ready-made scripts</td>
-<td><a href="../reference/library-catalog.html">Library catalog</a></td>
+<td>CLI automation</td>
+<td><a href="../reference/cli.html">CLI</a></td>
+<td>Commands and options extracted from source</td>
 </tr>
 <tr>
-<td>Starter templates and examples</td>
-<td><a href="../reference/templates-examples.html">Templates &amp; examples</a></td>
+<td>Files, dialogs or native windows</td>
+<td><a href="../api/api-desktop.html">Desktop bridge</a></td>
+<td>Desktop capabilities and typed contract</td>
 </tr>
 <tr>
-<td>Editor keys</td>
-<td><a href="../guides/shortcuts.html">Shortcuts</a></td>
+<td>Rust code</td>
+<td><a href="../api/api-rust.html">Rust API</a></td>
+<td>Public declarations and source comments</td>
+</tr>
+<tr>
+<td>Raw Phaser or Babylon objects</td>
+<td><a href="../reference/engine-docs.html">Versioned API ZIPs</a></td>
+<td>Separate offline upstream references and official links</td>
 </tr>
 </tbody></table>
-<h2 id="the-one-import">The one import<a class="anchor" href="#the-one-import">#</a></h2>
-<p><strong>Example</strong> (not a file; the one import line every script starts with):</p>
-<pre class="code" data-lang="js"><code>import { NordScript, clamp, lerp, remap, vec, ease, Rng, Pool, Events } from 'nord';</code></pre>
-<p><code>nord</code> maps to <code>runtime/core/index.js</code>. Backends add components and <code>game.camera</code> / <code>game.physics</code> / <code>game.gui</code>; scripts never import Phaser or Babylon.</p>
+<h2 id="use-the-editor-then-compare-the-file">Use the editor, then compare the file<a class="anchor" href="#use-the-editor-then-compare-the-file">#</a></h2>
+<p>Select an object in <span class="c-ui">Hierarchy</span> and inspect its components in <span class="c-ui">Inspector</span>. Follow the relevant component page to change a field. You should see the value in the Inspector and its effect when you press <span class="c-ui">Play</span>.</p>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, inspect that object&#39;s <code>components</code> array to compare the saved values with the component reference. Preserve the entity id, other components and scripts. The full schema and file examples are in <a href="../reference/project-format.html">Project format</a>.</p>
+<h2 id="use-one-scripting-style-per-class">Use one scripting style per class<a class="anchor" href="#use-one-scripting-style-per-class">#</a></h2>
+<p>The recommended style extends <code>MonoBehaviour</code> and uses <code>Start()</code> / <code>Update()</code>. The original style extends <code>NordScript</code> and uses <code>start()</code> / <code>update(dt)</code>. Existing tutorials retain their working style. Both import from <code>nord</code>; the import does not make C# syntax valid JavaScript.</p>
 <h2 id="escape-hatch">Escape hatch<a class="anchor" href="#escape-hatch">#</a></h2>
-<p>When Nord lacks a wrapper, <code>entity.native</code> (Phaser Container / Babylon TransformNode) and fields like <code>component.obj</code>, <code>.mesh</code>, <code>.light</code>, <code>.camera</code>, <code>.ps</code>, <code>game.camera.native</code> give raw access. Treat it as a last resort: raw objects differ between 2D and 3D and between engine versions.</p>
+<p>When a Nord wrapper does not expose a feature, the renderer or component may expose an underlying engine handle. Check the component&#39;s reference for the actual handle and backend first. A method documented for a Phaser object is not automatically a method on a Nord entity. Phaser and Babylon use different native types, so do not copy a raw call between 2D and 3D.</p>
 <h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
 <ul>
-<li>Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.</li>
-<li>If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.</li>
-<li>For platform or feature limits, check <a href="../appendix/known-issues.html">Known issues</a>.</li>
+<li>The import appears in the Public exports reference.</li>
+<li>Your script uses the lifecycle of its base class.</li>
+<li>The component and backend match the method you are calling.</li>
+<li>You checked a version-matched ZIP before relying on an upstream signature.</li>
 </ul>
-<p>Next: <a href="../examples/examples.html">Choose a worked example</a>. Back to: <a href="manual-paths.html">Manual reading paths</a>.</p>
-<div class="pager"><a href="performance.html"><small>← Previous</small>Performance &amp; debugging</a><a href="desktop-apps.html"><small>Next →</small>Desktop apps</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#use-this-page">Use this page </a><a href="#the-one-import">The one import </a><a href="#escape-hatch">Escape hatch </a><a href="#check-yourself">Check yourself </a></aside></div>
+<p>Next: <a href="../api/api-unity.html">Unity API</a>. Back to: <a href="manual-paths.html">Manual reading paths</a>.</p>
+<div class="pager"><a href="performance.html"><small>← Previous</small>Performance &amp; debugging</a><a href="desktop-apps.html"><small>Next →</small>Desktop apps</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#choose-the-right-reference">Choose the right reference </a><a href="#use-the-editor-then-compare-the-file">Use the editor, then compare the file </a><a href="#use-one-scripting-style-per-class">Use one scripting style per class </a><a href="#escape-hatch">Escape hatch </a><a href="#check-yourself">Check yourself </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

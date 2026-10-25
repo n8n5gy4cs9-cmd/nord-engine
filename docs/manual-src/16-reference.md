@@ -1,54 +1,46 @@
 ---
-title: Reference overview
+title: Find an API or file setting
 section: Manual
 group: Test and publish
 order: 16
-summary: Where to find the nord.js API, component schemas, CLI, project format and shortcuts.
+summary: Choose the Unity API, native Nord API, component fields or file reference for the task in front of you.
 ---
-
-## Use this page
-
-This chapter explains **reference overview**. Open a saved project before following editor steps. Use the topic links below for a specific task; follow [Tutorials](tutorials.html) when you want a complete project to build in order.
-
-| Find the instructions for | Go to |
-|---|---|
-| The one import | [Read this section](#the-one-import) |
-| Escape hatch | [Read this section](#escape-hatch) |
+Use the API section when you need an exact name or setting. Use Examples when you need a complete script that shows how the parts work together.
 
 ::: dummies
-This is a reference chapter: you do not have to complete every section. Choose one task, make that change in the editor, and press Play to check the result. An **entity** is an object in your scene; a **component** adds a capability; a **script** adds your own rules.
+An API is the set of names your code can call. An object can have a component such as a sprite or collider, and a script can ask for that component. A file format describes how the editor saves the same information on disk.
 :::
 
-Everything below is generated from the source or kept next to it, so it matches the code.
+## Choose the right reference
 
-| I want to know… | Go to |
-|---|---|
-| What `this.entity`, `this.game`, `this.audio`… are | [game.* namespaces](api-namespaces.html) |
-| A class's methods (Entity, Scene, Game, Input, Events, Save, Audio, UI, Scheduler, Rng, Pool, physics adapters) | the **API** section in the sidebar |
-| Math/easing helpers | [Math & helpers](api-helpers.html) |
-| A component's fields | [Component index](components.html) |
-| `nord` commands | [Command line](cli.html) |
-| JSON file formats | [Project format](project-format.html) |
-| Ready-made scripts | [Library catalog](library-catalog.html) |
-| Starter templates and examples | [Templates & examples](templates-examples.html) |
-| Editor keys | [Shortcuts](shortcuts.html) |
+| You are working on | Open | What it contains |
+|---|---|---|
+| New JavaScript gameplay | [Unity scripting API](api-unity.html) | MonoBehaviour, lifecycle, objects, maths, input and physics helpers |
+| Porting a Unity behavior | [Unity API map](ex-unity-api.html), [Coverage](unity-coverage.html) | Implemented groups, recipes and known gaps |
+| Existing lower-case scripts | [NordScript](api-nordscript.html), [Native cheatsheet](cheat-sheet-nordjs.html) | Original lifecycle and service access |
+| Imports | [Public exports](api-exports.html) | Names actually exported from Nord's core sources |
+| Inspector fields | [Components](components.html) | Fields, types, defaults, supported live changes and scene examples |
+| Project or scene JSON | [Project format](project-format.html) | On-disk data structures |
+| CLI automation | [CLI](cli.html) | Commands and options extracted from source |
+| Files, dialogs or native windows | [Desktop bridge](api-desktop.html) | Desktop capabilities and typed contract |
+| Rust code | [Rust API](api-rust.html) | Public declarations and source comments |
+| Raw Phaser or Babylon objects | [Versioned API ZIPs](engine-docs.html) | Separate offline upstream references and official links |
 
-## The one import
+## Use the editor, then compare the file
+Select an object in @ui[Hierarchy] and inspect its components in @ui[Inspector]. Follow the relevant component page to change a field. You should see the value in the Inspector and its effect when you press @ui[Play].
 
-**Example** (not a file; the one import line every script starts with):
-```js
-import { NordScript, clamp, lerp, remap, vec, ease, Rng, Pool, Events } from 'nord';
-```
-`nord` maps to `runtime/core/index.js`. Backends add components and `game.camera` / `game.physics` / `game.gui`; scripts never import Phaser or Babylon.
+**In the file** `scenes/main.scene.json`, inspect that object's `components` array to compare the saved values with the component reference. Preserve the entity id, other components and scripts. The full schema and file examples are in [Project format](project-format.html).
+
+## Use one scripting style per class
+The recommended style extends `MonoBehaviour` and uses `Start()` / `Update()`. The original style extends `NordScript` and uses `start()` / `update(dt)`. Existing tutorials retain their working style. Both import from `nord`; the import does not make C# syntax valid JavaScript.
 
 ## Escape hatch
-When Nord lacks a wrapper, `entity.native` (Phaser Container / Babylon TransformNode) and fields like `component.obj`, `.mesh`, `.light`, `.camera`, `.ps`, `game.camera.native` give raw access. Treat it as a last resort: raw objects differ between 2D and 3D and between engine versions.
-
+When a Nord wrapper does not expose a feature, the renderer or component may expose an underlying engine handle. Check the component's reference for the actual handle and backend first. A method documented for a Phaser object is not automatically a method on a Nord entity. Phaser and Babylon use different native types, so do not copy a raw call between 2D and 3D.
 
 ## Check yourself
+- The import appears in the Public exports reference.
+- Your script uses the lifecycle of its base class.
+- The component and backend match the method you are calling.
+- You checked a version-matched ZIP before relying on an upstream signature.
 
-- Save the project, then repeat the action from the section you used. Confirm the stated result before moving on.
-- If Play fails, check the Console for the first error and compare file paths and capitalisation with the example.
-- For platform or feature limits, check [Known issues](known-issues.html).
-
-Next: [Choose a worked example](examples.html). Back to: [Manual reading paths](manual-paths.html).
+Next: [Unity API](api-unity.html). Back to: [Manual reading paths](manual-paths.html).

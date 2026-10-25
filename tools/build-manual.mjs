@@ -409,7 +409,8 @@ for (const p of pages) {
   p.legacyFile = p.file;
   p.file = p.outputFile ?? path.posix.join(SECTION_DIR[p.section] ?? 'nord/reference', p.file);
 }
-pages.sort((a, b) => SECTION_ORDER.indexOf(a.section) - SECTION_ORDER.indexOf(b.section) || a.order - b.order || a.title.localeCompare(b.title));
+const manualGroups = ['Getting oriented', 'Projects, objects and scripts', '2D and 3D worlds', 'Gameplay, sound and interfaces', 'Test and publish'];
+pages.sort((a, b) => SECTION_ORDER.indexOf(a.section) - SECTION_ORDER.indexOf(b.section) || (a.section === 'Manual' ? manualGroups.indexOf(a.group) - manualGroups.indexOf(b.group) : 0) || a.order - b.order || a.title.localeCompare(b.title));
 const bySection = new Map();
 for (const p of pages) { if (!bySection.has(p.section)) bySection.set(p.section, []); bySection.get(p.section).push(p); }
 for (const s of bySection.keys()) if (!SECTION_ORDER.includes(s)) throw new Error(`unknown section '${s}'`);
@@ -476,11 +477,8 @@ fs.mkdirSync(OUT, { recursive: true });
 const oldManifest = path.join(OUT, MANIFEST);
 const previous = new Set(fs.existsSync(oldManifest) ? JSON.parse(fs.readFileSync(oldManifest, 'utf8')) : existingFiles(OUT));
 for (const file of ['robots.txt', '_headers', '.htaccess', 'HOSTING.txt']) copy(path.join(root, 'tools/manual/hosting', file), file);
-const searchGroups = new Map([['nord', []], ['phaser', []], ['phaser-archive', []], ['babylon', []], ['babylon-guides', []]]);
-const searchGroup = p => p.file.startsWith('engines/phaser/4.2/') ? 'phaser'
-  : p.file.startsWith('engines/phaser/4.1-archive/') ? 'phaser-archive'
-    : p.file.startsWith('engines/babylon/9.30/') ? 'babylon'
-      : p.file.startsWith('engines/babylon/guides/') ? 'babylon-guides' : 'nord';
+const searchGroups = new Map([['nord', []]]);
+const searchGroup = () => 'nord';
 let searchCount = 0;
 for (const p of all) {
   let body = p === home ? homeBody : p.html;
@@ -490,7 +488,12 @@ for (const p of all) {
     const search = searchGroups.get(searchGroup(p));
     search.push({ f: p.file, t: p.title, s: p.section, x: plain(body) });
     for (const m of p.searchMembers ?? []) search.push({ f: p.file + '#' + m.id, t: p.title + '.' + m.name, s: p.section, x: m.text.slice(0, 1200) });
-    searchCount += 1 + (p.searchMembers?.length ?? 0);
+    const headings = [...body.matchAll(/<h[23] id="([^"]+)">([\s\S]*?)<\/h[23]>/g)];
+    for (const [i, heading] of headings.entries()) {
+      const content = body.slice(heading.index, headings[i + 1]?.index ?? body.length);
+      search.push({ f: p.file + '#' + heading[1], t: plain(heading[2]).replace(/#$/, '').trim() + ' — ' + p.title, s: p.section, x: plain(content) });
+    }
+    searchCount += 1 + headings.length + (p.searchMembers?.length ?? 0);
   }
 }
 const searchFiles = [];
@@ -508,7 +511,7 @@ copy(path.join(root, 'vendor/codemirror/cm.bundle.js'), 'assets/cm.bundle.js');
 for (const [source, name] of [['inter/inter-latin-400-normal.woff2', 'inter.woff2'], ['plus-jakarta-sans/plus-jakarta-sans-latin-700-normal.woff2', 'jakarta.woff2'], ['jetbrains-mono/jetbrains-mono-latin-400-normal.woff2', 'mono.woff2']]) copy(path.join(root, 'vendor/fonts', source), `assets/${name}`);
 for (const [file, bytes] of engineArchives) emit(file, bytes);
 if (fs.existsSync(path.join(root, 'docs/tutorial-downloads'))) copyTree(path.join(root, 'docs/tutorial-downloads'), 'assets/downloads');
-for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png', ...fs.readdirSync(path.join(root, 'docs/screenshots')).filter((f) => /^(es|ed|ui|graph|mod|ex|vector-rocks|ember-crypt|series-dungeon)-.*\.png$/.test(f))]) copy(path.join(root, 'docs/screenshots', file), `assets/screenshots/${file}`);
+for (const file of ['vallout-03-classic-explore.png', 'automies-2-drive.png', 'xkom-tactical.png', 'manual-hello-nord.png', ...fs.readdirSync(path.join(root, 'docs/screenshots')).filter((f) => /^(es|ed|ui|graph|mod|ex|vector-rocks|ember-crypt|series-dungeon|manual-redesign)-.*\.png$/.test(f))]) copy(path.join(root, 'docs/screenshots', file), `assets/screenshots/${file}`);
 for (const [source, name] of [['notepaint/assets/ui/tools.png', 'notepaint-tools.png'], ['star-not/assets/sprites/space.png', 'star-not-space.png'], ['star-not/assets/ui/portraits.png', 'star-not-ui.png']]) copy(path.join(root, 'examples', source), `assets/tutorials/${name}`);
 // The vendored bundle is standalone ESM. Expose its exact exports as a classic-script global
 // so syntax highlighting also works when the user double-clicks the offline HTML file.

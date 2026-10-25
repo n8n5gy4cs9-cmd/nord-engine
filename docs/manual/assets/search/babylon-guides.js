@@ -1,1 +1,0 @@
-window.NORD_SEARCH_PARTS=window.NORD_SEARCH_PARTS||{};window.NORD_SEARCH_PARTS["babylon-guides"]=[];

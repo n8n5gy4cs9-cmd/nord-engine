@@ -9,6 +9,14 @@ summary: Build, bundle and host commands on one page.
 Save the editable project first. An export is the playable result; it does not replace your source project. Run commands from the project folder, and check the built result before uploading it.
 :::
 
+## Export from the editor
+Save the project, then open @ui[File ▸ Export…]. Choose the web or desktop output appropriate to your audience. The export window reports the result; open that output and confirm that the first scene appears. A desktop export needs the matching player template: see [Desktop apps](desktop-apps.html).
+
+**In the file** `nord.project.json`, the project's type and start scene determine what gets built. Check their exact saved values with [Project format](project-format.html); keep the editable project alongside your backups.
+
+## Command lookup
+These commands are alternatives to the editor workflow. Run them from the project folder. If `nord` is not found, use the executable path in the [CLI cheatsheet](cheat-sheet-cli.html).
+
 | Goal | Command |
 |---|---|
 | Check project | `nord check .` |

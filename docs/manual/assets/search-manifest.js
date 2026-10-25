@@ -1,1 +1,1 @@
-window.NORD_SEARCH_FILES=["assets/search/nord.js","assets/search/phaser.js","assets/search/phaser-archive.js","assets/search/babylon.js","assets/search/babylon-guides.js"];
+window.NORD_SEARCH_FILES=["assets/search/nord.js"];
