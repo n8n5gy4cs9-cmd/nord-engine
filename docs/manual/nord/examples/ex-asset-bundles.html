@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>3.7 · Reuse objects between projects with asset bundles — Nord Engine Docs</title>
+<script>window.NORD_MANUAL_ROOT="../../";try{if(localStorage.getItem('nord.manual.dummies')!=='0')document.documentElement.classList.add('dummies-on');document.documentElement.dataset.theme=localStorage.getItem('nord.manual.theme')||'dark'}catch(e){document.documentElement.classList.add('dummies-on')}</script>
+<link rel="stylesheet" href="../../assets/manual.css"></head>
+<body><a class="skip" href="#content">Skip to content</a><header><div class="topbar"><a class="brand" href="../../index.html"><img src="../../assets/logo.png" alt="">Nord Engine <span>DOCUMENTATION</span></a>
+<div class="search-wrap"><input id="q" type="search" aria-label="Search all documentation" placeholder="Search the docs…  /" autocomplete="off"><div id="results" hidden aria-live="polite"></div></div>
+<button id="dummies-toggle" aria-pressed="true">For dummies: <b>on</b></button><label class="theme-label">Theme <select id="theme-select" aria-label="Documentation theme"><option value="dark">Graphite</option><option value="light">Paper</option><option value="nord">Nord</option><option value="sepia">Sepia</option><option value="forest">Forest</option><option value="contrast">High contrast</option><option value="slate">Slate</option><option value="ocean">Deep ocean</option><option value="ember">Ember</option><option value="plum">Plum</option><option value="arcade">Arcade night ✦</option></select></label><button id="nav-toggle" aria-controls="sidebar" aria-expanded="false">Menu</button></div>
+<nav class="section-tabs" aria-label="Documentation sections"><a href="../start/getting-started.html">Start here</a><a href="../manual/manual-paths.html">Manual</a><a href="../tutorials/tutorials.html">Tutorials</a><a href="examples.html" class="active" aria-current="page">Examples</a><a href="../guides/cookbook.html">Cheatsheets</a><a href="../api/api.html">API</a></nav></header>
+<div class="layout"><nav id="sidebar" class="sidebar" aria-label="Section navigation"><a class="nav-home" href="../../index.html">Documentation home</a><div class="nav-label">Examples</div><details open><summary>Start coding · fundamentals <small>(14)</small></summary><a href="examples.html">Examples (coming from Unity)</a><a href="ex-first-script.html">1 · Your first script</a><a href="ex-input-movement.html">2 · Input and movement</a><a href="ex-find-and-talk.html">3 · Finding objects and talking to scripts</a><a href="ex-clock.html">3.5 · Build a clock: objects, hierarchy, materials and your first script</a><a href="ex-digital-clock.html">3.6 · Build a digital clock: primitives and 3D text in the world</a><a href="ex-asset-bundles.html" class="cur" aria-current="page">3.7 · Reuse objects between projects with asset bundles</a><a href="ex-game-manager.html">4 · GameManager and Singletons</a><a href="ex-spawn-destroy.html">5 · Spawning, prefabs and Destroy</a><a href="ex-collisions.html">6 · Collisions, triggers and raycasts</a><a href="ex-time-coroutines.html">7 · Time: coroutines, Invoke, timers and tweens</a><a href="ex-ui-hud.html">8 · UI: HUD, buttons and menus</a><a href="ex-audio.html">9 · Audio</a><a href="ex-music-player.html">9.5 · A music player and sound effects</a></details><details><summary>Gameplay · reusable recipes <small>(18)</small></summary><a href="ex-save-load.html">10 · Saving and loading</a><a href="ex-scenes.html">11 · Scenes and persistent objects</a><a href="ex-events.html">12 · Events and messages</a><a href="ex-ai-states.html">13 · Enemy AI and state machines</a><a href="ex-data-assets.html">14 · Data assets (ScriptableObject)</a><a href="ex-camera-3d.html">15 · Camera, 3D and effects</a><a href="ex-debug-tools.html">16 · Debugging and the Dev Console</a><a href="ex-coin-dash.html">17 · Coin Dash: a whole small game</a><a href="ex-platformer.html">19 · A platformer: Jump Dash</a><a href="ex-shooter.html">20 · A shooter: Star Shooter</a><a href="ex-health-damage.html">21 · Health, damage and death</a><a href="ex-animation.html">22 · Animation: sprites and the Animator</a><a href="ex-tilemap-levels.html">23 · Tilemaps and level design</a><a href="ex-inventory-quests.html">24 · Inventory, items and quests</a><a href="ex-dialogue-npc.html">25 · Talking to NPCs: interaction and dialogue</a><a href="ex-juice-effects.html">26 · Juice: particles, shake, hit-stop and floating text</a><a href="ex-mobile-touch.html">27 · Touch, mobile and responsive games</a><a href="ex-multiplayer.html">28 · Multiplayer basics</a></details><details><summary>Production · tools and systems <small>(19)</small></summary><a href="ex-language.html">30 · C# to JavaScript: the language side by side</a><a href="ex-physics-recipes.html">31 · Physics recipes</a><a href="ex-picking-dragging.html">32 · Clicking, hovering and dragging objects</a><a href="ex-settings-menu.html">33 · Options menu: volume, language, fullscreen, key rebinding</a><a href="ex-3d-controllers.html">34 · 3D: controllers, cameras, vehicles and interaction</a><a href="ex-architecture.html">35 · Structuring a bigger game: patterns you know from Unity</a><a href="ex-unity-packages.html">36 · Unity packages and features: what to use in Nord</a><a href="ex-genres.html">37 · Starting points by game type</a><a href="ex-build-publish.html">38 · Build, publish and ship</a><a href="ex-optimization-testing.html">39 · Optimising and testing your game</a><a href="ex-procedural.html">40 · Procedural content and randomness</a><a href="ex-unity-conversion.html">41 · Convert a Unity project or tutorial (for you and for AI)</a><a href="ex-unity-helpers.html">42 · Unity helpers cookbook</a><a href="ex-input-editor.html">43 · Input actions and the Input editor</a><a href="ex-vector-rocks.html">44 · Vector Rocks: Asteroids on a green vector monitor</a><a href="ex-platform.html">45 · Which platform? Editor, Mac, Windows, web, phone</a><a href="ex-pathfinding.html">46 · Pathfinding and NavMesh: moving around obstacles</a><a href="ex-cutscenes.html">47 · Cutscenes and the Timeline (Unity Timeline / PlayableDirector)</a><a href="ex-lights-2d.html">48 · 2D lights and shadows (URP 2D Lights)</a></details><details><summary>Complete games and shader lab <small>(8)</small></summary><a href="ex-dungeon-1-hero.html">49 · Dungeon 1: A hero that moves</a><a href="ex-dungeon-2-walls.html">50 · Dungeon 2: Walls</a><a href="ex-dungeon-3-camera.html">51 · Dungeon 3: Camera and a bigger level</a><a href="ex-dungeon-4-coins.html">52 · Dungeon 4: Coins and score</a><a href="ex-dungeon-5-enemies.html">53 · Dungeon 5: Enemies and health</a><a href="ex-dungeon-6-light.html">54 · Dungeon 6: Light and shipping</a><a href="ex-ember-crypt.html">55 · Ember Crypt: a complete game, from art to export</a><a href="ex-shadertoy.html">56 · Shadertoy: use any shader from shadertoy.com</a></details><details><summary>Unity API · map and recipes <small>(8)</small></summary><a href="ex-unity-api.html">57 · Unity API in Nord: the map</a><a href="ex-unity-api-scripting.html">58 · Unity API: scripting and objects</a><a href="ex-unity-api-math.html">59 · Unity API: math types</a><a href="ex-unity-api-input.html">60 · Unity API: input</a><a href="ex-unity-api-physics2d.html">61 · Unity API: Physics 2D</a><a href="ex-unity-api-physics3d.html">62 · Unity API: Physics 3D, joints and the camera</a><a href="ex-unity-api-rendering.html">63 · Unity API: LineRenderer, TrailRenderer, SpriteMask and SpriteShape</a><a href="ex-physics-lab.html">64 · Physics Lab: a bench for the Unity physics layer</a></details><details class="old-category"><summary>Old <small>(2)</small></summary><p class="archive-help">Earlier workflows and duplicate entry points. Preserved for existing projects.</p><a href="ex-migration.html">18 · Migration guide: C# habits to JavaScript</a><a href="ex-editor-for-unity-users.html">29 · The editor for Unity users</a></details></nav><main id="content"><div class="crumb">Examples / Nord Engine</div><h1>3.7 · Reuse objects between projects with asset bundles</h1>
+<aside class="box dummies"><div class="box-title">For dummies</div><p>Export an object (the analog clock) with its models, materials and scripts as one .nordpkg file, then import it into a new project (a dashboard) and drag it into the scene. Like Unity's Export Package and prefabs. Try this example by itself first. Use its stated project type, create the named files, attach scripts to the required objects, then test the stated result. <a href="../start/getting-started.html">Start here</a> if the editor is new to you.</p></aside><p><strong>Goal:</strong> take the analog clock from page <a href="ex-clock.html">3.5</a> and the digital clock from page <a href="ex-digital-clock.html">3.6</a>, turn each into <strong>one file</strong>, and use both in a brand new <strong>dashboard</strong> project without copying anything by hand. This is what Unity calls <em>Export Package / Import Package</em>, and what a Unity or Godot <strong>prefab</strong> (a saved object you can drop into any scene) is for.</p>
+<p><strong>Unity names in this page:</strong> a <em>prefab</em> is a saved entity with its children and scripts. An <em>asset bundle</em> (file ending <code>.nordpkg</code>) is a prefab <strong>plus all the files it uses</strong> (meshes, materials, textures, scripts, sounds). Unity: <em>Assets ▸ Export Package…</em> and <em>Import Package</em>. Godot: <em>Export Resource Pack</em> and dragging a <code>.tscn</code> into a scene.</p>
+<p><strong>Download:</strong> the finished dashboard is in <code>examples/clock-dashboard</code> (with both <code>.nordpkg</code> files in its <code>bundles/</code> folder). Allow 15 minutes.</p>
+<p><strong>Before you start:</strong> finish pages 3.5 and 3.6, or open the projects <code>examples/clock</code> and <code>examples/digital-clock</code> from the engine folder. You open the two projects one after the other: an object can only be exported from the scene it is in.</p>
+<h2 id="1-export-the-analog-clock">1 Export the analog clock<a class="anchor" href="#1-export-the-analog-clock">#</a></h2>
+<ol>
+<li>Open the project <code>clock</code> (<code>examples/clock</code>) in Nord.</li>
+<li>In the <span class="c-ui">Hierarchy</span>, right-click the object <code>Clock</code> (the root that holds the face, the indicators and the pivots).</li>
+<li>Choose <strong>Export asset bundle…</strong>.</li>
+<li>The save dialog opens in the project&#39;s <code>exports/</code> folder with the name <code>Clock.nordpkg</code>. Press <strong>Save</strong>.</li>
+</ol>
+<p>You see the toast <em>Bundle saved (6 files): …/Clock.nordpkg</em>, and the <span class="c-ui">Console</span> lists the same line. The six files are the prefab, the three materials (<code>clock-arm</code>, <code>hour-indicator</code>, <code>seconds-arm</code>) and the two scripts (<code>Clock.js</code>, <code>HourIndicators.js</code>). You did not pick any of them: the engine follows every file the clock refers to.</p>
+<p><strong>Terminal</strong> (in the engine folder), the same thing without the editor:</p>
+<pre class="code" data-lang="bash"><code>nord bundle export Clock -p examples/clock -o /tmp/analog-clock.nordpkg</code></pre>
+<p><strong>Console output:</strong></p>
+<pre class="code" data-lang=""><code>  assets/materials/clock-arm.mat.json
+  assets/materials/hour-indicator.mat.json
+  assets/materials/seconds-arm.mat.json
+  prefabs/Clock.prefab.json
+  scripts/Clock.js
+  scripts/HourIndicators.js
+exported 6 files → /tmp/analog-clock.nordpkg</code></pre>
+<blockquote>
+<p><strong>What about the primitives?</strong> The clock is built from <code>mesh</code> components (cube, cylinder), not from a model file, so there is no <code>.glb</code> in the bundle: the primitive is stored in the prefab. An object with a 3D model (<code>model</code> component, a <code>.glb</code> from the 3D Modeler) gets the model file and its textures in the bundle the same way.</p>
+</blockquote>
+<p>To look inside a bundle: <code>nord bundle info /tmp/analog-clock.nordpkg</code> prints each file and its size.</p>
+<h2 id="2-export-the-digital-clock">2 Export the digital clock<a class="anchor" href="#2-export-the-digital-clock">#</a></h2>
+<p>Repeat step 1 in the project <code>digital-clock</code> (<code>examples/digital-clock</code>): right-click <code>Digital Clock</code> ▸ <strong>Export asset bundle…</strong> ▸ save as <code>Digital-Clock.nordpkg</code>.</p>
+<p><strong>Terminal:</strong></p>
+<pre class="code" data-lang="bash"><code>nord bundle export &quot;Digital Clock&quot; -p examples/digital-clock -o /tmp/digital-clock.nordpkg</code></pre>
+<p>This bundle has seven files: the prefab, the five materials and <code>DigitalClock.js</code>.</p>
+<h2 id="3-create-the-dashboard-project">3 Create the dashboard project<a class="anchor" href="#3-create-the-dashboard-project">#</a></h2>
+<ol>
+<li><span class="c-ui">New project</span> ▸ name <code>dashboard</code> ▸ <strong>3D</strong> ▸ <strong>Create</strong>.</li>
+<li><span class="c-ui">Project</span> tab ▸ <strong>Project properties</strong>: <strong>Physics</strong> <code>none</code>, then press <strong>Apply project properties</strong>.</li>
+</ol>
+<p><strong>Terminal:</strong></p>
+<pre class="code" data-lang="bash"><code>nord new dashboard -t 3d</code></pre>
+<p>The scene is empty. That is all the setup the bundles need: nothing from the clock projects has to be copied.</p>
+<h2 id="4-import-the-bundles">4 Import the bundles<a class="anchor" href="#4-import-the-bundles">#</a></h2>
+<ol>
+<li>In the <span class="c-ui">Assets</span> panel press <strong>Import bundle…</strong> (the box icon in the toolbar).</li>
+<li>Pick <code>analog-clock.nordpkg</code>.</li>
+<li>Repeat for <code>digital-clock.nordpkg</code>.</li>
+</ol>
+<p>Each import shows a toast like <em>Imported &#39;clock&#39;. Drag Clock.prefab.json into the Hierarchy or Scene</em> and opens the folder <code>prefabs/bundles/clock/</code> in <span class="c-ui">Assets</span>. You see the prefab there.</p>
+<blockquote>
+<p><strong>Import files…</strong> also accepts a <code>.nordpkg</code>: a picked file that ends in <code>.nordpkg</code> is imported as a bundle instead of being copied into the folder.</p>
+</blockquote>
+<p><strong>Terminal</strong> (in the <code>dashboard</code> folder), the same result:</p>
+<pre class="code" data-lang="bash"><code>nord bundle import /tmp/analog-clock.nordpkg -p .
+nord bundle import /tmp/digital-clock.nordpkg -p .</code></pre>
+<p><strong>Console output:</strong></p>
+<pre class="code" data-lang=""><code>imported 6 files into 'clock'
+prefab: prefabs/bundles/clock/Clock.prefab.json  (drag it into a scene)
+imported 7 files into 'digital-clock'
+prefab: prefabs/bundles/digital-clock/Digital-Clock.prefab.json  (drag it into a scene)</code></pre>
+<h3 id="where-the-files-went">Where the files went<a class="anchor" href="#where-the-files-went">#</a></h3>
+<p>Nothing of the dashboard was overwritten: every imported file is stored under a <code>bundles/&lt;name&gt;</code> folder that keeps its original top folder.</p>
+<table>
+<thead>
+<tr>
+<th>In the clock project</th>
+<th>In the dashboard</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>prefabs/Clock.prefab.json</code></td>
+<td><code>prefabs/bundles/clock/Clock.prefab.json</code></td>
+</tr>
+<tr>
+<td><code>scripts/Clock.js</code></td>
+<td><code>scripts/bundles/clock/Clock.js</code></td>
+</tr>
+<tr>
+<td><code>assets/materials/seconds-arm.mat.json</code></td>
+<td><code>assets/bundles/clock/materials/seconds-arm.mat.json</code></td>
+</tr>
+<tr>
+<td><code>scripts/DigitalClock.js</code></td>
+<td><code>scripts/bundles/digital-clock/DigitalClock.js</code></td>
+</tr>
+</tbody></table>
+<p>The paths written inside the files were rewritten to the new places, so the prefab finds its scripts and the scripts find their materials.</p>
+<p><strong>In the file</strong> <code>prefabs/bundles/clock/Clock.prefab.json</code> (open it to check), the script and materials point at the imported copies:</p>
+<pre class="code" data-lang="json"><code>&quot;scripts&quot;: [ { &quot;path&quot;: &quot;scripts/bundles/clock/Clock.js&quot;, &quot;attributes&quot;: { … } } ]</code></pre>
+<p><strong>In the file</strong> <code>prefabs/bundles/clock/Clock.prefab.json</code> (further down, inside a child object), a material component:</p>
+<pre class="code" data-lang="json"><code>{ &quot;type&quot;: &quot;material&quot;, &quot;asset&quot;: &quot;assets/bundles/clock/materials/hour-indicator.mat.json&quot; }</code></pre>
+<h2 id="5-drag-the-clocks-into-the-scene">5 Drag the clocks into the scene<a class="anchor" href="#5-drag-the-clocks-into-the-scene">#</a></h2>
+<ol>
+<li>In <span class="c-ui">Assets</span> open <code>prefabs/bundles/clock/</code> and drag <code>Clock.prefab.json</code> onto the <span class="c-ui">Hierarchy</span>. A new entity <code>Clock</code> appears, with the prefab icon.</li>
+<li>Select it and set its <strong>Position</strong> to <code>-7, 0, 0</code>.</li>
+<li>Open <code>prefabs/bundles/digital-clock/</code>, drag <code>Digital-Clock.prefab.json</code> into the Hierarchy, set its <strong>Position</strong> to <code>7, 0, 0</code>.</li>
+<li>Add the camera and the light, as on page 3.5 section 3: <span class="c-ui">Hierarchy ▸ + Create ▸ Camera</span> at <strong>Position</strong> <code>0, 0, −22</code>, and <span class="c-ui">Hierarchy ▸ + Create ▸ Directional light</span> with <strong>direction</strong> <code>−0.321, −0.766, 0.557</code>.</li>
+<li><span class="c-ui">Project</span> tab ▸ <strong>Quality and lighting</strong>: ambient <code>#8a93a3</code>, intensity <code>0.6</code>.</li>
+<li>Press <span class="c-ui">Play</span>.</li>
+</ol>
+<p>You see the analog clock on the left and the digital clock on the right, both showing your computer&#39;s time. No script was written and no material was set up in the dashboard.</p>
+<p><strong>In the file</strong> <code>scenes/main.scene.json</code>, each clock is a prefab <strong>instance</strong> (a few lines, not the whole clock):</p>
+<pre class="code" data-lang="json"><code>{ &quot;name&quot;: &quot;Analog Clock&quot;, &quot;transform&quot;: { &quot;pos&quot;: [-7, 0, 0], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [1, 1, 1] },
+  &quot;prefab&quot;: { &quot;path&quot;: &quot;prefabs/bundles/clock/Clock.prefab.json&quot;, &quot;overrides&quot;: {} } },
+{ &quot;name&quot;: &quot;Digital Clock&quot;, &quot;transform&quot;: { &quot;pos&quot;: [7, 0, 0], &quot;rot&quot;: [0, 0, 0], &quot;scale&quot;: [1, 1, 1] },
+  &quot;prefab&quot;: { &quot;path&quot;: &quot;prefabs/bundles/digital-clock/Digital-Clock.prefab.json&quot;, &quot;overrides&quot;: {} } }</code></pre>
+<p>Because they are prefab instances you can change one of them in the <span class="c-ui">Inspector</span> (a blue <strong>●</strong> marks a value that differs from the prefab; <strong>✕ Revert to prefab value</strong> undoes it) and the other stays as it is. Scale one clock <code>0.5</code> to get a small desk clock.</p>
+<p>The finished project is <code>examples/clock-dashboard</code>.</p>
+<h2 id="6-update-a-bundle-later">6 Update a bundle later<a class="anchor" href="#6-update-a-bundle-later">#</a></h2>
+<p>You improved the clock in its own project. Export it again, then in the dashboard <strong>import it again with replace</strong> so the old copy is overwritten in place and the scene keeps working:</p>
+<p><strong>Terminal</strong> (in the dashboard folder):</p>
+<pre class="code" data-lang="bash"><code>nord bundle import /tmp/analog-clock.nordpkg -p . --replace</code></pre>
+<p>In the editor, <strong>Import bundle…</strong> never overwrites: a second import of the same bundle goes to <code>clock-2</code> (the folders <code>…/bundles/clock-2/</code>), which is handy to compare two versions side by side. Drag the new prefab in, or change <code>prefab.path</code> of the instance.</p>
+<h2 id="how-it-works">How it works<a class="anchor" href="#how-it-works">#</a></h2>
+<ol>
+<li><strong>Export</strong> reads the prefab (an object from a scene is first turned into one, with its position set to <code>0, 0, 0</code>), then looks at <strong>every string</strong> in it. A string that is the path of a project file (<code>scripts/Clock.js</code>, <code>assets/materials/…</code>) is a dependency. The same is done for each dependency that is text (materials, scripts, nested prefabs, animator controllers), until nothing new is found. The <code>.meta.json</code> file of each asset comes along.</li>
+<li>The files are stored in a zip named <code>.nordpkg</code> with a <code>bundle.json</code> that lists every file with its size and SHA-256. The format is described in <code>docs/ASSET_BUNDLES.md</code> in the engine folder.</li>
+<li><strong>Import</strong> checks the list (a damaged or unsafe file is refused before anything is written), copies the files under <code>&lt;top folder&gt;/bundles/&lt;name&gt;/</code>, and rewrites the quoted paths inside the text files.</li>
+</ol>
+<h3 id="reference-the-commands">Reference: the commands<a class="anchor" href="#reference-the-commands">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>nord bundle export &lt;entity&gt; -p &lt;project&gt;</code></td>
+<td>export a scene entity (by name or id); <code>-s &lt;scene&gt;</code> picks another scene than the start scene</td>
+</tr>
+<tr>
+<td><code>nord bundle export --prefab &lt;file&gt; -p &lt;project&gt;</code></td>
+<td>export a prefab file</td>
+</tr>
+<tr>
+<td><code>-o &lt;file&gt;</code></td>
+<td>where to write (default <code>&lt;project&gt;/exports/&lt;name&gt;.nordpkg</code>)</td>
+</tr>
+<tr>
+<td><code>nord bundle info &lt;file&gt;</code></td>
+<td>list the files in a bundle</td>
+</tr>
+<tr>
+<td><code>nord bundle import &lt;file&gt; -p &lt;project&gt;</code></td>
+<td>import; <code>--replace</code> overwrites an earlier import of the same name</td>
+</tr>
+</tbody></table>
+<h2 id="limits-and-traps">Limits and traps<a class="anchor" href="#limits-and-traps">#</a></h2>
+<blockquote>
+<p><strong>Trap: paths built in code.</strong> The export only sees paths written out in full. <code>&#39;assets/sfx/&#39; + name + &#39;.ogg&#39;</code> is invisible. Write each file once as a plain string somewhere in the prefab or script (a list, an attribute) so it is bundled.</p>
+</blockquote>
+<blockquote>
+<p><strong>Trap: relative paths across folders.</strong> <code>import &#39;./Hands.js&#39;</code> between two scripts in <code>scripts/</code> is fine. A script that reaches into another top folder with <code>&#39;../assets/x.png&#39;</code> gets a warning at export and can break after import. Use the project path <code>&#39;assets/x.png&#39;</code>.</p>
+</blockquote>
+<ul>
+<li>Bundles carry <strong>objects</strong>, not project settings. Input actions (<code>nord.project.json</code>), the scene&#39;s ambient light and the scene&#39;s event sheet are not in a bundle. The clocks need none of them.</li>
+<li>Names of things inside the scene (<code>EntityRef(&#39;Hours Arm Pivot&#39;)</code>) are looked up by name. Two copies of the analog clock in one scene are a thing to test before you rely on it.</li>
+<li>The browser editor cannot import <code>.nordpkg</code> yet. Use the desktop editor or the <code>nord bundle</code> command.</li>
+</ul>
+<h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
+<ul>
+<li><code>nord bundle info</code> on the analog clock bundle lists the prefab, three materials and two scripts.</li>
+<li>After the import, <span class="c-ui">Assets</span> shows <code>prefabs/bundles/clock/</code> and <code>scripts/bundles/clock/</code>, and the <strong>Console</strong> has no red errors.</li>
+<li>In play mode both clocks show the time; the seconds arm of the analog clock moves smoothly.</li>
+<li>If a clock appears but is white or untextured, the materials did not import: run <code>nord check</code> in the dashboard folder, it lists missing files.</li>
+<li>If the import refuses a file, the message says which file is damaged: export the bundle again.</li>
+</ul>
+<p>Next: <a href="examples.html">Examples</a> for more projects to export and reuse, or <a href="../manual/assets.html">Assets</a> for the Assets panel. Back to: <a href="ex-digital-clock.html">Build a digital clock</a>.</p>
+<div class="pager"><a href="ex-digital-clock.html"><small>← Previous</small>3.6 · Build a digital clock: primitives and 3D text in the world</a><a href="ex-game-manager.html"><small>Next →</small>4 · GameManager and Singletons</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#1-export-the-analog-clock">1 Export the analog clock </a><a href="#2-export-the-digital-clock">2 Export the digital clock </a><a href="#3-create-the-dashboard-project">3 Create the dashboard project </a><a href="#4-import-the-bundles">4 Import the bundles </a><a href="#5-drag-the-clocks-into-the-scene">5 Drag the clocks into the scene </a><a href="#6-update-a-bundle-later">6 Update a bundle later </a><a href="#how-it-works">How it works </a><a href="#limits-and-traps">Limits and traps </a><a href="#check-yourself">Check yourself </a></aside></div>
+<script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

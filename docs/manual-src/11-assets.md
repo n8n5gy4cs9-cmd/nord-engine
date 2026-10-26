@@ -57,12 +57,15 @@ Re-fetch the downloadable packs with `tools/fetch-packs.sh`. Copy what you need 
 * Never reference remote URLs — builds fail the offline check (`nord check-offline`).
 * Keep texture sizes sensible (see [Performance](performance.html)).
 
+## Asset bundles: move an object with everything it uses {#asset-bundles}
+A **bundle** (`.nordpkg`) is a prefab plus all the models, textures, materials, scripts and sounds it needs, in one file. Right-click an object in the @ui[Hierarchy] ▸ **Export asset bundle…** (or right-click a prefab in @ui[Assets]); in another project press **Import bundle…** in the @ui[Assets] toolbar and drag the new prefab into the scene. Files are imported to `<folder>/bundles/<name>/`, nothing is overwritten. Command line: `nord bundle export|import|info`. Worked example with the analog and digital clock: [3.7 · Reuse objects between projects](ex-asset-bundles.html).
+
 ## Right-click and shortcuts in the Assets panel
 Works on the folder tree (left), on files and folders (right) and on the empty background:
 
 * **Files and folders:** Open, Open with default app, Rename (**F2**), Duplicate (**⌘/Ctrl+D**), Delete (**Del**), Reveal in Finder / Show in Explorer, Copy path.
 * **Folders (and empty background):** New folder, New UI scene (`.ui.json`), New script (`.js`); the new item starts in rename mode.
-* **Background:** also Import files…, Refresh.
+* **Background:** also Import files…, Import asset bundle (`.nordpkg`)…, Refresh. On a prefab: **Export asset bundle…** ([bundles](#asset-bundles)).
 * Click selects (highlighted); drag a file onto a folder in the tree to move it; drop files from Finder to import.
 
 

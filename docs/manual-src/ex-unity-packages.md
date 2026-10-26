@@ -32,6 +32,7 @@ summary: Cinemachine, TextMeshPro, Input System, DOTween, NavMesh, Timeline, Add
 | **Cinemachine Impulse / Feel** | `game.camera.shake`, `fx-hitstop.js`, `ui-damage-numbers.js`, tweens | [Juice](ex-juice-effects.html) |
 | **Visual Scripting / Bolt / PlayMaker** | **Event sheets** and **Graph** tabs | no-code logic |
 | **Version control / Collab** | the project is plain JSON + JS: use Git | scene and prefab files merge well |
+| **Export Package / Import Package, prefabs between projects** | **asset bundles**: right-click an object ▸ **Export asset bundle…** makes a `.nordpkg` with the prefab and every model, material, texture and script it uses; **Import bundle…** in another project | [Reuse objects between projects](ex-asset-bundles.html), `nord bundle` |
 | **Asset Store** | the **Library** tab (ready-made scripts, prefabs, kits) and `.nordaddon` addons | `nord addon install` |
 | **Burst / Jobs / DOTS** | – | not needed at this scale; keep entity counts reasonable and pool |
 | **ML-Agents, Ads, IAP, Analytics** | – | out of scope for a local web/desktop engine |

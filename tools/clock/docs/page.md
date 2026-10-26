@@ -351,4 +351,6 @@ Helpers combine: `Header('Layout', Tooltip('Distance from the centre', Range(0, 
 * If you get a red error in the @ui[Console] that says `Cannot read properties of null` or similar, a pivot name in the script fields does not match an object. Check the spelling in the Inspector.
 * If the clock face looks black, check the camera is at `0, 0, −14` and the directional light exists.
 
+**Reuse it:** want this clock in another project? Right-click `Clock` in the @ui[Hierarchy] ▸ **Export asset bundle…**. The clock, its materials and both scripts end up in one `.nordpkg` that you can import anywhere: see [3.7 · Reuse objects between projects with asset bundles](ex-asset-bundles.html).
+
 Next: [Finding objects and talking to scripts](ex-find-and-talk.html) (page 3) goes deeper into `Find` and `GetComponent`, and [GameManager and Singletons](ex-game-manager.html) (page 4) is the next building block. Back to [Examples](examples.html).

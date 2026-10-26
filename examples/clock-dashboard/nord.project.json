@@ -1,0 +1,59 @@
+{
+  "format": 1,
+  "name": "Clock Dashboard",
+  "id": "com.crowelian.clockdashboard",
+  "type": "3d",
+  "engineVersion": "0.4.1",
+  "startScene": "scenes/main.scene.json",
+  "display": {
+    "width": 1280,
+    "height": 720,
+    "scale": "fit",
+    "pixelArt": false,
+    "background": "#31506e"
+  },
+  "physics": {
+    "engine": "none",
+    "gravity": [
+      0,
+      0,
+      0
+    ]
+  },
+  "input": {
+    "actions": {
+      "down": [
+        "KeyS",
+        "ArrowDown"
+      ],
+      "fire": [
+        "Space",
+        "Mouse0"
+      ],
+      "interact": [
+        "KeyE",
+        "Enter"
+      ],
+      "jump": [
+        "Space",
+        "KeyW",
+        "ArrowUp"
+      ],
+      "left": [
+        "KeyA",
+        "ArrowLeft"
+      ],
+      "right": [
+        "KeyD",
+        "ArrowRight"
+      ],
+      "up": [
+        "KeyW",
+        "ArrowUp"
+      ]
+    }
+  },
+  "ui": {},
+  "plugins": [],
+  "export": {}
+}

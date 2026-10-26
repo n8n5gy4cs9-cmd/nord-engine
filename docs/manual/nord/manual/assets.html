@@ -96,12 +96,14 @@ Replace a file at the <strong>same path and format</strong> and nothing else nee
 <li>Never reference remote URLs — builds fail the offline check (<code>nord check-offline</code>).</li>
 <li>Keep texture sizes sensible (see <a href="performance.html">Performance</a>).</li>
 </ul>
+<h2 id="asset-bundles">Asset bundles: move an object with everything it uses<a class="anchor" href="#asset-bundles">#</a></h2>
+<p>A <strong>bundle</strong> (<code>.nordpkg</code>) is a prefab plus all the models, textures, materials, scripts and sounds it needs, in one file. Right-click an object in the <span class="c-ui">Hierarchy</span> ▸ <strong>Export asset bundle…</strong> (or right-click a prefab in <span class="c-ui">Assets</span>); in another project press <strong>Import bundle…</strong> in the <span class="c-ui">Assets</span> toolbar and drag the new prefab into the scene. Files are imported to <code>&lt;folder&gt;/bundles/&lt;name&gt;/</code>, nothing is overwritten. Command line: <code>nord bundle export|import|info</code>. Worked example with the analog and digital clock: <a href="../examples/ex-asset-bundles.html">3.7 · Reuse objects between projects</a>.</p>
 <h2 id="right-click-and-shortcuts-in-the-assets-panel">Right-click and shortcuts in the Assets panel<a class="anchor" href="#right-click-and-shortcuts-in-the-assets-panel">#</a></h2>
 <p>Works on the folder tree (left), on files and folders (right) and on the empty background:</p>
 <ul>
 <li><strong>Files and folders:</strong> Open, Open with default app, Rename (<strong>F2</strong>), Duplicate (<strong>⌘/Ctrl+D</strong>), Delete (<strong>Del</strong>), Reveal in Finder / Show in Explorer, Copy path.</li>
 <li><strong>Folders (and empty background):</strong> New folder, New UI scene (<code>.ui.json</code>), New script (<code>.js</code>); the new item starts in rename mode.</li>
-<li><strong>Background:</strong> also Import files…, Refresh.</li>
+<li><strong>Background:</strong> also Import files…, Import asset bundle (<code>.nordpkg</code>)…, Refresh. On a prefab: <strong>Export asset bundle…</strong> (<a href="#asset-bundles">bundles</a>).</li>
 <li>Click selects (highlighted); drag a file onto a folder in the tree to move it; drop files from Finder to import.</li>
 </ul>
 <h2 id="check-yourself">Check yourself<a class="anchor" href="#check-yourself">#</a></h2>
@@ -111,5 +113,5 @@ Replace a file at the <strong>same path and format</strong> and nothing else nee
 <li>For platform or feature limits, check <a href="../appendix/known-issues.html">Known issues</a>.</li>
 </ul>
 <p>Next: <a href="../examples/examples.html">Choose a worked example</a>. Back to: <a href="manual-paths.html">Manual reading paths</a>.</p>
-<div class="pager"><a href="physics.html"><small>← Previous</small>Physics</a><a href="layout-editor.html"><small>Next →</small>Layout, layers and objects</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#sidecar-metadata">Sidecar metadata </a><a href="#thumbnails">Thumbnails </a><a href="#built-in-placeholder-art">Built-in placeholder art </a><a href="#optional-packs">Optional packs </a><a href="#rules">Rules </a><a href="#right-click-and-shortcuts-in-the-assets-panel">Right-click and shortcuts in the Assets panel </a><a href="#check-yourself">Check yourself </a></aside></div>
+<div class="pager"><a href="physics.html"><small>← Previous</small>Physics</a><a href="layout-editor.html"><small>Next →</small>Layout, layers and objects</a></div><footer>Crowelian 2026 + Sonnet · Nord Engine documentation · Works offline</footer></main><aside class="on-this-page" aria-label="On this page"><b>On this page</b><a href="#sidecar-metadata">Sidecar metadata </a><a href="#thumbnails">Thumbnails </a><a href="#built-in-placeholder-art">Built-in placeholder art </a><a href="#optional-packs">Optional packs </a><a href="#rules">Rules </a><a href="#asset-bundles">Asset bundles: move an object with everything it uses </a><a href="#right-click-and-shortcuts-in-the-assets-panel">Right-click and shortcuts in the Assets panel </a><a href="#check-yourself">Check yourself </a></aside></div>
 <script src="../../assets/cm.classic.js"></script><script src="../../assets/manual.js"></script></body></html>

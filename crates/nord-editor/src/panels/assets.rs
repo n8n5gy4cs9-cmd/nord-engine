@@ -33,7 +33,7 @@ pub struct AssetsUi {
     /// scroll the selected entry into view once (set by the Inspector's *Show in Assets* ping)
     pub scroll_to_selected: bool,
     listing: Vec<Entry>,
-    listed_at: Option<Instant>,
+    pub(crate) listed_at: Option<Instant>,
     listed_dir: String,
     thumbs: HashMap<String, Option<PathBuf>>,
     pending: HashSet<String>,
@@ -165,8 +165,32 @@ impl AssetsUi {
     }
 }
 
+fn import_bundle_dialog(st: &mut EditorState) {
+    match crate::platform::pick_file("Import asset bundle", nord_export::bundle::EXT) {
+        Some(p) => {
+            st.import_bundle(&p, false);
+        }
+        None if cfg!(target_arch = "wasm32") => {
+            st.toast("Asset bundles need the desktop editor (the browser editor has no file dialog for them yet)")
+        }
+        None => {}
+    }
+}
+
 pub fn import_files(st: &mut EditorState, files: &[PathBuf]) {
     let Some(root) = st.root.clone() else { return };
+    // .nordpkg files are bundles: unpack them instead of copying the zip into the project
+    let (bundles, files): (Vec<_>, Vec<_>) = files.iter().cloned().partition(|f| {
+        f.extension()
+            .is_some_and(|x| x.eq_ignore_ascii_case(nord_export::bundle::EXT))
+    });
+    for b in &bundles {
+        st.import_bundle(b, false);
+    }
+    let files = &files[..];
+    if files.is_empty() {
+        return;
+    }
     let dest = root.join(&st.assets_ui.dir);
     let _ = nord_core::vfs::create_dir_all(&dest);
     let mut n = 0;
@@ -217,6 +241,8 @@ const OP_VARIANT: u8 = 20;
 const OP_FIND_REFS: u8 = 18;
 const OP_OPEN_MODELER: u8 = 41;
 const OP_NEW_MONO: u8 = 13;
+const OP_EXPORT_BUNDLE: u8 = 42;
+const OP_IMPORT_BUNDLE: u8 = 43;
 const OP_NEW_SINGLETON: u8 = 14;
 const OP_NEW_MANAGER: u8 = 15;
 
@@ -268,6 +294,7 @@ fn entry_menu(ui: &mut Ui, e: &Entry, out: &mut Option<(Entry, u8)>) {
     if e.kind == AssetType::Prefab && !e.is_dir {
         item(ui, "Open prefab (Prefab mode)", OP_OPEN_PREFAB);
         item(ui, "Create variant", OP_VARIANT);
+        item(ui, "Export asset bundle…", OP_EXPORT_BUNDLE);
     }
     if e.rel.ends_with(".mesh.json") || e.rel.ends_with(".glb") || e.rel.ends_with(".gltf") {
         item(ui, "Open in 3D Modeler", OP_OPEN_MODELER);
@@ -405,6 +432,7 @@ fn background_menu(ui: &mut Ui, dir: &str, out: &mut Option<(Entry, u8)>) {
     );
     ui.separator();
     item(ui, "Import files…", OP_IMPORT);
+    item(ui, "Import asset bundle (.nordpkg)…", OP_IMPORT_BUNDLE);
     item(ui, "Refresh", OP_REFRESH);
     ui.separator();
     item(ui, reveal_label(), OP_REVEAL);
@@ -550,6 +578,8 @@ fn handle_op(st: &mut EditorState, ui: &Ui, root: &Path, e: Entry, op: u8) {
         OP_NEW_SCRIPT => create_in(st, root, &e.rel, "new-script", "js", Some(NEW_SCRIPT)),
         OP_OPEN_MODELER => st.open_in_modeler("", &e.rel),
         OP_OPEN_PREFAB => st.push(Action::OpenPrefab(e.rel.clone())),
+        OP_EXPORT_BUNDLE => st.export_bundle_prefab(&e.rel, None),
+        OP_IMPORT_BUNDLE => import_bundle_dialog(st),
         OP_VARIANT => st.push(Action::PrefabVariant(e.rel.clone())),
         OP_FAVORITE => {
             let f = &mut st.settings.asset_favorites;
@@ -763,6 +793,12 @@ fn ui_inner(st: &mut EditorState, ui: &mut Ui) {
             if let Some(files) = crate::platform::pick_files() {
                 import_files(st, &files);
             }
+        }
+        if icons::button(ui, "package", "Import bundle…", false)
+            .on_hover_text("Import a .nordpkg asset bundle: its files go to <folder>/bundles/<name>/ and the prefab is ready to drag into a scene")
+            .clicked()
+        {
+            import_bundle_dialog(st);
         }
         if icons::button(ui, "refresh-cw", "Refresh", false).clicked() {
             st.refresh_assets();

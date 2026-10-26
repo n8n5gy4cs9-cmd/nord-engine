@@ -683,6 +683,14 @@ fn row(
             st.make_prefab(&e.id, "prefabs");
             ui.close_menu();
         }
+        if ui
+            .button("Export asset bundle…")
+            .on_hover_text("Save this object with its models, textures, materials and scripts as one .nordpkg you can import into any project")
+            .clicked()
+        {
+            st.export_bundle_entity(&e.id, None);
+            ui.close_menu();
+        }
         if let Some(path) = st.model_path_of(e) {
             if ui.button("Open model in 3D Modeler").clicked() {
                 st.open_in_modeler(&e.id, &path);

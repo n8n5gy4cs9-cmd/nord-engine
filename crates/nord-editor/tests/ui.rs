@@ -2196,3 +2196,53 @@ fn desktop_export_makes_a_mac_app_from_a_template() {
             && app.join("Contents/Info.plist").exists()
     );
 }
+
+#[test]
+fn asset_bundle_export_and_import_roundtrip() {
+    use nord_core::scene::{Component, ScriptRef};
+    let mut st = state_with_scene("bundle");
+    let root = st.root.clone().unwrap();
+    std::fs::create_dir_all(root.join("scripts")).unwrap();
+    std::fs::create_dir_all(root.join("assets/textures")).unwrap();
+    std::fs::write(root.join("assets/textures/face.png"), b"png").unwrap();
+    std::fs::write(
+        root.join("scripts/Hand.js"),
+        "const t = 'assets/textures/face.png';",
+    )
+    .unwrap();
+    st.add_entity(None);
+    let id = st.scene.as_ref().unwrap().entities[0].id.clone();
+    st.edit("Setup", None, |l| {
+        let e = &mut l[0];
+        e.name = "Dial".into();
+        e.components.push(Component {
+            kind: "sprite".into(),
+            fields: serde_json::json!({"texture": "assets/textures/face.png"})
+                .as_object()
+                .unwrap()
+                .clone(),
+        });
+        e.scripts.push(ScriptRef {
+            path: "scripts/Hand.js".into(),
+            attributes: Default::default(),
+        });
+    });
+    st.export_bundle_entity(&id, Some(root.join("exports/Dial.nordpkg")));
+    let pkg = root.join("exports/Dial.nordpkg");
+    assert!(pkg.is_file(), "bundle written to exports/");
+    assert!(st.import_bundle(&pkg, false));
+    let prefab = root.join("prefabs/bundles/dial/Dial.prefab.json");
+    let text = std::fs::read_to_string(&prefab).unwrap();
+    assert!(
+        text.contains("assets/bundles/dial/textures/face.png"),
+        "{text}"
+    );
+    assert!(root.join("scripts/bundles/dial/Hand.js").is_file());
+    // dragging the imported prefab into the scene makes an instance
+    st.add_asset_entity("prefabs/bundles/dial/Dial.prefab.json");
+    let sc = st.scene.as_ref().unwrap();
+    assert!(sc.entities.iter().any(|e| e
+        .prefab
+        .as_ref()
+        .is_some_and(|p| p.path.ends_with("Dial.prefab.json"))));
+}

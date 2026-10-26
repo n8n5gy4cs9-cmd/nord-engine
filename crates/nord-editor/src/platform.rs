@@ -90,6 +90,24 @@ pub fn pick_file(title: &str, ext: &str) -> Option<PathBuf> {
     }
 }
 
+/// "Save as" dialog starting in `dir` with `name` filled in (native only; the browser has no file system to save to).
+pub fn save_file(title: &str, dir: &std::path::Path, name: &str, ext: &str) -> Option<PathBuf> {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        rfd::FileDialog::new()
+            .set_title(title)
+            .set_directory(dir)
+            .set_file_name(name)
+            .add_filter(ext, &[ext])
+            .save_file()
+    }
+    #[cfg(target_arch = "wasm32")]
+    {
+        let _ = (title, dir, name, ext);
+        None
+    }
+}
+
 /// Multi-file picker (browser: async, see [`WebEvent::ImportFiles`]).
 pub fn pick_files() -> Option<Vec<PathBuf>> {
     #[cfg(not(target_arch = "wasm32"))]

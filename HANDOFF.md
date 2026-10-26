@@ -43,6 +43,9 @@ cargo build --workspace && cargo test --workspace && cargo clippy --workspace --
 **Prompt:** *"Read HANDOFF.md and godotize-nordengine-tasks.md, then do the open checking tasks G8-3/G8-4/G8-5 (M13-13): run the native editor on macOS and verify asset drag, shortcut rebinding, live highlights, Window/menu overlays; run the Playwright suites T36/T38/T40–T43; walk KNOWN_ISSUES. Commit small to main."**
 All G0–G10 feature tasks are done (see Current status, M13 in task.md). Showcase: `examples/neon-harbor` / tutorial T48.
 
+## Session note v0.5.0 (2026-10-26)
+Asset bundles: `nord_export::bundle` (export_entity / export_prefab / read_manifest / import), `nord bundle`, editor menus (`prefab.rs` export_bundle_*/import_bundle, hierarchy + assets panels), MCP `bundle_*`, docs `docs/ASSET_BUNDLES.md` + manual page `ex-asset-bundles.md`, example `examples/clock-dashboard`. Not done / ideas: web editor (no `.nordpkg` dialog), docs screenshot `ex-bundles-result.png` (no Playwright here), bundling scene-level settings (event sheet, input actions), a Library-tab shelf for imported bundles.
+
 ## Session note v0.4.0 (2026-10-25)
 Desktop export + export templates + optional Colima template build (M9-17). Code: `crates/nord-export/src/{templates,localbuild}.rs`, `nord-editor/src/panels/{export,templates}.rs`, `docker/`, CI job `templates`. Verified on Mac only (see KNOWN_ISSUES). One test: `desktop_export_makes_a_mac_app_from_a_template`.
 

@@ -45,6 +45,37 @@ enum AddonCmd {
 }
 
 #[derive(Subcommand)]
+enum BundleCmd {
+    /// Export an object of a scene (or a prefab file) with everything it uses into a .nordpkg
+    Export {
+        /// Entity name or id in the scene; leave out when using --prefab
+        entity: Option<String>,
+        #[arg(short, long, default_value = ".")]
+        project: PathBuf,
+        /// Scene file (default: the project's start scene)
+        #[arg(short, long)]
+        scene: Option<String>,
+        /// Export this prefab file (e.g. prefabs/clock.prefab.json) instead of a scene entity
+        #[arg(long)]
+        prefab: Option<String>,
+        /// Output file (default: <project>/exports/<name>.nordpkg)
+        #[arg(short, long)]
+        out: Option<PathBuf>,
+    },
+    /// Import a .nordpkg into a project: files go to <folder>/bundles/<name>/, the prefab is ready to drag into a scene
+    Import {
+        package: PathBuf,
+        #[arg(short, long, default_value = ".")]
+        project: PathBuf,
+        /// Overwrite an earlier import of the same bundle instead of making name-2
+        #[arg(long)]
+        replace: bool,
+    },
+    /// List what a .nordpkg contains
+    Info { package: PathBuf },
+}
+
+#[derive(Subcommand)]
 enum Cmd {
     /// Print engine info
     Info,
@@ -110,6 +141,11 @@ enum Cmd {
         /// Keep event sheets as JSON (interpreted at runtime) instead of compiling them to JavaScript
         #[arg(long)]
         no_compile_events: bool,
+    },
+    /// Asset bundles: export an object with all its models/textures/materials/scripts into a .nordpkg, import one into a project
+    Bundle {
+        #[command(subcommand)]
+        cmd: BundleCmd,
     },
     /// Addon SDK: pack a folder into a .nordaddon, install one into a project, list a project's addons
     Addon {
@@ -344,6 +380,69 @@ fn main() -> anyhow::Result<()> {
                     eprintln!("warning: {}", w.as_str().unwrap_or(""));
                 }
                 println!("Open the level editor from the editor's FPS Level tab, or with `nord serve` → /editor/fpsc/index.html");
+            }
+        },
+        Cmd::Bundle { cmd } => match cmd {
+            BundleCmd::Export {
+                entity,
+                project,
+                scene,
+                prefab,
+                out,
+            } => {
+                let x = if let Some(p) = prefab {
+                    nord_export::bundle::export_prefab(&project, &p, out.as_deref())?
+                } else {
+                    let name = entity.context("give the entity name/id, or --prefab <file>")?;
+                    let proj = nord_core::io::load_project(&project)?;
+                    let rel = scene.unwrap_or(proj.start_scene);
+                    let sc: nord_core::Scene = nord_core::io::load_json(&project.join(&rel))?;
+                    let mut found = None;
+                    for e in &sc.entities {
+                        e.walk(&mut |c| {
+                            if found.is_none() && (c.id == name || c.name == name) {
+                                found = Some(c);
+                            }
+                        });
+                    }
+                    let e = found.with_context(|| format!("no entity '{name}' in {rel}"))?;
+                    nord_export::bundle::export_entity(&project, e, out.as_deref())?
+                };
+                for f in &x.manifest.files {
+                    println!("  {}", f.path);
+                }
+                for w in &x.manifest.warnings {
+                    eprintln!("warning: {w}");
+                }
+                println!(
+                    "exported {} files → {}",
+                    x.manifest.files.len(),
+                    x.out.display()
+                );
+            }
+            BundleCmd::Import {
+                package,
+                project,
+                replace,
+            } => {
+                let i = nord_export::bundle::import(&package, &project, replace)?;
+                println!(
+                    "imported {} files into '{}'{}\nprefab: {}  (drag it into a scene)",
+                    i.files.len(),
+                    i.id,
+                    if i.replaced { " (replaced)" } else { "" },
+                    i.prefab
+                );
+            }
+            BundleCmd::Info { package } => {
+                let m = nord_export::bundle::read_manifest(&package)?;
+                println!("{} (engine {}) prefab: {}", m.name, m.engine, m.prefab);
+                for f in &m.files {
+                    println!("  {:>9}  {}", f.size, f.path);
+                }
+                for w in &m.warnings {
+                    eprintln!("warning: {w}");
+                }
             }
         },
         Cmd::Addon { cmd } => match cmd {

@@ -981,6 +981,15 @@
     "hub": false
   },
   {
+    "file": "nord/examples/ex-asset-bundles.html",
+    "title": "3.7 · Reuse objects between projects with asset bundles",
+    "section": "Examples",
+    "group": "Start coding · fundamentals",
+    "summary": "Export an object (the analog clock) with its models, materials and scripts as one .nordpkg file, then import it into a new project (a dashboard) and drag it into the scene. Like Unity's Export Package and prefabs.",
+    "old": null,
+    "hub": false
+  },
+  {
     "file": "nord/examples/ex-game-manager.html",
     "title": "4 · GameManager and Singletons",
     "section": "Examples",

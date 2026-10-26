@@ -91,6 +91,9 @@ Optional attribute keys: `label`, `default`, `min`/`max`, `options` (enum), `ass
 ## Prefab
 Same as a scene with a single root entity: `{ "format":1, "root": {entity…} }`.
 
+## Asset bundle (`*.nordpkg`)
+Zip with `bundle.json` (`format 1`, `kind "nord-asset-bundle"`, `name`, `prefab`, `files[{path,size,sha256}]`, `warnings`) and the files under `files/<project path>`. Created by `nord bundle export`, unpacked by `nord bundle import` into `<top>/bundles/<name>/…` with quoted paths rewritten. See `ASSET_BUNDLES.md`.
+
 ## Asset metadata
 Sidecar `assets/foo.png.meta.json` only when non-default: `{ "type":"spritesheet","frameWidth":32,"frameHeight":32,
 "anims":{"walk":{"frames":[0,3],"fps":10,"loop":true}}, "filter":"nearest", "tags":["character"] }`.

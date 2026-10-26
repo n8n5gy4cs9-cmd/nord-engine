@@ -627,6 +627,129 @@ impl EditorState {
         }
     }
 
+    /// Export entity `id` (with its children) and everything it uses as a `.nordpkg` asset bundle.
+    /// `out` = where to write; `None` asks with a Save dialog.
+    pub fn export_bundle_entity(&mut self, id: &str, out: Option<std::path::PathBuf>) {
+        let Some(e) = self
+            .scene
+            .as_ref()
+            .and_then(|s| scene_ops::find(&s.entities, id))
+            .cloned()
+        else {
+            return;
+        };
+        self.export_bundle_with(&e.name, out, |root, out| {
+            nord_export::bundle::export_entity(root, &e, Some(out))
+        });
+    }
+
+    /// Assets ▸ right-click a prefab ▸ Export asset bundle.
+    pub fn export_bundle_prefab(&mut self, rel: &str, out: Option<std::path::PathBuf>) {
+        let name = rel
+            .rsplit('/')
+            .next()
+            .unwrap_or(rel)
+            .trim_end_matches(".prefab.json")
+            .to_string();
+        let rel = rel.to_string();
+        self.export_bundle_with(&name, out, |root, out| {
+            nord_export::bundle::export_prefab(root, &rel, Some(out))
+        });
+    }
+
+    fn export_bundle_with(
+        &mut self,
+        name: &str,
+        out: Option<std::path::PathBuf>,
+        run: impl FnOnce(
+            &std::path::Path,
+            &std::path::Path,
+        ) -> anyhow::Result<nord_export::bundle::Exported>,
+    ) {
+        let Some(root) = self.root.clone() else {
+            return;
+        };
+        let dir = root.join("exports");
+        let _ = nord_core::vfs::create_dir_all(&dir);
+        let file = format!(
+            "{}.{}",
+            nord_export::bundle::slug(name),
+            nord_export::bundle::EXT
+        );
+        let Some(out) = out.or_else(|| {
+            crate::platform::save_file("Export asset bundle", &dir, &file, nord_export::bundle::EXT)
+        }) else {
+            return;
+        };
+        match run(&root, &out) {
+            Ok(x) => {
+                for w in &x.manifest.warnings {
+                    self.log(crate::state::LogLevel::Warn, format!("bundle: {w}"));
+                }
+                self.log(
+                    crate::state::LogLevel::Info,
+                    format!(
+                        "Exported {} files → {}",
+                        x.manifest.files.len(),
+                        x.out.display()
+                    ),
+                );
+                self.toast(format!(
+                    "Bundle saved ({} files): {}",
+                    x.manifest.files.len(),
+                    x.out.display()
+                ));
+            }
+            Err(e) => {
+                self.log(
+                    crate::state::LogLevel::Error,
+                    format!("Export bundle: {e:#}"),
+                );
+                self.toast(format!("Export failed: {e:#}"));
+            }
+        }
+    }
+
+    /// Import a `.nordpkg` into the open project; the prefab lands in `prefabs/bundles/<name>/` and is shown in Assets.
+    pub fn import_bundle(&mut self, pkg: &std::path::Path, replace: bool) -> bool {
+        let Some(root) = self.root.clone() else {
+            return false;
+        };
+        match nord_export::bundle::import(pkg, &root, replace) {
+            Ok(i) => {
+                self.refresh_assets();
+                self.assets_ui.listed_at = None;
+                self.assets_ui.dir = i
+                    .prefab
+                    .rsplit_once('/')
+                    .map_or(String::new(), |(d, _)| d.into());
+                self.log(
+                    crate::state::LogLevel::Info,
+                    format!(
+                        "Imported bundle '{}': {} files, prefab {}",
+                        i.id,
+                        i.files.len(),
+                        i.prefab
+                    ),
+                );
+                self.toast(format!(
+                    "Imported '{}'. Drag {} into the Hierarchy or Scene",
+                    i.id,
+                    i.prefab.rsplit('/').next().unwrap_or(&i.prefab)
+                ));
+                true
+            }
+            Err(e) => {
+                self.log(
+                    crate::state::LogLevel::Error,
+                    format!("Import bundle: {e:#}"),
+                );
+                self.toast(format!("Import failed: {e:#}"));
+                false
+            }
+        }
+    }
+
     /// Hierarchy → Project drop / context menu: save entity `id` as `<dir>/<name>.prefab.json` and turn it into an instance.
     pub fn make_prefab(&mut self, id: &str, dir: &str) -> Option<String> {
         let root = self.root.clone()?;

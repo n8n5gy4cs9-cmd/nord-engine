@@ -215,6 +215,18 @@ nord doctor</code></pre>
 <td><code>nord addon list my-game</code></td>
 </tr>
 <tr>
+<td>Export an object + all its files as a bundle</td>
+<td><code>nord bundle export Clock -p examples/clock -o clock.nordpkg</code></td>
+</tr>
+<tr>
+<td>Import a bundle (prefab ready to drag in)</td>
+<td><code>nord bundle import clock.nordpkg -p my-game</code> (<code>--replace</code> updates)</td>
+</tr>
+<tr>
+<td>List a bundle&#39;s files</td>
+<td><code>nord bundle info clock.nordpkg</code></td>
+</tr>
+<tr>
 <td>Add the FPS Creator to a project</td>
 <td><code>nord fpsc init my-game</code> (add <code>--start</code> to make its scene the start scene)</td>
 </tr>

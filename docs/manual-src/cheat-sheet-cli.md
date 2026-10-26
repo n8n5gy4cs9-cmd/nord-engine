@@ -110,6 +110,9 @@ Targets for `-t`: `auto` (default, from the project type), `html`, `web-2d`, `we
 | Zip an addon folder | `nord addon pack library/addons/dice` |
 | Install an addon into a project | `nord addon install library/addons/dice -p my-game` |
 | List a project's addons | `nord addon list my-game` |
+| Export an object + all its files as a bundle | `nord bundle export Clock -p examples/clock -o clock.nordpkg` |
+| Import a bundle (prefab ready to drag in) | `nord bundle import clock.nordpkg -p my-game` (`--replace` updates) |
+| List a bundle's files | `nord bundle info clock.nordpkg` |
 | Add the FPS Creator to a project | `nord fpsc init my-game` (add `--start` to make its scene the start scene) |
 
 ## Checks and maintenance

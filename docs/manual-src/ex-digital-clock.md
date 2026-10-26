@@ -182,4 +182,6 @@ Press @ui[Play]. The numbers show the real time and the colons blink once a seco
 2. **Space** switches 24-hour and 12-hour.
 3. In the Scene view, orbit with **Alt + left mouse**: the text stays on the screen and turns with the clock.
 
+**Reuse it:** right-click `Digital Clock` in the @ui[Hierarchy] ▸ **Export asset bundle…** to get a single file you can drop into any project, together with the analog clock from page 3.5: see [3.7 · Reuse objects between projects with asset bundles](ex-asset-bundles.html).
+
 **Next:** [4 · Game Manager](ex-game-manager.html), or add sound with [9.5 · A music player and sound effects](ex-music-player.html).

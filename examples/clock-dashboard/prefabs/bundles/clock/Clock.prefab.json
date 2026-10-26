@@ -1,0 +1,829 @@
+{
+  "format": 1,
+  "root": {
+    "id": "ck020",
+    "name": "Clock",
+    "enabled": true,
+    "tags": [],
+    "layer": 0,
+    "transform": {
+      "pos": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rot": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "components": [],
+    "scripts": [
+      {
+        "path": "scripts/bundles/clock/Clock.js",
+        "attributes": {
+          "hoursPivot": "Hours Arm Pivot",
+          "minutesPivot": "Minutes Arm Pivot",
+          "secondsPivot": "Seconds Arm Pivot"
+        }
+      },
+      {
+        "path": "scripts/bundles/clock/HourIndicators.js",
+        "attributes": {
+          "radius": 4,
+          "depth": -0.25,
+          "indicatorSize": [
+            0.5,
+            1,
+            0.1
+          ],
+          "material": "assets/bundles/clock/materials/hour-indicator.mat.json"
+        }
+      }
+    ],
+    "children": [
+      {
+        "id": "ck001",
+        "name": "Face",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rot": [
+            90.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            10.0,
+            0.2,
+            10.0
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "cylinder",
+            "size": [
+              1,
+              2,
+              1
+            ],
+            "castShadow": true
+          },
+          {
+            "type": "material",
+            "color": "#ffffff"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "ck002",
+        "name": "Hour Indicator 1",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            2.0,
+            3.464,
+            -0.25
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            -30.0
+          ],
+          "scale": [
+            0.5,
+            1.0,
+            0.1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "box",
+            "size": [
+              1,
+              1,
+              1
+            ],
+            "castShadow": true
+          },
+          {
+            "type": "material",
+            "asset": "assets/bundles/clock/materials/hour-indicator.mat.json"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "ck003",
+        "name": "Hour Indicator 2",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            3.464,
+            2.0,
+            -0.25
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            -60.0
+          ],
+          "scale": [
+            0.5,
+            1.0,
+            0.1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "box",
+            "size": [
+              1,
+              1,
+              1
+            ],
+            "castShadow": true
+          },
+          {
+            "type": "material",
+            "asset": "assets/bundles/clock/materials/hour-indicator.mat.json"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "ck004",
+        "name": "Hour Indicator 3",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            4.0,
+            0.0,
+            -0.25
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            90.0
+          ],
+          "scale": [
+            0.5,
+            1.0,
+            0.1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "box",
+            "size": [
+              1,
+              1,
+              1
+            ],
+            "castShadow": true
+          },
+          {
+            "type": "material",
+            "asset": "assets/bundles/clock/materials/hour-indicator.mat.json"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "ck005",
+        "name": "Hour Indicator 4",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            3.464,
+            -2.0,
+            -0.25
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            60.0
+          ],
+          "scale": [
+            0.5,
+            1.0,
+            0.1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "box",
+            "size": [
+              1,
+              1,
+              1
+            ],
+            "castShadow": true
+          },
+          {
+            "type": "material",
+            "asset": "assets/bundles/clock/materials/hour-indicator.mat.json"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "ck006",
+        "name": "Hour Indicator 5",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            2.0,
+            -3.464,
+            -0.25
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            30.0
+          ],
+          "scale": [
+            0.5,
+            1.0,
+            0.1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "box",
+            "size": [
+              1,
+              1,
+              1
+            ],
+            "castShadow": true
+          },
+          {
+            "type": "material",
+            "asset": "assets/bundles/clock/materials/hour-indicator.mat.json"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "ck007",
+        "name": "Hour Indicator 6",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            0.0,
+            -4.0,
+            -0.25
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            0.5,
+            1.0,
+            0.1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "box",
+            "size": [
+              1,
+              1,
+              1
+            ],
+            "castShadow": true
+          },
+          {
+            "type": "material",
+            "asset": "assets/bundles/clock/materials/hour-indicator.mat.json"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "ck008",
+        "name": "Hour Indicator 7",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            -2.0,
+            -3.464,
+            -0.25
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            -30.0
+          ],
+          "scale": [
+            0.5,
+            1.0,
+            0.1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "box",
+            "size": [
+              1,
+              1,
+              1
+            ],
+            "castShadow": true
+          },
+          {
+            "type": "material",
+            "asset": "assets/bundles/clock/materials/hour-indicator.mat.json"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "ck009",
+        "name": "Hour Indicator 8",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            -3.464,
+            -2.0,
+            -0.25
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            -60.0
+          ],
+          "scale": [
+            0.5,
+            1.0,
+            0.1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "box",
+            "size": [
+              1,
+              1,
+              1
+            ],
+            "castShadow": true
+          },
+          {
+            "type": "material",
+            "asset": "assets/bundles/clock/materials/hour-indicator.mat.json"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "ck010",
+        "name": "Hour Indicator 9",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            -4.0,
+            0.0,
+            -0.25
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            90.0
+          ],
+          "scale": [
+            0.5,
+            1.0,
+            0.1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "box",
+            "size": [
+              1,
+              1,
+              1
+            ],
+            "castShadow": true
+          },
+          {
+            "type": "material",
+            "asset": "assets/bundles/clock/materials/hour-indicator.mat.json"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "ck011",
+        "name": "Hour Indicator 10",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            -3.464,
+            2.0,
+            -0.25
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            60.0
+          ],
+          "scale": [
+            0.5,
+            1.0,
+            0.1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "box",
+            "size": [
+              1,
+              1,
+              1
+            ],
+            "castShadow": true
+          },
+          {
+            "type": "material",
+            "asset": "assets/bundles/clock/materials/hour-indicator.mat.json"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "ck012",
+        "name": "Hour Indicator 11",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            -2.0,
+            3.464,
+            -0.25
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            30.0
+          ],
+          "scale": [
+            0.5,
+            1.0,
+            0.1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "box",
+            "size": [
+              1,
+              1,
+              1
+            ],
+            "castShadow": true
+          },
+          {
+            "type": "material",
+            "asset": "assets/bundles/clock/materials/hour-indicator.mat.json"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "ck013",
+        "name": "Hour Indicator 12",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            0.0,
+            4.0,
+            -0.25
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            0.5,
+            1.0,
+            0.1
+          ]
+        },
+        "components": [
+          {
+            "type": "mesh",
+            "shape": "box",
+            "size": [
+              1,
+              1,
+              1
+            ],
+            "castShadow": true
+          },
+          {
+            "type": "material",
+            "asset": "assets/bundles/clock/materials/hour-indicator.mat.json"
+          }
+        ],
+        "scripts": [],
+        "children": [],
+        "prefab": null
+      },
+      {
+        "id": "ck015",
+        "name": "Hours Arm Pivot",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "components": [],
+        "scripts": [],
+        "children": [
+          {
+            "id": "ck014",
+            "name": "Hours Arm",
+            "enabled": true,
+            "tags": [],
+            "layer": 0,
+            "transform": {
+              "pos": [
+                0.0,
+                0.75,
+                -0.25
+              ],
+              "rot": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "scale": [
+                0.3,
+                2.5,
+                0.1
+              ]
+            },
+            "components": [
+              {
+                "type": "mesh",
+                "shape": "box",
+                "size": [
+                  1,
+                  1,
+                  1
+                ],
+                "castShadow": true
+              },
+              {
+                "type": "material",
+                "asset": "assets/bundles/clock/materials/clock-arm.mat.json"
+              }
+            ],
+            "scripts": [],
+            "children": [],
+            "prefab": null
+          }
+        ],
+        "prefab": null
+      },
+      {
+        "id": "ck017",
+        "name": "Minutes Arm Pivot",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "components": [],
+        "scripts": [],
+        "children": [
+          {
+            "id": "ck016",
+            "name": "Minutes Arm",
+            "enabled": true,
+            "tags": [],
+            "layer": 0,
+            "transform": {
+              "pos": [
+                0.0,
+                1.0,
+                -0.35
+              ],
+              "rot": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "scale": [
+                0.2,
+                4.0,
+                0.1
+              ]
+            },
+            "components": [
+              {
+                "type": "mesh",
+                "shape": "box",
+                "size": [
+                  1,
+                  1,
+                  1
+                ],
+                "castShadow": true
+              },
+              {
+                "type": "material",
+                "asset": "assets/bundles/clock/materials/clock-arm.mat.json"
+              }
+            ],
+            "scripts": [],
+            "children": [],
+            "prefab": null
+          }
+        ],
+        "prefab": null
+      },
+      {
+        "id": "ck019",
+        "name": "Seconds Arm Pivot",
+        "enabled": true,
+        "tags": [],
+        "layer": 0,
+        "transform": {
+          "pos": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rot": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "components": [],
+        "scripts": [],
+        "children": [
+          {
+            "id": "ck018",
+            "name": "Seconds Arm",
+            "enabled": true,
+            "tags": [],
+            "layer": 0,
+            "transform": {
+              "pos": [
+                0.0,
+                1.25,
+                -0.45
+              ],
+              "rot": [
+                0.0,
+                0.0,
+                0.0
+              ],
+              "scale": [
+                0.1,
+                5.0,
+                0.1
+              ]
+            },
+            "components": [
+              {
+                "type": "mesh",
+                "shape": "box",
+                "size": [
+                  1,
+                  1,
+                  1
+                ],
+                "castShadow": true
+              },
+              {
+                "type": "material",
+                "asset": "assets/bundles/clock/materials/seconds-arm.mat.json"
+              }
+            ],
+            "scripts": [],
+            "children": [],
+            "prefab": null
+          }
+        ],
+        "prefab": null
+      }
+    ],
+    "prefab": null
+  }
+}

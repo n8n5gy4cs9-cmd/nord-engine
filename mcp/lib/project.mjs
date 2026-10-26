@@ -29,6 +29,7 @@ export const GUIDE_TOPICS = {
   debugger: ['docs/DEBUGGER.md'],
   profiler: ['docs/PROFILER.md'],
   addons: ['docs/ADDONS.md'],
+  'asset-bundles': ['docs/ASSET_BUNDLES.md'],
   localisation: ['docs/LOCALISATION.md'],
   'unity-conversion': ['docs/manual-src/ex-unity-conversion.md', 'docs/manual-src/ex-migration.md'],
   cookbook: ['docs/manual-src/cookbook.md'],
@@ -88,6 +89,11 @@ export function projectTools(ctx) {
     const assets = list('assets'), by = {}; assets.forEach((f) => { const k = path.extname(f).slice(1) || 'none'; by[k] = (by[k] || 0) + 1; });
     return `Project "${p.name}" (${p.type}) at ${root}\nstartScene: ${p.startScene}\ndisplay: ${JSON.stringify(p.display)}\nphysics: ${JSON.stringify(p.physics)}\nscenes: ${list('scenes', /\.scene\.json$/).join(', ') || '-'}\nscripts: ${list('scripts', /\.(js|ts)$/).join(', ') || '-'}\nprefabs: ${list('prefabs', /\.prefab\.json$/).join(', ') || '-'}\nmodels: ${list('models').join(', ') || '-'}\nassets: ${assets.length} files ${JSON.stringify(by)}\nnext: nord_guide, component_schema, scene_get, scene_add_entity`;
   });
+  tool('bundle_export', 'Export an object with everything it uses (models, textures, materials, scripts, nested prefabs) as one .nordpkg asset bundle, to reuse in another project (Unity "Export Package"). Give the entity name or id of a scene entity, or prefab: "prefabs/x.prefab.json". Output defaults to exports/<name>.nordpkg. See nord_guide asset-bundles.', obj({ entity: { type: 'string', description: 'Entity name or id in the scene' }, scene: { type: 'string', description: 'Scene file (default: the start scene)' }, prefab: { type: 'string', description: 'Export this prefab file instead of an entity' }, out: { type: 'string', description: 'Output .nordpkg path (default exports/<name>.nordpkg)' } }), ({ entity, scene, prefab, out }) => {
+    const a = ['bundle', 'export']; if (prefab) a.push('--prefab', prefab); else if (entity) a.push(entity); else throw new Error('give entity or prefab');
+    a.push('-p', ctx.projectRoot()); if (scene) a.push('-s', scene); if (out) a.push('-o', path.resolve(out)); return run(a);
+  }),
+  tool('bundle_import', 'Import a .nordpkg asset bundle into the open project. Files land in <folder>/bundles/<name>/ (nothing is overwritten; replace:true overwrites an earlier import). Returns the prefab path: put it in a scene with scene_add_entity {prefab:{path}}.', obj({ file: { type: 'string', description: 'Absolute path of the .nordpkg' }, replace: { type: 'boolean' } }, ['file']), ({ file, replace = false }) => run(['bundle', 'import', path.resolve(file), '-p', ctx.projectRoot(), ...(replace ? ['--replace'] : [])])),
   tool('library_list', 'Search the engine\'s ready-made library (scripts, prefabs, shaders, snippets): AI, camera, UI, inventory, dialogue, a Dev Console prefab and more. Returns id, kind, title, description. Prefer these over writing the same thing again.', obj({ query: { type: 'string', description: 'Words to search (id, title, tags, description). Empty = categories.' }, limit: { type: 'integer' } }), ({ query = '', limit = 25 }) => {
     const idx = JSON.parse(fs.readFileSync(path.join(engine, 'library/INDEX.json'), 'utf8')), q = query.toLowerCase().split(/\s+/).filter(Boolean);
     if (!q.length) { const c = {}; idx.forEach((i) => { c[i.category] = (c[i.category] || 0) + 1; }); return 'Categories: ' + Object.entries(c).map(([k, v]) => `${k} (${v})`).join(', ') + '\nSearch with a query, then library_add {id}.'; }

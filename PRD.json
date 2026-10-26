@@ -3,7 +3,7 @@
   "tagline": "Rust-based game/app engine + editor that exports static HTML web games and a native Mac app",
   "author": "Crowelian 2026 + Sonnet",
   "version": "0.0.1",
-  "updated": "2026-10-25",
+  "updated": "2026-10-26",
   "branch": "main",
   "statusValues": [
     "todo",
@@ -2619,6 +2619,12 @@
       "milestone": "M13",
       "title": "Verify in the native editor window: Stop returns to Scene/Game view, gizmo drag in Play, new component schemas in the Inspector, Add component menu",
       "status": "todo"
+    },
+    {
+      "id": "M13-47",
+      "milestone": "M13",
+      "title": "Asset bundles (.nordpkg): export an object with all its models/textures/materials/scripts, import into any project (nord bundle, editor menus, MCP, docs 3.7, example clock-dashboard)",
+      "status": "done"
     }
   ]
 }
